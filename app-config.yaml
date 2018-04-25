@@ -1,0 +1,29 @@
+# ref https://raw.githubusercontent.com/nais/naisd/master/nais_example.yaml
+image: docker.adeo.no:5000/fo/veilarbregistrering
+replicas:
+  min: 1
+  max: 2
+  cpuThresholdPercentage: 50
+port: 8080
+healthcheck:
+  liveness:
+    path: veilarbregistrering/internal/isAlive
+    initialDelay: 60
+  readiness:
+    path: veilarbregistrering/internal/selftest
+    initialDelay: 60
+prometheus:
+  enabled: true
+  path: veilarbregistrering/internal/metrics
+fasitResources:
+  used:
+  - alias: loadbalancer:veilarbregistrering
+    resourceType: loadbalancerconfig
+  - alias: srvveilarbregistrering
+    resourceType: credential
+  - alias: appdynamics
+    resourceType: applicationproperties
+  exposed:
+  - alias: veilarbregistreringSBS
+    resourceType: restservice
+    path: /veilarbregistrering/api

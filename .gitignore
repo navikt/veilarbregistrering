@@ -1,0 +1,15 @@
+.idea/*
+!.idea/runConfigurations/
+*.iml
+*.ipr
+*.iws
+*.log
+*.gz
+.checkstyle
+.classpath
+.pmd
+.project
+.settings
+target
+*.jsp
+activemq-data/
