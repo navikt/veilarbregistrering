@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config;
+package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
