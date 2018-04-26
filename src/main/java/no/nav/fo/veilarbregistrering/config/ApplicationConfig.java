@@ -36,7 +36,7 @@ public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 
     @Override
     public Sone getSone() {
-        return Sone.SBS;
+        return Sone.FSS;
     }
 
     @Transactional
