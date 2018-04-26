@@ -1,5 +1,5 @@
 import no.nav.apiapp.ApiApp;
-import no.nav.fo.veilarbregistrering.ApplicationConfig;
+import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
 
 public class Main {
 

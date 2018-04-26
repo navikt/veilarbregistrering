@@ -30,6 +30,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>api-app</artifactId>
         </dependency>
@@ -44,6 +53,10 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>jdbc</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,8 +1,15 @@
-package no.nav.fo.veilarbregistrering;
+package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+@Configuration
+@Import({
+        DatabaseConfig.class,
+        DataSourceHelsesjekk.class
+})
 public class ApplicationConfig implements ApiApplication.NaisApiApplication{
 
     public static final String APPLICATION_NAME = "veilarbregistrering";
