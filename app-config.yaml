@@ -23,6 +23,10 @@ fasitResources:
     resourceType: credential
   - alias: appdynamics
     resourceType: applicationproperties
+  - alias: aad_b2c_clientid
+    resourceType: credential
+  - alias: aad_b2c_discovery
+    resourceType: baseurl
   exposed:
   - alias: veilarbregistreringSBS
     resourceType: restservice
