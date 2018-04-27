@@ -1,13 +1,12 @@
 package no.nav.fo.veilarbregistrering.db;
 
 import org.flywaydb.core.Flyway;
-
-import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class MigrationUtils {
-    public static void createTables(DataSource dataSource) {
+    public static void createTables(JdbcTemplate jdbcTemplate) {
         Flyway flyway = new Flyway();
-        flyway.setDataSource(dataSource);
+        flyway.setDataSource(jdbcTemplate.getDataSource());
         flyway.migrate();
     }
 

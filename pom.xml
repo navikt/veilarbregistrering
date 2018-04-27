@@ -30,6 +30,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>fasit</artifactId>
         </dependency>

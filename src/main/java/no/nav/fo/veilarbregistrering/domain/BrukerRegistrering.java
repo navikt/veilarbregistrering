@@ -1,14 +1,17 @@
 package no.nav.fo.veilarbregistrering.domain;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
-@Accessors(chain = true)
+import java.util.Date;
+
+@Value
+@Builder
 public class BrukerRegistrering {
-    private String nusKode;
-    private String yrkesPraksis;
-    private boolean enigIOppsummering;
-    private String oppsummering;
-    private boolean harHelseutfordringer;
+    String nusKode;
+    String yrkesPraksis;
+    Date opprettetDato;
+    boolean enigIOppsummering;
+    String oppsummering;
+    boolean harHelseutfordringer;
 }

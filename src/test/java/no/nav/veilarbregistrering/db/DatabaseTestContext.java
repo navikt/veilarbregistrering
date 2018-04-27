@@ -21,11 +21,10 @@ public class DatabaseTestContext {
             setDataSourceProperties(dbCredential.get());
         } else {
             setInMemoryDataSourceProperties();
+        }
     }
 
-    }
-
-    public static void setupInMemoryContext() {
+    public static void setupInMemoryDatabaseContext() {
         setupContext(null);
     }
 

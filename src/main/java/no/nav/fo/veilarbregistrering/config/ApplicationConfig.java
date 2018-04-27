@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ public class ApplicationConfig implements ApiApplication.NaisApiApplication {
     public static final String APPLICATION_NAME = "veilarbregistrering";
 
     @Inject
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -42,6 +43,6 @@ public class ApplicationConfig implements ApiApplication.NaisApiApplication {
     @Transactional
     @Override
     public void startup(ServletContext servletContext) {
-        MigrationUtils.createTables(dataSource);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 }

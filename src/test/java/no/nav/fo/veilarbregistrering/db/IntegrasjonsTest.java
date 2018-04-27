@@ -1,9 +1,9 @@
-package no.nav.veilarbregistrering;
+package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
-import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.testconfig.ApiAppTest;
+import no.nav.veilarbregistrering.TestContext;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,11 +14,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import javax.sql.DataSource;
 
 public abstract class IntegrasjonsTest {
 
@@ -44,7 +43,7 @@ public abstract class IntegrasjonsTest {
         annotationConfigApplicationContext.start();
         platformTransactionManager = getBean(PlatformTransactionManager.class);
 
-        MigrationUtils.createTables(getBean(DataSource.class));
+        MigrationUtils.createTables(getBean(JdbcTemplate.class));
     }
 
     @BeforeEach
