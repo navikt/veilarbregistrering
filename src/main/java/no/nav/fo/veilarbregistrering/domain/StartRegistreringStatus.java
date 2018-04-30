@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.domain;
 
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -8,5 +7,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StartRegistreringStatus {
     private boolean underOppfolging;
-    private boolean oppfyllerKrav;
+    private boolean oppfyllerKravForAutomatiskRegistrering;
 }

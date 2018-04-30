@@ -27,6 +27,8 @@ fasitResources:
     resourceType: credential
   - alias: aad_b2c_discovery
     resourceType: baseurl
+  - alias: feature_endpoint
+    resourceType: restservice
   exposed:
   - alias: veilarbregistreringSBS
     resourceType: restservice
