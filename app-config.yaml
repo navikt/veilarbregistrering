@@ -29,6 +29,8 @@ fasitResources:
     resourceType: baseurl
   - alias: feature_endpoint
     resourceType: restservice
+  - aslias: aareg.endpoint.url
+    resourceType: webserviceendpoint
   exposed:
   - alias: veilarbregistreringSBS
     resourceType: restservice

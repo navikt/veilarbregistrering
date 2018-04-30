@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.OppfolgingService;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,8 +44,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidsforholdService arbeidsforholdService() {
-        return new ArbeidsforholdService();
+    ArbeidsforholdService arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
+        return new ArbeidsforholdService(arbeidsforholdV3);
     }
 
 }

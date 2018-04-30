@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.service;
 
-import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.OpprettBrukerIArenaFeature;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
@@ -10,7 +9,6 @@ import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.utils.SelvgaaendeUtil.erSelvgaaende;
@@ -76,7 +74,7 @@ public class BrukerRegistreringService {
                     .setOppfyllerKravForAutomatiskRegistrering(false);
         }
 
-        boolean oppfyllerKrav = oppfyllerKravOmAutomatiskRegistrering(fnr, () -> hentAlleArbeidsforhold(fnr), oppfolgingStatus.orElse(null), LocalDate.now());
+        boolean oppfyllerKrav = oppfyllerKravOmAutomatiskRegistrering(fnr, () -> arbeidsforholdService.hentArbeidsforhold(fnr), oppfolgingStatus.orElse(null), LocalDate.now());
 
         return new StartRegistreringStatus()
                 .setUnderOppfolging(false)
@@ -94,11 +92,6 @@ public class BrukerRegistreringService {
 
     private Optional<OppfolgingStatus> hentOppfolgingsstatusOgFlagg(String fnr) {
         return oppfolgingService.hentOppfolgingsstatusOgFlagg(fnr);
-    }
-
-    @SneakyThrows
-    private List<Arbeidsforhold> hentAlleArbeidsforhold(String fnr) {
-        return arbeidsforholdService.hentArbeidsforhold(fnr);
     }
 
     private void arkiverBruker(AktiverArbeidssokerData aktiverArbeidssokerData) {

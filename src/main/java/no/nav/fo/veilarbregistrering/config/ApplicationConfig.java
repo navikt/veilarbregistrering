@@ -20,18 +20,23 @@ import javax.servlet.ServletContext;
         DataSourceHelsesjekk.class,
         AktorConfig.class,
         RemoteFeatureConfig.class,
-        PepConfig.class
+        PepConfig.class,
+        CacheConfig.class,
+        AAregServiceWSConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 
     public static final String APPLICATION_NAME = "veilarbregistrering";
+    public static final String RUN_WITH_MOCKS = "RUN_WITH_MOCKS";
 
     @Inject
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
-        apiAppConfigurator.azureADB2CLogin().sts();
+        apiAppConfigurator
+                //.azureADB2CLogin()
+                .sts();
     }
 
     @Override
