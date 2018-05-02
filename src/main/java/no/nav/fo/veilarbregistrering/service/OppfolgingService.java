@@ -16,6 +16,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Component
 public class OppfolgingService {
 
+    public static final String FNR_QUERY_PARAM = "fnr";
     public static final String VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
     private final String veilarboppfolgingTarget;
     private final SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor;
@@ -33,7 +34,12 @@ public class OppfolgingService {
     }
 
     public Optional<OppfolgingStatus> hentOppfolgingsstatusOgFlagg(String fnr) {
-        return Optional.empty();
+        OppfolgingStatus oppfolgingStatus = withClient(c -> c.target(veilarboppfolgingTarget + "/hentOppfolgingsstatusOgFlagg")
+                .queryParam(FNR_QUERY_PARAM, fnr)
+                .request()
+                .get(OppfolgingStatus.class)
+        );
+        return Optional.of(oppfolgingStatus);
     }
 
     <T> T withClient(Function<Client, T> function) {
