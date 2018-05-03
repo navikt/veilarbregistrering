@@ -4,13 +4,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.PepClient;
-import no.nav.apiapp.util.SubjectUtils;
-import no.nav.fo.veilarbregistrering.config.PepConfig;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -18,7 +17,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
 
 @Component
 @Path("/")
@@ -34,6 +32,9 @@ public class RegistreringResource {
     private ArbeidsforholdService arbeidsforholdService;
 
     @Inject
+    private UserService userService;
+
+    @Inject
     private PepClient pepClient;
 
     @GET
@@ -43,28 +44,24 @@ public class RegistreringResource {
             notes = "Statusen inneholder to flagg: ett som sier hvorvidt brukeren er under oppfølging, og ett som sier hvorvidt brukeren oppfyller krav til automatisk registrering."
     )
     public StartRegistreringStatus hentStartRegistreringStatus() {
-        pepClient.sjekkLeseTilgangTilFnr(getFnr());
-        return brukerRegistreringService.hentStartRegistreringStatus(getFnr());
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        return brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
     }
 
     @POST
     @Path("/startregistrering")
     @ApiOperation(value = "Registrerer bruker")
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
-        pepClient.sjekkLeseTilgangTilFnr(getFnr());
-        return brukerRegistreringService.registrerBruker(brukerRegistrering, getFnr());
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
     }
 
     @GET
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter siste arbeidsforhold")
     public Arbeidsforhold hentSisteArbeidsforhold() {
-        pepClient.sjekkLeseTilgangTilFnr(getFnr());
-        return arbeidsforholdService.hentSisteArbeidsforhold((getFnr()));
-    }
-
-    private String getFnr() {
-        return SubjectUtils.getUserId().orElseThrow(IllegalArgumentException::new);
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
     }
 
 }

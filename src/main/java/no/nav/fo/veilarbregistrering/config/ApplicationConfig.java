@@ -5,7 +5,6 @@ import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,13 +22,11 @@ import javax.servlet.ServletContext;
         RemoteFeatureConfig.class,
         PepConfig.class,
         CacheConfig.class,
-        AAregServiceWSConfig.class,
-        RegistreringResource.class
+        AAregServiceWSConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 
     public static final String APPLICATION_NAME = "veilarbregistrering";
-    public static final String RUN_WITH_MOCKS = "RUN_WITH_MOCKS";
 
     @Inject
     private JdbcTemplate jdbcTemplate;

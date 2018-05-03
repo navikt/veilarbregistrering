@@ -16,7 +16,8 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.RUN_WITH_MOCKS;
+import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MAX_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacService.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 
 public class TestContext {
@@ -36,7 +37,6 @@ public class TestContext {
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize");
 
         setProperty(AKTOER_ENDPOINT_URL, "https://app-" + getDefaultEnvironment() + ".adeo.no/aktoerid/AktoerService/v2");
-        setProperty(RUN_WITH_MOCKS, "true");
 
         setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
 
@@ -60,6 +60,9 @@ public class TestContext {
         ServiceUser azureADClientId = FasitUtils.getServiceUser("aad_b2c_clientid", APPLICATION_NAME);
         Util.setProperty(AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME, FasitUtils.getBaseUrl("aad_b2c_discovery"));
         Util.setProperty(AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME, azureADClientId.username);
+
+        setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
+        setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
     }
 
 }
