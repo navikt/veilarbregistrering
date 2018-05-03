@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MAX_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MIN_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +37,7 @@ public class BrukerRegistreringServiceTest {
     private ArbeidsforholdService arbeidsforholdService;
     private RemoteFeatureConfig.OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private RemoteFeatureConfig.RegistreringFeature registreringFeature;
+    private StartRegistreringUtilsService startRegistreringUtilsService;
 
 
     @BeforeEach
@@ -47,6 +48,7 @@ public class BrukerRegistreringServiceTest {
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingService = mock(OppfolgingService.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
+        startRegistreringUtilsService = new StartRegistreringUtilsService();
 
         System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
         System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
@@ -58,7 +60,8 @@ public class BrukerRegistreringServiceTest {
                         opprettBrukerIArenaFeature,
                         registreringFeature,
                         oppfolgingService,
-                        arbeidsforholdService);
+                        arbeidsforholdService,
+                        startRegistreringUtilsService);
 
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
         when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);

@@ -8,6 +8,7 @@ import java.util.Date;
 @Value
 @Builder
 public class BrukerRegistrering {
+    long id;
     String nusKode;
     String yrkesPraksis;
     Date opprettetDato;

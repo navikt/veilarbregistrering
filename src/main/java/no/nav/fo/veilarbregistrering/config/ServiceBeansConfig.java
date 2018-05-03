@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.OppfolgingService;
 import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,8 @@ public class ServiceBeansConfig {
             RemoteFeatureConfig.OpprettBrukerIArenaFeature sjekkRegistrereBrukerArenaFeature,
             RemoteFeatureConfig.RegistreringFeature skalRegistrereBrukerGenerellFeature,
             OppfolgingService oppfolgingService,
-            ArbeidsforholdService arbeidsforholdService)
+            ArbeidsforholdService arbeidsforholdService,
+            StartRegistreringUtilsService startRegistreringUtilsService)
     {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
@@ -32,7 +34,8 @@ public class ServiceBeansConfig {
                 sjekkRegistrereBrukerArenaFeature,
                 skalRegistrereBrukerGenerellFeature,
                 oppfolgingService,
-                arbeidsforholdService
+                arbeidsforholdService,
+                startRegistreringUtilsService
         );
     }
 
@@ -61,6 +64,11 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidsforholdService arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
         return new ArbeidsforholdService(arbeidsforholdV3);
+    }
+
+    @Bean
+    StartRegistreringUtilsService startRegistreringUtils() {
+        return new StartRegistreringUtilsService();
     }
 
     @Bean

@@ -53,7 +53,7 @@ public class DateUtils {
                 .map(ZonedDateTime::toLocalDate).orElse(null);
     }
 
-    static boolean erDatoEldreEnnEllerLikAar(LocalDate dagensDato, LocalDate dato, int aar) {
+    public static boolean erDatoEldreEnnEllerLikAar(LocalDate dagensDato, LocalDate dato, int aar) {
         return FnrUtils.antallAarSidenDato(dato, dagensDato) >= aar;
     }
 

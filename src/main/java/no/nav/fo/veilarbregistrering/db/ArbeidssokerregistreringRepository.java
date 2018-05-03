@@ -48,8 +48,12 @@ public class ArbeidssokerregistreringRepository {
                 .value(KONSEPT_ID, -1)
                 .execute();
 
+        return hentBrukerregistreringForId(id);
+    }
+
+    public BrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
-                .where(WhereClause.equals(BRUKER_REGISTRERING_ID, id))
+                .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
                 .column("*")
                 .execute();
     }
@@ -61,6 +65,7 @@ public class ArbeidssokerregistreringRepository {
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
         return BrukerRegistrering.builder()
+                .id(rs.getLong(BRUKER_REGISTRERING_ID))
                 .nusKode(rs.getString(NUS_KODE))
                 .yrkesPraksis(rs.getString(YRKESPRAKSIS))
                 .opprettetDato(rs.getDate(OPPRETTET_DATO))

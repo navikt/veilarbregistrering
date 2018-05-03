@@ -12,8 +12,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.utils.SelvgaaendeUtil.erSelvgaaende;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.erUnderoppfolgingIArena;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.oppfyllerKravOmAutomatiskRegistrering;
 
 public class BrukerRegistreringService {
 
@@ -23,13 +21,16 @@ public class BrukerRegistreringService {
     private final RegistreringFeature registreringFeature;
     private OppfolgingService oppfolgingService;
     private ArbeidsforholdService arbeidsforholdService;
+    private StartRegistreringUtilsService startRegistreringUtilsService;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OpprettBrukerIArenaFeature opprettBrukerIArenaFeature,
                                      RegistreringFeature registreringFeature,
                                      OppfolgingService oppfolgingService,
-                                     ArbeidsforholdService arbeidsforholdService
+                                     ArbeidsforholdService arbeidsforholdService,
+                                     StartRegistreringUtilsService startRegistreringUtilsService
+
     ) {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
@@ -37,6 +38,7 @@ public class BrukerRegistreringService {
         this.registreringFeature = registreringFeature;
         this.oppfolgingService = oppfolgingService;
         this.arbeidsforholdService = arbeidsforholdService;
+        this.startRegistreringUtilsService = startRegistreringUtilsService;
     }
 
     @Transactional
@@ -62,11 +64,14 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         Optional<OppfolgingStatus> oppfolgingStatus = hentOppfolgingsstatusOgFlagg(fnr);
 
-        if(oppfolgingStatus.isPresent() && oppfolgingStatus.get().isOppfolgingsFlaggFO()) {
-            return new StartRegistreringStatus().setUnderOppfolging(true).setOppfyllerKravForAutomatiskRegistrering(false);
+        if (oppfolgingStatus.isPresent() && oppfolgingStatus.get().isOppfolgingsFlaggFO()) {
+            return new StartRegistreringStatus()
+                    .setUnderOppfolging(true)
+                    .setOppfyllerKravForAutomatiskRegistrering(false);
         }
 
-        boolean underOppfolgingIArena = oppfolgingStatus.isPresent() && erUnderoppfolgingIArena(oppfolgingStatus.get());
+        boolean underOppfolgingIArena =
+                oppfolgingStatus.isPresent() && startRegistreringUtilsService.erUnderoppfolgingIArena(oppfolgingStatus.get());
 
         if (underOppfolgingIArena) {
             return new StartRegistreringStatus()
@@ -74,7 +79,11 @@ public class BrukerRegistreringService {
                     .setOppfyllerKravForAutomatiskRegistrering(false);
         }
 
-        boolean oppfyllerKrav = oppfyllerKravOmAutomatiskRegistrering(fnr, () -> arbeidsforholdService.hentArbeidsforhold(fnr), oppfolgingStatus.orElse(null), LocalDate.now());
+        boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
+                fnr,
+                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                oppfolgingStatus.orElse(null), LocalDate.now()
+        );
 
         return new StartRegistreringStatus()
                 .setUnderOppfolging(false)

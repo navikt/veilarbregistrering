@@ -16,8 +16,8 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MAX_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.StartRegistreringUtils.MIN_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacService.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 
 public class TestContext {
