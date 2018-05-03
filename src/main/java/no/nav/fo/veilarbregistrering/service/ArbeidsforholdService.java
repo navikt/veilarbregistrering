@@ -27,7 +27,6 @@ public class ArbeidsforholdService {
         this.arbeidsforholdV3 = arbeidsforholdV3;
     }
 
-
     @Cacheable(HENT_ARBEIDSFORHOLD)
     public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();

@@ -1,3 +1,5 @@
+import no.nav.apiapp.ApiApp;
+import no.nav.fo.veilarbregistrering.config.ApplicationTestConfig;
 import no.nav.testconfig.ApiAppTest;
 import no.nav.veilarbregistrering.TestContext;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
@@ -11,6 +13,7 @@ public class MainTest {
         ApiAppTest.setupTestContext();
         DatabaseTestContext.setupContext(getProperty("database"));
         TestContext.setup();
-        Main.main(TEST_PORT);
+        String arguments[] = {TEST_PORT};
+        ApiApp.startApp(ApplicationTestConfig.class, arguments);
     }
 }
