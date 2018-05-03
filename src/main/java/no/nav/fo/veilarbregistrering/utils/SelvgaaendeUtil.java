@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 public class SelvgaaendeUtil {
 
     public static final String NUS_KODE_0 = "0";
-    public static final String NUS_KODE_2 = "2";
     public static final boolean HAR_HELSEUTFORDRINGER = true;
 
     public static boolean erSelvgaaende(BrukerRegistrering bruker, StartRegistreringStatus startRegistreringStatus) {

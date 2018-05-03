@@ -24,17 +24,22 @@ import javax.ws.rs.Produces;
 @Api
 public class RegistreringResource {
 
-    @Inject
     private BrukerRegistreringService brukerRegistreringService;
-
-    @Inject
     private ArbeidsforholdService arbeidsforholdService;
-
-    @Inject
     private UserService userService;
-
-    @Inject
     private PepClient pepClient;
+
+    public RegistreringResource(
+            PepClient pepClient,
+            UserService userService,
+            ArbeidsforholdService arbeidsforholdService,
+            BrukerRegistreringService brukerRegistreringService) {
+
+        this.pepClient = pepClient;
+        this.userService = userService;
+        this.arbeidsforholdService = arbeidsforholdService;
+        this.brukerRegistreringService = brukerRegistreringService;
+    }
 
     @GET
     @Path("/startregistrering")

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.service;
 
 public class Konstanter {
     public static final String NUS_KODE_0 = "0";
+    public static final String NUS_KODE_2 = "2";
     public static final String NUS_KODE_4 = "4";
     public static final String OPPSUMMERING = "Test oppsummering";
     public static final boolean HAR_INGEN_HELSEUTFORDRINGER = false;

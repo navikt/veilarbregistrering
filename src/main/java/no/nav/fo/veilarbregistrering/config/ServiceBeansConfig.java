@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.config;
 
+import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
@@ -36,8 +37,15 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    RegistreringResource registreringResource() {
-        return new RegistreringResource();
+    RegistreringResource registreringResource(PepClient pepClient,
+                                              UserService userService,
+                                              ArbeidsforholdService arbeidsforholdService,
+                                              BrukerRegistreringService brukerRegistreringService) {
+        return new RegistreringResource(
+                pepClient,
+                userService,
+                arbeidsforholdService,
+                brukerRegistreringService);
     }
 
     @Bean

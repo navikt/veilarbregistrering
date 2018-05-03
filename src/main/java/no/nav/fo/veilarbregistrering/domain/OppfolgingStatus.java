@@ -6,7 +6,6 @@ import lombok.experimental.Wither;
 
 import java.time.LocalDate;
 
-@Wither
 @Value
 @Builder
 public class OppfolgingStatus {
