@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.OpprettBrukerIAr
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ public class BrukerRegistreringService {
     private final AktorService aktorService;
     private final OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private final RegistreringFeature registreringFeature;
-    private OppfolgingService oppfolgingService;
+    private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
@@ -27,7 +28,7 @@ public class BrukerRegistreringService {
                                      AktorService aktorService,
                                      OpprettBrukerIArenaFeature opprettBrukerIArenaFeature,
                                      RegistreringFeature registreringFeature,
-                                     OppfolgingService oppfolgingService,
+                                     OppfolgingClient oppfolgingClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtilsService startRegistreringUtilsService
 
@@ -36,7 +37,7 @@ public class BrukerRegistreringService {
         this.aktorService = aktorService;
         this.opprettBrukerIArenaFeature = opprettBrukerIArenaFeature;
         this.registreringFeature = registreringFeature;
-        this.oppfolgingService = oppfolgingService;
+        this.oppfolgingClient = oppfolgingClient;
         this.arbeidsforholdService = arbeidsforholdService;
         this.startRegistreringUtilsService = startRegistreringUtilsService;
     }
@@ -62,18 +63,9 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        Optional<OppfolgingStatus> oppfolgingStatus = oppfolgingService.hentOppfolgingsstatusOgFlagg(fnr);
+        Optional<OppfolgingStatus> oppfolgingStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        if (oppfolgingStatus.isPresent() && oppfolgingStatus.get().isOppfolgingsFlaggFO()) {
-            return new StartRegistreringStatus()
-                    .setUnderOppfolging(true)
-                    .setOppfyllerKravForAutomatiskRegistrering(false);
-        }
-
-        boolean underOppfolgingIArena =
-                oppfolgingStatus.isPresent() && startRegistreringUtilsService.erUnderoppfolgingIArena(oppfolgingStatus.get());
-
-        if (underOppfolgingIArena) {
+        if (oppfolgingStatus.isPresent() && oppfolgingStatus.get().isUnderOppfolging()) {
             return new StartRegistreringStatus()
                     .setUnderOppfolging(true)
                     .setOppfyllerKravForAutomatiskRegistrering(false);
@@ -94,7 +86,7 @@ public class BrukerRegistreringService {
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
         if (opprettBrukerIArenaFeature.erAktiv()) {
-            oppfolgingService.aktiverBruker(new AktiverArbeidssokerData(new Fnr(fnr), "IKVAL"));
+            oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), "IKVAL"));
         }
         return brukerRegistrering;
     }

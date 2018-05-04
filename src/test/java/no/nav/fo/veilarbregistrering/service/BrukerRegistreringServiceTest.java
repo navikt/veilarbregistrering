@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatus;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ public class BrukerRegistreringServiceTest {
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
-    private OppfolgingService oppfolgingService;
+    private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private RemoteFeatureConfig.OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private RemoteFeatureConfig.RegistreringFeature registreringFeature;
@@ -46,7 +47,7 @@ public class BrukerRegistreringServiceTest {
         registreringFeature = mock(RemoteFeatureConfig.RegistreringFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
-        oppfolgingService = mock(OppfolgingService.class);
+        oppfolgingClient = mock(OppfolgingClient.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         startRegistreringUtilsService = new StartRegistreringUtilsService();
 
@@ -59,7 +60,7 @@ public class BrukerRegistreringServiceTest {
                         aktorService,
                         opprettBrukerIArenaFeature,
                         registreringFeature,
-                        oppfolgingService,
+                        oppfolgingClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
 
@@ -86,7 +87,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
-        verify(oppfolgingService, times(0)).aktiverBruker(any());
+        verify(oppfolgingClient, times(0)).aktiverBruker(any());
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
     }
 
@@ -95,7 +96,7 @@ public class BrukerRegistreringServiceTest {
         when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV);
-        verify(oppfolgingService, times(1)).aktiverBruker(any());
+        verify(oppfolgingClient, times(1)).aktiverBruker(any());
     }
 
     @Test
@@ -103,7 +104,7 @@ public class BrukerRegistreringServiceTest {
         when(registreringFeature.erAktiv()).thenReturn(false);
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         assertThrows(RuntimeException.class, () -> registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV));
-        verify(oppfolgingService, times(0)).aktiverBruker(any());
+        verify(oppfolgingClient, times(0)).aktiverBruker(any());
     }
 
     @Test
@@ -135,23 +136,23 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalReturnerUnderOppfolgingNaarUnderOppfolgingIArena() {
-        mockArbeidssokerSomOppfyllerKravFraArena();
+    public void skalReturnerUnderOppfolgingNaarUnderOppfolging() {
+        mockArbeidssokerSomHarAktivOppfolging();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isUnderOppfolging()).isTrue();
     }
 
     @Test
     public void skalIkkeOppfylleKravPgaAlder() {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now().minusYears(2)));
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
         assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
     }
 
     @Test
-    public void skalIkkeOppfylleKravPgaIservDato() {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now().minusYears(1)));
+    public void skalIkkeOppfylleKravPgaInaktivDato() {
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(1)));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
@@ -159,7 +160,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     public void skalIkkeOppfylleKravPgaArbeidserfaring() {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now().minusYears(2)));
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         mockArbeidsforhold(Collections.emptyList());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
@@ -167,7 +168,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     public void skalIkkeHenteArbeidsforholdDersomBrukerIkkeOppfyllerKravOmAlder()  {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now().minusYears(2)));
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
         verify(arbeidsforholdService, never()).hentArbeidsforhold(any());
     }
@@ -181,8 +182,8 @@ public class BrukerRegistreringServiceTest {
 
 
     @Test
-    public void skalReturnereFalseOmIkkeUnderOppfolgingIArena() {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now()));
+    public void skalReturnereFalseOmIkkeUnderOppfolging() {
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now()));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
@@ -190,7 +191,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     public void skalReturnereTrueDersomBrukerOppfyllerKrav() {
-        mockOppfolgingMedRespons(arenaISERV(LocalDate.now().minusYears(2)));
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
         System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
@@ -207,20 +208,18 @@ public class BrukerRegistreringServiceTest {
     }
 
 
-    private OppfolgingStatus arenaISERV(LocalDate iservFra) {
+    private OppfolgingStatus inaktivBrukerMedInaktiveringsDato(LocalDate inaktivFra) {
         return OppfolgingStatus.builder()
-                .formidlingsgruppe("ISERV")
-                .servicegruppe("IVURD")
-                .inaktiveringsdato(iservFra)
+                .inaktiveringsdato(inaktivFra)
                 .build();
     }
 
     private void mockOppfolgingMedRespons(OppfolgingStatus oppfolgingStatus){
-        when(oppfolgingService.hentOppfolgingsstatusOgFlagg(any())).thenReturn(Optional.of(oppfolgingStatus));
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(Optional.of(oppfolgingStatus));
     }
 
     private OppfolgingStatus setOppfolgingsflagg(){
-        return OppfolgingStatus.builder().oppfolgingsFlaggFO(true).build();
+        return OppfolgingStatus.builder().underOppfolging(true).build();
     }
 
 
@@ -235,9 +234,6 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
 
-    /*
-     * Mock og hjelpe funksjoner
-     * */
     public static BrukerRegistrering getBrukerRegistreringSelvgaaende() {
         return BrukerRegistrering.builder()
                 .nusKode(NUS_KODE_4)
@@ -272,7 +268,7 @@ public class BrukerRegistreringServiceTest {
     }
 
 
-    private BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {// throws RegistrerBrukerSikkerhetsbegrensning, HentStartRegistreringStatusFeilVedHentingAvStatusFraArena, HentStartRegistreringStatusFeilVedHentingAvArbeidsforhold {
+    private BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
         return brukerRegistreringService.registrerBruker(bruker, fnr);
     }
 
@@ -281,22 +277,19 @@ public class BrukerRegistreringServiceTest {
 
     }
 
-    private void mockArbeidssokerSomOppfyllerKravFraArena() {
-        when(oppfolgingService.hentOppfolgingsstatusOgFlagg(any())).thenReturn(
+    private void mockArbeidssokerSomHarAktivOppfolging() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 Optional.of(OppfolgingStatus.builder()
-                        .servicegruppe("BATT")
-                        .formidlingsgruppe("ARBS")
-                        .oppfolgingsFlaggFO(false)
+                        .underOppfolging(true)
                         .build())
         );
     }
 
 
     private void mockInaktivBruker() {
-        when(oppfolgingService.hentOppfolgingsstatusOgFlagg(any())).thenReturn(
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 Optional.of(OppfolgingStatus.builder()
-                        .formidlingsgruppe("ISERV")
-                        .oppfolgingsFlaggFO(false)
+                        .underOppfolging(false)
                         .build())
         );
     }

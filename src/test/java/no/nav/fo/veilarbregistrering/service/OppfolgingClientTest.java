@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OppfolgingServiceTest {
-
+class OppfolgingClientTest {
+//todo
 //    /*
 //     * Test av kall registrering arena og lagring
 //     * */

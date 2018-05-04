@@ -9,9 +9,9 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeat
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.OppfolgingService;
 import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static AktorService aktorService;
     private static OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private static RegistreringFeature registreringFeature;
-    private static OppfolgingService oppfolgingService;
+    private static OppfolgingClient oppfolgingClient;
     private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private static StartRegistreringUtilsService startRegistreringUtilsService;
 
@@ -61,7 +61,7 @@ class BrukerRegistreringServiceIntegrationTest {
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         arbeidssokerregistreringRepository = context.getBean(ArbeidssokerregistreringRepository.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
-        oppfolgingService = context.getBean(OppfolgingService.class);
+        oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
         opprettBrukerIArenaFeature = context.getBean(OpprettBrukerIArenaFeature.class);
         registreringFeature = context.getBean(RegistreringFeature.class);
@@ -76,7 +76,7 @@ class BrukerRegistreringServiceIntegrationTest {
     @Test
     public void skalRulleTilbakeDatabaseDersomKallTilArenaFeiler() {
         cofigureMocks();
-        doThrow(new RuntimeException()).when(oppfolgingService).aktiverBruker(any());
+        doThrow(new RuntimeException()).when(oppfolgingClient).aktiverBruker(any());
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident));
         assertThat(run.isFailure()).isTrue();
@@ -101,7 +101,6 @@ class BrukerRegistreringServiceIntegrationTest {
         when(registreringFeature.erAktiv()).thenReturn(true);
         when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
-        when(startRegistreringUtilsService.erUnderoppfolgingIArena(any())).thenReturn(false);
         when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);
     }
 
@@ -137,8 +136,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public OppfolgingService oppfolgingService() {
-            return mock(OppfolgingService.class);
+        public OppfolgingClient oppfolgingClient() {
+            return mock(OppfolgingClient.class);
         }
 
         @Bean
@@ -158,7 +157,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 AktorService aktorService,
                 OpprettBrukerIArenaFeature sjekkRegistrereBrukerArenaFeature,
                 RegistreringFeature skalRegistrereBrukerGenerellFeature,
-                OppfolgingService oppfolgingService,
+                OppfolgingClient oppfolgingClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtilsService startRegistreringUtilsService)
         {
@@ -167,7 +166,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     aktorService,
                     sjekkRegistrereBrukerArenaFeature,
                     skalRegistrereBrukerGenerellFeature,
-                    oppfolgingService,
+                    oppfolgingClient,
                     arbeidsforholdService,
                     startRegistreringUtilsService
             );

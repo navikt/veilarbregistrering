@@ -48,4 +48,10 @@ public class ApplicationTestConfig extends ApplicationConfig {
         return new PepClientMock();
     }
 
+    @Bean
+    @Conditional(Mock.class)
+    public OppfolgingClientMock oppfolgingClient() {
+        return new OppfolgingClientMock();
+    }
+
 }

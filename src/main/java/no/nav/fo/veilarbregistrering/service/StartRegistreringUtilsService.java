@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 import static java.lang.Integer.getInteger;
 import static java.util.Objects.nonNull;
 import static no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils.oppfyllerKravOmArbeidserfaring;
-import static no.nav.fo.veilarbregistrering.utils.ArenaUtils.erUnderOppfolging;
 import static no.nav.fo.veilarbregistrering.utils.DateUtils.erDatoEldreEnnEllerLikAar;
 
 
@@ -37,13 +36,6 @@ public class StartRegistreringUtilsService {
         return oppfyllerKravOmInaktivitet(dagensDato, inaktiveringsdato) &&
                 oppfyllerKravOmAlder(alder) &&
                 oppfyllerKravOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
-    }
-
-    public boolean erUnderoppfolgingIArena(OppfolgingStatus arenaOppfolging) {
-        return erUnderOppfolging(
-                arenaOppfolging.getFormidlingsgruppe(),
-                arenaOppfolging.getServicegruppe(),
-                arenaOppfolging.getHarMottaOppgaveIArena());
     }
 
     boolean oppfyllerKravOmAlder(int alder) {

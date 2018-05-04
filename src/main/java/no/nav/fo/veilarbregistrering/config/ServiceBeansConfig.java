@@ -5,11 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
-import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.OppfolgingService;
-import no.nav.fo.veilarbregistrering.service.UserService;
-import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
+import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +21,7 @@ public class ServiceBeansConfig {
             AktorService aktorService,
             RemoteFeatureConfig.OpprettBrukerIArenaFeature sjekkRegistrereBrukerArenaFeature,
             RemoteFeatureConfig.RegistreringFeature skalRegistrereBrukerGenerellFeature,
-            OppfolgingService oppfolgingService,
+            OppfolgingClient oppfolgingClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtilsService startRegistreringUtilsService)
     {
@@ -34,7 +30,7 @@ public class ServiceBeansConfig {
                 aktorService,
                 sjekkRegistrereBrukerArenaFeature,
                 skalRegistrereBrukerGenerellFeature,
-                oppfolgingService,
+                oppfolgingClient,
                 arbeidsforholdService,
                 startRegistreringUtilsService
         );
@@ -55,11 +51,6 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidssokerregistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
         return new ArbeidssokerregistreringRepository(db);
-    }
-
-    @Bean
-    OppfolgingService oppfolgingService() {
-        return new OppfolgingService();
     }
 
     @Bean
