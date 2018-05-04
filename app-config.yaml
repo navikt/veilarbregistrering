@@ -19,6 +19,8 @@ fasitResources:
   used:
   - alias: loadbalancer:veilarbregistrering
     resourceType: loadbalancerconfig
+  - alias: veilarbregistreringDB
+    resourceType: datasource
   - alias: srvveilarbregistrering
     resourceType: credential
   - alias: appdynamics
