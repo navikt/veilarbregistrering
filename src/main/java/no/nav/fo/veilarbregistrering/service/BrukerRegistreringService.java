@@ -62,7 +62,7 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        Optional<OppfolgingStatus> oppfolgingStatus = hentOppfolgingsstatusOgFlagg(fnr);
+        Optional<OppfolgingStatus> oppfolgingStatus = oppfolgingService.hentOppfolgingsstatusOgFlagg(fnr);
 
         if (oppfolgingStatus.isPresent() && oppfolgingStatus.get().isOppfolgingsFlaggFO()) {
             return new StartRegistreringStatus()
@@ -94,17 +94,8 @@ public class BrukerRegistreringService {
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
         if (opprettBrukerIArenaFeature.erAktiv()) {
-            arkiverBruker(new AktiverArbeidssokerData(new Fnr(fnr), "IKVAL"));
+            oppfolgingService.aktiverBruker(new AktiverArbeidssokerData(new Fnr(fnr), "IKVAL"));
         }
         return brukerRegistrering;
     }
-
-    private Optional<OppfolgingStatus> hentOppfolgingsstatusOgFlagg(String fnr) {
-        return oppfolgingService.hentOppfolgingsstatusOgFlagg(fnr);
-    }
-
-    private void arkiverBruker(AktiverArbeidssokerData aktiverArbeidssokerData) {
-        oppfolgingService.aktiverBruker(aktiverArbeidssokerData);
-    }
-
 }

@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -64,6 +65,11 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidsforholdService arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
         return new ArbeidsforholdService(arbeidsforholdV3);
+    }
+
+    @Bean
+    OppfolgingClient oppfolgingClient() {
+        return new OppfolgingClient();
     }
 
     @Bean
