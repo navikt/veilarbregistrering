@@ -5,9 +5,9 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
-@Accessors(chain = true)
 @Data
-public class OppfolgingStatus {
+@Accessors(chain = true)
+public class ArenaOppfolging {
+    private String formidlingsgruppe;
     private LocalDate inaktiveringsdato;
-    private boolean underOppfolging;
 }

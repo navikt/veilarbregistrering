@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.ArenaOppfolging;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatus;
 import no.nav.sbl.rest.RestUtils;
 
@@ -9,7 +10,7 @@ import javax.ws.rs.client.Entity;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class OppfolgingClient {
@@ -24,7 +25,7 @@ public class OppfolgingClient {
         this(getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME), new SystemUserAuthorizationInterceptor());
     }
 
-    OppfolgingClient(String veilarboppfolgingTarget, SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor) {
+    public OppfolgingClient(String veilarboppfolgingTarget, SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor) {
         this.veilarboppfolgingTarget = veilarboppfolgingTarget;
         this.systemUserAuthorizationInterceptor = systemUserAuthorizationInterceptor;
     }
@@ -37,17 +38,29 @@ public class OppfolgingClient {
     }
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        withClient(c -> c.target(veilarboppfolgingTarget + "/aktiverbruker")
+        withClient(c -> c.target(veilarboppfolgingTarget + "/api/aktiverbruker")
                 .request()
-                .post(Entity.json(aktiverBrukerData)));
+                .post(Entity.json(aktiverBrukerData), AktiverBrukerData.class));
     }
 
     public Optional<OppfolgingStatus> hentOppfolgingsstatus(String fnr) {
-        return of(withClient(c -> c.target(veilarboppfolgingTarget + "/oppfolging")
+        Optional<OppfolgingStatus> oppfolgingStatus =
+                ofNullable(withClient(c -> c.target(veilarboppfolgingTarget + "/api/oppfolging")
                 .queryParam("fnr", fnr)
                 .request()
-                .get(OppfolgingStatus.class))
-        );
+                .get(OppfolgingStatus.class)));
+
+
+        if (oppfolgingStatus.isPresent()) {
+            Optional<ArenaOppfolging> arenaOppfolging =
+                    ofNullable(withClient(c -> c.target(veilarboppfolgingTarget + "/api/person/" + fnr + "oppfoelgingsstatus")
+                    .queryParam("fnr", fnr)
+                    .request()
+                    .get(ArenaOppfolging.class)));
+
+            oppfolgingStatus.get().setInaktiveringsdato(arenaOppfolging.map(a -> a.getInaktiveringsdato()).orElse(null));
+        }
+        return oppfolgingStatus;
     }
 
 }

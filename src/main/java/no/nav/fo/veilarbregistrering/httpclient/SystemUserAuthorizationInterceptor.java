@@ -16,7 +16,7 @@ public class SystemUserAuthorizationInterceptor implements ClientRequestFilter {
         this(new SystemUserTokenProvider());
     }
 
-    SystemUserAuthorizationInterceptor(SystemUserTokenProvider systemUserTokenProvider) {
+    public SystemUserAuthorizationInterceptor(SystemUserTokenProvider systemUserTokenProvider) {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 

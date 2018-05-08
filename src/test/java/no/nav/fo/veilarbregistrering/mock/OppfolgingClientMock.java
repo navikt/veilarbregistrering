@@ -14,7 +14,7 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     public Optional<OppfolgingStatus> hentOppfolgingsstatus(String fnr) {
-        return of(OppfolgingStatus.builder().underOppfolging(false).build());
+        return of(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(false));
     }
 
 }
