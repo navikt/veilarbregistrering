@@ -25,14 +25,31 @@ fasitResources:
     resourceType: credential
   - alias: appdynamics
     resourceType: applicationproperties
-  - alias: aad_b2c_clientid
-    resourceType: credential
-  - alias: aad_b2c_discovery
-    resourceType: baseurl
   - alias: feature_endpoint
     resourceType: restservice
   - aslias: aareg.endpoint.url
     resourceType: webserviceendpoint
+
+
+  # oidc med AzureAD B2C
+  - alias: aad_b2c_clientid
+    resourceType: credential
+  - alias: aad_b2c_discovery
+    resourceType: baseurl
+
+  # ISSO
+  - alias: isso-host
+    resourceType: baseurl
+  - alias: isso-jwks
+    resourceType: baseurl
+  - alias: isso-issuer
+    resourceType: baseurl
+  - alias: isso.isalive
+    resourceType: baseurl
+  - alias: isso-rp-user
+    resourceType: credential
+  - alias: veilarblogin.redirect-url
+    resourceType: baseurl
   exposed:
   - alias: veilarbregistreringSBS
     resourceType: restservice
