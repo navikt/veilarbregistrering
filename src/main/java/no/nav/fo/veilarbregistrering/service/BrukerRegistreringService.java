@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.OpprettBrukerIArenaFeature;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
@@ -18,7 +17,6 @@ public class BrukerRegistreringService {
 
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
-    private final OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private final RegistreringFeature registreringFeature;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
@@ -26,7 +24,6 @@ public class BrukerRegistreringService {
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
-                                     OpprettBrukerIArenaFeature opprettBrukerIArenaFeature,
                                      RegistreringFeature registreringFeature,
                                      OppfolgingClient oppfolgingClient,
                                      ArbeidsforholdService arbeidsforholdService,
@@ -35,7 +32,6 @@ public class BrukerRegistreringService {
     ) {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
-        this.opprettBrukerIArenaFeature = opprettBrukerIArenaFeature;
         this.registreringFeature = registreringFeature;
         this.oppfolgingClient = oppfolgingClient;
         this.arbeidsforholdService = arbeidsforholdService;
@@ -85,9 +81,7 @@ public class BrukerRegistreringService {
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, AktorId aktorId) {
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
-        if (opprettBrukerIArenaFeature.erAktiv()) {
-            oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), "IKVAL"));
-        }
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), "IKVAL"));
         return brukerRegistrering;
     }
 }

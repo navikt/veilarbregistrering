@@ -36,14 +36,12 @@ public class BrukerRegistreringServiceTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private RemoteFeatureConfig.OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private RemoteFeatureConfig.RegistreringFeature registreringFeature;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
 
     @BeforeEach
     public void setup() {
-        opprettBrukerIArenaFeature = mock(RemoteFeatureConfig.OpprettBrukerIArenaFeature.class);
         registreringFeature = mock(RemoteFeatureConfig.RegistreringFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
@@ -58,14 +56,12 @@ public class BrukerRegistreringServiceTest {
                 new BrukerRegistreringService(
                         arbeidssokerregistreringRepository,
                         aktorService,
-                        opprettBrukerIArenaFeature,
                         registreringFeature,
                         oppfolgingClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
-        when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
         when(registreringFeature.erAktiv()).thenReturn(true);
     }
 
@@ -82,21 +78,12 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalRegistrereSelvgaaendeBrukerIDatabasenSelvOmArenaErToggletBort()  {
-        when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(false);
+    void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
-        verify(oppfolgingClient, times(0)).aktiverBruker(any());
-        verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
-    }
-
-    @Test
-    void skalRegistrereIArenaNaarArenaToggleErPaa()  {
-        when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
-        registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
+        verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
     }
 
     @Test

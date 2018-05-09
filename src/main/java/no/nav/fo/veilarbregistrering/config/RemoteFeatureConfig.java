@@ -22,20 +22,11 @@ public class RemoteFeatureConfig {
         return new RegistreringFeature(repo);
     }
 
-    @Bean
-    public OpprettBrukerIArenaFeature registrereBrukerArenaFeature(RemoteFeatureToggleRepository repo) {
-        return new OpprettBrukerIArenaFeature(repo);
-    }
-
     public static class RegistreringFeature extends RemoteFeatureToggle {
         public RegistreringFeature(RemoteFeatureToggleRepository repository) {
-            super(repository, "veilarboppfolging.registrering", false);
+            //TODO: Toggle bør endre navn siden denne ikke lenger tilhører veilarboppfolging 
+            super(repository, "veilarboppfolging.registrering", false); 
         }
     }
-
-    public static class OpprettBrukerIArenaFeature extends RemoteFeatureToggle {
-        public OpprettBrukerIArenaFeature(RemoteFeatureToggleRepository repository) {
-            super(repository, "veilarboppfolging.opprettbrukeriarena", false);
-        }
-    }
+    
 }

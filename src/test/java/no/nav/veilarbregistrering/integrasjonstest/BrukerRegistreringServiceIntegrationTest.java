@@ -4,7 +4,6 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.OpprettBrukerIArenaFeature;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
@@ -37,7 +36,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private static BrukerRegistreringService brukerRegistreringService;
     private static AktorService aktorService;
-    private static OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private static RegistreringFeature registreringFeature;
     private static OppfolgingClient oppfolgingClient;
     private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
@@ -63,7 +61,6 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
-        opprettBrukerIArenaFeature = context.getBean(OpprettBrukerIArenaFeature.class);
         registreringFeature = context.getBean(RegistreringFeature.class);
         startRegistreringUtilsService = context.getBean(StartRegistreringUtilsService.class);
     }
@@ -99,7 +96,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(registreringFeature.erAktiv()).thenReturn(true);
-        when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);
     }
@@ -118,11 +114,6 @@ class BrukerRegistreringServiceIntegrationTest {
         @Bean
         public AktorService aktoerService() {
             return mock(AktorService.class);
-        }
-
-        @Bean
-        public OpprettBrukerIArenaFeature opprettBrukerIArenaFeature() {
-            return mock(OpprettBrukerIArenaFeature.class);
         }
 
         @Bean
@@ -155,7 +146,6 @@ class BrukerRegistreringServiceIntegrationTest {
         BrukerRegistreringService registrerBrukerService(
                 ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                 AktorService aktorService,
-                OpprettBrukerIArenaFeature sjekkRegistrereBrukerArenaFeature,
                 RegistreringFeature skalRegistrereBrukerGenerellFeature,
                 OppfolgingClient oppfolgingClient,
                 ArbeidsforholdService arbeidsforholdService,
@@ -164,7 +154,6 @@ class BrukerRegistreringServiceIntegrationTest {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,
-                    sjekkRegistrereBrukerArenaFeature,
                     skalRegistrereBrukerGenerellFeature,
                     oppfolgingClient,
                     arbeidsforholdService,
