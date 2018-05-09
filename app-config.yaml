@@ -29,6 +29,8 @@ fasitResources:
     resourceType: restservice
   - alias: virksomhet:Arbeidsforhold_v3
     resourceType: webserviceendpoint
+  - alias: Aktoer_v2
+    resourceType: webserviceendpoint
 
 
   # oidc med AzureAD B2C
