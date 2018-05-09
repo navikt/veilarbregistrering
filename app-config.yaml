@@ -31,6 +31,8 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: Aktoer_v2
     resourceType: webserviceendpoint
+  - alias: securityTokenService
+    resourceType: baseUrl
 
 
   # oidc med AzureAD B2C
