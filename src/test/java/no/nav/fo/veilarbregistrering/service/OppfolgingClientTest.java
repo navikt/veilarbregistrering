@@ -37,7 +37,6 @@ class OppfolgingClientTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private RemoteFeatureConfig.OpprettBrukerIArenaFeature opprettBrukerIArenaFeature;
     private RemoteFeatureConfig.RegistreringFeature registreringFeature;
     private StartRegistreringUtilsService startRegistreringUtilsService;
     private ClientAndServer mockServer;
@@ -51,7 +50,6 @@ class OppfolgingClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        opprettBrukerIArenaFeature = mock(RemoteFeatureConfig.OpprettBrukerIArenaFeature.class);
         registreringFeature = mock(RemoteFeatureConfig.RegistreringFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
@@ -64,7 +62,6 @@ class OppfolgingClientTest {
                 new BrukerRegistreringService(
                         arbeidssokerregistreringRepository,
                         aktorService,
-                        opprettBrukerIArenaFeature,
                         registreringFeature,
                         oppfolgingClient,
                         arbeidsforholdService,
@@ -76,7 +73,6 @@ class OppfolgingClientTest {
 
         when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
-        when(opprettBrukerIArenaFeature.erAktiv()).thenReturn(true);
         when(registreringFeature.erAktiv()).thenReturn(true);
     }
 
