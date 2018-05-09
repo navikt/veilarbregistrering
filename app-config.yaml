@@ -33,6 +33,8 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: securityTokenService
     resourceType: baseUrl
+  - alias: veilArbOppfolgingAPI
+    resourceType: restservice
 
 
   # oidc med AzureAD B2C
