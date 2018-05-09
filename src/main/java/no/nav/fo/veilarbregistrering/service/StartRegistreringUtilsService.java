@@ -23,7 +23,7 @@ public class StartRegistreringUtilsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(StartRegistreringUtilsService.class);
 
-    static final int ANTALL_AAR_ISERV = 2;
+    private static final int ANTALL_AAR_ISERV = 2;
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "min.alder.automatisk.registrering";
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "maks.alder.automatisk.registrering";
 
@@ -38,7 +38,7 @@ public class StartRegistreringUtilsService {
                 oppfyllerKravOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
     }
 
-    boolean oppfyllerKravOmAlder(int alder) {
+    private boolean oppfyllerKravOmAlder(int alder) {
         Integer minAlderAutomatiskRegistrering = getInteger(MIN_ALDER_AUTOMATISK_REGISTRERING);
         Integer maksAlderAutomatiskRegistrering = getInteger(MAX_ALDER_AUTOMATISK_REGISTRERING);
 
@@ -51,7 +51,7 @@ public class StartRegistreringUtilsService {
         }
     }
 
-    boolean oppfyllerKravOmInaktivitet(LocalDate dagensDato, LocalDate inaktiveringsdato) {
+    private boolean oppfyllerKravOmInaktivitet(LocalDate dagensDato, LocalDate inaktiveringsdato) {
         return Objects.isNull(inaktiveringsdato) || erDatoEldreEnnEllerLikAar(dagensDato, inaktiveringsdato, ANTALL_AAR_ISERV);
     }
 }

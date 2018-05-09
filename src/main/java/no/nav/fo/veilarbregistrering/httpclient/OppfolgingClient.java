@@ -20,7 +20,6 @@ public class OppfolgingClient {
     private final String veilarboppfolgingTarget;
     private final SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor;
 
-    @SuppressWarnings("unused")
     public OppfolgingClient() {
         this(getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME), new SystemUserAuthorizationInterceptor());
     }

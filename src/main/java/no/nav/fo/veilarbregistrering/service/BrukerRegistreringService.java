@@ -50,16 +50,12 @@ public class BrukerRegistreringService {
         }
 
         StartRegistreringStatus status = hentStartRegistreringStatus(fnr);
-
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
-
-        boolean erSelvaaende = erSelvgaaende(bruker, status);
-
-        if (!erSelvaaende) {
+        
+        if (!erSelvgaaende(bruker, status)) {
             throw new RuntimeException("Bruker oppfyller ikke krav for registrering.");
         }
 
-        return opprettBruker(fnr, bruker, aktorId);
+        return opprettBruker(fnr, bruker);
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
@@ -74,7 +70,8 @@ public class BrukerRegistreringService {
         boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
                 fnr,
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                oppfolgingStatus.orElse(null), LocalDate.now()
+                oppfolgingStatus.orElse(null), 
+                LocalDate.now()
         );
 
         return new StartRegistreringStatus()
@@ -82,7 +79,8 @@ public class BrukerRegistreringService {
                 .setOppfyllerKravForAutomatiskRegistrering(oppfyllerKrav);
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, AktorId aktorId) {
+    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {
+        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
         if (opprettBrukerIArenaFeature.erAktiv()) {

@@ -28,8 +28,8 @@ import static org.mockito.Mockito.*;
 
 public class BrukerRegistreringServiceTest {
 
-    public static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
-    public static String FNR_OPPFYLLER_IKKE_KRAV = getFodselsnummerForPersonWithAge(20);
+    private static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
+    private static String FNR_OPPFYLLER_IKKE_KRAV = getFodselsnummerForPersonWithAge(20);
 
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
