@@ -27,7 +27,7 @@ fasitResources:
     resourceType: applicationproperties
   - alias: feature_endpoint
     resourceType: restservice
-  - alias: aareg.endpoint
+  - alias: virksomhet:Arbeidsforhold_v3
     resourceType: webserviceendpoint
 
 
