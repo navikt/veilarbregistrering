@@ -26,7 +26,7 @@ public class AAregServiceWSConfig {
     @Bean
     ArbeidsforholdV3 arbeidsforholdV3() {
         return arbeidsforholdV3CXFClient()
-                .withOutInterceptor(new UserSAMLOutInterceptor())
+                .configureStsForOnBehalfOfWithJWT()
                 .build();
     }
 
