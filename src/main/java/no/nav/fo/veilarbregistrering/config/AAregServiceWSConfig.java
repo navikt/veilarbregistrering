@@ -14,7 +14,7 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class AAregServiceWSConfig {
-    public static final String AAREG_ENDPOINT_URL = "aareg.endpoint.url";
+    public static final String AAREG_ENDPOINT_URL = "VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL";
     final static String url = getProperty(AAREG_ENDPOINT_URL);
 
     public static CXFClient<ArbeidsforholdV3> arbeidsforholdV3CXFClient() {
