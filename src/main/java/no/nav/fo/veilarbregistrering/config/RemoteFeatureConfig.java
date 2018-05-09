@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RemoteFeatureConfig {
 
-    @Value("${feature_endpoint.url}")
+
+    @Value("${FEATURE_ENDPOINT_URL}")
     private String remoteFeatureUrl;
 
     @Bean
