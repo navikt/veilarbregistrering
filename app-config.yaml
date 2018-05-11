@@ -15,6 +15,9 @@ healthcheck:
 prometheus:
   enabled: true
   path: veilarbregistrering/internal/metrics
+  resources: # Optional. See: http://kubernetes.io/docs/user-guide/compute-resources/
+    limits:
+      cpu: 3
 fasitResources:
   used:
   - alias: loadbalancer:veilarbregistrering
