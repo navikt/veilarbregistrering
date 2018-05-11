@@ -1,5 +1,6 @@
 import no.nav.apiapp.ApiApp;
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
+import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 
 import static java.lang.System.setProperty;
 import static no.nav.brukerdialog.security.Constants.OIDC_REDIRECT_URL_PROPERTY_NAME;
@@ -19,13 +20,17 @@ public class Main {
         setProperty("https.proxyHost", "webproxy-utvikler.nav.no");
         setProperty("https.proxyPort", "8088");
 
-        setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty("AKTOER_V2_ENDPOINTURL"));
-        setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty("VEILARBLOGIN_REDIRECT_URL_URL"));
         setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));
         setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"));
+
+        setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty("AKTOER_V2_ENDPOINTURL"));
+        setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty("VEILARBLOGIN_REDIRECT_URL_URL"));
+
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty("ABAC_PDP_ENDPOINT_URL"));
 
-
+        setProperty(StsSecurityConstants.STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"));
+//        setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, getRequiredProperty("VEILARBREGISTRERINGDB_USERNAME"));
+//        setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, getRequiredProperty("VEILARBREGISTRERINGDB_PASSWORD"));
 
         ApiApp.startApp(ApplicationConfig.class, args);
     }
