@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.modig.security.ws.UserSAMLOutInterceptor;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -8,14 +7,14 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static java.lang.System.getProperty;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class AAregServiceWSConfig {
     public static final String AAREG_ENDPOINT_URL = "VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL";
-    final static String url = getProperty(AAREG_ENDPOINT_URL);
+    final static String url = getRequiredProperty(AAREG_ENDPOINT_URL);
 
     public static CXFClient<ArbeidsforholdV3> arbeidsforholdV3CXFClient() {
         return new CXFClient<>(ArbeidsforholdV3.class)
