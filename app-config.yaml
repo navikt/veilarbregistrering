@@ -26,6 +26,8 @@ fasitResources:
     resourceType: datasource
   - alias: srvveilarbregistrering
     resourceType: credential
+  - alias: veilarbregistrering.properties
+    resourceType: applicationproperties
   - alias: appdynamics
     resourceType: applicationproperties
   - alias: feature_endpoint

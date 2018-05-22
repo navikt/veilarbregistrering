@@ -10,6 +10,10 @@ import static java.util.Optional.of;
 
 public class OppfolgingClientMock extends OppfolgingClient {
 
+    public OppfolgingClientMock() {
+        super(null);
+    }
+
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
     }
 

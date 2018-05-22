@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
+
 @Configuration
 public class ServiceBeansConfig {
 
@@ -57,8 +60,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppfolgingClient oppfolgingClient() {
-        return new OppfolgingClient();
+    OppfolgingClient oppfolgingClient(Provider<HttpServletRequest> provider) {
+        return new OppfolgingClient(provider);
     }
 
     @Bean

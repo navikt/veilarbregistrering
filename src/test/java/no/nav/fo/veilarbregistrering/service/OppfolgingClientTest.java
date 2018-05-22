@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
@@ -78,9 +80,13 @@ class OppfolgingClientTest {
 
     private OppfolgingClient buildClient() {
         SystemUserTokenProvider systemUserTokenProvider = mock(SystemUserTokenProvider.class);
+        Provider<HttpServletRequest> httpServletRequestProvider = mock(Provider.class);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor = new SystemUserAuthorizationInterceptor(systemUserTokenProvider);
-        return oppfolgingClient = new OppfolgingClient("http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT, systemUserAuthorizationInterceptor);
+        return oppfolgingClient = new OppfolgingClient("http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT, systemUserAuthorizationInterceptor, httpServletRequestProvider);
     }
 
     @Test
@@ -95,7 +101,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirUnauthorizedExceptionDersomBrukerIkkkeHarTilgangTilOppfolging() {
         mockOppfolgingApiOK();
-        mockServer.when(request().withMethod("POST").withPath("/api/aktiverbruker")).respond(response().withStatusCode(401));
+        mockServer.when(request().withMethod("POST").withPath("/api/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
         assertThrows(NotAuthorizedException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
@@ -103,7 +109,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirServerErrorExceptionDersomAktiverBrukerFeiler() {
         mockOppfolgingApiOK();
-        mockServer.when(request().withMethod("POST").withPath("/api/aktiverbruker")).respond(response().withStatusCode(502));
+        mockServer.when(request().withMethod("POST").withPath("/api/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
         assertThrows(ServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
@@ -111,14 +117,14 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirUnauthorizedExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
         mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(401));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "oppfoelgingsstatus")).respond(response().withStatusCode(401));
+        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(401));
         assertThrows(NotAuthorizedException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
     public void testAtGirServerErrorExceptionDersomKunOppfolgingFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(500));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "oppfoelgingsstatus")).respond(response().withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
         assertThrows(ServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
@@ -126,7 +132,7 @@ class OppfolgingClientTest {
     public void testAtGirServerErrorExceptionDersomKunOppfolgingStatusFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/api/oppfolging"))
                 .respond(response().withBody(oppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "oppfoelgingsstatus"))
+        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus"))
                 .respond(response().withBody(oppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(500));
 
         assertThrows(ServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
@@ -136,7 +142,7 @@ class OppfolgingClientTest {
     public void testAtGirIngenExceptionsDersomKun200OK() {
         mockServer.when(request().withMethod("GET").withPath("/api/oppfolging"))
                 .respond(response().withBody(oppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "oppfoelgingsstatus"))
+        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus"))
                 .respond(response().withBody(oppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
@@ -144,7 +150,7 @@ class OppfolgingClientTest {
 
     private void mockOppfolgingApiOK() {
         mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "oppfoelgingsstatus")).respond(response().withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
     }
 
     private String oppfolgingBody() {

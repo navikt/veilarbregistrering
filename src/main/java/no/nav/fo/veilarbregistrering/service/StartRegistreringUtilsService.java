@@ -24,8 +24,8 @@ public class StartRegistreringUtilsService {
     private static final Logger LOG = LoggerFactory.getLogger(StartRegistreringUtilsService.class);
 
     private static final int ANTALL_AAR_ISERV = 2;
-    public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "min.alder.automatisk.registrering";
-    public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "maks.alder.automatisk.registrering";
+    public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
+    public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
     public boolean oppfyllerKravOmAutomatiskRegistrering(String fnr, Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
                                                                 OppfolgingStatus oppfolgingStatus, LocalDate dagensDato) {

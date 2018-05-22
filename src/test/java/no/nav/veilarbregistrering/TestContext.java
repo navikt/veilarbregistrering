@@ -41,7 +41,7 @@ public class TestContext {
 
         setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
 
-        setProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME, "https://app-t6.adeo.no/veilarboppfolging/api");
+        setProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging");
 
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
