@@ -66,7 +66,7 @@ public class BrukerRegistreringService {
         boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
                 fnr,
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                oppfolgingStatus.orElse(null), 
+                oppfolgingStatus,
                 LocalDate.now()
         );
 

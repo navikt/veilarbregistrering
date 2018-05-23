@@ -28,10 +28,10 @@ public class StartRegistreringUtilsService {
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
     public boolean oppfyllerKravOmAutomatiskRegistrering(String fnr, Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
-                                                                OppfolgingStatus oppfolgingStatus, LocalDate dagensDato) {
+                                                                Optional<OppfolgingStatus> oppfolgingStatus, LocalDate dagensDato) {
         LocalDate fodselsdato = FnrUtils.utledFodselsdatoForFnr(fnr);
         int alder = FnrUtils.antallAarSidenDato(fodselsdato, dagensDato);
-        LocalDate inaktiveringsdato = Optional.ofNullable(oppfolgingStatus).map(OppfolgingStatus::getInaktiveringsdato).orElse(null);
+        LocalDate inaktiveringsdato = oppfolgingStatus.map(OppfolgingStatus::getInaktiveringsdato).orElse(null);
 
         return oppfyllerKravOmInaktivitet(dagensDato, inaktiveringsdato) &&
                 oppfyllerKravOmAlder(alder) &&

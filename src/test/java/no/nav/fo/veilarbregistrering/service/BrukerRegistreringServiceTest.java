@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
@@ -80,6 +81,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
+        mockOppfolgingMedRespons(new OppfolgingStatus().setUnderOppfolging(false));
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
@@ -200,14 +202,12 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockOppfolgingMedRespons(OppfolgingStatus oppfolgingStatus){
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(of(oppfolgingStatus));
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(ofNullable(oppfolgingStatus));
     }
 
     private OppfolgingStatus setOppfolgingsflagg(){
         return new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(true);
     }
-
-
 
     @SneakyThrows
     private StartRegistreringStatus getStartRegistreringStatus(String fnr) {
@@ -264,14 +264,14 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidssokerSomHarAktivOppfolging() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                of(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(true))
+                ofNullable(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(true))
         );
     }
 
 
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                of(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(false))
+                ofNullable(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(false))
         );
     }
 

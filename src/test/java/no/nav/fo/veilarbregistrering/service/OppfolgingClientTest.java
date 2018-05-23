@@ -15,9 +15,7 @@ import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.InternalServerErrorException;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
@@ -90,70 +88,92 @@ class OppfolgingClientTest {
     }
 
     @Test
-    public void testAtGirNotFoundExceptionDersomBrukerIkkeFinnesIOppfolging() {
-        mockOppfolgingApiOK();
-        mockServer.when(request().withMethod("POST").withPath("/api/aktiverbruker")).respond(response().withStatusCode(404));
+    public void testAtGirInternalServerErrorExceptionDersomBrukerIkkeFinnes() {
+        mockIkkeUnderOppfolgingApi();
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
-        assertThrows(NotFoundException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
 
     @Test
-    public void testAtGirUnauthorizedExceptionDersomBrukerIkkkeHarTilgangTilOppfolging() {
-        mockOppfolgingApiOK();
-        mockServer.when(request().withMethod("POST").withPath("/api/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
+    public void testAtGirInternalErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolging() {
+        mockUnderOppfolgingApi();
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
-        assertThrows(NotAuthorizedException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+    }
+
+
+    @Test
+    public void testAtRegistreringGirOKDeromBrukerIkkeFinnesIArena() {
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(BrukerRegistrering.builder().build());
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(404));
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
+
+        BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
+        assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
     @Test
-    public void testAtGirServerErrorExceptionDersomAktiverBrukerFeiler() {
-        mockOppfolgingApiOK();
-        mockServer.when(request().withMethod("POST").withPath("/api/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
+    public void testAtGirInternalServerErrorExceptionDersomAktiverBrukerFeiler() {
+        mockUnderOppfolgingApi();
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
-        assertThrows(ServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
     @Test
     public void testAtGirUnauthorizedExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
-        mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(401));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(401));
-        assertThrows(NotAuthorizedException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(401));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
-    public void testAtGirServerErrorExceptionDersomKunOppfolgingFeiler() {
-        mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(500));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
-        assertThrows(ServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+    public void testAtGirInternalServerErrorExceptionDersomKunOppfolgingFeiler() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
-    public void testAtGirServerErrorExceptionDersomKunOppfolgingStatusFeiler() {
-        mockServer.when(request().withMethod("GET").withPath("/api/oppfolging"))
-                .respond(response().withBody(oppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus"))
-                .respond(response().withBody(oppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(500));
+    public void testAtGirInternalServerErrorExceptionDersomKunOppfolgingStatusFeiler() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(underOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
+                .respond(response().withBody(underOppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(500));
 
-        assertThrows(ServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
-        mockServer.when(request().withMethod("GET").withPath("/api/oppfolging"))
-                .respond(response().withBody(oppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus"))
-                .respond(response().withBody(oppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(underOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
+                .respond(response().withBody(underOppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
-    private void mockOppfolgingApiOK() {
-        mockServer.when(request().withMethod("GET").withPath("/api/oppfolging")).respond(response().withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/api/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
+    private void mockUnderOppfolgingApi() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(underOppfolgingBody()).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).
+                respond(response().withBody(underOppfolgingStatusBody()).withStatusCode(200));
     }
 
-    private String oppfolgingBody() {
+    private void mockIkkeUnderOppfolgingApi() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
+                .respond(response().withStatusCode(404));
+    }
+
+    private String underOppfolgingBody() {
         return "{\n" +
                 "\"fnr\": 12345678910,\n" +
                 "\"veilederId\": null,\n" +
@@ -171,7 +191,25 @@ class OppfolgingClientTest {
                 "}";
     }
 
-    private String oppfolgingStatusBody() {
+    private String ikkeUnderOppfolgingBody() {
+        return "{\n" +
+                "\"fnr\": \"12345678910\",\n" +
+                "\"veilederId\": null,\n" +
+                "\"reservasjonKRR\": false,\n" +
+                "\"manuell\": false,\n" +
+                "\"underOppfolging\": false,\n" +
+                "\"underKvp\": false,\n" +
+                "\"vilkarMaBesvares\": true,\n" +
+                "\"oppfolgingUtgang\": null,\n" +
+                "\"gjeldendeEskaleringsvarsel\": null,\n" +
+                "\"kanStarteOppfolging\": false,\n" +
+                "\"avslutningStatus\": null,\n" +
+                "\"oppfolgingsPerioder\": [],\n" +
+                "\"harSkriveTilgang\": true\n" +
+                "}";
+    }
+
+    private String underOppfolgingStatusBody() {
         return "{\n" +
                 "\"rettighetsgruppe\": \"IYT\",\n" +
                 "\"formidlingsgruppe\": \"ARBS\",\n" +
