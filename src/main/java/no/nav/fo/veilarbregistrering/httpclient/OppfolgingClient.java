@@ -55,7 +55,7 @@ public class OppfolgingClient {
 
     public Optional<OppfolgingStatus> hentOppfolgingsstatus(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        Optional<OppfolgingStatus> oppfolgingStatus = getOppfolging(baseUrl + "/oppfolging", cookies, OppfolgingStatus.class);
+        Optional<OppfolgingStatus> oppfolgingStatus = getOppfolging(baseUrl + "/oppfolging?fnr="+fnr, cookies, OppfolgingStatus.class);
 
         if (oppfolgingStatus.isPresent()) {
             Optional<ArenaOppfolging> arenaOppfolging = getOppfolging(baseUrl + "/person/" + fnr + "/oppfoelgingsstatus", cookies, ArenaOppfolging.class);
