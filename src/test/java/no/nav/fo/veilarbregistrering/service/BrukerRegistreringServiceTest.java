@@ -4,9 +4,9 @@ import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.OppfolgingStatus;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
@@ -81,7 +80,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
-        mockOppfolgingMedRespons(new OppfolgingStatus().setUnderOppfolging(false));
+        mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
@@ -178,17 +177,6 @@ public class BrukerRegistreringServiceTest {
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
     }
 
-    @Test
-    public void skalReturnereTrueDersomBrukerOppfyllerKrav() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
-        mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
-        System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isTrue();
-    }
-
-
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
@@ -197,16 +185,16 @@ public class BrukerRegistreringServiceTest {
     }
 
 
-    private OppfolgingStatus inaktivBrukerMedInaktiveringsDato(LocalDate inaktivFra) {
-        return new OppfolgingStatus().setInaktiveringsdato(inaktivFra).setUnderOppfolging(false);
+    private AktivStatus inaktivBrukerMedInaktiveringsDato(LocalDate inaktivFra) {
+        return new AktivStatus().withInaktiveringDato(inaktivFra).withUnderOppfolging(false).withAktiv(false);
     }
 
-    private void mockOppfolgingMedRespons(OppfolgingStatus oppfolgingStatus){
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(ofNullable(oppfolgingStatus));
+    private void mockOppfolgingMedRespons(AktivStatus aktivStatus){
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(aktivStatus);
     }
 
-    private OppfolgingStatus setOppfolgingsflagg(){
-        return new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(true);
+    private AktivStatus setOppfolgingsflagg(){
+        return new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(true);
     }
 
     @SneakyThrows
@@ -264,14 +252,20 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidssokerSomHarAktivOppfolging() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                ofNullable(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(true))
+                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(true)
         );
     }
 
 
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                ofNullable(new OppfolgingStatus().setInaktiveringsdato(null).setUnderOppfolging(false))
+                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(false).withAktiv(false)
+        );
+    }
+
+    private void mockInaktivBrukerMedOppfolgingsflagg() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
+                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(false)
         );
     }
 

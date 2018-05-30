@@ -6,6 +6,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
@@ -20,11 +21,12 @@ import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -106,16 +108,27 @@ class OppfolgingClientTest {
 
 
     @Test
-    public void testAtRegistreringGirOKDeromBrukerIkkeFinnesIArena() {
+    public void testAtRegistreringGirOKDeromBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
         when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(BrukerRegistrering.builder().build());
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(404));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
 
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
         assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
+
+    @Test
+    public void testAtRegistreringIkkeGjoresDeromBrukerHarOppfolgingsflaggMenIkkeErAktivIArena() {
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(BrukerRegistrering.builder().build());
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+                .respond(response().withBody(harOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
+
+        StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(ident);
+        assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
+    }
+
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomAktiverBrukerFeiler() {
@@ -127,98 +140,54 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtGirUnauthorizedExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(401));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus")).respond(response().withStatusCode(401));
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
-    public void testAtGirInternalServerErrorExceptionDersomKunOppfolgingFeiler() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).respond(response().withStatusCode(200));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
-    }
-
-    @Test
-    public void testAtGirInternalServerErrorExceptionDersomKunOppfolgingStatusFeiler() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(underOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
-                .respond(response().withBody(underOppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(500));
-
+    public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus")).respond(response().withStatusCode(500));
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(underOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
-                .respond(response().withBody(underOppfolgingStatusBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     private void mockUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(underOppfolgingBody()).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus")).
-                respond(response().withBody(underOppfolgingStatusBody()).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody()).withStatusCode(200));
     }
 
     private void mockIkkeUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/oppfoelgingsstatus"))
-                .respond(response().withStatusCode(404));
+        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
     }
 
-    private String underOppfolgingBody() {
+    private String harOppfolgingsflaggOgErAktivIArenaBody() {
         return "{\n" +
-                "\"fnr\": 12345678910,\n" +
-                "\"veilederId\": null,\n" +
-                "\"reservasjonKRR\": false,\n" +
-                "\"manuell\": false,\n" +
-                "\"underOppfolging\": true,\n" +
-                "\"underKvp\": false,\n" +
-                "\"vilkarMaBesvares\": true,\n" +
-                "\"oppfolgingUtgang\": null,\n" +
-                "\"gjeldendeEskaleringsvarsel\": null,\n" +
-                "\"kanStarteOppfolging\": false,\n" +
-                "\"avslutningStatus\": null,\n" +
-                "\"oppfolgingsPerioder\": [],\n" +
-                "\"harSkriveTilgang\": true\n" +
+                "\"aktiv\": true,\n" +
+                "\"underOppfolging\": true\n" +
                 "}";
     }
 
-    private String ikkeUnderOppfolgingBody() {
+    private String harIkkeOppfolgingsflaggOgErInaktivIArenaBody() {
         return "{\n" +
-                "\"fnr\": \"12345678910\",\n" +
-                "\"veilederId\": null,\n" +
-                "\"reservasjonKRR\": false,\n" +
-                "\"manuell\": false,\n" +
-                "\"underOppfolging\": false,\n" +
-                "\"underKvp\": false,\n" +
-                "\"vilkarMaBesvares\": true,\n" +
-                "\"oppfolgingUtgang\": null,\n" +
-                "\"gjeldendeEskaleringsvarsel\": null,\n" +
-                "\"kanStarteOppfolging\": false,\n" +
-                "\"avslutningStatus\": null,\n" +
-                "\"oppfolgingsPerioder\": [],\n" +
-                "\"harSkriveTilgang\": true\n" +
+                "\"aktiv\": false,\n" +
+                "\"inaktiveringsdato\": \"2018-03-08T12:00:00+01:00\",\n" +
+                "\"underOppfolging\": false\n" +
                 "}";
     }
 
-    private String underOppfolgingStatusBody() {
+    private String harOppfolgingsflaggOgErInaktivIArenaBody() {
         return "{\n" +
-                "\"rettighetsgruppe\": \"IYT\",\n" +
-                "\"formidlingsgruppe\": \"ARBS\",\n" +
-                "\"servicegruppe\": \"IKVAL\",\n" +
-                "\"oppfolgingsenhet\": {\n" +
-                "\"navn\": \"NAV Aremark\",\n" +
-                "\"enhetId\": \"0118\"\n" +
-                "},\n" +
-                "\"inaktiveringsdato\": \"2018-03-08T12:00:00+01:00\"" +
+                "\"aktiv\": false,\n" +
+                "\"inaktiveringsdato\": \"2018-03-08T12:00:00+01:00\",\n" +
+                "\"underOppfolging\": true\n" +
                 "}";
     }
 

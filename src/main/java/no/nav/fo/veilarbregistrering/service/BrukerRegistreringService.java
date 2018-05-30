@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
@@ -9,10 +10,10 @@ import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.utils.SelvgaaendeUtil.erSelvgaaende;
 
+@Slf4j
 public class BrukerRegistreringService {
 
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
@@ -55,24 +56,27 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        Optional<OppfolgingStatus> oppfolgingStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
+        AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        if (oppfolgingStatus.isPresent() && oppfolgingStatus.get().isUnderOppfolging()) {
-            return new StartRegistreringStatus()
+        StartRegistreringStatus startRegistreringStatus;
+        if (aktivStatus.isAktiv()) {
+            startRegistreringStatus = new StartRegistreringStatus()
                     .setUnderOppfolging(true)
                     .setOppfyllerKravForAutomatiskRegistrering(false);
+        } else {
+            boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
+                    fnr,
+                    () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                    aktivStatus,
+                    LocalDate.now()
+            );
+            startRegistreringStatus = new StartRegistreringStatus()
+                    .setUnderOppfolging(false)
+                    .setOppfyllerKravForAutomatiskRegistrering(oppfyllerKrav);
         }
 
-        boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
-                fnr,
-                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                oppfolgingStatus,
-                LocalDate.now()
-        );
-
-        return new StartRegistreringStatus()
-                .setUnderOppfolging(false)
-                .setOppfyllerKravForAutomatiskRegistrering(oppfyllerKrav);
+        log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
+        return startRegistreringStatus;
     }
 
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {

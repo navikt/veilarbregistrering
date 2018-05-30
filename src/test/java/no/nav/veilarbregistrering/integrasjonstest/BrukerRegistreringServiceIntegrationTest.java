@@ -7,8 +7,8 @@ import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.OppfolgingStatus;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -97,7 +97,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(registreringFeature.erAktiv()).thenReturn(true);
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(ofNullable(new OppfolgingStatus().setUnderOppfolging(false)));
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new AktivStatus().withUnderOppfolging(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);
     }
