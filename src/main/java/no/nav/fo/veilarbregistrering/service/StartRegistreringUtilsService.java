@@ -13,10 +13,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static java.lang.Integer.getInteger;
-import static java.util.Objects.nonNull;
 import static no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils.oppfyllerKravOmArbeidserfaring;
 import static no.nav.fo.veilarbregistrering.utils.DateUtils.erDatoEldreEnnEllerLikAar;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 
 public class StartRegistreringUtilsService {
@@ -39,14 +38,14 @@ public class StartRegistreringUtilsService {
     }
 
     private boolean oppfyllerKravOmAlder(int alder) {
-        Integer minAlderAutomatiskRegistrering = getInteger(MIN_ALDER_AUTOMATISK_REGISTRERING);
-        Integer maksAlderAutomatiskRegistrering = getInteger(MAX_ALDER_AUTOMATISK_REGISTRERING);
+        try {
+            Integer minAlder = Integer.parseInt(getRequiredProperty(MIN_ALDER_AUTOMATISK_REGISTRERING));
+            Integer maksAlder = Integer.parseInt(getRequiredProperty(MAX_ALDER_AUTOMATISK_REGISTRERING));
+            return alder >= minAlder && alder <= maksAlder;
+        } catch (NumberFormatException e){
+            LOG.error("Feil ved lesing av parametrene " + MAX_ALDER_AUTOMATISK_REGISTRERING + " eller " +
+                    MIN_ALDER_AUTOMATISK_REGISTRERING  + ", " + e);
 
-        if (nonNull(minAlderAutomatiskRegistrering) && nonNull(maksAlderAutomatiskRegistrering)) {
-            return alder >= minAlderAutomatiskRegistrering && alder <= maksAlderAutomatiskRegistrering;
-        } else {
-            LOG.error("Parametrene " + MAX_ALDER_AUTOMATISK_REGISTRERING + " eller " +
-                    MIN_ALDER_AUTOMATISK_REGISTRERING + " mangler eller har ugyldig innhold.");
             return false;
         }
     }
