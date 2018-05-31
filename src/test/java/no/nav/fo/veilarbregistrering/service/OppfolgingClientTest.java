@@ -109,7 +109,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDeromBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(BrukerRegistrering.builder().build());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
@@ -120,7 +120,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringIkkeGjoresDeromBrukerHarOppfolgingsflaggMenIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(BrukerRegistrering.builder().build());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
@@ -192,11 +192,10 @@ class OppfolgingClientTest {
     }
 
     private BrukerRegistrering lagRegistreringGyldigBruker() {
-        return BrukerRegistrering.builder()
-                .enigIOppsummering(true)
-                .harHelseutfordringer(false)
-                .nusKode("12312")
-                .yrkesPraksis("1234")
-                .build();
+        return new BrukerRegistrering()
+                .setEnigIOppsummering(true)
+                .setHarHelseutfordringer(false)
+                .setNusKode("12312")
+                .setYrkesPraksis("1234");
     }
 }

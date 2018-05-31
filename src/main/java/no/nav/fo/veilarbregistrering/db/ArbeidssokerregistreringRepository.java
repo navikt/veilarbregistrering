@@ -64,14 +64,13 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
-        return BrukerRegistrering.builder()
-                .id(rs.getLong(BRUKER_REGISTRERING_ID))
-                .nusKode(rs.getString(NUS_KODE))
-                .yrkesPraksis(rs.getString(YRKESPRAKSIS))
-                .opprettetDato(rs.getDate(OPPRETTET_DATO))
-                .enigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
-                .oppsummering(rs.getString(OPPSUMMERING))
-                .harHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER))
-                .build();
+        return new BrukerRegistrering()
+                .setId(rs.getLong(BRUKER_REGISTRERING_ID))
+                .setNusKode(rs.getString(NUS_KODE))
+                .setYrkesPraksis(rs.getString(YRKESPRAKSIS))
+                .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
+                .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
+                .setOppsummering(rs.getString(OPPSUMMERING))
+                .setHarHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER));
     }
 }

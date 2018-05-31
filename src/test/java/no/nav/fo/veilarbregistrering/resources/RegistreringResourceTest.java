@@ -47,11 +47,11 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
-        BrukerRegistrering brukerRegistrering = BrukerRegistrering.builder()
-                .enigIOppsummering(true)
-                .harHelseutfordringer(false)
-                .nusKode("")
-                .build();
+        BrukerRegistrering brukerRegistrering = new BrukerRegistrering()
+                .setEnigIOppsummering(true)
+                .setHarHelseutfordringer(false)
+                .setNusKode("");
+
         registreringResource.registrerBruker(brukerRegistrering);
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }

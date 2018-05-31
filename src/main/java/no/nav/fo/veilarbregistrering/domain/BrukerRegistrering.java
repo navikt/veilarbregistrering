@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
-@Value
-@Builder
+@Data
+@Accessors(chain = true)
 public class BrukerRegistrering {
     long id;
     String nusKode;

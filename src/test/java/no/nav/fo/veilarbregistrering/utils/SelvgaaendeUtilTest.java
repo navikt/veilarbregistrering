@@ -31,39 +31,35 @@ public class SelvgaaendeUtilTest {
 
     @Test
     void brukerMedBesvarelseNus_Kode_0_SkalFeile() {
-        BrukerRegistrering bruker = BrukerRegistrering.builder()
-                .nusKode(NUS_KODE_0)
-                .yrkesPraksis(null)
-                .opprettetDato(null)
-                .enigIOppsummering(ENIG_I_OPPSUMMERING)
-                .oppsummering(OPPSUMMERING)
-                .harHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER)
-                .build();
+        BrukerRegistrering bruker = new BrukerRegistrering()
+                .setNusKode(NUS_KODE_0)
+                .setYrkesPraksis(null)
+                .setOpprettetDato(null)
+                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
+                .setOppsummering(OPPSUMMERING)
+                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
         assertThat(erBesvarelseneValidertSomSelvgaaende(bruker)).isFalse();
     }
 
     @Test
     void brukerMedBesvarelseNus_Kode_2_SkalIkkeFeile() {
-        BrukerRegistrering bruker = BrukerRegistrering.builder()
-                .nusKode(NUS_KODE_2)
-                .yrkesPraksis(null)
-                .opprettetDato(null)
-                .enigIOppsummering(ENIG_I_OPPSUMMERING)
-                .oppsummering(OPPSUMMERING)
-                .harHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER)
-                .build();
+        BrukerRegistrering bruker = new BrukerRegistrering()
+                .setNusKode(NUS_KODE_2)
+                .setYrkesPraksis(null)
+                .setOpprettetDato(null)
+                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
+                .setOppsummering(OPPSUMMERING);
         assertThat(erBesvarelseneValidertSomSelvgaaende(bruker)).isTrue();
     }
 
     private BrukerRegistrering getBrukerBesvarelse() {
-        return  BrukerRegistrering.builder()
-                .nusKode(NUS_KODE_4)
-                .yrkesPraksis(null)
-                .opprettetDato(null)
-                .enigIOppsummering(ENIG_I_OPPSUMMERING)
-                .oppsummering(OPPSUMMERING)
-                .harHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER)
-                .build();
+        return  new BrukerRegistrering()
+                .setNusKode(NUS_KODE_4)
+                .setYrkesPraksis(null)
+                .setOpprettetDato(null)
+                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
+                .setOppsummering(OPPSUMMERING)
+                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
     }
 
 }

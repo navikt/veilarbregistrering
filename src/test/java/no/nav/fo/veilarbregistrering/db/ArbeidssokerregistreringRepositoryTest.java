@@ -30,14 +30,13 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
 
         Date opprettetDato = new Date(System.currentTimeMillis());
         AktorId aktorId = new AktorId("11111");
-        BrukerRegistrering bruker = BrukerRegistrering.builder()
-                .nusKode("nus12")
-                .yrkesPraksis("12345")
-                .opprettetDato(opprettetDato)
-                .enigIOppsummering(true)
-                .oppsummering("Test test oppsummering")
-                .harHelseutfordringer(false)
-                .build();
+        BrukerRegistrering bruker = new BrukerRegistrering()
+                .setNusKode("nus12")
+                .setYrkesPraksis("12345")
+                .setOpprettetDato(opprettetDato)
+                .setEnigIOppsummering(true)
+                .setOppsummering("Test test oppsummering")
+                .setHarHelseutfordringer(false);
 
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
