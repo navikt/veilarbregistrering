@@ -7,5 +7,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StartRegistreringStatus {
     private boolean underOppfolging;
-    private boolean oppfyllerKravForAutomatiskRegistrering;
+    private boolean oppfyllerKrav;
 }
