@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.httpclient;
 import io.vavr.control.Try;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,9 @@ public class OppfolgingClient {
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         try {
-            withClient(c -> c.target(baseUrl + "/oppfolging/aktiverbruker")
+            withClient(
+                    RestUtils.RestConfig.builder().readTimeout(120000).build() // 120sek = 2min
+                    ,c -> c.target(baseUrl + "/oppfolging/aktiverbruker")
                     .register(systemUserAuthorizationInterceptor)
                     .request()
                     .post(Entity.json(aktiverBrukerData), AktiverBrukerData.class));
