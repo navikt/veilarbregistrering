@@ -62,7 +62,7 @@ public class BrukerRegistreringService {
         if (aktivStatus.isAktiv()) {
             startRegistreringStatus = new StartRegistreringStatus()
                     .setUnderOppfolging(true)
-                    .setOppfyllerKravForAutomatiskRegistrering(false);
+                    .setOppfyllerKrav(false);
         } else {
             boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
                     fnr,
@@ -72,7 +72,7 @@ public class BrukerRegistreringService {
             );
             startRegistreringStatus = new StartRegistreringStatus()
                     .setUnderOppfolging(false)
-                    .setOppfyllerKravForAutomatiskRegistrering(oppfyllerKrav);
+                    .setOppfyllerKrav(oppfyllerKrav);
         }
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);

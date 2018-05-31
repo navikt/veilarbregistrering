@@ -16,7 +16,7 @@ public class SelvgaaendeUtilTest {
         BrukerRegistrering bruker = getBrukerBesvarelse();
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(true)
-                .setOppfyllerKravForAutomatiskRegistrering(true);
+                .setOppfyllerKrav(true);
         assertThat(erSelvgaaende(bruker, startRegistreringStatus )).isFalse();
     }
 
@@ -25,7 +25,7 @@ public class SelvgaaendeUtilTest {
         BrukerRegistrering bruker = getBrukerBesvarelse();
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(false)
-                .setOppfyllerKravForAutomatiskRegistrering(false);
+                .setOppfyllerKrav(false);
         assertThat(erSelvgaaende(bruker, startRegistreringStatus )).isFalse();
     }
 

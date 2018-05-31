@@ -135,7 +135,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
+        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
     }
 
     @Test
@@ -143,7 +143,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(1)));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
+        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
     }
 
     @Test
@@ -151,7 +151,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         mockArbeidsforhold(Collections.emptyList());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKravForAutomatiskRegistrering()).isFalse();
+        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
     }
 
     @Test
