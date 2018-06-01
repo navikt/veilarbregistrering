@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
 import io.vavr.control.Try;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.sbl.rest.RestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -17,6 +16,7 @@ import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
+@Slf4j
 public class OppfolgingClient {
 
     public static final String VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
@@ -24,9 +24,6 @@ public class OppfolgingClient {
     private final String baseUrl;
     private final SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor;
     private final Provider<HttpServletRequest> httpServletRequestProvider;
-
-    private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
-
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -48,7 +45,7 @@ public class OppfolgingClient {
                     .request()
                     .post(Entity.json(aktiverBrukerData), AktiverBrukerData.class));
         } catch (Exception e) {
-            LOG.error("Feil ved aktivering av bruker mot Oppfølging " + e);
+            log.error("Feil ved aktivering av bruker mot Oppfølging med data {}, {}  ", aktiverBrukerData, e);
             throw new InternalServerErrorException();
         }
     }
@@ -61,7 +58,7 @@ public class OppfolgingClient {
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {
         return Try.of(() -> withClient(c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
                 .onFailure((e) -> {
-                    LOG.error("Feil ved kall til Oppfølging " + url + ", " + e);
+                    log.error("Feil ved kall til Oppfølging {}, {}", url, e);
                     throw new InternalServerErrorException();
                 })
                 .get();

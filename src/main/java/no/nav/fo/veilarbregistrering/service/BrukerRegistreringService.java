@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import static java.lang.Boolean.TRUE;
 import static no.nav.fo.veilarbregistrering.utils.SelvgaaendeUtil.erSelvgaaende;
 
 @Slf4j
@@ -83,7 +84,7 @@ public class BrukerRegistreringService {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), "IKVAL"));
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
         return brukerRegistrering;
     }
 }
