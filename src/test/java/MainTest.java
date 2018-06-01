@@ -14,6 +14,6 @@ public class MainTest {
         DatabaseTestContext.setupContext(getProperty("database"));
         TestContext.setup();
         String arguments[] = {TEST_PORT};
-        ApiApp.startApp(ApplicationConfig.class, arguments);
+        ApiApp.startApiApp(ApplicationConfig.class, arguments);
     }
 }

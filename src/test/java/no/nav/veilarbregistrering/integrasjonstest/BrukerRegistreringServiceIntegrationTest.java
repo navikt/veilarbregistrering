@@ -124,11 +124,6 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public BrukerRegistreringService brukerRegistreringService() {
-            return mock(BrukerRegistreringService.class);
-        }
-
-        @Bean
         public OppfolgingClient oppfolgingClient() {
             return mock(OppfolgingClient.class);
         }
@@ -145,7 +140,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
 
         @Bean
-        BrukerRegistreringService registrerBrukerService(
+        BrukerRegistreringService brukerRegistreringService(
                 ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                 AktorService aktorService,
                 RegistreringFeature skalRegistrereBrukerGenerellFeature,

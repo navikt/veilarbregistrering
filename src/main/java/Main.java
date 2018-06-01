@@ -6,7 +6,7 @@ import static no.nav.brukerdialog.security.Constants.OIDC_REDIRECT_URL_PROPERTY_
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
-import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacService.ABAC_ENDPOINT_URL_PROPERTY_NAME;
+import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.STS_URL_KEY;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
@@ -29,7 +29,7 @@ public class Main {
         setProperty(STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"));
 
 
-        ApiApp.startApp(ApplicationConfig.class, args);
+        ApiApp.startApiApp(ApplicationConfig.class, args);
     }
 
 }

@@ -19,7 +19,8 @@ import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION
 import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacService.ABAC_ENDPOINT_URL_PROPERTY_NAME;
+import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
+
 
 public class TestContext {
 
