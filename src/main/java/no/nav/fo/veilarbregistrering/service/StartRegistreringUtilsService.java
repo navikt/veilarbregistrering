@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
@@ -17,10 +18,8 @@ import static no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils.oppfyllerK
 import static no.nav.fo.veilarbregistrering.utils.DateUtils.erDatoEldreEnnEllerLikAar;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-
+@Slf4j
 public class StartRegistreringUtilsService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(StartRegistreringUtilsService.class);
 
     private static final int ANTALL_AAR_ISERV = 2;
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
@@ -43,8 +42,8 @@ public class StartRegistreringUtilsService {
             Integer maksAlder = Integer.parseInt(getRequiredProperty(MAX_ALDER_AUTOMATISK_REGISTRERING));
             return alder >= minAlder && alder <= maksAlder;
         } catch (NumberFormatException e){
-            LOG.error("Feil ved lesing av parametrene " + MAX_ALDER_AUTOMATISK_REGISTRERING + " eller " +
-                    MIN_ALDER_AUTOMATISK_REGISTRERING  + ", " + e);
+            log.error("Feil ved lesing av parametrene " + MAX_ALDER_AUTOMATISK_REGISTRERING + " eller " +
+                    MIN_ALDER_AUTOMATISK_REGISTRERING, e);
 
             return false;
         }

@@ -45,7 +45,7 @@ public class OppfolgingClient {
                     .request()
                     .post(Entity.json(aktiverBrukerData), AktiverBrukerData.class));
         } catch (Exception e) {
-            log.error("Feil ved aktivering av bruker mot Oppfølging med data {}, {}  ", aktiverBrukerData, e);
+            log.error("Feil ved aktivering av bruker mot Oppfølging med data {}", aktiverBrukerData, e);
             throw new InternalServerErrorException();
         }
     }
@@ -58,7 +58,7 @@ public class OppfolgingClient {
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {
         return Try.of(() -> withClient(c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
                 .onFailure((e) -> {
-                    log.error("Feil ved kall til Oppfølging {}, {}", url, e);
+                    log.error("Feil ved kall til Oppfølging {}", url, e);
                     throw new InternalServerErrorException();
                 })
                 .get();

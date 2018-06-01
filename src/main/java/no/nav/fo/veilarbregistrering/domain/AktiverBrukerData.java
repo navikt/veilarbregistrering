@@ -7,5 +7,5 @@ import lombok.Value;
 @ToString
 public class AktiverBrukerData {
     Fnr fnr;
-    Boolean selvgande;
+    Boolean selvgaende;
 }
