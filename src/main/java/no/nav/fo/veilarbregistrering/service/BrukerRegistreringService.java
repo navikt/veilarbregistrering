@@ -48,7 +48,7 @@ public class BrukerRegistreringService {
         }
 
         StartRegistreringStatus status = hentStartRegistreringStatus(fnr);
-        
+
         if (!erSelvgaaende(bruker, status)) {
             throw new RuntimeException("Bruker oppfyller ikke krav for registrering.");
         }
@@ -83,8 +83,11 @@ public class BrukerRegistreringService {
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        AktiverBrukerResponseStatus aktiveringRespons = oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
+        brukerRegistrering.setAktiverBrukerResponseStatus(aktiveringRespons);
 
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
+        log.info("Brukerregistrering gjennomført med data {}", brukerRegistrering);
         return brukerRegistrering;
     }
+
 }

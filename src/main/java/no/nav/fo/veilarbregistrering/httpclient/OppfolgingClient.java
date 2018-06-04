@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
@@ -36,14 +37,14 @@ public class OppfolgingClient {
         this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
-    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
+    public AktiverBrukerResponseStatus aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         try {
-            withClient(
+            return withClient(
                     RestUtils.RestConfig.builder().readTimeout(120000).build() // 120sek = 2min
                     ,c -> c.target(baseUrl + "/oppfolging/aktiverbruker")
                     .register(systemUserAuthorizationInterceptor)
                     .request()
-                    .post(Entity.json(aktiverBrukerData), AktiverBrukerData.class));
+                    .post(Entity.json(aktiverBrukerData), AktiverBrukerResponseStatus.class));
         } catch (Exception e) {
             log.error("Feil ved aktivering av bruker mot Oppfølging med data {}", aktiverBrukerData, e);
             throw new InternalServerErrorException();

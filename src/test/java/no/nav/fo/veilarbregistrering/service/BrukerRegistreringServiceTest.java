@@ -4,10 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.domain.AktivStatus;
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,6 +70,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
     }
@@ -82,6 +80,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
