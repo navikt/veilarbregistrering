@@ -8,6 +8,8 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeat
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
+import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
@@ -25,6 +27,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus.Status.STATUS_SUKSESS;
 import static no.nav.fo.veilarbregistrering.service.BrukerRegistreringServiceTest.getBrukerRegistreringSelvgaaende;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -97,6 +100,9 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(registreringFeature.erAktiv()).thenReturn(true);
+        AktiverBrukerResponseStatus aktiverBrukerResponseStatus = new AktiverBrukerResponseStatus();
+        aktiverBrukerResponseStatus.setStatus(STATUS_SUKSESS);
+        when(oppfolgingClient.aktiverBruker(any(AktiverBrukerData.class))).thenReturn(aktiverBrukerResponseStatus);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new AktivStatus().withUnderOppfolging(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);

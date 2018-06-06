@@ -19,14 +19,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus.Status.STATUS_SUKSESS;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -109,10 +110,10 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDeromBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering().setBrukerStatus(STATUS_SUKSESS));
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
         assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
@@ -188,6 +189,12 @@ class OppfolgingClientTest {
                 "\"aktiv\": false,\n" +
                 "\"inaktiveringsdato\": \"2018-03-08T12:00:00+01:00\",\n" +
                 "\"underOppfolging\": true\n" +
+                "}";
+    }
+
+    private String okRegistreringBody() {
+        return "{\n" +
+                "\"Status\": \"STATUS_SUKSESS\"\n" +
                 "}";
     }
 
