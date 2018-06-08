@@ -61,10 +61,11 @@ public class OppfolgingClient {
 
         if (status == 204) {
             return status;
-        } else if (status == 500){
+        } else if (status == 500) {
             throw new WebApplicationException(response);
-        } else
-            throw new RuntimeException("Uventet respons ("+status+") ved aktivering av bruker mot " + url);
+        } else {
+            throw new RuntimeException("Uventet respons (" + status + ") ved aktivering av bruker mot " + url);
+        }
     }
 
     public AktivStatus hentOppfolgingsstatus(String fnr) {
