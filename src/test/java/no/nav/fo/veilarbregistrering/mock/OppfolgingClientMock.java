@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.mock;
 
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 
 public class OppfolgingClientMock extends OppfolgingClient {
@@ -17,8 +16,7 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     @Override
-    public BrukerRegistrering aktiverBruker(AktiverBrukerData fnr) {
-        return new BrukerRegistrering();
+    public void aktiverBruker(AktiverBrukerData fnr) {
     }
 
 }
