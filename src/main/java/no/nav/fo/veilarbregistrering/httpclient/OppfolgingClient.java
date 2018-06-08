@@ -2,10 +2,8 @@ package no.nav.fo.veilarbregistrering.httpclient;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
@@ -41,13 +39,11 @@ public class OppfolgingClient {
         this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
-    public BrukerRegistrering aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        BrukerRegistrering brukerRegistrering = new BrukerRegistrering();
+    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         withClient(
                 RestUtils.RestConfig.builder().build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
-        return brukerRegistrering;
     }
 
     private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
