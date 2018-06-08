@@ -83,9 +83,7 @@ public class BrukerRegistreringService {
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        AktiverBrukerResponseStatus aktiveringRespons = oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
-        brukerRegistrering.setBrukerStatus(aktiveringRespons.getStatus());
-
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
         log.info("Brukerregistrering gjennomført med data {}", brukerRegistrering);
         return brukerRegistrering;
     }

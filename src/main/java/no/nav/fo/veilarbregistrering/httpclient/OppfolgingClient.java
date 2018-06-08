@@ -4,14 +4,16 @@ import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
-import no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.withClient;
@@ -37,17 +39,28 @@ public class OppfolgingClient {
         this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
-    public AktiverBrukerResponseStatus aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        try {
-            return withClient(
-                    RestUtils.RestConfig.builder().readTimeout(120000).build() // 120sek = 2min
-                    ,c -> c.target(baseUrl + "/oppfolging/aktiverbruker")
-                    .register(systemUserAuthorizationInterceptor)
-                    .request()
-                    .post(Entity.json(aktiverBrukerData), AktiverBrukerResponseStatus.class));
-        } catch (Exception e) {
-            log.error("Feil ved aktivering av bruker mot Oppfølging med data {}", aktiverBrukerData, e);
-            throw new InternalServerErrorException();
+    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
+        withClient(
+                RestUtils.RestConfig.builder().build()
+                , c -> postBrukerAktivering(aktiverBrukerData, c)
+        );
+    }
+
+    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
+        String url = baseUrl + "/oppfolging/aktiverbruker";
+        Response response = client.target(url)
+                .register(systemUserAuthorizationInterceptor)
+                .request()
+                .post(Entity.json(aktiverBrukerData));
+
+        int status = response.getStatus();
+
+        if (status == 204) {
+            return status;
+        } else if (status == 500) {
+            throw new WebApplicationException(response);
+        } else {
+            throw new RuntimeException("Uventet respons (" + status + ") ved aktivering av bruker mot " + url);
         }
     }
 

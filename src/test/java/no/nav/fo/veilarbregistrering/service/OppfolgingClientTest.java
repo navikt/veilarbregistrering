@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus.Status.STATUS_SUKSESS;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,11 +90,11 @@ class OppfolgingClientTest {
     }
 
     @Test
-    public void testAtGirInternalServerErrorExceptionDersomBrukerIkkeFinnes() {
+    public void testAtGirRuntimeExceptionDersomOppfolgingIkkeSvarer() {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
 
@@ -110,10 +109,10 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDeromBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering().setBrukerStatus(STATUS_SUKSESS));
+        when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
         assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
@@ -124,7 +123,7 @@ class OppfolgingClientTest {
         when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(200));
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204));
 
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(ident);
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
