@@ -17,5 +17,4 @@ public class BrukerRegistrering {
     boolean enigIOppsummering;
     String oppsummering;
     boolean harHelseutfordringer;
-    AktiverBrukerResponseStatus.Status brukerStatus;
 }

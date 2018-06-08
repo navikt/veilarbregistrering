@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
-import static no.nav.fo.veilarbregistrering.domain.AktiverBrukerResponseStatus.Status.STATUS_SUKSESS;
 import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
@@ -72,9 +71,6 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        AktiverBrukerResponseStatus aktiverBrukerData = new AktiverBrukerResponseStatus();
-        aktiverBrukerData.setStatus(STATUS_SUKSESS);
-        when(oppfolgingClient.aktiverBruker(any(AktiverBrukerData.class))).thenReturn(aktiverBrukerData);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
     }
@@ -85,9 +81,6 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        AktiverBrukerResponseStatus aktiverBrukerData = new AktiverBrukerResponseStatus();
-        aktiverBrukerData.setStatus(STATUS_SUKSESS);
-        when(oppfolgingClient.aktiverBruker(any(AktiverBrukerData.class))).thenReturn(aktiverBrukerData);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());

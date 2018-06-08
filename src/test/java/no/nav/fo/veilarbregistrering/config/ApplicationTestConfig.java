@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationTestConfig extends ApplicationConfig {
 
-    public static final boolean RUN_WITH_MOCKS = true;
+    public static final boolean RUN_WITH_MOCKS = false;
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
