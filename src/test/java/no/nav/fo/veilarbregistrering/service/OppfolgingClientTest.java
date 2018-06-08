@@ -90,7 +90,7 @@ class OppfolgingClientTest {
     }
 
     @Test
-    public void testAtGirRuntimeExceptionDersomArenaIkkeSvarer() {
+    public void testAtGirRuntimeExceptionDersomOppfolgingIkkeSvarer() {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
