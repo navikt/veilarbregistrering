@@ -50,7 +50,8 @@ public class BrukerRegistreringService {
         StartRegistreringStatus status = hentStartRegistreringStatus(fnr);
 
         if (!erSelvgaaende(bruker, status)) {
-            throw new RuntimeException("Bruker oppfyller ikke krav for registrering.");
+            log.info("Brukerregistrering ({}) oppfyller ikke krav for selvgående bruker. Brukerstatus {}", bruker, status);
+            throw new RuntimeException("Krav til bruker ikke oppfylt.");
         }
 
         return opprettBruker(fnr, bruker);
