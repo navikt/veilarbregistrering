@@ -41,7 +41,7 @@ public class OppfolgingClient {
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         withClient(
-                RestUtils.RestConfig.builder().build()
+                RestUtils.RestConfig.builder().readTimeout(120000).build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
     }
