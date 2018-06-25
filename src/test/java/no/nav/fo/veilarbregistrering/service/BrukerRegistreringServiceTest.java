@@ -130,30 +130,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalIkkeOppfylleKravPgaAlder() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
-        mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
-    }
-
-    @Test
-    public void skalIkkeOppfylleKravPgaInaktivDato() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(1)));
-        mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
-    }
-
-    @Test
-    public void skalIkkeOppfylleKravPgaArbeidserfaring() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
-        mockArbeidsforhold(Collections.emptyList());
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isOppfyllerKrav()).isFalse();
-    }
-
-    @Test
     public void skalIkkeHenteArbeidsforholdDersomBrukerIkkeOppfyllerKravOmAlder()  {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
         getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
