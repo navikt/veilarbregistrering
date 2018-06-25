@@ -20,14 +20,6 @@ public class SelvgaaendeUtilTest {
     }
 
     @Test
-    void skalValidereSelvgaaendeOppfyllerkrav() {
-        BrukerRegistrering bruker = getBrukerBesvarelse();
-        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(false);
-        assertThat(erSelvgaaende(bruker, startRegistreringStatus )).isFalse();
-    }
-
-    @Test
     void brukerMedBesvarelseNus_Kode_0_SkalFeile() {
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setNusKode(NUS_KODE_0)
