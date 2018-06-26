@@ -47,11 +47,8 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        StartRegistreringStatus status = hentStartRegistreringStatus(fnr);
-
-        if (!erSelvgaaende(bruker, status)) {
-            log.info("Brukerregistrering ({}) oppfyller ikke krav for selvgående bruker. Brukerstatus {}", bruker, status);
-            throw new RuntimeException("Krav til bruker ikke oppfylt.");
+        if (hentStartRegistreringStatus(fnr).isUnderOppfolging()) {
+            throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
         return opprettBruker(fnr, bruker);
@@ -60,22 +57,8 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        StartRegistreringStatus startRegistreringStatus;
-        if (aktivStatus.isAktiv()) {
-            startRegistreringStatus = new StartRegistreringStatus()
-                    .setUnderOppfolging(true)
-                    .setOppfyllerKrav(false);
-        } else {
-            boolean oppfyllerKrav = startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(
-                    fnr,
-                    () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                    aktivStatus,
-                    LocalDate.now()
-            );
-            startRegistreringStatus = new StartRegistreringStatus()
-                    .setUnderOppfolging(false)
-                    .setOppfyllerKrav(oppfyllerKrav);
-        }
+        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
+                .setUnderOppfolging(aktivStatus.isAktiv());
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;

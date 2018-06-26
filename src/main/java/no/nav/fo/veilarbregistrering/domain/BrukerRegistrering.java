@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @ToString
-public class BrukerRegistrering {
+public class    BrukerRegistrering {
     long id;
     String nusKode;
     String yrkesPraksis;

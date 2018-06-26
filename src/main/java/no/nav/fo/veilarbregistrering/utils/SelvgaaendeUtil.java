@@ -11,8 +11,7 @@ public class SelvgaaendeUtil {
 
     public static boolean erSelvgaaende(BrukerRegistrering bruker, StartRegistreringStatus startRegistreringStatus) {
         return erBesvarelseneValidertSomSelvgaaende(bruker) &&
-                !startRegistreringStatus.isUnderOppfolging() &&
-                startRegistreringStatus.isOppfyllerKrav();
+                !startRegistreringStatus.isUnderOppfolging();
     }
 
     public static boolean erBesvarelseneValidertSomSelvgaaende(BrukerRegistrering bruker) {

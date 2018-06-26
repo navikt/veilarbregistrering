@@ -15,17 +15,7 @@ public class SelvgaaendeUtilTest {
     void skalValidereSelvgaaendeUnderoppfolging() {
         BrukerRegistrering bruker = getBrukerBesvarelse();
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(true)
-                .setOppfyllerKrav(true);
-        assertThat(erSelvgaaende(bruker, startRegistreringStatus )).isFalse();
-    }
-
-    @Test
-    void skalValidereSelvgaaendeOppfyllerkrav() {
-        BrukerRegistrering bruker = getBrukerBesvarelse();
-        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(false)
-                .setOppfyllerKrav(false);
+                .setUnderOppfolging(true);
         assertThat(erSelvgaaende(bruker, startRegistreringStatus )).isFalse();
     }
 
