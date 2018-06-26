@@ -47,6 +47,10 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
+        if (hentStartRegistreringStatus(fnr).isUnderOppfolging()) {
+            throw new RuntimeException("Bruker allerede under oppfølging.");
+        }
+
         return opprettBruker(fnr, bruker);
     }
 

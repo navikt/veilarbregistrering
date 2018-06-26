@@ -102,27 +102,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalIkkeLagreRegistreringSomIkkeOppfyllerKravForAutomatiskRegistrering()  {
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
-        BrukerRegistrering selvgaaendeBruker = getBrukerIngenUtdannelse();
-        assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_IKKE_KRAV));
-    }
-
-    @Test
-    void skalIkkeLagreRegistreringDersomIngenUtdannelse()  {
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
-        BrukerRegistrering ikkeSelvgaaendeBruker = getBrukerIngenUtdannelse();
-        assertThrows(RuntimeException.class, () -> registrerBruker(ikkeSelvgaaendeBruker, FNR_OPPFYLLER_KRAV));
-    }
-
-    @Test
-    void skalIkkeLagreRegistreringMedHelseutfordringer() {
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
-        BrukerRegistrering brukerRegistreringMedHelseutfordringer = getBrukerRegistreringMedHelseutfordringer();
-        assertThrows(RuntimeException.class, () -> registrerBruker(brukerRegistreringMedHelseutfordringer, FNR_OPPFYLLER_KRAV));
-    }
-
-    @Test
     public void skalReturnerUnderOppfolgingNaarUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
