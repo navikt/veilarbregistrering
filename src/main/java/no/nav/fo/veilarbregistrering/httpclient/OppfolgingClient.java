@@ -58,6 +58,7 @@ public class OppfolgingClient {
         if (status == 204) {
             return status;
         } else if (status == 500) {
+            log.error("Feil ved aktivering av bruker mot VeilArbOppfolging {}", response);
             throw new WebApplicationException(response);
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved aktivering av bruker mot " + url);
