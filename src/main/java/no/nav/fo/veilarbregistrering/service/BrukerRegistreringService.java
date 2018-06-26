@@ -47,13 +47,6 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        StartRegistreringStatus status = hentStartRegistreringStatus(fnr);
-
-        if (!erSelvgaaende(bruker, status)) {
-            log.info("Brukerregistrering ({}) oppfyller ikke krav for selvgående bruker. Brukerstatus {}", bruker, status);
-            throw new RuntimeException("Krav til bruker ikke oppfylt.");
-        }
-
         return opprettBruker(fnr, bruker);
     }
 
