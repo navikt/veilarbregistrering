@@ -117,8 +117,8 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalReturnereAtBrukerOppfyllerBetingelseOmInaktivering() {
-        mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivering();
+    public void skalReturnereAtBrukerOppfyllerBetingelseOmInaktivitet() {
+        mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isRegistrertNavSisteToAr()).isFalse();
     }
@@ -219,7 +219,7 @@ public class BrukerRegistreringServiceTest {
         );
     }
 
-    private void mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivering() {
+    private void mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet() {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
     }
 
