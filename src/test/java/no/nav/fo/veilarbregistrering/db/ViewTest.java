@@ -22,7 +22,11 @@ public class ViewTest extends IntegrasjonsTest {
     @Parameters(name = "{0}")
     public static Object[] views() {
             return new Object[]{
-                "DVH_BRUKER_REGISTRERING"
+                    "DVH_BRUKER_REGISTRERING",
+                    "DVH_BEGRUNNELSE_KODEVERK",
+                    "DVH_BRUKER_PROFILERING",
+                    "DVH_BRUKER_REAKTIVERING",
+                    "DVH_PROFILERING_KODEVERK"
         };
     }
 
