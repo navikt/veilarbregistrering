@@ -16,7 +16,7 @@ public class ArbeidsforholdUtils {
     static int minAntallMndSammenhengendeJobb = 6;
     static int dagIMnd = 1;
 
-    public static boolean oppfyllerKravOmArbeidserfaring(List<Arbeidsforhold> arbeidsforhold, LocalDate dagensDato) {
+    public static boolean oppfyllerBetingelseOmArbeidserfaring(List<Arbeidsforhold> arbeidsforhold, LocalDate dagensDato) {
         int antallSammenhengendeMandeder = 0;
         int mndFraDagensMnd = 0;
         LocalDate innevaerendeMnd = LocalDate.of(dagensDato.getYear(), dagensDato.getMonthValue(), dagIMnd);

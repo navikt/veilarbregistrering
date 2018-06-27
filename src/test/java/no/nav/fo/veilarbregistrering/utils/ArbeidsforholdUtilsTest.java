@@ -91,7 +91,7 @@ public class ArbeidsforholdUtilsTest {
         Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold().setFom(fom2).setTom(tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
-        assertThat(oppfyllerKravOmArbeidserfaring(arbeidsforhold,dagensDato)).isTrue();
+        assertThat(oppfyllerBetingelseOmArbeidserfaring(arbeidsforhold,dagensDato)).isTrue();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class ArbeidsforholdUtilsTest {
         Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold().setFom(fom2).setTom(tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
-        assertThat(oppfyllerKravOmArbeidserfaring(arbeidsforhold,dagensDato)).isFalse();
+        assertThat(oppfyllerBetingelseOmArbeidserfaring(arbeidsforhold,dagensDato)).isFalse();
     }
 
     @Test
