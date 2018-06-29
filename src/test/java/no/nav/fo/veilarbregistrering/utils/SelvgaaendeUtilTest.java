@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import org.junit.jupiter.api.Test;
 
 import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
@@ -23,11 +26,11 @@ public class SelvgaaendeUtilTest {
     void brukerMedBesvarelseNus_Kode_0_SkalFeile() {
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setNusKode(NUS_KODE_0)
-                .setYrkesPraksis(null)
+                .setSisteStilling(new Stilling().setStyrk08(null))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
         assertThat(erBesvarelseneValidertSomSelvgaaende(bruker)).isFalse();
     }
 
@@ -35,7 +38,7 @@ public class SelvgaaendeUtilTest {
     void brukerMedBesvarelseNus_Kode_2_SkalIkkeFeile() {
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setNusKode(NUS_KODE_2)
-                .setYrkesPraksis(null)
+                .setSisteStilling(new Stilling().setStyrk08(null))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING);
@@ -45,11 +48,11 @@ public class SelvgaaendeUtilTest {
     private BrukerRegistrering getBrukerBesvarelse() {
         return  new BrukerRegistrering()
                 .setNusKode(NUS_KODE_4)
-                .setYrkesPraksis(null)
+                .setSisteStilling(new Stilling().setStyrk08(null))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
     }
 
 }

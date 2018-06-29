@@ -7,6 +7,9 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
@@ -200,8 +203,8 @@ class OppfolgingClientTest {
     private BrukerRegistrering lagRegistreringGyldigBruker() {
         return new BrukerRegistrering()
                 .setEnigIOppsummering(true)
-                .setHarHelseutfordringer(false)
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
                 .setNusKode("12312")
-                .setYrkesPraksis("1234");
+                .setSisteStilling(new Stilling().setStyrk08("1234"));
     }
 }
