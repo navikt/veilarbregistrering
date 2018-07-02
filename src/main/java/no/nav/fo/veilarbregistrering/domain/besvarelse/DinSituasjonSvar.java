@@ -9,5 +9,4 @@ public enum DinSituasjonSvar {
     USIKKER_JOBBSITUASJON,
     JOBB_OVER_2_AAR,
     VIL_FORTSETTE_I_JOBB,
-    INGEN_SVAR,
 }

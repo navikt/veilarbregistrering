@@ -76,7 +76,7 @@ class OppfolgingClientTest {
         System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
         System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
 
-        when(startRegistreringUtilsService.oppfyllerBetingelseOmArbeidserfaring(any(), any())).thenReturn(true);
+        when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
         when(registreringFeature.erAktiv()).thenReturn(true);
