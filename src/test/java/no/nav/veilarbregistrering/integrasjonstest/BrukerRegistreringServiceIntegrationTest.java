@@ -99,7 +99,8 @@ class BrukerRegistreringServiceIntegrationTest {
         when(registreringFeature.erAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new AktivStatus().withUnderOppfolging(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
-        when(startRegistreringUtilsService.oppfyllerKravOmAutomatiskRegistrering(any(), any(), any(), any())).thenReturn(true);
+        when(startRegistreringUtilsService.oppfyllerBetingelseOmArbeidserfaring(any(), any())).thenReturn(true);
+        when(startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(any(), any())).thenReturn(true);
     }
 
 

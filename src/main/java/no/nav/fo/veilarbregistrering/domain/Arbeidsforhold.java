@@ -5,10 +5,12 @@ import lombok.experimental.Accessors;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.AnsettelsesPeriode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Periode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Yrker;
 
 import java.time.LocalDate;
-import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @Data
 @Accessors(chain = true)
@@ -25,15 +27,18 @@ public class Arbeidsforhold {
                 .setTom(getTom(arbeidsforhold.getAnsettelsesPeriode()));
     }
 
-    private static LocalDate getFom(AnsettelsesPeriode periode) {
-        return Optional.ofNullable(periode)
-                .map(AnsettelsesPeriode::getFomBruksperiode)
-                .map(DateUtils::xmlGregorianCalendarToLocalDate).orElse(null);
+    private static LocalDate getFom(AnsettelsesPeriode ansettelsesPeriode) {
+        return ofNullable(ansettelsesPeriode)
+                .map(AnsettelsesPeriode::getPeriode)
+                .map(Periode::getFom)
+                .map(DateUtils::xmlGregorianCalendarToLocalDate)
+                .orElse(null);
     }
 
     private static LocalDate getTom(AnsettelsesPeriode periode) {
-        return Optional.ofNullable(periode)
-                .map(AnsettelsesPeriode::getTomBruksperiode)
+        return ofNullable(periode)
+                .map(AnsettelsesPeriode::getPeriode)
+                .map(Periode::getTom)
                 .map(DateUtils::xmlGregorianCalendarToLocalDate).orElse(null);
     }
 }

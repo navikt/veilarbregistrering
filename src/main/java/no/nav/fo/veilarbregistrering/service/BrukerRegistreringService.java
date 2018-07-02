@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 import static java.lang.Boolean.TRUE;
-import static no.nav.fo.veilarbregistrering.utils.SelvgaaendeUtil.erSelvgaaende;
 
 @Slf4j
 public class BrukerRegistreringService {
@@ -57,8 +56,19 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
+        boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.oppfyllerBetingelseOmArbeidserfaring(
+                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                LocalDate.now()
+        );
+        boolean oppfyllerBetingelseOmInaktivitet = startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(
+                LocalDate.now(),
+                aktivStatus.getInaktiveringDato()
+        );
+
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(aktivStatus.isAktiv());
+                .setUnderOppfolging(aktivStatus.isAktiv())
+                .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring)
+                .setRegistrertNavSisteToAr(!oppfyllerBetingelseOmInaktivitet);
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;

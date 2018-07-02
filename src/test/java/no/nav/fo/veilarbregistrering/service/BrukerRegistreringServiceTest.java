@@ -71,7 +71,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalRegistrereSelvgaaendeBruker()  {
         mockInaktivBruker();
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
@@ -80,7 +80,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
         BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
@@ -92,7 +92,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv()  {
         when(registreringFeature.erAktiv()).thenReturn(false);
-        mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         assertThrows(RuntimeException.class, () -> registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV));
         verify(oppfolgingClient, times(0)).aktiverBruker(any());
     }
@@ -105,26 +105,26 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalReturnerUnderOppfolgingNaarUnderOppfolging() {
+    public void skalReturnereUnderOppfolgingNaarUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isUnderOppfolging()).isTrue();
     }
 
     @Test
-    public void skalIkkeHenteArbeidsforholdDersomBrukerIkkeOppfyllerKravOmAlder()  {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
-        getStartRegistreringStatus(FNR_OPPFYLLER_IKKE_KRAV);
-        verify(arbeidsforholdService, never()).hentArbeidsforhold(any());
+    public void skalReturnereAtBrukerOppfyllerBetingelseOmArbeidserfaring() {
+        mockInaktivBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.isJobbetSeksAvTolvSisteManeder()).isTrue();
     }
 
     @Test
-    public void skalIkkeHenteArbeidsforholdOmBrukerErUnderOppfolging() {
-        mockOppfolgingMedRespons(setOppfolgingsflagg());
-        getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(arbeidsforholdService, never()).hentArbeidsforhold(any());
+    public void skalReturnereAtBrukerOppfyllerBetingelseOmInaktivitet() {
+        mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet();
+        StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.isRegistrertNavSisteToAr()).isFalse();
     }
-
 
     @Test
     public void skalReturnereFalseOmIkkeUnderOppfolging() {
@@ -210,7 +210,6 @@ public class BrukerRegistreringServiceTest {
         );
     }
 
-
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(false).withAktiv(false)
@@ -223,7 +222,11 @@ public class BrukerRegistreringServiceTest {
         );
     }
 
-    private void mockArbeidssforholdSomOppfyllerKravForSelvgaaendeBruker() {
+    private void mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet() {
+        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
+    }
+
+    private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
         when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(
                 Collections.singletonList(new Arbeidsforhold()
                         .setArbeidsgiverOrgnummer("orgnummer")

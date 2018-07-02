@@ -7,4 +7,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StartRegistreringStatus {
     private boolean underOppfolging;
+    private boolean jobbetSeksAvTolvSisteManeder;
+    private boolean registrertNavSisteToAr;
 }
