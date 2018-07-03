@@ -46,7 +46,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(YRKESPRAKSIS, bruker.getSisteStilling().getStyrk08())
                 .value(ENIG_I_OPPSUMMERING, bruker.isEnigIOppsummering())
                 .value(OPPSUMMERING, bruker.getOppsummering())
-                .value(HAR_HELSEUTFORDRINGER, bruker.getBesvarelse().getHelseHinder())
+                .value(HAR_HELSEUTFORDRINGER, bruker.getBesvarelse().getHelseHinder().equals(HelseHinderSvar.JA))
                 .value(YRKESBESKRIVELSE, -1)
                 .value(KONSEPT_ID, -1)
                 .execute();

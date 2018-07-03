@@ -47,6 +47,11 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
     }
 
     private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
-        assertThat(brukerRegistrering).isEqualTo(bruker);
+        assertThat(brukerRegistrering.getNusKode()).isEqualTo(bruker.getNusKode());
+        assertThat(brukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
+        assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
+        assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
+        assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+
     }
 }

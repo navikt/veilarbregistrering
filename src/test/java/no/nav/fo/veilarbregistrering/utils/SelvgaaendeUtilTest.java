@@ -39,6 +39,7 @@ public class SelvgaaendeUtilTest {
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setNusKode(NUS_KODE_2)
                 .setSisteStilling(new Stilling().setStyrk08(null))
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING);

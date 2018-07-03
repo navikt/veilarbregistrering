@@ -114,7 +114,7 @@ class StartRegistreringUtilsServiceTest {
                         .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
                         .setUtdanningBestatt(UtdanningBestattSvar.JA)
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
-                        .setHelseHinder(HelseHinderSvar.JA)
+                        .setHelseHinder(HelseHinderSvar.NEI)
                         .setAndreForhold(AndreForholdSvar.NEI)
                 );
         List<Arbeidsforhold> arbeidsforholdList = getArbeidsforholdList(true);
