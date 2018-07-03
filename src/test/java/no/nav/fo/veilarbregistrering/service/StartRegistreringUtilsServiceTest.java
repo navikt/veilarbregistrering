@@ -21,39 +21,46 @@ class StartRegistreringUtilsServiceTest {
     void testProfilering() {
         LocalDate dagensDato = LocalDate.now();
 
-        List<Integer> aldre = new ArrayList<>();
-        aldre.add(25);
-        aldre.add(40);
-        aldre.add(65);
+        List<Integer> aldre = Arrays.asList(25, 40, 65);
+        List<Boolean> tilfredsstillerKravTilArbeidList = Arrays.asList(true, false);
+        List<Besvarelse> alleMuligeBesvarelser = genererAlleMuligeBesvarelser();
 
-        List<Boolean> tilfredsstillerKravTilArbeid = new ArrayList<>();
-        tilfredsstillerKravTilArbeid.add(true);
-        tilfredsstillerKravTilArbeid.add(false);
+        alleMuligeBesvarelser.forEach(besvarelse -> {
+            if (besvarelse.getUtdanning() == null) {
+                System.out.println(besvarelse);
+                throw new RuntimeException();
+            }
+            tilfredsstillerKravTilArbeidList.forEach(tilfredsstillerKrav -> {
+                aldre.forEach(alder -> {
+                    validerProfilering(
+                            new BrukerRegistrering().setBesvarelse(besvarelse),
+                            alder,
+                            () -> getArbeidsforholdList(tilfredsstillerKrav),
+                            dagensDato
+                    );
+                });
+            });
+        });
+    }
 
-        tilfredsstillerKravTilArbeid.forEach(tilfredsstillerKrav -> {
-            aldre.forEach(alder -> {
-                Arrays.asList(DinSituasjonSvar.values()).forEach(dinSituasjonSvar -> {
-                    Arrays.asList(SisteStillingSvar.values()).forEach(sisteStillingSvar -> {
-                        Arrays.asList(UtdanningSvar.values()).forEach(utdanningSvar -> {
-                            Arrays.asList(UtdanningGodkjentSvar.values()).forEach(utdanningGodkjentSvar -> {
-                                Arrays.asList(UtdanningBestattSvar.values()).forEach(utdanningBestattSvar -> {
-                                    Arrays.asList(HelseHinderSvar.values()).forEach(helseHinderSvar -> {
-                                        Arrays.asList(AndreForholdSvar.values()).forEach(andreForholdSvar -> {
-                                            Besvarelse besvarelse = new Besvarelse()
-                                                    .setDinSituasjon(dinSituasjonSvar)
-                                                    .setUtdanning(utdanningSvar)
-                                                    .setUtdanningGodkjent(utdanningGodkjentSvar)
-                                                    .setUtdanningBestatt(utdanningBestattSvar)
-                                                    .setHelseHinder(helseHinderSvar)
-                                                    .setAndreForhold(andreForholdSvar);
-                                            validerProfilering(
-                                                    new BrukerRegistrering().setBesvarelse(besvarelse),
-                                                    alder,
-                                                    () -> getArbeidsforhold(tilfredsstillerKrav),
-                                                    dagensDato
-                                            );
-                                        });
-                                    });
+    private List<Besvarelse> genererAlleMuligeBesvarelser() {
+        List<Besvarelse> besvarelser = new ArrayList<>();
+        Arrays.asList(DinSituasjonSvar.values()).forEach(dinSituasjonSvar -> {
+            Arrays.asList(SisteStillingSvar.values()).forEach(sisteStillingSvar -> {
+                Arrays.asList(UtdanningSvar.values()).forEach(utdanningSvar -> {
+                    Arrays.asList(UtdanningGodkjentSvar.values()).forEach(utdanningGodkjentSvar -> {
+                        Arrays.asList(UtdanningBestattSvar.values()).forEach(utdanningBestattSvar -> {
+                            Arrays.asList(HelseHinderSvar.values()).forEach(helseHinderSvar -> {
+                                Arrays.asList(AndreForholdSvar.values()).forEach(andreForholdSvar -> {
+                                    besvarelser.add(new Besvarelse()
+                                            .setDinSituasjon(dinSituasjonSvar)
+                                            .setSisteStilling(sisteStillingSvar)
+                                            .setUtdanning(utdanningSvar)
+                                            .setUtdanningGodkjent(utdanningGodkjentSvar)
+                                            .setUtdanningBestatt(utdanningBestattSvar)
+                                            .setHelseHinder(helseHinderSvar)
+                                            .setAndreForhold(andreForholdSvar)
+                                    );
                                 });
                             });
                         });
@@ -61,7 +68,7 @@ class StartRegistreringUtilsServiceTest {
                 });
             });
         });
-
+        return besvarelser;
     }
 
     private void validerProfilering(
@@ -80,7 +87,6 @@ class StartRegistreringUtilsServiceTest {
         Besvarelse besvarelse = bruker.getBesvarelse();
 
         Innsatsgruppe onsketInnsatsgruppe;
-
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
         } else if ((30 <= alder && alder <= 59)
@@ -96,25 +102,22 @@ class StartRegistreringUtilsServiceTest {
             onsketInnsatsgruppe = Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
         }
 
-        System.out.println(innsatsgruppe);
-        System.out.println(besvarelse.toString());
         assertEquals(onsketInnsatsgruppe, innsatsgruppe, "Feil profilering for bruker: " + bruker.toString());
     }
 
     @Test
     void testSpesifikkBesvarelse() {
         BrukerRegistrering bruker = new BrukerRegistrering()
-                .setBesvarelse(
-                        new Besvarelse()
-                                .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
-                                .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
-                                .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
-                                .setUtdanningBestatt(UtdanningBestattSvar.JA)
-                                .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
-                                .setHelseHinder(HelseHinderSvar.JA)
-                                .setAndreForhold(AndreForholdSvar.NEI)
+                .setBesvarelse(new Besvarelse()
+                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
+                        .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+                        .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
+                        .setUtdanningBestatt(UtdanningBestattSvar.JA)
+                        .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
+                        .setHelseHinder(HelseHinderSvar.JA)
+                        .setAndreForhold(AndreForholdSvar.NEI)
                 );
-        List<Arbeidsforhold> arbeidsforholdListe = getArbeidsforhold(true);
+        List<Arbeidsforhold> arbeidsforholdList = getArbeidsforholdList(true);
         int alder = 35;
         LocalDate dagensDato = LocalDate.now();
 
@@ -123,7 +126,7 @@ class StartRegistreringUtilsServiceTest {
         Innsatsgruppe innsatsgruppe = startRegistreringUtilsService.profilerBruker(
                 bruker,
                 alder,
-                () -> arbeidsforholdListe,
+                () -> arbeidsforholdList,
                 dagensDato
         );
 
@@ -131,7 +134,7 @@ class StartRegistreringUtilsServiceTest {
 
     }
 
-    List<Arbeidsforhold> getArbeidsforhold(boolean tilfredsstillerKrav) {
+    private List<Arbeidsforhold> getArbeidsforholdList(boolean tilfredsstillerKrav) {
         int antallManeder = tilfredsstillerKrav ? 10 : 2;
         return Collections.singletonList(
                 new Arbeidsforhold()

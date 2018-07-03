@@ -33,7 +33,7 @@ public class StartRegistreringUtilsService {
         return Objects.isNull(inaktiveringsdato) || erDatoEldreEnnEllerLikAar(dagensDato, inaktiveringsdato, ANTALL_AAR_ISERV);
     }
 
-    public Innsatsgruppe profilerBruker(
+    Innsatsgruppe profilerBruker(
             BrukerRegistrering bruker,
             int alder,
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
