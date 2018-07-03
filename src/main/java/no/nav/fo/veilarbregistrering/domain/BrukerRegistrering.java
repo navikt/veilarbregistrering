@@ -17,8 +17,12 @@ public class BrukerRegistrering {
     long id;
     String nusKode;
     Date opprettetDato;
-    String oppsummering;
     boolean enigIOppsummering;
+    String oppsummering;
     Besvarelse besvarelse;
     Stilling sisteStilling;
+
+    // TODO: Skal slettes. FO-1123
+    String yrkesPraksis;
+    boolean harHelseutfordringer;
 }

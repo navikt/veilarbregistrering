@@ -39,7 +39,11 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
                 .setOpprettetDato(opprettetDato)
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(false)
+                .setYrkesPraksis("12345");
 
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
@@ -50,8 +54,11 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
         assertThat(brukerRegistrering.getNusKode()).isEqualTo(bruker.getNusKode());
         assertThat(brukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
         assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
-        assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
-        assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        // assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        // assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
 
+        // TODO: Skal slettes. FO-1123
+        assertThat(brukerRegistrering.getYrkesPraksis()).isEqualTo(bruker.getYrkesPraksis());
+        assertThat(brukerRegistrering.isHarHelseutfordringer()).isEqualTo(bruker.isHarHelseutfordringer());
     }
 }

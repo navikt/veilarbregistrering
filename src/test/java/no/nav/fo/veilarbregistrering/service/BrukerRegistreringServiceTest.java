@@ -171,7 +171,11 @@ public class BrukerRegistreringServiceTest {
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(false)
+                .setYrkesPraksis("1111.11");
     }
 
     private BrukerRegistrering getBrukerIngenUtdannelse() {

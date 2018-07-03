@@ -43,10 +43,10 @@ public class ArbeidssokerregistreringRepository {
                 .value(AKTOR_ID, aktorId.getAktorId())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(NUS_KODE, bruker.getNusKode())
-                .value(YRKESPRAKSIS, bruker.getSisteStilling().getStyrk08())
+                .value(YRKESPRAKSIS, bruker.getYrkesPraksis())
                 .value(ENIG_I_OPPSUMMERING, bruker.isEnigIOppsummering())
                 .value(OPPSUMMERING, bruker.getOppsummering())
-                .value(HAR_HELSEUTFORDRINGER, bruker.getBesvarelse().getHelseHinder().equals(HelseHinderSvar.JA))
+                .value(HAR_HELSEUTFORDRINGER, bruker.isHarHelseutfordringer())
                 .value(YRKESBESKRIVELSE, -1)
                 .value(KONSEPT_ID, -1)
                 .execute();
@@ -77,6 +77,11 @@ public class ArbeidssokerregistreringRepository {
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
                 .setBesvarelse(new Besvarelse()
-                        .setHelseHinder(helseHinderSvar));
+                        .setHelseHinder(helseHinderSvar))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER))
+                .setYrkesPraksis(rs.getString(YRKESPRAKSIS))
+                ;
     }
 }
