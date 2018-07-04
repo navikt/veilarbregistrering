@@ -25,7 +25,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.service.BrukerRegistreringServiceTest.getBrukerRegistreringSelvgaaende;
+import static no.nav.fo.veilarbregistrering.service.BrukerRegistreringServiceTest.getGyldigBrukerRegistrering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +43,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtilsService startRegistreringUtilsService;
 
     private static String ident = "11111111111";
-    private static final BrukerRegistrering SELVGAENDE_BRUKER = getBrukerRegistreringSelvgaaende();
+    private static final BrukerRegistrering SELVGAENDE_BRUKER = getGyldigBrukerRegistrering();
 
     @BeforeEach
     public void setup() {
