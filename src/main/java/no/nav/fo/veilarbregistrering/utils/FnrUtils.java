@@ -11,10 +11,6 @@ import java.time.Period;
 
 public class FnrUtils {
 
-    public static int utledAlderForFnr(String fnr, LocalDate dagensDato) {
-        return antallAarSidenDato(utledFodselsdatoForFnr(fnr), dagensDato);
-    }
-
     public static LocalDate utledFodselsdatoForFnr(String fnr) {
         Fodselsnummer fodselsnummer = FodselsnummerValidator.getFodselsnummer(fnr);
 

@@ -50,8 +50,8 @@ public class StartRegistreringUtilsService {
 
     private boolean anbefalerBehovForArbeidsevnevurdering(BrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse.getHelseHinder().equals(HelseHinderSvar.JA)
-                || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA);
+        return HelseHinderSvar.JA.equals(besvarelse.getHelseHinder())
+                || AndreForholdSvar.JA.equals(besvarelse.getAndreForhold());
     }
 
     private boolean anbefalerStandardInnsats(
@@ -63,10 +63,10 @@ public class StartRegistreringUtilsService {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return (30 <= alder && alder <= 59)
                 && harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
-                && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
-                && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
-                && besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.JA)
-                && besvarelse.getHelseHinder().equals(HelseHinderSvar.NEI)
-                && besvarelse.getAndreForhold().equals(AndreForholdSvar.NEI);
+                && !UtdanningSvar.INGEN_UTDANNING.equals(besvarelse.getUtdanning())
+                && UtdanningBestattSvar.JA.equals(besvarelse.getUtdanningBestatt())
+                && UtdanningGodkjentSvar.JA.equals(besvarelse.getUtdanningGodkjent())
+                && HelseHinderSvar.NEI.equals(besvarelse.getHelseHinder())
+                && AndreForholdSvar.NEI.equals(besvarelse.getAndreForhold());
     }
 }
