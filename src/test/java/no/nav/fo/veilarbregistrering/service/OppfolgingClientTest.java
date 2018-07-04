@@ -7,6 +7,9 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
@@ -73,7 +76,7 @@ class OppfolgingClientTest {
         System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
         System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
 
-        when(startRegistreringUtilsService.oppfyllerBetingelseOmArbeidserfaring(any(), any())).thenReturn(true);
+        when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
         when(registreringFeature.erAktiv()).thenReturn(true);
@@ -201,8 +204,8 @@ class OppfolgingClientTest {
     private BrukerRegistrering lagRegistreringGyldigBruker() {
         return new BrukerRegistrering()
                 .setEnigIOppsummering(true)
-                .setHarHelseutfordringer(false)
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
                 .setNusKode("12312")
-                .setYrkesPraksis("1234");
+                .setSisteStilling(new Stilling().setStyrk08("1234"));
     }
 }

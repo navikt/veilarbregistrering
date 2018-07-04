@@ -56,7 +56,7 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.oppfyllerBetingelseOmArbeidserfaring(
+        boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 LocalDate.now()
         );

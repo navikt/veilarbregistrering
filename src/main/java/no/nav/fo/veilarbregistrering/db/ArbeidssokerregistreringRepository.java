@@ -3,6 +3,9 @@ package no.nav.fo.veilarbregistrering.db;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
@@ -64,13 +67,21 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
+        HelseHinderSvar helseHinderSvar = rs.getBoolean(HAR_HELSEUTFORDRINGER) ? HelseHinderSvar.JA : HelseHinderSvar.NEI;
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setNusKode(rs.getString(NUS_KODE))
-                .setYrkesPraksis(rs.getString(YRKESPRAKSIS))
+                .setSisteStilling(new Stilling()
+                        .setStyrk08(rs.getString(YRKESPRAKSIS)))
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
-                .setHarHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER));
+                .setBesvarelse(new Besvarelse()
+                        .setHelseHinder(helseHinderSvar))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER))
+                .setYrkesPraksis(rs.getString(YRKESPRAKSIS))
+                ;
     }
 }

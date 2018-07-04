@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,11 +35,15 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
         AktorId aktorId = new AktorId("11111");
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setNusKode("nus12")
-                .setYrkesPraksis("12345")
+                .setSisteStilling(new Stilling().setStyrk08("12345"))
                 .setOpprettetDato(opprettetDato)
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
-                .setHarHelseutfordringer(false);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(false)
+                .setYrkesPraksis("12345");
 
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
@@ -45,9 +52,13 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
 
     private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
         assertThat(brukerRegistrering.getNusKode()).isEqualTo(bruker.getNusKode());
-        assertThat(brukerRegistrering.getYrkesPraksis()).isEqualTo(bruker.getYrkesPraksis());
         assertThat(brukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
         assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
+        // assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        // assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
+
+        // TODO: Skal slettes. FO-1123
+        assertThat(brukerRegistrering.getYrkesPraksis()).isEqualTo(bruker.getYrkesPraksis());
         assertThat(brukerRegistrering.isHarHelseutfordringer()).isEqualTo(bruker.isHarHelseutfordringer());
     }
 }

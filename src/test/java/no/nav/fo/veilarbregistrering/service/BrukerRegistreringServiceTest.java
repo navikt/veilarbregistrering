@@ -5,6 +5,9 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -164,31 +167,35 @@ public class BrukerRegistreringServiceTest {
     public static BrukerRegistrering getBrukerRegistreringSelvgaaende() {
         return new BrukerRegistrering()
                 .setNusKode(NUS_KODE_4)
-                .setYrkesPraksis("1111.11")
+                .setSisteStilling(new Stilling().setStyrk08("1111.11"))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
+
+                // TODO: Skal slettes. FO-1123
+                .setHarHelseutfordringer(false)
+                .setYrkesPraksis("1111.11");
     }
 
     private BrukerRegistrering getBrukerIngenUtdannelse() {
         return new BrukerRegistrering()
                 .setNusKode(NUS_KODE_0)
-                .setYrkesPraksis(null)
+                .setSisteStilling(new Stilling().setStyrk08(null))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setHarHelseutfordringer(HAR_INGEN_HELSEUTFORDRINGER);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
     }
 
     private BrukerRegistrering getBrukerRegistreringMedHelseutfordringer() {
         return new BrukerRegistrering()
                 .setNusKode(NUS_KODE_4)
-                .setYrkesPraksis(null)
+                .setSisteStilling(new Stilling().setStyrk08(null))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setHarHelseutfordringer(HAR_HELSEUTFORDRINGER);
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.JA));
     }
 
 
