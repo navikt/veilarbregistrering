@@ -25,7 +25,7 @@ public class StartRegistreringUtilsService {
     public void validerBrukerRegistrering(BrukerRegistrering brukerRegistrering) {
         // TODO Skriv test for denne. FO-1020
         if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse()) || !erStillingGyldig(brukerRegistrering.getSisteStilling())) {
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig. Ett eller flere felt i besvarelse/stilling er null.");
+            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
         }
     }
 
