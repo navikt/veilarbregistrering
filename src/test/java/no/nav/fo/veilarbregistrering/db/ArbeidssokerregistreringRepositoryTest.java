@@ -2,9 +2,7 @@ package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,16 +32,22 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
         Date opprettetDato = new Date(System.currentTimeMillis());
         AktorId aktorId = new AktorId("11111");
         BrukerRegistrering bruker = new BrukerRegistrering()
-                .setNusKode("nus12")
-                .setSisteStilling(new Stilling().setStyrk08("12345"))
+                .setNusKode("7")
+                .setSisteStilling(new Stilling()
+                        .setStyrk08("12345")
+                        .setLabel("yrkesbeskrivelse")
+                        .setKonseptId(1246345L))
                 .setOpprettetDato(opprettetDato)
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
-
-                // TODO: Skal slettes. FO-1123
-                .setHarHelseutfordringer(false)
-                .setYrkesPraksis("12345");
+                .setBesvarelse(new Besvarelse()
+                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
+                        .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+                        .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
+                        .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
+                        .setUtdanningBestatt(UtdanningBestattSvar.JA)
+                        .setHelseHinder(HelseHinderSvar.NEI)
+                        .setAndreForhold(AndreForholdSvar.NEI));
 
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 

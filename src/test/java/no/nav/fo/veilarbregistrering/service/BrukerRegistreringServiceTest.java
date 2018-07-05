@@ -5,9 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +70,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBruker()  {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = getGyldigBrukerRegistrering();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
@@ -82,7 +80,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = getGyldigBrukerRegistrering();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
@@ -93,14 +91,14 @@ public class BrukerRegistreringServiceTest {
     void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv()  {
         when(registreringFeature.erAktiv()).thenReturn(false);
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        assertThrows(RuntimeException.class, () -> registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> registrerBruker(getGyldigBrukerRegistrering(), FNR_OPPFYLLER_KRAV));
         verify(oppfolgingClient, times(0)).aktiverBruker(any());
     }
 
     @Test
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = getGyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV));
     }
 
@@ -164,18 +162,25 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
 
-    public static BrukerRegistrering getBrukerRegistreringSelvgaaende() {
+    public static BrukerRegistrering getGyldigBrukerRegistrering() {
         return new BrukerRegistrering()
                 .setNusKode(NUS_KODE_4)
                 .setSisteStilling(new Stilling().setStyrk08("1111.11"))
                 .setOpprettetDato(null)
                 .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
                 .setOppsummering(OPPSUMMERING)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
-
-                // TODO: Skal slettes. FO-1123
-                .setHarHelseutfordringer(false)
-                .setYrkesPraksis("1111.11");
+                .setBesvarelse(new Besvarelse()
+                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
+                        .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+                        .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
+                        .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
+                        .setUtdanningBestatt(UtdanningBestattSvar.JA)
+                        .setHelseHinder(HelseHinderSvar.NEI)
+                        .setAndreForhold(AndreForholdSvar.NEI))
+                .setSisteStilling(new Stilling()
+                        .setStyrk08("1111.11")
+                        .setLabel("yrkesbeskrivelse")
+                        .setKonseptId(1246345L));
     }
 
     private BrukerRegistrering getBrukerIngenUtdannelse() {
@@ -204,7 +209,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(getBrukerRegistreringSelvgaaende());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(getGyldigBrukerRegistrering());
 
     }
 

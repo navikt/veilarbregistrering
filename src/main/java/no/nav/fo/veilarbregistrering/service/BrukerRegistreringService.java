@@ -50,6 +50,8 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
+        startRegistreringUtilsService.validerBrukerRegistrering(bruker);
+
         return opprettBruker(fnr, bruker);
     }
 
