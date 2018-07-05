@@ -11,5 +11,5 @@ import lombok.ToString;
 @ToString
 public class AktiverBrukerData {
     Fnr fnr;
-    Boolean selvgaende;
+    Innsatsgruppe innsatsgruppe;
 }
