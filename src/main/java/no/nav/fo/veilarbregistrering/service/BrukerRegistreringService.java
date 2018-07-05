@@ -9,9 +9,9 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 
-import static java.lang.Boolean.TRUE;
 
 @Slf4j
 public class BrukerRegistreringService {
@@ -52,7 +52,8 @@ public class BrukerRegistreringService {
 
         startRegistreringUtilsService.validerBrukerRegistrering(bruker);
 
-        return opprettBruker(fnr, bruker);
+        Innsatsgruppe innsatsgruppe = profilerBrukerTilInnsatsgruppe(fnr, bruker);
+        return opprettBruker(fnr, bruker, innsatsgruppe);
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
@@ -60,10 +61,10 @@ public class BrukerRegistreringService {
 
         boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                LocalDate.now()
+                now()
         );
         boolean oppfyllerBetingelseOmInaktivitet = startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(
-                LocalDate.now(),
+                now(),
                 aktivStatus.getInaktiveringDato()
         );
 
@@ -76,12 +77,20 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {
+    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Innsatsgruppe innsatsgruppe) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
-        log.info("Brukerregistrering gjennomført med data {}", brukerRegistrering);
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), innsatsgruppe));
+        log.info("Brukerregistrering gjennomført med data {}",brukerRegistrering);
         return brukerRegistrering;
+    }
+
+    private Innsatsgruppe profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
+        return startRegistreringUtilsService.profilerBruker(
+                bruker,
+                utledAlderForFnr(fnr, now()),
+                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                now());
     }
 
 }

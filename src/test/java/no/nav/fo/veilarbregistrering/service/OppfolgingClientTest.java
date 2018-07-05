@@ -61,7 +61,7 @@ class OppfolgingClientTest {
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         startRegistreringUtilsService = mock(StartRegistreringUtilsService.class);
-        ident = "12345";
+        ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
