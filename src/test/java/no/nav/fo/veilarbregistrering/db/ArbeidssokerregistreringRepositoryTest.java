@@ -32,7 +32,7 @@ public class ArbeidssokerregistreringRepositoryTest extends IntegrasjonsTest {
         Date opprettetDato = new Date(System.currentTimeMillis());
         AktorId aktorId = new AktorId("11111");
         BrukerRegistrering bruker = new BrukerRegistrering()
-                .setNusKode("nus12")
+                .setNusKode("7")
                 .setSisteStilling(new Stilling()
                         .setStyrk08("12345")
                         .setLabel("yrkesbeskrivelse")

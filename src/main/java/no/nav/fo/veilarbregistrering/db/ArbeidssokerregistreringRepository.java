@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
@@ -43,6 +44,8 @@ public class ArbeidssokerregistreringRepository {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         Stilling stilling = bruker.getSisteStilling();
+
+        // TODO Slett dette når feltet i DB blir tekst FO-1291
         int helseHinder = HelseHinderSvar.JA.equals(besvarelse.getHelseHinder()) ? 1 : 0;
 
         SqlUtils.insert(db, BRUKER_REGISTRERING)
@@ -57,7 +60,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(KONSEPT_ID, stilling.getKonseptId())
                 // Besvarelse
                 .value(BEGRUNNELSE_FOR_REGISTRERING, besvarelse.getDinSituasjon().toString())
-                .value(NUS_KODE, bruker.getNusKode())
+                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
                 .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
                 .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
                 .value(HAR_HELSEUTFORDRINGER, helseHinder)
@@ -86,7 +89,6 @@ public class ArbeidssokerregistreringRepository {
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setNusKode(rs.getString(NUS_KODE))
-
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
@@ -96,6 +98,7 @@ public class ArbeidssokerregistreringRepository {
                         .setLabel(rs.getString(YRKESBESKRIVELSE)))
                 .setBesvarelse(new Besvarelse()
                         .setDinSituasjon(DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)))
+                        .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
                         .setUtdanningBestatt(UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)))
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
                         .setHelseHinder(helseHinder)
