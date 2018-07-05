@@ -81,7 +81,7 @@ public class BrukerRegistreringService {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), innsatsgruppe));
-        log.info("Brukerregistrering gjennomført med data {}",brukerRegistrering);
+        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, innsatsgruppe);
         return brukerRegistrering;
     }
 
