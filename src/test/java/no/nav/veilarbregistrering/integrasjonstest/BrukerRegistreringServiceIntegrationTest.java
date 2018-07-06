@@ -25,7 +25,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.service.BrukerRegistreringServiceTest.getGyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -44,7 +44,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtilsService startRegistreringUtilsService;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
-    private static final BrukerRegistrering SELVGAENDE_BRUKER = getGyldigBrukerRegistrering();
+    private static final BrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
     public void setup() {

@@ -19,7 +19,6 @@ public class ArbeidssokerregistreringRepository {
 
     private JdbcTemplate db;
 
-
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REGISTRERING = "BRUKER_REGISTRERING";
     private final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
@@ -48,7 +47,6 @@ public class ArbeidssokerregistreringRepository {
     private final static String ALDER = "ALDER";
     private final static String ARB_6_AV_SISTE_12_MND = "ARB_6_AV_SISTE_12_MND";
     private final static String RESULTAT_PROFILERING = "RESULTAT_PROFILERING";
-
 
     public ArbeidssokerregistreringRepository(JdbcTemplate db) {
         this.db = db;

@@ -6,8 +6,6 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -24,6 +22,7 @@ import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -99,7 +98,7 @@ class OppfolgingClientTest {
     public void testAtGirRuntimeExceptionDersomOppfolgingIkkeSvarer() {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
-        BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
@@ -108,7 +107,7 @@ class OppfolgingClientTest {
     public void testAtGirInternalErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolging() {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
-        BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
@@ -121,7 +120,7 @@ class OppfolgingClientTest {
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
         assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
@@ -141,7 +140,7 @@ class OppfolgingClientTest {
     public void testAtGirInternalServerErrorExceptionDersomAktiverBrukerFeiler() {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
-        BrukerRegistrering brukerRegistrering = lagRegistreringGyldigBruker();
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
     }
 
@@ -202,25 +201,5 @@ class OppfolgingClientTest {
         return "{\n" +
                 "\"Status\": \"STATUS_SUKSESS\"\n" +
                 "}";
-    }
-
-    private BrukerRegistrering lagRegistreringGyldigBruker() {
-        return new BrukerRegistrering()
-                .setNusKode("12312")
-                .setSisteStilling(new Stilling()
-                        .setStyrk08("1234")
-                        .setLabel("yrkesbeskrivelse")
-                        .setKonseptId(1246345L))
-                .setEnigIOppsummering(true)
-                .setOppsummering("Test test oppsummering")
-                .setBesvarelse(new Besvarelse()
-                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
-                        .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
-                        .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
-                        .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
-                        .setUtdanningBestatt(UtdanningBestattSvar.JA)
-                        .setHelseHinder(HelseHinderSvar.NEI)
-                        .setAndreForhold(AndreForholdSvar.NEI));
-
     }
 }
