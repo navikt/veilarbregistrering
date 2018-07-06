@@ -40,16 +40,6 @@ public class ApplicationConfig implements ApiApplication.NaisApiApplication {
                 .sts();
     }
 
-    @Override
-    public String getApplicationName() {
-        return APPLICATION_NAME;
-    }
-
-    @Override
-    public Sone getSone() {
-        return Sone.FSS;
-    }
-
     @Transactional
     @Override
     public void startup(ServletContext servletContext) {
