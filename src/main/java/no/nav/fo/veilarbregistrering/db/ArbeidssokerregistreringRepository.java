@@ -37,6 +37,7 @@ public class ArbeidssokerregistreringRepository {
     private final static String BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING";
     private final static String UTDANNING_BESTATT = "UTDANNING_BESTATT";
     private final static String UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE";
+    private final static String JOBBHISTORIKK = "JOBBHISTORIKK";
 
     private final static String AKTOR_ID = "AKTOR_ID";
 
@@ -98,6 +99,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
                 .value(HAR_HELSEUTFORDRINGER, helseHinder)
                 .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
                 .execute();
 
         return hentBrukerregistreringForId(id);
@@ -136,6 +138,7 @@ public class ArbeidssokerregistreringRepository {
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
                         .setHelseHinder(helseHinder)
                         .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
+                        .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
                 );
     }
 

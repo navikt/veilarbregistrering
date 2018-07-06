@@ -24,7 +24,6 @@ public class StartRegistreringUtilsService {
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
     public void validerBrukerRegistrering(BrukerRegistrering brukerRegistrering) {
-        // TODO Skriv test for denne. FO-1020
         if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse()) || !erStillingGyldig(brukerRegistrering.getSisteStilling())) {
             throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
         }
