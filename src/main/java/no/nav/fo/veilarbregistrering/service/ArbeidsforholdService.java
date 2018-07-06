@@ -1,8 +1,11 @@
 package no.nav.fo.veilarbregistrering.service;
 
+import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
@@ -16,6 +19,9 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import java.util.List;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.Predicates.instanceOf;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
@@ -39,17 +45,22 @@ public class ArbeidsforholdService {
 
         FinnArbeidsforholdPrArbeidstakerResponse response;
 
-        try {
-            response = arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(request);
-        } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning e) {
-            String logMessage = "Ikke tilgang til bruker " + fnr;
-            log.warn(logMessage, e);
-            throw new ForbiddenException(logMessage, e);
-        } catch (FinnArbeidsforholdPrArbeidstakerUgyldigInput e) {
-            String logMessage = "Ugyldig bruker identifikator: " + fnr;
-            log.warn(logMessage, e);
-            throw new BadRequestException(logMessage, e);
-        }
+        Timer timer = MetricsFactory.createTimer("finn.arbeidsforhold.aareg").start();
+        response = Try.of(() -> arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(request))
+                .onFailure(f -> {
+                    timer.stop()
+                            .setFailed()
+                            .addTagToReport("aarsak",  f.getClass().getSimpleName())
+                            .report();
+                    log.error("Feil ved henting av arbeidsforhold for bruker", f);
+                })
+                .mapFailure(
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)), (t) -> new ForbiddenException("Ikke tilgang til bruker")),
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerUgyldigInput.class)), (t) -> new BadRequestException("Ugyldig bruker identifikator"))
+                )
+                .onSuccess((event) -> timer.stop().report())
+                .get();
+
         return response.getArbeidsforhold().stream()
                 .map(Arbeidsforhold::of)
                 .collect(toList());
