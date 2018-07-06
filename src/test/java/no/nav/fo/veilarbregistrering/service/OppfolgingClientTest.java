@@ -6,10 +6,10 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
@@ -24,10 +24,12 @@ import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
@@ -114,6 +116,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtRegistreringGirOKDeromBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
         when(arbeidssokerregistreringRepository.lagreBruker(any(),any())).thenReturn(new BrukerRegistrering());
+        when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
@@ -203,9 +206,21 @@ class OppfolgingClientTest {
 
     private BrukerRegistrering lagRegistreringGyldigBruker() {
         return new BrukerRegistrering()
-                .setEnigIOppsummering(true)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
                 .setNusKode("12312")
-                .setSisteStilling(new Stilling().setStyrk08("1234"));
+                .setSisteStilling(new Stilling()
+                        .setStyrk08("1234")
+                        .setLabel("yrkesbeskrivelse")
+                        .setKonseptId(1246345L))
+                .setEnigIOppsummering(true)
+                .setOppsummering("Test test oppsummering")
+                .setBesvarelse(new Besvarelse()
+                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
+                        .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+                        .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
+                        .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
+                        .setUtdanningBestatt(UtdanningBestattSvar.JA)
+                        .setHelseHinder(HelseHinderSvar.NEI)
+                        .setAndreForhold(AndreForholdSvar.NEI));
+
     }
 }

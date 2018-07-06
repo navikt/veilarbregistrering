@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.service;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +84,7 @@ class StartRegistreringUtilsServiceTest {
                 alder,
                 arbeidsforholdSupplier,
                 dagensDato
-        );
+        ).getInnsatsgruppe();
         Besvarelse besvarelse = bruker.getBesvarelse();
 
         Innsatsgruppe onsketInnsatsgruppe;
@@ -128,7 +129,7 @@ class StartRegistreringUtilsServiceTest {
                 alder,
                 () -> arbeidsforholdList,
                 dagensDato
-        );
+        ).getInnsatsgruppe();
 
         assertEquals(Innsatsgruppe.STANDARD_INNSATS, innsatsgruppe);
 
