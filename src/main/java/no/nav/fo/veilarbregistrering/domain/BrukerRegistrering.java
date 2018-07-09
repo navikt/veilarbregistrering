@@ -21,8 +21,4 @@ public class BrukerRegistrering {
     String oppsummering;
     Besvarelse besvarelse;
     Stilling sisteStilling;
-
-    // TODO: Skal slettes. FO-1123
-    String yrkesPraksis;
-    boolean harHelseutfordringer;
 }

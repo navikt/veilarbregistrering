@@ -25,7 +25,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.service.BrukerRegistreringServiceTest.getGyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +44,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtilsService startRegistreringUtilsService;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
-    private static final BrukerRegistrering SELVGAENDE_BRUKER = getGyldigBrukerRegistrering();
+    private static final BrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
     public void setup() {
@@ -100,6 +101,7 @@ class BrukerRegistreringServiceIntegrationTest {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new AktivStatus().withUnderOppfolging(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
+        when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         when(startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(any(), any())).thenReturn(true);
     }
 

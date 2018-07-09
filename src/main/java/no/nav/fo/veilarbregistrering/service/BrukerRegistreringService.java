@@ -52,8 +52,9 @@ public class BrukerRegistreringService {
 
         startRegistreringUtilsService.validerBrukerRegistrering(bruker);
 
-        Innsatsgruppe innsatsgruppe = profilerBrukerTilInnsatsgruppe(fnr, bruker);
-        return opprettBruker(fnr, bruker, innsatsgruppe);
+        int alder = utledAlderForFnr(fnr, now());
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
+        return opprettBruker(fnr, bruker, profilering);
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
@@ -77,15 +78,18 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Innsatsgruppe innsatsgruppe) {
+    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), innsatsgruppe));
-        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, innsatsgruppe);
+        arbeidssokerregistreringRepository.lagreProfilering(brukerRegistrering.getId(), profilering);
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
+
+        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, profilering);
         return brukerRegistrering;
     }
 
-    private Innsatsgruppe profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
+    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
         return startRegistreringUtilsService.profilerBruker(
                 bruker,
                 utledAlderForFnr(fnr, now()),

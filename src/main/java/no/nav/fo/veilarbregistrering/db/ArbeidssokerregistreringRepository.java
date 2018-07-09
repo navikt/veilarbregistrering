@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.db;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
@@ -11,6 +13,7 @@ import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -33,11 +36,40 @@ public class ArbeidssokerregistreringRepository {
     private final static String BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING";
     private final static String UTDANNING_BESTATT = "UTDANNING_BESTATT";
     private final static String UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE";
+    private final static String JOBBHISTORIKK = "JOBBHISTORIKK";
 
     private final static String AKTOR_ID = "AKTOR_ID";
 
+    private final static String BRUKER_PROFILERING = "BRUKER_PROFILERING";
+    private final static String PROFILERING_TYPE = "PROFILERING_TYPE";
+    private final static String VERDI = "VERDI";
+
+    private final static String ALDER = "ALDER";
+    private final static String ARB_6_AV_SISTE_12_MND = "ARB_6_AV_SISTE_12_MND";
+    private final static String RESULTAT_PROFILERING = "RESULTAT_PROFILERING";
+
     public ArbeidssokerregistreringRepository(JdbcTemplate db) {
         this.db = db;
+    }
+
+    public void lagreProfilering(long brukerregistreringId, Profilering profilering) {
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, ALDER)
+                .value(VERDI, profilering.getAlder())
+                .execute();
+
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, ARB_6_AV_SISTE_12_MND)
+                .value(VERDI, profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder())
+                .execute();
+
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, RESULTAT_PROFILERING)
+                .value(VERDI, profilering.getInnsatsgruppe().getArenakode())
+                .execute();
     }
 
     public BrukerRegistrering lagreBruker(BrukerRegistrering bruker, AktorId aktorId) {
@@ -65,6 +97,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
                 .value(HAR_HELSEUTFORDRINGER, helseHinder)
                 .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
                 .execute();
 
         return hentBrukerregistreringForId(id);
@@ -103,6 +136,7 @@ public class ArbeidssokerregistreringRepository {
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
                         .setHelseHinder(helseHinder)
                         .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
+                        .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
                 );
     }
 
