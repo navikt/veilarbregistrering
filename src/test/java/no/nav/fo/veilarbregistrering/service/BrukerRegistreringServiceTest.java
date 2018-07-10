@@ -120,13 +120,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalReturnereAtBrukerOppfyllerBetingelseOmInaktivitet() {
-        mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet();
-        StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isRegistrertNavSisteToAr()).isFalse();
-    }
-
-    @Test
     public void skalReturnereFalseOmIkkeUnderOppfolging() {
         mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now()));
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
@@ -202,10 +195,6 @@ public class BrukerRegistreringServiceTest {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(false)
         );
-    }
-
-    private void mockOppfolgingsstatusSomOppfyllerBetingelseOmInaktivitet() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now().minusYears(2)));
     }
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
