@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.utils;
 
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.ENIGIOPPSUMMERING;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
-import org.assertj.core.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -53,7 +53,7 @@ public class TestUtils {
         return new BrukerRegistrering()
                 .setNusKode("7")
                 .setOpprettetDato(now())
-                .setEnigIOppsummering(true)
+                .setEnigIOppsummering(ENIGIOPPSUMMERING.JA)
                 .setOppsummering("Test test oppsummering")
                 .setSisteStilling(gyldigStilling())
                 .setBesvarelse(gyldigBesvarelse());

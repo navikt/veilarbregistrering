@@ -17,7 +17,7 @@ public class BrukerRegistrering {
     long id;
     String nusKode;
     Date opprettetDato;
-    boolean enigIOppsummering;
+    ENIGIOPPSUMMERING enigIOppsummering;
     String oppsummering;
     Besvarelse besvarelse;
     Stilling sisteStilling;
