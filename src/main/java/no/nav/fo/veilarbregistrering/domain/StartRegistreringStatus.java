@@ -9,4 +9,5 @@ public class StartRegistreringStatus {
     private boolean underOppfolging;
     private boolean jobbetSeksAvTolvSisteManeder;
     private boolean registrertNavSisteToAr;
+    private boolean kreverReaktivering;
 }
