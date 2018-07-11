@@ -7,14 +7,16 @@ import java.time.Period;
 
 public class ReaktiveringUtils {
     public static boolean kreverReaktivering(AktivStatus aktivStatus) {
-        return !aktivStatus.isAktiv() && harVartRegistrertSiste28dager(aktivStatus.getInaktiveringDato());
+        return !aktivStatus.isAktiv() && harVaertRegistrertILopetAvDeSiste28Dagene(aktivStatus.getInaktiveringDato());
     }
 
-    static boolean harVartRegistrertSiste28dager(LocalDate inaktiveringsDato) {
+    static boolean harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate inaktiveringsDato) {
         if (inaktiveringsDato == null) {
             return false;
         }
-        Period interval = Period.between(inaktiveringsDato, LocalDate.now());
-        return interval.getMonths() == 0 && interval.getDays() <= 28;
+        Period inaktiveringsIntervall = Period.between(inaktiveringsDato, LocalDate.now());
+        return inaktiveringsIntervall.getYears() == 0
+                && inaktiveringsIntervall.getMonths() == 0
+                && inaktiveringsIntervall.getDays() <= 28;
     }
 }

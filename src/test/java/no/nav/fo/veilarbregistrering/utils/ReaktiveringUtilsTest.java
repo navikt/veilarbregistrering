@@ -17,14 +17,21 @@ public class ReaktiveringUtilsTest {
     }
 
     @Test
-    public void harVartRegistrertSiste28dager() {
-        assertEquals(ReaktiveringUtils.harVartRegistrertSiste28dager(LocalDate.now().minusDays(24)), true);
-        assertEquals(ReaktiveringUtils.harVartRegistrertSiste28dager(LocalDate.now().minusDays(28)), true);
+    public void harVaertRegistrertILopetAvDeSiste28Dagene() {
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusDays(24)), true);
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusDays(28)), true);
+
     }
 
     @Test
-    public void harIkkeVartRegistrertSiste28dager() {
-        assertEquals(ReaktiveringUtils.harVartRegistrertSiste28dager(LocalDate.now().minusDays(31)), false);
-        assertEquals(ReaktiveringUtils.harVartRegistrertSiste28dager(LocalDate.now().minusDays(29)), false);
+    public void harIkkeVaertRegistrertILopetAvDeSiste28Dagene() {
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusDays(31)), false);
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusDays(29)), false);
+    }
+
+    @Test
+    public void harIkkeVaertRegistrertPaaOvertEttAAr() {
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusYears(1).minusDays(24)), false);
+        assertEquals(ReaktiveringUtils.harVaertRegistrertILopetAvDeSiste28Dagene(LocalDate.now().minusYears(1).minusDays(38)), false);
     }
 }
