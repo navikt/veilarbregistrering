@@ -77,7 +77,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(BRUKER_REGISTRERING_ID, id)
                 .value(AKTOR_ID, aktorId.getAktorId())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
-                .value(ENIG_I_OPPSUMMERING, bruker.getEnigIOppsummering().toString())
+                .value(ENIG_I_OPPSUMMERING, bruker.isEnigIOppsummering())
                 .value(OPPSUMMERING, bruker.getOppsummering())
                 // Siste stilling
                 .value(YRKESPRAKSIS, stilling.getStyrk08())
@@ -113,7 +113,7 @@ public class ArbeidssokerregistreringRepository {
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setNusKode(rs.getString(NUS_KODE))
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
-                .setEnigIOppsummering(ENIGIOPPSUMMERING.valueOf(rs.getString(ENIG_I_OPPSUMMERING)))
+                .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
                 .setSisteStilling(new Stilling()
                         .setStyrk08(rs.getString(YRKESPRAKSIS))

@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.resources;
 import no.nav.apiapp.security.PepClient;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.ENIGIOPPSUMMERING;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -51,7 +50,7 @@ class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         BrukerRegistrering brukerRegistrering = new BrukerRegistrering()
-                .setEnigIOppsummering(ENIGIOPPSUMMERING.JA)
+                .setEnigIOppsummering(true)
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
                 .setNusKode("");
 

@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.utils;
 
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.ENIGIOPPSUMMERING;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
@@ -53,7 +52,7 @@ public class TestUtils {
         return new BrukerRegistrering()
                 .setNusKode("7")
                 .setOpprettetDato(now())
-                .setEnigIOppsummering(ENIGIOPPSUMMERING.JA)
+                .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
                 .setSisteStilling(gyldigStilling())
                 .setBesvarelse(gyldigBesvarelse());
