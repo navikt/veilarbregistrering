@@ -42,7 +42,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private static StartRegistreringUtilsService startRegistreringUtilsService;
 
-    private static String ident = "11111111111";
+    private static String ident = "12345678910";
     private static final BrukerRegistrering SELVGAENDE_BRUKER = getBrukerRegistreringSelvgaaende();
 
     @BeforeEach
