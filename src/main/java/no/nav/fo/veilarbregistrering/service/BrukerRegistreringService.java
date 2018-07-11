@@ -10,9 +10,9 @@ import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 
-import static java.lang.Boolean.TRUE;
 
 @Slf4j
 public class BrukerRegistreringService {
@@ -51,7 +51,11 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
-        return opprettBruker(fnr, bruker);
+        startRegistreringUtilsService.validerBrukerRegistrering(bruker);
+
+        int alder = utledAlderForFnr(fnr, now());
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
+        return opprettBruker(fnr, bruker, profilering);
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
@@ -59,10 +63,10 @@ public class BrukerRegistreringService {
 
         boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                LocalDate.now()
+                now()
         );
         boolean oppfyllerBetingelseOmInaktivitet = startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(
-                LocalDate.now(),
+                now(),
                 aktivStatus.getInaktiveringDato()
         );
 
@@ -76,12 +80,23 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker) {
+    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), TRUE));
-        log.info("Brukerregistrering gjennomført med data {}", brukerRegistrering);
+        arbeidssokerregistreringRepository.lagreProfilering(brukerRegistrering.getId(), profilering);
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
+
+        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, profilering);
         return brukerRegistrering;
+    }
+
+    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
+        return startRegistreringUtilsService.profilerBruker(
+                bruker,
+                utledAlderForFnr(fnr, now()),
+                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                now());
     }
 
 }

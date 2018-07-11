@@ -7,6 +7,7 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.sbl.dialogarena.common.cxf.TimeoutFeature.DEFAULT_CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
@@ -25,6 +26,7 @@ public class AAregServiceWSConfig {
     @Bean
     ArbeidsforholdV3 arbeidsforholdV3() {
         return arbeidsforholdV3CXFClient()
+                .timeout(DEFAULT_CONNECTION_TIMEOUT, 60000)
                 .configureStsForOnBehalfOfWithJWT()
                 .build();
     }

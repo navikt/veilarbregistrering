@@ -28,7 +28,7 @@ public abstract class IntegrasjonsTest {
     @BeforeAll
     @BeforeClass
     public static void setupContext() {
-        ApiAppTest.setupTestContext();
+        ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
         TestContext.setup();
         setupContext(
                 ApplicationConfig.class

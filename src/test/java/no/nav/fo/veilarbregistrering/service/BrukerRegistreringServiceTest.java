@@ -5,9 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +19,8 @@ import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,7 +72,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBruker()  {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
@@ -82,7 +82,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
@@ -93,14 +93,14 @@ public class BrukerRegistreringServiceTest {
     void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv()  {
         when(registreringFeature.erAktiv()).thenReturn(false);
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        assertThrows(RuntimeException.class, () -> registrerBruker(getBrukerRegistreringSelvgaaende(), FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> registrerBruker(gyldigBrukerRegistrering(), FNR_OPPFYLLER_KRAV));
         verify(oppfolgingClient, times(0)).aktiverBruker(any());
     }
 
     @Test
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
-        BrukerRegistrering selvgaaendeBruker = getBrukerRegistreringSelvgaaende();
+        BrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV));
     }
 
@@ -164,38 +164,16 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
 
-    public static BrukerRegistrering getBrukerRegistreringSelvgaaende() {
-        return new BrukerRegistrering()
-                .setNusKode(NUS_KODE_4)
-                .setSisteStilling(new Stilling().setStyrk08("1111.11"))
-                .setOpprettetDato(null)
-                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
-                .setOppsummering(OPPSUMMERING)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
-
-                // TODO: Skal slettes. FO-1123
-                .setHarHelseutfordringer(false)
-                .setYrkesPraksis("1111.11");
-    }
-
     private BrukerRegistrering getBrukerIngenUtdannelse() {
-        return new BrukerRegistrering()
-                .setNusKode(NUS_KODE_0)
-                .setSisteStilling(new Stilling().setStyrk08(null))
-                .setOpprettetDato(null)
-                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
-                .setOppsummering(OPPSUMMERING)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
+        return gyldigBrukerRegistrering().setBesvarelse(
+                gyldigBesvarelse().setUtdanning(UtdanningSvar.INGEN_UTDANNING)
+        );
     }
 
     private BrukerRegistrering getBrukerRegistreringMedHelseutfordringer() {
-        return new BrukerRegistrering()
-                .setNusKode(NUS_KODE_4)
-                .setSisteStilling(new Stilling().setStyrk08(null))
-                .setOpprettetDato(null)
-                .setEnigIOppsummering(ENIG_I_OPPSUMMERING)
-                .setOppsummering(OPPSUMMERING)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.JA));
+        return gyldigBrukerRegistrering().setBesvarelse(
+                gyldigBesvarelse().setHelseHinder(HelseHinderSvar.JA)
+        );
     }
 
 
@@ -204,7 +182,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(getBrukerRegistreringSelvgaaende());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(gyldigBrukerRegistrering());
 
     }
 

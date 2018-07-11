@@ -13,9 +13,36 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigStilling;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StartRegistreringUtilsServiceTest {
+
+    private StartRegistreringUtilsService startRegistreringUtilsService = new StartRegistreringUtilsService();
+
+    @Test
+    void valideringSkalGodkjenneGyldigeObjekter() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
+        startRegistreringUtilsService.validerBrukerRegistrering(brukerRegistrering);
+    }
+
+    @Test
+    void valideringSkalFeileHvisBesvarelseHarNullfelt() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+                gyldigBesvarelse().setAndreForhold(null)
+        );
+        assertThrows(RuntimeException.class, () -> startRegistreringUtilsService.validerBrukerRegistrering(brukerRegistrering));
+    }
+
+    @Test
+    void valideringSkalFeileHvisStillingHarNullfelt() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(
+                gyldigStilling().setLabel(null)
+        );
+        assertThrows(RuntimeException.class, () -> startRegistreringUtilsService.validerBrukerRegistrering(brukerRegistrering));
+    }
 
     @Test
     void testProfilering() {
@@ -77,13 +104,12 @@ class StartRegistreringUtilsServiceTest {
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
     ) {
-        StartRegistreringUtilsService startRegistreringUtilsService = new StartRegistreringUtilsService();
         Innsatsgruppe innsatsgruppe = startRegistreringUtilsService.profilerBruker(
                 bruker,
                 alder,
                 arbeidsforholdSupplier,
                 dagensDato
-        );
+        ).getInnsatsgruppe();
         Besvarelse besvarelse = bruker.getBesvarelse();
 
         Innsatsgruppe onsketInnsatsgruppe;
@@ -128,7 +154,7 @@ class StartRegistreringUtilsServiceTest {
                 alder,
                 () -> arbeidsforholdList,
                 dagensDato
-        );
+        ).getInnsatsgruppe();
 
         assertEquals(Innsatsgruppe.STANDARD_INNSATS, innsatsgruppe);
 

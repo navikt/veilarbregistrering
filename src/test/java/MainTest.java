@@ -11,7 +11,7 @@ public class MainTest {
     public static final String TEST_PORT = "8810";
 
     public static void main(String[] args) throws Exception {
-        ApiAppTest.setupTestContext();
+        ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
         DatabaseTestContext.setupContext(getProperty("database"));
         TestContext.setup();
         String arguments[] = {TEST_PORT};

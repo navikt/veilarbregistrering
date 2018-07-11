@@ -10,4 +10,8 @@ public enum Innsatsgruppe {
     Innsatsgruppe(String arenakode) {
         this.arenakode = arenakode;
     }
+
+    public String getArenakode() {
+        return arenakode;
+    }
 }

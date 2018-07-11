@@ -3,15 +3,17 @@ package no.nav.fo.veilarbregistrering.db;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -30,25 +32,72 @@ public class ArbeidssokerregistreringRepository {
     private final static String YRKESBESKRIVELSE = "YRKESBESKRIVELSE";
     private final static String KONSEPT_ID = "KONSEPT_ID";
 
+    private final static String ANDRE_UTFORDRINGER = "ANDRE_UTFORDRINGER";
+    private final static String BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING";
+    private final static String UTDANNING_BESTATT = "UTDANNING_BESTATT";
+    private final static String UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE";
+    private final static String JOBBHISTORIKK = "JOBBHISTORIKK";
+
     private final static String AKTOR_ID = "AKTOR_ID";
+
+    private final static String BRUKER_PROFILERING = "BRUKER_PROFILERING";
+    private final static String PROFILERING_TYPE = "PROFILERING_TYPE";
+    private final static String VERDI = "VERDI";
+
+    private final static String ALDER = "ALDER";
+    private final static String ARB_6_AV_SISTE_12_MND = "ARB_6_AV_SISTE_12_MND";
+    private final static String RESULTAT_PROFILERING = "RESULTAT_PROFILERING";
 
     public ArbeidssokerregistreringRepository(JdbcTemplate db) {
         this.db = db;
     }
 
+    public void lagreProfilering(long brukerregistreringId, Profilering profilering) {
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, ALDER)
+                .value(VERDI, profilering.getAlder())
+                .execute();
+
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, ARB_6_AV_SISTE_12_MND)
+                .value(VERDI, profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder())
+                .execute();
+
+        SqlUtils.insert(db, BRUKER_PROFILERING)
+                .value(BRUKER_REGISTRERING_ID, brukerregistreringId)
+                .value(PROFILERING_TYPE, RESULTAT_PROFILERING)
+                .value(VERDI, profilering.getInnsatsgruppe().getArenakode())
+                .execute();
+    }
+
     public BrukerRegistrering lagreBruker(BrukerRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        Stilling stilling = bruker.getSisteStilling();
+
+        // TODO Slett dette når feltet i DB blir tekst FO-1291
+        int helseHinder = HelseHinderSvar.JA.equals(besvarelse.getHelseHinder()) ? 1 : 0;
+
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
                 .value(AKTOR_ID, aktorId.getAktorId())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
-                .value(NUS_KODE, bruker.getNusKode())
-                .value(YRKESPRAKSIS, bruker.getYrkesPraksis())
                 .value(ENIG_I_OPPSUMMERING, bruker.isEnigIOppsummering())
                 .value(OPPSUMMERING, bruker.getOppsummering())
-                .value(HAR_HELSEUTFORDRINGER, bruker.isHarHelseutfordringer())
-                .value(YRKESBESKRIVELSE, -1)
-                .value(KONSEPT_ID, -1)
+                // Siste stilling
+                .value(YRKESPRAKSIS, stilling.getStyrk08())
+                .value(YRKESBESKRIVELSE, stilling.getLabel())
+                .value(KONSEPT_ID, stilling.getKonseptId())
+                // Besvarelse
+                .value(BEGRUNNELSE_FOR_REGISTRERING, besvarelse.getDinSituasjon().toString())
+                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
+                .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
+                .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
+                .value(HAR_HELSEUTFORDRINGER, helseHinder)
+                .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
                 .execute();
 
         return hentBrukerregistreringForId(id);
@@ -67,21 +116,28 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
-        HelseHinderSvar helseHinderSvar = rs.getBoolean(HAR_HELSEUTFORDRINGER) ? HelseHinderSvar.JA : HelseHinderSvar.NEI;
+        HelseHinderSvar helseHinder = rs.getInt(HAR_HELSEUTFORDRINGER) == 0
+                ? HelseHinderSvar.NEI
+                : HelseHinderSvar.JA;
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setNusKode(rs.getString(NUS_KODE))
-                .setSisteStilling(new Stilling()
-                        .setStyrk08(rs.getString(YRKESPRAKSIS)))
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
+                .setSisteStilling(new Stilling()
+                        .setStyrk08(rs.getString(YRKESPRAKSIS))
+                        .setKonseptId(rs.getLong(KONSEPT_ID))
+                        .setLabel(rs.getString(YRKESBESKRIVELSE)))
                 .setBesvarelse(new Besvarelse()
-                        .setHelseHinder(helseHinderSvar))
-
-                // TODO: Skal slettes. FO-1123
-                .setHarHelseutfordringer(rs.getBoolean(HAR_HELSEUTFORDRINGER))
-                .setYrkesPraksis(rs.getString(YRKESPRAKSIS))
-                ;
+                        .setDinSituasjon(DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)))
+                        .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
+                        .setUtdanningBestatt(UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)))
+                        .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
+                        .setHelseHinder(helseHinder)
+                        .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
+                        .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
+                );
     }
+
 }
