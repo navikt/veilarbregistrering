@@ -65,16 +65,11 @@ public class BrukerRegistreringService {
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 now()
         );
-        boolean oppfyllerBetingelseOmInaktivitet = startRegistreringUtilsService.oppfyllerBetingelseOmInaktivitet(
-                now(),
-                aktivStatus.getInaktiveringDato()
-        );
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(aktivStatus.isAktiv())
                 .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
-                .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring)
-                .setRegistrertNavSisteToAr(!oppfyllerBetingelseOmInaktivitet);
+                .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;

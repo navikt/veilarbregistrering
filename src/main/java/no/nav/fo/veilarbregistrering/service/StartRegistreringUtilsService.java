@@ -19,7 +19,6 @@ import static no.nav.fo.veilarbregistrering.utils.DateUtils.erDatoEldreEnnEllerL
 @Slf4j
 public class StartRegistreringUtilsService {
 
-    private static final int ANTALL_AAR_ISERV = 2;
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
@@ -49,10 +48,6 @@ public class StartRegistreringUtilsService {
             LocalDate dagensDato
     ) {
         return ArbeidsforholdUtils.oppfyllerBetingelseOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
-    }
-
-    public boolean oppfyllerBetingelseOmInaktivitet(LocalDate dagensDato, LocalDate inaktiveringsdato) {
-        return Objects.isNull(inaktiveringsdato) || erDatoEldreEnnEllerLikAar(dagensDato, inaktiveringsdato, ANTALL_AAR_ISERV);
     }
 
     public Profilering profilerBruker(
