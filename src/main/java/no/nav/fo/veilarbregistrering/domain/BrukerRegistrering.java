@@ -15,7 +15,6 @@ import java.util.Date;
 @EqualsAndHashCode
 public class BrukerRegistrering {
     long id;
-    String nusKode;
     Date opprettetDato;
     boolean enigIOppsummering;
     String oppsummering;

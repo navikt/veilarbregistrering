@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeat
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +68,7 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(aktivStatus.isAktiv())
+                .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
                 .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);

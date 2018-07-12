@@ -51,7 +51,6 @@ public class TestUtils {
 
     public static BrukerRegistrering gyldigBrukerRegistrering() {
         return new BrukerRegistrering()
-                .setNusKode("7")
                 .setOpprettetDato(now())
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
