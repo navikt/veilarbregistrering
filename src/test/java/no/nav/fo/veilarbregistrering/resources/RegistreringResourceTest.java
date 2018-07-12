@@ -51,8 +51,7 @@ class RegistreringResourceTest {
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         BrukerRegistrering brukerRegistrering = new BrukerRegistrering()
                 .setEnigIOppsummering(true)
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI))
-                .setNusKode("");
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
         registreringResource.registrerBruker(brukerRegistrering);
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());

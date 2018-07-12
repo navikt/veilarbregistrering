@@ -121,7 +121,6 @@ public class ArbeidssokerregistreringRepository {
                 : HelseHinderSvar.JA;
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
-                .setNusKode(rs.getString(NUS_KODE))
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
