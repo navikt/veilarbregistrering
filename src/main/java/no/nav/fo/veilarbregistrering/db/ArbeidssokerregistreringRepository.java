@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
-import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
@@ -13,7 +10,6 @@ import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -77,9 +73,6 @@ public class ArbeidssokerregistreringRepository {
         Besvarelse besvarelse = bruker.getBesvarelse();
         Stilling stilling = bruker.getSisteStilling();
 
-        // TODO Slett dette når feltet i DB blir tekst FO-1291
-        int helseHinder = HelseHinderSvar.JA.equals(besvarelse.getHelseHinder()) ? 1 : 0;
-
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
                 .value(AKTOR_ID, aktorId.getAktorId())
@@ -95,7 +88,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
                 .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
                 .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
-                .value(HAR_HELSEUTFORDRINGER, helseHinder)
+                .value(HAR_HELSEUTFORDRINGER, besvarelse.getHelseHinder().toString())
                 .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
                 .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
                 .execute();
@@ -116,9 +109,6 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
-        HelseHinderSvar helseHinder = rs.getInt(HAR_HELSEUTFORDRINGER) == 0
-                ? HelseHinderSvar.NEI
-                : HelseHinderSvar.JA;
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
@@ -133,7 +123,7 @@ public class ArbeidssokerregistreringRepository {
                         .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
                         .setUtdanningBestatt(UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)))
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
-                        .setHelseHinder(helseHinder)
+                        .setHelseHinder(HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)))
                         .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
                         .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
                 );
