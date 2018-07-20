@@ -17,7 +17,7 @@ public class UtdanningUtils {
         nuskodeMapTmp.put(UtdanningSvar.VIDEREGAENDE_FAGBREV_SVENNEBREV, "4");
         nuskodeMapTmp.put(UtdanningSvar.HOYERE_UTDANNING_1_TIL_4, "6");
         nuskodeMapTmp.put(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER, "7");
-        nuskodeMapTmp.put(null, "9");
+        nuskodeMapTmp.put(UtdanningSvar.INGEN_SVAR, "9");
 
         nuskodeMap = Collections.unmodifiableMap(nuskodeMapTmp);
     }
