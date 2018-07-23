@@ -41,6 +41,25 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
+    public void reaktiverBruker(String fnr) {
+
+        if (!registreringFeature.erAktiv()) {
+            throw new RuntimeException("Tjenesten er togglet av.");
+        }
+
+        if (!hentStartRegistreringStatus(fnr).isKreverReaktivering()) {
+            throw new RuntimeException("Bruker kan ikke reaktiveres.");
+        }
+
+        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+
+        arbeidssokerregistreringRepository.lagreReaktiveringForBruker(aktorId);
+        oppfolgingClient.reaktiverBruker(fnr);
+
+        log.info("Reaktivering av bruker med aktørId : {}", aktorId);
+    }
+
+    @Transactional
     public BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
 
         if (!registreringFeature.erAktiv()) {

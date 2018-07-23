@@ -27,6 +27,11 @@ public class OppfolgingClientMock extends OppfolgingClient {
         //sendException("BRUKER_MANGLER_ARBEIDSTILLATELSE");
     }
 
+    @Override
+    public void reaktiverBruker(String fnr) {
+
+    }
+
     private void sendException(String feilType) {
         FeilDTO feilDTO = new FeilDTO("1", feilType, new FeilDTO.Detaljer(feilType, "", ""));
         throw new WebApplicationException(Response.serverError().entity(feilDTO).build());

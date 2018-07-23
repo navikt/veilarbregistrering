@@ -52,6 +52,13 @@ public class RegistreringResource {
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
     }
 
+    @POST
+    @Path("/startreaktivering")
+    public void reaktivering() {
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        brukerRegistreringService.reaktiverBruker(userService.getFnr());
+    }
+
     @GET
     @Path("/sistearbeidsforhold")
     public Arbeidsforhold hentSisteArbeidsforhold() {

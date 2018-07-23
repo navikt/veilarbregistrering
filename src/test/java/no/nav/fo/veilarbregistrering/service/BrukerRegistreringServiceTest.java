@@ -5,7 +5,8 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.UtdanningSvar;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
-import static no.nav.fo.veilarbregistrering.service.Konstanter.*;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,6 +74,32 @@ public class BrukerRegistreringServiceTest {
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
+    }
+
+    @Test
+    void skalReaktivereInaktivBrukerUnder28Dager()  {
+        mockInaktivBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        mockOppfolgingMedRespons(
+                new AktivStatus().withUnderOppfolging(false)
+                        .withUnderOppfolging(false)
+                        .withInaktiveringDato(LocalDate.now().minusDays(20))
+        );
+        brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV);
+        verify(arbeidssokerregistreringRepository, times(1)).lagreReaktiveringForBruker(any());
+    }
+
+    @Test
+    void reaktiveringAvBrukerOver28DagerSkalGiException()  {
+        mockInaktivBruker();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        mockOppfolgingMedRespons(
+                new AktivStatus().withUnderOppfolging(false)
+                        .withUnderOppfolging(false)
+                        .withInaktiveringDato(LocalDate.now().minusDays(30))
+        );
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV));
+        verify(arbeidssokerregistreringRepository, times(0)).lagreReaktiveringForBruker(any());
     }
 
     @Test
