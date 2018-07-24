@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
@@ -39,11 +40,33 @@ public class OppfolgingClient {
         this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
+    public void reaktiverBruker(String fnr) {
+        withClient(
+                RestUtils.RestConfig.builder().readTimeout(120000).build()
+                , c -> postBrukerReAktivering(fnr, c)
+        );
+    }
+
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(120000).build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
+    }
+
+    public AktivStatus hentOppfolgingsstatus(String fnr) {
+        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
+        return getOppfolging(baseUrl + "/person/" + fnr + "/aktivstatus", cookies, AktivStatus.class);
+    }
+
+    private int postBrukerReAktivering(String fnr, Client client) {
+        String url = baseUrl + "/oppfolging/reaktiverbruker";
+        Response response = client.target(url)
+                .register(systemUserAuthorizationInterceptor)
+                .request()
+                .post(Entity.json(new Fnr(fnr)));
+
+        return behandleHttpResponse(response, url);
     }
 
     private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
@@ -53,21 +76,20 @@ public class OppfolgingClient {
                 .request()
                 .post(Entity.json(aktiverBrukerData));
 
+        return behandleHttpResponse(response, url);
+    }
+
+    private int behandleHttpResponse(Response response, String url) {
         int status = response.getStatus();
 
         if (status == 204) {
             return status;
         } else if (status == 500) {
-            log.error("Feil ved aktivering av bruker mot VeilArbOppfolging {}", response);
+            log.error("Feil ved kall mot VeilArbOppfolging : {}, response : {}", url, response);
             throw new WebApplicationException(response);
         } else {
-            throw new RuntimeException("Uventet respons (" + status + ") ved aktivering av bruker mot " + url);
+            throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
         }
-    }
-
-    public AktivStatus hentOppfolgingsstatus(String fnr) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getOppfolging(baseUrl + "/person/" + fnr + "/aktivstatus", cookies, AktivStatus.class);
     }
 
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {

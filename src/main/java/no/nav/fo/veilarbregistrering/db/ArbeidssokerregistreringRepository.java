@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.db;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
@@ -13,16 +12,19 @@ import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 
 public class ArbeidssokerregistreringRepository {
 
     private JdbcTemplate db;
 
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
+    private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
     private final static String BRUKER_REGISTRERING = "BRUKER_REGISTRERING";
+    private final static String BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING";
     private final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
+    private final static String BRUKER_REAKTIVERING_ID = "BRUKER_REAKTIVERING_ID";
     private final static String OPPRETTET_DATO = "OPPRETTET_DATO";
+    private final static String REAKTIVERING_DATO = "REAKTIVERING_DATO";
 
     private final static String NUS_KODE = "NUS_KODE";
     private final static String YRKESPRAKSIS = "YRKESPRAKSIS";
@@ -110,6 +112,15 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
+    public void lagreReaktiveringForBruker(AktorId aktorId) {
+        long id = nesteFraSekvens(BRUKER_REAKTIVERING_SEQ);
+        SqlUtils.insert(db, BRUKER_REAKTIVERING)
+                .value(BRUKER_REAKTIVERING_ID, id)
+                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(REAKTIVERING_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .execute();
+    }
+
     private long nesteFraSekvens(String sekvensNavn) {
         return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
     }
@@ -138,5 +149,4 @@ public class ArbeidssokerregistreringRepository {
                         .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
                 );
     }
-
 }
