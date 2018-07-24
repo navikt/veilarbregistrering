@@ -72,7 +72,6 @@ public class BrukerRegistreringService {
 
         startRegistreringUtilsService.validerBrukerRegistrering(bruker);
 
-        int alder = utledAlderForFnr(fnr, now());
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
         return opprettBruker(fnr, bruker, profilering);
     }
