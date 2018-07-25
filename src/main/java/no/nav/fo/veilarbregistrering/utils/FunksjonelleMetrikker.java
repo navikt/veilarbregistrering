@@ -8,7 +8,7 @@ import no.nav.metrics.MetricsFactory;
 public class FunksjonelleMetrikker {
 
     public static void rapporterRegistreringsstatus(AktivStatus aktivStatus, StartRegistreringStatus registreringStatus) {
-        Event event = MetricsFactory.createEvent("registrering.bruker.under.oppfolging");
+        Event event = MetricsFactory.createEvent("registrering.bruker.data");
         event.addFieldToReport("underOppfolging", aktivStatus.isUnderOppfolging());
         event.addFieldToReport("erAktivIArena", aktivStatus.isAktiv());
         event.addFieldToReport("kreverReaktivering", registreringStatus.isKreverReaktivering());
