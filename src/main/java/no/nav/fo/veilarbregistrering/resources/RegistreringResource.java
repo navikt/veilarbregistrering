@@ -8,12 +8,15 @@ import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterRegistreringsstatus;
 
 @Component
 @Path("/")
@@ -42,7 +45,9 @@ public class RegistreringResource {
     @Path("/startregistrering")
     public StartRegistreringStatus hentStartRegistreringStatus() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        return brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
+        StartRegistreringStatus status =  brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
+        rapporterRegistreringsstatus(status);
+        return status;
     }
 
     @POST
