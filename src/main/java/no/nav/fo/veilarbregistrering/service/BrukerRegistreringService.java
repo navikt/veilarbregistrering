@@ -6,13 +6,13 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeat
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker;
-import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
+import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
 
 
 @Slf4j
@@ -67,13 +67,16 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        if (hentStartRegistreringStatus(fnr).isUnderOppfolging()) {
+        StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
+
+        if (startRegistreringStatus.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
         startRegistreringUtilsService.validerBrukerRegistrering(bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
+
         return opprettBruker(fnr, bruker, profilering);
     }
 
@@ -90,7 +93,6 @@ public class BrukerRegistreringService {
                 .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
                 .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
 
-        FunksjonelleMetrikker.rapporterRegistreringsstatus(aktivStatus, startRegistreringStatus);
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
     }
@@ -102,6 +104,7 @@ public class BrukerRegistreringService {
         arbeidssokerregistreringRepository.lagreProfilering(brukerRegistrering.getId(), profilering);
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
 
+        rapporterProfilering(profilering);
         log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, profilering);
         return brukerRegistrering;
     }

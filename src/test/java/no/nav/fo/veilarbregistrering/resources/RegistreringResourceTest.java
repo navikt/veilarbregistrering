@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.resources;
 
 import no.nav.apiapp.security.PepClient;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
@@ -27,6 +28,7 @@ class RegistreringResourceTest {
         userService = mock(UserService.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+
         registreringResource = new RegistreringResource(
                 pepClient,
                 userService,
@@ -43,6 +45,7 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
+        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
