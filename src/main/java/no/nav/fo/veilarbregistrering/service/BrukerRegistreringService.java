@@ -67,13 +67,17 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        if (hentStartRegistreringStatus(fnr).isUnderOppfolging()) {
+        StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
+
+        if (startRegistreringStatus.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
         startRegistreringUtilsService.validerBrukerRegistrering(bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
+
+        FunksjonelleMetrikker.rapporterRegistreringsstatus(startRegistreringStatus, profilering);
         return opprettBruker(fnr, bruker, profilering);
     }
 
@@ -90,7 +94,6 @@ public class BrukerRegistreringService {
                 .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
                 .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
 
-        FunksjonelleMetrikker.rapporterRegistreringsstatus(aktivStatus, startRegistreringStatus);
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
     }
