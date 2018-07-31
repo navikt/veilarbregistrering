@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
-import no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;

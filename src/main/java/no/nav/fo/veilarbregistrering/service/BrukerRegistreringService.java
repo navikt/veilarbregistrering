@@ -83,15 +83,18 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
-                now()
-        );
+        boolean kreverReaktivering = ReaktiveringUtils.kreverReaktivering(aktivStatus);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(aktivStatus.isAktiv())
-                .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
-                .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
+                .setKreverReaktivering(kreverReaktivering);
+        
+        if(!aktivStatus.isAktiv() && !kreverReaktivering) {
+            boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
+                    () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                    now());
+            startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
+        }
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
