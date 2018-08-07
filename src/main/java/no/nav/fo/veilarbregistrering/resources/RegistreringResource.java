@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.resources;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.PepClient;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
@@ -8,7 +9,6 @@ import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
-import no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -21,7 +21,7 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporte
 @Component
 @Path("/")
 @Produces("application/json")
-@Api
+@Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
 public class RegistreringResource {
 
     private BrukerRegistreringService brukerRegistreringService;
@@ -43,6 +43,7 @@ public class RegistreringResource {
 
     @GET
     @Path("/startregistrering")
+    @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         StartRegistreringStatus status =  brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
@@ -52,6 +53,7 @@ public class RegistreringResource {
 
     @POST
     @Path("/startregistrering")
+    @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
@@ -59,6 +61,7 @@ public class RegistreringResource {
 
     @POST
     @Path("/startreaktivering")
+    @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         brukerRegistreringService.reaktiverBruker(userService.getFnr());
@@ -66,6 +69,7 @@ public class RegistreringResource {
 
     @GET
     @Path("/sistearbeidsforhold")
+    @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public Arbeidsforhold hentSisteArbeidsforhold() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
