@@ -21,7 +21,7 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporte
 @Component
 @Path("/")
 @Produces("application/json")
-@Api(description = "Tjenester for registrering og reaktivering av arbeidssøker.")
+@Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
 public class RegistreringResource {
 
     private BrukerRegistreringService brukerRegistreringService;
