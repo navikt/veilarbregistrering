@@ -166,6 +166,14 @@ class OppfolgingClientTest {
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
+    @Test
+    public void testAtGirIngenExceptionsDersomKun200MedKanReaktiveresNull() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaKanReaktiveresNullBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+
+        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
+    }
+
     private void mockUnderOppfolgingApi() {
         mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
                 .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody()).withStatusCode(200));
@@ -186,6 +194,13 @@ class OppfolgingClientTest {
     private String harOppfolgingsflaggOgErAktivIArenaBody() {
         return "{\n" +
                 "\"kanReaktiveres\": false,\n" +
+                "\"underOppfolging\": true\n" +
+                "}";
+    }
+
+    private String harOppfolgingsflaggOgErAktivIArenaKanReaktiveresNullBody() {
+        return "{\n" +
+                "\"kanReaktiveres\": null,\n" +
                 "\"underOppfolging\": true\n" +
                 "}";
     }
