@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.metrics.Event;
