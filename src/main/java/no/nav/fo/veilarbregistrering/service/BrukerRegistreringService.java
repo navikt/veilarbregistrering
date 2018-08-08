@@ -47,7 +47,8 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        if (!hentStartRegistreringStatus(fnr).isKreverReaktivering()) {
+        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getKreverReaktivering();
+        if (kanReaktiveres == null || !kanReaktiveres) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
