@@ -2,9 +2,10 @@ package no.nav.fo.veilarbregistrering.httpclient;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.domain.AktivStatus;
+
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
+import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
@@ -54,9 +55,9 @@ public class OppfolgingClient {
         );
     }
 
-    public AktivStatus hentOppfolgingsstatus(String fnr) {
+    public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getOppfolging(baseUrl + "/person/" + fnr + "/aktivstatus", cookies, AktivStatus.class);
+        return getOppfolging(baseUrl + "/oppfolging?fnr=" + fnr, cookies, OppfolgingStatusData.class);
     }
 
     private int postBrukerReAktivering(String fnr, Client client) {

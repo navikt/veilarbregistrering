@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
-import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
@@ -81,7 +80,7 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
+        OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
@@ -89,8 +88,8 @@ public class BrukerRegistreringService {
         );
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(aktivStatus.isAktiv())
-                .setKreverReaktivering(ReaktiveringUtils.kreverReaktivering(aktivStatus))
+                .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
+                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
                 .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);

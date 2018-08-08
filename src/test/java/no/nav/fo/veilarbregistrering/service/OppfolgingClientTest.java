@@ -6,7 +6,6 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
@@ -20,12 +19,10 @@ import javax.ws.rs.InternalServerErrorException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static java.time.ZoneId.systemDefault;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -116,7 +113,7 @@ class OppfolgingClientTest {
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
         when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new BrukerRegistrering());
         when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
@@ -126,7 +123,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtReaktiveringFeilerDersomArenaSierAtBrukerHarAktivStatus() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(ident));
@@ -134,24 +131,12 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtReaktiveringGirOKDersomArenaSierAtBrukerHarInaktivStatus() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
-                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(LocalDateTime.now().minusDays(20)), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
+                .respond(response().withBody(harIkkeOppfolgingsflaggOgKanReaktiveres(LocalDateTime.now().minusDays(20)), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(response().withStatusCode(204));
 
         brukerRegistreringService.reaktiverBruker(ident);
     }
-
-    @Test
-    public void testAtRegistreringIkkeGjoresDeromBrukerHarOppfolgingsflaggMenIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new BrukerRegistrering());
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
-                .respond(response().withBody(harOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
-        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204));
-
-        StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(ident);
-        assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
-    }
-
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomAktiverBrukerFeiler() {
@@ -163,19 +148,19 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus")).respond(response().withStatusCode(401));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus")).respond(response().withStatusCode(500));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
@@ -191,36 +176,27 @@ class OppfolgingClientTest {
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
     }
 
-    private String harIkkeOppfolgingsflaggOgErInaktivIArenaBody(LocalDateTime inaktiveringsdato) {
+    private String harIkkeOppfolgingsflaggOgKanReaktiveres(LocalDateTime inaktiveringsdato) {
         return "{\n" +
-                "\"aktiv\": false,\n" +
-                "\"inaktiveringDato\": \"" + inaktiveringsdato.atZone(systemDefault()).toString() + "\",\n" +
+                "\"kanReaktiveres\": true,\n" +
                 "\"underOppfolging\": false\n" +
                 "}";
     }
 
     private String harOppfolgingsflaggOgErAktivIArenaBody() {
         return "{\n" +
-                "\"aktiv\": true,\n" +
+                "\"kanReaktiveres\": false,\n" +
                 "\"underOppfolging\": true\n" +
                 "}";
     }
 
     private String harIkkeOppfolgingsflaggOgErInaktivIArenaBody() {
         return "{\n" +
-                "\"aktiv\": false,\n" +
-                "\"inaktiveringDato\": \"2018-03-08T12:00:00+01:00\",\n" +
+                "\"kanReaktiveres\": false,\n" +
                 "\"underOppfolging\": false\n" +
                 "}";
     }
 
-    private String harOppfolgingsflaggOgErInaktivIArenaBody() {
-        return "{\n" +
-                "\"aktiv\": false,\n" +
-                "\"inaktiveringDato\": \"2018-03-08T12:00:00+01:00\",\n" +
-                "\"underOppfolging\": true\n" +
-                "}";
-    }
 
     private String okRegistreringBody() {
         return "{\n" +
