@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
@@ -11,12 +10,8 @@ import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
-import static no.nav.fo.veilarbregistrering.utils.DateUtils.erDatoEldreEnnEllerLikAar;
-
-@Slf4j
 public class StartRegistreringUtilsService {
 
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
