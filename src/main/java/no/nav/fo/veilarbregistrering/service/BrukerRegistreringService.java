@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
-import no.nav.fo.veilarbregistrering.utils.ReaktiveringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
@@ -48,7 +47,8 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        if (!hentStartRegistreringStatus(fnr).isKreverReaktivering()) {
+        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getKreverReaktivering();
+        if (kanReaktiveres == null || !kanReaktiveres) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
@@ -81,15 +81,13 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        AktivStatus aktivStatus = oppfolgingClient.hentOppfolgingsstatus(fnr);
-
-        boolean kreverReaktivering = ReaktiveringUtils.kreverReaktivering(aktivStatus);
+        OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(aktivStatus.isAktiv())
-                .setKreverReaktivering(kreverReaktivering);
+                .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
+                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres());
         
-        if(!aktivStatus.isAktiv() && !kreverReaktivering) {
+        if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                     now());

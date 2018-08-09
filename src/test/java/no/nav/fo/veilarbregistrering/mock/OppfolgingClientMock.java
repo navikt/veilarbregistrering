@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.mock;
 
 import no.nav.apiapp.feil.FeilDTO;
-import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 
 import javax.ws.rs.WebApplicationException;
@@ -15,8 +15,8 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     @Override
-    public AktivStatus hentOppfolgingsstatus(String fnr) {
-        return new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(false).withAktiv(false);
+    public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
+        return new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false);
     }
 
     @Override

@@ -7,8 +7,8 @@ import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.domain.AktivStatus;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -98,7 +98,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(registreringFeature.erAktiv()).thenReturn(true);
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new AktivStatus().withUnderOppfolging(false));
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
@@ -148,8 +148,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 RegistreringFeature skalRegistrereBrukerGenerellFeature,
                 OppfolgingClient oppfolgingClient,
                 ArbeidsforholdService arbeidsforholdService,
-                StartRegistreringUtilsService startRegistreringUtilsService)
-        {
+                StartRegistreringUtilsService startRegistreringUtilsService) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,

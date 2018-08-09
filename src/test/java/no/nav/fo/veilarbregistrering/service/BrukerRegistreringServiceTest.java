@@ -67,7 +67,7 @@ public class BrukerRegistreringServiceTest {
      * Test av besvarelsene og lagring
      * */
     @Test
-    void skalRegistrereSelvgaaendeBruker()  {
+    void skalRegistrereSelvgaaendeBruker() {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         BrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
@@ -77,35 +77,31 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalReaktivereInaktivBrukerUnder28Dager()  {
+    void skalReaktivereInaktivBrukerUnder28Dager() {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        mockOppfolgingMedRespons(
-                new AktivStatus().withUnderOppfolging(false)
-                        .withUnderOppfolging(false)
-                        .withInaktiveringDato(LocalDate.now().minusDays(20))
-        );
+
         brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV);
         verify(arbeidssokerregistreringRepository, times(1)).lagreReaktiveringForBruker(any());
     }
 
     @Test
-    void reaktiveringAvBrukerOver28DagerSkalGiException()  {
+    void reaktiveringAvBrukerOver28DagerSkalGiException() {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(
-                new AktivStatus().withUnderOppfolging(false)
+                new OppfolgingStatusData()
                         .withUnderOppfolging(false)
-                        .withInaktiveringDato(LocalDate.now().minusDays(30))
+                        .withKanReaktiveres(false)
         );
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV));
         verify(arbeidssokerregistreringRepository, times(0)).lagreReaktiveringForBruker(any());
     }
 
     @Test
-    void skalRegistrereSelvgaaendeBrukerIDatabasen()  {
+    void skalRegistrereSelvgaaendeBrukerIDatabasen() {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        mockOppfolgingMedRespons(new AktivStatus().withUnderOppfolging(false));
+        mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         BrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(arbeidssokerregistreringRepository.lagreBruker(any(BrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
@@ -114,7 +110,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv()  {
+    void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv() {
         when(registreringFeature.erAktiv()).thenReturn(false);
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         assertThrows(RuntimeException.class, () -> registrerBruker(gyldigBrukerRegistrering(), FNR_OPPFYLLER_KRAV));
@@ -145,7 +141,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     public void skalReturnereFalseOmIkkeUnderOppfolging() {
-        mockOppfolgingMedRespons(inaktivBrukerMedInaktiveringsDato(LocalDate.now()));
+        mockOppfolgingMedRespons(inaktivBruker());
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
@@ -155,20 +151,20 @@ public class BrukerRegistreringServiceTest {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
                 .setStyrk("styrk")
-                .setFom(LocalDate.of(2017,1,10)));
+                .setFom(LocalDate.of(2017, 1, 10)));
     }
 
 
-    private AktivStatus inaktivBrukerMedInaktiveringsDato(LocalDate inaktivFra) {
-        return new AktivStatus().withInaktiveringDato(inaktivFra).withUnderOppfolging(false).withAktiv(false);
+    private OppfolgingStatusData inaktivBruker() {
+        return new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true);
     }
 
-    private void mockOppfolgingMedRespons(AktivStatus aktivStatus){
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(aktivStatus);
+    private void mockOppfolgingMedRespons(OppfolgingStatusData oppfolgingStatusData) {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(oppfolgingStatusData);
     }
 
-    private AktivStatus setOppfolgingsflagg(){
-        return new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(true);
+    private OppfolgingStatusData setOppfolgingsflagg() {
+        return new OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false);
     }
 
     @SneakyThrows
@@ -205,19 +201,13 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidssokerSomHarAktivOppfolging() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(true)
+                new OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false)
         );
     }
 
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(false).withAktiv(false)
-        );
-    }
-
-    private void mockInaktivBrukerMedOppfolgingsflagg() {
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new AktivStatus().withInaktiveringDato(null).withUnderOppfolging(true).withAktiv(false)
+                new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
         );
     }
 
@@ -226,7 +216,7 @@ public class BrukerRegistreringServiceTest {
                 Collections.singletonList(new Arbeidsforhold()
                         .setArbeidsgiverOrgnummer("orgnummer")
                         .setStyrk("styrk")
-                        .setFom(LocalDate.of(2017,1,10)))
+                        .setFom(LocalDate.of(2017, 1, 10)))
         );
     }
 }
