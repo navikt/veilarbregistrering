@@ -5,8 +5,6 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.UtdanningSvar;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +25,6 @@ import static org.mockito.Mockito.*;
 public class BrukerRegistreringServiceTest {
 
     private static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
-    private static String FNR_OPPFYLLER_IKKE_KRAV = getFodselsnummerForPersonWithAge(20);
 
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
@@ -136,7 +133,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isJobbetSeksAvTolvSisteManeder()).isTrue();
+        assertThat(startRegistreringStatus.getJobbetSeksAvTolvSisteManeder()).isTrue();
     }
 
     @Test
@@ -163,10 +160,6 @@ public class BrukerRegistreringServiceTest {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(oppfolgingStatusData);
     }
 
-    private OppfolgingStatusData setOppfolgingsflagg() {
-        return new OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false);
-    }
-
     @SneakyThrows
     private StartRegistreringStatus getStartRegistreringStatus(String fnr) {
         return brukerRegistreringService.hentStartRegistreringStatus(fnr);
@@ -176,19 +169,6 @@ public class BrukerRegistreringServiceTest {
     private void mockArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
         when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
-
-    private BrukerRegistrering getBrukerIngenUtdannelse() {
-        return gyldigBrukerRegistrering().setBesvarelse(
-                gyldigBesvarelse().setUtdanning(UtdanningSvar.INGEN_UTDANNING)
-        );
-    }
-
-    private BrukerRegistrering getBrukerRegistreringMedHelseutfordringer() {
-        return gyldigBrukerRegistrering().setBesvarelse(
-                gyldigBesvarelse().setHelseHinder(HelseHinderSvar.JA)
-        );
-    }
-
 
     private BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
         return brukerRegistreringService.registrerBruker(bruker, fnr);
