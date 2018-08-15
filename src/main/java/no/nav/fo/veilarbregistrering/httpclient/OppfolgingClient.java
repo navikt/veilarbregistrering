@@ -94,7 +94,9 @@ public class OppfolgingClient {
     }
 
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {
-        return Try.of(() -> withClient(c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
+        return Try.of(() ->
+                withClient(RestUtils.RestConfig.builder().readTimeout(30000).build(),
+                        c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
                 .onFailure((e) -> {
                     log.error("Feil ved kall til Oppfølging {}", url, e);
                     throw new InternalServerErrorException();
