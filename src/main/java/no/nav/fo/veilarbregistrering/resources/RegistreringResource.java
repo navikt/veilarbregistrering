@@ -16,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterAlder;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterRegistreringsstatus;
 
 @Component
@@ -56,6 +57,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        rapporterAlder(userService.getFnr());
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
     }
 
@@ -64,6 +66,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        rapporterAlder(userService.getFnr());
         brukerRegistreringService.reaktiverBruker(userService.getFnr());
     }
 

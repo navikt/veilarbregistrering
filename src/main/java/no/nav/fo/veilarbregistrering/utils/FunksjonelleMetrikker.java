@@ -5,6 +5,9 @@ import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
+import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+
 public class FunksjonelleMetrikker {
 
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
@@ -18,6 +21,12 @@ public class FunksjonelleMetrikker {
     public static void rapporterProfilering(Profilering profilering) {
         Event event = MetricsFactory.createEvent("registrering.bruker.profilering");
         event.addFieldToReport("innsatsgruppe", profilering.getInnsatsgruppe());
+        event.report();
+    }
+
+    public static void rapporterAlder(String fnr) {
+        Event event = MetricsFactory.createEvent("registrering.bruker.alder");
+        event.addFieldToReport("alder", utledAlderForFnr(fnr, now()));
         event.report();
     }
 
