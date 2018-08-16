@@ -10,8 +10,8 @@ public class FunksjonelleMetrikker {
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
         Event event = MetricsFactory.createEvent("registrering.bruker.data");
         event.addFieldToReport("erAktivIArena", registreringStatus.isUnderOppfolging());
-        event.addFieldToReport("kreverReaktivering", registreringStatus.getKreverReaktivering());
-        event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
+        event.addFieldToReport("kreverReaktivering", registreringStatus.getKreverReaktivering().booleanValue());
+        event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder().booleanValue());
         event.report();
     }
 
