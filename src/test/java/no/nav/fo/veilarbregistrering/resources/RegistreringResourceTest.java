@@ -56,6 +56,8 @@ class RegistreringResourceTest {
                 .setEnigIOppsummering(true)
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
+        String ident = "10108000398"; //Aremark fiktivt fnr.";
+        when(userService.getFnr()).thenReturn(ident);
         registreringResource.registrerBruker(brukerRegistrering);
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
