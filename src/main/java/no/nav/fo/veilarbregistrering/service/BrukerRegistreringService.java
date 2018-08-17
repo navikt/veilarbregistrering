@@ -77,7 +77,8 @@ public class BrukerRegistreringService {
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
 
-        return opprettBruker(fnr, bruker, profilering);
+        BrukerRegistrering brukerRegistrering = opprettBruker(fnr, bruker, profilering);
+        return brukerRegistrering;
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {

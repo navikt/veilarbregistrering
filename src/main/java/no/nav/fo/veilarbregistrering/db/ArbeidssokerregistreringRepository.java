@@ -1,9 +1,12 @@
 package no.nav.fo.veilarbregistrering.db;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
@@ -11,7 +14,11 @@ import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -33,6 +40,7 @@ public class ArbeidssokerregistreringRepository {
     private final static String HAR_HELSEUTFORDRINGER = "HAR_HELSEUTFORDRINGER";
     private final static String YRKESBESKRIVELSE = "YRKESBESKRIVELSE";
     private final static String KONSEPT_ID = "KONSEPT_ID";
+    private final static String TEKSTER_FOR_BESVARELSE = "TEKSTER_FOR_BESVARELSE";
 
     private final static String ANDRE_UTFORDRINGER = "ANDRE_UTFORDRINGER";
     private final static String BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING";
@@ -78,6 +86,7 @@ public class ArbeidssokerregistreringRepository {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         Stilling stilling = bruker.getSisteStilling();
+        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
 
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
@@ -85,6 +94,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(ENIG_I_OPPSUMMERING, bruker.isEnigIOppsummering())
                 .value(OPPSUMMERING, bruker.getOppsummering())
+                .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling
                 .value(YRKESPRAKSIS, stilling.getStyrk08())
                 .value(YRKESBESKRIVELSE, stilling.getLabel())
@@ -100,6 +110,23 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
 
         return hentBrukerregistreringForId(id);
+    }
+
+    private static String tilJson(List<TekstForSporsmal> obj) {
+        try {
+            return (new ObjectMapper()).writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            return "";
+        }
+    }
+
+    private static List<TekstForSporsmal> tilTeksterForBesvarelse(String json) {
+        try {
+            TekstForSporsmal[] teksterForBesvarelse = (new ObjectMapper()).readValue(json, TekstForSporsmal[].class);
+            return teksterForBesvarelse != null ? Arrays.asList(teksterForBesvarelse) : new ArrayList<>();
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
     }
 
     public BrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
@@ -129,6 +156,7 @@ public class ArbeidssokerregistreringRepository {
                 .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
+                .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))
                 .setSisteStilling(new Stilling()
                         .setStyrk08(rs.getString(YRKESPRAKSIS))
                         .setKonseptId(rs.getLong(KONSEPT_ID))
