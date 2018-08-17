@@ -9,4 +9,5 @@ public class StartRegistreringStatus {
     private boolean underOppfolging;
     private Boolean jobbetSeksAvTolvSisteManeder;
     private Boolean kreverReaktivering;
+    private Boolean erIkkeArbeidssokerUtenOppfolging;
 }

@@ -85,7 +85,8 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres());
+                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
+                .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging());
         
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
