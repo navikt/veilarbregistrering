@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.PepClient;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -57,6 +58,14 @@ public class RegistreringResource {
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
+    }
+
+    @GET
+    @Path("/oppsummering")
+    @ApiOperation(value = "Henter oppsummering av registrering.")
+    public BrukerRegistrering hentOppsummering(Fnr fnr) {
+        pepClient.sjekkLeseTilgangTilFnr(fnr.getFnr());
+        return brukerRegistreringService.hentOppsummering(fnr);
     }
 
     @POST

@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
+import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -105,6 +106,15 @@ public class ArbeidssokerregistreringRepository {
     public BrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
+                .column("*")
+                .execute();
+    }
+
+    public BrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
+                .limit(1)
                 .column("*")
                 .execute();
     }

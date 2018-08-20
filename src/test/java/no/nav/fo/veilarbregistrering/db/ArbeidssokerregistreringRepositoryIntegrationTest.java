@@ -4,12 +4,14 @@ import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -46,6 +48,21 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
         assertRegistrertBruker(bruker, brukerRegistrering);
+    }
+
+    @Test
+    public void hentBrukerregistreringForAktorId() {
+        AktorId aktorId = new AktorId("11111");
+        BrukerRegistrering bruker1 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA));
+        BrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.NEI));
+
+        arbeidssokerregistreringRepository.lagreBruker(bruker1, aktorId);
+        arbeidssokerregistreringRepository.lagreBruker(bruker2, aktorId);
+
+        BrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
+        assertRegistrertBruker(bruker2, registrering);
     }
 
     private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {

@@ -110,6 +110,12 @@ public class BrukerRegistreringService {
         return brukerRegistrering;
     }
 
+    public BrukerRegistrering hentOppsummering(Fnr fnr) {
+        return arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(
+                FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
+        );
+    }
+
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
         return startRegistreringUtilsService.profilerBruker(
                 bruker,
@@ -117,5 +123,4 @@ public class BrukerRegistreringService {
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 now());
     }
-
 }
