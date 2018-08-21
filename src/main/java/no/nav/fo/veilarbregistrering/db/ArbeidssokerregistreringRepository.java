@@ -113,10 +113,13 @@ public class ArbeidssokerregistreringRepository {
     }
 
     private static String tilJson(List<TekstForSporsmal> obj) {
+        if (obj == null) {
+            return "[]";
+        }
         try {
             return (new ObjectMapper()).writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            return "";
+            return "[]";
         }
     }
 
