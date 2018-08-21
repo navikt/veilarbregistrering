@@ -63,11 +63,11 @@ public class RegistreringResource {
     }
 
     @GET
-    @Path("/oppsummering")
+    @Path("/registrering")
     @ApiOperation(value = "Henter oppsummering av registrering.")
-    public BrukerRegistrering hentOppsummering(Fnr fnr) {
+    public BrukerRegistrering hentRegistrering(Fnr fnr) {
         pepClient.sjekkLeseTilgangTilFnr(fnr.getFnr());
-        return brukerRegistreringService.hentOppsummering(fnr);
+        return brukerRegistreringService.hentRegistrering(fnr);
     }
 
     @POST

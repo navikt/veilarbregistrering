@@ -110,7 +110,7 @@ public class BrukerRegistreringService {
         return brukerRegistrering;
     }
 
-    public BrukerRegistrering hentOppsummering(Fnr fnr) {
+    public BrukerRegistrering hentRegistrering(Fnr fnr) {
         return arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(
                 FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
         );
