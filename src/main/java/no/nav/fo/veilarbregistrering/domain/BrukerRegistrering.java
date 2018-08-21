@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -20,4 +21,5 @@ public class BrukerRegistrering {
     String oppsummering;
     Besvarelse besvarelse;
     Stilling sisteStilling;
+    List<TekstForSporsmal> teksterForBesvarelse;
 }

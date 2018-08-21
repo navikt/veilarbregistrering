@@ -70,5 +70,6 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
         assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
+        assertThat(brukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 }
