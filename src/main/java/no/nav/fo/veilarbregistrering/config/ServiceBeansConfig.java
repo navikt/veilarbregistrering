@@ -25,8 +25,8 @@ public class ServiceBeansConfig {
             RemoteFeatureConfig.RegistreringFeature skalRegistrereBrukerGenerellFeature,
             OppfolgingClient oppfolgingClient,
             ArbeidsforholdService arbeidsforholdService,
-            StartRegistreringUtilsService startRegistreringUtilsService)
-    {
+            StartRegistreringUtilsService startRegistreringUtilsService
+    ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
                 aktorService,
@@ -38,15 +38,20 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    RegistreringResource registreringResource(PepClient pepClient,
-                                              UserService userService,
-                                              ArbeidsforholdService arbeidsforholdService,
-                                              BrukerRegistreringService brukerRegistreringService) {
+    RegistreringResource registreringResource(
+            PepClient pepClient,
+            UserService userService,
+            ArbeidsforholdService arbeidsforholdService,
+            BrukerRegistreringService brukerRegistreringService,
+            Provider<HttpServletRequest> requestProvider
+    ) {
         return new RegistreringResource(
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService);
+                brukerRegistreringService,
+                requestProvider
+        );
     }
 
     @Bean
