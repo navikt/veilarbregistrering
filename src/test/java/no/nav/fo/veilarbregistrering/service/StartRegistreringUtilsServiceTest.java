@@ -117,6 +117,7 @@ class StartRegistreringUtilsServiceTest {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
         } else if ((30 <= alder && alder <= 59)
                     && startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
+                    && !svarIndikererAtBrukerIkkeOppfyllerKravTilArbeidserfaring(bruker)
                     && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
                     && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
                     && besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.JA)
@@ -131,11 +132,16 @@ class StartRegistreringUtilsServiceTest {
         assertEquals(onsketInnsatsgruppe, innsatsgruppe, "Feil profilering for bruker: " + bruker.toString());
     }
 
+    private boolean svarIndikererAtBrukerIkkeOppfyllerKravTilArbeidserfaring(BrukerRegistrering bruker) {
+        DinSituasjonSvar svar = bruker.getBesvarelse().getDinSituasjon();
+        return svar.equals(DinSituasjonSvar.ALDRI_HATT_JOBB) || svar.equals(DinSituasjonSvar.JOBB_OVER_2_AAR);
+    }
+
     @Test
     void testSpesifikkBesvarelse() {
         BrukerRegistrering bruker = new BrukerRegistrering()
                 .setBesvarelse(new Besvarelse()
-                        .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
+                        .setDinSituasjon(DinSituasjonSvar.USIKKER_JOBBSITUASJON)
                         .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
                         .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
                         .setUtdanningBestatt(UtdanningBestattSvar.JA)
