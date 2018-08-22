@@ -79,10 +79,16 @@ public class StartRegistreringUtilsService {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return (30 <= alder && alder <= 59)
                 && oppfyllerKravTilArbeidserfaring
+                && !svarIndikererAtBrukerIkkeOppfyllerKravTilArbeidserfaring(bruker)
                 && !UtdanningSvar.INGEN_UTDANNING.equals(besvarelse.getUtdanning())
                 && UtdanningBestattSvar.JA.equals(besvarelse.getUtdanningBestatt())
                 && UtdanningGodkjentSvar.JA.equals(besvarelse.getUtdanningGodkjent())
                 && HelseHinderSvar.NEI.equals(besvarelse.getHelseHinder())
                 && AndreForholdSvar.NEI.equals(besvarelse.getAndreForhold());
+    }
+
+    private boolean svarIndikererAtBrukerIkkeOppfyllerKravTilArbeidserfaring(BrukerRegistrering bruker) {
+        DinSituasjonSvar svar = bruker.getBesvarelse().getDinSituasjon();
+        return svar.equals(DinSituasjonSvar.ALDRI_HATT_JOBB) || svar.equals(DinSituasjonSvar.JOBB_OVER_2_AAR);
     }
 }
