@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class BrukerRegistrering {
     long id;
-    Date opprettetDato;
+    LocalDateTime opprettetDato;
     boolean enigIOppsummering;
     String oppsummering;
     Besvarelse besvarelse;

@@ -3,14 +3,14 @@ package no.nav.fo.veilarbregistrering.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.PepClient;
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,17 +29,20 @@ public class RegistreringResource {
     private ArbeidsforholdService arbeidsforholdService;
     private UserService userService;
     private PepClient pepClient;
+    private Provider<HttpServletRequest> requestProvider;
 
     public RegistreringResource(
             PepClient pepClient,
             UserService userService,
             ArbeidsforholdService arbeidsforholdService,
-            BrukerRegistreringService brukerRegistreringService) {
-
+            BrukerRegistreringService brukerRegistreringService,
+            Provider<HttpServletRequest> requestProvider
+    ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.arbeidsforholdService = arbeidsforholdService;
         this.brukerRegistreringService = brukerRegistreringService;
+        this.requestProvider = requestProvider;
     }
 
     @GET
@@ -61,6 +64,14 @@ public class RegistreringResource {
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
     }
 
+    @GET
+    @Path("/registrering")
+    @ApiOperation(value = "Henter siste registrering av bruker.")
+    public BrukerRegistrering hentRegistrering() {
+        pepClient.sjekkLeseTilgangTilFnr(getFnr().getFnr());
+        return brukerRegistreringService.hentRegistrering(getFnr());
+    }
+
     @POST
     @Path("/startreaktivering")
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
@@ -78,4 +89,7 @@ public class RegistreringResource {
         return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
     }
 
+    private Fnr getFnr() {
+        return new Fnr(requestProvider.get().getParameter("fnr"));
+    }
 }

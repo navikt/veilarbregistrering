@@ -11,6 +11,9 @@ import no.nav.fo.veilarbregistrering.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -21,6 +24,7 @@ class RegistreringResourceTest {
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
+    private Provider<HttpServletRequest> requestProvider;
 
     @BeforeEach
     public void setup() {
@@ -33,7 +37,9 @@ class RegistreringResourceTest {
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService);
+                brukerRegistreringService,
+                requestProvider
+        );
     }
 
 
