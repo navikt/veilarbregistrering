@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
+import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -139,6 +140,15 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
+    public BrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
+                .limit(1)
+                .column("*")
+                .execute();
+    }
+
     public void lagreReaktiveringForBruker(AktorId aktorId) {
         long id = nesteFraSekvens(BRUKER_REAKTIVERING_SEQ);
         SqlUtils.insert(db, BRUKER_REAKTIVERING)
@@ -156,7 +166,7 @@ public class ArbeidssokerregistreringRepository {
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
         return new BrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
-                .setOpprettetDato(rs.getDate(OPPRETTET_DATO))
+                .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
                 .setOppsummering(rs.getString(OPPSUMMERING))
                 .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))

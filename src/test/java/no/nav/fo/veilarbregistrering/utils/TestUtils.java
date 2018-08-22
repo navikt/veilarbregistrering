@@ -5,16 +5,15 @@ import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
-import org.assertj.core.util.DateUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static no.bekk.bekkopen.person.FodselsnummerCalculator.getFodselsnummerForDate;
-import static org.assertj.core.util.DateUtil.now;
 
 public class TestUtils {
 
@@ -66,7 +65,7 @@ public class TestUtils {
 
     public static BrukerRegistrering gyldigBrukerRegistrering() {
         return new BrukerRegistrering()
-                .setOpprettetDato(now())
+                .setOpprettetDato(LocalDateTime.now())
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
                 .setSisteStilling(gyldigStilling())
