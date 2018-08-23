@@ -12,7 +12,7 @@ public class MainTest {
 
     public static void main(String[] args) throws Exception {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
-        DatabaseTestContext.setupContext(getProperty("database"));
+        DatabaseTestContext.setupContext("Q6");
         TestContext.setup();
         String arguments[] = {TEST_PORT};
         ApiApp.startApiApp(ApplicationTestConfig.class, arguments);
