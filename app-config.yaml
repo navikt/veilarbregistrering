@@ -67,5 +67,3 @@ fasitResources:
   - alias: veilarbregistreringSBS
     resourceType: restservice
     path: /veilarbregistrering/api
-
-webproxy: true
