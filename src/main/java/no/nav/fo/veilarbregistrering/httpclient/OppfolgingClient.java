@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.sbl.rest.RestUtils;
+import org.apache.cxf.transport.http.Cookies;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,31 +28,31 @@ public class OppfolgingClient {
     public static final String VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
 
     private final String baseUrl;
-    private final SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor;
     private final Provider<HttpServletRequest> httpServletRequestProvider;
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        this(getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME), new SystemUserAuthorizationInterceptor(), httpServletRequestProvider);
+        this(getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME), httpServletRequestProvider);
     }
 
-    public OppfolgingClient(String baseUrl, SystemUserAuthorizationInterceptor systemUserAuthorizationInterceptor, Provider<HttpServletRequest> httpServletRequestProvider) {
+    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
         this.baseUrl = baseUrl;
-        this.systemUserAuthorizationInterceptor = systemUserAuthorizationInterceptor;
         this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
     public void reaktiverBruker(String fnr) {
+        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(120000).build()
-                , c -> postBrukerReAktivering(fnr, c)
+                , c -> postBrukerReAktivering(fnr, c, cookies)
         );
     }
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
+        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(120000).build()
-                , c -> postBrukerAktivering(aktiverBrukerData, c)
+                , c -> postBrukerAktivering(aktiverBrukerData, c, cookies)
         );
     }
 
@@ -60,21 +61,21 @@ public class OppfolgingClient {
         return getOppfolging(baseUrl + "/oppfolging?fnr=" + fnr, cookies, OppfolgingStatusData.class);
     }
 
-    private int postBrukerReAktivering(String fnr, Client client) {
+    private int postBrukerReAktivering(String fnr, Client client, String cookies) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
         Response response = client.target(url)
-                .register(systemUserAuthorizationInterceptor)
                 .request()
+                .header(COOKIE, cookies)
                 .post(Entity.json(new Fnr(fnr)));
 
         return behandleHttpResponse(response, url);
     }
 
-    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
+    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client, String cookies) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
         Response response = client.target(url)
-                .register(systemUserAuthorizationInterceptor)
                 .request()
+                .header(COOKIE, cookies)
                 .post(Entity.json(aktiverBrukerData));
 
         return behandleHttpResponse(response, url);

@@ -59,7 +59,7 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         rapporterAlder(userService.getFnr());
         return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
     }
@@ -76,7 +76,7 @@ public class RegistreringResource {
     @Path("/startreaktivering")
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         rapporterAlder(userService.getFnr());
         brukerRegistreringService.reaktiverBruker(userService.getFnr());
     }

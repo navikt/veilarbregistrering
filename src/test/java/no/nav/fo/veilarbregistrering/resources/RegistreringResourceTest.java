@@ -65,6 +65,6 @@ class RegistreringResourceTest {
         String ident = "10108000398"; //Aremark fiktivt fnr.";
         when(userService.getFnr()).thenReturn(ident);
         registreringResource.registrerBruker(brukerRegistrering);
-        verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
     }
 }
