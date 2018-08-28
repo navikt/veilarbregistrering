@@ -1,5 +1,8 @@
 package no.nav.fo.veilarbregistrering.domain;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum Innsatsgruppe {
     STANDARD_INNSATS("IKVAL"),
     SITUASJONSBESTEMT_INNSATS("BFORM"),
@@ -13,5 +16,12 @@ public enum Innsatsgruppe {
 
     public String getArenakode() {
         return arenakode;
+    }
+
+    public static Innsatsgruppe tilInnsatsgruppe(String arenakode) {
+        Optional<Innsatsgruppe> innsatsgruppeOptional = Arrays.stream(Innsatsgruppe.values())
+                .filter(innsatsgruppe -> innsatsgruppe.getArenakode().equals(arenakode))
+                .findAny();
+        return innsatsgruppeOptional.orElse(null);
     }
 }

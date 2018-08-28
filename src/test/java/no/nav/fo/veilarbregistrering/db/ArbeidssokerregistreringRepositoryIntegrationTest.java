@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.db;
 
-import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +10,10 @@ import javax.inject.Inject;
 
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArbeidssokerregistreringRepositoryIntegrationTest extends IntegrasjonsTest {
 
@@ -63,6 +62,26 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         BrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
         assertRegistrertBruker(bruker2, registrering);
+    }
+
+    @Test
+    public void hentProfilertBrukerRegistreringForAktorId(){
+
+        AktorId aktorId = new AktorId("11111");
+
+        BrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA));
+
+        Profilering profilering = lagProfilering();
+
+        BrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
+        arbeidssokerregistreringRepository.lagreProfilering(bruker.getId(), profilering);
+
+        ProfilertBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(aktorId);
+
+        assertEquals(new ProfilertBrukerRegistrering(bruker, profilering), profilertBrukerRegistrering);
+
     }
 
     private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
