@@ -15,5 +15,5 @@ import java.util.List;
 public class ProfilertBrukerRegistrering {
     private BrukerRegistrering registrering;
     private Profilering profilering;
-    private List<TekstForSporsmal> tekstForSporsmal; // TODO FO-1451 Skal fjernes.
+    private List<TekstForSporsmal> teksterForBesvarelse; // TODO FO-1451 Skal fjernes.
 }
