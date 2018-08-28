@@ -111,8 +111,8 @@ public class BrukerRegistreringService {
         return brukerRegistrering;
     }
 
-    public BrukerRegistrering hentRegistrering(Fnr fnr) {
-        return arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(
+    public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
+        return arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(
                 FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
         );
     }

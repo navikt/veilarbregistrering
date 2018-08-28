@@ -2,11 +2,11 @@ package no.nav.fo.veilarbregistrering.db;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
-import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ArbeidssokerregistreringRepository {
@@ -140,6 +141,14 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
+    public Profilering hentProfileringForId(long brukerregistreringId){
+        return SqlUtils.select(db, BRUKER_PROFILERING, ArbeidssokerregistreringRepository::brukerProfileringMapper)
+                .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
+                .limit(3)
+                .column("*")
+                .execute();
+    }
+
     public BrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
@@ -147,6 +156,12 @@ public class ArbeidssokerregistreringRepository {
                 .limit(1)
                 .column("*")
                 .execute();
+    }
+
+    public ProfilertBrukerRegistrering hentProfilertBrukerregistreringForAktorId(AktorId aktorId) {
+        BrukerRegistrering brukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
+        Profilering profilering = hentProfileringForId(brukerRegistrering.getId());
+        return new ProfilertBrukerRegistrering(brukerRegistrering, profilering);
     }
 
     public void lagreReaktiveringForBruker(AktorId aktorId) {
@@ -162,6 +177,32 @@ public class ArbeidssokerregistreringRepository {
         return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
     }
 
+
+    @SneakyThrows
+    private static Profilering brukerProfileringMapper(ResultSet rs) {
+
+        Profilering profilering = new Profilering();
+
+        do {
+            switch (rs.getString(PROFILERING_TYPE)){
+                case ALDER:
+                    profilering.setAlder(rs.getInt(VERDI));
+                    break;
+                case ARB_6_AV_SISTE_12_MND:
+                    profilering.setJobbetSammenhengendeSeksAvTolvSisteManeder(rs.getBoolean(VERDI));
+                    break;
+                case RESULTAT_PROFILERING:
+                    profilering.setInnsatsgruppe(Innsatsgruppe.tilInnsatsgruppe(rs.getString(VERDI)));
+                    break;
+            }
+
+        } while (rs.next());
+
+        return profilering;
+
+    }
+
+   
     @SneakyThrows
     private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
         return new BrukerRegistrering()
