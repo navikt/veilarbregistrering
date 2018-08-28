@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @ToString
@@ -13,4 +15,5 @@ import lombok.ToString;
 public class ProfilertBrukerRegistrering {
     private BrukerRegistrering registrering;
     private Profilering profilering;
+    private List<TekstForSporsmal> tekstForSporsmal; // TODO FO-1451 Skal fjernes.
 }
