@@ -11,9 +11,6 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class ProfilertBrukerRegistrering {
-
     private BrukerRegistrering registrering;
-
     private Profilering profilering;
-
 }
