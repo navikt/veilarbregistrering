@@ -67,5 +67,5 @@ fasitResources:
   - alias: veilarbregistreringSBS
     resourceType: restservice
     path: /veilarbregistrering/api
-  alertProfiles:
+alertProfiles:
   - common-java-modules
