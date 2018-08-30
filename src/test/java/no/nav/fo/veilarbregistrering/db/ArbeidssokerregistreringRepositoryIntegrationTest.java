@@ -13,7 +13,7 @@ import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistre
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArbeidssokerregistreringRepositoryIntegrationTest extends IntegrasjonsTest {
 
@@ -82,6 +82,14 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         assertEquals(new ProfilertBrukerRegistrering(bruker, profilering, bruker.getTeksterForBesvarelse()), profilertBrukerRegistrering);
 
+    }
+
+    @Test
+    public void hentProfilertBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret(){
+        AktorId uregistrertAktorId = new AktorId("9876543");
+        ProfilertBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(uregistrertAktorId);
+
+        assertNull(profilertBrukerRegistrering);
     }
 
     private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {

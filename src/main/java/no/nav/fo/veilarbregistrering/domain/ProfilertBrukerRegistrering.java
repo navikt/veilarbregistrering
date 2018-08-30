@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
