@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbregistrering.domain.besvarelse;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode

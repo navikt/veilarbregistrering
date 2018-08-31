@@ -17,27 +17,6 @@ public class StartRegistreringUtilsService {
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
-    public void validerBrukerRegistrering(BrukerRegistrering brukerRegistrering) {
-        if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse()) || !erStillingGyldig(brukerRegistrering.getSisteStilling())) {
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
-        }
-    }
-
-    private boolean erStillingGyldig(Stilling stilling) {
-        return stilling.getStyrk08() != null
-                && stilling.getLabel() != null;
-    }
-
-    private boolean erBesvarelseGyldig(Besvarelse besvarelse) {
-        return besvarelse.getDinSituasjon() != null
-                && besvarelse.getSisteStilling() != null
-                && besvarelse.getUtdanning() != null
-                && besvarelse.getUtdanningGodkjent() != null
-                && besvarelse.getUtdanningBestatt() != null
-                && besvarelse.getHelseHinder() != null
-                && besvarelse.getAndreForhold() != null;
-    }
-
     public boolean harJobbetSammenhengendeSeksAvTolvSisteManeder(
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato

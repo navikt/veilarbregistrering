@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
 
@@ -73,7 +74,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
-        startRegistreringUtilsService.validerBrukerRegistrering(bruker);
+        validerBrukerRegistrering(bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
 
