@@ -30,6 +30,8 @@ public class ValideringUtils {
         DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
         UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
 
+        assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
+        assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
         assertFalse(bruker.getSisteStilling().equals(tomStilling));
         assertFalse(stillingHarNull(bruker));
         assertFalse(besvarelseHarNull(bruker));

@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.DinSituasjonSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.SisteStillingSvar;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +12,34 @@ import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ValideringUtilsTest {
+
+    @Test
+    void sporsmalSkalIkkeVaereNull() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse().setAndreForhold(null));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+    }
+
+    @Test
+    void sisteStillingSkalIkkeVaereNull() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(null);
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+    }
+
+    @Test
+    void skalSvarePaaSporsmalOmAndreForhold() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+                gyldigBesvarelse().setAndreForhold(AndreForholdSvar.INGEN_SVAR)
+        );
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+    }
+
+    @Test
+    void skalSvarePaaSporsmalOmHelse() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+                gyldigBesvarelse().setHelseHinder(HelseHinderSvar.INGEN_SVAR)
+        );
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+    }
 
     @Test
     void skalHaIngenYrkesbakgrunnHvisViVetAtBrukerIkkeHarHattJobb() {
