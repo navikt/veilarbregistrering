@@ -36,12 +36,14 @@ public class StartRegistreringUtilsService {
     }
 
     private boolean erStillingGyldig(Stilling stilling) {
-        return stilling.getStyrk08() != null
+        return stilling != null
+                && stilling.getStyrk08() != null
                 && stilling.getLabel() != null;
     }
 
     private boolean erBesvarelseGyldig(Besvarelse besvarelse) {
-        return besvarelse.getDinSituasjon() != null
+        return besvarelse != null
+                && besvarelse.getDinSituasjon() != null
                 && besvarelse.getSisteStilling() != null
                 && besvarelse.getUtdanning() != null
                 && besvarelse.getUtdanningGodkjent() != null

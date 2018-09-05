@@ -53,11 +53,15 @@ public class FunksjonelleMetrikker {
     public static void rapporterInvalidStilling(Stilling stilling) {
         Event event = MetricsFactory.createEvent("registrering.invalid.stilling");
         String field = "";
-        if (stilling.getStyrk08() == null) {
-            field += "styrk08 er null ";
-        }
-        if (stilling.getLabel() == null) {
-            field += "label er null";
+        if (stilling == null) {
+            field = "stilling er null";
+        } else {
+            if (stilling.getStyrk08() == null) {
+                field += "styrk08 er null ";
+            }
+            if (stilling.getLabel() == null) {
+                field += "label er null";
+            }
         }
 
         event.addFieldToReport("stillingsinfo", field);
