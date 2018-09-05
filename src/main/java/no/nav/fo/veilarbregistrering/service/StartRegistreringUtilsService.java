@@ -12,13 +12,25 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidBesvarelse;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidStilling;
+
 public class StartRegistreringUtilsService {
 
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
 
     public void validerBrukerRegistrering(BrukerRegistrering brukerRegistrering) {
-        if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse()) || !erStillingGyldig(brukerRegistrering.getSisteStilling())) {
+        boolean isValid = true;
+        if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse())) {
+            isValid = false;
+            rapporterInvalidBesvarelse(brukerRegistrering.getBesvarelse());
+        }
+        if (!erStillingGyldig(brukerRegistrering.getSisteStilling())) {
+            isValid = false;
+            rapporterInvalidStilling(brukerRegistrering.getSisteStilling());
+        }
+        if (!isValid) {
             throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
         }
     }
