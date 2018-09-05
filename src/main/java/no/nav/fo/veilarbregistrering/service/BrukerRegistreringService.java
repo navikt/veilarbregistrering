@@ -74,7 +74,12 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
-        validerBrukerRegistrering(bruker);
+        try {
+            validerBrukerRegistrering(bruker);
+        } catch (RuntimeException e) {
+            log.warn("Ugyldig innsendt besvarelse.", bruker.getBesvarelse(), bruker.getSisteStilling());
+            throw e;
+        }
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(fnr, bruker);
 

@@ -27,14 +27,15 @@ public class ValideringUtils {
 
     public static void validerBrukerRegistrering(BrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
-        DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
-        UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
+        assertFalse(besvarelseHarNull(bruker));
+        assertFalse(stillingHarNull(bruker));
 
         assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
         assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
         assertFalse(bruker.getSisteStilling().equals(tomStilling));
-        assertFalse(stillingHarNull(bruker));
-        assertFalse(besvarelseHarNull(bruker));
+
+        DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
+        UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
 
         if (situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar)) {
             brukerSkalIkkeHaBesvartSisteStillingSpm(bruker);
@@ -60,13 +61,15 @@ public class ValideringUtils {
 
     private static boolean stillingHarNull(BrukerRegistrering bruker) {
         Stilling stilling = bruker.getSisteStilling();
-        return stilling.getStyrk08() == null
+        return stilling == null
+                || stilling.getStyrk08() == null
                 || stilling.getLabel() == null;
     }
 
     private static boolean besvarelseHarNull(BrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse.getDinSituasjon() == null
+        return besvarelse == null
+                || besvarelse.getDinSituasjon() == null
                 || besvarelse.getSisteStilling() == null
                 || besvarelse.getUtdanning() == null
                 || besvarelse.getUtdanningGodkjent() == null
