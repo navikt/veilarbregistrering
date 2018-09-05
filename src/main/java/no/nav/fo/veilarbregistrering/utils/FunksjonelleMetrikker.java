@@ -1,7 +1,12 @@
 package no.nav.fo.veilarbregistrering.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
@@ -27,6 +32,32 @@ public class FunksjonelleMetrikker {
     public static void rapporterAlder(String fnr) {
         Event event = MetricsFactory.createEvent("registrering.bruker.alder");
         event.addFieldToReport("alder", utledAlderForFnr(fnr, now()));
+        event.report();
+    }
+
+    public static void rapporterInvalidBesvarelse(Besvarelse besvarelse) {
+        String jsonBesvarelse;
+        try {
+            jsonBesvarelse = (new ObjectMapper()).writeValueAsString(besvarelse);
+        } catch (JsonProcessingException e) {
+            return;
+        }
+        Event event = MetricsFactory.createEvent("registrering.invalid.besvarelse");
+        event.addFieldToReport("besvarelse", jsonBesvarelse);
+        event.report();
+    }
+
+    public static void rapporterInvalidStilling(Stilling stilling) {
+        Event event = MetricsFactory.createEvent("registrering.invalid.stilling");
+        String field = "";
+        if (stilling.getStyrk08() == null) {
+            field += "styrk08 er null ";
+        }
+        if (stilling.getLabel() == null) {
+            field += "label er null";
+        }
+
+        event.addFieldToReport("stillingsinfo", field);
         event.report();
     }
 
