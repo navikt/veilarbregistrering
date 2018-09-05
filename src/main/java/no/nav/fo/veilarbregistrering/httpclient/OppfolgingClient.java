@@ -86,6 +86,7 @@ public class OppfolgingClient {
         if (status == 204) {
             return status;
         } else if (status == 500 || status == 403) {
+            //todo: fjerne "status == 500" over når veilarboppfølging er endret til å sende 403 for kjente feil.
             log.error("Feil ved kall mot VeilArbOppfolging : {}, response : {}", url, response);
             throw new WebApplicationException(response);
         } else {
