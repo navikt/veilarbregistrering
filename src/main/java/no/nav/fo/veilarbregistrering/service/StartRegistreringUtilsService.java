@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
@@ -15,6 +16,7 @@ import java.util.function.Supplier;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidBesvarelse;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidStilling;
 
+@Slf4j
 public class StartRegistreringUtilsService {
 
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
@@ -31,6 +33,7 @@ public class StartRegistreringUtilsService {
             rapporterInvalidStilling(brukerRegistrering.getSisteStilling());
         }
         if (!isValid) {
+            log.warn("Innsendt registreringsinformasjon er ugyldig.");
             throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
         }
     }

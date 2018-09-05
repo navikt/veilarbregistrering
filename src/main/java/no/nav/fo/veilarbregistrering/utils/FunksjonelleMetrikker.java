@@ -36,11 +36,11 @@ public class FunksjonelleMetrikker {
     }
 
     public static void rapporterInvalidBesvarelse(Besvarelse besvarelse) {
-        String jsonBesvarelse;
-        try {
-            jsonBesvarelse = (new ObjectMapper()).writeValueAsString(besvarelse);
-        } catch (JsonProcessingException e) {
-            return;
+        String jsonBesvarelse = "";
+        if (besvarelse != null) {
+            try {
+                jsonBesvarelse = (new ObjectMapper()).writeValueAsString(besvarelse);
+            } catch (JsonProcessingException ignored) {}
         }
         Event event = MetricsFactory.createEvent("registrering.invalid.besvarelse");
         event.addFieldToReport("besvarelse", jsonBesvarelse);
