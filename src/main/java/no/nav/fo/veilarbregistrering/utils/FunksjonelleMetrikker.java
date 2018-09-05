@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
@@ -13,6 +14,7 @@ import no.nav.metrics.MetricsFactory;
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 
+@Slf4j
 public class FunksjonelleMetrikker {
 
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
@@ -45,6 +47,7 @@ public class FunksjonelleMetrikker {
         Event event = MetricsFactory.createEvent("registrering.invalid.besvarelse");
         event.addFieldToReport("besvarelse", jsonBesvarelse);
         event.report();
+        log.warn("Invalid besvarelse", besvarelse);
     }
 
     public static void rapporterInvalidStilling(Stilling stilling) {
@@ -59,6 +62,7 @@ public class FunksjonelleMetrikker {
 
         event.addFieldToReport("stillingsinfo", field);
         event.report();
+        log.warn("Invalid besvarelse", field);
     }
 
     private FunksjonelleMetrikker() {
