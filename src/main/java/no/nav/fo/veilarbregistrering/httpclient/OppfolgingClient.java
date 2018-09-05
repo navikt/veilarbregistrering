@@ -85,7 +85,7 @@ public class OppfolgingClient {
 
         if (status == 204) {
             return status;
-        } else if (status == 500) {
+        } else if (status == 403) {
             log.error("Feil ved kall mot VeilArbOppfolging : {}, response : {}", url, response);
             throw new WebApplicationException(response);
         } else {
