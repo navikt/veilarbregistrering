@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 public class ValideringUtils {
 
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenHarHattJobb = Arrays.asList(
@@ -62,8 +61,8 @@ public class ValideringUtils {
     private static boolean stillingHarNull(BrukerRegistrering bruker) {
         Stilling stilling = bruker.getSisteStilling();
         return stilling == null
-                || stilling.getStyrk08() == null
-                || stilling.getLabel() == null;
+                || isEmpty(stilling.getStyrk08())
+                || isEmpty(stilling.getLabel());
     }
 
     private static boolean besvarelseHarNull(BrukerRegistrering bruker) {
@@ -94,5 +93,9 @@ public class ValideringUtils {
 
     private static void assertFalse(boolean value) {
         assertTrue(!value);
+    }
+
+    private static boolean isEmpty(String str) {
+        return !(str == null || str.isEmpty());
     }
 }
