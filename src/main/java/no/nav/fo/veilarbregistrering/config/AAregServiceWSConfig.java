@@ -26,7 +26,7 @@ public class AAregServiceWSConfig {
     @Bean
     ArbeidsforholdV3 arbeidsforholdV3() {
         return arbeidsforholdV3CXFClient()
-                .timeout(DEFAULT_CONNECTION_TIMEOUT, 60000)
+                .timeout(DEFAULT_CONNECTION_TIMEOUT, 120000)
                 .configureStsForOnBehalfOfWithJWT()
                 .build();
     }

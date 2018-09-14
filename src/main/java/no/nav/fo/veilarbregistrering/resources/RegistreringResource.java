@@ -50,7 +50,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        StartRegistreringStatus status =  brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
+        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
         rapporterRegistreringsstatus(status);
         return status;
     }

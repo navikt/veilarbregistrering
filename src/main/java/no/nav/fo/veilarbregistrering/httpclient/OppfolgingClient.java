@@ -2,12 +2,10 @@ package no.nav.fo.veilarbregistrering.httpclient;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.sbl.rest.RestUtils;
-import org.apache.cxf.transport.http.Cookies;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -29,6 +27,7 @@ public class OppfolgingClient {
 
     private final String baseUrl;
     private final Provider<HttpServletRequest> httpServletRequestProvider;
+    private static final int HTTP_READ_TIMEOUT = 120000;
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -43,7 +42,7 @@ public class OppfolgingClient {
     public void reaktiverBruker(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
-                RestUtils.RestConfig.builder().readTimeout(120000).build()
+                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerReAktivering(fnr, c, cookies)
         );
     }
@@ -51,7 +50,7 @@ public class OppfolgingClient {
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
-                RestUtils.RestConfig.builder().readTimeout(120000).build()
+                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c, cookies)
         );
     }
@@ -86,7 +85,7 @@ public class OppfolgingClient {
 
         if (status == 204) {
             return status;
-        } else if (status == 500) {
+        } else if (status == 403) {
             log.error("Feil ved kall mot VeilArbOppfolging : {}, response : {}", url, response);
             throw new WebApplicationException(response);
         } else {
@@ -96,7 +95,7 @@ public class OppfolgingClient {
 
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {
         return Try.of(() ->
-                withClient(RestUtils.RestConfig.builder().readTimeout(30000).build(),
+                withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                         c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
                 .onFailure((e) -> {
                     log.error("Feil ved kall til Oppfølging {}", url, e);
