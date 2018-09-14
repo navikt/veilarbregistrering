@@ -60,8 +60,9 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
+        BrukerRegistrering registrering = brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
         rapporterAlder(userService.getFnr());
-        return brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
+        return registrering;
     }
 
     @GET
@@ -77,8 +78,8 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        rapporterAlder(userService.getFnr());
         brukerRegistreringService.reaktiverBruker(userService.getFnr());
+        rapporterAlder(userService.getFnr());
     }
 
     @GET
