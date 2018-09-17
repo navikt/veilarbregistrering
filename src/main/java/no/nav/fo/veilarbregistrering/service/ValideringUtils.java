@@ -15,7 +15,6 @@ public class ValideringUtils {
             DinSituasjonSvar.ER_PERMITTERT,
             DinSituasjonSvar.DELTIDSJOBB_VIL_MER,
             DinSituasjonSvar.VIL_BYTTE_JOBB,
-            DinSituasjonSvar.ALDRI_HATT_JOBB,
             DinSituasjonSvar.VIL_FORTSETTE_I_JOBB
     );
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenIkkeHarHattJobb = Collections.singletonList(
