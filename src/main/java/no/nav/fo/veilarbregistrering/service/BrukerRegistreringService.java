@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -21,14 +20,12 @@ public class BrukerRegistreringService {
 
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
-    private final RegistreringFeature registreringFeature;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
-                                     RegistreringFeature registreringFeature,
                                      OppfolgingClient oppfolgingClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtilsService startRegistreringUtilsService
@@ -36,7 +33,6 @@ public class BrukerRegistreringService {
     ) {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
-        this.registreringFeature = registreringFeature;
         this.oppfolgingClient = oppfolgingClient;
         this.arbeidsforholdService = arbeidsforholdService;
         this.startRegistreringUtilsService = startRegistreringUtilsService;
@@ -44,10 +40,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public void reaktiverBruker(String fnr) {
-
-        if (!registreringFeature.erAktiv()) {
-            throw new RuntimeException("Tjenesten er togglet av.");
-        }
 
         Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getKreverReaktivering();
         if (kanReaktiveres == null || !kanReaktiveres) {
@@ -64,10 +56,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
-
-        if (!registreringFeature.erAktiv()) {
-            throw new RuntimeException("Tjenesten er togglet av.");
-        }
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
 

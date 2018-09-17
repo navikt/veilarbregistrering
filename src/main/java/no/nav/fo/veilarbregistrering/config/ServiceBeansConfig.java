@@ -22,7 +22,6 @@ public class ServiceBeansConfig {
     BrukerRegistreringService registrerBrukerService(
             ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
             AktorService aktorService,
-            RemoteFeatureConfig.RegistreringFeature skalRegistrereBrukerGenerellFeature,
             OppfolgingClient oppfolgingClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtilsService startRegistreringUtilsService
@@ -30,7 +29,6 @@ public class ServiceBeansConfig {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
                 aktorService,
-                skalRegistrereBrukerGenerellFeature,
                 oppfolgingClient,
                 arbeidsforholdService,
                 startRegistreringUtilsService

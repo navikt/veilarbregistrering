@@ -4,7 +4,6 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.RegistreringFeature;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
@@ -38,7 +37,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private static BrukerRegistreringService brukerRegistreringService;
     private static AktorService aktorService;
-    private static RegistreringFeature registreringFeature;
     private static OppfolgingClient oppfolgingClient;
     private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private static StartRegistreringUtilsService startRegistreringUtilsService;
@@ -63,7 +61,6 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
-        registreringFeature = context.getBean(RegistreringFeature.class);
         startRegistreringUtilsService = context.getBean(StartRegistreringUtilsService.class);
     }
 
@@ -97,7 +94,6 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
-        when(registreringFeature.erAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
@@ -121,11 +117,6 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public RegistreringFeature registreringFeature() {
-            return mock(RegistreringFeature.class);
-        }
-
-        @Bean
         public OppfolgingClient oppfolgingClient() {
             return mock(OppfolgingClient.class);
         }
@@ -145,14 +136,12 @@ class BrukerRegistreringServiceIntegrationTest {
         BrukerRegistreringService brukerRegistreringService(
                 ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                 AktorService aktorService,
-                RegistreringFeature skalRegistrereBrukerGenerellFeature,
                 OppfolgingClient oppfolgingClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtilsService startRegistreringUtilsService) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,
-                    skalRegistrereBrukerGenerellFeature,
                     oppfolgingClient,
                     arbeidsforholdService,
                     startRegistreringUtilsService
