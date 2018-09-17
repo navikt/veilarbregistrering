@@ -46,7 +46,7 @@ public class FunksjonelleMetrikker {
         String json = "";
         try {
             json = (new ObjectMapper()).writeValueAsString(obj);
-        } catch (JsonProcessingException | NullPointerException ignored) {  }
+        } catch (JsonProcessingException ignored) {  }
         return json;
     }
 
