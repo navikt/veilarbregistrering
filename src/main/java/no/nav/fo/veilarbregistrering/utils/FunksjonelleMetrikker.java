@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
@@ -34,30 +35,19 @@ public class FunksjonelleMetrikker {
         event.report();
     }
 
-    public static void rapporterInvalidBesvarelse(Besvarelse besvarelse) {
-        String jsonBesvarelse = "";
-        if (besvarelse != null) {
-            try {
-                jsonBesvarelse = (new ObjectMapper()).writeValueAsString(besvarelse);
-            } catch (JsonProcessingException ignored) {
-            }
-        }
-        Event event = MetricsFactory.createEvent("registrering.invalid.besvarelse");
-        event.addFieldToReport("besvarelse", jsonBesvarelse);
+    public static void rapporterInvalidRegistrering(BrukerRegistrering brukerRegistrering) {
+        Event event = MetricsFactory.createEvent("registrering.invalid.registrering");
+        event.addFieldToReport("registrering", toJson(brukerRegistrering.getBesvarelse()));
+        event.addFieldToReport("stilling", toJson(brukerRegistrering.getSisteStilling()));
         event.report();
     }
 
-    public static void rapporterInvalidStilling(Stilling stilling) {
-        Event event = MetricsFactory.createEvent("registrering.invalid.stilling");
-        String field = "";
-        if (stilling.getStyrk08() == null) {
-            field += "styrk08 er null ";
-        }
-        if (stilling.getLabel() == null) {
-            field += "label er null";
-        }
-
-        event.addFieldToReport("stillingsinfo", field);
-        event.report();
+    private static String toJson(Object obj) {
+        String json = "";
+        try {
+            json = (new ObjectMapper()).writeValueAsString(obj);
+        } catch (JsonProcessingException ignored) {  }
+        return json;
     }
+
 }

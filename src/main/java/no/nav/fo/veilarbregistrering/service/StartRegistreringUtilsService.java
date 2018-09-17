@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
@@ -13,45 +12,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidBesvarelse;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidStilling;
-
-@Slf4j
 public class StartRegistreringUtilsService {
 
     public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
     public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
-
-    public void validerBrukerRegistrering(BrukerRegistrering brukerRegistrering) {
-        boolean isValid = true;
-        if (!erBesvarelseGyldig(brukerRegistrering.getBesvarelse())) {
-            isValid = false;
-            rapporterInvalidBesvarelse(brukerRegistrering.getBesvarelse());
-        }
-        if (!erStillingGyldig(brukerRegistrering.getSisteStilling())) {
-            isValid = false;
-            rapporterInvalidStilling(brukerRegistrering.getSisteStilling());
-        }
-        if (!isValid) {
-            log.warn("Invalid besvarelse : {}", brukerRegistrering);
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
-        }
-    }
-
-    private boolean erStillingGyldig(Stilling stilling) {
-        return stilling.getStyrk08() != null
-                && stilling.getLabel() != null;
-    }
-
-    private boolean erBesvarelseGyldig(Besvarelse besvarelse) {
-        return besvarelse.getDinSituasjon() != null
-                && besvarelse.getSisteStilling() != null
-                && besvarelse.getUtdanning() != null
-                && besvarelse.getUtdanningGodkjent() != null
-                && besvarelse.getUtdanningBestatt() != null
-                && besvarelse.getHelseHinder() != null
-                && besvarelse.getAndreForhold() != null;
-    }
 
     public boolean harJobbetSammenhengendeSeksAvTolvSisteManeder(
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,

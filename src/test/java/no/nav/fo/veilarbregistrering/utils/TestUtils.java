@@ -52,6 +52,10 @@ public class TestUtils {
                 .setKonseptId(1246345L);
     }
 
+    public static Stilling ingenYrkesbakgrunn() {
+        return new Stilling("X", -1L, "X");
+    }
+
     public static Besvarelse gyldigBesvarelse() {
         return new Besvarelse()
                 .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
@@ -63,6 +67,12 @@ public class TestUtils {
                 .setAndreForhold(AndreForholdSvar.NEI);
     }
 
+    public static Besvarelse gyldigBesvarelseUtenJobb() {
+        return gyldigBesvarelse()
+                .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
+                .setSisteStilling(SisteStillingSvar.INGEN_SVAR);
+    }
+
     public static BrukerRegistrering gyldigBrukerRegistrering() {
         return new BrukerRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
@@ -72,5 +82,14 @@ public class TestUtils {
                 .setBesvarelse(gyldigBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForBesvarelse());
 
+    }
+
+    public static BrukerRegistrering gyldigBrukerRegistreringUtenJobb() {
+        return gyldigBrukerRegistrering().setSisteStilling(
+                ingenYrkesbakgrunn()
+        ).setBesvarelse(gyldigBesvarelse()
+                .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
+                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
+        );
     }
 }
