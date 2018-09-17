@@ -19,6 +19,9 @@ prometheus:
 resources: # Optional. See: http://kubernetes.io/docs/user-guide/compute-resources/
   limits:
     cpu: 3
+    memory: 1024Mi
+  requests:
+    memory: 512Mi
 fasitResources:
   used:
   - alias: loadbalancer:veilarbregistrering
