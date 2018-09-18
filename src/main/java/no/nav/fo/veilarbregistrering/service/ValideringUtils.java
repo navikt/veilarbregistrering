@@ -39,15 +39,12 @@ public class ValideringUtils {
         stillingSkalSamsvareMedSisteStillingSpm(bruker);
         assertIfAndOnlyIf(
                 situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar),
-                !brukerHarIngenYrkesbakgrunn(bruker)
-                        && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
+                brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
         );
         assertIfAndOnlyIf(
                 situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar),
-                brukerHarIngenYrkesbakgrunn(bruker)
-                        && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
+                !brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
         );
-
 
         assertIfAndOnlyIf(
                 DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar),
@@ -66,9 +63,9 @@ public class ValideringUtils {
     private static void stillingSkalSamsvareMedSisteStillingSpm(BrukerRegistrering bruker) {
         SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
         if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
-            assertFalse(brukerHarIngenYrkesbakgrunn(bruker));
+            assertTrue(brukerHarYrkesbakgrunn(bruker));
         } else if (SisteStillingSvar.HAR_IKKE_HATT_JOBB.equals(sisteStillingSvar)) {
-            assertTrue(brukerHarIngenYrkesbakgrunn(bruker));
+            assertFalse(brukerHarYrkesbakgrunn(bruker));
         }
     }
 
@@ -91,8 +88,8 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
-    private static boolean brukerHarIngenYrkesbakgrunn(BrukerRegistrering bruker) {
-        return bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
+    private static boolean brukerHarYrkesbakgrunn(BrukerRegistrering bruker) {
+        return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 
     private static void assertIfAndOnlyIf(boolean value1, boolean value2) {
