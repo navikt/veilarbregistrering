@@ -95,10 +95,6 @@ public class ValideringUtils {
         return bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 
-    private static void brukerSkalIkkeHaBesvartSisteStillingSpm(BrukerRegistrering bruker) {
-        assertTrue(bruker.getBesvarelse().getSisteStilling().equals(SisteStillingSvar.INGEN_SVAR));
-    }
-
     private static void assertIfAndOnlyIf(boolean value1, boolean value2) {
         if (value1) {
             assertTrue(value2);

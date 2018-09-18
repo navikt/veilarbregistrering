@@ -66,7 +66,7 @@ public class BrukerRegistreringService {
     public BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
 
         if (!registreringFeature.erAktiv()) {
-            // throw new RuntimeException("Tjenesten er togglet av.");
+            throw new RuntimeException("Tjenesten er togglet av.");
         }
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
