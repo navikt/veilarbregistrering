@@ -34,26 +34,38 @@ public class ValideringUtils {
 
         DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
         UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
+        SisteStillingSvar sisteStillingSvar = besvarelse.getSisteStilling();
 
-        if (situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar)) {
-            brukerSkalIkkeHaBesvartSisteStillingSpm(bruker);
-            assertFalse(brukerHarIngenYrkesbakgrunn(bruker));
-        }
+        stillingSkalSamsvareMedSisteStillingSpm(bruker);
+        assertIfAndOnlyIf(
+                situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar),
+                brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
+        );
+        assertIfAndOnlyIf(
+                situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar),
+                !brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
+        );
 
-        if (situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar)) {
-            brukerSkalIkkeHaBesvartSisteStillingSpm(bruker);
-            assertTrue(brukerHarIngenYrkesbakgrunn(bruker));
-        }
+        assertIfAndOnlyIf(
+                DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar),
+                UtdanningSvar.INGEN_SVAR.equals(utdanningSvar)
+                        && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
+                        && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
+        );
+        assertIfAndOnlyIf(
+                UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
+                !DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar)
+                        && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
+                        && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
+        );
+    }
 
-        if (dinSituasjonSvar.equals(DinSituasjonSvar.VIL_FORTSETTE_I_JOBB)) {
-            assertTrue(utdanningSvar.equals(UtdanningSvar.INGEN_SVAR));
-            assertTrue(besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.INGEN_SVAR));
-            assertTrue(besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.INGEN_SVAR));
-        }
-
-        if (utdanningSvar.equals(UtdanningSvar.INGEN_UTDANNING)) {
-            assertTrue(besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.INGEN_SVAR));
-            assertTrue(besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.INGEN_SVAR));
+    private static void stillingSkalSamsvareMedSisteStillingSpm(BrukerRegistrering bruker) {
+        SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
+        if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
+            assertTrue(brukerHarYrkesbakgrunn(bruker));
+        } else if (SisteStillingSvar.HAR_IKKE_HATT_JOBB.equals(sisteStillingSvar)) {
+            assertFalse(brukerHarYrkesbakgrunn(bruker));
         }
     }
 
@@ -76,12 +88,17 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
-    private static boolean brukerHarIngenYrkesbakgrunn(BrukerRegistrering bruker) {
-        return bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
+    private static boolean brukerHarYrkesbakgrunn(BrukerRegistrering bruker) {
+        return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 
-    private static void brukerSkalIkkeHaBesvartSisteStillingSpm(BrukerRegistrering bruker) {
-        assertTrue(bruker.getBesvarelse().getSisteStilling().equals(SisteStillingSvar.INGEN_SVAR));
+    private static void assertIfAndOnlyIf(boolean value1, boolean value2) {
+        if (value1) {
+            assertTrue(value2);
+        }
+        if (value2) {
+            assertTrue(value1);
+        }
     }
 
     private static void assertTrue(boolean value) {
