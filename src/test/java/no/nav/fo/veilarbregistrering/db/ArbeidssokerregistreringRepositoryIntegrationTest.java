@@ -80,7 +80,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         ProfilertBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(aktorId);
 
-        assertEquals(new ProfilertBrukerRegistrering(bruker, profilering, bruker.getTeksterForBesvarelse()), profilertBrukerRegistrering);
+        assertEquals(new ProfilertBrukerRegistrering(bruker, profilering), profilertBrukerRegistrering);
 
     }
 

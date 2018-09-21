@@ -164,7 +164,7 @@ public class ArbeidssokerregistreringRepository {
             return null;
         }
         Profilering profilering = hentProfileringForId(brukerRegistrering.getId());
-        return new ProfilertBrukerRegistrering(brukerRegistrering, profilering, brukerRegistrering.getTeksterForBesvarelse());
+        return new ProfilertBrukerRegistrering(brukerRegistrering, profilering);
     }
 
     public void lagreReaktiveringForBruker(AktorId aktorId) {
