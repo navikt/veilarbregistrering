@@ -20,7 +20,6 @@ import javax.servlet.ServletContext;
         DatabaseConfig.class,
         DataSourceHelsesjekk.class,
         AktorConfig.class,
-        RemoteFeatureConfig.class,
         PepConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,

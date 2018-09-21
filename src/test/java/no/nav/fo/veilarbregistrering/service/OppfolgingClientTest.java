@@ -3,11 +3,9 @@ package no.nav.fo.veilarbregistrering.service;
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.SystemUserAuthorizationInterceptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +39,6 @@ class OppfolgingClientTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private RemoteFeatureConfig.RegistreringFeature registreringFeature;
     private StartRegistreringUtilsService startRegistreringUtilsService;
     private ClientAndServer mockServer;
     private String ident;
@@ -54,7 +51,6 @@ class OppfolgingClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        registreringFeature = mock(RemoteFeatureConfig.RegistreringFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
@@ -66,7 +62,6 @@ class OppfolgingClientTest {
                 new BrukerRegistreringService(
                         arbeidssokerregistreringRepository,
                         aktorService,
-                        registreringFeature,
                         oppfolgingClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
@@ -77,7 +72,6 @@ class OppfolgingClientTest {
 
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
-        when(registreringFeature.erAktiv()).thenReturn(true);
     }
 
     private OppfolgingClient buildClient() {

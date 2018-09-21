@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -31,13 +30,11 @@ public class BrukerRegistreringServiceTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private RemoteFeatureConfig.RegistreringFeature registreringFeature;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
 
     @BeforeEach
     public void setup() {
-        registreringFeature = mock(RemoteFeatureConfig.RegistreringFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
@@ -51,13 +48,11 @@ public class BrukerRegistreringServiceTest {
                 new BrukerRegistreringService(
                         arbeidssokerregistreringRepository,
                         aktorService,
-                        registreringFeature,
                         oppfolgingClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
-        when(registreringFeature.erAktiv()).thenReturn(true);
     }
 
     /*
@@ -104,14 +99,6 @@ public class BrukerRegistreringServiceTest {
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
-    }
-
-    @Test
-    void skalKasteRuntimeExceptionDersomRegistreringFeatureErAv() {
-        when(registreringFeature.erAktiv()).thenReturn(false);
-        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        assertThrows(RuntimeException.class, () -> registrerBruker(gyldigBrukerRegistrering(), FNR_OPPFYLLER_KRAV));
-        verify(oppfolgingClient, times(0)).aktiverBruker(any());
     }
 
     @Test
