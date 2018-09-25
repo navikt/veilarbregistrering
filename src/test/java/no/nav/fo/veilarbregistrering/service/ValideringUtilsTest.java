@@ -11,6 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class ValideringUtilsTest {
 
     @Test
+    void hvisMistetJobbenSaaSkalManHaSvartPaaUtdanning() {
+        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+                .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
+                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
+                .setUtdanning(UtdanningSvar.INGEN_SVAR)
+                .setUtdanningGodkjent(UtdanningGodkjentSvar.NEI)
+                .setUtdanningBestatt(UtdanningBestattSvar.NEI)
+                .setHelseHinder(HelseHinderSvar.NEI)
+                .setAndreForhold(AndreForholdSvar.NEI)
+        );
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+    }
+
+    @Test
     void hvisSisteStillingSpmIkkeErBesvartSkalManViteHvorvidtBrukerErIJobb() {
         BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.USIKKER_JOBBSITUASJON)

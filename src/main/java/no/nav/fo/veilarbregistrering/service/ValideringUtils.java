@@ -49,9 +49,14 @@ public class ValideringUtils {
         assertBothTrueOrBothFalse(
                 DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar),
                 UtdanningSvar.INGEN_SVAR.equals(utdanningSvar)
-                        && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
+        );
+
+        assertBothTrueOrBothFalse(
+                UtdanningSvar.INGEN_SVAR.equals(utdanningSvar) || UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
+                UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
                         && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
         );
+
         assertBothTrueOrBothFalse(
                 UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
                 !DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar)
