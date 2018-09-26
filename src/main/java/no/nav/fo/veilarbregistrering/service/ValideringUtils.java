@@ -37,22 +37,27 @@ public class ValideringUtils {
         SisteStillingSvar sisteStillingSvar = besvarelse.getSisteStilling();
 
         stillingSkalSamsvareMedSisteStillingSpm(bruker);
-        assertIfAndOnlyIf(
+        assertBothTrueOrBothFalse(
                 situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar),
                 brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
         );
-        assertIfAndOnlyIf(
+        assertBothTrueOrBothFalse(
                 situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar),
                 !brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
         );
 
-        assertIfAndOnlyIf(
+        assertBothTrueOrBothFalse(
                 DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar),
                 UtdanningSvar.INGEN_SVAR.equals(utdanningSvar)
-                        && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
+        );
+
+        assertBothTrueOrBothFalse(
+                UtdanningSvar.INGEN_SVAR.equals(utdanningSvar) || UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
+                UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
                         && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
         );
-        assertIfAndOnlyIf(
+
+        assertBothTrueOrBothFalse(
                 UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
                 !DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar)
                         && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
@@ -92,13 +97,8 @@ public class ValideringUtils {
         return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 
-    private static void assertIfAndOnlyIf(boolean value1, boolean value2) {
-        if (value1) {
-            assertTrue(value2);
-        }
-        if (value2) {
-            assertTrue(value1);
-        }
+    private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
+        assertTrue(value1 == value2);
     }
 
     private static void assertTrue(boolean value) {
