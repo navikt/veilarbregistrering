@@ -5,6 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +22,14 @@ public class BrukerRegistreringService {
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
     private OppfolgingClient oppfolgingClient;
+    private SykeforloepMetadataClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
+                                     SykeforloepMetadataClient sykeforloepMetadataClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtilsService startRegistreringUtilsService
 
@@ -34,6 +37,7 @@ public class BrukerRegistreringService {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
         this.oppfolgingClient = oppfolgingClient;
+        this.sykeforloepMetadataClient = sykeforloepMetadataClient;
         this.arbeidsforholdService = arbeidsforholdService;
         this.startRegistreringUtilsService = startRegistreringUtilsService;
     }
@@ -120,4 +124,9 @@ public class BrukerRegistreringService {
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 now());
     }
+
+    public SykeforloepMetaData hentSykeforloepMetadata() {
+        return sykeforloepMetadataClient.hentSykeforloepMetadata();
+    }
+
 }

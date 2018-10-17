@@ -17,6 +17,7 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient.SYKEFORLOEPMETADATA_URL_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
@@ -43,13 +44,14 @@ public class TestContext {
         setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
 
         setProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
+        setProperty(SYKEFORLOEPMETADATA_URL_PROPERTY_NAME, "sykeforloep-api"); // TODO hva skal url-api være?
 
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
         String issoIsAlive = FasitUtils.getBaseUrl("isso.isalive", FasitUtils.Zone.FSS);
         ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
-        String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
+        String loginUrl = "https://app-q6.adeo.no/veilarblogin/api/login";
 
         setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME, issoHost);
         setProperty(Constants.ISSO_RP_USER_USERNAME_PROPERTY_NAME, isso_rp_user.getUsername());

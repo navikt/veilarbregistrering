@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
@@ -122,6 +123,11 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public SykeforloepMetadataClient sykeforloepMetadataClient() {
+            return mock(SykeforloepMetadataClient.class);
+        }
+
+        @Bean
         public ArbeidsforholdService arbeidsforholdService() {
             return mock(ArbeidsforholdService.class);
         }
@@ -137,12 +143,14 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                 AktorService aktorService,
                 OppfolgingClient oppfolgingClient,
+                SykeforloepMetadataClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtilsService startRegistreringUtilsService) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,
                     oppfolgingClient,
+                    sykeforloepMetadataClient,
                     arbeidsforholdService,
                     startRegistreringUtilsService
             );
