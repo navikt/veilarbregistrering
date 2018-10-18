@@ -82,11 +82,13 @@ public class BrukerRegistreringService {
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
+        boolean erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtMedArbeidsgiverOver39uker(oppfolgingStatusData);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
-                .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging());
+                .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
+                .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker);
         
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
@@ -97,6 +99,11 @@ public class BrukerRegistreringService {
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
+    }
+
+    private boolean hentErSykmeldtMedArbeidsgiverOver39uker(OppfolgingStatusData oppfolgingStatusData) {
+        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
+        return oppfolgingStatusData.sykmeldMedArbeidsgiver && sykeforloepMetaData.erSykmeldt;
     }
 
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
@@ -123,10 +130,6 @@ public class BrukerRegistreringService {
                 utledAlderForFnr(fnr, now()),
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 now());
-    }
-
-    public SykeforloepMetaData hentSykeforloepMetadata() {
-        return sykeforloepMetadataClient.hentSykeforloepMetadata();
     }
 
 }

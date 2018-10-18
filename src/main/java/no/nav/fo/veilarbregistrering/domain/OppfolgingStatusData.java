@@ -15,4 +15,5 @@ public class OppfolgingStatusData {
     public boolean underOppfolging;
     public Boolean kanReaktiveres;
     public Boolean erIkkeArbeidssokerUtenOppfolging;
+    public boolean sykmeldMedArbeidsgiver;
 }

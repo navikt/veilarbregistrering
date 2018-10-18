@@ -90,14 +90,6 @@ public class RegistreringResource {
         return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
     }
 
-    @GET
-    @Path("/sykeforloep")
-    @ApiOperation(value = "Henter sykeforloep metadata.")
-    public SykeforloepMetaData hentSykeforloepMetadata() {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        return brukerRegistreringService.hentSykeforloepMetadata();
-    }
-
     private Fnr getFnr() {
         return new Fnr(requestProvider.get().getParameter("fnr"));
     }

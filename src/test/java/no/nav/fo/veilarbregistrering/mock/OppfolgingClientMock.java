@@ -16,7 +16,10 @@ public class OppfolgingClientMock extends OppfolgingClient {
 
     @Override
     public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
-        return new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false);
+        return new OppfolgingStatusData()
+                .withUnderOppfolging(false)
+                .withKanReaktiveres(false)
+                .withSykmeldMedArbeidsgiver(true);
     }
 
     @Override
