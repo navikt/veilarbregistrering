@@ -14,5 +14,8 @@ import lombok.experimental.Wither;
 public class OppfolgingStatusData {
     public boolean underOppfolging;
     public Boolean kanReaktiveres;
+    public Boolean erSykmeldtMedArbeidsgiver;
+
+    @Deprecated
     public Boolean erIkkeArbeidssokerUtenOppfolging;
 }
