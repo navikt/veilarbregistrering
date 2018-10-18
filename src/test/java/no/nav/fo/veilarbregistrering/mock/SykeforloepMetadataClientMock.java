@@ -11,6 +11,6 @@ public class SykeforloepMetadataClientMock extends SykeforloepMetadataClient {
 
     @Override
     public SykeforloepMetaData hentSykeforloepMetadata() {
-        return new SykeforloepMetaData().withErSykmeldt(false);
+        return new SykeforloepMetaData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
     }
 }

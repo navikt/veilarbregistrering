@@ -18,5 +18,4 @@ public class OppfolgingStatusData {
 
     @Deprecated
     public Boolean erIkkeArbeidssokerUtenOppfolging;
-    public boolean sykmeldMedArbeidsgiver;
 }

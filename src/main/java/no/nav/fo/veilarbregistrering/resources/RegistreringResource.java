@@ -90,6 +90,14 @@ public class RegistreringResource {
         return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
     }
 
+    @POST
+    @Path("/startregistrersykmeldt")
+    @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
+    public void registrerSykmeldt() {
+        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
+        brukerRegistreringService.registrerSykmeldt(userService.getFnr());
+    }
+
     private Fnr getFnr() {
         return new Fnr(requestProvider.get().getParameter("fnr"));
     }

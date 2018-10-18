@@ -82,7 +82,11 @@ public class BrukerRegistreringService {
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
-        boolean erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtMedArbeidsgiverOver39uker(oppfolgingStatusData);
+
+        boolean erSykmeldtMedArbeidsgiverOver39uker = false;
+        if (oppfolgingStatusData.erSykmeldtMedArbeidsgiver) {
+            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+        }
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
@@ -99,11 +103,6 @@ public class BrukerRegistreringService {
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
-    }
-
-    private boolean hentErSykmeldtMedArbeidsgiverOver39uker(OppfolgingStatusData oppfolgingStatusData) {
-        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-        return oppfolgingStatusData.sykmeldMedArbeidsgiver && sykeforloepMetaData.erSykmeldt;
     }
 
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
@@ -130,6 +129,22 @@ public class BrukerRegistreringService {
                 utledAlderForFnr(fnr, now()),
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                 now());
+    }
+
+    public void registrerSykmeldt(String fnr) {
+        StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
+        if (startRegistreringStatus.isErSykemeldtMedArbeidsgiverOver39uker()) {
+            oppfolgingClient.settOppfolgingSykmeldt();
+            //Lagring
+        } else {
+            throw new RuntimeException("Registreringsinformasjon er ugyldig");
+        }
+
+    }
+
+    private boolean hentErSykmeldtOver39uker() {
+        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
+        return sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
     }
 
 }
