@@ -15,6 +15,6 @@ public class MainTest {
         DatabaseTestContext.setupContext("Q6");
         TestContext.setup();
         String arguments[] = {TEST_PORT};
-        ApiApp.startApiApp(ApplicationTestConfig.class, arguments);
+        ApiApp.runApp(ApplicationTestConfig.class, arguments);
     }
 }

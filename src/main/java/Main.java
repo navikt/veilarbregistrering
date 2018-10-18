@@ -13,12 +13,6 @@ public class Main {
 
     public static void main(String... args) throws Exception {
 
-        setProperty("http.nonProxyHosts", "*.155.55.|*.192.168.|*.10.|*.local|*.rtv.gov|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no");
-        setProperty("http.proxyHost", "webproxy-nais.nav.no");
-        setProperty("http.proxyPort", "8088");
-        setProperty("https.proxyHost", "webproxy-nais.nav.no");
-        setProperty("https.proxyPort", "8088");
-
         setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));
         setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"));
 
@@ -26,8 +20,7 @@ public class Main {
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty("ABAC_PDP_ENDPOINT_URL"));
         setProperty(STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"));
 
-
-        ApiApp.startApiApp(ApplicationConfig.class, args);
+        ApiApp.runApp(ApplicationConfig.class, args);
     }
 
 }

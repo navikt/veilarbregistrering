@@ -74,3 +74,5 @@ fasitResources:
     path: /veilarbregistrering/api
 alertProfiles:
   - common-java-modules
+
+webproxy: true
