@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigStilling;
-import static org.junit.jupiter.api.Assertions.*;
+import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
+import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.STANDARD_INNSATS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StartRegistreringUtilsServiceTest {
 
@@ -24,7 +24,7 @@ class StartRegistreringUtilsServiceTest {
 
     @Test
     void testProfilering() {
-        LocalDate dagensDato = LocalDate.now();
+        LocalDate dagensDato = now();
 
         List<Integer> aldre = Arrays.asList(25, 40, 65);
         List<Boolean> tilfredsstillerKravTilArbeidList = Arrays.asList(true, false);
@@ -93,7 +93,7 @@ class StartRegistreringUtilsServiceTest {
         Innsatsgruppe onsketInnsatsgruppe;
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
-        } else if ((30 <= alder && alder <= 59)
+        } else if ((18 <= alder && alder <= 59)
                     && startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
                     && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
                     && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
@@ -101,17 +101,49 @@ class StartRegistreringUtilsServiceTest {
                     && besvarelse.getHelseHinder().equals(HelseHinderSvar.NEI)
                     && besvarelse.getAndreForhold().equals(AndreForholdSvar.NEI)
         ) {
-            onsketInnsatsgruppe = Innsatsgruppe.STANDARD_INNSATS;
+            onsketInnsatsgruppe = STANDARD_INNSATS;
         } else {
-            onsketInnsatsgruppe = Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
+            onsketInnsatsgruppe = SITUASJONSBESTEMT_INNSATS;
         }
 
         assertEquals(onsketInnsatsgruppe, innsatsgruppe, "Feil profilering for bruker: " + bruker.toString());
     }
 
     @Test
-    void testSpesifikkBesvarelse() {
-        BrukerRegistrering bruker = new BrukerRegistrering()
+    void testSpesifikkBesvarelseOver30AarOgUnder59Aar() {
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+                hentStandardInnsatsBesvarelse(),
+                35,
+                () -> getArbeidsforholdList(true),
+                now()
+        ).getInnsatsgruppe();
+        assertEquals(STANDARD_INNSATS, innsatsgruppe);
+    }
+
+    @Test
+    void testSpesifikkBesvarelseOver59Aar() {
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+                hentStandardInnsatsBesvarelse(),
+                60,
+                () -> getArbeidsforholdList(true),
+                now()
+        ).getInnsatsgruppe();
+        assertEquals(SITUASJONSBESTEMT_INNSATS, innsatsgruppe);
+    }
+
+    @Test
+    void testSpesifikkBesvarelseUnder30Aar() {
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+                hentStandardInnsatsBesvarelse(),
+                19,
+                () -> getArbeidsforholdList(true),
+                now()
+        ).getInnsatsgruppe();
+        assertEquals(STANDARD_INNSATS, innsatsgruppe);
+    }
+
+    private BrukerRegistrering hentStandardInnsatsBesvarelse() {
+        return new BrukerRegistrering()
                 .setBesvarelse(new Besvarelse()
                         .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
                         .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
@@ -121,29 +153,14 @@ class StartRegistreringUtilsServiceTest {
                         .setHelseHinder(HelseHinderSvar.NEI)
                         .setAndreForhold(AndreForholdSvar.NEI)
                 );
-        List<Arbeidsforhold> arbeidsforholdList = getArbeidsforholdList(true);
-        int alder = 35;
-        LocalDate dagensDato = LocalDate.now();
-
-        StartRegistreringUtilsService startRegistreringUtilsService = new StartRegistreringUtilsService();
-
-        Innsatsgruppe innsatsgruppe = startRegistreringUtilsService.profilerBruker(
-                bruker,
-                alder,
-                () -> arbeidsforholdList,
-                dagensDato
-        ).getInnsatsgruppe();
-
-        assertEquals(Innsatsgruppe.STANDARD_INNSATS, innsatsgruppe);
-
     }
 
     private List<Arbeidsforhold> getArbeidsforholdList(boolean tilfredsstillerKrav) {
         int antallManeder = tilfredsstillerKrav ? 10 : 2;
         return Collections.singletonList(
                 new Arbeidsforhold()
-                        .setFom(LocalDate.now().minusMonths(antallManeder))
-                        .setTom(LocalDate.now())
+                        .setFom(now().minusMonths(antallManeder))
+                        .setTom(now())
         );
 
     }
