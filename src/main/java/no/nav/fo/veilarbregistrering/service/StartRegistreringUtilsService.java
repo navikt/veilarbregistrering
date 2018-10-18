@@ -56,7 +56,7 @@ public class StartRegistreringUtilsService {
             boolean oppfyllerKravTilArbeidserfaring
     ) {
         Besvarelse besvarelse = bruker.getBesvarelse();
-        return (30 <= alder && alder <= 59)
+        return (18 <= alder && alder <= 59)
                 && oppfyllerKravTilArbeidserfaring
                 && !UtdanningSvar.INGEN_UTDANNING.equals(besvarelse.getUtdanning())
                 && UtdanningBestattSvar.JA.equals(besvarelse.getUtdanningBestatt())
