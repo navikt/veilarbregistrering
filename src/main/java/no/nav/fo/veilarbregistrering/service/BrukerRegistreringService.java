@@ -9,6 +9,8 @@ import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
@@ -84,7 +86,7 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (oppfolgingStatusData.erSykmeldtMedArbeidsgiver) {
+        if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
             erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 

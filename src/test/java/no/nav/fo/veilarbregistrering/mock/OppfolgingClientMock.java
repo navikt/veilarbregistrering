@@ -19,7 +19,7 @@ public class OppfolgingClientMock extends OppfolgingClient {
         return new OppfolgingStatusData()
                 .withUnderOppfolging(false)
                 .withKanReaktiveres(false)
-                .withSykmeldMedArbeidsgiver(true);
+                .withErSykmeldtMedArbeidsgiver(true);
     }
 
     @Override
