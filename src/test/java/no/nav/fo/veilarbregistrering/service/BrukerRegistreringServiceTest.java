@@ -135,6 +135,19 @@ public class BrukerRegistreringServiceTest {
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
     }
 
+    @Test
+    void skalRegistrereSykmeldte() {
+        mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
+        mockSykmeldtMedArbeidsgiver();
+        brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
+    }
+
+    @Test
+    void skalIkkeLagreRegistreringSykmeldtSomIkkeOppfyllerKrav() {
+        mockSykmeldtMedArbeidsgiver();
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV));
+    }
+
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
@@ -179,6 +192,17 @@ public class BrukerRegistreringServiceTest {
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
+        );
+    }
+
+    private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
+        when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
+                new SykeforloepMetaData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
+        );
+    }
+    private void mockSykmeldtMedArbeidsgiver() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
+                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true)
         );
     }
 
