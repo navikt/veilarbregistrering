@@ -15,22 +15,13 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
-public class SykeforloepMetadataClient {
+public class SykeforloepMetadataClient extends BaseClient {
 
     public static final String SYKEFORLOEPMETADATA_URL_PROPERTY_NAME = "SYKEFORLOEPMETADATA_URL";
 
-    private final String baseUrl;
-    private final Provider<HttpServletRequest> httpServletRequestProvider;
-    private static final int HTTP_READ_TIMEOUT = 120000;
-
     @Inject
     public SykeforloepMetadataClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        this(getRequiredProperty(SYKEFORLOEPMETADATA_URL_PROPERTY_NAME), httpServletRequestProvider);
-    }
-
-    public SykeforloepMetadataClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
-        this.baseUrl = baseUrl;
-        this.httpServletRequestProvider = httpServletRequestProvider;
+        super(getRequiredProperty(SYKEFORLOEPMETADATA_URL_PROPERTY_NAME), httpServletRequestProvider);
     }
 
     public SykeforloepMetaData hentSykeforloepMetadata() {
@@ -47,6 +38,5 @@ public class SykeforloepMetadataClient {
                     throw new InternalServerErrorException();
                 })
                 .get();
-
     }
 }

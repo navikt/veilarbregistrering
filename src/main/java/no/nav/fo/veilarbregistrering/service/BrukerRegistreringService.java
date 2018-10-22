@@ -9,9 +9,8 @@ import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static java.time.LocalDate.now;
+import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
@@ -86,7 +85,7 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
             erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 
@@ -141,12 +140,9 @@ public class BrukerRegistreringService {
         } else {
             throw new RuntimeException("Registreringsinformasjon er ugyldig");
         }
-
     }
 
     private boolean hentErSykmeldtOver39uker() {
-        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-        return sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
+        return sykeforloepMetadataClient.hentSykeforloepMetadata().erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
     }
-
 }

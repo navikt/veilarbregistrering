@@ -3,13 +3,13 @@ package no.nav.fo.veilarbregistrering.httpclient;
 import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
-import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.API_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class OppfolgingClientHelseSjekk implements Helsesjekk {
 
-    private String veilarboppfolgingPingUrl = getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME) + "/ping";
+    private String veilarboppfolgingPingUrl = getRequiredProperty(API_PROPERTY_NAME) + "/ping";
 
     @Override
     public void helsesjekk() throws Throwable {
