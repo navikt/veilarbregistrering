@@ -11,4 +11,5 @@ public class StartRegistreringStatus {
     private Boolean kreverReaktivering;
     private Boolean erIkkeArbeidssokerUtenOppfolging;
     private boolean erSykemeldtMedArbeidsgiverOver39uker;
+    private RegistreringStatus registreringStatus;
 }

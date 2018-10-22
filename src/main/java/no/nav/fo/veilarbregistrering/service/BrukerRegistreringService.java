@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
@@ -82,6 +83,31 @@ public class BrukerRegistreringService {
         return opprettBruker(fnr, bruker, profilering);
     }
 
+    private RegistreringStatus finnRegistreringStatus(OppfolgingStatusData oppfolgingStatusData) {
+
+        boolean erSykmeldtMedArbeidsgiverOver39uker = false;
+        if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+        }
+
+        if (oppfolgingStatusData.isUnderOppfolging()) {
+            return RegistreringStatus.ALLEREDE_REGISTRERT;
+        } else if (oppfolgingStatusData.getKanReaktiveres()) {
+            return RegistreringStatus.REAKTIVERING;
+        } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
+                && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
+                && erSykmeldtMedArbeidsgiverOver39uker) {
+            return RegistreringStatus.SYKDEMELDT_REGISTRERING;
+        } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
+                && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
+                && !erSykmeldtMedArbeidsgiverOver39uker) {
+            return RegistreringStatus.SPERRET;
+        } else {
+            return RegistreringStatus.ORDINAER_REGISTRERING;
+        }
+
+    }
+
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
@@ -95,6 +121,8 @@ public class BrukerRegistreringService {
                 .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
                 .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
                 .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker);
+
+        startRegistreringStatus.setRegistreringStatus();
         
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
@@ -124,6 +152,7 @@ public class BrukerRegistreringService {
                 FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
         );
     }
+
 
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
         return startRegistreringUtilsService.profilerBruker(
