@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.service;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
@@ -97,7 +96,7 @@ public class BrukerRegistreringService {
         } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
                 && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
                 && erSykmeldtMedArbeidsgiverOver39uker) {
-            return RegistreringStatus.SYKDEMELDT_REGISTRERING;
+            return RegistreringStatus.SYKMELDT_REGISTRERING;
         } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
                 && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
                 && !erSykmeldtMedArbeidsgiverOver39uker) {
@@ -122,7 +121,7 @@ public class BrukerRegistreringService {
                 .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
                 .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker);
 
-        startRegistreringStatus.setRegistreringStatus();
+        startRegistreringStatus.setRegistreringStatus(finnRegistreringStatus(oppfolgingStatusData));
         
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
@@ -175,7 +174,13 @@ public class BrukerRegistreringService {
 
     private boolean hentErSykmeldtOver39uker() {
         SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-        return sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
-    }
 
+        boolean over39Uker = false;
+        if (sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv) {
+            over39Uker = true;
+        } else if (sykeforloepMetaData.erTiltakSykmeldteInngangAktiv) {
+            over39Uker = false;
+        }
+        return over39Uker;
+    }
 }
