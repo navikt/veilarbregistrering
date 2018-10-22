@@ -9,9 +9,8 @@ import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static java.time.LocalDate.now;
+import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
@@ -85,7 +84,7 @@ public class BrukerRegistreringService {
     private RegistreringStatus finnRegistreringStatus(OppfolgingStatusData oppfolgingStatusData) {
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
             erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 
@@ -93,11 +92,11 @@ public class BrukerRegistreringService {
             return RegistreringStatus.ALLEREDE_REGISTRERT;
         } else if (oppfolgingStatusData.getKanReaktiveres()) {
             return RegistreringStatus.REAKTIVERING;
-        } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
                 && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
                 && erSykmeldtMedArbeidsgiverOver39uker) {
             return RegistreringStatus.SYKMELDT_REGISTRERING;
-        } else if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()
                 && oppfolgingStatusData.erSykmeldtMedArbeidsgiver
                 && !erSykmeldtMedArbeidsgiverOver39uker) {
             return RegistreringStatus.SPERRET;
@@ -111,7 +110,7 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (Optional.ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
             erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 
@@ -122,7 +121,7 @@ public class BrukerRegistreringService {
                 .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker);
 
         startRegistreringStatus.setRegistreringStatus(finnRegistreringStatus(oppfolgingStatusData));
-        
+
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdService.hentArbeidsforhold(fnr),
@@ -169,20 +168,19 @@ public class BrukerRegistreringService {
         } else {
             throw new RuntimeException("Registreringsinformasjon er ugyldig");
         }
-
     }
 
     private boolean hentErSykmeldtOver39uker() {
         SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
 
-        if (!Optional.ofNullable(sykeforloepMetaData).isPresent()) {
+        if (!ofNullable(sykeforloepMetaData).isPresent()) {
             return false;
         }
 
-        if (Optional.ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
+        if (ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
                 && sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv) {
             return true;
-        } else if (Optional.ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
+        } else if (ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
             && sykeforloepMetaData.erTiltakSykmeldteInngangAktiv) {
             return false;
         }

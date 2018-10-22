@@ -18,6 +18,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
@@ -85,7 +86,8 @@ class OppfolgingClientTest {
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
-        return oppfolgingClient = new OppfolgingClient("http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT, httpServletRequestProvider);
+        setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
+        return oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
     }
 
     @Test
