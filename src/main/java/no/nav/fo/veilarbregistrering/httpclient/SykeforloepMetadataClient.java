@@ -17,7 +17,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Slf4j
 public class SykeforloepMetadataClient extends BaseClient {
 
-    public static final String SYKEFORLOEPMETADATA_URL_PROPERTY_NAME = "SYKEFORLOEPMETADATA_URL";
+    public static final String SYKEFORLOEPMETADATA_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
 
     @Inject
     public SykeforloepMetadataClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -26,7 +26,7 @@ public class SykeforloepMetadataClient extends BaseClient {
 
     public SykeforloepMetaData hentSykeforloepMetadata() {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getSykeforloepMetadata(baseUrl , cookies, SykeforloepMetaData.class);
+        return getSykeforloepMetadata(baseUrl + "/sykeforloep/metadata" , cookies, SykeforloepMetaData.class);
     }
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
