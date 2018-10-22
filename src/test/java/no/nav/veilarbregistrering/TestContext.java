@@ -16,8 +16,8 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.API_PROPERTY_NAME;
-import static no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient.SYKEFORLOEPMETADATA_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
@@ -43,8 +43,8 @@ public class TestContext {
 
         setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
 
-        setProperty(API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
-        setProperty(SYKEFORLOEPMETADATA_URL_PROPERTY_NAME, "sykeforloep-api"); // TODO hva skal url-api være?
+        setProperty(OPPFOLGING_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
+        setProperty(DIGISYFO_BASE_URL_PROPERTY_NAME, "sykeforloep-api"); // TODO hva skal url-api være?
 
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");

@@ -6,7 +6,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class OppfolgingClientTest {
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private SykeforloepMetadataClient sykeforloepMetadataClient;
+    private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
     private ClientAndServer mockServer;
@@ -58,7 +58,7 @@ class OppfolgingClientTest {
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
-        sykeforloepMetadataClient = mock(SykeforloepMetadataClient.class);
+        sykeforloepMetadataClient = mock(DigisyfoClient.class);
         startRegistreringUtilsService = mock(StartRegistreringUtilsService.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 

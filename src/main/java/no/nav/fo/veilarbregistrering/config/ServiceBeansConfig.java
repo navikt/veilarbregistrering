@@ -4,7 +4,7 @@ import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -24,7 +24,7 @@ public class ServiceBeansConfig {
             ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
             AktorService aktorService,
             OppfolgingClient oppfolgingClient,
-            SykeforloepMetadataClient sykeforloepMetadataClient,
+            DigisyfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtilsService startRegistreringUtilsService
     ) {
@@ -71,8 +71,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    SykeforloepMetadataClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
-        return new SykeforloepMetadataClient(provider);
+    DigisyfoClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
+        return new DigisyfoClient(provider);
     }
 
     @Bean

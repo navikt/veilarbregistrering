@@ -3,18 +3,18 @@ package no.nav.fo.veilarbregistrering.httpclient;
 import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
-import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-public class OppfolgingClientHelseSjekk implements Helsesjekk {
+public class DigisyfoClientHelseSjekk implements Helsesjekk {
 
-    private String veilarboppfolgingPingUrl = getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME) + "/ping";
+    private String digiSyfoPingUrl = getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME) + "/ping";
 
     @Override
     public void helsesjekk() throws Throwable {
         int status = withClient(c ->
-                c.target(veilarboppfolgingPingUrl)
+                c.target(digiSyfoPingUrl)
                         .request()
                         .get()
                         .getStatus());
@@ -26,9 +26,9 @@ public class OppfolgingClientHelseSjekk implements Helsesjekk {
     @Override
     public HelsesjekkMetadata getMetadata() {
         return new HelsesjekkMetadata(
-                "veilarboppfolging",
-                veilarboppfolgingPingUrl,
-                "Ping av veilarboppfolging",
+                "digisyfo",
+                digiSyfoPingUrl,
+                "Ping av digisyfo",
                 true
         );
     }
