@@ -175,12 +175,17 @@ public class BrukerRegistreringService {
     private boolean hentErSykmeldtOver39uker() {
         SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
 
-        boolean over39Uker = false;
-        if (sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv) {
-            over39Uker = true;
-        } else if (sykeforloepMetaData.erTiltakSykmeldteInngangAktiv) {
-            over39Uker = false;
+        if (!Optional.ofNullable(sykeforloepMetaData).isPresent()) {
+            return false;
         }
-        return over39Uker;
+
+        if (Optional.ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
+                && sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv) {
+            return true;
+        } else if (Optional.ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).isPresent()
+            && sykeforloepMetaData.erTiltakSykmeldteInngangAktiv) {
+            return false;
+        }
+        return false;
     }
 }
