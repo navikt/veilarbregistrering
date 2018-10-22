@@ -140,10 +140,11 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
         brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
+        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
     }
 
     @Test
-    void skalIkkeLagreRegistreringSykmeldtSomIkkeOppfyllerKrav() {
+    void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV));
     }
