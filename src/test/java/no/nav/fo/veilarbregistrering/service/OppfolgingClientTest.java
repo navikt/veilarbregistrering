@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.service;
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -36,6 +37,7 @@ class OppfolgingClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
+    private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
@@ -54,6 +56,7 @@ class OppfolgingClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
+        digisyfoFeature = mock(RemoteFeatureConfig.DigisyfoFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
@@ -69,7 +72,8 @@ class OppfolgingClientTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
-                        startRegistreringUtilsService);
+                        startRegistreringUtilsService,
+                        digisyfoFeature);
 
 
         System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
@@ -77,6 +81,7 @@ class OppfolgingClientTest {
 
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
+        when(digisyfoFeature.erAktiv()).thenReturn(true);
     }
 
     private OppfolgingClient buildClient() {

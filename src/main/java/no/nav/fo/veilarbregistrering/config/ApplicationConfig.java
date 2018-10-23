@@ -25,7 +25,8 @@ import javax.servlet.ServletContext;
         CacheConfig.class,
         AAregServiceWSConfig.class,
         OppfolgingClientHelseSjekk.class,
-        DigisyfoClientHelseSjekk.class
+        DigisyfoClientHelseSjekk.class,
+        RemoteFeatureConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 

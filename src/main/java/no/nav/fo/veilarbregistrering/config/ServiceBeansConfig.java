@@ -3,10 +3,13 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
-import no.nav.fo.veilarbregistrering.service.*;
+import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
+import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
+import no.nav.fo.veilarbregistrering.service.UserService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +29,8 @@ public class ServiceBeansConfig {
             OppfolgingClient oppfolgingClient,
             DigisyfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
-            StartRegistreringUtilsService startRegistreringUtilsService
+            StartRegistreringUtilsService startRegistreringUtilsService,
+            RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature
     ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
@@ -34,7 +38,8 @@ public class ServiceBeansConfig {
                 oppfolgingClient,
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
-                startRegistreringUtilsService
+                startRegistreringUtilsService,
+                digiSyfoFeature
         );
     }
 

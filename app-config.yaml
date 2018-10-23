@@ -48,6 +48,8 @@ fasitResources:
     resourceType: restservice
   - alias: abac.pdp.endpoint
     resourceType: restservice
+  - alias: unleash-api
+    resourceType: restservice
 
   # oidc med AzureAD B2C
   - alias: aad_b2c_clientid

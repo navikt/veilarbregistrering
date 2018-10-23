@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -33,10 +34,12 @@ public class BrukerRegistreringServiceTest {
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
+    private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
 
 
     @BeforeEach
     public void setup() {
+        digisyfoFeature = mock(RemoteFeatureConfig.DigisyfoFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
@@ -54,9 +57,11 @@ public class BrukerRegistreringServiceTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
-                        startRegistreringUtilsService);
+                        startRegistreringUtilsService,
+                        digisyfoFeature);
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
+        when(digisyfoFeature.erAktiv()).thenReturn(true);
     }
 
     /*

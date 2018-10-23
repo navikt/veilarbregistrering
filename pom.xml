@@ -244,6 +244,12 @@
             <version>2.9.5</version>
         </dependency>
 
+        <!-- Feature toggle -->
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>feature-toggle</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
