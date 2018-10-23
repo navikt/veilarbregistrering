@@ -26,7 +26,8 @@ public class ServiceBeansConfig {
             OppfolgingClient oppfolgingClient,
             DigisyfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
-            StartRegistreringUtilsService startRegistreringUtilsService
+            StartRegistreringUtilsService startRegistreringUtilsService,
+            RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature
     ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
@@ -34,7 +35,8 @@ public class ServiceBeansConfig {
                 oppfolgingClient,
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
-                startRegistreringUtilsService
+                startRegistreringUtilsService,
+                digiSyfoFeature
         );
     }
 

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -22,6 +23,7 @@ public class BrukerRegistreringService {
 
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
+    private final RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
     private OppfolgingClient oppfolgingClient;
     private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
@@ -32,11 +34,13 @@ public class BrukerRegistreringService {
                                      OppfolgingClient oppfolgingClient,
                                      DigisyfoClient sykeforloepMetadataClient,
                                      ArbeidsforholdService arbeidsforholdService,
-                                     StartRegistreringUtilsService startRegistreringUtilsService
+                                     StartRegistreringUtilsService startRegistreringUtilsService,
+                                     RemoteFeatureConfig.DigisyfoFeature digisyfoFeature
 
     ) {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
+        this.digisyfoFeature = digisyfoFeature;
         this.oppfolgingClient = oppfolgingClient;
         this.sykeforloepMetadataClient = sykeforloepMetadataClient;
         this.arbeidsforholdService = arbeidsforholdService;
@@ -85,8 +89,10 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
-            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+        if (digisyfoFeature.erAktiv()) {
+            if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+                erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+            }
         }
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()

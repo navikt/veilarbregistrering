@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.*;
 
 class BrukerRegistreringServiceIntegrationTest {
 
+    private static RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
@@ -63,6 +65,7 @@ class BrukerRegistreringServiceIntegrationTest {
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
         startRegistreringUtilsService = context.getBean(StartRegistreringUtilsService.class);
+        digisyfoFeature = context.getBean(RemoteFeatureConfig.DigisyfoFeature.class);
     }
 
     @AfterEach
@@ -95,6 +98,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
+        when(digisyfoFeature.erAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
@@ -105,6 +109,11 @@ class BrukerRegistreringServiceIntegrationTest {
     @Configuration
     @ComponentScan
     public static class BrukerregistreringConfigTest {
+
+        @Bean
+        public RemoteFeatureConfig.DigisyfoFeature registreringFeature() {
+            return mock(RemoteFeatureConfig.DigisyfoFeature.class);
+        }
 
         @Bean
         public ArbeidssokerregistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
@@ -145,14 +154,16 @@ class BrukerRegistreringServiceIntegrationTest {
                 OppfolgingClient oppfolgingClient,
                 DigisyfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
-                StartRegistreringUtilsService startRegistreringUtilsService) {
+                StartRegistreringUtilsService startRegistreringUtilsService,
+                RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,
                     oppfolgingClient,
                     sykeforloepMetadataClient,
                     arbeidsforholdService,
-                    startRegistreringUtilsService
+                    startRegistreringUtilsService,
+                    digiSyfoFeature
             );
         }
 
