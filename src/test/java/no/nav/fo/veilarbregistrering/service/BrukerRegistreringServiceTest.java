@@ -153,7 +153,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereAlleredeUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringStatus() == RegistreringStatus.ALLEREDE_REGISTRERT).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isTrue();
     }
 
     @Test
@@ -161,7 +161,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(inaktivBruker());
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringStatus() == RegistreringStatus.REAKTIVERING).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING).isTrue();
     }
 
     @Test
@@ -169,7 +169,7 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringStatus() == RegistreringStatus.SYKMELDT_REGISTRERING).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING).isTrue();
     }
 
     @Test
@@ -177,14 +177,14 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringStatus() == RegistreringStatus.SPERRET).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SPERRET).isTrue();
     }
 
     @Test
     public void skalReturnereOrdinarRegistrering() {
         mockIkkeSykmeldtBruker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringStatus() == RegistreringStatus.ORDINAER_REGISTRERING).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ORDINAER_REGISTRERING).isTrue();
     }
 
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
