@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
@@ -90,17 +91,20 @@ public class BrukerRegistreringService {
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
         if (digisyfoFeature.erAktiv()) {
-            if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).isPresent()) {
+            if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
                 erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
             }
         }
+
+        RegistreringType regStatus = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
                 .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
-                .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker);
-        
+                .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker)
+                .setRegistreringType(regStatus);
+
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdService.hentArbeidsforhold(fnr),
@@ -110,6 +114,22 @@ public class BrukerRegistreringService {
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
+    }
+
+    private RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, boolean erSykmeldtMedArbeidsgiverOver39uker) {
+        if (oppfolgingStatusData.isUnderOppfolging()) {
+            return ALLEREDE_REGISTRERT;
+        } else if (oppfolgingStatusData.getKanReaktiveres()) {
+            return REAKTIVERING;
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+                && erSykmeldtMedArbeidsgiverOver39uker) {
+            return SYKMELDT_REGISTRERING;
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+                && !erSykmeldtMedArbeidsgiverOver39uker) {
+            return SPERRET;
+        } else {
+            return ORDINAER_REGISTRERING;
+        }
     }
 
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
@@ -130,6 +150,7 @@ public class BrukerRegistreringService {
         );
     }
 
+
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
         return startRegistreringUtilsService.profilerBruker(
                 bruker,
@@ -149,6 +170,7 @@ public class BrukerRegistreringService {
     }
 
     private boolean hentErSykmeldtOver39uker() {
-        return sykeforloepMetadataClient.hentSykeforloepMetadata().erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
+        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
+        return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
     }
 }

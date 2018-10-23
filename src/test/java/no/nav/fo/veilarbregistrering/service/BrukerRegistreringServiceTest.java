@@ -154,6 +154,44 @@ public class BrukerRegistreringServiceTest {
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV));
     }
 
+    @Test
+    public void skalReturnereAlleredeUnderOppfolging() {
+        mockArbeidssokerSomHarAktivOppfolging();
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isTrue();
+    }
+
+    @Test
+    public void skalReturnereReaktivering() {
+        mockOppfolgingMedRespons(inaktivBruker());
+        mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING).isTrue();
+    }
+
+    @Test
+    public void skalReturnereSykmeldtRegistrering() {
+        mockSykmeldtBruker();
+        mockSykmeldtBrukerOver39uker();
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING).isTrue();
+    }
+
+    @Test
+    public void skalReturnereSperret() {
+        mockSykmeldtBruker();
+        mockSykmeldtBrukerUnder39uker();
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SPERRET).isTrue();
+    }
+
+    @Test
+    public void skalReturnereOrdinarRegistrering() {
+        mockIkkeSykmeldtBruker();
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ORDINAER_REGISTRERING).isTrue();
+    }
+
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
@@ -201,6 +239,39 @@ public class BrukerRegistreringServiceTest {
         );
     }
 
+    private void mockSykmeldtBruker() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
+                new OppfolgingStatusData()
+                        .withUnderOppfolging(false)
+                        .withKanReaktiveres(false)
+                        .withErSykmeldtMedArbeidsgiver(true)
+        );
+    }
+
+    private void mockIkkeSykmeldtBruker() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
+                new OppfolgingStatusData()
+                        .withUnderOppfolging(false)
+                        .withKanReaktiveres(false)
+                        .withErSykmeldtMedArbeidsgiver(false)
+        );
+    }
+
+    private void mockSykmeldtBrukerOver39uker() {
+        when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
+                new SykeforloepMetaData()
+                        .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
+        );
+    }
+
+    private void mockSykmeldtBrukerUnder39uker() {
+        when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
+                new SykeforloepMetaData()
+                        .withErTiltakSykmeldteInngangAktiv(true)
+        );
+    }
+
+
     private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
         when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
                 new SykeforloepMetaData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
@@ -208,7 +279,7 @@ public class BrukerRegistreringServiceTest {
     }
     private void mockSykmeldtMedArbeidsgiver() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true)
+                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true).withKanReaktiveres(false)
         );
     }
 
