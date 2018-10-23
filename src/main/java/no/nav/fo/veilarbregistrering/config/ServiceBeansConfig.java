@@ -7,6 +7,8 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.requireApplicationName;
 
 @Configuration
 public class ServiceBeansConfig {
