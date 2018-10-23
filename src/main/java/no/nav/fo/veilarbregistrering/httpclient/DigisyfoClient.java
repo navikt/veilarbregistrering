@@ -15,13 +15,13 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
-public class SykeforloepMetadataClient extends BaseClient {
+public class DigisyfoClient extends BaseClient {
 
-    public static final String SYKEFORLOEPMETADATA_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
+    public static final String DIGISYFO_BASE_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
 
     @Inject
-    public SykeforloepMetadataClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        super(getRequiredProperty(SYKEFORLOEPMETADATA_URL_PROPERTY_NAME), httpServletRequestProvider);
+    public DigisyfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
+        super(getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME), httpServletRequestProvider);
     }
 
     public SykeforloepMetaData hentSykeforloepMetadata() {

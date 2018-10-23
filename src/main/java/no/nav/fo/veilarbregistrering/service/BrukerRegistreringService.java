@@ -5,7 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +23,14 @@ public class BrukerRegistreringService {
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
     private OppfolgingClient oppfolgingClient;
-    private SykeforloepMetadataClient sykeforloepMetadataClient;
+    private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
-                                     SykeforloepMetadataClient sykeforloepMetadataClient,
+                                     DigisyfoClient sykeforloepMetadataClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtilsService startRegistreringUtilsService
 

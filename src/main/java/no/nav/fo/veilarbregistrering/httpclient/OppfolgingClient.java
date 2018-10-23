@@ -22,11 +22,11 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Slf4j
 public class OppfolgingClient extends BaseClient {
 
-    public static final String API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
+    public static final String OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        super(getRequiredProperty(API_PROPERTY_NAME), httpServletRequestProvider);
+        super(getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
     }
 
     public void reaktiverBruker(String fnr) {

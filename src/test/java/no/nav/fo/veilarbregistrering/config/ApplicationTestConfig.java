@@ -56,8 +56,8 @@ public class ApplicationTestConfig extends ApplicationConfig {
 
     @Bean
     @Conditional(Mock.class)
-    public SykeforloepMetadataClientMock sykeforloepMetadataClient() {
-        return new SykeforloepMetadataClientMock();
+    public DigisyfoClientMock sykeforloepMetadataClient() {
+        return new DigisyfoClientMock();
     }
 
 }

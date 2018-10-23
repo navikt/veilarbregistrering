@@ -5,6 +5,7 @@ import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClientHelseSjekk;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,7 +24,8 @@ import javax.servlet.ServletContext;
         PepConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
-        OppfolgingClientHelseSjekk.class
+        OppfolgingClientHelseSjekk.class,
+        DigisyfoClientHelseSjekk.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 

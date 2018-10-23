@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbregistrering.mock;
 
 import no.nav.fo.veilarbregistrering.domain.SykeforloepMetaData;
-import no.nav.fo.veilarbregistrering.httpclient.SykeforloepMetadataClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 
-public class SykeforloepMetadataClientMock extends SykeforloepMetadataClient {
+public class DigisyfoClientMock extends DigisyfoClient {
 
-    public SykeforloepMetadataClientMock() {
+    public DigisyfoClientMock() {
         super(null);
     }
 
