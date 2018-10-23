@@ -10,13 +10,13 @@ import static no.nav.sbl.util.EnvironmentUtils.requireApplicationName;
 
 @Configuration
 public class RemoteFeatureConfig {
-    public static final String UNLEASH_URL_PROPERTY = "UNLEASH_URL";
+    public static final String UNLEASH_API_URL_PROPERTY = "UNLEASH_API_URL";
 
     @Bean
     public UnleashService unleashService() {
         return new UnleashService(UnleashServiceConfig.builder()
                 .applicationName(requireApplicationName())
-                .unleashApiUrl(getRequiredProperty(UNLEASH_URL_PROPERTY))
+                .unleashApiUrl(getRequiredProperty(UNLEASH_API_URL_PROPERTY))
                 .build());
     }
 
