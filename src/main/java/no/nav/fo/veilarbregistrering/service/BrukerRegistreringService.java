@@ -90,14 +90,14 @@ public class BrukerRegistreringService {
             erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 
-        RegistreringType regStatus = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
+        RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
                 .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
                 .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker)
-                .setRegistreringType(regStatus);
+                .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
@@ -155,7 +155,7 @@ public class BrukerRegistreringService {
 
     public void registrerSykmeldt(String fnr) {
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
-        if (startRegistreringStatus.isErSykemeldtMedArbeidsgiverOver39uker()) {
+        if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             oppfolgingClient.settOppfolgingSykmeldt();
             //Lagring
         } else {

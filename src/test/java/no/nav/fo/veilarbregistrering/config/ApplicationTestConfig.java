@@ -10,10 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
+
 @Configuration
 public class ApplicationTestConfig extends ApplicationConfig {
 
-    public static final boolean RUN_WITH_MOCKS = true;
+    public static final boolean RUN_WITH_MOCKS = false;
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -38,8 +41,8 @@ public class ApplicationTestConfig extends ApplicationConfig {
 
     @Bean
     @Conditional(Mock.class)
-    public UserService userService() {
-        return new UserServiceMock();
+    public UserService userService(Provider<HttpServletRequest> requestProvider) {
+        return new UserServiceMock(requestProvider);
     }
 
     @Bean

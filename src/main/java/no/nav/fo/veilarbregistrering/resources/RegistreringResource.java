@@ -29,20 +29,17 @@ public class RegistreringResource {
     private ArbeidsforholdService arbeidsforholdService;
     private UserService userService;
     private PepClient pepClient;
-    private Provider<HttpServletRequest> requestProvider;
 
     public RegistreringResource(
             PepClient pepClient,
             UserService userService,
             ArbeidsforholdService arbeidsforholdService,
-            BrukerRegistreringService brukerRegistreringService,
-            Provider<HttpServletRequest> requestProvider
+            BrukerRegistreringService brukerRegistreringService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.arbeidsforholdService = arbeidsforholdService;
         this.brukerRegistreringService = brukerRegistreringService;
-        this.requestProvider = requestProvider;
     }
 
     @GET
@@ -69,8 +66,9 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public ProfilertBrukerRegistrering hentProfilertRegistrering() {
-        pepClient.sjekkLeseTilgangTilFnr(getFnr().getFnr());
-        return brukerRegistreringService.hentProfilertBrukerRegistrering(getFnr());
+        String fnr = userService.getFnrFromUrl();
+        pepClient.sjekkLeseTilgangTilFnr(fnr);
+        return brukerRegistreringService.hentProfilertBrukerRegistrering(new Fnr(fnr));
     }
 
     @POST
@@ -98,7 +96,4 @@ public class RegistreringResource {
         brukerRegistreringService.registrerSykmeldt(userService.getFnr());
     }
 
-    private Fnr getFnr() {
-        return new Fnr(requestProvider.get().getParameter("fnr"));
-    }
 }
