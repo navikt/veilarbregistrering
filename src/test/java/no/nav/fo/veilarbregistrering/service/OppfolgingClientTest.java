@@ -6,6 +6,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
@@ -38,6 +40,7 @@ class OppfolgingClientTest {
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
+    private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtilsService startRegistreringUtilsService;
     private ClientAndServer mockServer;
@@ -55,6 +58,7 @@ class OppfolgingClientTest {
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
+        sykeforloepMetadataClient = mock(DigisyfoClient.class);
         startRegistreringUtilsService = mock(StartRegistreringUtilsService.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -63,6 +67,7 @@ class OppfolgingClientTest {
                         arbeidssokerregistreringRepository,
                         aktorService,
                         oppfolgingClient,
+                        sykeforloepMetadataClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
 
@@ -81,7 +86,8 @@ class OppfolgingClientTest {
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
-        return oppfolgingClient = new OppfolgingClient("http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT, httpServletRequestProvider);
+        setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
+        return oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
     }
 
     @Test

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -21,22 +20,13 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
-public class OppfolgingClient {
+public class OppfolgingClient extends BaseClient {
 
-    public static final String VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
-
-    private final String baseUrl;
-    private final Provider<HttpServletRequest> httpServletRequestProvider;
-    private static final int HTTP_READ_TIMEOUT = 120000;
+    public static final String OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        this(getRequiredProperty(VEILARBOPPFOLGINGAPI_URL_PROPERTY_NAME), httpServletRequestProvider);
-    }
-
-    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
-        this.baseUrl = baseUrl;
-        this.httpServletRequestProvider = httpServletRequestProvider;
+        super(getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
     }
 
     public void reaktiverBruker(String fnr) {
@@ -60,6 +50,15 @@ public class OppfolgingClient {
         return getOppfolging(baseUrl + "/oppfolging?fnr=" + fnr, cookies, OppfolgingStatusData.class);
     }
 
+    public void settOppfolgingSykmeldt() {
+        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
+        withClient(
+                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                , c -> postOppfolgingSykmeldt(c, cookies)
+        );
+    }
+
+
     private int postBrukerReAktivering(String fnr, Client client, String cookies) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
         Response response = client.target(url)
@@ -80,17 +79,14 @@ public class OppfolgingClient {
         return behandleHttpResponse(response, url);
     }
 
-    private int behandleHttpResponse(Response response, String url) {
-        int status = response.getStatus();
+    private int postOppfolgingSykmeldt(Client client, String cookies) {
+        String url = baseUrl + "/oppfolging/sykmeldt";
+        Response response = client.target(url)
+                .request()
+                .header(COOKIE, cookies)
+                .post(null);
 
-        if (status == 204) {
-            return status;
-        } else if (status == 403) {
-            log.error("Feil ved kall mot VeilArbOppfolging : {}, response : {}", url, response);
-            throw new WebApplicationException(response);
-        } else {
-            throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
-        }
+        return behandleHttpResponse(response, url);
     }
 
     private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {

@@ -5,6 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,7 @@ public class BrukerRegistreringServiceTest {
     private static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
 
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private DigisyfoClient sykeforloepMetadataClient;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
@@ -38,6 +40,7 @@ public class BrukerRegistreringServiceTest {
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
+        sykeforloepMetadataClient = mock(DigisyfoClient.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         startRegistreringUtilsService = new StartRegistreringUtilsService();
 
@@ -49,6 +52,7 @@ public class BrukerRegistreringServiceTest {
                         arbeidssokerregistreringRepository,
                         aktorService,
                         oppfolgingClient,
+                        sykeforloepMetadataClient,
                         arbeidsforholdService,
                         startRegistreringUtilsService);
 
@@ -131,6 +135,20 @@ public class BrukerRegistreringServiceTest {
         assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
     }
 
+    @Test
+    void skalRegistrereSykmeldte() {
+        mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
+        mockSykmeldtMedArbeidsgiver();
+        brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
+        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
+    }
+
+    @Test
+    void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
+        mockSykmeldtMedArbeidsgiver();
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV));
+    }
+
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
@@ -175,6 +193,17 @@ public class BrukerRegistreringServiceTest {
     private void mockInaktivBruker() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
+        );
+    }
+
+    private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
+        when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
+                new SykeforloepMetaData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
+        );
+    }
+    private void mockSykmeldtMedArbeidsgiver() {
+        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
+                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true)
         );
     }
 

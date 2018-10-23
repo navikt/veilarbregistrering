@@ -44,6 +44,8 @@ fasitResources:
     resourceType: baseUrl
   - alias: veilArbOppfolgingAPI
     resourceType: restservice
+  - alias: sykefravaerapi
+    resourceType: restservice
   - alias: abac.pdp.endpoint
     resourceType: restservice
 
