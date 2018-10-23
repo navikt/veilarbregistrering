@@ -11,9 +11,6 @@ import no.nav.fo.veilarbregistrering.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,7 +21,6 @@ class RegistreringResourceTest {
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
-    private Provider<HttpServletRequest> requestProvider;
 
     @BeforeEach
     public void setup() {
@@ -37,8 +33,7 @@ class RegistreringResourceTest {
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService,
-                requestProvider
+                brukerRegistreringService
         );
     }
 
@@ -53,6 +48,13 @@ class RegistreringResourceTest {
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
         registreringResource.hentStartRegistreringStatus();
+        verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
+    }
+
+    @Test
+    public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
+        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        registreringResource.hentProfilertRegistrering();
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
 

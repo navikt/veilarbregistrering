@@ -50,15 +50,13 @@ public class ServiceBeansConfig {
             PepClient pepClient,
             UserService userService,
             ArbeidsforholdService arbeidsforholdService,
-            BrukerRegistreringService brukerRegistreringService,
-            Provider<HttpServletRequest> requestProvider
+            BrukerRegistreringService brukerRegistreringService
     ) {
         return new RegistreringResource(
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService,
-                requestProvider
+                brukerRegistreringService
         );
     }
 
@@ -88,8 +86,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    UserService userService() {
-        return new UserService();
+    UserService userService(Provider<HttpServletRequest> provider) {
+        return new UserService(provider);
     }
 
 }
