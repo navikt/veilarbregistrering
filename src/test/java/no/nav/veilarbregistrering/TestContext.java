@@ -17,10 +17,8 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.UNLEASH_API_URL_PROPERTY;
-import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 
 
@@ -69,8 +67,5 @@ public class TestContext {
         Util.setProperty(AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME, FasitUtils.getBaseUrl("aad_b2c_discovery"));
         Util.setProperty(AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME, azureADClientId.username);
 
-        setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
-        setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
     }
-
 }

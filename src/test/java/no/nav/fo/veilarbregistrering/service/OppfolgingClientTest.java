@@ -6,8 +6,8 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.lang.System.setProperty;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +42,7 @@ class OppfolgingClientTest {
     private OppfolgingClient oppfolgingClient;
     private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private StartRegistreringUtilsService startRegistreringUtilsService;
+    private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
     private String ident;
 
@@ -62,7 +60,7 @@ class OppfolgingClientTest {
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         sykeforloepMetadataClient = mock(DigisyfoClient.class);
-        startRegistreringUtilsService = mock(StartRegistreringUtilsService.class);
+        startRegistreringUtils = mock(StartRegistreringUtils.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
@@ -72,14 +70,11 @@ class OppfolgingClientTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
-                        startRegistreringUtilsService,
+                        startRegistreringUtils,
                         digisyfoFeature);
 
 
-        System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
-        System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
-
-        when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
+        when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
         when(digisyfoFeature.erAktiv()).thenReturn(true);
     }
@@ -116,7 +111,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
         when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new BrukerRegistrering());
-        when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
+        when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));

@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
+import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static AktorService aktorService;
     private static OppfolgingClient oppfolgingClient;
     private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
-    private static StartRegistreringUtilsService startRegistreringUtilsService;
+    private static StartRegistreringUtils startRegistreringUtils;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
     private static final BrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
@@ -64,7 +64,7 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
-        startRegistreringUtilsService = context.getBean(StartRegistreringUtilsService.class);
+        startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
         digisyfoFeature = context.getBean(RemoteFeatureConfig.DigisyfoFeature.class);
     }
 
@@ -101,8 +101,8 @@ class BrukerRegistreringServiceIntegrationTest {
         when(digisyfoFeature.erAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
-        when(startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
-        when(startRegistreringUtilsService.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
+        when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
+        when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
     }
 
 
@@ -142,8 +142,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public StartRegistreringUtilsService startRegistreringUtils() {
-            return mock(StartRegistreringUtilsService.class);
+        public StartRegistreringUtils startRegistreringUtils() {
+            return mock(StartRegistreringUtils.class);
         }
 
 
@@ -154,7 +154,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 OppfolgingClient oppfolgingClient,
                 DigisyfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
-                StartRegistreringUtilsService startRegistreringUtilsService,
+                StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
@@ -162,7 +162,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     oppfolgingClient,
                     sykeforloepMetadataClient,
                     arbeidsforholdService,
-                    startRegistreringUtilsService,
+                    startRegistreringUtils,
                     digiSyfoFeature
             );
         }

@@ -18,9 +18,9 @@ import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.SITUASJONSBESTE
 import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.STANDARD_INNSATS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StartRegistreringUtilsServiceTest {
+class StartRegistreringUtilsTest {
 
-    private StartRegistreringUtilsService startRegistreringUtilsService = new StartRegistreringUtilsService();
+    private StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
 
     @Test
     void testProfilering() {
@@ -82,7 +82,7 @@ class StartRegistreringUtilsServiceTest {
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
     ) {
-        Innsatsgruppe innsatsgruppe = startRegistreringUtilsService.profilerBruker(
+        Innsatsgruppe innsatsgruppe = startRegistreringUtils.profilerBruker(
                 bruker,
                 alder,
                 arbeidsforholdSupplier,
@@ -94,7 +94,7 @@ class StartRegistreringUtilsServiceTest {
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
         } else if ((18 <= alder && alder <= 59)
-                    && startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
+                    && startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
                     && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
                     && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
                     && besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.JA)
@@ -111,7 +111,7 @@ class StartRegistreringUtilsServiceTest {
 
     @Test
     void testSpesifikkBesvarelseOver30AarOgUnder59Aar() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
                 hentStandardInnsatsBesvarelse(),
                 35,
                 () -> getArbeidsforholdList(true),
@@ -122,7 +122,7 @@ class StartRegistreringUtilsServiceTest {
 
     @Test
     void testSpesifikkBesvarelseOver59Aar() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
                 hentStandardInnsatsBesvarelse(),
                 60,
                 () -> getArbeidsforholdList(true),
@@ -133,7 +133,7 @@ class StartRegistreringUtilsServiceTest {
 
     @Test
     void testSpesifikkBesvarelseUnder30Aar() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtilsService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
                 hentStandardInnsatsBesvarelse(),
                 19,
                 () -> getArbeidsforholdList(true),

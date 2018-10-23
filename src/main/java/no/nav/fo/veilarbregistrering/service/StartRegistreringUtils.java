@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
 
@@ -12,16 +9,33 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class StartRegistreringUtilsService {
+import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
 
-    public static final String MIN_ALDER_AUTOMATISK_REGISTRERING = "MIN_ALDER_AUTOMATISK_REGISTRERING";
-    public static final String MAX_ALDER_AUTOMATISK_REGISTRERING = "MAKS_ALDER_AUTOMATISK_REGISTRERING";
+public class StartRegistreringUtils {
 
     public boolean harJobbetSammenhengendeSeksAvTolvSisteManeder(
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
     ) {
         return ArbeidsforholdUtils.oppfyllerBetingelseOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
+    }
+
+    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, boolean erSykmeldtMedArbeidsgiverOver39uker) {
+        if (oppfolgingStatusData.isUnderOppfolging()) {
+            return ALLEREDE_REGISTRERT;
+        } else if (oppfolgingStatusData.getKanReaktiveres()) {
+            return REAKTIVERING;
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+                && erSykmeldtMedArbeidsgiverOver39uker) {
+            return SYKMELDT_REGISTRERING;
+        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+                && !erSykmeldtMedArbeidsgiverOver39uker) {
+            return SPERRET;
+        } else {
+            return ORDINAER_REGISTRERING;
+        }
     }
 
     public Profilering profilerBruker(

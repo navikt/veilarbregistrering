@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService;
+import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.service.UserService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ public class ServiceBeansConfig {
             OppfolgingClient oppfolgingClient,
             DigisyfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
-            StartRegistreringUtilsService startRegistreringUtilsService,
+            StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature
     ) {
         return new BrukerRegistreringService(
@@ -38,7 +38,7 @@ public class ServiceBeansConfig {
                 oppfolgingClient,
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
-                startRegistreringUtilsService,
+                startRegistreringUtils,
                 digiSyfoFeature
         );
     }
@@ -79,8 +79,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    StartRegistreringUtilsService startRegistreringUtils() {
-        return new StartRegistreringUtilsService();
+    StartRegistreringUtils startRegistreringUtils() {
+        return new StartRegistreringUtils();
     }
 
     @Bean

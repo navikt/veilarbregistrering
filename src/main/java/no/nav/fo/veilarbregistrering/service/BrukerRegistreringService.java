@@ -5,14 +5,15 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
@@ -28,14 +29,14 @@ public class BrukerRegistreringService {
     private OppfolgingClient oppfolgingClient;
     private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private StartRegistreringUtilsService startRegistreringUtilsService;
+    private StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
                                      DigisyfoClient sykeforloepMetadataClient,
                                      ArbeidsforholdService arbeidsforholdService,
-                                     StartRegistreringUtilsService startRegistreringUtilsService,
+                                     StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.DigisyfoFeature digisyfoFeature
 
     ) {
@@ -45,7 +46,7 @@ public class BrukerRegistreringService {
         this.oppfolgingClient = oppfolgingClient;
         this.sykeforloepMetadataClient = sykeforloepMetadataClient;
         this.arbeidsforholdService = arbeidsforholdService;
-        this.startRegistreringUtilsService = startRegistreringUtilsService;
+        this.startRegistreringUtils = startRegistreringUtils;
     }
 
     @Transactional
@@ -106,7 +107,7 @@ public class BrukerRegistreringService {
                 .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
-            boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtilsService.harJobbetSammenhengendeSeksAvTolvSisteManeder(
+            boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                     now());
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
@@ -114,22 +115,6 @@ public class BrukerRegistreringService {
 
         log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
-    }
-
-    private RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, boolean erSykmeldtMedArbeidsgiverOver39uker) {
-        if (oppfolgingStatusData.isUnderOppfolging()) {
-            return ALLEREDE_REGISTRERT;
-        } else if (oppfolgingStatusData.getKanReaktiveres()) {
-            return REAKTIVERING;
-        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
-                && erSykmeldtMedArbeidsgiverOver39uker) {
-            return SYKMELDT_REGISTRERING;
-        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
-                && !erSykmeldtMedArbeidsgiverOver39uker) {
-            return SPERRET;
-        } else {
-            return ORDINAER_REGISTRERING;
-        }
     }
 
     private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
@@ -150,9 +135,8 @@ public class BrukerRegistreringService {
         );
     }
 
-
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
-        return startRegistreringUtilsService.profilerBruker(
+        return startRegistreringUtils.profilerBruker(
                 bruker,
                 utledAlderForFnr(fnr, now()),
                 () -> arbeidsforholdService.hentArbeidsforhold(fnr),

@@ -5,8 +5,8 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,9 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MAX_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtilsService.MIN_ALDER_AUTOMATISK_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +32,7 @@ public class BrukerRegistreringServiceTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
-    private StartRegistreringUtilsService startRegistreringUtilsService;
+    private StartRegistreringUtils startRegistreringUtils;
     private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
 
 
@@ -45,10 +44,7 @@ public class BrukerRegistreringServiceTest {
         oppfolgingClient = mock(OppfolgingClient.class);
         sykeforloepMetadataClient = mock(DigisyfoClient.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
-        startRegistreringUtilsService = new StartRegistreringUtilsService();
-
-        System.setProperty(MIN_ALDER_AUTOMATISK_REGISTRERING, "30");
-        System.setProperty(MAX_ALDER_AUTOMATISK_REGISTRERING, "59");
+        startRegistreringUtils = new StartRegistreringUtils();
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -57,7 +53,7 @@ public class BrukerRegistreringServiceTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
-                        startRegistreringUtilsService,
+                        startRegistreringUtils,
                         digisyfoFeature);
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
