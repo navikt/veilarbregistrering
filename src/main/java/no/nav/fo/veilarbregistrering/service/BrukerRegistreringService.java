@@ -160,6 +160,9 @@ public class BrukerRegistreringService {
     }
 
     public void registrerSykmeldt(String fnr) {
+        if (!digisyfoFeature.erAktiv()) {
+            throw new RuntimeException("Tjenesten er togglet av.");
+        }
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             oppfolgingClient.settOppfolgingSykmeldt();

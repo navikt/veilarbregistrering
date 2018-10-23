@@ -59,6 +59,12 @@ class RegistreringResourceTest {
     }
 
     @Test
+    public void skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
+        registreringResource.registrerSykmeldt();
+        verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
+    }
+
+    @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         BrukerRegistrering brukerRegistrering = new BrukerRegistrering()
                 .setEnigIOppsummering(true)
