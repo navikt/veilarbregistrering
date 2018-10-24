@@ -25,7 +25,7 @@ public class StartRegistreringUtils {
     protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, boolean erSykmeldtMedArbeidsgiverOver39uker) {
         if (oppfolgingStatusData.isUnderOppfolging()) {
             return ALLEREDE_REGISTRERT;
-        } else if (oppfolgingStatusData.getKanReaktiveres()) {
+        } else if (ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
             return REAKTIVERING;
         } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
                 && erSykmeldtMedArbeidsgiverOver39uker) {
