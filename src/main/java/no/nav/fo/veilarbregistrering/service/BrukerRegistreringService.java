@@ -25,7 +25,7 @@ public class BrukerRegistreringService {
 
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private final AktorService aktorService;
-    private final RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
+    private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private OppfolgingClient oppfolgingClient;
     private DigisyfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
@@ -37,12 +37,12 @@ public class BrukerRegistreringService {
                                      DigisyfoClient sykeforloepMetadataClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtils startRegistreringUtils,
-                                     RemoteFeatureConfig.DigisyfoFeature digisyfoFeature
+                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
 
     ) {
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
         this.aktorService = aktorService;
-        this.digisyfoFeature = digisyfoFeature;
+        this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
         this.sykeforloepMetadataClient = sykeforloepMetadataClient;
         this.arbeidsforholdService = arbeidsforholdService;
@@ -91,10 +91,13 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (digisyfoFeature.erAktiv()) {
+        if (!sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
                 erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
             }
+        } else {
+            //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
+            erSykmeldtMedArbeidsgiverOver39uker = true;
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
@@ -144,7 +147,7 @@ public class BrukerRegistreringService {
     }
 
     public void registrerSykmeldt(String fnr) {
-        if (!digisyfoFeature.erAktiv()) {
+        if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);

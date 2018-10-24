@@ -21,15 +21,19 @@ public class RemoteFeatureConfig {
     }
 
     @Bean
-    public DigisyfoFeature digiSyfoFeature(UnleashService unleashService) {
-        return new DigisyfoFeature(unleashService);
+    public SykemeldtRegistreringFeature digiSyfoFeature(UnleashService unleashService) {
+        return new SykemeldtRegistreringFeature(unleashService);
     }
 
-    public static class DigisyfoFeature extends RemoteFeatureConfig {
+    public static class SykemeldtRegistreringFeature extends RemoteFeatureConfig {
         protected UnleashService unleashService;
-        public DigisyfoFeature(UnleashService unleashService) { this.unleashService = unleashService; }
+        public SykemeldtRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
 
-        public boolean erAktiv() {
+        public boolean erSykemeldtRegistreringAktiv() {
+            return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
+        }
+
+        public boolean skalMockeDataFraDigisyfo() {
             return unleashService.isEnabled("veilarbregistrering.digisyfo");
         }
     }

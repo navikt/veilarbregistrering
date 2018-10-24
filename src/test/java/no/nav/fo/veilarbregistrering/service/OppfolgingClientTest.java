@@ -35,7 +35,7 @@ class OppfolgingClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
-    private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
+    private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
@@ -54,7 +54,7 @@ class OppfolgingClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        digisyfoFeature = mock(RemoteFeatureConfig.DigisyfoFeature.class);
+        sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
@@ -71,12 +71,12 @@ class OppfolgingClientTest {
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
                         startRegistreringUtils,
-                        digisyfoFeature);
+                        sykemeldtRegistreringFeature);
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
-        when(digisyfoFeature.erAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 
     private OppfolgingClient buildClient() {
