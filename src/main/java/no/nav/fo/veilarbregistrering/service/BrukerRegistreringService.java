@@ -91,10 +91,8 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-                erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
-            }
+        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
+            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
         }
 
         if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
@@ -162,7 +160,11 @@ public class BrukerRegistreringService {
     }
 
     private boolean hentErSykmeldtOver39uker() {
-        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-        return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
+            SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
+            return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+        } else {
+            return false;
+        }
     }
 }
