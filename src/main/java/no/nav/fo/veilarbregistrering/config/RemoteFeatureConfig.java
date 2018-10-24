@@ -34,11 +34,11 @@ public class RemoteFeatureConfig {
         }
 
         public boolean skalKalleDigisyfoTjeneste() {
-            return unleashService.isEnabled("veilarbregistrering.digisyfo.mock");
+            return unleashService.isEnabled("veilarbregistrering.digisyfo");
         }
 
         public boolean skalMockeDataFraDigisyfo() {
-            return unleashService.isEnabled("veilarbregistrering.digisyfo");
+            return unleashService.isEnabled("veilarbregistrering.digisyfo.mock");
         }
     }
     
