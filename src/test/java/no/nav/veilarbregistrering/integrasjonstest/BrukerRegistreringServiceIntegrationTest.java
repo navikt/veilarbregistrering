@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 
 class BrukerRegistreringServiceIntegrationTest {
 
-    private static RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
+    private static RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
@@ -65,7 +65,7 @@ class BrukerRegistreringServiceIntegrationTest {
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
-        digisyfoFeature = context.getBean(RemoteFeatureConfig.DigisyfoFeature.class);
+        sykemeldtRegistreringFeature = context.getBean(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
     }
 
     @AfterEach
@@ -98,7 +98,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
-        when(digisyfoFeature.erAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
@@ -111,8 +111,8 @@ class BrukerRegistreringServiceIntegrationTest {
     public static class BrukerregistreringConfigTest {
 
         @Bean
-        public RemoteFeatureConfig.DigisyfoFeature registreringFeature() {
-            return mock(RemoteFeatureConfig.DigisyfoFeature.class);
+        public RemoteFeatureConfig.SykemeldtRegistreringFeature registreringFeature() {
+            return mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         }
 
         @Bean
@@ -155,7 +155,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 DigisyfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtils startRegistreringUtils,
-                RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature) {
+                RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,

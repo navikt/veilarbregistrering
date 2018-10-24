@@ -33,12 +33,12 @@ public class BrukerRegistreringServiceTest {
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
-    private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
+    private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
 
 
     @BeforeEach
     public void setup() {
-        digisyfoFeature = mock(RemoteFeatureConfig.DigisyfoFeature.class);
+        sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
@@ -54,10 +54,10 @@ public class BrukerRegistreringServiceTest {
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
                         startRegistreringUtils,
-                        digisyfoFeature);
+                        sykemeldtRegistreringFeature);
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
-        when(digisyfoFeature.erAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 
     /*
@@ -186,6 +186,25 @@ public class BrukerRegistreringServiceTest {
         mockIkkeSykmeldtBruker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ORDINAER_REGISTRERING).isTrue();
+    }
+
+    @Test
+    public void skalIkkeKalleDigiSyfoTjenesteVedMockingAvTjenesten() {
+        mockSykmeldtBruker();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        verify(sykeforloepMetadataClient, times(0)).hentSykeforloepMetadata();
+    }
+
+    @Test
+    public void skalKalleDigiSyfoTjenesteVedMockingAvskrudd() {
+        mockSykmeldtBruker();
+        mockSykmeldtBrukerOver39uker();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(false);
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        verify(sykeforloepMetadataClient, times(1)).hentSykeforloepMetadata();
     }
 
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {

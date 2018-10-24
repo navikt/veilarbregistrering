@@ -30,7 +30,7 @@ public class ServiceBeansConfig {
             DigisyfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.DigisyfoFeature digiSyfoFeature
+            RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature
     ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,

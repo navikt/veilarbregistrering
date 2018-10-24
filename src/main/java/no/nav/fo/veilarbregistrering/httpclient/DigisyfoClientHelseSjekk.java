@@ -11,15 +11,15 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class DigisyfoClientHelseSjekk implements Helsesjekk {
 
     private String digiSyfoPingUrl = getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME) + "/ping";
-    private RemoteFeatureConfig.DigisyfoFeature digisyfoFeature;
+    private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
 
-    public DigisyfoClientHelseSjekk(RemoteFeatureConfig.DigisyfoFeature digisyfoFeature) {
-        this.digisyfoFeature = digisyfoFeature;
+    public DigisyfoClientHelseSjekk(RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
+        this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
     }
 
     @Override
     public void helsesjekk() throws Throwable {
-        if (!digisyfoFeature.erAktiv()) {
+        if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             return;
         }
         int status = withClient(c ->
