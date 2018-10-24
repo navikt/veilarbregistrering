@@ -141,7 +141,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
         brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
-        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
+        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(FNR_OPPFYLLER_KRAV);
     }
 
     @Test
