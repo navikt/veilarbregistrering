@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.of;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -140,6 +141,8 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSykmeldte() {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
     }
@@ -169,8 +172,10 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereSykmeldtRegistrering() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING).isTrue();
     }
 
     @Test
@@ -189,23 +194,51 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalIkkeKalleDigiSyfoTjenesteVedMockingAvTjenesten() {
+    public void skalIkkeKalleDigiSyfoTjenesteNaarToggleErAv() {
         mockSykmeldtBruker();
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
         when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(false);
+        getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         verify(sykeforloepMetadataClient, times(0)).hentSykeforloepMetadata();
     }
 
     @Test
-    public void skalKalleDigiSyfoTjenesteVedMockingAvskrudd() {
+    public void skalKalleDigiSyfoTjenesteNaarToggleErPaa() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(false);
+        getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        verify(sykeforloepMetadataClient, times(1)).hentSykeforloepMetadata();
+    }
+
+    @Test
+    public void mockDataSkalOverskriveResponsFraTjenesteNaarMockToggleErPaa() {
+        mockSykmeldtBruker();
+        mockSykmeldtBrukerUnder39uker();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        verify(sykeforloepMetadataClient, times(1)).hentSykeforloepMetadata();
+        assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isTrue();
+    }
+
+
+    @Test
+    public void mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
+        mockSykmeldtBruker();
+        mockSykmeldtBrukerUnder39uker();
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(false);
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         verify(sykeforloepMetadataClient, times(1)).hentSykeforloepMetadata();
+        assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
+
 
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
@@ -282,7 +315,7 @@ public class BrukerRegistreringServiceTest {
     private void mockSykmeldtBrukerUnder39uker() {
         when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
                 new SykeforloepMetaData()
-                        .withErTiltakSykmeldteInngangAktiv(true)
+                        .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
         );
     }
 

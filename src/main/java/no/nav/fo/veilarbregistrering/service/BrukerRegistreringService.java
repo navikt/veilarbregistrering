@@ -91,11 +91,13 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (!sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
+        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
             if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
                 erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
             }
-        } else {
+        }
+
+        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
             erSykmeldtMedArbeidsgiverOver39uker = true;
         }
