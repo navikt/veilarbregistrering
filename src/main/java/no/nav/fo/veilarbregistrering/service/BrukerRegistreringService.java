@@ -91,11 +91,11 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
-        if (!sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
-            if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-                erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
-            }
-        } else {
+        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
+            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+        }
+
+        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
             erSykmeldtMedArbeidsgiverOver39uker = true;
         }
@@ -160,7 +160,11 @@ public class BrukerRegistreringService {
     }
 
     private boolean hentErSykmeldtOver39uker() {
-        SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-        return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
+            SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
+            return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+        } else {
+            return false;
+        }
     }
 }

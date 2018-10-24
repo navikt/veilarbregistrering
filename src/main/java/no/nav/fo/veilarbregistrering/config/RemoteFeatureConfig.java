@@ -33,6 +33,10 @@ public class RemoteFeatureConfig {
             return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
         }
 
+        public boolean skalKalleDigisyfoTjeneste() {
+            return unleashService.isEnabled("veilarbregistrering.digisyfo.mock");
+        }
+
         public boolean skalMockeDataFraDigisyfo() {
             return unleashService.isEnabled("veilarbregistrering.digisyfo");
         }
