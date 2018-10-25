@@ -18,12 +18,13 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class DigisyfoClient extends BaseClient {
 
     public static final String DIGISYFO_BASE_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
+    public static final String API_KEY_FASIT_KEY = "VEILARBREGISTRERING_SYKEFRAVAERAPI_APIKEY_PASSWORD";
     private static String apiKey = "";
 
     @Inject
     public DigisyfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
         super(getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME), httpServletRequestProvider);
-        this.apiKey = getRequiredProperty("VEILARBREGISTRERING_SYKEFRAVAERAPI_APIKEY_PASSWORD");
+        this.apiKey = getRequiredProperty(API_KEY_FASIT_KEY);
     }
 
     public SykeforloepMetaData hentSykeforloepMetadata() {
