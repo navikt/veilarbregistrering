@@ -18,10 +18,12 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class DigisyfoClient extends BaseClient {
 
     public static final String DIGISYFO_BASE_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
+    private static String apiKey = "";
 
     @Inject
     public DigisyfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
         super(getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME), httpServletRequestProvider);
+        this.apiKey = getRequiredProperty("VEILARBREGISTRERING_SYKEFRAVAERAPI_APIKEY_PASSWORD");
     }
 
     public SykeforloepMetaData hentSykeforloepMetadata() {
@@ -32,7 +34,11 @@ public class DigisyfoClient extends BaseClient {
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
         return Try.of(() ->
                 withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                        c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
+                        c -> c.target(url)
+                                .request()
+                                .header(COOKIE, cookies)
+                                .header("x-nav-apiKey", apiKey)
+                                .get(returnType)))
                 .onFailure((e) -> {
                     log.error("Feil ved kall til Sykeforloep metadata {}", url, e);
                     throw new InternalServerErrorException();

@@ -46,6 +46,8 @@ fasitResources:
     resourceType: restservice
   - alias: sykefravaerapi
     resourceType: restservice
+  - alias: veilarbregistrering-sykefravaerapi-apiKey
+    resourceType: credential
   - alias: abac.pdp.endpoint
     resourceType: restservice
   - alias: unleash-api
