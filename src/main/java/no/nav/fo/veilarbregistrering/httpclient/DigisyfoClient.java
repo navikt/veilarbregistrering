@@ -29,7 +29,7 @@ public class DigisyfoClient extends BaseClient {
 
     public SykeforloepMetaData hentSykeforloepMetadata() {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getSykeforloepMetadata(baseUrl + "/sykeforloep/metadata" , cookies, SykeforloepMetaData.class);
+        return getSykeforloepMetadata(baseUrl + "sykeforloep/metadata" , cookies, SykeforloepMetaData.class);
     }
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
