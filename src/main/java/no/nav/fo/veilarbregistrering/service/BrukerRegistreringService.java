@@ -52,8 +52,8 @@ public class BrukerRegistreringService {
     @Transactional
     public void reaktiverBruker(String fnr) {
 
-        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getKreverReaktivering();
-        if (kanReaktiveres == null || !kanReaktiveres) {
+        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getRegistreringType() == RegistreringType.REAKTIVERING;
+        if (!kanReaktiveres) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
@@ -70,7 +70,7 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
 
-        if (startRegistreringStatus.isUnderOppfolging()) {
+        if (startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
@@ -102,12 +102,7 @@ public class BrukerRegistreringService {
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
 
-        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
-                .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
-                .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker)
-                .setRegistreringType(registreringType);
+        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus().setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(

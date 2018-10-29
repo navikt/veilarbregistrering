@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.domain.RegistreringType;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
@@ -17,8 +18,8 @@ public class FunksjonelleMetrikker {
 
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
         Event event = MetricsFactory.createEvent("registrering.bruker.data");
-        event.addFieldToReport("erAktivIArena", registreringStatus.isUnderOppfolging());
-        event.addFieldToReport("kreverReaktivering", registreringStatus.getKreverReaktivering());
+        event.addFieldToReport("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT);
+        event.addFieldToReport("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING);
         event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
         event.report();
     }
