@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ class DigisyfoClientTest {
 
     @BeforeEach
     public void setup() {
+        TestContext.setup();
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
@@ -78,7 +80,7 @@ class DigisyfoClientTest {
 
     private DigisyfoClient buildSykeForloepClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
-        setProperty("SYKEFRAVAERAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
+        setProperty("SYKEFRAVAERAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/");
         return sykeforloepMetadataClient = new DigisyfoClient(httpServletRequestProvider);
     }
 
