@@ -144,7 +144,7 @@ public class BrukerRegistreringServiceTest {
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
         when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
-        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(FNR_OPPFYLLER_KRAV);
+        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
     }
 
     @Test

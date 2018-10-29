@@ -50,11 +50,11 @@ public class OppfolgingClient extends BaseClient {
         return getOppfolging(baseUrl + "/oppfolging?fnr=" + fnr, cookies, OppfolgingStatusData.class);
     }
 
-    public void settOppfolgingSykmeldt(String fnr) {
+    public void settOppfolgingSykmeldt() {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(fnr, c, cookies)
+                , c -> postOppfolgingSykmeldt(c, cookies)
         );
     }
 
@@ -79,7 +79,7 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
-    private int postOppfolgingSykmeldt(String fnr, Client client, String cookies) {
+    private int postOppfolgingSykmeldt( Client client, String cookies) {
         String url = baseUrl + "/oppfolging/aktiverSykmeldt";
         Response response = client.target(url)
                 .request()

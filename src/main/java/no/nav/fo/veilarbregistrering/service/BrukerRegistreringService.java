@@ -152,7 +152,7 @@ public class BrukerRegistreringService {
         }
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
-            oppfolgingClient.settOppfolgingSykmeldt(fnr);
+            oppfolgingClient.settOppfolgingSykmeldt();
             //Lagring
         } else {
             throw new RuntimeException("Registreringsinformasjon er ugyldig");
