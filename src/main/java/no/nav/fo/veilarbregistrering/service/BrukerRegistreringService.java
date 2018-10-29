@@ -70,7 +70,7 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
 
-        if (startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT) {
+        if (startRegistreringStatus.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
@@ -102,7 +102,9 @@ public class BrukerRegistreringService {
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
 
-        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus().setRegistreringType(registreringType);
+        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
+                .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
+                .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
