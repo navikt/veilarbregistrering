@@ -14,6 +14,8 @@ import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.AZUREA
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
+import static no.nav.dialogarena.config.fasit.FasitUtils.getRestService;
+import static no.nav.dialogarena.config.fasit.FasitUtils.getServiceUser;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.UNLEASH_API_URL_PROPERTY;
@@ -27,7 +29,7 @@ public class TestContext {
 
     public static void setup() {
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
-        ServiceUser srvveilarbregistrering = FasitUtils.getServiceUser("srvveilarbregistrering", APPLICATION_NAME);
+        ServiceUser srvveilarbregistrering = getServiceUser("srvveilarbregistrering", APPLICATION_NAME);
 
         //sts
         setProperty(StsSecurityConstants.STS_URL_KEY, securityTokenService);
@@ -45,9 +47,9 @@ public class TestContext {
 
         setProperty(OPPFOLGING_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
 
-        setProperty(DIGISYFO_BASE_URL_PROPERTY_NAME, "sykeforloep-api"); // TODO hva skal url-api være?
+        setProperty(DIGISYFO_BASE_URL_PROPERTY_NAME, getRestService("sykefravaerapi", getDefaultEnvironment()).getUrl());
 
-        ServiceUser sykefravaerapiUser = FasitUtils.getServiceUser("veilarbregistrering-sykefravaerapi-apiKey", APPLICATION_NAME);
+        ServiceUser sykefravaerapiUser = getServiceUser("veilarbregistrering-sykefravaerapi-apiKey", APPLICATION_NAME);
         setProperty(API_KEY_FASIT_KEY, sykefravaerapiUser.getPassword());
 
         setProperty(UNLEASH_API_URL_PROPERTY, "https://unleash.nais.adeo.no/api/");
@@ -56,8 +58,8 @@ public class TestContext {
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
         String issoIsAlive = FasitUtils.getBaseUrl("isso.isalive", FasitUtils.Zone.FSS);
-        ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
-        String loginUrl = FasitUtils.getRestService("veilarblogin.redirect-url", getDefaultEnvironment()).getUrl();
+        ServiceUser isso_rp_user = getServiceUser("isso-rp-user", APPLICATION_NAME);
+        String loginUrl = getRestService("veilarblogin.redirect-url", getDefaultEnvironment()).getUrl();
 
         setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME, issoHost);
         setProperty(Constants.ISSO_RP_USER_USERNAME_PROPERTY_NAME, isso_rp_user.getUsername());
@@ -69,7 +71,7 @@ public class TestContext {
         setProperty(SecurityConstants.SYSTEMUSER_PASSWORD, srvveilarbregistrering.getPassword());
         setProperty(Constants.OIDC_REDIRECT_URL_PROPERTY_NAME, loginUrl);
 
-        ServiceUser azureADClientId = FasitUtils.getServiceUser("aad_b2c_clientid", APPLICATION_NAME);
+        ServiceUser azureADClientId = getServiceUser("aad_b2c_clientid", APPLICATION_NAME);
         Util.setProperty(AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME, FasitUtils.getBaseUrl("aad_b2c_discovery"));
         Util.setProperty(AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME, azureADClientId.username);
 
