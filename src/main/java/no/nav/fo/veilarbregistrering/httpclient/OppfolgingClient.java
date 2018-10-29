@@ -80,7 +80,7 @@ public class OppfolgingClient extends BaseClient {
     }
 
     private int postOppfolgingSykmeldt(String fnr, Client client, String cookies) {
-        String url = baseUrl + "/oppfolging/aktiverSykmeldt?fnr=" + fnr;
+        String url = baseUrl + "/oppfolging/aktiverSykmeldt";
         Response response = client.target(url)
                 .request()
                 .header(COOKIE, cookies)
