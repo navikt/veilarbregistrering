@@ -20,6 +20,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.util.Optional;
 
 import static java.lang.System.setProperty;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,7 +104,7 @@ class DigisyfoClientTest {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(ident);
-        assertTrue(startRegistreringStatus.isErSykemeldtMedArbeidsgiverOver39uker());
+        assertTrue(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING);
     }
 
     @Test
