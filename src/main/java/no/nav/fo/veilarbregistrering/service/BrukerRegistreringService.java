@@ -52,8 +52,8 @@ public class BrukerRegistreringService {
     @Transactional
     public void reaktiverBruker(String fnr) {
 
-        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getKreverReaktivering();
-        if (kanReaktiveres == null || !kanReaktiveres) {
+        Boolean kanReaktiveres = hentStartRegistreringStatus(fnr).getRegistreringType() == RegistreringType.REAKTIVERING;
+        if (!kanReaktiveres) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
@@ -104,9 +104,6 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setKreverReaktivering(oppfolgingStatusData.getKanReaktiveres())
-                .setErIkkeArbeidssokerUtenOppfolging(oppfolgingStatusData.getErIkkeArbeidssokerUtenOppfolging())
-                .setErSykemeldtMedArbeidsgiverOver39uker(erSykmeldtMedArbeidsgiverOver39uker)
                 .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {

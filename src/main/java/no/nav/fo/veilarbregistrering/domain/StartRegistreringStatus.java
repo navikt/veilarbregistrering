@@ -8,8 +8,5 @@ import lombok.experimental.Accessors;
 public class StartRegistreringStatus {
     private boolean underOppfolging;
     private Boolean jobbetSeksAvTolvSisteManeder;
-    private Boolean kreverReaktivering;
-    private Boolean erIkkeArbeidssokerUtenOppfolging;
-    private boolean erSykemeldtMedArbeidsgiverOver39uker;
     private RegistreringType registreringType;
 }

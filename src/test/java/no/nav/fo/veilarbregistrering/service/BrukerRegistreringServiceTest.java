@@ -118,7 +118,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereUnderOppfolgingNaarUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
         StartRegistreringStatus startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isUnderOppfolging()).isTrue();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isTrue();
     }
 
     @Test
@@ -134,7 +134,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(inaktivBruker());
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        assertThat(startRegistreringStatus.isUnderOppfolging()).isFalse();
+        assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isFalse();
     }
 
     @Test
