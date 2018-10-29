@@ -10,7 +10,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class DigisyfoClientHelseSjekk implements Helsesjekk {
 
-    private String digiSyfoPingUrl = getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME) + "/ping";
+    private String digiSyfoPingUrl = getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME) + "internal/isAlive";
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
 
     public DigisyfoClientHelseSjekk(RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
