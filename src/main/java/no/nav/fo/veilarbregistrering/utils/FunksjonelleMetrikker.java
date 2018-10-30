@@ -20,6 +20,8 @@ public class FunksjonelleMetrikker {
         Event event = MetricsFactory.createEvent("registrering.bruker.data");
         event.addFieldToReport("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT);
         event.addFieldToReport("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING);
+        event.addFieldToReport("sykmeldt", registreringStatus.getRegistreringType() == RegistreringType.SPERRET);
+        event.addFieldToReport("sykmeldOver39u", registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING);
         event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
         event.report();
     }
