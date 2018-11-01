@@ -31,6 +31,8 @@ public class TestContext {
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         ServiceUser srvveilarbregistrering = getServiceUser("srvveilarbregistrering", APPLICATION_NAME);
 
+        setProperty("APP_NAME", APPLICATION_NAME);
+
         //sts
         setProperty(StsSecurityConstants.STS_URL_KEY, securityTokenService);
         setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, srvveilarbregistrering.getUsername());
