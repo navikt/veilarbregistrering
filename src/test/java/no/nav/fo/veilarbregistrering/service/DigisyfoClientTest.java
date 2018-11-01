@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
@@ -49,9 +50,13 @@ class DigisyfoClientTest {
         mockServer.stop();
     }
 
+    @BeforeAll
+    public static void before() {
+        TestContext.setup();
+    }
+
     @BeforeEach
     public void setup() {
-        TestContext.setup();
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
