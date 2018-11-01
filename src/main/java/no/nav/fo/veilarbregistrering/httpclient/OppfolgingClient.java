@@ -13,9 +13,10 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
 
+import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
@@ -31,18 +32,16 @@ public class OppfolgingClient extends BaseClient {
     }
 
     public void reaktiverBruker(String fnr) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerReAktivering(fnr, c, cookies)
+                , c -> postBrukerReAktivering(fnr, c)
         );
     }
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerAktivering(aktiverBrukerData, c, cookies)
+                , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
     }
 
@@ -52,44 +51,27 @@ public class OppfolgingClient extends BaseClient {
     }
 
     public void settOppfolgingSykmeldt() {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         withClient(
                 RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(c, cookies)
+                , c -> postOppfolgingSykmeldt(c)
         );
     }
 
-
-    private int postBrukerReAktivering(String fnr, Client client, String cookies) {
+    private int postBrukerReAktivering(String fnr, Client client) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
-        Response response = client.target(url)
-                .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
-                .post(Entity.json(new Fnr(fnr)));
-
+        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(new Fnr(fnr)));
         return behandleHttpResponse(response, url);
     }
 
-    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client, String cookies) {
+    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
-        Response response = client.target(url)
-                .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
-                .post(Entity.json(aktiverBrukerData));
-
+        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
         return behandleHttpResponse(response, url);
     }
 
-    private int postOppfolgingSykmeldt( Client client, String cookies) {
+    private int postOppfolgingSykmeldt( Client client) {
         String url = baseUrl + "/oppfolging/aktiverSykmeldt";
-        Response response = client.target(url)
-                .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
-                .post(null);
-
+        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(null);
         return behandleHttpResponse(response, url);
     }
 
@@ -102,6 +84,13 @@ public class OppfolgingClient extends BaseClient {
                     throw new InternalServerErrorException();
                 })
                 .get();
+    }
 
+    private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
+        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
+        return client.target(url)
+                .request()
+                .header(COOKIE, cookies)
+                .header("SystemAuthorization", new SystemUserTokenProvider().getToken());
     }
 }
