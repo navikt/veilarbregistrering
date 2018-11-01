@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.httpclient;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
@@ -64,6 +65,7 @@ public class OppfolgingClient extends BaseClient {
         Response response = client.target(url)
                 .request()
                 .header(COOKIE, cookies)
+                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
                 .post(Entity.json(new Fnr(fnr)));
 
         return behandleHttpResponse(response, url);
@@ -74,6 +76,7 @@ public class OppfolgingClient extends BaseClient {
         Response response = client.target(url)
                 .request()
                 .header(COOKIE, cookies)
+                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
                 .post(Entity.json(aktiverBrukerData));
 
         return behandleHttpResponse(response, url);
@@ -84,6 +87,7 @@ public class OppfolgingClient extends BaseClient {
         Response response = client.target(url)
                 .request()
                 .header(COOKIE, cookies)
+                .header("SystemAuthorization", new SystemUserTokenProvider().getToken())
                 .post(null);
 
         return behandleHttpResponse(response, url);
