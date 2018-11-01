@@ -90,20 +90,27 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
+        String sykmeldtFraDato = "";
+        SykeforloepMetaData sykeforloepMetaData;
         boolean erSykmeldtMedArbeidsgiverOver39uker = false;
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-            erSykmeldtMedArbeidsgiverOver39uker = hentErSykmeldtOver39uker();
+            sykeforloepMetaData = hentSykeforloepMetaData();
+            erSykmeldtMedArbeidsgiverOver39uker = ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+            sykmeldtFraDato = ofNullable(sykeforloepMetaData.sykmeldtFraDato).orElse("");
+
         }
 
         if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
             erSykmeldtMedArbeidsgiverOver39uker = true;
+            sykmeldtFraDato = "2018-01-21";
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
+                .setSykmeldtFraDato(sykmeldtFraDato)
                 .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
@@ -156,12 +163,13 @@ public class BrukerRegistreringService {
         }
     }
 
-    private boolean hentErSykmeldtOver39uker() {
+    private SykeforloepMetaData hentSykeforloepMetaData() {
         if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            SykeforloepMetaData sykeforloepMetaData = sykeforloepMetadataClient.hentSykeforloepMetadata();
-            return ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
+            return sykeforloepMetadataClient.hentSykeforloepMetadata();
         } else {
-            return false;
+            return new SykeforloepMetaData()
+                    .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
+                    .withSykmeldtFraDato("2018-01-21");
         }
     }
 }

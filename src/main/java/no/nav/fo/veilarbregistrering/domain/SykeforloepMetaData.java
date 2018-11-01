@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Wither;
 
-import java.util.Date;
-
 @Wither
 @Data
 @ToString
@@ -15,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class SykeforloepMetaData {
     public boolean erSykmeldt;
-    public Date sykmeldtFraDato;
+    public String sykmeldtFraDato;
     public boolean erTiltakSykmeldteInngangAktiv;
     public boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
 }
