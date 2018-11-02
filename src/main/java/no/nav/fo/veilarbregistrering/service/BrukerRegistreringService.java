@@ -10,7 +10,11 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static java.time.LocalDate.now;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
@@ -90,27 +94,16 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        String sykmeldtFraDato = "";
-        SykeforloepMetaData sykeforloepMetaData;
-        boolean erSykmeldtMedArbeidsgiverOver39uker = false;
+        Optional<SykeforloepMetaData> sykeforloepMetaData = empty();
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
             sykeforloepMetaData = hentSykeforloepMetaData();
-            erSykmeldtMedArbeidsgiverOver39uker = ofNullable(sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv).orElse(false);
-            sykmeldtFraDato = ofNullable(sykeforloepMetaData.sykmeldtFraDato).orElse("");
-
         }
 
-        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
-            //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
-            erSykmeldtMedArbeidsgiverOver39uker = true;
-            sykmeldtFraDato = "2018-01-21";
-        }
-
-        RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, erSykmeldtMedArbeidsgiverOver39uker);
+        RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setSykmeldtFraDato(sykmeldtFraDato)
+                .setSykmeldtFraDato(sykeforloepMetaData.map(s -> s.getSykmeldtFraDato()).orElse(""))
                 .setRegistreringType(registreringType);
 
         if(!oppfolgingStatusData.isUnderOppfolging()) {
@@ -163,13 +156,18 @@ public class BrukerRegistreringService {
         }
     }
 
-    private SykeforloepMetaData hentSykeforloepMetaData() {
+    private Optional<SykeforloepMetaData> hentSykeforloepMetaData() {
+        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
+            //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
+            return of(new SykeforloepMetaData()
+                    .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
+                    .withSykmeldtFraDato("2018-01-21"));
+        }
+
         if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return sykeforloepMetadataClient.hentSykeforloepMetadata();
+            return of(sykeforloepMetadataClient.hentSykeforloepMetadata());
         } else {
-            return new SykeforloepMetaData()
-                    .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
-                    .withSykmeldtFraDato("2018-01-21");
+            return empty();
         }
     }
 }
