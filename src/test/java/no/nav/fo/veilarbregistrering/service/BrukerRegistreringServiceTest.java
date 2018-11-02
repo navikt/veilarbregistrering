@@ -222,7 +222,7 @@ public class BrukerRegistreringServiceTest {
         when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(1)).hentSykeforloepMetadata();
+        verify(sykeforloepMetadataClient, times(0)).hentSykeforloepMetadata();
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isTrue();
     }
 

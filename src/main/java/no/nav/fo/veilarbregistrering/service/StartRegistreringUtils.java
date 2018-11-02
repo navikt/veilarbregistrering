@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
@@ -22,20 +23,26 @@ public class StartRegistreringUtils {
         return ArbeidsforholdUtils.oppfyllerBetingelseOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
     }
 
-    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, boolean erSykmeldtMedArbeidsgiverOver39uker) {
+    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, Optional<SykeforloepMetaData> sykeforloepMetaData) {
         if (oppfolgingStatusData.isUnderOppfolging() && !ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
             return ALLEREDE_REGISTRERT;
         } else if (ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
             return REAKTIVERING;
         } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
-                && erSykmeldtMedArbeidsgiverOver39uker) {
+                && erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
             return SYKMELDT_REGISTRERING;
         } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
-                && !erSykmeldtMedArbeidsgiverOver39uker) {
+                && !erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
             return SPERRET;
         } else {
             return ORDINAER_REGISTRERING;
         }
+    }
+
+    private static boolean erSykmeldtMedArbeidsgiverOver39Uker(Optional<SykeforloepMetaData> sykeforloepMetaData) {
+        return sykeforloepMetaData
+                .map(s -> s.erArbeidsrettetOppfolgingSykmeldtInngangAktiv)
+                .orElse(false);
     }
 
     public Profilering profilerBruker(
