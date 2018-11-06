@@ -26,6 +26,12 @@ public class ArbeidssokerregistreringRepository {
 
     private JdbcTemplate db;
 
+    private final static String SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ";
+    private final static String SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID";
+    private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERIN";
+    private final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
+    private final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
+
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
     private final static String BRUKER_REGISTRERING = "BRUKER_REGISTRERING";
@@ -112,6 +118,26 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
 
         return hentBrukerregistreringForId(id);
+    }
+
+    public void lagreSykmeldtBruker(BrukerRegistrering bruker, AktorId aktorId) {
+        long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
+
+        SqlUtils.insert(db, SYKMELDT_REGISTRERING)
+                .value(SYKMELDT_REGISTRERING_ID, id)
+                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
+                // Besvarelse
+                .value(FREMTIDIG_SITUASJON, besvarelse.getFremtidigSituasjon().toString())
+                .value(TILBAKE_ETTER_52_UKER, besvarelse.getTilbakeEtter52uker().toString())
+                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
+                .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
+                .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
+                .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .execute();
     }
 
     private static String tilJson(List<TekstForSporsmal> obj) {

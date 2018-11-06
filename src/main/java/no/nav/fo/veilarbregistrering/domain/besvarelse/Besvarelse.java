@@ -17,4 +17,6 @@ public class Besvarelse {
     private AndreForholdSvar andreForhold;
     private SisteStillingSvar sisteStilling;
     private DinSituasjonSvar dinSituasjon;
+    private FremtidigSituasjonSvar fremtidigSituasjon;
+    private TilbakeEtter52ukerSvar tilbakeEtter52uker;
 }
