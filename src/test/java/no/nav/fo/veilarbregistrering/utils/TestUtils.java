@@ -45,6 +45,13 @@ public class TestUtils {
         return tekster;
     }
 
+    public static List<TekstForSporsmal> gyldigeTeksterForSykmeldtBesvarelse() {
+        List<TekstForSporsmal> tekster = new ArrayList<>();
+        tekster.add(new TekstForSporsmal("fremtidigSituasjon", "Hva tenker du om din fremtidige situasjon?", "Jeg skal tilbake til jobben jeg har"));
+        tekster.add(new TekstForSporsmal("tilbakeIArbeid", "Tror du at du kommer tilbake i jobb før du har vært sykmeldt i 52 uker?", "Nei"));
+        return tekster;
+    }
+
     public static Stilling gyldigStilling() {
         return new Stilling()
                 .setStyrk08("12345")
@@ -67,6 +74,12 @@ public class TestUtils {
                 .setAndreForhold(AndreForholdSvar.NEI);
     }
 
+    public static Besvarelse gyldigSykmeldtBesvarelse() {
+        return new Besvarelse()
+                .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING);
+    }
+
     public static Besvarelse gyldigBesvarelseUtenJobb() {
         return gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
@@ -82,6 +95,13 @@ public class TestUtils {
                 .setBesvarelse(gyldigBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForBesvarelse());
 
+    }
+
+    public static BrukerRegistrering gyldigSykmeldtRegistrering() {
+        return new BrukerRegistrering()
+                .setOpprettetDato(LocalDateTime.now())
+                .setBesvarelse(gyldigSykmeldtBesvarelse())
+                .setTeksterForBesvarelse(gyldigeTeksterForSykmeldtBesvarelse());
     }
 
     public static BrukerRegistrering gyldigBrukerRegistreringUtenJobb() {

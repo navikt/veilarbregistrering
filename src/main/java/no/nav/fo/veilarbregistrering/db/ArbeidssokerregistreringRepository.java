@@ -2,9 +2,6 @@ package no.nav.fo.veilarbregistrering.db;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
@@ -19,8 +16,11 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.domain.besvarelse.FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -28,7 +28,7 @@ public class ArbeidssokerregistreringRepository {
 
     private final static String SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ";
     private final static String SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID";
-    private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERIN";
+    private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING";
     private final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
     private final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
 
@@ -131,13 +131,18 @@ public class ArbeidssokerregistreringRepository {
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Besvarelse
-                .value(FREMTIDIG_SITUASJON, besvarelse.getFremtidigSituasjon().toString())
-                .value(TILBAKE_ETTER_52_UKER, besvarelse.getTilbakeEtter52uker().toString())
-                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
-                .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
-                .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
-                .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon().toString()).orElse(""))
+                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeEtter52uker().toString()).orElse(""))
+                .value(NUS_KODE, "")
+                .value(UTDANNING_BESTATT, "")
+                .value(UTDANNING_GODKJENT_NORGE, "")
+                .value(ANDRE_UTFORDRINGER, "")
+//                .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(""))
+//                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).orElse(UtdanningBestattSvar.INGEN_SVAR).toString())
+//                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).orElse(UtdanningGodkjentSvar.INGEN_SVAR).toString())
+//                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).orElse(AndreForholdSvar.INGEN_SVAR).toString())
                 .execute();
+
     }
 
     private static String tilJson(List<TekstForSporsmal> obj) {
@@ -179,6 +184,15 @@ public class ArbeidssokerregistreringRepository {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
+                .limit(1)
+                .column("*")
+                .execute();
+    }
+
+    public BrukerRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, SYKMELDT_REGISTRERING, ArbeidssokerregistreringRepository::sykmeldtRegistreringMapper)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(SYKMELDT_REGISTRERING_ID))
                 .limit(1)
                 .column("*")
                 .execute();
@@ -252,6 +266,43 @@ public class ArbeidssokerregistreringRepository {
                         .setHelseHinder(HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)))
                         .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
                         .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
+                );
+    }
+
+    @SneakyThrows
+    private static BrukerRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
+
+        return new BrukerRegistrering()
+                .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
+                .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
+                .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))
+                .setBesvarelse(new Besvarelse()
+                        .setFremtidigSituasjon(
+                                ofNullable(rs.getString(FREMTIDIG_SITUASJON)).isPresent()
+                                ? FremtidigSituasjonSvar.valueOf(rs.getString(FREMTIDIG_SITUASJON))
+                                        : null
+                        )
+                        .setTilbakeEtter52uker(
+                                ofNullable(rs.getString(TILBAKE_ETTER_52_UKER)).isPresent()
+                                ? TilbakeEtter52ukerSvar.valueOf(rs.getString(TILBAKE_ETTER_52_UKER))
+                                        : null
+                        )
+                        .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
+                        .setUtdanningBestatt(
+                                ofNullable(rs.getString(UTDANNING_BESTATT)).isPresent()
+                                        ? UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT))
+                                        : null
+                                )
+                        .setUtdanningGodkjent(
+                                ofNullable(rs.getString(UTDANNING_GODKJENT_NORGE)).isPresent()
+                                ? UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE))
+                                        : null
+                        )
+                        .setAndreForhold(
+                                ofNullable(rs.getString(ANDRE_UTFORDRINGER)).isPresent()
+                                ? AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER))
+                                        : null
+                        )
                 );
     }
 }

@@ -2,15 +2,14 @@ package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeEtter52ukerSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBesvarelse;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,6 +64,21 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     }
 
     @Test
+    public void hentSykmeldtregistreringForAktorId() {
+        AktorId aktorId = new AktorId("11111");
+        BrukerRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
+        BrukerRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_REDUSERT_STILLING));
+
+        arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
+        arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
+
+        BrukerRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
+        assertSykmeldtRegistrertBruker(bruker2, registrering);
+    }
+
+    @Test
     public void hentProfilertBrukerRegistreringForAktorId(){
 
         AktorId aktorId = new AktorId("11111");
@@ -97,6 +111,11 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
         assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
+        assertThat(brukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
+    }
+
+    private void assertSykmeldtRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
+        assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(brukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 }
