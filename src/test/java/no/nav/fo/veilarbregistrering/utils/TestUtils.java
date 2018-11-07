@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
-import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 
 import java.time.LocalDate;
@@ -97,8 +94,8 @@ public class TestUtils {
 
     }
 
-    public static OrdinaerBrukerRegistrering gyldigSykmeldtRegistrering() {
-        return new OrdinaerBrukerRegistrering()
+    public static SykmeldtRegistrering gyldigSykmeldtRegistrering() {
+        return new SykmeldtRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
                 .setBesvarelse(gyldigSykmeldtBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForSykmeldtBesvarelse());

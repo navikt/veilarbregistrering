@@ -118,7 +118,7 @@ public class ArbeidssokerregistreringRepository {
         return hentBrukerregistreringForId(id);
     }
 
-    public void lagreSykmeldtBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
+    public void lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
@@ -183,7 +183,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public OrdinaerBrukerRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
+    public SykmeldtRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, SYKMELDT_REGISTRERING, ArbeidssokerregistreringRepository::sykmeldtRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(SYKMELDT_REGISTRERING_ID))
@@ -264,9 +264,9 @@ public class ArbeidssokerregistreringRepository {
     }
 
     @SneakyThrows
-    private static OrdinaerBrukerRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
+    private static SykmeldtRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
 
-        return new OrdinaerBrukerRegistrering()
+        return new SykmeldtRegistrering()
                 .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))

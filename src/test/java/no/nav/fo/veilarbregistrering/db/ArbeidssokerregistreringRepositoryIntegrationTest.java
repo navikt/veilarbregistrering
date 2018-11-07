@@ -66,15 +66,15 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     @Test
     public void hentSykmeldtregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        OrdinaerBrukerRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        SykmeldtRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
-        OrdinaerBrukerRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_REDUSERT_STILLING));
 
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
 
-        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
+        SykmeldtRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
         assertSykmeldtRegistrertBruker(bruker2, registrering);
     }
 
@@ -114,8 +114,8 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         assertThat(ordinaerBrukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 
-    private void assertSykmeldtRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
-        assertThat(ordinaerBrukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
-        assertThat(ordinaerBrukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
+    private void assertSykmeldtRegistrertBruker(SykmeldtRegistrering bruker, SykmeldtRegistrering sykmeldtRegistrering) {
+        assertThat(sykmeldtRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        assertThat(sykmeldtRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 }
