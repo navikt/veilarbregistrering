@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
-import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.SykeforloepMetaData;
 import no.nav.sbl.rest.RestUtils;
@@ -33,17 +32,15 @@ public class DigisyfoClient extends BaseClient {
     }
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
-        return Try.of(() ->
-                withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
+        try {
+            return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                         c -> c.target(url)
                                 .request()
                                 .header(COOKIE, cookies)
                                 .header("x-nav-apiKey", apiKey)
-                                .get(returnType)))
-                .onFailure((e) -> {
-                    log.error("Feil ved kall til Sykeforloep metadata {}", url, e);
-                    throw new InternalServerErrorException();
-                })
-                .get();
+                                .get(returnType));
+        } catch (Exception e) {
+            throw new InternalServerErrorException();
+        }
     }
 }

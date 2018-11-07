@@ -1,12 +1,10 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
-import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
-import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -18,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
@@ -33,26 +32,34 @@ public class OppfolgingClient extends BaseClient {
 
     public void reaktiverBruker(String fnr) {
         withClient(
-                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerReAktivering(fnr, c)
         );
     }
 
     public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         withClient(
-                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getOppfolging(baseUrl + "/oppfolging?fnr=" + fnr, cookies, OppfolgingStatusData.class);
+        try {
+            return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
+                    c -> c.target(baseUrl + "/oppfolging?fnr=" + fnr)
+                            .request()
+                            .header(COOKIE, cookies)
+                            .get(OppfolgingStatusData.class));
+        } catch (Exception e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     public void settOppfolgingSykmeldt() {
         withClient(
-                RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postOppfolgingSykmeldt(c)
         );
     }
@@ -73,17 +80,6 @@ public class OppfolgingClient extends BaseClient {
         String url = baseUrl + "/oppfolging/aktiverSykmeldt";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(null);
         return behandleHttpResponse(response, url);
-    }
-
-    private static <T> T getOppfolging(String url, String cookies, Class<T> returnType) {
-        return Try.of(() ->
-                withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                        c -> c.target(url).request().header(COOKIE, cookies).get(returnType)))
-                .onFailure((e) -> {
-                    log.error("Feil ved kall til Oppfølging {}", url, e);
-                    throw new InternalServerErrorException();
-                })
-                .get();
     }
 
     private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
