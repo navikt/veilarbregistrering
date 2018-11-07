@@ -141,12 +141,12 @@ public class BrukerRegistreringService {
                 now());
     }
 
+    @Transactional
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
-
         if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
+        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             oppfolgingClient.settOppfolgingSykmeldt();
