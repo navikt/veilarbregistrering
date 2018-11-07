@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.*;
+import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
@@ -104,7 +105,7 @@ public class BrukerRegistreringService {
                 .setSykmeldtFraDato(sykeforloepMetaData.map(s -> s.getSykmeldtFraDato()).orElse(""))
                 .setRegistreringType(registreringType);
 
-        if (!oppfolgingStatusData.isUnderOppfolging()) {
+        if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdService.hentArbeidsforhold(fnr),
                     now());
