@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 
 import java.util.Arrays;
@@ -65,6 +66,29 @@ public class ValideringUtils {
         );
     }
 
+    public static void validerSykmeldtBrukerRegistrering(SykmeldtRegistrering bruker) {
+
+        assertBothTrueOrThrowException(
+                FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
+                gyldigBesvarelseFremtidigSituasjonLoep1(bruker)
+        );
+
+        assertBothTrueOrThrowException(
+                FremtidigSituasjonSvar.INGEN_PASSER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
+                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
+        );
+
+        assertBothTrueOrThrowException(
+                FremtidigSituasjonSvar.USIKKER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
+                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
+        );
+
+        assertBothTrueOrThrowException(
+                FremtidigSituasjonSvar.NY_ARBEIDSGIVER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
+                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
+        );
+    }
+
     private static void stillingSkalSamsvareMedSisteStillingSpm(OrdinaerBrukerRegistrering bruker) {
         SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
         if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
@@ -93,12 +117,39 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
+    private static boolean gyldigBesvarelseFremtidigSituasjonLoep1(SykmeldtRegistrering bruker) {
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        return besvarelse != null
+                && besvarelse.getFremtidigSituasjon() != null
+                && besvarelse.getTilbakeEtter52uker() != null
+                && besvarelse.getUtdanning() == null
+                && besvarelse.getUtdanningGodkjent() == null
+                && besvarelse.getUtdanningBestatt() == null
+                && besvarelse.getAndreForhold() == null;
+    }
+    private static boolean gyldigBesvarelseFremtidigSituasjonLoep234(SykmeldtRegistrering bruker) {
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        return besvarelse != null
+                && besvarelse.getFremtidigSituasjon() == null
+                && besvarelse.getTilbakeEtter52uker() == null
+                && besvarelse.getUtdanning() != null
+                && besvarelse.getUtdanningGodkjent() != null
+                && besvarelse.getUtdanningBestatt() != null
+                && besvarelse.getAndreForhold() != null;
+    }
+
     private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
         return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 
     private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
         assertTrue(value1 == value2);
+    }
+
+    private static void assertBothTrueOrThrowException(boolean value1, boolean value2) {
+        if (value1 != value2) {
+            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
+        }
     }
 
     private static void assertTrue(boolean value) {

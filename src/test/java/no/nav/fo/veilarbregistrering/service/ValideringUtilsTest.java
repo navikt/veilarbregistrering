@@ -1,10 +1,12 @@
 package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerSykmeldtBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,5 +138,52 @@ class ValideringUtilsTest {
                 gyldigStilling().setLabel(null)
         );
         assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
+    }
+
+    @Test
+    void invalidBesvarelserForSykmeldtOgskalTilbakeTilSammeJobb() {
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering()
+                .setBesvarelse(getBesvarelseSykmeldtLoep1234()
+                        .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+        );
+        assertThrows(RuntimeException.class, () -> validerSykmeldtBrukerRegistrering(sykmeldtRegistrering));
+    }
+
+    @Test
+    void invalidBesvarelserForSykmeldtUsikker() {
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering()
+                .setBesvarelse(getBesvarelseSykmeldtLoep1234()
+                        .setFremtidigSituasjon(FremtidigSituasjonSvar.USIKKER)
+        );
+        assertThrows(RuntimeException.class, () -> validerSykmeldtBrukerRegistrering(sykmeldtRegistrering));
+    }
+
+    @Test
+    void invalidBesvarelserForSykmeldtIngenPasser() {
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering()
+                .setBesvarelse(getBesvarelseSykmeldtLoep1234()
+                        .setFremtidigSituasjon(FremtidigSituasjonSvar.INGEN_PASSER)
+        );
+        assertThrows(RuntimeException.class, () -> validerSykmeldtBrukerRegistrering(sykmeldtRegistrering));
+    }
+
+    @Test
+    void invalidBesvarelserForSykmeldtOgTrengerNyJobb() {
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering()
+                .setBesvarelse(getBesvarelseSykmeldtLoep1234()
+                        .setFremtidigSituasjon(FremtidigSituasjonSvar.NY_ARBEIDSGIVER)
+                );
+
+        assertThrows(RuntimeException.class, () -> validerSykmeldtBrukerRegistrering(sykmeldtRegistrering));
+    }
+
+    private Besvarelse getBesvarelseSykmeldtLoep1234() {
+        return new Besvarelse()
+                .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING)
+                .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
+                .setUtdanningGodkjent(UtdanningGodkjentSvar.NEI)
+                .setUtdanningBestatt(UtdanningBestattSvar.NEI)
+                .setAndreForhold(AndreForholdSvar.NEI);
     }
 }
