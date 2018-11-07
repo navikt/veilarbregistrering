@@ -17,10 +17,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.domain.besvarelse.FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER;
 
 public class ArbeidssokerregistreringRepository {
 
@@ -131,16 +129,12 @@ public class ArbeidssokerregistreringRepository {
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Besvarelse
-                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon().toString()).orElse(""))
-                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeEtter52uker().toString()).orElse(""))
-                .value(NUS_KODE, "")
-                .value(UTDANNING_BESTATT, "")
-                .value(UTDANNING_GODKJENT_NORGE, "")
-                .value(ANDRE_UTFORDRINGER, "")
-//                .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(""))
-//                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).orElse(UtdanningBestattSvar.INGEN_SVAR).toString())
-//                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).orElse(UtdanningGodkjentSvar.INGEN_SVAR).toString())
-//                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).orElse(AndreForholdSvar.INGEN_SVAR).toString())
+                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon()).isPresent() ? besvarelse.getFremtidigSituasjon().toString() : null)
+                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeEtter52uker()).isPresent() ? besvarelse.getTilbakeEtter52uker().toString() : null)
+                .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(null))
+                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).isPresent() ? besvarelse.getUtdanningBestatt().toString() : null)
+                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).isPresent() ? besvarelse.getUtdanningGodkjent().toString() : null)
+                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).isPresent() ? besvarelse.getAndreForhold().toString() : null)
                 .execute();
 
     }
