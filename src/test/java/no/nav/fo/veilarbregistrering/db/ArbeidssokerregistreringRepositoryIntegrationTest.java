@@ -66,9 +66,9 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     @Test
     public void hentSykmeldtregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        SykmeldtRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        SykmeldtRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
-        SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_REDUSERT_STILLING));
 
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);

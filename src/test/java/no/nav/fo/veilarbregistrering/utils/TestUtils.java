@@ -71,7 +71,7 @@ public class TestUtils {
                 .setAndreForhold(AndreForholdSvar.NEI);
     }
 
-    public static Besvarelse gyldigSykmeldtBesvarelse() {
+    public static Besvarelse gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse() {
         return new Besvarelse()
                 .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING);
@@ -97,7 +97,7 @@ public class TestUtils {
     public static SykmeldtRegistrering gyldigSykmeldtRegistrering() {
         return new SykmeldtRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
-                .setBesvarelse(gyldigSykmeldtBesvarelse())
+                .setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForSykmeldtBesvarelse());
     }
 
