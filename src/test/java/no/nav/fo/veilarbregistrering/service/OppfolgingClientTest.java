@@ -18,7 +18,6 @@ import org.mockserver.integration.ClientAndServer;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.lang.System.setProperty;
@@ -117,11 +116,11 @@ class OppfolgingClientTest {
 
 
     @Test
-    public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
+    public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
         when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new BrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+                .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
@@ -129,17 +128,17 @@ class OppfolgingClientTest {
     }
 
     @Test
-    public void testAtReaktiveringFeilerDersomArenaSierAtBrukerHarAktivStatus() {
+    public void testAtReaktiveringFeilerDersomArenaSierAtBrukerErUnderOppfolging() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+                .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(ident));
     }
 
     @Test
-    public void testAtReaktiveringGirOKDersomArenaSierAtBrukerHarInaktivStatus() {
+    public void testAtReaktiveringGirOKDersomArenaSierAtBrukerKanReaktiveres() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harIkkeOppfolgingsflaggOgKanReaktiveres(LocalDateTime.now().minusDays(20)), MediaType.JSON_UTF_8).withStatusCode(200));
+                .respond(response().withBody(settOppfolgingOgReaktivering(false, true), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(response().withStatusCode(204));
 
         brukerRegistreringService.reaktiverBruker(ident);
@@ -168,7 +167,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+                .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
@@ -176,47 +175,23 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirIngenExceptionsDersomKun200MedKanReaktiveresNull() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaKanReaktiveresNullBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+                .respond(response().withBody(settOppfolgingOgReaktivering(null, null), MediaType.JSON_UTF_8).withStatusCode(200));
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     private void mockUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
-                .respond(response().withBody(harOppfolgingsflaggOgErAktivIArenaBody()).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", ident))
+                .respond(response().withBody(settOppfolgingOgReaktivering(true, false)).withStatusCode(200));
     }
 
     private void mockIkkeUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/person/" + ident + "/aktivstatus"))
-                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", ident))
+                .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
     }
 
-    private String harIkkeOppfolgingsflaggOgKanReaktiveres(LocalDateTime inaktiveringsdato) {
-        return "{\n" +
-                "\"kanReaktiveres\": true,\n" +
-                "\"underOppfolging\": false\n" +
-                "}";
-    }
-
-    private String harOppfolgingsflaggOgErAktivIArenaBody() {
-        return "{\n" +
-                "\"kanReaktiveres\": false,\n" +
-                "\"underOppfolging\": true\n" +
-                "}";
-    }
-
-    private String harOppfolgingsflaggOgErAktivIArenaKanReaktiveresNullBody() {
-        return "{\n" +
-                "\"kanReaktiveres\": null,\n" +
-                "\"underOppfolging\": true\n" +
-                "}";
-    }
-
-    private String harIkkeOppfolgingsflaggOgErInaktivIArenaBody() {
-        return "{\n" +
-                "\"kanReaktiveres\": false,\n" +
-                "\"underOppfolging\": false\n" +
-                "}";
+    private String settOppfolgingOgReaktivering(Boolean oppfolging, Boolean reaktivering) {
+        return "{\"kanReaktiveres\": "+reaktivering+", \"underOppfolging\": "+oppfolging+"}";
     }
 
 
