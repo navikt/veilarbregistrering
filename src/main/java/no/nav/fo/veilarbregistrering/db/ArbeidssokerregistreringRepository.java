@@ -88,7 +88,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public BrukerRegistrering lagreBruker(BrukerRegistrering bruker, AktorId aktorId) {
+    public OrdinaerBrukerRegistrering lagreBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         Stilling stilling = bruker.getSisteStilling();
@@ -118,7 +118,7 @@ public class ArbeidssokerregistreringRepository {
         return hentBrukerregistreringForId(id);
     }
 
-    public void lagreSykmeldtBruker(BrukerRegistrering bruker, AktorId aktorId) {
+    public void lagreSykmeldtBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
@@ -159,7 +159,7 @@ public class ArbeidssokerregistreringRepository {
         }
     }
 
-    public BrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
+    public OrdinaerBrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
                 .column("*")
@@ -174,7 +174,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public BrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
+    public OrdinaerBrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
@@ -183,7 +183,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public BrukerRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
+    public OrdinaerBrukerRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, SYKMELDT_REGISTRERING, ArbeidssokerregistreringRepository::sykmeldtRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(SYKMELDT_REGISTRERING_ID))
@@ -193,12 +193,12 @@ public class ArbeidssokerregistreringRepository {
     }
 
     public ProfilertBrukerRegistrering hentProfilertBrukerregistreringForAktorId(AktorId aktorId) {
-        BrukerRegistrering brukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
-        if (brukerRegistrering == null) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
+        if (ordinaerBrukerRegistrering == null) {
             return null;
         }
-        Profilering profilering = hentProfileringForId(brukerRegistrering.getId());
-        return new ProfilertBrukerRegistrering(brukerRegistrering, profilering);
+        Profilering profilering = hentProfileringForId(ordinaerBrukerRegistrering.getId());
+        return new ProfilertBrukerRegistrering(ordinaerBrukerRegistrering, profilering);
     }
 
     public void lagreReaktiveringForBruker(AktorId aktorId) {
@@ -241,8 +241,8 @@ public class ArbeidssokerregistreringRepository {
 
    
     @SneakyThrows
-    private static BrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
-        return new BrukerRegistrering()
+    private static OrdinaerBrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
+        return new OrdinaerBrukerRegistrering()
                 .setId(rs.getLong(BRUKER_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setEnigIOppsummering(rs.getBoolean(ENIG_I_OPPSUMMERING))
@@ -264,9 +264,9 @@ public class ArbeidssokerregistreringRepository {
     }
 
     @SneakyThrows
-    private static BrukerRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
+    private static OrdinaerBrukerRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
 
-        return new BrukerRegistrering()
+        return new OrdinaerBrukerRegistrering()
                 .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))

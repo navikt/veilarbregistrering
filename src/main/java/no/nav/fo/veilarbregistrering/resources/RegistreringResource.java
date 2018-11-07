@@ -50,9 +50,9 @@ public class RegistreringResource {
     @POST
     @Path("/startregistrering")
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
-    public BrukerRegistrering registrerBruker(BrukerRegistrering brukerRegistrering) {
+    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        BrukerRegistrering registrering = brukerRegistreringService.registrerBruker(brukerRegistrering, userService.getFnr());
+        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, userService.getFnr());
         rapporterAlder(userService.getFnr());
         return registrering;
     }

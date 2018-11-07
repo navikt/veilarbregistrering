@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 
 import java.util.Arrays;
@@ -23,7 +23,7 @@ public class ValideringUtils {
     private static final Stilling ingenYrkesbakgrunn = new Stilling("X", -1L, "X");
     private static final Stilling tomStilling = new Stilling("", -1L, "-1");
 
-    public static void validerBrukerRegistrering(BrukerRegistrering bruker) {
+    public static void validerBrukerRegistrering(OrdinaerBrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
         assertFalse(besvarelseHarNull(bruker));
         assertFalse(stillingHarNull(bruker));
@@ -65,7 +65,7 @@ public class ValideringUtils {
         );
     }
 
-    private static void stillingSkalSamsvareMedSisteStillingSpm(BrukerRegistrering bruker) {
+    private static void stillingSkalSamsvareMedSisteStillingSpm(OrdinaerBrukerRegistrering bruker) {
         SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
         if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
             assertTrue(brukerHarYrkesbakgrunn(bruker));
@@ -74,14 +74,14 @@ public class ValideringUtils {
         }
     }
 
-    private static boolean stillingHarNull(BrukerRegistrering bruker) {
+    private static boolean stillingHarNull(OrdinaerBrukerRegistrering bruker) {
         Stilling stilling = bruker.getSisteStilling();
         return stilling == null
                 || isEmpty(stilling.getStyrk08())
                 || isEmpty(stilling.getLabel());
     }
 
-    private static boolean besvarelseHarNull(BrukerRegistrering bruker) {
+    private static boolean besvarelseHarNull(OrdinaerBrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return besvarelse == null
                 || besvarelse.getDinSituasjon() == null
@@ -93,7 +93,7 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
-    private static boolean brukerHarYrkesbakgrunn(BrukerRegistrering bruker) {
+    private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
         return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
     }
 

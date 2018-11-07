@@ -5,7 +5,7 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
@@ -102,8 +102,8 @@ class OppfolgingClientTest {
     public void testAtGirRuntimeExceptionDersomOppfolgingIkkeSvarer() {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, ident));
     }
 
 
@@ -111,21 +111,21 @@ class OppfolgingClientTest {
     public void testAtGirInternalErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolging() {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, ident));
     }
 
 
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new BrukerRegistrering());
+        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
-        assertNotNull(brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertNotNull(brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, ident));
     }
 
     @Test
@@ -149,8 +149,8 @@ class OppfolgingClientTest {
     public void testAtGirInternalServerErrorExceptionDersomAktiverBrukerFeiler() {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(brukerRegistrering, ident));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, ident));
     }
 
     @Test

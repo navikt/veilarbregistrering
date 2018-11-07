@@ -41,40 +41,40 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     public void registrerBruker() {
 
         AktorId aktorId = new AktorId("11111");
-        BrukerRegistrering bruker = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering();
 
-        BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
 
-        assertRegistrertBruker(bruker, brukerRegistrering);
+        assertRegistrertBruker(bruker, ordinaerBrukerRegistrering);
     }
 
     @Test
     public void hentBrukerregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        BrukerRegistrering bruker1 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker1 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
-        BrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
         arbeidssokerregistreringRepository.lagreBruker(bruker1, aktorId);
         arbeidssokerregistreringRepository.lagreBruker(bruker2, aktorId);
 
-        BrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
         assertRegistrertBruker(bruker2, registrering);
     }
 
     @Test
     public void hentSykmeldtregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        BrukerRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        OrdinaerBrukerRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
-        BrukerRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
+        OrdinaerBrukerRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtBesvarelse()
                 .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_REDUSERT_STILLING));
 
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
 
-        BrukerRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
         assertSykmeldtRegistrertBruker(bruker2, registrering);
     }
 
@@ -83,12 +83,12 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         AktorId aktorId = new AktorId("11111");
 
-        BrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
         Profilering profilering = lagProfilering();
 
-        BrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
         bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
         arbeidssokerregistreringRepository.lagreProfilering(bruker.getId(), profilering);
 
@@ -106,16 +106,16 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         assertNull(profilertBrukerRegistrering);
     }
 
-    private void assertRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
-        assertThat(brukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
-        assertThat(brukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
-        assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
-        assertThat(brukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
-        assertThat(brukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
+    private void assertRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
+        assertThat(ordinaerBrukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
+        assertThat(ordinaerBrukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
+        assertThat(ordinaerBrukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        assertThat(ordinaerBrukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
+        assertThat(ordinaerBrukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 
-    private void assertSykmeldtRegistrertBruker(BrukerRegistrering bruker, BrukerRegistrering brukerRegistrering) {
-        assertThat(brukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
-        assertThat(brukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
+    private void assertSykmeldtRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
+        assertThat(ordinaerBrukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
+        assertThat(ordinaerBrukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
     }
 }

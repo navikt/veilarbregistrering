@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
@@ -45,7 +45,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtils startRegistreringUtils;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
-    private static final BrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
+    private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
     public void setup() {
@@ -81,7 +81,7 @@ class BrukerRegistreringServiceIntegrationTest {
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident));
         assertThat(run.isFailure()).isTrue();
 
-        Optional<BrukerRegistrering> brukerRegistrering = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(1l));
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(1l));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
     }
@@ -90,9 +90,9 @@ class BrukerRegistreringServiceIntegrationTest {
     public void skalLagreIDatabaseDersomKallTilArenaErOK() {
         cofigureMocks();
 
-        BrukerRegistrering brukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident);
 
-        Optional<BrukerRegistrering> reg = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(brukerRegistrering.getId()));
+        Optional<OrdinaerBrukerRegistrering> reg = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
 
         assertThat(reg.isPresent()).isTrue();
     }

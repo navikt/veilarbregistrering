@@ -70,7 +70,7 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
+    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering bruker, String fnr) {
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
 
@@ -117,16 +117,16 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
+    private OrdinaerBrukerRegistrering opprettBruker(String fnr, OrdinaerBrukerRegistrering bruker, Profilering profilering) {
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
 
-        BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        arbeidssokerregistreringRepository.lagreProfilering(brukerRegistrering.getId(), profilering);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        arbeidssokerregistreringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
 
         rapporterProfilering(profilering);
-        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, profilering);
-        return brukerRegistrering;
+        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+        return ordinaerBrukerRegistrering;
     }
 
     public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
@@ -135,7 +135,7 @@ public class BrukerRegistreringService {
         );
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
+    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, OrdinaerBrukerRegistrering bruker) {
         return startRegistreringUtils.profilerBruker(
                 bruker,
                 utledAlderForFnr(fnr, now()),

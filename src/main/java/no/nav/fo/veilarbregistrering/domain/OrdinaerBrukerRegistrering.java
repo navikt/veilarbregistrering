@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode
-public class BrukerRegistrering {
+public class OrdinaerBrukerRegistrering {
     long id;
     LocalDateTime opprettetDato;
     boolean enigIOppsummering;

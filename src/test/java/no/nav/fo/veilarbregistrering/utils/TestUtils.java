@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
@@ -86,8 +86,8 @@ public class TestUtils {
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR);
     }
 
-    public static BrukerRegistrering gyldigBrukerRegistrering() {
-        return new BrukerRegistrering()
+    public static OrdinaerBrukerRegistrering gyldigBrukerRegistrering() {
+        return new OrdinaerBrukerRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
@@ -97,14 +97,14 @@ public class TestUtils {
 
     }
 
-    public static BrukerRegistrering gyldigSykmeldtRegistrering() {
-        return new BrukerRegistrering()
+    public static OrdinaerBrukerRegistrering gyldigSykmeldtRegistrering() {
+        return new OrdinaerBrukerRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
                 .setBesvarelse(gyldigSykmeldtBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForSykmeldtBesvarelse());
     }
 
-    public static BrukerRegistrering gyldigBrukerRegistreringUtenJobb() {
+    public static OrdinaerBrukerRegistrering gyldigBrukerRegistreringUtenJobb() {
         return gyldigBrukerRegistrering().setSisteStilling(
                 ingenYrkesbakgrunn()
         ).setBesvarelse(gyldigBesvarelse()

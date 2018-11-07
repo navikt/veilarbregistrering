@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class StartRegistreringUtilsTest {
             tilfredsstillerKravTilArbeidList.forEach(tilfredsstillerKrav -> {
                 aldre.forEach(alder -> {
                     validerProfilering(
-                            new BrukerRegistrering().setBesvarelse(besvarelse),
+                            new OrdinaerBrukerRegistrering().setBesvarelse(besvarelse),
                             alder,
                             () -> getArbeidsforholdList(tilfredsstillerKrav),
                             dagensDato
@@ -77,7 +77,7 @@ class StartRegistreringUtilsTest {
     }
 
     private void validerProfilering(
-            BrukerRegistrering bruker,
+            OrdinaerBrukerRegistrering bruker,
             int alder,
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
@@ -142,8 +142,8 @@ class StartRegistreringUtilsTest {
         assertEquals(STANDARD_INNSATS, innsatsgruppe);
     }
 
-    private BrukerRegistrering hentStandardInnsatsBesvarelse() {
-        return new BrukerRegistrering()
+    private OrdinaerBrukerRegistrering hentStandardInnsatsBesvarelse() {
+        return new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse()
                         .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
                         .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
