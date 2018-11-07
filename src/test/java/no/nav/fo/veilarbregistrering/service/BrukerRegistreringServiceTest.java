@@ -69,9 +69,9 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBruker();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
-        when(arbeidssokerregistreringRepository.lagreBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        when(arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
-        verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
+        verify(arbeidssokerregistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
 
     @Test
@@ -101,10 +101,10 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
-        when(arbeidssokerregistreringRepository.lagreBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        when(arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
-        verify(arbeidssokerregistreringRepository, times(1)).lagreBruker(any(), any());
+        verify(arbeidssokerregistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
 
     @Test
@@ -271,7 +271,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(gyldigBrukerRegistrering());
+        when(arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(gyldigBrukerRegistrering());
 
     }
 

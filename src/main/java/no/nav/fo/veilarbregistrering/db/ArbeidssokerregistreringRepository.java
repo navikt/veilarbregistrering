@@ -88,7 +88,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public OrdinaerBrukerRegistrering lagreBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
+    public OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         Stilling stilling = bruker.getSisteStilling();

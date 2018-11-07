@@ -118,7 +118,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeErAktivIArena() {
-        when(arbeidssokerregistreringRepository.lagreBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
+        when(arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));

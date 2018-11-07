@@ -43,7 +43,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         AktorId aktorId = new AktorId("11111");
         OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering();
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
 
         assertRegistrertBruker(bruker, ordinaerBrukerRegistrering);
     }
@@ -56,8 +56,8 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         OrdinaerBrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
-        arbeidssokerregistreringRepository.lagreBruker(bruker1, aktorId);
-        arbeidssokerregistreringRepository.lagreBruker(bruker2, aktorId);
+        arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker1, aktorId);
+        arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker2, aktorId);
 
         OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
         assertRegistrertBruker(bruker2, registrering);
@@ -88,7 +88,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         Profilering profilering = lagProfilering();
 
-        OrdinaerBrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
         bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
         arbeidssokerregistreringRepository.lagreProfilering(bruker.getId(), profilering);
 
