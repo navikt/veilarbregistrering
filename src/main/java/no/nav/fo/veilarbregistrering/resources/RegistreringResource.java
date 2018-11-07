@@ -86,9 +86,9 @@ public class RegistreringResource {
     @POST
     @Path("/startregistrersykmeldt")
     @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
-    public void registrerSykmeldt() {
+    public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        brukerRegistreringService.registrerSykmeldt(userService.getFnr());
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, userService.getFnr());
     }
 
 }

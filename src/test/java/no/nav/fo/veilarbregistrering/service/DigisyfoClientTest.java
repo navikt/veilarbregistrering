@@ -6,6 +6,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigSykmeldtRegistrering;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -100,8 +102,9 @@ class DigisyfoClientTest {
     public void testAtRegistreringAvSykmeldtGirOk() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(204));
-        brukerRegistreringService.registrerSykmeldt(ident);
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, ident);
     }
 
     @Test
@@ -116,8 +119,9 @@ class DigisyfoClientTest {
     public void testAtGirInternalServerErrorExceptionDersomRegistreringAvSykmeldtFeiler() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(502));
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(ident));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, ident));
     }
 
     @Test

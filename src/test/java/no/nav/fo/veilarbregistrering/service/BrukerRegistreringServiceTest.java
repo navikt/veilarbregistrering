@@ -18,6 +18,7 @@ import static java.util.Optional.of;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigSykmeldtRegistrering;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -141,16 +142,18 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSykmeldte() {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
         when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
-        brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV);
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV);
         verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt();
     }
 
     @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(FNR_OPPFYLLER_KRAV));
+        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
     }
 
     @Test
