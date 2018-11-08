@@ -18,6 +18,7 @@ import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REG
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.FnrUtils.getAktorIdOrElseThrow;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
@@ -60,7 +61,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
         arbeidssokerregistreringRepository.lagreReaktiveringForBruker(aktorId);
         oppfolgingClient.reaktiverBruker(fnr);
@@ -117,7 +118,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(String fnr, OrdinaerBrukerRegistrering bruker, Profilering profilering) {
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
         arbeidssokerregistreringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
@@ -130,7 +131,7 @@ public class BrukerRegistreringService {
 
     public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
         return arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(
-                FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
+                getAktorIdOrElseThrow(aktorService, fnr.getFnr())
         );
     }
 
@@ -148,9 +149,9 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
+            AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
             oppfolgingClient.settOppfolgingSykmeldt();
             arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         } else {
