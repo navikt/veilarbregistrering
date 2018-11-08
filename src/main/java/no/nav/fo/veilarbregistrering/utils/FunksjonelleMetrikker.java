@@ -2,12 +2,10 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.domain.RegistreringType;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
@@ -38,10 +36,10 @@ public class FunksjonelleMetrikker {
         event.report();
     }
 
-    public static void rapporterInvalidRegistrering(BrukerRegistrering brukerRegistrering) {
+    public static void rapporterInvalidRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         Event event = MetricsFactory.createEvent("registrering.invalid.registrering");
-        event.addFieldToReport("registrering", toJson(brukerRegistrering.getBesvarelse()));
-        event.addFieldToReport("stilling", toJson(brukerRegistrering.getSisteStilling()));
+        event.addFieldToReport("registrering", toJson(ordinaerBrukerRegistrering.getBesvarelse()));
+        event.addFieldToReport("stilling", toJson(ordinaerBrukerRegistrering.getSisteStilling()));
         event.report();
     }
 

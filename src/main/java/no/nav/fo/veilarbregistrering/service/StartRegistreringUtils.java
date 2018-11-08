@@ -46,7 +46,7 @@ public class StartRegistreringUtils {
     }
 
     public Profilering profilerBruker(
-            BrukerRegistrering bruker,
+            OrdinaerBrukerRegistrering bruker,
             int alder,
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
@@ -65,14 +65,14 @@ public class StartRegistreringUtils {
         return profilering;
     }
 
-    private boolean anbefalerBehovForArbeidsevnevurdering(BrukerRegistrering bruker) {
+    private boolean anbefalerBehovForArbeidsevnevurdering(OrdinaerBrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return HelseHinderSvar.JA.equals(besvarelse.getHelseHinder())
                 || AndreForholdSvar.JA.equals(besvarelse.getAndreForhold());
     }
 
     private boolean anbefalerStandardInnsats(
-            BrukerRegistrering bruker,
+            OrdinaerBrukerRegistrering bruker,
             int alder,
             boolean oppfyllerKravTilArbeidserfaring
     ) {

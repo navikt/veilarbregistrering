@@ -14,12 +14,9 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode
-public class BrukerRegistrering {
+public class SykmeldtRegistrering {
     long id;
     LocalDateTime opprettetDato;
-    boolean enigIOppsummering;
-    String oppsummering;
     Besvarelse besvarelse;
-    Stilling sisteStilling;
     List<TekstForSporsmal> teksterForBesvarelse;
 }

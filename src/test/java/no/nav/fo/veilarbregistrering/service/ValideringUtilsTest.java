@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class ValideringUtilsTest {
 
     @Test
     void hvisMistetJobbenSaaSkalManHaSvartPaaUtdanning() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
                 .setUtdanning(UtdanningSvar.INGEN_SVAR)
@@ -21,120 +21,120 @@ class ValideringUtilsTest {
                 .setHelseHinder(HelseHinderSvar.NEI)
                 .setAndreForhold(AndreForholdSvar.NEI)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void hvisSisteStillingSpmIkkeErBesvartSkalManViteHvorvidtBrukerErIJobb() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.USIKKER_JOBBSITUASJON)
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalHaSvartPaaUtdanningssporsmalHvisDinSituasjonIkkeErVilFortsetteIJobb() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
                 .setUtdanning(UtdanningSvar.INGEN_SVAR)
                 .setUtdanningBestatt(UtdanningBestattSvar.INGEN_SVAR)
                 .setUtdanningGodkjent(UtdanningGodkjentSvar.INGEN_SVAR)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void stillingSkalSamsvaretMedSvaretPaSisteStillingSpm() {
-        BrukerRegistrering brukerRegistrering1 = gyldigBrukerRegistrering()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering1 = gyldigBrukerRegistrering()
                 .setBesvarelse(gyldigBesvarelse()
                         .setSisteStilling(SisteStillingSvar.HAR_IKKE_HATT_JOBB))
                 .setSisteStilling(gyldigStilling());
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering1));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering1));
 
-        BrukerRegistrering brukerRegistrering2 = gyldigBrukerRegistrering()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering2 = gyldigBrukerRegistrering()
                 .setBesvarelse(gyldigBesvarelse()
                         .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB))
                 .setSisteStilling(ingenYrkesbakgrunn());
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering2));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering2));
     }
 
     @Test
     void sporsmalSkalIkkeVaereNull() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse().setAndreForhold(null));
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse().setAndreForhold(null));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void sisteStillingSkalIkkeVaereNull() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(null);
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(null);
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalSvarePaaSporsmalOmAndreForhold() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
                 gyldigBesvarelse().setAndreForhold(AndreForholdSvar.INGEN_SVAR)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalSvarePaaSporsmalOmHelse() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
                 gyldigBesvarelse().setHelseHinder(HelseHinderSvar.INGEN_SVAR)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalHaIngenYrkesbakgrunnHvisViVetAtBrukerIkkeHarHattJobb() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistreringUtenJobb().setSisteStilling(gyldigStilling());
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistreringUtenJobb().setSisteStilling(gyldigStilling());
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalIkkeSvarePaaSpmOmSisteStillingHvisViVetAtBrukerIkkeHarHattJobb() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistreringUtenJobb().setBesvarelse(
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistreringUtenJobb().setBesvarelse(
                 gyldigBesvarelseUtenJobb().setSisteStilling(SisteStillingSvar.HAR_IKKE_HATT_JOBB)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void skalIkkeSvarePaaSpmOmSisteStillingHvisViAlleredeVetAtBrukerHarHattJobb() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
         );
-        validerBrukerRegistrering(brukerRegistrering);
+        validerBrukerRegistrering(ordinaerBrukerRegistrering);
 
-        brukerRegistrering.setBesvarelse(brukerRegistrering.getBesvarelse()
+        ordinaerBrukerRegistrering.setBesvarelse(ordinaerBrukerRegistrering.getBesvarelse()
                 .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void valideringSkalGodkjenneGyldigeObjekter() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering();
-        validerBrukerRegistrering(brukerRegistrering);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        validerBrukerRegistrering(ordinaerBrukerRegistrering);
     }
 
     @Test
     void valideringSkalFeileHvisBesvarelseHarNullfelt() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
                 gyldigBesvarelse().setAndreForhold(null)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 
     @Test
     void valideringSkalFeileHvisStillingHarNullfelt() {
-        BrukerRegistrering brukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(
                 gyldigStilling().setLabel(null)
         );
-        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(brukerRegistrering));
+        assertThrows(RuntimeException.class, () -> validerBrukerRegistrering(ordinaerBrukerRegistrering));
     }
 }

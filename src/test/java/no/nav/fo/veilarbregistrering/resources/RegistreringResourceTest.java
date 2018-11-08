@@ -1,10 +1,13 @@
 package no.nav.fo.veilarbregistrering.resources;
 
 import no.nav.apiapp.security.PepClient;
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
+import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeEtter52ukerSvar;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
@@ -60,19 +63,23 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
-        registreringResource.registrerSykmeldt();
+        SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering()
+                .setBesvarelse(new Besvarelse()
+                        .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+                        .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
+        registreringResource.registrerSykmeldt(sykmeldtRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
     }
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
-        BrukerRegistrering brukerRegistrering = new BrukerRegistrering()
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setEnigIOppsummering(true)
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
         String ident = "10108000398"; //Aremark fiktivt fnr.";
         when(userService.getFnr()).thenReturn(ident);
-        registreringResource.registrerBruker(brukerRegistrering);
+        registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
     }
 }

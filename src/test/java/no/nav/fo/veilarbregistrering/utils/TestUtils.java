@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.BrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
-import no.nav.fo.veilarbregistrering.domain.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 
 import java.time.LocalDate;
@@ -45,6 +42,13 @@ public class TestUtils {
         return tekster;
     }
 
+    public static List<TekstForSporsmal> gyldigeTeksterForSykmeldtBesvarelse() {
+        List<TekstForSporsmal> tekster = new ArrayList<>();
+        tekster.add(new TekstForSporsmal("fremtidigSituasjon", "Hva tenker du om din fremtidige situasjon?", "Jeg skal tilbake til jobben jeg har"));
+        tekster.add(new TekstForSporsmal("tilbakeIArbeid", "Tror du at du kommer tilbake i jobb før du har vært sykmeldt i 52 uker?", "Nei"));
+        return tekster;
+    }
+
     public static Stilling gyldigStilling() {
         return new Stilling()
                 .setStyrk08("12345")
@@ -67,14 +71,20 @@ public class TestUtils {
                 .setAndreForhold(AndreForholdSvar.NEI);
     }
 
+    public static Besvarelse gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse() {
+        return new Besvarelse()
+                .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING);
+    }
+
     public static Besvarelse gyldigBesvarelseUtenJobb() {
         return gyldigBesvarelse()
                 .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR);
     }
 
-    public static BrukerRegistrering gyldigBrukerRegistrering() {
-        return new BrukerRegistrering()
+    public static OrdinaerBrukerRegistrering gyldigBrukerRegistrering() {
+        return new OrdinaerBrukerRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
                 .setEnigIOppsummering(true)
                 .setOppsummering("Test test oppsummering")
@@ -84,7 +94,14 @@ public class TestUtils {
 
     }
 
-    public static BrukerRegistrering gyldigBrukerRegistreringUtenJobb() {
+    public static SykmeldtRegistrering gyldigSykmeldtRegistrering() {
+        return new SykmeldtRegistrering()
+                .setOpprettetDato(LocalDateTime.now())
+                .setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse())
+                .setTeksterForBesvarelse(gyldigeTeksterForSykmeldtBesvarelse());
+    }
+
+    public static OrdinaerBrukerRegistrering gyldigBrukerRegistreringUtenJobb() {
         return gyldigBrukerRegistrering().setSisteStilling(
                 ingenYrkesbakgrunn()
         ).setBesvarelse(gyldigBesvarelse()

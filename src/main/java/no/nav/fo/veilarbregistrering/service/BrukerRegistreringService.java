@@ -18,6 +18,7 @@ import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REG
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.utils.FnrUtils.getAktorIdOrElseThrow;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
@@ -60,7 +61,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
         arbeidssokerregistreringRepository.lagreReaktiveringForBruker(aktorId);
         oppfolgingClient.reaktiverBruker(fnr);
@@ -69,7 +70,7 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public BrukerRegistrering registrerBruker(BrukerRegistrering bruker, String fnr) {
+    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering bruker, String fnr) {
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
 
@@ -116,25 +117,25 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private BrukerRegistrering opprettBruker(String fnr, BrukerRegistrering bruker, Profilering profilering) {
-        AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);
+    private OrdinaerBrukerRegistrering opprettBruker(String fnr, OrdinaerBrukerRegistrering bruker, Profilering profilering) {
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
-        BrukerRegistrering brukerRegistrering = arbeidssokerregistreringRepository.lagreBruker(bruker, aktorId);
-        arbeidssokerregistreringRepository.lagreProfilering(brukerRegistrering.getId(), profilering);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
+        arbeidssokerregistreringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
 
         rapporterProfilering(profilering);
-        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", brukerRegistrering, profilering);
-        return brukerRegistrering;
+        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+        return ordinaerBrukerRegistrering;
     }
 
     public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
         return arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(
-                FnrUtils.getAktorIdOrElseThrow(aktorService, fnr.getFnr())
+                getAktorIdOrElseThrow(aktorService, fnr.getFnr())
         );
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, BrukerRegistrering bruker) {
+    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, OrdinaerBrukerRegistrering bruker) {
         return startRegistreringUtils.profilerBruker(
                 bruker,
                 utledAlderForFnr(fnr, now()),
@@ -142,16 +143,19 @@ public class BrukerRegistreringService {
                 now());
     }
 
-    public void registrerSykmeldt(String fnr) {
+    @Transactional
+    public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
         if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
+
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
+            AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
             oppfolgingClient.settOppfolgingSykmeldt();
-            //Lagring
+            arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         } else {
-            throw new RuntimeException("Registreringsinformasjon er ugyldig");
+            throw new RuntimeException("Bruker kan ikke registreres.");
         }
     }
 
