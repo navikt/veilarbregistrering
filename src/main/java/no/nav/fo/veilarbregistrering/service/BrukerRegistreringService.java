@@ -18,7 +18,6 @@ import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REG
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerSykmeldtBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
@@ -147,13 +146,6 @@ public class BrukerRegistreringService {
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
         if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             throw new RuntimeException("Tjenesten er togglet av.");
-        }
-
-        try {
-            validerSykmeldtBrukerRegistrering(sykmeldtRegistrering);
-        } catch (RuntimeException e) {
-            log.warn("Ugyldig innsendt sykmeldt registrering. Besvarelse: {}", sykmeldtRegistrering.getBesvarelse());
-            throw e;
         }
 
         AktorId aktorId = FnrUtils.getAktorIdOrElseThrow(aktorService, fnr);

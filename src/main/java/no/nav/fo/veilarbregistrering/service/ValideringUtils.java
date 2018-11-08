@@ -66,29 +66,6 @@ public class ValideringUtils {
         );
     }
 
-    public static void validerSykmeldtBrukerRegistrering(SykmeldtRegistrering bruker) {
-
-        assertBothTrueOrThrowException(
-                FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
-                gyldigBesvarelseFremtidigSituasjonLoep1(bruker)
-        );
-
-        assertBothTrueOrThrowException(
-                FremtidigSituasjonSvar.INGEN_PASSER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
-                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
-        );
-
-        assertBothTrueOrThrowException(
-                FremtidigSituasjonSvar.USIKKER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
-                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
-        );
-
-        assertBothTrueOrThrowException(
-                FremtidigSituasjonSvar.NY_ARBEIDSGIVER.equals(bruker.getBesvarelse().getFremtidigSituasjon()),
-                gyldigBesvarelseFremtidigSituasjonLoep234(bruker)
-        );
-    }
-
     private static void stillingSkalSamsvareMedSisteStillingSpm(OrdinaerBrukerRegistrering bruker) {
         SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
         if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
