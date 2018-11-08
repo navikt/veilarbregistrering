@@ -149,6 +149,10 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
+        if (!ofNullable(sykmeldtRegistrering.getBesvarelse()).isPresent()) {
+            throw new RuntimeException("Besvarelse for sykmeldt ugyldig.");
+        }
+
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
