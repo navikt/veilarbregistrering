@@ -155,7 +155,7 @@ public class BrukerRegistreringService {
             oppfolgingClient.settOppfolgingSykmeldt();
             arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         } else {
-            throw new RuntimeException("Registreringsinformasjon er ugyldig");
+            throw new RuntimeException("Bruker kan ikke registreres.");
         }
     }
 
