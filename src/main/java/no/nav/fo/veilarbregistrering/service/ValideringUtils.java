@@ -98,7 +98,7 @@ public class ValideringUtils {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return besvarelse != null
                 && besvarelse.getFremtidigSituasjon() != null
-                && besvarelse.getTilbakeEtter52uker() != null
+                && besvarelse.getTilbakeIArbeid() != null
                 && besvarelse.getUtdanning() == null
                 && besvarelse.getUtdanningGodkjent() == null
                 && besvarelse.getUtdanningBestatt() == null
@@ -108,7 +108,7 @@ public class ValideringUtils {
         Besvarelse besvarelse = bruker.getBesvarelse();
         return besvarelse != null
                 && besvarelse.getFremtidigSituasjon() == null
-                && besvarelse.getTilbakeEtter52uker() == null
+                && besvarelse.getTilbakeIArbeid() == null
                 && besvarelse.getUtdanning() != null
                 && besvarelse.getUtdanningGodkjent() != null
                 && besvarelse.getUtdanningBestatt() != null

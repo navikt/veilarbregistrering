@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeEtter52ukerSvar;
+import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeIArbeidSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -67,9 +67,9 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     public void hentSykmeldtregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
         SykmeldtRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
-                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING));
+                .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
         SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
-                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_REDUSERT_STILLING));
+                .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_REDUSERT_STILLING));
 
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
         arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
