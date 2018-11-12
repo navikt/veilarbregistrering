@@ -150,6 +150,16 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
+    void skalIkkeRegistrereSykmeldteMedTomBesvarelse() {
+        mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
+        mockSykmeldtMedArbeidsgiver();
+        SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
+        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
+    }
+
+    @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
