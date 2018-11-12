@@ -148,7 +148,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
 
-        of (sykmeldtRegistrering.getBesvarelse())
+        ofNullable (sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
