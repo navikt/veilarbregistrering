@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -149,9 +148,8 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten er togglet av.");
         }
 
-        if (!ofNullable(sykmeldtRegistrering.getBesvarelse()).isPresent()) {
-            throw new RuntimeException("Besvarelse for sykmeldt ugyldig.");
-        }
+        of (sykmeldtRegistrering.getBesvarelse())
+                .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
