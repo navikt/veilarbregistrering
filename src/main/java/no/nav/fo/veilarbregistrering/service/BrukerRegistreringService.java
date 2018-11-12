@@ -145,7 +145,7 @@ public class BrukerRegistreringService {
     @Transactional
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
         if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
-            throw new RuntimeException("Tjenesten er togglet av.");
+            throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
 
         of (sykmeldtRegistrering.getBesvarelse())

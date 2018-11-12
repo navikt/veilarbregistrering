@@ -74,7 +74,7 @@ public class TestUtils {
     public static Besvarelse gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse() {
         return new Besvarelse()
                 .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
-                .setTilbakeEtter52uker(TilbakeEtter52ukerSvar.JA_FULL_STILLING);
+                .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING);
     }
 
     public static Besvarelse gyldigBesvarelseUtenJobb() {

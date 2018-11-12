@@ -130,7 +130,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Besvarelse
                 .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon()).isPresent() ? besvarelse.getFremtidigSituasjon().toString() : null)
-                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeEtter52uker()).isPresent() ? besvarelse.getTilbakeEtter52uker().toString() : null)
+                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeIArbeid()).isPresent() ? besvarelse.getTilbakeIArbeid().toString() : null)
                 .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(null))
                 .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).isPresent() ? besvarelse.getUtdanningBestatt().toString() : null)
                 .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).isPresent() ? besvarelse.getUtdanningGodkjent().toString() : null)
@@ -276,9 +276,9 @@ public class ArbeidssokerregistreringRepository {
                                 ? FremtidigSituasjonSvar.valueOf(rs.getString(FREMTIDIG_SITUASJON))
                                         : null
                         )
-                        .setTilbakeEtter52uker(
+                        .setTilbakeIArbeid(
                                 ofNullable(rs.getString(TILBAKE_ETTER_52_UKER)).isPresent()
-                                ? TilbakeEtter52ukerSvar.valueOf(rs.getString(TILBAKE_ETTER_52_UKER))
+                                ? TilbakeIArbeidSvar.valueOf(rs.getString(TILBAKE_ETTER_52_UKER))
                                         : null
                         )
                         .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
