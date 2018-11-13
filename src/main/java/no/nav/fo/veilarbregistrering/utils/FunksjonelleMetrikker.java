@@ -11,6 +11,7 @@ import no.nav.metrics.MetricsFactory;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukersSvarIndikererArbeidSisteManeder;
 
 public class FunksjonelleMetrikker {
 
@@ -27,6 +28,17 @@ public class FunksjonelleMetrikker {
     public static void rapporterProfilering(Profilering profilering) {
         Event event = MetricsFactory.createEvent("registrering.bruker.profilering");
         event.addFieldToReport("innsatsgruppe", profilering.getInnsatsgruppe());
+        event.report();
+    }
+
+    public static void rapporterBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
+        boolean samsvarermedinfofraaareg = brukersSvarIndikererArbeidSisteManeder(ordinaerBrukerRegistrering)
+                == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
+
+        Event event = MetricsFactory.createEvent("registrering.besvarelse");
+        event.addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning());
+        event.addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder());
+        event.addFieldToReport("samsvarermedinfofraaareg", samsvarermedinfofraaareg);
         event.report();
     }
 
