@@ -8,7 +8,7 @@ import no.nav.metrics.MetricsFactory;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukersSvarIndikererArbeidSisteManeder;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukerSvarerAtDenHarJobbetSisteMander;
 
 public class FunksjonelleMetrikker {
 
@@ -36,7 +36,7 @@ public class FunksjonelleMetrikker {
     }
 
     public static void rapporterOrdinaerBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
-        boolean samsvarermedinfofraaareg = brukersSvarIndikererArbeidSisteManeder(ordinaerBrukerRegistrering)
+        boolean samsvarermedinfofraaareg = brukerSvarerAtDenHarJobbetSisteMander(ordinaerBrukerRegistrering)
                 == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
 
         Event event = MetricsFactory.createEvent("registrering.besvarelse");
