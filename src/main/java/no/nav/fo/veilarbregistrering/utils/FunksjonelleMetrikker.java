@@ -2,10 +2,7 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
-import no.nav.fo.veilarbregistrering.domain.RegistreringType;
-import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
@@ -31,7 +28,14 @@ public class FunksjonelleMetrikker {
         event.report();
     }
 
-    public static void rapporterBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
+    public static void rapporterSykmeldtBesvarelse(SykmeldtRegistrering sykmeldtRegistrering) {
+        Event event = MetricsFactory.createEvent("registrering.sykmeldt.besvarelse");
+        event.addFieldToReport("utdanning", sykmeldtRegistrering.getBesvarelse().getUtdanning());
+        event.addFieldToReport("helseHinder", sykmeldtRegistrering.getBesvarelse().getHelseHinder());
+        event.report();
+    }
+
+    public static void rapporterOrdinaerBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
         boolean samsvarermedinfofraaareg = brukersSvarIndikererArbeidSisteManeder(ordinaerBrukerRegistrering)
                 == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
 
