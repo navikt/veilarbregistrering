@@ -19,8 +19,7 @@ import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.bereg
 import static no.nav.fo.veilarbregistrering.service.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.getAktorIdOrElseThrow;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterInvalidRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterProfilering;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 
 @Slf4j
@@ -124,6 +123,7 @@ public class BrukerRegistreringService {
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
 
         rapporterProfilering(profilering);
+        rapporterOrdinaerBesvarelse(bruker, profilering);
         log.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
         return ordinaerBrukerRegistrering;
     }
@@ -157,6 +157,7 @@ public class BrukerRegistreringService {
             oppfolgingClient.settOppfolgingSykmeldt();
             arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
+            rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
         } else {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }

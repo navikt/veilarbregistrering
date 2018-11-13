@@ -2,15 +2,13 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
-import no.nav.fo.veilarbregistrering.domain.RegistreringType;
-import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
+import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukerSvarerAtDenHarJobbetSisteMander;
 
 public class FunksjonelleMetrikker {
 
@@ -27,6 +25,24 @@ public class FunksjonelleMetrikker {
     public static void rapporterProfilering(Profilering profilering) {
         Event event = MetricsFactory.createEvent("registrering.bruker.profilering");
         event.addFieldToReport("innsatsgruppe", profilering.getInnsatsgruppe());
+        event.report();
+    }
+
+    public static void rapporterSykmeldtBesvarelse(SykmeldtRegistrering sykmeldtRegistrering) {
+        Event event = MetricsFactory.createEvent("registrering.sykmeldt.besvarelse");
+        event.addFieldToReport("utdanning", sykmeldtRegistrering.getBesvarelse().getUtdanning());
+        event.addFieldToReport("helseHinder", sykmeldtRegistrering.getBesvarelse().getHelseHinder());
+        event.report();
+    }
+
+    public static void rapporterOrdinaerBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
+        boolean samsvarermedinfofraaareg = brukerSvarerAtDenHarJobbetSisteMander(ordinaerBrukerRegistrering)
+                == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
+
+        Event event = MetricsFactory.createEvent("registrering.besvarelse");
+        event.addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning());
+        event.addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder());
+        event.addFieldToReport("samsvarermedinfofraaareg", samsvarermedinfofraaareg);
         event.report();
     }
 
