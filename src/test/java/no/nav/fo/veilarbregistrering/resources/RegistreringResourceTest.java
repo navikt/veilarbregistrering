@@ -74,7 +74,6 @@ class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
-                .setEnigIOppsummering(true)
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
         String ident = "10108000398"; //Aremark fiktivt fnr.";

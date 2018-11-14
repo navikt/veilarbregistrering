@@ -17,8 +17,6 @@ import java.util.List;
 public class OrdinaerBrukerRegistrering {
     long id;
     LocalDateTime opprettetDato;
-    boolean enigIOppsummering;
-    String oppsummering;
     Besvarelse besvarelse;
     Stilling sisteStilling;
     List<TekstForSporsmal> teksterForBesvarelse;
