@@ -11,7 +11,7 @@ healthcheck:
     path: veilarbregistrering/internal/isAlive
     initialDelay: 60
   readiness:
-    path: veilarbregistrering/internal/isAlive
+    path: veilarbregistrering/internal/isReady
     initialDelay: 60
 prometheus:
   enabled: true
