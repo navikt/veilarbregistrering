@@ -157,7 +157,6 @@ public class BrukerRegistreringService {
             oppfolgingClient.settOppfolgingSykmeldt();
             arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
-            rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
         } else {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }

@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterAlder;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterRegistreringsstatus;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterSykmeldtBesvarelse;
 
 @Component
 @Path("/")
@@ -89,6 +90,7 @@ public class RegistreringResource {
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, userService.getFnr());
+        rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
 }
