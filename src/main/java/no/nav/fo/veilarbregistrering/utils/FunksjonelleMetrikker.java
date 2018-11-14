@@ -38,11 +38,17 @@ public class FunksjonelleMetrikker {
         boolean samsvarermedinfofraaareg = brukerSvarerAtDenHarJobbetSisteMander(ordinaerBrukerRegistrering)
                 == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
 
-        Event event = MetricsFactory.createEvent("registrering.besvarelse");
-        event.addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning());
-        event.addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder());
-        event.addFieldToReport("samsvarermedinfofraaareg", samsvarermedinfofraaareg);
-        event.report();
+        MetricsFactory.createEvent("registrering.besvarelse.utdanning")
+                .addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning())
+                .report();
+
+        MetricsFactory.createEvent("registrering.besvarelse.helseHinder")
+                .addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder())
+                .report();
+
+        MetricsFactory.createEvent("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg")
+                .addFieldToReport("samsvarermedinfofraaareg", samsvarermedinfofraaareg)
+                .report();
     }
 
     public static void rapporterAlder(String fnr) {
