@@ -47,7 +47,7 @@ public class FunksjonelleMetrikker {
                 .report();
 
         MetricsFactory.createEvent("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg")
-                .addFieldToReport("samsvarermedinfofraaareg", samsvarermedinfofraaareg)
+                .addFieldToReport("samsvarermedinfofraareg", samsvarermedinfofraaareg)
                 .report();
     }
 
