@@ -107,8 +107,6 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     }
 
     private void assertRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
-        assertThat(ordinaerBrukerRegistrering.isEnigIOppsummering()).isEqualTo(bruker.isEnigIOppsummering());
-        assertThat(ordinaerBrukerRegistrering.getOppsummering()).isEqualTo(bruker.getOppsummering());
         assertThat(ordinaerBrukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(ordinaerBrukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
         assertThat(ordinaerBrukerRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());

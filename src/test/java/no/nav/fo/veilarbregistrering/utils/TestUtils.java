@@ -86,8 +86,6 @@ public class TestUtils {
     public static OrdinaerBrukerRegistrering gyldigBrukerRegistrering() {
         return new OrdinaerBrukerRegistrering()
                 .setOpprettetDato(LocalDateTime.now())
-                .setEnigIOppsummering(true)
-                .setOppsummering("Test test oppsummering")
                 .setSisteStilling(gyldigStilling())
                 .setBesvarelse(gyldigBesvarelse())
                 .setTeksterForBesvarelse(gyldigeTeksterForBesvarelse());
