@@ -7,6 +7,7 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
 import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.domain.besvarelse.UtdanningSvar.GRUNNSKOLE;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukerSvarerAtDenHarJobbetSisteMander;
 
@@ -30,7 +31,7 @@ public class FunksjonelleMetrikker {
 
     public static void rapporterSykmeldtBesvarelse(SykmeldtRegistrering sykmeldtRegistrering) {
         Event event = MetricsFactory.createEvent("registrering.sykmeldt.besvarelse");
-        event.addFieldToReport("utdanning", sykmeldtRegistrering.getBesvarelse().getUtdanning());
+        event.addFieldToReport("utdanning", GRUNNSKOLE);
         event.report();
     }
 
