@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.httpclient;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerData;
 import no.nav.fo.veilarbregistrering.domain.Fnr;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 
@@ -57,10 +58,10 @@ public class OppfolgingClient extends BaseClient {
         }
     }
 
-    public void settOppfolgingSykmeldt() {
+    public void settOppfolgingSykmeldt(SykmeldtBrukerData sykmeldtBrukerData) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(c)
+                , c -> postOppfolgingSykmeldt(sykmeldtBrukerData, c)
         );
     }
 
@@ -76,9 +77,9 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
-    private int postOppfolgingSykmeldt( Client client) {
+    private int postOppfolgingSykmeldt(SykmeldtBrukerData sykmeldtBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverSykmeldt";
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(null);
+        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(sykmeldtBrukerData));
         return behandleHttpResponse(response, url);
     }
 

@@ -85,4 +85,23 @@ public class StartRegistreringUtils {
                 && HelseHinderSvar.NEI.equals(besvarelse.getHelseHinder())
                 && AndreForholdSvar.NEI.equals(besvarelse.getAndreForhold());
     }
+
+    public SykmeldtBrukerData lagSykmeldtBrukerData(SykmeldtRegistrering sykmeldtRegistrering) {
+        FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
+        boolean tilSammeArbeidsgiver = (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
+                || (fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER);
+        boolean tilNyArbeidsgiver = (fremtidigSituasjon == FremtidigSituasjonSvar.NY_ARBEIDSGIVER)
+                || (fremtidigSituasjon == FremtidigSituasjonSvar.USIKKER);
+
+
+        SykmeldtBrukerData sykmeldtBrukerData = new SykmeldtBrukerData();
+
+        if (tilNyArbeidsgiver) {
+            sykmeldtBrukerData.setSykmeldtBrukerType(SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER);
+        } else if (tilSammeArbeidsgiver){
+            sykmeldtBrukerData.setSykmeldtBrukerType(SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER);
+        }
+
+        return sykmeldtBrukerData;
+    }
 }
