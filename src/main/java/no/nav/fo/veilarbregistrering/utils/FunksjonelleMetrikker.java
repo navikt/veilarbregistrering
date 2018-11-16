@@ -17,9 +17,9 @@ public class FunksjonelleMetrikker {
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
         Event event = MetricsFactory.createEvent("registrering.bruker.data");
         event.addFieldToReport("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT);
-        event.addFieldToReport("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING);
-        event.addFieldToReport("sykmeldUnder39uker", registreringStatus.getRegistreringType() == RegistreringType.SPERRET);
-        event.addFieldToReport("sykmeldOver39uker", registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING);
+        event.addFieldToReport("kreverReaktivering", Boolean.toString(registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING));
+        event.addFieldToReport("sykmeldUnder39uker", Boolean.toString(registreringStatus.getRegistreringType() == RegistreringType.SPERRET));
+        event.addFieldToReport("sykmeldOver39uker", Boolean.toString(registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING));
         event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
         event.report();
     }
@@ -32,7 +32,7 @@ public class FunksjonelleMetrikker {
 
     public static void rapporterSykmeldtBesvarelse(SykmeldtRegistrering sykmeldtRegistrering) {
         Event event = MetricsFactory.createEvent("registrering.sykmeldt.besvarelse");
-        event.addFieldToReport("utdanning", HOYERE_UTDANNING_5_ELLER_MER);
+        event.addFieldToReport("utdanning", sykmeldtRegistrering.getBesvarelse().getUtdanning() + "");
         event.report();
     }
 
