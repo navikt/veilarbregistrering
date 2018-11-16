@@ -111,7 +111,7 @@ public class BrukerRegistreringService {
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
 
-        log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
+        log.info("Returnerer startregistreringsstatus {} basert på oppfølgingsdata {} og sykeforløpdata {}", startRegistreringStatus, oppfolgingStatusData, sykeforloepMetaData);
         return startRegistreringStatus;
     }
 
