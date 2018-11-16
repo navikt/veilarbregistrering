@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
@@ -10,14 +11,19 @@ import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukerSvarerAtDenHarJobbetSisteMander;
 
+@Slf4j
 public class FunksjonelleMetrikker {
 
     public static void rapporterRegistreringsstatus(StartRegistreringStatus registreringStatus) {
         Event event = MetricsFactory.createEvent("registrering.bruker.data");
+        boolean sykmeldtOver39Uker = registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING;
+        boolean sykmeldtUnder39Uker = registreringStatus.getRegistreringType() == RegistreringType.SPERRET;
+        boolean reaktivering = registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING;
         event.addFieldToReport("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT);
-        event.addFieldToReport("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING);
-        event.addFieldToReport("sykmeldUnder39uker", registreringStatus.getRegistreringType() == RegistreringType.SPERRET);
-        event.addFieldToReport("sykmeldOver39uker", registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING);
+        event.addFieldToReport("kreverReaktivering", reaktivering);
+        event.addFieldToReport("sykmeldUnder39uker", sykmeldtUnder39Uker);
+        event.addFieldToReport("sykmeldOver39uker", sykmeldtOver39Uker);
+        log.info("Rapportering av registreringsstatus : reaktivering {}, sykmeldtUnder39Uker {}, sykmeldtOver39Uker {}", reaktivering, sykmeldtUnder39Uker, sykmeldtOver39Uker);
         event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
         event.report();
     }
