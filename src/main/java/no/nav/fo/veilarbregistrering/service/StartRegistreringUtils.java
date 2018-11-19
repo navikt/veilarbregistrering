@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
+import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
 
 public class StartRegistreringUtils {
 
@@ -86,22 +88,14 @@ public class StartRegistreringUtils {
                 && AndreForholdSvar.NEI.equals(besvarelse.getAndreForhold());
     }
 
-    public SykmeldtBrukerData lagSykmeldtBrukerData(SykmeldtRegistrering sykmeldtRegistrering) {
+    public SykmeldtBrukerType finnSykmeldtBrukerType(SykmeldtRegistrering sykmeldtRegistrering) {
         FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
-        boolean tilSammeArbeidsgiver = (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
-                || (fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER);
-        boolean tilNyArbeidsgiver = (fremtidigSituasjon == FremtidigSituasjonSvar.NY_ARBEIDSGIVER)
-                || (fremtidigSituasjon == FremtidigSituasjonSvar.USIKKER);
-
-
-        SykmeldtBrukerData sykmeldtBrukerData = new SykmeldtBrukerData();
-
-        if (tilNyArbeidsgiver) {
-            sykmeldtBrukerData.setSykmeldtBrukerType(SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER);
-        } else if (tilSammeArbeidsgiver){
-            sykmeldtBrukerData.setSykmeldtBrukerType(SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER);
+        if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
+                || (fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER)) {
+            return SKAL_TIL_SAMME_ARBEIDSGIVER;
+        } else {
+            return SKAL_TIL_NY_ARBEIDSGIVER;
         }
 
-        return sykmeldtBrukerData;
     }
 }
