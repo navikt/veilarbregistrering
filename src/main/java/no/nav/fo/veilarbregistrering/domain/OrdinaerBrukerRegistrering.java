@@ -10,36 +10,22 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.domain.BrukerRegistreringType.ORDINAER;
+
 @Data
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode
 public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
+    long id;
+    LocalDateTime opprettetDato;
+    Besvarelse besvarelse;
+    List<TekstForSporsmal> teksterForBesvarelse;
     Stilling sisteStilling;
     Profilering profilering;
 
     @Override
-    public OrdinaerBrukerRegistrering setId(long id){
-        this.id = id;
-        return this;
+    BrukerRegistreringType hentType() {
+        return ORDINAER;
     }
-
-    @Override
-    public OrdinaerBrukerRegistrering setOpprettetDato(LocalDateTime opprettetDato){
-        this.opprettetDato = opprettetDato;
-        return this;
-    }
-
-    @Override
-    public OrdinaerBrukerRegistrering setBesvarelse(Besvarelse besvarelse){
-        this.besvarelse = besvarelse;
-        return this;
-    }
-
-    @Override
-    public OrdinaerBrukerRegistrering setTeksterForBesvarelse(List<TekstForSporsmal> teksterForBesvarelse){
-        this.teksterForBesvarelse = teksterForBesvarelse;
-        return this;
-    }
-
 }
