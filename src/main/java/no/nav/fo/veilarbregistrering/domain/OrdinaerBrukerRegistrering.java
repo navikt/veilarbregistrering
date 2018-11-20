@@ -14,10 +14,32 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode
-public class OrdinaerBrukerRegistrering {
-    long id;
-    LocalDateTime opprettetDato;
-    Besvarelse besvarelse;
+public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
     Stilling sisteStilling;
-    List<TekstForSporsmal> teksterForBesvarelse;
+    Profilering profilering;
+
+    @Override
+    public OrdinaerBrukerRegistrering setId(long id){
+        this.id = id;
+        return this;
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering setOpprettetDato(LocalDateTime opprettetDato){
+        this.opprettetDato = opprettetDato;
+        return this;
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering setBesvarelse(Besvarelse besvarelse){
+        this.besvarelse = besvarelse;
+        return this;
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering setTeksterForBesvarelse(List<TekstForSporsmal> teksterForBesvarelse){
+        this.teksterForBesvarelse = teksterForBesvarelse;
+        return this;
+    }
+
 }

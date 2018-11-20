@@ -190,13 +190,14 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public ProfilertBrukerRegistrering hentProfilertBrukerregistreringForAktorId(AktorId aktorId) {
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringMedProfileringForAktorId(AktorId aktorId) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
         if (ordinaerBrukerRegistrering == null) {
             return null;
         }
         Profilering profilering = hentProfileringForId(ordinaerBrukerRegistrering.getId());
-        return new ProfilertBrukerRegistrering(ordinaerBrukerRegistrering, profilering);
+        ordinaerBrukerRegistrering.setProfilering(profilering);
+        return ordinaerBrukerRegistrering;
     }
 
     public void lagreReaktiveringForBruker(AktorId aktorId) {
@@ -261,8 +262,7 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static SykmeldtRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
-
-        return new SykmeldtRegistrering()
+        return (SykmeldtRegistrering) new SykmeldtRegistrering()
                 .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))

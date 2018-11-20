@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
@@ -128,10 +129,23 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
-    public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
-        return arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(
-                getAktorIdOrElseThrow(aktorService, fnr.getFnr())
-        );
+    public BrukerRegistrering hentBrukerRegistrering(Fnr fnr) {
+
+        OrdinaerBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository
+                .hentOrdinaerBrukerregistreringMedProfileringForAktorId(getAktorIdOrElseThrow(aktorService, fnr.getFnr()));
+
+        SykmeldtRegistrering sykmeldtRegistrering = arbeidssokerregistreringRepository
+                .hentSykmeldtregistreringForAktorId(getAktorIdOrElseThrow(aktorService, fnr.getFnr()));
+
+        LocalDateTime profilertBrukerRegistreringDato = profilertBrukerRegistrering.getOpprettetDato();
+        LocalDateTime sykmeldtRegistreringDato = sykmeldtRegistrering.getOpprettetDato();
+
+        if(profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)){
+            return profilertBrukerRegistrering;
+        }else{
+            return sykmeldtRegistrering;
+        }
+
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, OrdinaerBrukerRegistrering bruker) {
