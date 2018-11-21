@@ -172,7 +172,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public OrdinaerBrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
@@ -191,7 +191,7 @@ public class ArbeidssokerregistreringRepository {
     }
 
     public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringMedProfileringForAktorId(AktorId aktorId) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentOrdinaerBrukerregistreringForAktorId(aktorId);
         if (ordinaerBrukerRegistrering == null) {
             return null;
         }
@@ -262,7 +262,7 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static SykmeldtRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
-        return (SykmeldtRegistrering) new SykmeldtRegistrering()
+        return new SykmeldtRegistrering()
                 .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                 .setTeksterForBesvarelse(tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))

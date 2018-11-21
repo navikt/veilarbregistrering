@@ -57,7 +57,7 @@ class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
-        registreringResource.hentProfilertRegistrering();
+        registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
 
