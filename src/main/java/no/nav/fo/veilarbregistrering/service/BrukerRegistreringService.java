@@ -131,11 +131,21 @@ public class BrukerRegistreringService {
 
     public BrukerRegistreringWrapper hentBrukerRegistrering(Fnr fnr) {
 
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr.getFnr());
+
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository
-                .hentOrdinaerBrukerregistreringMedProfileringForAktorId(getAktorIdOrElseThrow(aktorService, fnr.getFnr()));
+                .hentOrdinaerBrukerregistreringMedProfileringForAktorId(aktorId);
 
         SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
-                .hentSykmeldtregistreringForAktorId(getAktorIdOrElseThrow(aktorService, fnr.getFnr()));
+                .hentSykmeldtregistreringForAktorId(aktorId);
+
+        if(ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null){
+            return null;
+        }else if(ordinaerBrukerRegistrering == null){
+            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
+        }else if(sykmeldtBrukerRegistrering == null){
+            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
+        }
 
         LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
         LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
