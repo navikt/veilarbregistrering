@@ -178,7 +178,9 @@ public class BrukerRegistreringService {
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
-            oppfolgingClient.settOppfolgingSykmeldt();
+            SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
+
+            oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType);
             arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
         } else {
