@@ -4,8 +4,8 @@ import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 
-import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.API_KEY_FASIT_KEY;
-import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient.API_KEY_FASIT_KEY;
+import static no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 

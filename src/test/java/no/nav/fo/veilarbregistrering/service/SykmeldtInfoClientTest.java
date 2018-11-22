@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-class DigisyfoClientTest {
+class SykmeldtInfoClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
@@ -41,7 +41,7 @@ class DigisyfoClientTest {
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private DigisyfoClient sykeforloepMetadataClient;
+    private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
@@ -86,10 +86,10 @@ class DigisyfoClientTest {
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 
-    private DigisyfoClient buildSykeForloepClient() {
+    private SykmeldtInfoClient buildSykeForloepClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         setProperty("SYKEFRAVAERAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/");
-        return sykeforloepMetadataClient = new DigisyfoClient(httpServletRequestProvider);
+        return sykeforloepMetadataClient = new SykmeldtInfoClient(httpServletRequestProvider);
     }
 
     private OppfolgingClient buildOppfolgingClient() {

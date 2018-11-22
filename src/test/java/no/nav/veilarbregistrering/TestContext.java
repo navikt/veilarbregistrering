@@ -19,8 +19,8 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.getServiceUser;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.UNLEASH_API_URL_PROPERTY;
-import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.API_KEY_FASIT_KEY;
-import static no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient.API_KEY_FASIT_KEY;
+import static no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient.DIGISYFO_BASE_URL_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 

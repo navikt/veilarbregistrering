@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
@@ -132,8 +132,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public DigisyfoClient sykeforloepMetadataClient() {
-            return mock(DigisyfoClient.class);
+        public SykmeldtInfoClient sykeforloepMetadataClient() {
+            return mock(SykmeldtInfoClient.class);
         }
 
         @Bean
@@ -152,7 +152,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                 AktorService aktorService,
                 OppfolgingClient oppfolgingClient,
-                DigisyfoClient sykeforloepMetadataClient,
+                SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature) {

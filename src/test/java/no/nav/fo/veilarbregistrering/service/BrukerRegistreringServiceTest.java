@@ -5,7 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class BrukerRegistreringServiceTest {
     private static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
 
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
-    private DigisyfoClient sykeforloepMetadataClient;
+    private SykmeldtInfoClient sykeforloepMetadataClient;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
@@ -44,7 +44,7 @@ public class BrukerRegistreringServiceTest {
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
-        sykeforloepMetadataClient = mock(DigisyfoClient.class);
+        sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         startRegistreringUtils = new StartRegistreringUtils();
 

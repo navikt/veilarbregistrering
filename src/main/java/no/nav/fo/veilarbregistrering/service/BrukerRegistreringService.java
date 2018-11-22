@@ -5,7 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +29,14 @@ public class BrukerRegistreringService {
     private final AktorService aktorService;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private OppfolgingClient oppfolgingClient;
-    private DigisyfoClient sykeforloepMetadataClient;
+    private SykmeldtInfoClient sykmeldtInfoClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
-                                     DigisyfoClient sykeforloepMetadataClient,
+                                     SykmeldtInfoClient sykmeldtInfoClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
@@ -46,7 +46,7 @@ public class BrukerRegistreringService {
         this.aktorService = aktorService;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
-        this.sykeforloepMetadataClient = sykeforloepMetadataClient;
+        this.sykmeldtInfoClient = sykmeldtInfoClient;
         this.arbeidsforholdService = arbeidsforholdService;
         this.startRegistreringUtils = startRegistreringUtils;
     }
@@ -171,7 +171,7 @@ public class BrukerRegistreringService {
         }
 
         if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return of(sykeforloepMetadataClient.hentSykeforloepMetadata());
+            return of(sykmeldtInfoClient.hentSykeforloepMetadata());
         } else {
             return empty();
         }

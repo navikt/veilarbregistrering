@@ -14,14 +14,14 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
-public class DigisyfoClient extends BaseClient {
+public class SykmeldtInfoClient extends BaseClient {
 
     public static final String DIGISYFO_BASE_URL_PROPERTY_NAME = "SYKEFRAVAERAPI_URL";
     public static final String API_KEY_FASIT_KEY = "VEILARBREGISTRERING_SYKEFRAVAERAPI_APIKEY_PASSWORD";
     private static String apiKey = "";
 
     @Inject
-    public DigisyfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
+    public SykmeldtInfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
         super(getRequiredProperty(DIGISYFO_BASE_URL_PROPERTY_NAME), httpServletRequestProvider);
         this.apiKey = getRequiredProperty(API_KEY_FASIT_KEY);
     }
