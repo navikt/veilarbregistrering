@@ -91,7 +91,9 @@ public class StartRegistreringUtils {
     public SykmeldtBrukerType finnSykmeldtBrukerType(SykmeldtRegistrering sykmeldtRegistrering) {
         FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
         if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
-                || (fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER)) {
+                || fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER_NY_STILLING
+                || fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER
+        ) {
             return SKAL_TIL_SAMME_ARBEIDSGIVER;
         } else {
             return SKAL_TIL_NY_ARBEIDSGIVER;
