@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
@@ -128,10 +129,33 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
-    public ProfilertBrukerRegistrering hentProfilertBrukerRegistrering(Fnr fnr) {
-        return arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(
-                getAktorIdOrElseThrow(aktorService, fnr.getFnr())
-        );
+    public BrukerRegistreringWrapper hentBrukerRegistrering(Fnr fnr) {
+
+        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr.getFnr());
+
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository
+                .hentOrdinaerBrukerregistreringMedProfileringForAktorId(aktorId);
+
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
+                .hentSykmeldtregistreringForAktorId(aktorId);
+
+        if(ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null){
+            return null;
+        }else if(ordinaerBrukerRegistrering == null){
+            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
+        }else if(sykmeldtBrukerRegistrering == null){
+            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
+        }
+
+        LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
+        LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
+
+        if(profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)){
+            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
+        }else{
+            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
+        }
+
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, OrdinaerBrukerRegistrering bruker) {
