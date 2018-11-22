@@ -61,10 +61,10 @@ public class RegistreringResource {
     @GET
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
-    public ProfilertBrukerRegistrering hentProfilertRegistrering() {
+    public BrukerRegistreringWrapper hentRegistrering() {
         String fnr = userService.getFnrFromUrl();
         pepClient.sjekkLeseTilgangTilFnr(fnr);
-        return brukerRegistreringService.hentProfilertBrukerRegistrering(new Fnr(fnr));
+        return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
     }
 
     @POST
