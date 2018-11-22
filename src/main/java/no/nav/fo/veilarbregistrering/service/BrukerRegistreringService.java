@@ -92,7 +92,7 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        Optional<SykeforloepMetaData> sykeforloepMetaData = empty();
+        Optional<SykmeldtInfoData> sykeforloepMetaData = empty();
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
             sykeforloepMetaData = hentSykeforloepMetaData();
         }
@@ -162,10 +162,10 @@ public class BrukerRegistreringService {
         }
     }
 
-    private Optional<SykeforloepMetaData> hentSykeforloepMetaData() {
+    private Optional<SykmeldtInfoData> hentSykeforloepMetaData() {
         if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
-            return of(new SykeforloepMetaData()
+            return of(new SykmeldtInfoData()
                     .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
                     .withSykmeldtFraDato("2018-01-21"));
         }

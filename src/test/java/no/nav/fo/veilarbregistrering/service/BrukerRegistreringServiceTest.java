@@ -326,14 +326,14 @@ public class BrukerRegistreringServiceTest {
 
     private void mockSykmeldtBrukerOver39uker() {
         when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
-                new SykeforloepMetaData()
+                new SykmeldtInfoData()
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }
 
     private void mockSykmeldtBrukerUnder39uker() {
         when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
-                new SykeforloepMetaData()
+                new SykmeldtInfoData()
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
         );
     }
@@ -341,7 +341,7 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
         when(sykeforloepMetadataClient.hentSykeforloepMetadata()).thenReturn(
-                new SykeforloepMetaData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
+                new SykmeldtInfoData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }
     private void mockSykmeldtMedArbeidsgiver() {

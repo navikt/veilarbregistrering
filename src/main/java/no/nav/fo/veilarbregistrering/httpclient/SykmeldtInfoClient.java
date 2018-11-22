@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.domain.SykeforloepMetaData;
+import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
@@ -26,9 +26,9 @@ public class SykmeldtInfoClient extends BaseClient {
         this.apiKey = getRequiredProperty(API_KEY_FASIT_KEY);
     }
 
-    public SykeforloepMetaData hentSykeforloepMetadata() {
+    public SykmeldtInfoData hentSykeforloepMetadata() {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getSykeforloepMetadata(baseUrl + "sykeforloep/metadata" , cookies, SykeforloepMetaData.class);
+        return getSykeforloepMetadata(baseUrl + "sykeforloep/metadata" , cookies, SykmeldtInfoData.class);
     }
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
