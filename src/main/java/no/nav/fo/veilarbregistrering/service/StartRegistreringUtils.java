@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
+import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
 
 public class StartRegistreringUtils {
 
@@ -84,5 +86,18 @@ public class StartRegistreringUtils {
                 && UtdanningGodkjentSvar.JA.equals(besvarelse.getUtdanningGodkjent())
                 && HelseHinderSvar.NEI.equals(besvarelse.getHelseHinder())
                 && AndreForholdSvar.NEI.equals(besvarelse.getAndreForhold());
+    }
+
+    public SykmeldtBrukerType finnSykmeldtBrukerType(SykmeldtRegistrering sykmeldtRegistrering) {
+        FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
+        if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
+                || fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER_NY_STILLING
+                || fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER
+        ) {
+            return SKAL_TIL_SAMME_ARBEIDSGIVER;
+        } else {
+            return SKAL_TIL_NY_ARBEIDSGIVER;
+        }
+
     }
 }

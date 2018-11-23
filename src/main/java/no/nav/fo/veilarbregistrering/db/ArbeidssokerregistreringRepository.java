@@ -172,7 +172,7 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public OrdinaerBrukerRegistrering hentBrukerregistreringForAktorId(AktorId aktorId) {
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, ArbeidssokerregistreringRepository::brukerRegistreringMapper)
                 .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
                 .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
@@ -190,13 +190,14 @@ public class ArbeidssokerregistreringRepository {
                 .execute();
     }
 
-    public ProfilertBrukerRegistrering hentProfilertBrukerregistreringForAktorId(AktorId aktorId) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentBrukerregistreringForAktorId(aktorId);
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringMedProfileringForAktorId(AktorId aktorId) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentOrdinaerBrukerregistreringForAktorId(aktorId);
         if (ordinaerBrukerRegistrering == null) {
             return null;
         }
         Profilering profilering = hentProfileringForId(ordinaerBrukerRegistrering.getId());
-        return new ProfilertBrukerRegistrering(ordinaerBrukerRegistrering, profilering);
+        ordinaerBrukerRegistrering.setProfilering(profilering);
+        return ordinaerBrukerRegistrering;
     }
 
     public void lagreReaktiveringForBruker(AktorId aktorId) {
@@ -261,7 +262,6 @@ public class ArbeidssokerregistreringRepository {
 
     @SneakyThrows
     private static SykmeldtRegistrering sykmeldtRegistreringMapper(ResultSet rs) {
-
         return new SykmeldtRegistrering()
                 .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
                 .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())

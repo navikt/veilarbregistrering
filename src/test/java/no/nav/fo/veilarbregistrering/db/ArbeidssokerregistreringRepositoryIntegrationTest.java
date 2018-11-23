@@ -59,7 +59,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker1, aktorId);
         arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker2, aktorId);
 
-        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentBrukerregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentOrdinaerBrukerregistreringForAktorId(aktorId);
         assertRegistrertBruker(bruker2, registrering);
     }
 
@@ -79,29 +79,35 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     }
 
     @Test
-    public void hentProfilertBrukerRegistreringForAktorId(){
+    public void hentOrdinaerBrukerRegistreringForAktorId(){
 
         AktorId aktorId = new AktorId("11111");
 
-        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
-
         Profilering profilering = lagProfilering();
+
+        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA))
+                .setProfilering(lagProfilering());
 
         OrdinaerBrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
         bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
         arbeidssokerregistreringRepository.lagreProfilering(bruker.getId(), profilering);
 
-        ProfilertBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository
+                .hentOrdinaerBrukerregistreringForAktorId(aktorId);
 
-        assertEquals(new ProfilertBrukerRegistrering(bruker, profilering), profilertBrukerRegistrering);
+        ordinaerBrukerRegistrering.setProfilering(arbeidssokerregistreringRepository
+                .hentProfileringForId(ordinaerBrukerRegistrering.getId()));
+
+        assertEquals(bruker, ordinaerBrukerRegistrering);
 
     }
 
     @Test
-    public void hentProfilertBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret(){
+    public void hentOrdinaerBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret(){
         AktorId uregistrertAktorId = new AktorId("9876543");
-        ProfilertBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository.hentProfilertBrukerregistreringForAktorId(uregistrertAktorId);
+        OrdinaerBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository
+                .hentOrdinaerBrukerregistreringForAktorId(uregistrertAktorId);
 
         assertNull(profilertBrukerRegistrering);
     }
