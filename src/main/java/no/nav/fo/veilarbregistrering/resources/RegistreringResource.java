@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 
+import java.util.Optional;
+
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterAlder;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterRegistreringsstatus;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterSykmeldtBesvarelse;
@@ -92,5 +94,14 @@ public class RegistreringResource {
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, userService.getFnr());
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
+
+    @GET
+    @Path("/sykmeldtinfodata")
+    @ApiOperation(value = "Henter sykmeldt informasjon")
+    public Optional<SykmeldtInfoData> hentSykmeldtInfoData() {
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        return brukerRegistreringService.hentSykmeldtInfoData();
+    }
+
 
 }

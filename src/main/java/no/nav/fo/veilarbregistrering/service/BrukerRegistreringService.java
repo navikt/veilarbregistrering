@@ -94,7 +94,7 @@ public class BrukerRegistreringService {
 
         Optional<SykmeldtInfoData> sykeforloepMetaData = empty();
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-            sykeforloepMetaData = hentSykeforloepMetaData();
+            sykeforloepMetaData = hentSykmeldtInfoData();
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
@@ -162,7 +162,7 @@ public class BrukerRegistreringService {
         }
     }
 
-    private Optional<SykmeldtInfoData> hentSykeforloepMetaData() {
+    public Optional<SykmeldtInfoData> hentSykmeldtInfoData() {
         if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
             return of(new SykmeldtInfoData()
