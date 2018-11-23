@@ -10,14 +10,22 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.domain.BrukerRegistreringType.ORDINAER;
+
 @Data
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode
-public class OrdinaerBrukerRegistrering {
+public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
     long id;
     LocalDateTime opprettetDato;
     Besvarelse besvarelse;
-    Stilling sisteStilling;
     List<TekstForSporsmal> teksterForBesvarelse;
+    Stilling sisteStilling;
+    Profilering profilering;
+
+    @Override
+    BrukerRegistreringType hentType() {
+        return ORDINAER;
+    }
 }
