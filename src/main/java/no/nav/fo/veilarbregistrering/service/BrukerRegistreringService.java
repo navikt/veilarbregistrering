@@ -171,7 +171,7 @@ public class BrukerRegistreringService {
         }
 
         if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return of(sykmeldtInfoClient.hentSykeforloepMetadata());
+            return of(sykmeldtInfoClient.hentSykmeldtInfoData());
         } else {
             return empty();
         }

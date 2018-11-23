@@ -10,7 +10,7 @@ public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
     }
 
     @Override
-    public SykmeldtInfoData hentSykeforloepMetadata() {
+    public SykmeldtInfoData hentSykmeldtInfoData() {
         return new SykmeldtInfoData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
     }
 }
