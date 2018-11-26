@@ -143,8 +143,6 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV);
 
         SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
@@ -157,8 +155,6 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
     }
 
@@ -188,8 +184,6 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereSykmeldtRegistrering() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING).isTrue();
     }
@@ -210,46 +204,17 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalIkkeKalleDigiSyfoTjenesteNaarToggleErAv() {
-        mockSykmeldtBruker();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(false);
-        getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(0)).hentSykmeldtInfoData();
-    }
-
-    @Test
     public void skalKalleDigiSyfoTjenesteNaarToggleErPaa() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(false);
         getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData();
     }
 
     @Test
-    public void mockDataSkalOverskriveResponsFraTjenesteNaarMockToggleErPaa() {
-        mockSykmeldtBruker();
-        mockSykmeldtBrukerUnder39uker();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(true);
-        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(0)).hentSykmeldtInfoData();
-        assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isTrue();
-    }
-
-
-    @Test
     public void mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
-        when(sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()).thenReturn(false);
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData();
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();

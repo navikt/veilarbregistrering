@@ -82,7 +82,6 @@ class SykmeldtInfoClientTest {
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
-        when(sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()).thenReturn(true);
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 

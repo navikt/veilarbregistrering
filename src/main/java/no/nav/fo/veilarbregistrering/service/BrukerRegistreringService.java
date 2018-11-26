@@ -5,15 +5,14 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
@@ -139,20 +138,20 @@ public class BrukerRegistreringService {
         SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
 
-        if(ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null){
+        if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
             return null;
-        }else if(ordinaerBrukerRegistrering == null){
+        } else if (ordinaerBrukerRegistrering == null) {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        }else if(sykmeldtBrukerRegistrering == null){
+        } else if (sykmeldtBrukerRegistrering == null) {
             return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
         }
 
         LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
         LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
 
-        if(profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)){
+        if (profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)) {
             return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
-        }else{
+        } else {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
         }
 
@@ -172,7 +171,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
 
-        ofNullable (sykmeldtRegistrering.getBesvarelse())
+        ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
@@ -189,17 +188,6 @@ public class BrukerRegistreringService {
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
-            //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
-            return new SykmeldtInfoData()
-                    .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
-                    .withSykmeldtFraDato("2018-01-21");
-        }
-
-        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return sykmeldtInfoClient.hentSykmeldtInfoData();
-        } else {
-            return null;
-        }
+        return sykmeldtInfoClient.hentSykmeldtInfoData();
     }
 }
