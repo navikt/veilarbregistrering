@@ -98,7 +98,7 @@ public class RegistreringResource {
     @GET
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
-    public Optional<SykmeldtInfoData> hentSykmeldtInfoData() {
+    public SykmeldtInfoData hentSykmeldtInfoData() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
         return brukerRegistreringService.hentSykmeldtInfoData();
     }

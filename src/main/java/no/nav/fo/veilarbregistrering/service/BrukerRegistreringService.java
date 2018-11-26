@@ -93,7 +93,7 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        Optional<SykmeldtInfoData> sykeforloepMetaData = empty();
+        SykmeldtInfoData sykeforloepMetaData = null;
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
             sykeforloepMetaData = hentSykmeldtInfoData();
         }
@@ -102,7 +102,7 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setSykmeldtFraDato(sykeforloepMetaData.map(s -> s.getSykmeldtFraDato()).orElse(""))
+                .setSykmeldtFraDato(sykeforloepMetaData != null ? sykeforloepMetaData.getSykmeldtFraDato() : "")
                 .setRegistreringType(registreringType);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
@@ -188,18 +188,18 @@ public class BrukerRegistreringService {
         }
     }
 
-    public Optional<SykmeldtInfoData> hentSykmeldtInfoData() {
+    public SykmeldtInfoData hentSykmeldtInfoData() {
         if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
             //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
-            return of(new SykmeldtInfoData()
+            return new SykmeldtInfoData()
                     .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
-                    .withSykmeldtFraDato("2018-01-21"));
+                    .withSykmeldtFraDato("2018-01-21");
         }
 
         if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return of(sykmeldtInfoClient.hentSykmeldtInfoData());
+            return sykmeldtInfoClient.hentSykmeldtInfoData();
         } else {
-            return empty();
+            return null;
         }
     }
 }
