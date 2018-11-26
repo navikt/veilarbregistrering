@@ -155,7 +155,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
                 StartRegistreringUtils startRegistreringUtils,
-                RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature) {
+                RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
             return new BrukerRegistreringService(
                     arbeidssokerregistreringRepository,
                     aktorService,
@@ -163,7 +163,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     sykeforloepMetadataClient,
                     arbeidsforholdService,
                     startRegistreringUtils,
-                    digiSyfoFeature
+                    sykemeldtRegistreringFeature
             );
         }
 

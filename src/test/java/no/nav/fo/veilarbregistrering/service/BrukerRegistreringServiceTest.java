@@ -204,14 +204,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    public void skalKalleDigiSyfoTjenesteNaarToggleErPaa() {
-        mockSykmeldtBruker();
-        mockSykmeldtBrukerOver39uker();
-        getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData();
-    }
-
-    @Test
     public void mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();

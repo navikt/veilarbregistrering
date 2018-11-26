@@ -21,7 +21,7 @@ public class RemoteFeatureConfig {
     }
 
     @Bean
-    public SykemeldtRegistreringFeature digiSyfoFeature(UnleashService unleashService) {
+    public SykemeldtRegistreringFeature sykemeldtRegistreringFeature(UnleashService unleashService) {
         return new SykemeldtRegistreringFeature(unleashService);
     }
 

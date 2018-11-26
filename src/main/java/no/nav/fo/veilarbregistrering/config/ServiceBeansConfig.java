@@ -30,7 +30,7 @@ public class ServiceBeansConfig {
             SykmeldtInfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature
+            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
     ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
@@ -39,7 +39,7 @@ public class ServiceBeansConfig {
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
                 startRegistreringUtils,
-                digiSyfoFeature
+                sykemeldtRegistreringFeature
         );
     }
 
