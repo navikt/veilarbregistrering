@@ -25,7 +25,7 @@ public class StartRegistreringUtils {
         return ArbeidsforholdUtils.oppfyllerBetingelseOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
     }
 
-    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, Optional<SykeforloepMetaData> sykeforloepMetaData) {
+    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, SykmeldtInfoData sykeforloepMetaData) {
         if (oppfolgingStatusData.isUnderOppfolging() && !ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
             return ALLEREDE_REGISTRERT;
         } else if (ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
@@ -41,10 +41,8 @@ public class StartRegistreringUtils {
         }
     }
 
-    private static boolean erSykmeldtMedArbeidsgiverOver39Uker(Optional<SykeforloepMetaData> sykeforloepMetaData) {
-        return sykeforloepMetaData
-                .map(s -> s.erArbeidsrettetOppfolgingSykmeldtInngangAktiv)
-                .orElse(false);
+    private static boolean erSykmeldtMedArbeidsgiverOver39Uker(SykmeldtInfoData sykeforloepMetaData) {
+        return sykeforloepMetaData != null && sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
     }
 
     public Profilering profilerBruker(

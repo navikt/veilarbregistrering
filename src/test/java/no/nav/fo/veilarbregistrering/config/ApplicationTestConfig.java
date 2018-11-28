@@ -57,10 +57,4 @@ public class ApplicationTestConfig extends ApplicationConfig {
         return new OppfolgingClientMock();
     }
 
-    @Bean
-    @Conditional(Mock.class)
-    public DigisyfoClientMock sykeforloepMetadataClient() {
-        return new DigisyfoClientMock();
-    }
-
 }

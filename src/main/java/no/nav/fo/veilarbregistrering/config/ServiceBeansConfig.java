@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
@@ -27,10 +27,10 @@ public class ServiceBeansConfig {
             ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
             AktorService aktorService,
             OppfolgingClient oppfolgingClient,
-            DigisyfoClient sykeforloepMetadataClient,
+            SykmeldtInfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.SykemeldtRegistreringFeature digiSyfoFeature
+            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
     ) {
         return new BrukerRegistreringService(
                 arbeidssokerregistreringRepository,
@@ -39,7 +39,7 @@ public class ServiceBeansConfig {
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
                 startRegistreringUtils,
-                digiSyfoFeature
+                sykemeldtRegistreringFeature
         );
     }
 
@@ -74,8 +74,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    DigisyfoClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
-        return new DigisyfoClient(provider);
+    SykmeldtInfoClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
+        return new SykmeldtInfoClient(provider);
     }
 
     @Bean

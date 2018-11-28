@@ -9,11 +9,12 @@ import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterAlder;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterRegistreringsstatus;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.rapporterSykmeldtBesvarelse;
+import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 @Component
 @Path("/")
@@ -93,4 +94,11 @@ public class RegistreringResource {
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
+    @GET
+    @Path("/sykmeldtinfodata")
+    @ApiOperation(value = "Henter sykmeldt informasjon")
+    public SykmeldtInfoData hentSykmeldtInfoData() {
+        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
+        return brukerRegistreringService.hentSykmeldtInfoData();
+    }
 }

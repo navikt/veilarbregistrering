@@ -11,9 +11,7 @@ import lombok.experimental.Wither;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SykeforloepMetaData {
-    public boolean erSykmeldt;
-    public String sykmeldtFraDato;
-    public boolean erTiltakSykmeldteInngangAktiv;
+public class SykmeldtInfoData {
+    public String maksDato;
     public boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
 }

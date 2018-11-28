@@ -21,7 +21,7 @@ public class RemoteFeatureConfig {
     }
 
     @Bean
-    public SykemeldtRegistreringFeature digiSyfoFeature(UnleashService unleashService) {
+    public SykemeldtRegistreringFeature sykemeldtRegistreringFeature(UnleashService unleashService) {
         return new SykemeldtRegistreringFeature(unleashService);
     }
 
@@ -31,14 +31,6 @@ public class RemoteFeatureConfig {
 
         public boolean erSykemeldtRegistreringAktiv() {
             return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
-        }
-
-        public boolean skalKalleDigisyfoTjeneste() {
-            return unleashService.isEnabled("veilarbregistrering.digisyfo");
-        }
-
-        public boolean skalMockeDataFraDigisyfo() {
-            return unleashService.isEnabled("veilarbregistrering.digisyfo.mock");
         }
     }
     

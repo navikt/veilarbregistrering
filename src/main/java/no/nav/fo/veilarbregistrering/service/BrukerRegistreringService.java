@@ -5,15 +5,14 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.service.StartRegistreringUtils.beregnRegistreringType;
@@ -30,14 +29,14 @@ public class BrukerRegistreringService {
     private final AktorService aktorService;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private OppfolgingClient oppfolgingClient;
-    private DigisyfoClient sykeforloepMetadataClient;
+    private SykmeldtInfoClient sykmeldtInfoClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
-                                     DigisyfoClient sykeforloepMetadataClient,
+                                     SykmeldtInfoClient sykmeldtInfoClient,
                                      ArbeidsforholdService arbeidsforholdService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
@@ -47,7 +46,7 @@ public class BrukerRegistreringService {
         this.aktorService = aktorService;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
-        this.sykeforloepMetadataClient = sykeforloepMetadataClient;
+        this.sykmeldtInfoClient = sykmeldtInfoClient;
         this.arbeidsforholdService = arbeidsforholdService;
         this.startRegistreringUtils = startRegistreringUtils;
     }
@@ -93,16 +92,15 @@ public class BrukerRegistreringService {
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
-        Optional<SykeforloepMetaData> sykeforloepMetaData = empty();
+        SykmeldtInfoData sykeforloepMetaData = null;
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-            sykeforloepMetaData = hentSykeforloepMetaData();
+            sykeforloepMetaData = hentSykmeldtInfoData();
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setSykmeldtFraDato(sykeforloepMetaData.map(s -> s.getSykmeldtFraDato()).orElse(""))
                 .setRegistreringType(registreringType);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
@@ -139,20 +137,20 @@ public class BrukerRegistreringService {
         SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
 
-        if(ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null){
+        if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
             return null;
-        }else if(ordinaerBrukerRegistrering == null){
+        } else if (ordinaerBrukerRegistrering == null) {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        }else if(sykmeldtBrukerRegistrering == null){
+        } else if (sykmeldtBrukerRegistrering == null) {
             return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
         }
 
         LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
         LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
 
-        if(profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)){
+        if (profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)) {
             return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
-        }else{
+        } else {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
         }
 
@@ -172,7 +170,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
 
-        ofNullable (sykmeldtRegistrering.getBesvarelse())
+        ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
@@ -188,18 +186,7 @@ public class BrukerRegistreringService {
         }
     }
 
-    private Optional<SykeforloepMetaData> hentSykeforloepMetaData() {
-        if (sykemeldtRegistreringFeature.skalMockeDataFraDigisyfo()) {
-            //Mocker data fra Digisyfo. todo: må fjernes når Digisyfo-tjenesten er tilgjengelig i prod.
-            return of(new SykeforloepMetaData()
-                    .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
-                    .withSykmeldtFraDato("2018-01-21"));
-        }
-
-        if (sykemeldtRegistreringFeature.skalKalleDigisyfoTjeneste()) {
-            return of(sykeforloepMetadataClient.hentSykeforloepMetadata());
-        } else {
-            return empty();
-        }
+    public SykmeldtInfoData hentSykmeldtInfoData() {
+        return sykmeldtInfoClient.hentSykmeldtInfoData();
     }
 }

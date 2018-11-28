@@ -6,7 +6,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.httpclient.DigisyfoClient;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +41,7 @@ class OppfolgingClientTest {
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private DigisyfoClient sykeforloepMetadataClient;
+    private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
@@ -66,7 +66,7 @@ class OppfolgingClientTest {
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
-        sykeforloepMetadataClient = mock(DigisyfoClient.class);
+        sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
