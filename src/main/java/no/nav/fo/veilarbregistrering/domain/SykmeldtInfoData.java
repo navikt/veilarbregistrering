@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Wither;
 
-import java.time.LocalDateTime;
-
 @Wither
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class SykmeldtInfoData {
-    public LocalDateTime maksDato;
+    public String maksDato;
     public boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
 }
