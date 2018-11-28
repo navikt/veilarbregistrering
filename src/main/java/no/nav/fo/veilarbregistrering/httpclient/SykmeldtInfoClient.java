@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class SykmeldtInfoClient extends BaseClient {
@@ -19,7 +20,7 @@ public class SykmeldtInfoClient extends BaseClient {
         // mock, venter på infotryd api for å hente maxdato
         return new SykmeldtInfoData()
                 .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
-                .withSykmeldtFraDato("2018-01-21");
+                .withMaksDato(LocalDateTime.parse("2017-12-03T10:15:30"));
     }
 
 }

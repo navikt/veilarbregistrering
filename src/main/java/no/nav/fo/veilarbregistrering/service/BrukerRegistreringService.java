@@ -101,7 +101,6 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setSykmeldtFraDato(sykeforloepMetaData != null ? sykeforloepMetaData.getSykmeldtFraDato() : "")
                 .setRegistreringType(registreringType);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
