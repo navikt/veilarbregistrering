@@ -94,7 +94,7 @@ public class BrukerRegistreringService {
 
         SykmeldtInfoData sykeforloepMetaData = null;
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
-            sykeforloepMetaData = hentSykmeldtInfoData();
+            sykeforloepMetaData = hentSykmeldtInfoData(fnr);
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
@@ -186,7 +186,7 @@ public class BrukerRegistreringService {
         }
     }
 
-    public SykmeldtInfoData hentSykmeldtInfoData() {
-        return sykmeldtInfoClient.hentSykmeldtInfoData();
+    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
+        return sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
     }
 }

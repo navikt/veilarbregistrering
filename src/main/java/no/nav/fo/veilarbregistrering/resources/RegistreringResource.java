@@ -99,6 +99,6 @@ public class RegistreringResource {
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
         pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        return brukerRegistreringService.hentSykmeldtInfoData();
+        return brukerRegistreringService.hentSykmeldtInfoData(userService.getFnr());
     }
 }
