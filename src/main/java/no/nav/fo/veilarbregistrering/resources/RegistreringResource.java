@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.PepClient;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
@@ -14,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 @Component
@@ -22,6 +24,7 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 @Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
 public class RegistreringResource {
 
+    private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
     private UserService userService;
@@ -31,12 +34,14 @@ public class RegistreringResource {
             PepClient pepClient,
             UserService userService,
             ArbeidsforholdService arbeidsforholdService,
-            BrukerRegistreringService brukerRegistreringService
+            BrukerRegistreringService brukerRegistreringService,
+            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.arbeidsforholdService = arbeidsforholdService;
         this.brukerRegistreringService = brukerRegistreringService;
+        this.tjenesteNedeFeature = tjenesteNedeFeature;
     }
 
     @GET
@@ -53,6 +58,11 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
+
+        if(tjenesteNedeFeature.erTjenesteNede()){
+            throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
+        }
+
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, userService.getFnr());
         rapporterAlder(userService.getFnr());
@@ -64,6 +74,9 @@ public class RegistreringResource {
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
         String fnr = userService.getFnrFromUrl();
+        if (!isValid(fnr)) {
+            throw new RuntimeException("Fødselsnummer ikke gyldig.");
+        }
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
     }
@@ -72,6 +85,11 @@ public class RegistreringResource {
     @Path("/startreaktivering")
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
+
+        if(tjenesteNedeFeature.erTjenesteNede()){
+            throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
+        }
+
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         brukerRegistreringService.reaktiverBruker(userService.getFnr());
         rapporterAlder(userService.getFnr());
@@ -89,6 +107,11 @@ public class RegistreringResource {
     @Path("/startregistrersykmeldt")
     @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
+
+        if(tjenesteNedeFeature.erTjenesteNede()){
+            throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
+        }
+
         pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, userService.getFnr());
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);

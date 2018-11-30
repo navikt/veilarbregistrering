@@ -48,13 +48,15 @@ public class ServiceBeansConfig {
             PepClient pepClient,
             UserService userService,
             ArbeidsforholdService arbeidsforholdService,
-            BrukerRegistreringService brukerRegistreringService
+            BrukerRegistreringService brukerRegistreringService,
+            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
     ) {
         return new RegistreringResource(
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService
+                brukerRegistreringService,
+                tjenesteNedeFeature
         );
     }
 

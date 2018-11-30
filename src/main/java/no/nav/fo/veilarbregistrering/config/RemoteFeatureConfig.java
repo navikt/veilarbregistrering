@@ -25,6 +25,11 @@ public class RemoteFeatureConfig {
         return new SykemeldtRegistreringFeature(unleashService);
     }
 
+    @Bean
+    public TjenesteNedeFeature tjenesteNedeFeature(UnleashService unleashService) {
+        return new TjenesteNedeFeature(unleashService);
+    }
+
     public static class SykemeldtRegistreringFeature extends RemoteFeatureConfig {
         protected UnleashService unleashService;
         public SykemeldtRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
@@ -32,6 +37,18 @@ public class RemoteFeatureConfig {
         public boolean erSykemeldtRegistreringAktiv() {
             return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
         }
+
     }
+
+    public static class TjenesteNedeFeature extends RemoteFeatureConfig {
+        protected UnleashService unleashService;
+        public TjenesteNedeFeature(UnleashService unleashService) { this.unleashService = unleashService; }
+
+        public boolean erTjenesteNede() {
+            return unleashService.isEnabled("arbeidssokerregistrering.nedetid");
+        }
+
+    }
+
     
 }
