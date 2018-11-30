@@ -208,7 +208,7 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData();
+        verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData(anyString());
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
 
@@ -285,14 +285,14 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockSykmeldtBrukerOver39uker() {
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData()).thenReturn(
+        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new SykmeldtInfoData()
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }
 
     private void mockSykmeldtBrukerUnder39uker() {
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData()).thenReturn(
+        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new SykmeldtInfoData()
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
         );
@@ -300,7 +300,7 @@ public class BrukerRegistreringServiceTest {
 
 
     private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData()).thenReturn(
+        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new SykmeldtInfoData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }

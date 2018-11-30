@@ -10,7 +10,7 @@ public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
     }
 
     @Override
-    public SykmeldtInfoData hentSykmeldtInfoData() {
+    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
         return new SykmeldtInfoData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
     }
 }
