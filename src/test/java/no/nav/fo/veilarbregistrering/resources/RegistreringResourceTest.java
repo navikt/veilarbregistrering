@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.resources;
 
 import no.nav.apiapp.security.PepClient;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
@@ -24,6 +25,7 @@ class RegistreringResourceTest {
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
+    private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
 
     @BeforeEach
     public void setup() {
@@ -31,12 +33,15 @@ class RegistreringResourceTest {
         userService = mock(UserService.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+        tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
                 userService,
                 arbeidsforholdService,
-                brukerRegistreringService
+                brukerRegistreringService,
+                tjenesteNedeFeature
+
         );
     }
 
