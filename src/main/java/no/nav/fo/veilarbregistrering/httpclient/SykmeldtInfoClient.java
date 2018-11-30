@@ -29,6 +29,7 @@ public class SykmeldtInfoClient extends BaseClient {
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
         try {
+            log.info ("Kaller infotrygd-sykepenger på url : " + url);
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(url)
                             .request()
