@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -16,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 @Component
@@ -74,6 +74,9 @@ public class RegistreringResource {
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
         String fnr = userService.getFnrFromUrl();
+        if (!isValid(fnr)) {
+            throw new RuntimeException("Fødselsnummer ikke gyldig.");
+        }
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
     }

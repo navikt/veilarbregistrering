@@ -15,6 +15,7 @@ import no.nav.fo.veilarbregistrering.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -26,6 +27,8 @@ class RegistreringResourceTest {
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
+
+    private static String ident = "10108000398"; //Aremark fiktivt fnr.";
 
     @BeforeEach
     public void setup() {
@@ -55,13 +58,22 @@ class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(userService.getFnrFromUrl()).thenReturn(ident);
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
 
     @Test
-    public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
+    public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
+        assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
+        verify(pepClient, times(0)).sjekkLeseTilgangTilFnr(any());
+    }
+
+    @Test
+    public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
+        when(userService.getFnrFromUrl()).thenReturn(ident);
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
     }
@@ -81,7 +93,6 @@ class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
-        String ident = "10108000398"; //Aremark fiktivt fnr.";
         when(userService.getFnr()).thenReturn(ident);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
