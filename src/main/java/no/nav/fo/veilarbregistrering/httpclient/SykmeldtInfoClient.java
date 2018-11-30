@@ -36,6 +36,7 @@ public class SykmeldtInfoClient extends BaseClient {
                             .header(COOKIE, cookies)
                             .get(returnType));
         } catch (Exception e) {
+            log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();
         }
     }
