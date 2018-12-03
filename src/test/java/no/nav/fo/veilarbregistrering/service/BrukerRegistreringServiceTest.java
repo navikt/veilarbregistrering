@@ -61,6 +61,7 @@ public class BrukerRegistreringServiceTest {
 
         when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(sykemeldtRegistreringFeature.skalKalleSykmeldtInfoTjeneste()).thenReturn(true);
     }
 
     /*

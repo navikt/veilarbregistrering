@@ -190,6 +190,14 @@ public class BrukerRegistreringService {
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
+
+        if (!sykemeldtRegistreringFeature.skalKalleSykmeldtInfoTjeneste()) {
+            SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
+            sykmeldtInfoData.setMaksDato("");
+            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
+            return sykmeldtInfoData;
+        }
+
         SykmeldtInfoData sykmeldtInfo = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
 
         boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(sykmeldtInfo, now());

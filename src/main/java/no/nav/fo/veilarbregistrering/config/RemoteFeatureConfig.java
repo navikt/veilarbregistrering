@@ -38,6 +38,10 @@ public class RemoteFeatureConfig {
             return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
         }
 
+        public boolean skalKalleSykmeldtInfoTjeneste() {
+            return unleashService.isEnabled("veilarbregistrering.sykmeldtinfo");
+        }
+
     }
 
     public static class TjenesteNedeFeature extends RemoteFeatureConfig {
