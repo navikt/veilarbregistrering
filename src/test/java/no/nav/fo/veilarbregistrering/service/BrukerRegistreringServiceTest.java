@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static java.time.LocalDate.now;
 import static java.util.Optional.of;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerForPersonWithAge;
@@ -142,6 +143,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSykmeldte() {
         mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
+        mockSykmeldtBrukerOver39uker();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV);
 
@@ -285,15 +287,19 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockSykmeldtBrukerOver39uker() {
+        String dagensDatoMinus13Uker = now().minusWeeks(13).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new SykmeldtInfoData()
+                        .withMaksDato(dagensDatoMinus13Uker)
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }
 
     private void mockSykmeldtBrukerUnder39uker() {
+        String dagensDatoMinus14Uker = now().minusWeeks(14).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new SykmeldtInfoData()
+                        .withMaksDato(dagensDatoMinus14Uker)
                         .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
         );
     }

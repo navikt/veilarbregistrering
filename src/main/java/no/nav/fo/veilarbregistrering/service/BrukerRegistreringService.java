@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -189,6 +190,18 @@ public class BrukerRegistreringService {
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
-        return sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+        SykmeldtInfoData sykmeldtInfo = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+
+        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(sykmeldtInfo, now());
+
+        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
+        sykmeldtInfoData.setMaksDato(sykmeldtInfo.maksDato);
+        sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
+
+        if (erSykmeldtOver39Uker) {
+            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
+        }
+
+        return sykmeldtInfoData;
     }
 }
