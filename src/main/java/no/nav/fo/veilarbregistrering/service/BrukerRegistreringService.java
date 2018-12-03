@@ -191,7 +191,7 @@ public class BrukerRegistreringService {
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
 
-        if (!sykemeldtRegistreringFeature.skalKalleSykmeldtInfoTjeneste()) {
+        if (!sykemeldtRegistreringFeature.skalKalleInfoTrygdTjeneste()) {
             SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
             sykmeldtInfoData.setMaksDato("");
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
