@@ -15,7 +15,7 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 @Slf4j
 public class SykmeldtInfoClient extends BaseClient {
 
-    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-sykepenger/";
+    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-sykepenger.q6.svc.nais.local";
 
     @Inject
     public SykmeldtInfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -24,7 +24,7 @@ public class SykmeldtInfoClient extends BaseClient {
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getSykeforloepMetadata(baseUrl + "hentMaksdato?fnr=" + fnr , cookies, SykmeldtInfoData.class);
+        return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr , cookies, SykmeldtInfoData.class);
     }
 
     private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
