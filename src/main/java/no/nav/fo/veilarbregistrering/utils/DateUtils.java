@@ -28,6 +28,7 @@ public class DateUtils {
         LocalDate maksDato = LocalDate.parse(sykmeldtInfoData.maksDato);
         long GJENSTAENDE_UKER = 13;
 
-        return ChronoUnit.WEEKS.between(maksDato, dagenDato) <= GJENSTAENDE_UKER;
+        return ChronoUnit.WEEKS.between(maksDato, dagenDato) >= 0 &&
+                ChronoUnit.WEEKS.between(maksDato, dagenDato) <= GJENSTAENDE_UKER;
     }
 }
