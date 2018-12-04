@@ -6,10 +6,13 @@ import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 
+import static io.vavr.collection.Array.*;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CProvider.AZUREADB2C_OIDC_COOKIE_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
 @Slf4j
@@ -23,21 +26,33 @@ public class SykmeldtInfoClient extends BaseClient {
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
-        return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr , cookies, SykmeldtInfoData.class);
+        return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr);
     }
 
-    private static <T> T getSykeforloepMetadata(String url, String cookies, Class<T> returnType) {
+    private SykmeldtInfoData getSykeforloepMetadata(String url) {
+
         try {
-            log.info ("Kaller infotrygd-sykepenger på url : " + url);
+            log.info("Kaller infotrygd-sykepenger på url : " + url);
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(url)
                             .request()
-                            .header(COOKIE, cookies)
-                            .get(returnType));
+                            .header(COOKIE, httpServletRequestProvider.get().getHeader(COOKIE))
+                            .header("Authorization", "Bearer " + getAuthHeader())
+                            .get(SykmeldtInfoData.class));
         } catch (Exception e) {
             log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();
         }
     }
+
+    private String getAuthHeader() {
+        Cookie cookie = of(httpServletRequestProvider.get().getCookies())
+                .filter(c -> AZUREADB2C_OIDC_COOKIE_NAME.equals(c.getName()))
+                .get();
+        if (cookie != null) {
+            return cookie.getValue();
+        }
+        return "";
+    }
+
 }
