@@ -15,7 +15,7 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 @Slf4j
 public class SykmeldtInfoClient extends BaseClient {
 
-    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-sykepenger.q6.svc.nais.local";
+    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-sykepenger.q6.svc.cluster.local";
 
     @Inject
     public SykmeldtInfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
