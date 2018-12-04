@@ -32,19 +32,15 @@ public class DateUtilsTest {
 
     @Test
     public void skalVaereSykmeldtIOverEllerLik39Uker()  {
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-
-        sykmeldtInfoData.setMaksDato("2017-01-01");
+        String maksDato = "2017-01-01";
         LocalDate dagenDato = LocalDate.of(2017, Month.APRIL, 8);
-        assertEquals(DateUtils.beregnSykmeldtOver39uker(sykmeldtInfoData, dagenDato), true);
+        assertEquals(DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato), true);
     }
 
     @Test
     public void skalIkkeVaereSykmeldtIOver39Uker()  {
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-
-        sykmeldtInfoData.setMaksDato("2017-01-01");
+        String maksDato = "2017-01-01";
         LocalDate dagenDato = LocalDate.of(2017, Month.APRIL, 9);
-        assertEquals(DateUtils.beregnSykmeldtOver39uker(sykmeldtInfoData, dagenDato), false);
+        assertEquals(DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato), false);
     }
 }

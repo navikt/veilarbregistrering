@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 import no.nav.sbl.rest.RestUtils;
 
@@ -25,11 +26,11 @@ public class SykmeldtInfoClient extends BaseClient {
         super(INFOTRYGDAPI_URL_PROPERTY_NAME, httpServletRequestProvider);
     }
 
-    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
+    public InfotrygdData hentSykmeldtInfoData(String fnr) {
         return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr);
     }
 
-    private SykmeldtInfoData getSykeforloepMetadata(String url) {
+    private InfotrygdData getSykeforloepMetadata(String url) {
 
         try {
             log.info("Kaller infotrygd-sykepenger på url : " + url);
@@ -38,7 +39,7 @@ public class SykmeldtInfoClient extends BaseClient {
                             .request()
                             .header(COOKIE, httpServletRequestProvider.get().getHeader(COOKIE))
                             .header("Authorization", "Bearer " + getAuthHeader())
-                            .get(SykmeldtInfoData.class));
+                            .get(InfotrygdData.class));
         } catch (Exception e) {
             log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();

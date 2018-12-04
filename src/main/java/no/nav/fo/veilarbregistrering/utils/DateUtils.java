@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.utils;
 
+import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -24,11 +25,11 @@ public class DateUtils {
                 .map(ZonedDateTime::toLocalDate).orElse(null);
     }
 
-    public static boolean beregnSykmeldtOver39uker(SykmeldtInfoData sykmeldtInfoData, LocalDate dagenDato) {
-        LocalDate maksDato = LocalDate.parse(sykmeldtInfoData.maksDato);
+    public static boolean beregnSykmeldtOver39uker(String maksDato, LocalDate dagenDato) {
+        LocalDate dato = LocalDate.parse(maksDato);
         long GJENSTAENDE_UKER = 13;
 
-        return ChronoUnit.WEEKS.between(maksDato, dagenDato) >= 0 &&
-                ChronoUnit.WEEKS.between(maksDato, dagenDato) <= GJENSTAENDE_UKER;
+        return ChronoUnit.WEEKS.between(dato, dagenDato) >= 0 &&
+                ChronoUnit.WEEKS.between(dato, dagenDato) <= GJENSTAENDE_UKER;
     }
 }

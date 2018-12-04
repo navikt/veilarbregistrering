@@ -142,7 +142,6 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     void skalRegistrereSykmeldte() {
-        mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
         mockSykmeldtMedArbeidsgiver();
         mockSykmeldtBrukerOver39uker();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
@@ -155,7 +154,7 @@ public class BrukerRegistreringServiceTest {
 
     @Test
     void skalIkkeRegistrereSykmeldteMedTomBesvarelse() {
-        mockArbeidsrettetOppfolgingSykmeldtInngangAktiv();
+        mockSykmeldtBrukerOver39uker();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
@@ -290,27 +289,20 @@ public class BrukerRegistreringServiceTest {
     private void mockSykmeldtBrukerOver39uker() {
         String dagensDatoMinus13Uker = now().minusWeeks(13).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
-                new SykmeldtInfoData()
+                new InfotrygdData()
                         .withMaksDato(dagensDatoMinus13Uker)
-                        .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
         );
     }
 
     private void mockSykmeldtBrukerUnder39uker() {
         String dagensDatoMinus14Uker = now().minusWeeks(14).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
-                new SykmeldtInfoData()
+                new InfotrygdData()
                         .withMaksDato(dagensDatoMinus14Uker)
-                        .withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false)
         );
     }
 
 
-    private void mockArbeidsrettetOppfolgingSykmeldtInngangAktiv() {
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
-                new SykmeldtInfoData().withErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true)
-        );
-    }
     private void mockSykmeldtMedArbeidsgiver() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true).withKanReaktiveres(false)

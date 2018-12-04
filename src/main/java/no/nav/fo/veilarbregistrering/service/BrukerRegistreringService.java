@@ -198,12 +198,12 @@ public class BrukerRegistreringService {
             return sykmeldtInfoData;
         }
 
-        SykmeldtInfoData sykmeldtInfo = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+        InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
 
-        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(sykmeldtInfo, now());
+        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(infotrygdData.maksDato, now());
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-        sykmeldtInfoData.setMaksDato(sykmeldtInfo.maksDato);
+        sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
         sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
 
         if (erSykmeldtOver39Uker) {
