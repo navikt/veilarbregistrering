@@ -74,9 +74,15 @@ public class RegistreringResource {
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
         String fnr = userService.getFnrFromUrl();
+
+        if(fnr == null){
+            fnr = userService.getFnr();
+        }
+
         if (!isValid(fnr)) {
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }
+
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
     }
