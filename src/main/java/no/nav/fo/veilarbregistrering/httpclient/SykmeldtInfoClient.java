@@ -11,15 +11,11 @@ import javax.ws.rs.InternalServerErrorException;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.withClient;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
 public class SykmeldtInfoClient extends BaseClient {
 
-    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME =
-            "http://infotrygd-sykepenger." +
-            getRequiredProperty("APP_ENVIRONMENT") +
-            ".svc.cluster.local";
+    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-sykepenger.default.svc.nais.local";
 
     @Inject
     public SykmeldtInfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
