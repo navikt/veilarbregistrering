@@ -31,16 +31,23 @@ public class DateUtilsTest {
     }
 
     @Test
-    public void skalVaereSykmeldtIOverEllerLik39Uker()  {
-        String maksDato = "2017-01-01";
-        LocalDate dagenDato = LocalDate.of(2017, Month.APRIL, 8);
+    public void skalVaereSykmeldtOverEllerLik39Uker()  {
+        String maksDato = "2018-10-01";
+        LocalDate dagenDato = LocalDate.of(2018, Month.JUNE, 26);
         assertEquals(DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato), true);
     }
 
     @Test
-    public void skalIkkeVaereSykmeldtIOver39Uker()  {
-        String maksDato = "2017-01-01";
-        LocalDate dagenDato = LocalDate.of(2017, Month.APRIL, 9);
+    public void skalIkkeVaereSykmeldtOver39Uker()  {
+        String maksDato = "2018-10-01";
+        LocalDate dagenDato = LocalDate.of(2018, Month.APRIL, 9);
+        assertEquals(DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato), false);
+    }
+
+    @Test
+    public void skalIkkeVaereSykmeldtOver39UkerNarMaksDatoErUnderDagensDato()  {
+        String maksDato = "2018-10-01";
+        LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
         assertEquals(DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato), false);
     }
 }

@@ -29,7 +29,7 @@ public class DateUtils {
         LocalDate dato = LocalDate.parse(maksDato);
         long GJENSTAENDE_UKER = 13;
 
-        return ChronoUnit.WEEKS.between(dato, dagenDato) >= 0 &&
-                ChronoUnit.WEEKS.between(dato, dagenDato) <= GJENSTAENDE_UKER;
+        return ChronoUnit.WEEKS.between(dagenDato, dato) >= 0 &&
+                ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
     }
 }
