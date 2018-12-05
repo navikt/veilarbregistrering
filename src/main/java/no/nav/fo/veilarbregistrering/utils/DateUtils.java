@@ -1,8 +1,5 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
-import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.time.LocalDate;

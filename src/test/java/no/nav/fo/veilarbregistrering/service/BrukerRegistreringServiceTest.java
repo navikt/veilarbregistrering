@@ -287,7 +287,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockSykmeldtBrukerOver39uker() {
-        String dagensDatoMinus13Uker = now().minusWeeks(13).toString();
+        String dagensDatoMinus13Uker = now().plusWeeks(13).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new InfotrygdData()
                         .withMaksDato(dagensDatoMinus13Uker)
@@ -295,7 +295,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockSykmeldtBrukerUnder39uker() {
-        String dagensDatoMinus14Uker = now().minusWeeks(14).toString();
+        String dagensDatoMinus14Uker = now().plusWeeks(14).toString();
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
                 new InfotrygdData()
                         .withMaksDato(dagensDatoMinus14Uker)

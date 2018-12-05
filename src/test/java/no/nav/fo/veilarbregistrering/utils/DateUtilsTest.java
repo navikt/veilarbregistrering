@@ -1,15 +1,11 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 import org.junit.Test;
-
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-
-import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateUtilsTest {
