@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -95,7 +96,7 @@ public class BrukerRegistreringService {
         SykmeldtInfoData sykeforloepMetaData = null;
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
-                sykeforloepMetaData = hentSykmeldtInfoData();
+                sykeforloepMetaData = hentSykmeldtInfoData(fnr);
             }
         }
 
@@ -188,7 +189,27 @@ public class BrukerRegistreringService {
         }
     }
 
-    public SykmeldtInfoData hentSykmeldtInfoData() {
-        return sykmeldtInfoClient.hentSykmeldtInfoData();
+    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
+
+        if (!sykemeldtRegistreringFeature.skalKalleInfoTrygdTjeneste()) {
+            SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
+            sykmeldtInfoData.setMaksDato("");
+            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
+            return sykmeldtInfoData;
+        }
+
+        InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+
+        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(infotrygdData.maksDato, now());
+
+        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
+        sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
+        sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
+
+        if (erSykmeldtOver39Uker) {
+            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
+        }
+
+        return sykmeldtInfoData;
     }
 }
