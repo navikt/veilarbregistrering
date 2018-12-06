@@ -104,7 +104,8 @@ public class BrukerRegistreringService {
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
-                .setRegistreringType(registreringType);
+                .setRegistreringType(registreringType)
+                .setMaksDato(sykeforloepMetaData.maksDato);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
