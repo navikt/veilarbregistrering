@@ -94,9 +94,11 @@ public class BrukerRegistreringService {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
 
         SykmeldtInfoData sykeforloepMetaData = null;
+        String maksDato = "";
         if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
                 sykeforloepMetaData = hentSykmeldtInfoData(fnr);
+                maksDato = sykeforloepMetaData.maksDato;
             }
         }
 
@@ -105,7 +107,7 @@ public class BrukerRegistreringService {
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setRegistreringType(registreringType)
-                .setMaksDato(sykeforloepMetaData.maksDato);
+                .setMaksDato(maksDato);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
