@@ -10,7 +10,9 @@ import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
@@ -203,8 +205,10 @@ public class BrukerRegistreringService {
 
         boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(infotrygdData.maksDato, now());
 
+        String formatterMaksDato = LocalDate.parse(infotrygdData.maksDato).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-        sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
+        sykmeldtInfoData.setMaksDato(formatterMaksDato);
         sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
 
         if (erSykmeldtOver39Uker) {
