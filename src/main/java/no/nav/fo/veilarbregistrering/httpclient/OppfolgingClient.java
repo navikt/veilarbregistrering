@@ -51,6 +51,7 @@ public class OppfolgingClient extends BaseClient {
                             .header(COOKIE, cookies)
                             .get(OppfolgingStatusData.class));
         } catch (Exception e) {
+            log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();
         }
     }

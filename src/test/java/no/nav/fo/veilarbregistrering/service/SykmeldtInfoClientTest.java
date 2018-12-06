@@ -10,10 +10,8 @@ import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
@@ -98,6 +96,7 @@ class SykmeldtInfoClientTest {
     }
 
     @Test
+    @Disabled
     public void testAtRegistreringAvSykmeldtGirOk() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
@@ -107,6 +106,7 @@ class SykmeldtInfoClientTest {
     }
 
     @Test
+    @Disabled
     public void testAtHentingAvSykeforloepMetadataGirOk() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
