@@ -27,7 +27,9 @@ public class ViewTest extends IntegrasjonsTest {
                     "DVH_BRUKER_PROFILERING",
                     "DVH_BRUKER_REAKTIVERING",
                     "DVH_PROFILERING_KODEVERK",
-                    "DVH_BRUKER_REGISTRERING_TEKST"
+                    "DVH_BRUKER_REGISTRERING_TEKST",
+                    "DVH_SYKMELDT_REGISTRERING",
+                    "DVH_SYKMELDT_REG_TEKST"
         };
     }
 
