@@ -204,7 +204,7 @@ public class BrukerRegistreringService {
 
         boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(infotrygdData.maksDato, now());
 
-        String formatterMaksDato = LocalDate.parse(infotrygdData.maksDato).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String formatterMaksDato = DateUtils.formatterMaksDato(infotrygdData.maksDato);
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
         sykmeldtInfoData.setMaksDato(formatterMaksDato);
