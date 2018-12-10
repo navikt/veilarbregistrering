@@ -4,6 +4,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.GregorianCalendar;
 import java.util.Optional;
@@ -23,10 +24,20 @@ public class DateUtils {
     }
 
     public static boolean beregnSykmeldtOver39uker(String maksDato, LocalDate dagenDato) {
+        if (maksDato == null) {
+            return false;
+        }
         LocalDate dato = LocalDate.parse(maksDato);
         long GJENSTAENDE_UKER = 13;
 
         return ChronoUnit.WEEKS.between(dagenDato, dato) >= 0 &&
                 ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
+    }
+
+    public static String formatterMaksDato(String maksDato) {
+        if (maksDato == null) {
+            return "";
+        }
+        return LocalDate.parse(maksDato).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }
