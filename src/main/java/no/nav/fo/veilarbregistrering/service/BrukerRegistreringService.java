@@ -10,9 +10,7 @@ import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
@@ -204,7 +202,7 @@ public class BrukerRegistreringService {
 
         InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
 
-        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtOver39uker(infotrygdData.maksDato, now());
+        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
 
         String formatterMaksDato = DateUtils.formatterMaksDato(infotrygdData.maksDato);
 

@@ -30,42 +30,42 @@ public class DateUtilsTest {
     public void skalVaereSykmeldtOverEllerLik39Uker() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2018, Month.JUNE, 26);
-        assertEquals(true, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalVaereSykmeldtAkkurat52Uker() {
         String maksDato = "2018-12-11";
         LocalDate dagenDato = LocalDate.of(2017, Month.DECEMBER, 12);
-        assertEquals(true, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalVaereSykmeldtNesten52Uker() {
         String maksDato = "2018-12-11";
         LocalDate dagenDato = LocalDate.of(2017, Month.DECEMBER, 15);
-        assertEquals(true, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalIkkeVaereSykmeldtOver39Uker() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2018, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalIkkeVaereSykmeldtOver39UkerNarMaksDatoErUnderDagensDato() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalHandtereNullVedBeregnSykmeldtOver39uker() {
         String maksDato = null;
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtOver39uker(maksDato, dagenDato));
+        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
