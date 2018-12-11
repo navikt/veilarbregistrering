@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class StartRegistreringStatus {
+    private String maksDato;
     private boolean underOppfolging;
     private boolean erSykmeldtMedArbeidsgiver;
     private Boolean jobbetSeksAvTolvSisteManeder;
