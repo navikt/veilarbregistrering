@@ -36,14 +36,14 @@ public class DateUtilsTest {
     @Test
     public void skalVaereSykmeldtAkkurat52Uker() {
         String maksDato = "2018-12-11";
-        LocalDate dagenDato = LocalDate.of(2017, Month.DECEMBER, 12);
+        LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 11);
         assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalVaereSykmeldtNesten52Uker() {
         String maksDato = "2018-12-11";
-        LocalDate dagenDato = LocalDate.of(2017, Month.DECEMBER, 15);
+        LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 9);
         assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
