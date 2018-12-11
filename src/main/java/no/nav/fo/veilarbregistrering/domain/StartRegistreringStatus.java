@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StartRegistreringStatus {
     private boolean underOppfolging;
+    private boolean erSykmeldtMedArbeidsgiver;
     private Boolean jobbetSeksAvTolvSisteManeder;
     private RegistreringType registreringType;
 }
