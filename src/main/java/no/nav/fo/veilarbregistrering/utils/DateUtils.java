@@ -23,7 +23,7 @@ public class DateUtils {
                 .map(ZonedDateTime::toLocalDate).orElse(null);
     }
 
-    public static boolean beregnSykmeldtOver39uker(String maksDato, LocalDate dagenDato) {
+    public static boolean beregnSykmeldtMellom39Og52Uker(String maksDato, LocalDate dagenDato) {
         if (maksDato == null) {
             return false;
         }
