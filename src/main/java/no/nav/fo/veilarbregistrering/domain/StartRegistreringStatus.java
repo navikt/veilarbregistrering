@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 public class StartRegistreringStatus {
     private String maksDato;
     private boolean underOppfolging;
+    private boolean erSykmeldtMedArbeidsgiver;
     private Boolean jobbetSeksAvTolvSisteManeder;
     private RegistreringType registreringType;
 }

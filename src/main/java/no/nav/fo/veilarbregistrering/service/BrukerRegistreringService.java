@@ -97,7 +97,8 @@ public class BrukerRegistreringService {
 
         SykmeldtInfoData sykeforloepMetaData = null;
         String maksDato = "";
-        if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)) {
+        boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false);
+        if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
                 sykeforloepMetaData = hentSykmeldtInfoData(fnr);
                 maksDato = sykeforloepMetaData.maksDato;
@@ -109,6 +110,7 @@ public class BrukerRegistreringService {
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setRegistreringType(registreringType)
+                .setErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver)
                 .setMaksDato(maksDato);
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
