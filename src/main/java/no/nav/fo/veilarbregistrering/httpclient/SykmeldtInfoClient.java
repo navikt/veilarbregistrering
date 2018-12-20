@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.httpclient;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brukerdialog.security.jaspic.TokenLocator;
 import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
 import no.nav.sbl.rest.RestUtils;
@@ -32,28 +33,20 @@ public class SykmeldtInfoClient extends BaseClient {
 
     private InfotrygdData getSykeforloepMetadata(String url) {
 
+        HttpServletRequest request = httpServletRequestProvider.get();
+        TokenLocator tokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME, null);
+
         try {
             log.info("Kaller infotrygd-sykepenger på url : " + url);
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(url)
                             .request()
-                            .header(COOKIE, httpServletRequestProvider.get().getHeader(COOKIE))
-                            .header("Authorization", "Bearer " + getAuthHeader())
+                            .header(COOKIE, request.getHeader(COOKIE))
+                            .header("Authorization", "Bearer " + tokenLocator.getToken(request).orElse(null))
                             .get(InfotrygdData.class));
         } catch (Exception e) {
             log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();
         }
     }
-
-    private String getAuthHeader() {
-        Cookie cookie = of(httpServletRequestProvider.get().getCookies())
-                .filter(c -> AZUREADB2C_OIDC_COOKIE_NAME.equals(c.getName()))
-                .get();
-        if (cookie != null) {
-            return cookie.getValue();
-        }
-        return "";
-    }
-
 }
