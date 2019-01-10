@@ -127,7 +127,18 @@ public class RegistreringResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        return brukerRegistreringService.hentSykmeldtInfoData(userService.getFnr());
+
+        String fnr = userService.getFnrFromUrl();
+
+        if(fnr == null){
+            fnr = userService.getFnr();
+        }
+
+        if (!isValid(fnr)) {
+            throw new RuntimeException("Fødselsnummer ikke gyldig.");
+        }
+
+        pepClient.sjekkLeseTilgangTilFnr(fnr);
+        return brukerRegistreringService.hentSykmeldtInfoData(fnr);
     }
 }
