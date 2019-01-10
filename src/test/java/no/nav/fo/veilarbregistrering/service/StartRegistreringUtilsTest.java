@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
 import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.STANDARD_INNSATS;
+import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StartRegistreringUtilsTest {
@@ -110,7 +111,7 @@ class StartRegistreringUtilsTest {
     }
 
     @Test
-    void testSpesifikkBesvarelseOver30AarOgUnder59Aar() {
+    void testIKVALBesvarelseMellom30Og59Aar() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
                 hentStandardInnsatsBesvarelse(),
                 35,
@@ -121,7 +122,7 @@ class StartRegistreringUtilsTest {
     }
 
     @Test
-    void testSpesifikkBesvarelseOver59Aar() {
+    void testBFORMBesvarelseOver59Aar() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
                 hentStandardInnsatsBesvarelse(),
                 60,
@@ -132,14 +133,14 @@ class StartRegistreringUtilsTest {
     }
 
     @Test
-    void testSpesifikkBesvarelseUnder30Aar() {
+    void testBKARTBesvarelse() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
-                hentStandardInnsatsBesvarelse(),
-                19,
+                hentArbeidsEvneVurderingBesvarelse(),
+                40,
                 () -> getArbeidsforholdList(true),
                 now()
         ).getInnsatsgruppe();
-        assertEquals(STANDARD_INNSATS, innsatsgruppe);
+        assertEquals(BEHOV_FOR_ARBEIDSEVNEVURDERING, innsatsgruppe);
     }
 
     private OrdinaerBrukerRegistrering hentStandardInnsatsBesvarelse() {
@@ -153,6 +154,12 @@ class StartRegistreringUtilsTest {
                         .setHelseHinder(HelseHinderSvar.NEI)
                         .setAndreForhold(AndreForholdSvar.NEI)
                 );
+    }
+
+    private OrdinaerBrukerRegistrering hentArbeidsEvneVurderingBesvarelse(){
+        OrdinaerBrukerRegistrering besvarelse = hentStandardInnsatsBesvarelse();
+        besvarelse.getBesvarelse().setHelseHinder(HelseHinderSvar.JA);
+        return besvarelse;
     }
 
     private List<Arbeidsforhold> getArbeidsforholdList(boolean tilfredsstillerKrav) {
