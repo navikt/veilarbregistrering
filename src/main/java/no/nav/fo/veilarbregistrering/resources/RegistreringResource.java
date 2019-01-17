@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -15,7 +16,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 @Component
@@ -48,8 +48,10 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(userService.getFnr());
+        final String fnr = FnrUtils.hentFnr(userService);
+
+        pepClient.sjekkLeseTilgangTilFnr(fnr);
+        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(fnr);
         rapporterRegistreringsstatus(status);
         return status;
     }
@@ -63,9 +65,11 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, userService.getFnr());
-        rapporterAlder(userService.getFnr());
+        final String fnr = FnrUtils.hentFnr(userService);
+
+        pepClient.sjekkSkriveTilgangTilFnr(fnr);
+        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+        rapporterAlder(fnr);
         return registrering;
     }
 
@@ -73,15 +77,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        String fnr = userService.getFnrFromUrl();
-
-        if(fnr == null){
-            fnr = userService.getFnr();
-        }
-
-        if (!isValid(fnr)) {
-            throw new RuntimeException("Fødselsnummer ikke gyldig.");
-        }
+        final String fnr = FnrUtils.hentFnr(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
@@ -96,17 +92,21 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        brukerRegistreringService.reaktiverBruker(userService.getFnr());
-        rapporterAlder(userService.getFnr());
+        final String fnr = FnrUtils.hentFnr(userService);
+
+        pepClient.sjekkSkriveTilgangTilFnr(fnr);
+        brukerRegistreringService.reaktiverBruker(fnr);
+        rapporterAlder(fnr);
     }
 
     @GET
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public Arbeidsforhold hentSisteArbeidsforhold() {
-        pepClient.sjekkLeseTilgangTilFnr(userService.getFnr());
-        return arbeidsforholdService.hentSisteArbeidsforhold(userService.getFnr());
+        final String fnr = FnrUtils.hentFnr(userService);
+
+        pepClient.sjekkLeseTilgangTilFnr(fnr);
+        return arbeidsforholdService.hentSisteArbeidsforhold(fnr);
     }
 
     @POST
@@ -118,8 +118,10 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        pepClient.sjekkSkriveTilgangTilFnr(userService.getFnr());
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, userService.getFnr());
+        final String fnr = FnrUtils.hentFnr(userService);
+
+        pepClient.sjekkSkriveTilgangTilFnr(fnr);
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
@@ -127,16 +129,7 @@ public class RegistreringResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-
-        String fnr = userService.getFnrFromUrl();
-
-        if(fnr == null){
-            fnr = userService.getFnr();
-        }
-
-        if (!isValid(fnr)) {
-            throw new RuntimeException("Fødselsnummer ikke gyldig.");
-        }
+        final String fnr = FnrUtils.hentFnr(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentSykmeldtInfoData(fnr);
