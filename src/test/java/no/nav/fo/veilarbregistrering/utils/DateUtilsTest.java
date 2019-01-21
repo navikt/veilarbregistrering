@@ -67,16 +67,4 @@ public class DateUtilsTest {
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
         assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
-
-    @Test
-    public void skalFormatterMaksDato() {
-        String maksDato = "2018-10-01";
-        assertEquals("01.10.2018", DateUtils.formatterMaksDato(maksDato));
-    }
-
-    @Test
-    public void skalHandtereNullVedFormatteringAvMaksDato() {
-        String maksDato = null;
-        assertEquals("", DateUtils.formatterMaksDato(maksDato));
-    }
 }
