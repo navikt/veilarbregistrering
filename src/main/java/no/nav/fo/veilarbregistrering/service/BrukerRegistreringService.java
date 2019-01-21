@@ -207,10 +207,8 @@ public class BrukerRegistreringService {
 
         boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
 
-        String formatterMaksDato = DateUtils.formatterMaksDato(infotrygdData.maksDato);
-
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-        sykmeldtInfoData.setMaksDato(formatterMaksDato);
+        sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
         sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
 
         if (erSykmeldtOver39Uker) {
