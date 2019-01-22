@@ -33,11 +33,4 @@ public class DateUtils {
         return ChronoUnit.WEEKS.between(dagenDato, dato) >= 0 &&
                 ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
     }
-
-    public static String formatterMaksDato(String maksDato) {
-        if (maksDato == null) {
-            return "";
-        }
-        return LocalDate.parse(maksDato).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    }
 }
