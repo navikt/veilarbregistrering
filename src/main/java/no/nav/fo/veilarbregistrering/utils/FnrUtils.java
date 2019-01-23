@@ -14,15 +14,13 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 
 public class FnrUtils {
 
-    public static String hentFnr(UserService userService) {
+    public static String hentFnrFraUrlEllerToken(UserService userService) {
 
         String fnr = userService.getFnrFromUrl();
 
-        if(fnr == null){
+        if (fnr == null) {
             fnr = userService.getFnr();
-        }
-
-        if (!isValid(fnr)) {
+        } else if (!isValid(fnr)) {
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }
 

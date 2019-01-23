@@ -48,7 +48,7 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(fnr);
@@ -65,7 +65,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
         OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
@@ -77,7 +77,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
@@ -92,7 +92,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
         brukerRegistreringService.reaktiverBruker(fnr);
@@ -103,7 +103,7 @@ public class RegistreringResource {
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public Arbeidsforhold hentSisteArbeidsforhold() {
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return arbeidsforholdService.hentSisteArbeidsforhold(fnr);
@@ -118,7 +118,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
@@ -129,7 +129,7 @@ public class RegistreringResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        final String fnr = FnrUtils.hentFnr(userService);
+        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentSykmeldtInfoData(fnr);
