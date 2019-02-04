@@ -77,6 +77,10 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
+        if (!ORDINAER_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
+            throw new RuntimeException("Brukeren kan ikke registreres. Krever registreringtypen ordinær.");
+        }
+
         try {
             validerBrukerRegistrering(bruker);
         } catch (RuntimeException e) {
