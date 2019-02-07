@@ -47,8 +47,6 @@ public class TestContext {
 
         setProperty(OPPFOLGING_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
 
-        ServiceUser sykefravaerapiUser = getServiceUser("veilarbregistrering-sykefravaerapi-apiKey", APPLICATION_NAME);
-
         setProperty(UNLEASH_API_URL_PROPERTY, "https://unleash.nais.adeo.no/api/");
 
         String issoHost = FasitUtils.getBaseUrl("isso-host");

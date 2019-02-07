@@ -6,10 +6,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
-import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +44,7 @@ public class ServiceBeansConfig {
     RegistreringResource registreringResource(
             PepClient pepClient,
             UserService userService,
+            ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
@@ -54,10 +52,18 @@ public class ServiceBeansConfig {
         return new RegistreringResource(
                 pepClient,
                 userService,
+                manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
                 tjenesteNedeFeature
         );
+    }
+
+    @Bean
+    ManuellRegistreringService manuellRegistreringService(AktorService aktorService,
+                                                          ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                                                          Provider<HttpServletRequest> provider) {
+        return new ManuellRegistreringService(aktorService, arbeidssokerregistreringRepository, provider);
     }
 
     @Bean

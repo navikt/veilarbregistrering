@@ -30,10 +30,13 @@ public class ArbeidssokerregistreringRepository {
     private final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
     private final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
 
+    private final static String MANUELL_REGISTRERING_SEQ = "MANUELL_REGISTRERING_SEQ";
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
     private final static String BRUKER_REGISTRERING = "BRUKER_REGISTRERING";
     private final static String BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING";
+    private final static String MANUELL_REGISTRERING = "MANUELL_REGISTRERING";
+    private final static String MANUELL_REGISTRERING_ID = "MANUELL_REGISTRERING_ID";
     private final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
     private final static String BRUKER_REAKTIVERING_ID = "BRUKER_REAKTIVERING_ID";
     private final static String OPPRETTET_DATO = "OPPRETTET_DATO";
@@ -55,6 +58,9 @@ public class ArbeidssokerregistreringRepository {
     private final static String JOBBHISTORIKK = "JOBBHISTORIKK";
 
     private final static String AKTOR_ID = "AKTOR_ID";
+
+    private final static String VEILEDER_IDENT = "VEILEDER_IDENT";
+    private final static String VEILEDER_ENHET_ID = "VEILEDER_ENHET_ID";
 
     private final static String BRUKER_PROFILERING = "BRUKER_PROFILERING";
     private final static String PROFILERING_TYPE = "PROFILERING_TYPE";
@@ -200,6 +206,25 @@ public class ArbeidssokerregistreringRepository {
         return ordinaerBrukerRegistrering;
     }
 
+    public void lagreManuellRegistrering(ManuellRegistrering manuellRegistrering) {
+        long id = nesteFraSekvens(MANUELL_REGISTRERING_SEQ);
+        SqlUtils.insert(db, MANUELL_REGISTRERING)
+                .value(MANUELL_REGISTRERING_ID, id)
+                .value(AKTOR_ID, manuellRegistrering.getAktorId())
+                .value(VEILEDER_IDENT, manuellRegistrering.getVeilederIdent())
+                .value(VEILEDER_ENHET_ID, manuellRegistrering.getVeilederEnhetId())
+                .execute();
+    }
+
+    public ManuellRegistrering hentManuellRegistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, MANUELL_REGISTRERING, ArbeidssokerregistreringRepository::manuellRegistreringMapper)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(MANUELL_REGISTRERING_ID))
+                .limit(1)
+                .column("*")
+                .execute();
+    }
+
     public void lagreReaktiveringForBruker(AktorId aktorId) {
         long id = nesteFraSekvens(BRUKER_REAKTIVERING_SEQ);
         SqlUtils.insert(db, BRUKER_REAKTIVERING)
@@ -238,7 +263,15 @@ public class ArbeidssokerregistreringRepository {
 
     }
 
-   
+    @SneakyThrows
+    private static ManuellRegistrering manuellRegistreringMapper(ResultSet rs) {
+        return new ManuellRegistrering()
+                .setId(rs.getLong(MANUELL_REGISTRERING_ID))
+                .setAktorId(rs.getString(AKTOR_ID))
+                .setVeilederIdent(rs.getString(VEILEDER_IDENT))
+                .setVeilederEnhetId(rs.getString(VEILEDER_ENHET_ID));
+    }
+
     @SneakyThrows
     private static OrdinaerBrukerRegistrering brukerRegistreringMapper(ResultSet rs) {
         return new OrdinaerBrukerRegistrering()
