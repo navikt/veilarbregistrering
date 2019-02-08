@@ -70,6 +70,7 @@ class RegistreringResourceTest {
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
         verify(pepClient, times(0)).sjekkLeseTilgangTilFnr(any());
@@ -97,6 +98,7 @@ class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
+        when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnr()).thenReturn(ident);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());

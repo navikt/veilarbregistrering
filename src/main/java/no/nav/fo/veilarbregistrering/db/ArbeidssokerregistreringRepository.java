@@ -206,7 +206,7 @@ public class ArbeidssokerregistreringRepository {
         return ordinaerBrukerRegistrering;
     }
 
-    public void lagreManuellRegistrering(ManuellRegistrering manuellRegistrering) {
+    public long lagreManuellRegistrering(ManuellRegistrering manuellRegistrering) {
         long id = nesteFraSekvens(MANUELL_REGISTRERING_SEQ);
         SqlUtils.insert(db, MANUELL_REGISTRERING)
                 .value(MANUELL_REGISTRERING_ID, id)
@@ -214,6 +214,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(VEILEDER_IDENT, manuellRegistrering.getVeilederIdent())
                 .value(VEILEDER_ENHET_ID, manuellRegistrering.getVeilederEnhetId())
                 .execute();
+        return id;
     }
 
     public ManuellRegistrering hentManuellRegistreringForAktorId(AktorId aktorId) {
