@@ -30,6 +30,11 @@ public class RemoteFeatureConfig {
         return new TjenesteNedeFeature(unleashService);
     }
 
+    @Bean
+    public ManuellRegistreringFeature manuellRegistreringFeature(UnleashService unleashService) {
+        return new ManuellRegistreringFeature(unleashService);
+    }
+
     public static class SykemeldtRegistreringFeature extends RemoteFeatureConfig {
         protected UnleashService unleashService;
         public SykemeldtRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
@@ -54,5 +59,14 @@ public class RemoteFeatureConfig {
 
     }
 
-    
+    public static class ManuellRegistreringFeature extends RemoteFeatureConfig {
+        protected UnleashService unleashService;
+        public ManuellRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
+
+        public boolean skalBrukereBliManueltRegistrert() {
+            return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
+        }
+
+    }
+
 }

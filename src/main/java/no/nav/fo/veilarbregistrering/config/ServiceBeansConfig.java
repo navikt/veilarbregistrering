@@ -47,7 +47,8 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
-            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
+            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
     ) {
         return new RegistreringResource(
                 pepClient,
@@ -55,7 +56,8 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
-                tjenesteNedeFeature
+                tjenesteNedeFeature,
+                manuellRegistreringFeature
         );
     }
 

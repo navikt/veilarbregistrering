@@ -29,6 +29,7 @@ class RegistreringResourceTest {
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
+    private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -40,6 +41,7 @@ class RegistreringResourceTest {
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
+        manuellRegistreringFeature = mock(RemoteFeatureConfig.ManuellRegistreringFeature.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
@@ -47,8 +49,8 @@ class RegistreringResourceTest {
                 manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
-                tjenesteNedeFeature
-
+                tjenesteNedeFeature,
+                manuellRegistreringFeature
         );
     }
 

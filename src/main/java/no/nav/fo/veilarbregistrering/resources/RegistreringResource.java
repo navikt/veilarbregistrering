@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
-import no.nav.fo.veilarbregistrering.utils.FnrUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -27,11 +26,12 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 public class RegistreringResource {
 
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
-    private BrukerRegistreringService brukerRegistreringService;
-    private ArbeidsforholdService arbeidsforholdService;
-    private UserService userService;
-    private ManuellRegistreringService manuellRegistreringService;
-    private PepClient pepClient;
+    private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private final BrukerRegistreringService brukerRegistreringService;
+    private final ArbeidsforholdService arbeidsforholdService;
+    private final UserService userService;
+    private final ManuellRegistreringService manuellRegistreringService;
+    private final PepClient pepClient;
 
     public RegistreringResource(
             PepClient pepClient,
@@ -39,7 +39,8 @@ public class RegistreringResource {
             ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
-            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
+            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
@@ -47,6 +48,7 @@ public class RegistreringResource {
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.tjenesteNedeFeature = tjenesteNedeFeature;
+        this.manuellRegistreringFeature = manuellRegistreringFeature;
     }
 
     @GET
@@ -76,6 +78,10 @@ public class RegistreringResource {
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
 
         if (AutentiseringUtils.erInternBruker()) {
+
+            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
+            }
 
             final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
@@ -144,6 +150,10 @@ public class RegistreringResource {
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
 
         if (AutentiseringUtils.erInternBruker()) {
+
+            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
+            }
 
             final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
