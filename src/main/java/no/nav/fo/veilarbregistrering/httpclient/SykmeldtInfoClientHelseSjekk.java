@@ -5,11 +5,10 @@ import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
 import static no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient.INFOTRYGDAPI_URL_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class SykmeldtInfoClientHelseSjekk implements Helsesjekk {
 
-    private String infotrygdFOPingUrl = getRequiredProperty(INFOTRYGDAPI_URL_PROPERTY_NAME) + "/rest/internal/isAlive";
+    private String infotrygdFOPingUrl = INFOTRYGDAPI_URL_PROPERTY_NAME + "/rest/internal/isAlive";
 
     @Override
     public void helsesjekk() throws Throwable {
