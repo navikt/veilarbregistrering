@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,11 @@ class RegistreringResourceTest {
     private PepClient pepClient;
     private RegistreringResource registreringResource;
     private UserService userService;
+    private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
+    private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -34,17 +37,20 @@ class RegistreringResourceTest {
     public void setup() {
         pepClient = mock(PepClient.class);
         userService = mock(UserService.class);
+        manuellRegistreringService = mock(ManuellRegistreringService.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
+        manuellRegistreringFeature = mock(RemoteFeatureConfig.ManuellRegistreringFeature.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
                 userService,
+                manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
-                tjenesteNedeFeature
-
+                tjenesteNedeFeature,
+                manuellRegistreringFeature
         );
     }
 
@@ -66,6 +72,7 @@ class RegistreringResourceTest {
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
         verify(pepClient, times(0)).sjekkLeseTilgangTilFnr(any());
@@ -93,6 +100,7 @@ class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
+        when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnr()).thenReturn(ident);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());

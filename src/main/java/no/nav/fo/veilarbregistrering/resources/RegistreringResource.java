@@ -7,8 +7,9 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
-import no.nav.fo.veilarbregistrering.utils.FnrUtils;
+import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -25,30 +26,36 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 public class RegistreringResource {
 
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
-    private BrukerRegistreringService brukerRegistreringService;
-    private ArbeidsforholdService arbeidsforholdService;
-    private UserService userService;
-    private PepClient pepClient;
+    private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private final BrukerRegistreringService brukerRegistreringService;
+    private final ArbeidsforholdService arbeidsforholdService;
+    private final UserService userService;
+    private final ManuellRegistreringService manuellRegistreringService;
+    private final PepClient pepClient;
 
     public RegistreringResource(
             PepClient pepClient,
             UserService userService,
+            ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
-            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature
+            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.arbeidsforholdService = arbeidsforholdService;
+        this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.tjenesteNedeFeature = tjenesteNedeFeature;
+        this.manuellRegistreringFeature = manuellRegistreringFeature;
     }
 
     @GET
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(fnr);
@@ -65,11 +72,31 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        OrdinaerBrukerRegistrering registrering;
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
-        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+
+        if (AutentiseringUtils.erInternBruker()) {
+
+            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
+            }
+
+            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String veilederIdent = AutentiseringUtils.hentIdent()
+                    .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
+
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+
+            manuellRegistreringService.lagreManuellRegistrering(fnr, veilederIdent, enhetId);
+
+        } else {
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+        }
+
         rapporterAlder(fnr);
+
         return registrering;
     }
 
@@ -77,7 +104,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
@@ -92,7 +119,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
         brukerRegistreringService.reaktiverBruker(fnr);
@@ -103,7 +130,7 @@ public class RegistreringResource {
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public Arbeidsforhold hentSisteArbeidsforhold() {
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return arbeidsforholdService.hentSisteArbeidsforhold(fnr);
@@ -118,10 +145,28 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
 
+        final String fnr = userService.hentFnrFraUrlEllerToken();
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+
+        if (AutentiseringUtils.erInternBruker()) {
+
+            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
+            }
+
+            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String veilederIdent = AutentiseringUtils.hentIdent()
+                    .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
+
+            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+
+            manuellRegistreringService.lagreManuellRegistrering(fnr, veilederIdent, enhetId);
+
+        } else {
+            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+        }
+
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
@@ -129,9 +174,24 @@ public class RegistreringResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        final String fnr = FnrUtils.hentFnrFraUrlEllerToken(userService);
+        final String fnr = userService.hentFnrFraUrlEllerToken();
 
         pepClient.sjekkLeseTilgangTilFnr(fnr);
         return brukerRegistreringService.hentSykmeldtInfoData(fnr);
+    }
+
+    @GET
+    @Path("/manuellregistrering")
+    @ApiOperation(value = "Henter siste manuell registrering av bruker.")
+    public ManuellRegistrering hentManuellRegistrering() {
+
+        if(AutentiseringUtils.erEksternBruker()){
+            throw new RuntimeException("Eksterne brukere har ikke tilgang");
+        }
+
+        final String fnr = userService.getFnrFromUrl();
+
+        pepClient.sjekkLeseTilgangTilFnr(fnr);
+        return manuellRegistreringService.hentManuellRegistrering(fnr);
     }
 }

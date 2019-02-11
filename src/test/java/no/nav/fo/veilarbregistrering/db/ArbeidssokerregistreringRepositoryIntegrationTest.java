@@ -112,6 +112,29 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         assertNull(profilertBrukerRegistrering);
     }
 
+    @Test
+    public void hentManuellRegistreringForAktorId(){
+
+        String aktorId = "11111";
+        String veilederIdent = "Z1234567";
+        String veilederEnhetId = "1234";
+
+        ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
+                .setAktorId(aktorId)
+                .setVeilederIdent(veilederIdent)
+                .setVeilederEnhetId(veilederEnhetId);
+
+        long id = arbeidssokerregistreringRepository.lagreManuellRegistrering(manuellRegistrering);
+
+        manuellRegistrering.setId(id);
+
+        ManuellRegistrering hentetRegistrering = arbeidssokerregistreringRepository
+                .hentManuellRegistreringForAktorId(new AktorId(aktorId));
+
+        assertEquals(manuellRegistrering, hentetRegistrering);
+
+    }
+
     private void assertRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         assertThat(ordinaerBrukerRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(ordinaerBrukerRegistrering.getSisteStilling()).isEqualTo(bruker.getSisteStilling());
