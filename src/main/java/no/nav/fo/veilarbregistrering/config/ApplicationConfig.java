@@ -6,6 +6,7 @@ import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClientHelseSjekk;
+import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClientHelseSjekk;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ import javax.servlet.ServletContext;
         CacheConfig.class,
         AAregServiceWSConfig.class,
         OppfolgingClientHelseSjekk.class,
+        SykmeldtInfoClientHelseSjekk.class,
         RemoteFeatureConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
