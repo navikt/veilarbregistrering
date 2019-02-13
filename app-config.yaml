@@ -48,6 +48,8 @@ fasitResources:
     resourceType: restservice
   - alias: unleash-api
     resourceType: restservice
+  - alias: virksomhet:OrganisasjonEnhet_v2
+    resourceType: webserviceendpoint
 
   # oidc med AzureAD B2C
   - alias: aad_b2c_clientid

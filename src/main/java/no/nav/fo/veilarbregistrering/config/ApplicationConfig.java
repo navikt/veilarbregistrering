@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
         DataSourceHelsesjekk.class,
         AktorConfig.class,
         PepConfig.class,
+        OrganisasjonEnhetV2Config.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
         OppfolgingClientHelseSjekk.class,

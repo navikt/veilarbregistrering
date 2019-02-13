@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +118,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         public ArbeidssokerregistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
-
             return new ArbeidssokerregistreringRepository(db);
         }
 
@@ -142,6 +142,11 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public ManuellRegistreringService manuellRegistreringService() {
+            return mock(ManuellRegistreringService.class);
+        }
+
+        @Bean
         public StartRegistreringUtils startRegistreringUtils() {
             return mock(StartRegistreringUtils.class);
         }
@@ -154,6 +159,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 OppfolgingClient oppfolgingClient,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdService arbeidsforholdService,
+                ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
             return new BrukerRegistreringService(
@@ -162,6 +168,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     oppfolgingClient,
                     sykeforloepMetadataClient,
                     arbeidsforholdService,
+                    manuellRegistreringService,
                     startRegistreringUtils,
                     sykemeldtRegistreringFeature
             );

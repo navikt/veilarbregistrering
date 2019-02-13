@@ -36,14 +36,15 @@ public class BrukerRegistreringServiceTest {
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdService arbeidsforholdService;
     private StartRegistreringUtils startRegistreringUtils;
+    private ManuellRegistreringService manuellRegistreringService;
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
-
 
     @BeforeEach
     public void setup() {
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
+        manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
@@ -56,6 +57,7 @@ public class BrukerRegistreringServiceTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
+                        manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);
 

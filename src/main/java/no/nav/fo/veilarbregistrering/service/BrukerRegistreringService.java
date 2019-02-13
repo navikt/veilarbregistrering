@@ -32,6 +32,7 @@ public class BrukerRegistreringService {
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykmeldtInfoClient;
     private ArbeidsforholdService arbeidsforholdService;
+    private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
@@ -39,6 +40,7 @@ public class BrukerRegistreringService {
                                      OppfolgingClient oppfolgingClient,
                                      SykmeldtInfoClient sykmeldtInfoClient,
                                      ArbeidsforholdService arbeidsforholdService,
+                                     ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
 
@@ -49,6 +51,7 @@ public class BrukerRegistreringService {
         this.oppfolgingClient = oppfolgingClient;
         this.sykmeldtInfoClient = sykmeldtInfoClient;
         this.arbeidsforholdService = arbeidsforholdService;
+        this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
     }
 
@@ -148,6 +151,16 @@ public class BrukerRegistreringService {
 
         SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
+
+        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(aktorId);
+
+        if (ordinaerBrukerRegistrering != null){
+            ordinaerBrukerRegistrering.setManueltRegistrertAv(veileder);
+        }
+
+        if (sykmeldtBrukerRegistrering != null){
+            sykmeldtBrukerRegistrering.setManueltRegistrertAv(veileder);
+        }
 
         if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
             return null;
