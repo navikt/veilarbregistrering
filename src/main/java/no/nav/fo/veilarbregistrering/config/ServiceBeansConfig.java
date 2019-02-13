@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,6 +27,7 @@ public class ServiceBeansConfig {
             OppfolgingClient oppfolgingClient,
             SykmeldtInfoClient sykeforloepMetadataClient,
             ArbeidsforholdService arbeidsforholdService,
+            ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
     ) {
@@ -35,6 +37,7 @@ public class ServiceBeansConfig {
                 oppfolgingClient,
                 sykeforloepMetadataClient,
                 arbeidsforholdService,
+                manuellRegistreringService,
                 startRegistreringUtils,
                 sykemeldtRegistreringFeature
         );
@@ -64,8 +67,9 @@ public class ServiceBeansConfig {
     @Bean
     ManuellRegistreringService manuellRegistreringService(AktorService aktorService,
                                                           ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                                                          EnhetOppslagService enhetOppslagService,
                                                           Provider<HttpServletRequest> provider) {
-        return new ManuellRegistreringService(aktorService, arbeidssokerregistreringRepository, provider);
+        return new ManuellRegistreringService(aktorService, arbeidssokerregistreringRepository, enhetOppslagService, provider);
     }
 
     @Bean
@@ -86,6 +90,16 @@ public class ServiceBeansConfig {
     @Bean
     SykmeldtInfoClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
         return new SykmeldtInfoClient(provider);
+    }
+
+    @Bean
+    HentEnheterService hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
+        return new HentEnheterService(organisasjonEnhetService);
+    }
+
+    @Bean
+    EnhetOppslagService enhetOppslagService(HentEnheterService hentEnheterService) {
+        return new EnhetOppslagService(hentEnheterService);
     }
 
     @Bean

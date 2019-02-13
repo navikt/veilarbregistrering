@@ -5,6 +5,8 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
 import no.nav.fo.veilarbregistrering.domain.ManuellRegistrering;
+import no.nav.fo.veilarbregistrering.domain.NavEnhet;
+import no.nav.fo.veilarbregistrering.domain.Veileder;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +18,16 @@ public class ManuellRegistreringService {
 
     private final AktorService aktorService;
     private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private final EnhetOppslagService enhetOppslagService;
     private final Provider<HttpServletRequest> requestProvider;
 
     public ManuellRegistreringService(AktorService aktorService,
                                       ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                                      EnhetOppslagService enhetOppslagService,
                                       Provider<HttpServletRequest> requestProvider) {
         this.aktorService = aktorService;
         this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
+        this.enhetOppslagService = enhetOppslagService;
         this.requestProvider = requestProvider;
     }
 
@@ -42,6 +47,22 @@ public class ManuellRegistreringService {
     public ManuellRegistrering hentManuellRegistrering(String fnr){
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
         return arbeidssokerregistreringRepository.hentManuellRegistreringForAktorId(aktorId);
+    }
+
+    public Veileder hentManuellRegistreringVeileder(AktorId aktorId){
+
+        ManuellRegistrering registrering = arbeidssokerregistreringRepository.hentManuellRegistreringForAktorId(aktorId);
+
+        if (registrering == null) {
+            return null;
+        }
+
+        NavEnhet enhet = enhetOppslagService.finnEnhet(registrering.getVeilederEnhetId());
+
+        return new Veileder()
+                .setEnhet(enhet)
+                .setIdent(registrering.getVeilederIdent());
+
     }
 
     public String getEnhetIdFromUrlOrThrow() {

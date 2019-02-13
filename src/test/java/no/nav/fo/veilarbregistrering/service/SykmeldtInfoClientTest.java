@@ -41,6 +41,7 @@ class SykmeldtInfoClientTest {
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
+    private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
     private String ident;
@@ -65,6 +66,7 @@ class SykmeldtInfoClientTest {
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
         startRegistreringUtils = mock(StartRegistreringUtils.class);
+        manuellRegistreringService = mock(ManuellRegistreringService.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
@@ -74,6 +76,7 @@ class SykmeldtInfoClientTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
+                        manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);
 

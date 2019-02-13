@@ -2,17 +2,13 @@ package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.domain.ManuellRegistrering;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
 import static java.util.Optional.of;
-import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -27,6 +23,7 @@ public class ManuellRegistreringServiceTest {
     private AktorService aktorService;
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private Provider<HttpServletRequest> requestProvider;
+    private EnhetOppslagService enhetOppslagService;
     private ManuellRegistreringService manuellRegistreringService;
 
     @BeforeEach
@@ -35,9 +32,10 @@ public class ManuellRegistreringServiceTest {
         aktorService = mock(AktorService.class);
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
         requestProvider = mock(Provider.class);
+        enhetOppslagService = mock(EnhetOppslagService.class);
 
         manuellRegistreringService = new ManuellRegistreringService(aktorService,
-                arbeidssokerregistreringRepository, requestProvider);
+                arbeidssokerregistreringRepository, enhetOppslagService, requestProvider);
 
         when(aktorService.getAktorId(any())).thenReturn(of(MOCK_AKTOR_ID));
     }

@@ -180,18 +180,4 @@ public class RegistreringResource {
         return brukerRegistreringService.hentSykmeldtInfoData(fnr);
     }
 
-    @GET
-    @Path("/manuellregistrering")
-    @ApiOperation(value = "Henter siste manuell registrering av bruker.")
-    public ManuellRegistrering hentManuellRegistrering() {
-
-        if(AutentiseringUtils.erEksternBruker()){
-            throw new RuntimeException("Eksterne brukere har ikke tilgang");
-        }
-
-        final String fnr = userService.getFnrFromUrl();
-
-        pepClient.sjekkLeseTilgangTilFnr(fnr);
-        return manuellRegistreringService.hentManuellRegistrering(fnr);
-    }
 }

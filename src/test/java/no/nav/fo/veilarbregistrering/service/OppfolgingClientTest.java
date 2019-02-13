@@ -42,6 +42,7 @@ class OppfolgingClientTest {
     private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
+    private ManuellRegistreringService manuellRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdService arbeidsforholdService;
@@ -70,6 +71,7 @@ class OppfolgingClientTest {
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
+        manuellRegistreringService = mock(ManuellRegistreringService.class);
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
@@ -79,6 +81,7 @@ class OppfolgingClientTest {
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdService,
+                        manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);
 
