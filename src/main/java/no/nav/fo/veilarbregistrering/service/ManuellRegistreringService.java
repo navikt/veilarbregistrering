@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.domain.ManuellRegistrering;
-import no.nav.fo.veilarbregistrering.domain.NavEnhet;
-import no.nav.fo.veilarbregistrering.domain.Veileder;
+import no.nav.fo.veilarbregistrering.domain.*;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -31,12 +28,12 @@ public class ManuellRegistreringService {
         this.requestProvider = requestProvider;
     }
 
-    public void lagreManuellRegistrering(String fnr, String veilederIdent, String veilederEnhetId){
-
-        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
+    public void lagreManuellRegistrering(String veilederIdent, String veilederEnhetId,
+                                         long registreringId, BrukerRegistreringType brukerRegistreringType){
 
         final ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setAktorId(aktorId.getAktorId())
+                .setRegistreringId(registreringId)
+                .setBrukerRegistreringType(brukerRegistreringType)
                 .setVeilederIdent(veilederIdent)
                 .setVeilederEnhetId(veilederEnhetId);
 
@@ -44,14 +41,10 @@ public class ManuellRegistreringService {
 
     }
 
-    public ManuellRegistrering hentManuellRegistrering(String fnr){
-        AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
-        return arbeidssokerregistreringRepository.hentManuellRegistreringForAktorId(aktorId);
-    }
+    public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType){
 
-    public Veileder hentManuellRegistreringVeileder(AktorId aktorId){
-
-        ManuellRegistrering registrering = arbeidssokerregistreringRepository.hentManuellRegistreringForAktorId(aktorId);
+        ManuellRegistrering registrering = arbeidssokerregistreringRepository
+                .hentManuellRegistrering(registreringId, brukerRegistreringType);
 
         if (registrering == null) {
             return null;

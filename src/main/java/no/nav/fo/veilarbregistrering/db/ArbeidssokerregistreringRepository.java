@@ -59,6 +59,8 @@ public class ArbeidssokerregistreringRepository {
 
     private final static String AKTOR_ID = "AKTOR_ID";
 
+    private final static String REGISTRERING_ID = "REGISTRERING_ID";
+    private final static String BRUKER_REGISTRERING_TYPE = "BRUKER_REGISTRERING_TYPE";
     private final static String VEILEDER_IDENT = "VEILEDER_IDENT";
     private final static String VEILEDER_ENHET_ID = "VEILEDER_ENHET_ID";
 
@@ -122,7 +124,7 @@ public class ArbeidssokerregistreringRepository {
         return hentBrukerregistreringForId(id);
     }
 
-    public void lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId) {
+    public long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
         String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
@@ -141,6 +143,7 @@ public class ArbeidssokerregistreringRepository {
                 .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).isPresent() ? besvarelse.getAndreForhold().toString() : null)
                 .execute();
 
+        return id;
     }
 
     private static String tilJson(List<TekstForSporsmal> obj) {
@@ -210,17 +213,18 @@ public class ArbeidssokerregistreringRepository {
         long id = nesteFraSekvens(MANUELL_REGISTRERING_SEQ);
         SqlUtils.insert(db, MANUELL_REGISTRERING)
                 .value(MANUELL_REGISTRERING_ID, id)
-                .value(AKTOR_ID, manuellRegistrering.getAktorId())
+                .value(REGISTRERING_ID, manuellRegistrering.getRegistreringId())
+                .value(BRUKER_REGISTRERING_TYPE, manuellRegistrering.getBrukerRegistreringType().toString())
                 .value(VEILEDER_IDENT, manuellRegistrering.getVeilederIdent())
                 .value(VEILEDER_ENHET_ID, manuellRegistrering.getVeilederEnhetId())
                 .execute();
         return id;
     }
 
-    public ManuellRegistrering hentManuellRegistreringForAktorId(AktorId aktorId) {
+    public ManuellRegistrering hentManuellRegistrering(long registreringId, BrukerRegistreringType brukerRegistreringType) {
         return SqlUtils.select(db, MANUELL_REGISTRERING, ArbeidssokerregistreringRepository::manuellRegistreringMapper)
-                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
-                .orderBy(OrderClause.desc(MANUELL_REGISTRERING_ID))
+                .where(WhereClause.equals(REGISTRERING_ID, registreringId)
+                        .and(WhereClause.equals(BRUKER_REGISTRERING_TYPE, brukerRegistreringType.toString())))
                 .limit(1)
                 .column("*")
                 .execute();
@@ -268,7 +272,8 @@ public class ArbeidssokerregistreringRepository {
     private static ManuellRegistrering manuellRegistreringMapper(ResultSet rs) {
         return new ManuellRegistrering()
                 .setId(rs.getLong(MANUELL_REGISTRERING_ID))
-                .setAktorId(rs.getString(AKTOR_ID))
+                .setRegistreringId(rs.getLong(REGISTRERING_ID))
+                .setBrukerRegistreringType(BrukerRegistreringType.valueOf(rs.getString(BRUKER_REGISTRERING_TYPE)))
                 .setVeilederIdent(rs.getString(VEILEDER_IDENT))
                 .setVeilederEnhetId(rs.getString(VEILEDER_ENHET_ID));
     }

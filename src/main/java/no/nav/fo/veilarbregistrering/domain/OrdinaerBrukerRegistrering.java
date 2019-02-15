@@ -25,7 +25,8 @@ public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
     Profilering profilering;
 
     @Override
-    BrukerRegistreringType hentType() {
+    public BrukerRegistreringType hentType() {
         return ORDINAER;
     }
+
 }

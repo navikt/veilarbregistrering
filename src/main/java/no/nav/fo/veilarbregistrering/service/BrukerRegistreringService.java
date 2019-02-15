@@ -11,6 +11,8 @@ import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
@@ -142,6 +144,15 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
+    private void setManueltRegistrertAv(BrukerRegistrering ...registreringer){
+        Arrays.stream(registreringer)
+                .filter(Objects::nonNull)
+                .forEach((registrering) -> {
+                    registrering.setManueltRegistrertAv(manuellRegistreringService
+                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
+                });
+    }
+
     public BrukerRegistreringWrapper hentBrukerRegistrering(Fnr fnr) {
 
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr.getFnr());
@@ -152,15 +163,7 @@ public class BrukerRegistreringService {
         SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
 
-        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(aktorId);
-
-        if (ordinaerBrukerRegistrering != null){
-            ordinaerBrukerRegistrering.setManueltRegistrertAv(veileder);
-        }
-
-        if (sykmeldtBrukerRegistrering != null){
-            sykmeldtBrukerRegistrering.setManueltRegistrertAv(veileder);
-        }
+        setManueltRegistrertAv(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
 
         if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
             return null;
@@ -190,7 +193,7 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
+    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, String fnr) {
         if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
@@ -199,16 +202,20 @@ public class BrukerRegistreringService {
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(fnr);
+        long id;
+
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
             SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
 
             oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType);
-            arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
+            id = arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
         } else {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
+
+        return id;
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {

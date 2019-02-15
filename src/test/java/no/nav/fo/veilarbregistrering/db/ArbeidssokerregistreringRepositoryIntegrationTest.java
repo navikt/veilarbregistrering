@@ -113,14 +113,16 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     }
 
     @Test
-    public void hentManuellRegistreringForAktorId(){
+    public void hentManuellRegistrering(){
 
-        String aktorId = "11111";
         String veilederIdent = "Z1234567";
         String veilederEnhetId = "1234";
+        long registreringId = 1;
+        BrukerRegistreringType registreringType = BrukerRegistreringType.ORDINAER;
 
         ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setAktorId(aktorId)
+                .setRegistreringId(registreringId)
+                .setBrukerRegistreringType(registreringType)
                 .setVeilederIdent(veilederIdent)
                 .setVeilederEnhetId(veilederEnhetId);
 
@@ -129,7 +131,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         manuellRegistrering.setId(id);
 
         ManuellRegistrering hentetRegistrering = arbeidssokerregistreringRepository
-                .hentManuellRegistreringForAktorId(new AktorId(aktorId));
+                .hentManuellRegistrering(registreringId, registreringType);
 
         assertEquals(manuellRegistrering, hentetRegistrering);
 
