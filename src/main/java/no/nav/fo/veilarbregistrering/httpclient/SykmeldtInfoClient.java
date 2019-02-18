@@ -3,16 +3,16 @@ package no.nav.fo.veilarbregistrering.httpclient;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.jaspic.TokenLocator;
 import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
-import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
+import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 
-import static io.vavr.collection.Array.*;
+import static no.nav.brukerdialog.security.Constants.ID_TOKEN_COOKIE_NAME;
+import static no.nav.brukerdialog.security.Constants.REFRESH_TOKEN_COOKIE_NAME;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CProvider.AZUREADB2C_OIDC_COOKIE_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
@@ -21,6 +21,10 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 public class SykmeldtInfoClient extends BaseClient {
 
     public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-fo.default.svc.nais.local";
+
+    private final TokenLocator issoTokenLocator = new TokenLocator(ID_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME);
+
+    private final TokenLocator essoTokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME, null);
 
     @Inject
     public SykmeldtInfoClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -33,8 +37,14 @@ public class SykmeldtInfoClient extends BaseClient {
 
     private InfotrygdData getSykeforloepMetadata(String url) {
 
+        String token;
         HttpServletRequest request = httpServletRequestProvider.get();
-        TokenLocator tokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME, null);
+
+        if (AutentiseringUtils.erInternBruker()) {
+            token = issoTokenLocator.getToken(request).orElse(null);
+        } else {
+            token = essoTokenLocator.getToken(request).orElse(null);
+        }
 
         try {
             log.info("Kaller infotrygd-sykepenger på url : " + url);
@@ -42,7 +52,7 @@ public class SykmeldtInfoClient extends BaseClient {
                     c -> c.target(url)
                             .request()
                             .header(COOKIE, request.getHeader(COOKIE))
-                            .header("Authorization", "Bearer " + tokenLocator.getToken(request).orElse(null))
+                            .header("Authorization", "Bearer " + token)
                             .get(InfotrygdData.class));
         } catch (Exception e) {
             log.error("Feil ved kall til tjeneste " + e);
