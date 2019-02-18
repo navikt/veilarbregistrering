@@ -12,7 +12,8 @@ import lombok.experimental.Accessors;
 public class ManuellRegistrering {
 
     long id;
-    String aktorId;
+    long registreringId;
+    BrukerRegistreringType brukerRegistreringType;
     String veilederIdent;
     String veilederEnhetId;
 

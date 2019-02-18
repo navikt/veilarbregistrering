@@ -7,6 +7,7 @@ public abstract class BrukerRegistrering {
 
     protected Veileder manueltRegistrertAv;
 
-    abstract BrukerRegistreringType hentType();
+    public abstract BrukerRegistreringType hentType();
 
+    public abstract long getId();
 }

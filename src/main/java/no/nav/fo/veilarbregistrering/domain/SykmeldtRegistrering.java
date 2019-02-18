@@ -22,7 +22,7 @@ public class SykmeldtRegistrering extends BrukerRegistrering {
     List<TekstForSporsmal> teksterForBesvarelse;
 
     @Override
-    BrukerRegistreringType hentType() {
+    public BrukerRegistreringType hentType() {
         return SYKMELDT;
     }
 }

@@ -89,7 +89,8 @@ public class RegistreringResource {
 
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
 
-            manuellRegistreringService.lagreManuellRegistrering(fnr, veilederIdent, enhetId);
+            manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
+                    registrering.getId(), BrukerRegistreringType.ORDINAER);
 
         } else {
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
@@ -159,9 +160,9 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
 
-            manuellRegistreringService.lagreManuellRegistrering(fnr, veilederIdent, enhetId);
+            manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
 
         } else {
             brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
