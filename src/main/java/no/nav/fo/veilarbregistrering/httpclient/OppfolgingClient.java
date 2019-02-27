@@ -7,7 +7,9 @@ import no.nav.fo.veilarbregistrering.domain.*;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
@@ -50,6 +52,10 @@ public class OppfolgingClient extends BaseClient {
                             .request()
                             .header(COOKIE, cookies)
                             .get(OppfolgingStatusData.class));
+        } catch (ForbiddenException e) {
+            log.error("Ingen tilgang " + e);
+            Response response = e.getResponse();
+            throw new WebApplicationException(response);
         } catch (Exception e) {
             log.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();

@@ -21,6 +21,7 @@ import org.mockserver.integration.ClientAndServer;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
 import java.util.Optional;
 
 import static java.lang.System.setProperty;
@@ -173,6 +174,12 @@ class OppfolgingClientTest {
     public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
         assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+    }
+
+    @Test
+    public void testAtGirWebApplicationExceptionExceptionDersomIngenTilgang() {
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(403));
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
     }
 
     @Test
