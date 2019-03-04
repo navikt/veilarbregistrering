@@ -43,6 +43,10 @@ public class FunksjonelleMetrikker {
                 .addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning())
                 .report();
 
+        MetricsFactory.createEvent("registrering.besvarelse.dinsituasjon")
+                .addFieldToReport("dinsituasjon", ordinaerBrukerRegistrering.getBesvarelse().getDinSituasjon())
+                .report();
+
         MetricsFactory.createEvent("registrering.besvarelse.helseHinder")
                 .addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder())
                 .report();
