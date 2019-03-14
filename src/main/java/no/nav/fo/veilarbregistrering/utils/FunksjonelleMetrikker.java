@@ -51,6 +51,10 @@ public class FunksjonelleMetrikker {
                 .addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder())
                 .report();
 
+        MetricsFactory.createEvent("registrering.besvarelse.andreForhold")
+                .addFieldToReport("andreForhold", ordinaerBrukerRegistrering.getBesvarelse().getAndreForhold())
+                .report();
+
         MetricsFactory.createEvent("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg")
                 .addFieldToReport("samsvarermedinfofraareg", samsvarermedinfofraaareg)
                 .report();
