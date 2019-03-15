@@ -20,7 +20,7 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 @Slf4j
 public class SykmeldtInfoClient extends BaseClient {
 
-    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "http://infotrygd-fo.default.svc.nais.local";
+    public static final String INFOTRYGDAPI_URL_PROPERTY_NAME = "https://infotrygd-fo-q1.nais.preprod.local";
 
     private final TokenLocator issoTokenLocator = new TokenLocator(ID_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME);
 
