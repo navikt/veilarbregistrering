@@ -151,7 +151,7 @@ public class BrukerRegistreringServiceTest {
 
         SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
 
-        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(sykmeldtBrukerType);
+        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(sykmeldtBrukerType, FNR_OPPFYLLER_KRAV);
     }
 
     @Test
