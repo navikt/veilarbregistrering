@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -207,8 +208,7 @@ public class BrukerRegistreringService {
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
             SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
-
-            oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType);
+            oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType, fnr);
             id = arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
         } else {
@@ -227,16 +227,18 @@ public class BrukerRegistreringService {
             return sykmeldtInfoData;
         }
 
-        InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
-
-        boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
-
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-        sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
-        sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
 
-        if (erSykmeldtOver39Uker) {
+        if (AutentiseringUtils.erInternBruker()) {
+            // Veiledere har ikke tilgang til å gjøre kall mot infotrygd
+            // Sett inngang aktiv, slik at de får registrert sykmeldte brukere
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
+        } else {
+            InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+            boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
+
+            sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
+            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(erSykmeldtOver39Uker);
         }
 
         return sykmeldtInfoData;

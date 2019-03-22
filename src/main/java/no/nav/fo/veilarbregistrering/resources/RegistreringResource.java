@@ -146,7 +146,6 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-
         final String fnr = userService.hentFnrFraUrlEllerToken();
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
 
