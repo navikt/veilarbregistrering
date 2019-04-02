@@ -92,6 +92,8 @@ public class RegistreringResource {
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
                     registrering.getId(), BrukerRegistreringType.ORDINAER);
 
+            rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
+
         } else {
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
         }
@@ -124,6 +126,11 @@ public class RegistreringResource {
 
         pepClient.sjekkSkriveTilgangTilFnr(fnr);
         brukerRegistreringService.reaktiverBruker(fnr);
+
+        if (AutentiseringUtils.erInternBruker()) {
+            rapporterManuellReaktivering();
+        }
+
         rapporterAlder(fnr);
     }
 
@@ -160,8 +167,8 @@ public class RegistreringResource {
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
             long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
-
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
+            rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
 
         } else {
             brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);

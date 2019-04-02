@@ -35,6 +35,17 @@ public class FunksjonelleMetrikker {
         event.report();
     }
 
+    public static void rapporterManuellRegistrering(BrukerRegistreringType type){
+        Event event = MetricsFactory.createEvent("registrering.manuell-registrering");
+        event.addFieldToReport("type",  type.toString());
+        event.report();
+    }
+
+    public static void rapporterManuellReaktivering(){
+        Event event = MetricsFactory.createEvent("registrering.manuell-reaktivering");
+        event.report();
+    }
+
     public static void rapporterOrdinaerBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
         boolean samsvarermedinfofraaareg = brukerSvarerAtDenHarJobbetSisteMander(ordinaerBrukerRegistrering)
                 == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
