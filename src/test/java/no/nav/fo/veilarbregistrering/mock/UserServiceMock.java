@@ -11,7 +11,11 @@ public class UserServiceMock extends UserService {
         super(requestProvider);
     }
 
-    public String getFnr() {
+    public boolean erEksternBruker() {
+        return true;
+    }
+
+    public String getUid() {
         return "10108000398"; //Aremark fiktivt fnr.
     }
 }

@@ -3,8 +3,10 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.db.InfoOmMegRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.resources.InfoOmMegResource;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -19,6 +21,16 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class ServiceBeansConfig {
 
+    @Bean
+    InfoOmMegService infoOmMegService(
+            ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+            InfoOmMegRepository infoOmMegRepository
+    ) {
+        return new InfoOmMegService(
+                arbeidssokerregistreringRepository,
+                infoOmMegRepository
+        );
+    }
 
     @Bean
     BrukerRegistreringService registrerBrukerService(
@@ -40,6 +52,21 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 startRegistreringUtils,
                 sykemeldtRegistreringFeature
+        );
+    }
+
+    @Bean
+    InfoOmMegResource infoOmMegResource(
+            InfoOmMegService infoOmMegService,
+            UserService userService,
+            AktorService aktorService,
+            PepClient pepClient
+    ) {
+        return new InfoOmMegResource(
+                infoOmMegService,
+                userService,
+                aktorService,
+                pepClient
         );
     }
 
@@ -70,6 +97,11 @@ public class ServiceBeansConfig {
                                                           EnhetOppslagService enhetOppslagService,
                                                           Provider<HttpServletRequest> provider) {
         return new ManuellRegistreringService(aktorService, arbeidssokerregistreringRepository, enhetOppslagService, provider);
+    }
+
+    @Bean
+    InfoOmMegRepository infoOmMegRepository(JdbcTemplate db) {
+        return new InfoOmMegRepository(db);
     }
 
     @Bean

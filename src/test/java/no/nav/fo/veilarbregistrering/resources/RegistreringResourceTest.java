@@ -101,7 +101,7 @@ class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
         when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
-        when(userService.getFnr()).thenReturn(ident);
+        when(userService.getUid()).thenReturn(ident);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
     }
