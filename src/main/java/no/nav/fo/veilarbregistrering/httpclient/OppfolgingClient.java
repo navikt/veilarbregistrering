@@ -62,10 +62,10 @@ public class OppfolgingClient extends BaseClient {
         }
     }
 
-    public void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType) {
+    public void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, c)
+                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
         );
     }
 
@@ -81,8 +81,8 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
-    private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Client client) {
-        String url = baseUrl + "/oppfolging/aktiverSykmeldt";
+    private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr, Client client) {
+        String url = baseUrl + "/oppfolging/aktiverSykmeldt/?fnr=" + fnr;
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(sykmeldtBrukerType));
         return behandleHttpResponse(response, url);
     }

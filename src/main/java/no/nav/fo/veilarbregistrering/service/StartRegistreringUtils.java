@@ -4,6 +4,7 @@ package no.nav.fo.veilarbregistrering.service;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
+import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
