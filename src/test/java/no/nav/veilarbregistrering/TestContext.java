@@ -2,20 +2,20 @@ package no.nav.veilarbregistrering;
 
 import no.nav.brukerdialog.security.Constants;
 import no.nav.brukerdialog.tools.SecurityConstants;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.ServiceUser;
-import no.nav.dialogarena.config.util.Util;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.ServiceUser;
 import no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants;
 import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
+import no.nav.testconfig.util.Util;
 
 import static java.lang.System.setProperty;
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME;
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
-import static no.nav.dialogarena.config.fasit.FasitUtils.getDefaultEnvironment;
-import static no.nav.dialogarena.config.fasit.FasitUtils.getRestService;
-import static no.nav.dialogarena.config.fasit.FasitUtils.getServiceUser;
+import static no.nav.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.getDefaultEnvironment;
+import static no.nav.fasit.FasitUtils.getRestService;
+import static no.nav.fasit.FasitUtils.getServiceUser;
 import static no.nav.fo.veilarbregistrering.config.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbregistrering.config.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
@@ -30,7 +30,7 @@ public class TestContext {
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         ServiceUser srvveilarbregistrering = getServiceUser("srvveilarbregistrering", APPLICATION_NAME);
 
-        setProperty("APP_NAME", APPLICATION_NAME);
+        setProperty("NAIS_APP_NAME", APPLICATION_NAME);
 
         //sts
         setProperty(StsSecurityConstants.STS_URL_KEY, securityTokenService);
@@ -55,7 +55,7 @@ public class TestContext {
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
-        String issoIsAlive = FasitUtils.getBaseUrl("isso.isalive", FasitUtils.Zone.FSS);
+        String issoIsAlive = FasitUtils.getBaseUrl("isso.isalive", FSS);
         ServiceUser isso_rp_user = getServiceUser("isso-rp-user", APPLICATION_NAME);
         String loginUrl = getRestService("veilarblogin.redirect-url", getDefaultEnvironment()).getUrl();
 

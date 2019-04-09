@@ -1,9 +1,9 @@
 package no.nav.veilarbregistrering.db;
 
 import lombok.val;
-import no.nav.dialogarena.config.fasit.DbCredentials;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.TestEnvironment;
+import no.nav.fasit.DbCredentials;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.TestEnvironment;
 
 import java.util.Optional;
 
