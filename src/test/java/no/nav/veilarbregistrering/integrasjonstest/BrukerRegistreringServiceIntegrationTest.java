@@ -1,7 +1,7 @@
 package no.nav.veilarbregistrering.integrasjonstest;
 
 import io.vavr.control.Try;
-import no.nav.apiapp.security.PepClient;
+import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
@@ -175,8 +175,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        PepClient pepClient() {
-            return mock(PepClient.class);
+        VeilarbAbacPepClient pepClient() {
+            return mock(VeilarbAbacPepClient.class);
         }
     }
 

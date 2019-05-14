@@ -24,6 +24,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class OppfolgingClient extends BaseClient {
 
     public static final String OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
+    private SystemUserTokenProvider systemUserTokenProvider;
 
     @Inject
     public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
@@ -92,6 +93,12 @@ public class OppfolgingClient extends BaseClient {
         return client.target(url)
                 .request()
                 .header(COOKIE, cookies)
-                .header("SystemAuthorization", new SystemUserTokenProvider().getToken());
+                .header("SystemAuthorization",
+                        (this.systemUserTokenProvider==null? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                                .getToken());
+    }
+
+    public void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
+        this.systemUserTokenProvider = systemUserTokenProvider;
     }
 }

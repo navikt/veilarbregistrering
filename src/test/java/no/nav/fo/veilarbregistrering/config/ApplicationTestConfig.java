@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.apiapp.security.PepClient;
+import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.mock.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+
+import static org.mockito.Mockito.mock;
 
 @Configuration
 public class ApplicationTestConfig extends ApplicationConfig {
@@ -47,8 +49,8 @@ public class ApplicationTestConfig extends ApplicationConfig {
 
     @Bean
     @Conditional(Mock.class)
-    public PepClient pepClient() {
-        return new PepClientMock();
+    public VeilarbAbacPepClient pepClient() {
+        return mock(VeilarbAbacPepClient.class);
     }
 
     @Bean
