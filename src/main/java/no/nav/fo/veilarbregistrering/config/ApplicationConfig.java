@@ -29,7 +29,7 @@ import javax.servlet.ServletContext;
         SykmeldtInfoClientHelseSjekk.class,
         RemoteFeatureConfig.class
 })
-public class ApplicationConfig implements ApiApplication.NaisApiApplication {
+public class ApplicationConfig implements ApiApplication {
 
     public static final String APPLICATION_NAME = "veilarbregistrering";
 
