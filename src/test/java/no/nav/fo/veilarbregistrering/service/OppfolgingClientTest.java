@@ -105,7 +105,9 @@ class OppfolgingClientTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
-        return oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
+        oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
+        return oppfolgingClient;
     }
 
     @Test

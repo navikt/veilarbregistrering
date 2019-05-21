@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.resources;
 
-import no.nav.apiapp.security.PepClient;
+import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
@@ -22,24 +23,26 @@ import static org.mockito.Mockito.*;
 
 class RegistreringResourceTest {
 
-    private PepClient pepClient;
+    private VeilarbAbacPepClient pepClient;
     private RegistreringResource registreringResource;
     private UserService userService;
     private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
     private ArbeidsforholdService arbeidsforholdService;
+    private AktorService aktorService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
 
-    private static String ident = "10108000398"; //Aremark fiktivt fnr.";
+    private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
     @BeforeEach
     public void setup() {
-        pepClient = mock(PepClient.class);
+        pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         arbeidsforholdService = mock(ArbeidsforholdService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+        aktorService = mock(AktorService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
         manuellRegistreringFeature = mock(RemoteFeatureConfig.ManuellRegistreringFeature.class);
 
@@ -49,6 +52,7 @@ class RegistreringResourceTest {
                 manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
+                aktorService,
                 tjenesteNedeFeature,
                 manuellRegistreringFeature
         );
@@ -57,16 +61,17 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
+        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentSisteArbeidsforhold();
-        verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
-        when(userService.getFnrFromUrl()).thenReturn(ident);
+        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentStartRegistreringStatus();
-        verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
@@ -75,14 +80,14 @@ class RegistreringResourceTest {
         when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
-        verify(pepClient, times(0)).sjekkLeseTilgangTilFnr(any());
+        verify(pepClient, times(0)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
-        when(userService.getFnrFromUrl()).thenReturn(ident);
+        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentRegistrering();
-        verify(pepClient, times(1)).sjekkLeseTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
@@ -91,8 +96,9 @@ class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse()
                         .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
+        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
-        verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 
     @Test
@@ -101,8 +107,8 @@ class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
         when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
-        when(userService.getFnr()).thenReturn(ident);
+        when(userService.getFnr()).thenReturn(IDENT);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
-        verify(pepClient, times(1)).sjekkSkriveTilgangTilFnr(any());
+        verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 }

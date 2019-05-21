@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.security.PepClient;
+import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
@@ -45,11 +45,12 @@ public class ServiceBeansConfig {
 
     @Bean
     RegistreringResource registreringResource(
-            PepClient pepClient,
+            VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
+            AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
             RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
     ) {
@@ -59,6 +60,7 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 arbeidsforholdService,
                 brukerRegistreringService,
+                aktorService,
                 tjenesteNedeFeature,
                 manuellRegistreringFeature
         );

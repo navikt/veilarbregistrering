@@ -2,7 +2,11 @@ package no.nav.fo.veilarbregistrering.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import no.nav.apiapp.security.PepClient;
+import no.nav.apiapp.feil.Feil;
+import no.nav.apiapp.feil.FeilType;
+import no.nav.apiapp.security.veilarbabac.Bruker;
+import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
@@ -31,14 +35,16 @@ public class RegistreringResource {
     private final ArbeidsforholdService arbeidsforholdService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
-    private final PepClient pepClient;
+    private final VeilarbAbacPepClient pepClient;
+    private final AktorService aktorService;
 
     public RegistreringResource(
-            PepClient pepClient,
+            VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             ArbeidsforholdService arbeidsforholdService,
             BrukerRegistreringService brukerRegistreringService,
+            AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
             RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
     ) {
@@ -47,6 +53,7 @@ public class RegistreringResource {
         this.arbeidsforholdService = arbeidsforholdService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
+        this.aktorService=aktorService;
         this.tjenesteNedeFeature = tjenesteNedeFeature;
         this.manuellRegistreringFeature = manuellRegistreringFeature;
     }
@@ -55,10 +62,10 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatus hentStartRegistreringStatus() {
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkLeseTilgangTilFnr(fnr);
-        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(fnr);
+        pepClient.sjekkLesetilgangTilBruker(bruker);
+        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
         rapporterRegistreringsstatus(status);
         return status;
     }
@@ -73,9 +80,9 @@ public class RegistreringResource {
         }
 
         OrdinaerBrukerRegistrering registrering;
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkSkriveTilgangTilFnr(fnr);
+        pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
         if (AutentiseringUtils.erInternBruker()) {
 
@@ -87,7 +94,7 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
 
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
                     registrering.getId(), BrukerRegistreringType.ORDINAER);
@@ -95,10 +102,10 @@ public class RegistreringResource {
             rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
 
         } else {
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, fnr);
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
         }
 
-        rapporterAlder(fnr);
+        rapporterAlder(bruker.getFoedselsnummer());
 
         return registrering;
     }
@@ -107,10 +114,10 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkLeseTilgangTilFnr(fnr);
-        return brukerRegistreringService.hentBrukerRegistrering(new Fnr(fnr));
+        pepClient.sjekkLesetilgangTilBruker(bruker);
+        return brukerRegistreringService.hentBrukerRegistrering(new Fnr(bruker.getFoedselsnummer()));
     }
 
     @POST
@@ -122,26 +129,26 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkSkriveTilgangTilFnr(fnr);
-        brukerRegistreringService.reaktiverBruker(fnr);
+        pepClient.sjekkSkrivetilgangTilBruker(bruker);
+        brukerRegistreringService.reaktiverBruker(bruker.getFoedselsnummer());
 
         if (AutentiseringUtils.erInternBruker()) {
             rapporterManuellReaktivering();
         }
 
-        rapporterAlder(fnr);
+        rapporterAlder(bruker.getFoedselsnummer());
     }
 
     @GET
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public Arbeidsforhold hentSisteArbeidsforhold() {
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkLeseTilgangTilFnr(fnr);
-        return arbeidsforholdService.hentSisteArbeidsforhold(fnr);
+        pepClient.sjekkLesetilgangTilBruker(bruker);
+        return arbeidsforholdService.hentSisteArbeidsforhold(bruker.getFoedselsnummer());
     }
 
     @POST
@@ -153,8 +160,8 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final String fnr = userService.hentFnrFraUrlEllerToken();
-        pepClient.sjekkSkriveTilgangTilFnr(fnr);
+        final Bruker bruker = hentBruker();
+        pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
         if (AutentiseringUtils.erInternBruker()) {
 
@@ -166,12 +173,12 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
             rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, fnr);
+            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
         }
 
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
@@ -181,10 +188,19 @@ public class RegistreringResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        final String fnr = userService.hentFnrFraUrlEllerToken();
+        final Bruker bruker = hentBruker();
 
-        pepClient.sjekkLeseTilgangTilFnr(fnr);
-        return brukerRegistreringService.hentSykmeldtInfoData(fnr);
+        pepClient.sjekkLesetilgangTilBruker(bruker);
+        return brukerRegistreringService.hentSykmeldtInfoData(bruker.getFoedselsnummer());
     }
+
+    private Bruker hentBruker() {
+        String fnr = userService.hentFnrFraUrlEllerToken();
+
+        return Bruker.fraFnr(fnr)
+                .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
+    }
+
+
 
 }
