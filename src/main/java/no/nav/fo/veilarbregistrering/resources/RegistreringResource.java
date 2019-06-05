@@ -84,7 +84,7 @@ public class RegistreringResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
-        if (AutentiseringUtils.erInternBruker()) {
+        if (AutentiseringUtils.erVeileder()) {
 
             if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
@@ -134,7 +134,7 @@ public class RegistreringResource {
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
         brukerRegistreringService.reaktiverBruker(bruker.getFoedselsnummer());
 
-        if (AutentiseringUtils.erInternBruker()) {
+        if (AutentiseringUtils.erVeileder()) {
             rapporterManuellReaktivering();
         }
 
@@ -163,7 +163,7 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
-        if (AutentiseringUtils.erInternBruker()) {
+        if (AutentiseringUtils.erVeileder()) {
 
             if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
