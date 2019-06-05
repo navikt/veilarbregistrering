@@ -229,7 +229,7 @@ public class BrukerRegistreringService {
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
 
-        if (AutentiseringUtils.erInternBruker()) {
+        if (AutentiseringUtils.erVeileder()) {
             // Veiledere har ikke tilgang til å gjøre kall mot infotrygd
             // Sett inngang aktiv, slik at de får registrert sykmeldte brukere
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
