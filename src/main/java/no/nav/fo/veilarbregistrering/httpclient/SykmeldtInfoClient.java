@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
-import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CProvider.AZUREADB2C_OIDC_COOKIE_NAME;
+import static no.nav.brukerdialog.security.Constants.AZUREADB2C_OIDC_COOKIE_NAME_SBS;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
 @Slf4j
@@ -31,7 +31,7 @@ public class SykmeldtInfoClient extends BaseClient {
 
     private InfotrygdData getSykeforloepMetadata(String url) {
         HttpServletRequest request = httpServletRequestProvider.get();
-        TokenLocator tokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME, null);
+        TokenLocator tokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME_SBS, null);
 
         try {
             log.info("Kaller infotrygd-sykepenger på url : " + url);

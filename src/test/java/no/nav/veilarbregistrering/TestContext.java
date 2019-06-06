@@ -9,8 +9,8 @@ import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 import no.nav.testconfig.util.Util;
 
 import static java.lang.System.setProperty;
-import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME;
-import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME;
+import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERNAL_USERS_AZUREAD_B2C_DISCOVERY_URL;
+import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERNAL_USERS_AZUREAD_B2C_EXPECTED_AUDIENCE;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fasit.FasitUtils.getDefaultEnvironment;
@@ -70,8 +70,8 @@ public class TestContext {
         setProperty(Constants.OIDC_REDIRECT_URL_PROPERTY_NAME, loginUrl);
 
         ServiceUser azureADClientId = getServiceUser("aad_b2c_clientid", APPLICATION_NAME);
-        Util.setProperty(AZUREAD_B2C_DISCOVERY_URL_PROPERTY_NAME, FasitUtils.getBaseUrl("aad_b2c_discovery"));
-        Util.setProperty(AZUREAD_B2C_EXPECTED_AUDIENCE_PROPERTY_NAME, azureADClientId.username);
+        Util.setProperty(EXTERNAL_USERS_AZUREAD_B2C_DISCOVERY_URL, FasitUtils.getBaseUrl("aad_b2c_discovery"));
+        Util.setProperty(EXTERNAL_USERS_AZUREAD_B2C_EXPECTED_AUDIENCE, azureADClientId.username);
 
     }
 }
