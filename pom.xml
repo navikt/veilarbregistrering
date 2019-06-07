@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2019.06.04-11.23-39227602efb8</version>
+        <version>1.2019.06.07-10.01-7113bea9fda1</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
