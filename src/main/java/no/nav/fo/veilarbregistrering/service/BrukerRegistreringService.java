@@ -220,13 +220,6 @@ public class BrukerRegistreringService {
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
 
-        if (!sykemeldtRegistreringFeature.skalKalleInfoTrygdTjeneste()) {
-            SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-            sykmeldtInfoData.setMaksDato("");
-            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(false);
-            return sykmeldtInfoData;
-        }
-
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
 
         if (AutentiseringUtils.erVeileder()) {
