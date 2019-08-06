@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 
 @Data
 @NoArgsConstructor

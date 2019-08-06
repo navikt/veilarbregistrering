@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;

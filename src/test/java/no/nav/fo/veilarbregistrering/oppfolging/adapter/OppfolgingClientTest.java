@@ -7,11 +7,10 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Profilering;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;

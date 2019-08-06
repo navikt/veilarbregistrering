@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.utils.UtdanningUtils;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;

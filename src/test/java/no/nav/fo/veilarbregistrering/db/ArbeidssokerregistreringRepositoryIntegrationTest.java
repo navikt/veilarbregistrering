@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.db;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

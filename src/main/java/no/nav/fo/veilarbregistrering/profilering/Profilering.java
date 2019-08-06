@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.domain;
+package no.nav.fo.veilarbregistrering.profilering;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

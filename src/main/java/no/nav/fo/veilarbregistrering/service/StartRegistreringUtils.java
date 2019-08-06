@@ -7,6 +7,8 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 
 import java.time.LocalDate;
 import java.util.List;

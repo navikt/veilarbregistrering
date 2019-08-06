@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.service;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static java.time.LocalDate.now;
-import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
-import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.STANDARD_INNSATS;
-import static no.nav.fo.veilarbregistrering.domain.Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
+import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
+import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.STANDARD_INNSATS;
+import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StartRegistreringUtilsTest {

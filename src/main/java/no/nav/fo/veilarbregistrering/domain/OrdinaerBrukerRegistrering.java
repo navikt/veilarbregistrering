@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 
 import java.time.LocalDateTime;
 import java.util.List;

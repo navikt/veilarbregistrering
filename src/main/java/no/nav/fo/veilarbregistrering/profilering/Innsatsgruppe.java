@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.domain;
+package no.nav.fo.veilarbregistrering.profilering;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
