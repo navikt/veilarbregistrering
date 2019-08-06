@@ -18,7 +18,7 @@ import static no.nav.fasit.FasitUtils.getRestService;
 import static no.nav.fasit.FasitUtils.getServiceUser;
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.config.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
+import static no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
 import static no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.UNLEASH_API_URL_PROPERTY;
 import static no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;

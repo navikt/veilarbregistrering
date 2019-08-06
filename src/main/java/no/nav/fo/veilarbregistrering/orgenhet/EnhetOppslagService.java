@@ -1,21 +1,20 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.orgenhet;
 
 import lombok.extern.slf4j.Slf4j;
-
-import no.nav.fo.veilarbregistrering.domain.NavEnhet;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
 
 @Slf4j
 public class EnhetOppslagService {
 
-    private HentEnheterService hentEnheterService;
+    private HentEnheterGateway hentEnheterGateway;
 
-    public EnhetOppslagService(HentEnheterService hentEnheterService){
-        this.hentEnheterService = hentEnheterService;
+    public EnhetOppslagService(HentEnheterGateway hentEnheterGateway){
+        this.hentEnheterGateway = hentEnheterGateway;
     }
 
     public NavEnhet finnEnhet(String enhetId) {
         try {
-            return hentEnheterService.hentAlleEnheter()
+            return hentEnheterGateway.hentAlleEnheter()
                     .stream()
                     .filter((enhet) -> enhet.getId().equals(enhetId))
                     .findFirst().orElseThrow(RuntimeException::new);

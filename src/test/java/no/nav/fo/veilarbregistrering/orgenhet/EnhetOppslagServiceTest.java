@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.orgenhet;
 
-import no.nav.fo.veilarbregistrering.domain.NavEnhet;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,18 +15,18 @@ import static org.mockito.Mockito.when;
 public class EnhetOppslagServiceTest {
 
     private EnhetOppslagService enhetOppslagService;
-    private HentEnheterService hentEnheterService;
+    private HentEnheterGateway hentEnheterGateway;
 
     @BeforeEach
     public void setup(){
-        hentEnheterService = mock(HentEnheterService.class);
-        enhetOppslagService = new EnhetOppslagService(hentEnheterService);
+        hentEnheterGateway = mock(HentEnheterGateway.class);
+        enhetOppslagService = new EnhetOppslagService(hentEnheterGateway);
 
         List<NavEnhet> enheter = Arrays.asList(
                 new NavEnhet("1234", "TEST1"),
                 new NavEnhet("5678", "TEST2")
         );
-        when(hentEnheterService.hentAlleEnheter()).thenReturn(enheter);
+        when(hentEnheterGateway.hentAlleEnheter()).thenReturn(enheter);
     }
 
     @Test

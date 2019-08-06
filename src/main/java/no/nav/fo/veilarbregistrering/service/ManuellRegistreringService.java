@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
+import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.getAktorIdOrElseThrow;
 
 @Slf4j
 public class ManuellRegistreringService {

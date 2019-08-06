@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
-import no.nav.fo.veilarbregistrering.domain.NavEnhet;
+import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.Oppgavebehandlerfilter;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.Organisasjonsenhet;
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ALLE_ENHETER;
 
-public class HentEnheterService {
+public class HentEnheterGateway {
 
     private OrganisasjonEnhetV2 organisasjonEnhetService;
 
-    public HentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService){
+    public HentEnheterGateway(OrganisasjonEnhetV2 organisasjonEnhetService){
         this.organisasjonEnhetService = organisasjonEnhetService;
     }
 
@@ -27,7 +27,7 @@ public class HentEnheterService {
                 organisasjonEnhetService.hentFullstendigEnhetListe(lagHentFullstendigEnhetListeRequest());
 
         return hentFullstendigEnhetListeResponse.getEnhetListe().stream()
-                .map(HentEnheterService::orgEnhetTilPortefoljeEnhet)
+                .map(HentEnheterGateway::orgEnhetTilPortefoljeEnhet)
                 .collect(Collectors.toList());
     }
 

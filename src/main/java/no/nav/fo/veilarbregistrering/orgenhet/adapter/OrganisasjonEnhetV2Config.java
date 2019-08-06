@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config;
+package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;

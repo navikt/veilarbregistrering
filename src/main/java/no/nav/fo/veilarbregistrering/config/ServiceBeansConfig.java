@@ -6,6 +6,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -96,13 +98,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    HentEnheterService hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
-        return new HentEnheterService(organisasjonEnhetService);
+    HentEnheterGateway hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
+        return new HentEnheterGateway(organisasjonEnhetService);
     }
 
     @Bean
-    EnhetOppslagService enhetOppslagService(HentEnheterService hentEnheterService) {
-        return new EnhetOppslagService(hentEnheterService);
+    EnhetOppslagService enhetOppslagService(HentEnheterGateway hentEnheterGateway) {
+        return new EnhetOppslagService(hentEnheterGateway);
     }
 
     @Bean
