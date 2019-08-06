@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.mock;
 
-import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;

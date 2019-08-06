@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.domain.*;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 

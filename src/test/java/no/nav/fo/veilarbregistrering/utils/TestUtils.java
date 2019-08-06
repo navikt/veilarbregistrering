@@ -1,7 +1,11 @@
 package no.nav.fo.veilarbregistrering.utils;
 
-import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
