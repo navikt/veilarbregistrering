@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db;
+package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.UtdanningSvar;
 

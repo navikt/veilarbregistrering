@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
@@ -26,13 +27,14 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
 @Slf4j
-public class ArbeidsforholdGateway {
+public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
     private ArbeidsforholdV3 arbeidsforholdV3;
 
-    public ArbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
+    public ArbeidsforholdGatewayImpl(ArbeidsforholdV3 arbeidsforholdV3) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
     }
 
+    @Override
     @Cacheable(HENT_ARBEIDSFORHOLD)
     public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
@@ -66,6 +68,7 @@ public class ArbeidsforholdGateway {
                 .collect(toList());
     }
 
+    @Override
     public Arbeidsforhold hentSisteArbeidsforhold(String fnr) {
         return ArbeidsforholdUtils.hentSisteArbeidsforhold(hentArbeidsforhold(fnr));
     }

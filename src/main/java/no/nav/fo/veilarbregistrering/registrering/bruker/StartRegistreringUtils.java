@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
