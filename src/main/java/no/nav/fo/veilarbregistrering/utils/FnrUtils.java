@@ -3,13 +3,10 @@ package no.nav.fo.veilarbregistrering.utils;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.bekk.bekkopen.person.FodselsnummerValidator;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.domain.AktorId;
-import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 
 import java.time.LocalDate;
 import java.time.Period;
-
-import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 
 
 public class FnrUtils {

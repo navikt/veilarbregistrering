@@ -9,12 +9,14 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
-import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.service.UserService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 

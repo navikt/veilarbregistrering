@@ -1,10 +1,12 @@
 package no.nav.fo.veilarbregistrering.db;
 
-import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.AndreForholdSvar;
-import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

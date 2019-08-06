@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
-import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClientHelseSjekk;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
