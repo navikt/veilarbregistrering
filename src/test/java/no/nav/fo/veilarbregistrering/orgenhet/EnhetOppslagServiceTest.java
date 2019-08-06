@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet;
 
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class EnhetOppslagServiceTest {
 
     @BeforeEach
     public void setup(){
-        hentEnheterGateway = mock(HentEnheterGateway.class);
+        hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
         enhetOppslagService = new EnhetOppslagService(hentEnheterGateway);
 
         List<NavEnhet> enheter = Arrays.asList(

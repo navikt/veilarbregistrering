@@ -1,12 +1,12 @@
-package no.nav.fo.veilarbregistrering.db;
+package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.profilering.Profilering;
-import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,29 +16,20 @@ import javax.inject.Inject;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ArbeidssokerregistreringRepositoryIntegrationTest extends IntegrasjonsTest {
+public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTest {
 
     @Inject
     private JdbcTemplate jdbcTemplate;
 
-    private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
 
     @BeforeEach
     public void setup() {
         setupInMemoryDatabaseContext();
-        arbeidssokerregistreringRepository = new ArbeidssokerregistreringRepository(jdbcTemplate);
-    }
-
-    @Test
-    public void profilerBruker() {
-        Profilering profilering = new Profilering()
-                .setAlder(39)
-                .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
-                .setInnsatsgruppe(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING);
-
-        arbeidssokerregistreringRepository.lagreProfilering(9, profilering);
+        brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
     }
 
     @Test
@@ -47,7 +38,7 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         AktorId aktorId = new AktorId("11111");
         OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering();
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
 
         assertRegistrertBruker(bruker, ordinaerBrukerRegistrering);
     }
@@ -60,10 +51,10 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         OrdinaerBrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
-        arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker1, aktorId);
-        arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker2, aktorId);
+        brukerRegistreringRepository.lagreOrdinaerBruker(bruker1, aktorId);
+        brukerRegistreringRepository.lagreOrdinaerBruker(bruker2, aktorId);
 
-        OrdinaerBrukerRegistrering registrering = arbeidssokerregistreringRepository.hentOrdinaerBrukerregistreringForAktorId(aktorId);
+        OrdinaerBrukerRegistrering registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(aktorId);
         assertRegistrertBruker(bruker2, registrering);
     }
 
@@ -75,10 +66,10 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
         SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_REDUSERT_STILLING));
 
-        arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
-        arbeidssokerregistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
+        brukerRegistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
+        brukerRegistreringRepository.lagreSykmeldtBruker(bruker2, aktorId);
 
-        SykmeldtRegistrering registrering = arbeidssokerregistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
+        SykmeldtRegistrering registrering = brukerRegistreringRepository.hentSykmeldtregistreringForAktorId(aktorId);
         assertSykmeldtRegistrertBruker(bruker2, registrering);
     }
 
@@ -87,21 +78,14 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
 
         AktorId aktorId = new AktorId("11111");
 
-        Profilering profilering = lagProfilering();
-
         OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA))
-                .setProfilering(lagProfilering());
+                .setAndreForhold(AndreForholdSvar.JA));
 
-        OrdinaerBrukerRegistrering lagretBruker = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
+        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
         bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
-        arbeidssokerregistreringRepository.lagreProfilering(bruker.getId(), profilering);
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(aktorId);
-
-        ordinaerBrukerRegistrering.setProfilering(arbeidssokerregistreringRepository
-                .hentProfileringForId(ordinaerBrukerRegistrering.getId()));
 
         assertEquals(bruker, ordinaerBrukerRegistrering);
 
@@ -110,35 +94,10 @@ public class ArbeidssokerregistreringRepositoryIntegrationTest extends Integrasj
     @Test
     public void hentOrdinaerBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret(){
         AktorId uregistrertAktorId = new AktorId("9876543");
-        OrdinaerBrukerRegistrering profilertBrukerRegistrering = arbeidssokerregistreringRepository
+        OrdinaerBrukerRegistrering profilertBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(uregistrertAktorId);
 
         assertNull(profilertBrukerRegistrering);
-    }
-
-    @Test
-    public void hentManuellRegistrering(){
-
-        String veilederIdent = "Z1234567";
-        String veilederEnhetId = "1234";
-        long registreringId = 1;
-        BrukerRegistreringType registreringType = BrukerRegistreringType.ORDINAER;
-
-        ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setRegistreringId(registreringId)
-                .setBrukerRegistreringType(registreringType)
-                .setVeilederIdent(veilederIdent)
-                .setVeilederEnhetId(veilederEnhetId);
-
-        long id = arbeidssokerregistreringRepository.lagreManuellRegistrering(manuellRegistrering);
-
-        manuellRegistrering.setId(id);
-
-        ManuellRegistrering hentetRegistrering = arbeidssokerregistreringRepository
-                .hentManuellRegistrering(registreringId, registreringType);
-
-        assertEquals(manuellRegistrering, hentetRegistrering);
-
     }
 
     private void assertRegistrertBruker(OrdinaerBrukerRegistrering bruker, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {

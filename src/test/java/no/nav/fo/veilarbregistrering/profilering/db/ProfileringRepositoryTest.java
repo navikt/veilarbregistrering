@@ -1,14 +1,15 @@
-package no.nav.fo.veilarbregistrering.db;
+package no.nav.fo.veilarbregistrering.profilering.db;
 
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
+import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class ArbeidssokerregistreringRepositoryTest {
+public class ProfileringRepositoryTest {
     
     private final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
     private final static String BRUKER_PROFILERING = "BRUKER_PROFILERING";
@@ -21,7 +22,7 @@ public class ArbeidssokerregistreringRepositoryTest {
     @Test
     public void profileringSkalSetteRiktigInformasjonIDatabase() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
-        ArbeidssokerregistreringRepository arbeidssokerregistreringRepository = new ArbeidssokerregistreringRepository(jdbcTemplate);
+        ProfileringRepositoryImpl profileringRepository = new ProfileringRepositoryImpl(jdbcTemplate);
 
         Profilering profilering = new Profilering()
                 .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
@@ -29,7 +30,7 @@ public class ArbeidssokerregistreringRepositoryTest {
                 .setAlder(36);
         long brukerregistreringId = 7258365L;
 
-        arbeidssokerregistreringRepository.lagreProfilering(brukerregistreringId, profilering);
+        profileringRepository.lagreProfilering(brukerregistreringId, profilering);
 
         String query = String.format("insert into %s (%s,%s,%s) values (?,?,?)", BRUKER_PROFILERING, BRUKER_REGISTRERING_ID, PROFILERING_TYPE, VERDI);
 

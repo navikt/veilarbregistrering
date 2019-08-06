@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
@@ -10,10 +12,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +27,6 @@ class RegistreringResourceTest {
     private UserService userService;
     private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
-    private ArbeidsforholdGateway arbeidsforholdGateway;
     private AktorService aktorService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
@@ -40,7 +38,6 @@ class RegistreringResourceTest {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         aktorService = mock(AktorService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
@@ -50,20 +47,11 @@ class RegistreringResourceTest {
                 pepClient,
                 userService,
                 manuellRegistreringService,
-                arbeidsforholdGateway,
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
                 manuellRegistreringFeature
         );
-    }
-
-
-    @Test
-    public void skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
-        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
-        registreringResource.hentSisteArbeidsforhold();
-        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
@@ -24,7 +24,7 @@ class ArbeidsforholdGatewayTest {
     public static void setup() {
         arbeidsforholdV3 = mock(ArbeidsforholdV3.class);
 
-        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGateway.class)
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGatewayImpl.class)
                 .addConstructorArgValue(arbeidsforholdV3).getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();
