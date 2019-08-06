@@ -6,7 +6,7 @@ import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClientHelseSjekk;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClientHelseSjekk;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

@@ -8,7 +8,9 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

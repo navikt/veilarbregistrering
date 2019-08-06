@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.httpclient;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.domain.*;
+
+import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

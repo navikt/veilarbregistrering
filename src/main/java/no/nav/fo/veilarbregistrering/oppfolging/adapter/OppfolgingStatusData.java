@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.domain;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

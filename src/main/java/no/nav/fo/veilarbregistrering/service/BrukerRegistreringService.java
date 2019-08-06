@@ -6,8 +6,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;

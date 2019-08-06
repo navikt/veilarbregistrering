@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.httpclient;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
-import static no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 

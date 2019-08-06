@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
@@ -11,7 +11,10 @@ import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Profilering;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

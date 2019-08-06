@@ -5,6 +5,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,8 +15,8 @@ import java.util.function.Supplier;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.domain.RegistreringType.ORDINAER_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
-import static no.nav.fo.veilarbregistrering.domain.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
+import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
+import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
 
 public class StartRegistreringUtils {
 

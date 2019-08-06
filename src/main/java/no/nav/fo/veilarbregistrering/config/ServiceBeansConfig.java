@@ -5,7 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.service.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;

@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
