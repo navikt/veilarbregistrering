@@ -1,6 +1,4 @@
-package no.nav.fo.veilarbregistrering.utils;
-
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
+package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
 import java.time.LocalDate;
 import java.util.Comparator;

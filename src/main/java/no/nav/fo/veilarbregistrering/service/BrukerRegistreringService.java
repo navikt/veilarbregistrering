@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
@@ -34,7 +35,7 @@ public class BrukerRegistreringService {
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykmeldtInfoClient;
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
 
@@ -42,7 +43,7 @@ public class BrukerRegistreringService {
                                      AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
                                      SykmeldtInfoClient sykmeldtInfoClient,
-                                     ArbeidsforholdService arbeidsforholdService,
+                                     ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
@@ -53,7 +54,7 @@ public class BrukerRegistreringService {
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
         this.sykmeldtInfoClient = sykmeldtInfoClient;
-        this.arbeidsforholdService = arbeidsforholdService;
+        this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
     }
@@ -123,7 +124,7 @@ public class BrukerRegistreringService {
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                    () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                    () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                     now());
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
@@ -189,7 +190,7 @@ public class BrukerRegistreringService {
         return startRegistreringUtils.profilerBruker(
                 bruker,
                 utledAlderForFnr(fnr, now()),
-                () -> arbeidsforholdService.hentArbeidsforhold(fnr),
+                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now());
     }
 

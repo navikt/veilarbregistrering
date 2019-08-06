@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.service;
 
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.domain.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;

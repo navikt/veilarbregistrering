@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -8,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils.*;
+import static no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ArbeidsforholdUtilsTest {

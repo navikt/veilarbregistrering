@@ -1,5 +1,6 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class ArbeidsforholdServiceTest {
+class ArbeidsforholdGatewayTest {
 
     private static ArbeidsforholdV3 arbeidsforholdV3;
     private static AnnotationConfigApplicationContext context;
@@ -23,7 +24,7 @@ class ArbeidsforholdServiceTest {
     public static void setup() {
         arbeidsforholdV3 = mock(ArbeidsforholdV3.class);
 
-        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdService.class)
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGateway.class)
                 .addConstructorArgValue(arbeidsforholdV3).getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();
@@ -40,19 +41,19 @@ class ArbeidsforholdServiceTest {
 
     @Test
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
-        ArbeidsforholdService arbeidsforholdService = context.getBean(ArbeidsforholdService.class);
+        ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdService.hentArbeidsforhold("fnr");
-        arbeidsforholdService.hentArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentArbeidsforhold("fnr");
         verify(arbeidsforholdV3, times(1)).finnArbeidsforholdPrArbeidstaker(any());
     }
 
     @Test
     public void skalIkkeCacheVedKallPaaForskjelligFnr() throws Exception {
-        ArbeidsforholdService arbeidsforholdService = context.getBean(ArbeidsforholdService.class);
+        ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdService.hentArbeidsforhold("fnr");
-        arbeidsforholdService.hentArbeidsforhold("fnr2");
+        arbeidsforholdGateway.hentArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentArbeidsforhold("fnr2");
         verify(arbeidsforholdV3, times(2)).finnArbeidsforholdPrArbeidstaker(any());
     }
 

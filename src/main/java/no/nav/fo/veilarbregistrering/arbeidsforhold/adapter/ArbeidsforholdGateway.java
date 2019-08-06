@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.service;
+package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -26,10 +26,10 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
 @Slf4j
-public class ArbeidsforholdService {
+public class ArbeidsforholdGateway {
     private ArbeidsforholdV3 arbeidsforholdV3;
 
-    public ArbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
+    public ArbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
     }
 
@@ -62,7 +62,7 @@ public class ArbeidsforholdService {
                 .get();
 
         return response.getArbeidsforhold().stream()
-                .map(Arbeidsforhold::of)
+                .map(arbeidsforhold -> ArbeidsforholdMapper.map(arbeidsforhold))
                 .collect(toList());
     }
 

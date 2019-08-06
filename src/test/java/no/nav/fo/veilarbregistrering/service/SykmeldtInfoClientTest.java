@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.service;
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.StartRegistreringStatus;
@@ -10,13 +11,11 @@ import no.nav.fo.veilarbregistrering.domain.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
 import no.nav.veilarbregistrering.TestContext;
-import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.InternalServerErrorException;
 import java.util.Optional;
 
 import static java.lang.System.setProperty;
@@ -40,7 +39,7 @@ class SykmeldtInfoClientTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykeforloepMetadataClient;
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
@@ -63,7 +62,7 @@ class SykmeldtInfoClientTest {
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildOppfolgingClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
-        arbeidsforholdService = mock(ArbeidsforholdService.class);
+        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -75,7 +74,7 @@ class SykmeldtInfoClientTest {
                         aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
-                        arbeidsforholdService,
+                        arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);

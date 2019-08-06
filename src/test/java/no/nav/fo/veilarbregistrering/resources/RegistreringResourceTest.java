@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.domain.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.TilbakeIArbeidSvar;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
@@ -28,7 +28,7 @@ class RegistreringResourceTest {
     private UserService userService;
     private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private AktorService aktorService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
@@ -40,7 +40,7 @@ class RegistreringResourceTest {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidsforholdService = mock(ArbeidsforholdService.class);
+        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         aktorService = mock(AktorService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
@@ -50,7 +50,7 @@ class RegistreringResourceTest {
                 pepClient,
                 userService,
                 manuellRegistreringService,
-                arbeidsforholdService,
+                arbeidsforholdGateway,
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,

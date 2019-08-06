@@ -1,7 +1,6 @@
-package no.nav.fo.veilarbregistrering.domain;
+package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.AnsettelsesPeriode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
@@ -12,15 +11,8 @@ import java.time.LocalDate;
 
 import static java.util.Optional.ofNullable;
 
-@Data
-@Accessors(chain = true)
-public class Arbeidsforhold {
-    private String arbeidsgiverOrgnummer;
-    private String styrk;
-    private LocalDate fom;
-    private LocalDate tom;
-
-    public static Arbeidsforhold of(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
+class ArbeidsforholdMapper {
+    static Arbeidsforhold map(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
         return new Arbeidsforhold().setArbeidsgiverOrgnummer(arbeidsforhold.getArbeidsgiver().getAktoerId())
                 .setStyrk(arbeidsforhold.getArbeidsavtale().stream().findFirst().map(Arbeidsavtale::getYrke).map(Yrker::getKodeRef).orElse("utenstyrkkode"))
                 .setFom(getFom(arbeidsforhold.getAnsettelsesPeriode()))

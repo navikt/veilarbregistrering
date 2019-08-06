@@ -1,14 +1,13 @@
 package no.nav.fo.veilarbregistrering.service;
 
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.domain.*;
 import no.nav.fo.veilarbregistrering.domain.besvarelse.*;
-import no.nav.fo.veilarbregistrering.utils.ArbeidsforholdUtils;
-import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;

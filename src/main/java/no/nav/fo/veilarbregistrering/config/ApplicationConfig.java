@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClientHelseSjekk;

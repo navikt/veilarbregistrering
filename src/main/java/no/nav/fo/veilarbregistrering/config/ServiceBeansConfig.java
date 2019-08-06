@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
@@ -26,7 +27,7 @@ public class ServiceBeansConfig {
             AktorService aktorService,
             OppfolgingClient oppfolgingClient,
             SykmeldtInfoClient sykeforloepMetadataClient,
-            ArbeidsforholdService arbeidsforholdService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
@@ -36,7 +37,7 @@ public class ServiceBeansConfig {
                 aktorService,
                 oppfolgingClient,
                 sykeforloepMetadataClient,
-                arbeidsforholdService,
+                arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
                 sykemeldtRegistreringFeature
@@ -48,7 +49,7 @@ public class ServiceBeansConfig {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
-            ArbeidsforholdService arbeidsforholdService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
@@ -58,7 +59,7 @@ public class ServiceBeansConfig {
                 pepClient,
                 userService,
                 manuellRegistreringService,
-                arbeidsforholdService,
+                arbeidsforholdGateway,
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
@@ -80,8 +81,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidsforholdService arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new ArbeidsforholdService(arbeidsforholdV3);
+    ArbeidsforholdGateway arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
+        return new ArbeidsforholdGateway(arbeidsforholdV3);
     }
 
     @Bean

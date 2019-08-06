@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.service;
 
 import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.*;
@@ -34,7 +36,7 @@ public class BrukerRegistreringServiceTest {
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
@@ -47,7 +49,7 @@ public class BrukerRegistreringServiceTest {
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
-        arbeidsforholdService = mock(ArbeidsforholdService.class);
+        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
 
         brukerRegistreringService =
@@ -56,7 +58,7 @@ public class BrukerRegistreringServiceTest {
                         aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
-                        arbeidsforholdService,
+                        arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);
@@ -239,7 +241,7 @@ public class BrukerRegistreringServiceTest {
 
     @SneakyThrows
     private void mockArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
-        when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
+        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
 
     private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering bruker, String fnr) {
@@ -311,7 +313,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
-        when(arbeidsforholdService.hentArbeidsforhold(any())).thenReturn(
+        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(
                 Collections.singletonList(new Arbeidsforhold()
                         .setArbeidsgiverOrgnummer("orgnummer")
                         .setStyrk("styrk")

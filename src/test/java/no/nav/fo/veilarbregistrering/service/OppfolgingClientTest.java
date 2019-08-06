@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.service;
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.domain.AktorId;
@@ -46,7 +47,7 @@ class OppfolgingClientTest {
     private ManuellRegistreringService manuellRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykeforloepMetadataClient;
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
     private String ident;
@@ -69,7 +70,7 @@ class OppfolgingClientTest {
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
         arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
-        arbeidsforholdService = mock(ArbeidsforholdService.class);
+        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -81,7 +82,7 @@ class OppfolgingClientTest {
                         aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
-                        arbeidsforholdService,
+                        arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);

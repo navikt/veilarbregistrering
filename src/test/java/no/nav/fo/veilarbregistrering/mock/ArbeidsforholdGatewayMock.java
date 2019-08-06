@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.mock;
 
-import no.nav.fo.veilarbregistrering.domain.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,9 +9,9 @@ import java.util.List;
 
 import static java.time.LocalDate.now;
 
-public class ArbeidsforholdServiceMock extends ArbeidsforholdService {
+public class ArbeidsforholdGatewayMock extends ArbeidsforholdGateway {
 
-    public ArbeidsforholdServiceMock() {
+    public ArbeidsforholdGatewayMock() {
         super(null);
     }
 

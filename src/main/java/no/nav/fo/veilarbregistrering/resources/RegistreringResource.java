@@ -7,9 +7,10 @@ import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.domain.*;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.service.UserService;
@@ -32,7 +33,7 @@ public class RegistreringResource {
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
     private final BrukerRegistreringService brukerRegistreringService;
-    private final ArbeidsforholdService arbeidsforholdService;
+    private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
@@ -42,7 +43,7 @@ public class RegistreringResource {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
-            ArbeidsforholdService arbeidsforholdService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
@@ -50,7 +51,7 @@ public class RegistreringResource {
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
-        this.arbeidsforholdService = arbeidsforholdService;
+        this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.aktorService=aktorService;
@@ -148,7 +149,7 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        return arbeidsforholdService.hentSisteArbeidsforhold(bruker.getFoedselsnummer());
+        return arbeidsforholdGateway.hentSisteArbeidsforhold(bruker.getFoedselsnummer());
     }
 
     @POST
