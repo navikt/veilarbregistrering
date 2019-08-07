@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

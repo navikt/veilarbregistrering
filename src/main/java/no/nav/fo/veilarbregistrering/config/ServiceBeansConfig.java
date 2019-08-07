@@ -12,7 +12,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;

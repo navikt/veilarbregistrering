@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
