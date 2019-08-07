@@ -4,7 +4,9 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
@@ -28,7 +30,8 @@ public class ServiceBeansConfig {
 
     @Bean
     BrukerRegistreringService registrerBrukerService(
-            ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ProfileringRepository profileringRepository,
             AktorService aktorService,
             OppfolgingClient oppfolgingClient,
             SykmeldtInfoClient sykeforloepMetadataClient,
@@ -38,7 +41,8 @@ public class ServiceBeansConfig {
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
     ) {
         return new BrukerRegistreringService(
-                arbeidssokerregistreringRepository,
+                brukerRegistreringRepository,
+                profileringRepository,
                 aktorService,
                 oppfolgingClient,
                 sykeforloepMetadataClient,
@@ -74,15 +78,25 @@ public class ServiceBeansConfig {
 
     @Bean
     ManuellRegistreringService manuellRegistreringService(AktorService aktorService,
-                                                          ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                                                          ManuellRegistreringRepository manuellRegistreringRepository,
                                                           EnhetOppslagService enhetOppslagService,
                                                           Provider<HttpServletRequest> provider) {
-        return new ManuellRegistreringService(aktorService, arbeidssokerregistreringRepository, enhetOppslagService, provider);
+        return new ManuellRegistreringService(aktorService, manuellRegistreringRepository, enhetOppslagService, provider);
     }
 
     @Bean
-    ArbeidssokerregistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
-        return new ArbeidssokerregistreringRepository(db);
+    BrukerRegistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
+        return new BrukerRegistreringRepository(db);
+    }
+
+    @Bean
+    ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
+        return new ManuellRegistreringRepository(db);
+    }
+
+    @Bean
+    ProfileringRepository profileringRepository(JdbcTemplate db) {
+        return new ProfileringRepository(db);
     }
 
     @Bean

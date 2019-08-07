@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
+import no.nav.fo.veilarbregistrering.profilering.Profilering;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
-import no.nav.fo.veilarbregistrering.profilering.Profilering;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,8 @@ import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 @Slf4j
 public class BrukerRegistreringService {
 
-    private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final ProfileringRepository profileringRepository;
     private final AktorService aktorService;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private OppfolgingClient oppfolgingClient;
@@ -42,8 +43,8 @@ public class BrukerRegistreringService {
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
 
-    public BrukerRegistreringService(ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
-                                     AktorService aktorService,
+    public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
+                                     ProfileringRepository profileringRepository, AktorService aktorService,
                                      OppfolgingClient oppfolgingClient,
                                      SykmeldtInfoClient sykmeldtInfoClient,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
@@ -52,7 +53,8 @@ public class BrukerRegistreringService {
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
 
     ) {
-        this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
+        this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.profileringRepository = profileringRepository;
         this.aktorService = aktorService;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
@@ -72,7 +74,7 @@ public class BrukerRegistreringService {
 
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
-        arbeidssokerregistreringRepository.lagreReaktiveringForBruker(aktorId);
+        brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
         oppfolgingClient.reaktiverBruker(fnr);
 
         log.info("Reaktivering av bruker med aktørId : {}", aktorId);
@@ -139,8 +141,8 @@ public class BrukerRegistreringService {
     private OrdinaerBrukerRegistrering opprettBruker(String fnr, OrdinaerBrukerRegistrering bruker, Profilering profilering) {
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
-        arbeidssokerregistreringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
+        profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(fnr), profilering.getInnsatsgruppe()));
 
         rapporterProfilering(profilering);
@@ -162,10 +164,14 @@ public class BrukerRegistreringService {
 
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr.getFnr());
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = arbeidssokerregistreringRepository
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringMedProfileringForAktorId(aktorId);
 
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = arbeidssokerregistreringRepository
+        Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
+        ordinaerBrukerRegistrering.setProfilering(profilering);
+
+
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
 
         setManueltRegistrertAv(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
@@ -213,7 +219,7 @@ public class BrukerRegistreringService {
             AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr);
             SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
             oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType, fnr);
-            id = arbeidssokerregistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
+            id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
         } else {
             throw new RuntimeException("Bruker kan ikke registreres.");

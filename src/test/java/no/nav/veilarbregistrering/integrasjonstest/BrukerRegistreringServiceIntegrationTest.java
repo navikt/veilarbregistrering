@@ -5,7 +5,8 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -42,7 +43,8 @@ class BrukerRegistreringServiceIntegrationTest {
     private static BrukerRegistreringService brukerRegistreringService;
     private static AktorService aktorService;
     private static OppfolgingClient oppfolgingClient;
-    private static ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private static BrukerRegistreringRepository brukerRegistreringRepository;
+    private static ProfileringRepository profileringRepository;
     private static StartRegistreringUtils startRegistreringUtils;
 
     private static String ident = "10108000398"; //Aremark fiktivt fnr.";
@@ -61,7 +63,8 @@ class BrukerRegistreringServiceIntegrationTest {
         context.start();
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
-        arbeidssokerregistreringRepository = context.getBean(ArbeidssokerregistreringRepository.class);
+        brukerRegistreringRepository = context.getBean(BrukerRegistreringRepository.class);
+        profileringRepository = context.getBean(ProfileringRepository.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
@@ -82,7 +85,7 @@ class BrukerRegistreringServiceIntegrationTest {
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident));
         assertThat(run.isFailure()).isTrue();
 
-        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(1l));
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1l));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
     }
@@ -93,7 +96,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident);
 
-        Optional<OrdinaerBrukerRegistrering> reg = ofNullable(arbeidssokerregistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
+        Optional<OrdinaerBrukerRegistrering> reg = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
 
         assertThat(reg.isPresent()).isTrue();
     }
@@ -117,8 +120,13 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public ArbeidssokerregistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
-            return new ArbeidssokerregistreringRepository(db);
+        public BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
+            return new BrukerRegistreringRepository(db);
+        }
+
+        @Bean
+        public ProfileringRepository profileringRepository(JdbcTemplate db) {
+            return new ProfileringRepository(db);
         }
 
         @Bean
@@ -154,7 +162,8 @@ class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         BrukerRegistreringService brukerRegistreringService(
-                ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                BrukerRegistreringRepository brukerRegistreringRepository,
+                ProfileringRepository profileringRepository,
                 AktorService aktorService,
                 OppfolgingClient oppfolgingClient,
                 SykmeldtInfoClient sykeforloepMetadataClient,
@@ -162,8 +171,10 @@ class BrukerRegistreringServiceIntegrationTest {
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
+
             return new BrukerRegistreringService(
-                    arbeidssokerregistreringRepository,
+                    brukerRegistreringRepository,
+                    profileringRepository,
                     aktorService,
                     oppfolgingClient,
                     sykeforloepMetadataClient,

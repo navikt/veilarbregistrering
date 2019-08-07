@@ -5,7 +5,8 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
@@ -43,7 +44,8 @@ class OppfolgingClientTest {
     private static final int MOCKSERVER_PORT = 1080;
 
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
-    private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
+    private ProfileringRepository profileringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private ManuellRegistreringService manuellRegistreringService;
@@ -71,7 +73,8 @@ class OppfolgingClientTest {
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildClient();
-        arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
+        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
+        profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
@@ -80,7 +83,8 @@ class OppfolgingClientTest {
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
-                        arbeidssokerregistreringRepository,
+                        brukerRegistreringRepository,
+                        profileringRepository,
                         aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
@@ -118,7 +122,7 @@ class OppfolgingClientTest {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        when (arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(new OrdinaerBrukerRegistrering());
+        when (brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(new OrdinaerBrukerRegistrering());
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, ident));
     }
 
@@ -134,7 +138,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
-        when(arbeidssokerregistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
+        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));

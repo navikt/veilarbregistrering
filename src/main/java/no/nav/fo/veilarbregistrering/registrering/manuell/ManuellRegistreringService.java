@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.manuell;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
@@ -14,16 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 public class ManuellRegistreringService {
 
     private final AktorService aktorService;
-    private final ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final EnhetOppslagService enhetOppslagService;
     private final Provider<HttpServletRequest> requestProvider;
 
     public ManuellRegistreringService(AktorService aktorService,
-                                      ArbeidssokerregistreringRepository arbeidssokerregistreringRepository,
+                                      ManuellRegistreringRepository manuellRegistreringRepository,
                                       EnhetOppslagService enhetOppslagService,
                                       Provider<HttpServletRequest> requestProvider) {
         this.aktorService = aktorService;
-        this.arbeidssokerregistreringRepository = arbeidssokerregistreringRepository;
+        this.manuellRegistreringRepository = manuellRegistreringRepository;
         this.enhetOppslagService = enhetOppslagService;
         this.requestProvider = requestProvider;
     }
@@ -37,13 +36,13 @@ public class ManuellRegistreringService {
                 .setVeilederIdent(veilederIdent)
                 .setVeilederEnhetId(veilederEnhetId);
 
-        arbeidssokerregistreringRepository.lagreManuellRegistrering(manuellRegistrering);
+        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
 
     }
 
     public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType){
 
-        ManuellRegistrering registrering = arbeidssokerregistreringRepository
+        ManuellRegistrering registrering = manuellRegistreringRepository
                 .hentManuellRegistrering(registreringId, brukerRegistreringType);
 
         if (registrering == null) {

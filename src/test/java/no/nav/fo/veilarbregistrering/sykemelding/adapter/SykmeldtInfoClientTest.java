@@ -5,12 +5,12 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.veilarbregistrering.TestContext;
@@ -37,7 +37,8 @@ class SykmeldtInfoClientTest {
     private static final int MOCKSERVER_PORT = 1080;
 
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
-    private ArbeidssokerregistreringRepository arbeidssokerregistreringRepository;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
+    private ProfileringRepository profileringRepository;
     private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
@@ -64,7 +65,8 @@ class SykmeldtInfoClientTest {
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         aktorService = mock(AktorService.class);
         oppfolgingClient = buildOppfolgingClient();
-        arbeidssokerregistreringRepository = mock(ArbeidssokerregistreringRepository.class);
+        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
+        profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
         startRegistreringUtils = mock(StartRegistreringUtils.class);
@@ -73,7 +75,8 @@ class SykmeldtInfoClientTest {
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
-                        arbeidssokerregistreringRepository,
+                        brukerRegistreringRepository,
+                        profileringRepository,
                         aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
