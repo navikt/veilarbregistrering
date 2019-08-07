@@ -6,7 +6,9 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -63,8 +65,8 @@ class BrukerRegistreringServiceIntegrationTest {
         context.start();
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
-        brukerRegistreringRepository = context.getBean(BrukerRegistreringRepository.class);
-        profileringRepository = context.getBean(ProfileringRepository.class);
+        brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
+        profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         aktorService = context.getBean(AktorService.class);
@@ -121,12 +123,12 @@ class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         public BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
-            return new BrukerRegistreringRepository(db);
+            return new BrukerRegistreringRepositoryImpl(db);
         }
 
         @Bean
         public ProfileringRepository profileringRepository(JdbcTemplate db) {
-            return new ProfileringRepository(db);
+            return new ProfileringRepositoryImpl(db);
         }
 
         @Bean

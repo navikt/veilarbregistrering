@@ -165,7 +165,7 @@ public class BrukerRegistreringService {
         AktorId aktorId = getAktorIdOrElseThrow(aktorService, fnr.getFnr());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringMedProfileringForAktorId(aktorId);
+                .hentOrdinaerBrukerregistreringForAktorId(aktorId);
 
         Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
         ordinaerBrukerRegistrering.setProfilering(profilering);

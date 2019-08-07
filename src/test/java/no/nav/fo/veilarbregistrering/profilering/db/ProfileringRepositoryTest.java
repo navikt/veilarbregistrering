@@ -1,9 +1,8 @@
-package no.nav.fo.veilarbregistrering.profilering;
+package no.nav.fo.veilarbregistrering.profilering.db;
 
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
-import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -23,7 +22,7 @@ public class ProfileringRepositoryTest {
     @Test
     public void profileringSkalSetteRiktigInformasjonIDatabase() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
-        ProfileringRepository profileringRepository = new ProfileringRepository(jdbcTemplate);
+        ProfileringRepositoryImpl profileringRepository = new ProfileringRepositoryImpl(jdbcTemplate);
 
         Profilering profilering = new Profilering()
                 .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)

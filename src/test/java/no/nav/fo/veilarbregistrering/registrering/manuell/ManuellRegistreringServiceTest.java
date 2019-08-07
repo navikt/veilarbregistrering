@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.manuell;
 
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class ManuellRegistreringServiceTest {
 
 
     private AktorService aktorService;
-    private ManuellRegistreringRepository manuellRegistreringRepository;
+    private ManuellRegistreringRepositoryImpl manuellRegistreringRepository;
     private Provider<HttpServletRequest> requestProvider;
     private EnhetOppslagService enhetOppslagService;
     private ManuellRegistreringService manuellRegistreringService;
@@ -28,7 +29,7 @@ public class ManuellRegistreringServiceTest {
     public void setup() {
 
         aktorService = Mockito.mock(AktorService.class);
-        manuellRegistreringRepository = Mockito.mock(ManuellRegistreringRepository.class);
+        manuellRegistreringRepository = Mockito.mock(ManuellRegistreringRepositoryImpl.class);
         requestProvider = Mockito.mock(Provider.class);
         enhetOppslagService = Mockito.mock(EnhetOppslagService.class);
 

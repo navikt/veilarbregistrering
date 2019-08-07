@@ -5,8 +5,11 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
@@ -85,18 +88,18 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    BrukerRegistreringRepository arbeidssokerregistreringRepository(JdbcTemplate db) {
-        return new BrukerRegistreringRepository(db);
+    BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
+        return new BrukerRegistreringRepositoryImpl(db);
     }
 
     @Bean
     ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
-        return new ManuellRegistreringRepository(db);
+        return new ManuellRegistreringRepositoryImpl(db);
     }
 
     @Bean
     ProfileringRepository profileringRepository(JdbcTemplate db) {
-        return new ProfileringRepository(db);
+        return new ProfileringRepositoryImpl(db);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.profilering;
+package no.nav.fo.veilarbregistrering.profilering.db;
 
 import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
@@ -11,9 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.inject.Inject;
 
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ProfileringRepositoryIntegrationTest extends IntegrasjonsTest {
 
@@ -25,7 +22,7 @@ public class ProfileringRepositoryIntegrationTest extends IntegrasjonsTest {
     @BeforeEach
     public void setup() {
         setupInMemoryDatabaseContext();
-        profileringRepository = new ProfileringRepository(jdbcTemplate);
+        profileringRepository = new ProfileringRepositoryImpl(jdbcTemplate);
     }
 
     @Test

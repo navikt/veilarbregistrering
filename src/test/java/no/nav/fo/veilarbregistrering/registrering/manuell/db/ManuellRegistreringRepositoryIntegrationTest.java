@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.manuell;
+package no.nav.fo.veilarbregistrering.registrering.manuell.db;
 
 import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,12 +18,12 @@ public class ManuellRegistreringRepositoryIntegrationTest extends IntegrasjonsTe
     @Inject
     private JdbcTemplate jdbcTemplate;
 
-    private ManuellRegistreringRepository manuellRegistreringRepository;
+    private ManuellRegistreringRepositoryImpl manuellRegistreringRepository;
 
     @BeforeEach
     public void setup() {
         setupInMemoryDatabaseContext();
-        manuellRegistreringRepository = new ManuellRegistreringRepository(jdbcTemplate);
+        manuellRegistreringRepository = new ManuellRegistreringRepositoryImpl(jdbcTemplate);
     }
 
     @Test

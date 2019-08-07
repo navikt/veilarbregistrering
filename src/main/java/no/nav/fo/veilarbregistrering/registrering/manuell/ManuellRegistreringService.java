@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class ManuellRegistreringService {
 
+    //FIXME: fjern denne ... ikke i bruk
     private final AktorService aktorService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final EnhetOppslagService enhetOppslagService;

@@ -1,6 +1,10 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +29,7 @@ public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTes
     @BeforeEach
     public void setup() {
         setupInMemoryDatabaseContext();
-        brukerRegistreringRepository = new BrukerRegistreringRepository(jdbcTemplate);
+        brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
     }
 
     @Test

@@ -1,0 +1,176 @@
+package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.fo.veilarbregistrering.db.UtdanningUtils;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
+import no.nav.sbl.sql.DbConstants;
+import no.nav.sbl.sql.SqlUtils;
+import no.nav.sbl.sql.order.OrderClause;
+import no.nav.sbl.sql.where.WhereClause;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Optional.ofNullable;
+
+public class BrukerRegistreringRepositoryImpl implements no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository {
+
+    private JdbcTemplate db;
+
+    private final static String SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ";
+    final static String SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID";
+    private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING";
+    final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
+    final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
+
+    private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
+    private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
+    private final static String BRUKER_REGISTRERING = "BRUKER_REGISTRERING";
+    private final static String BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING";
+    final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
+    private final static String BRUKER_REAKTIVERING_ID = "BRUKER_REAKTIVERING_ID";
+    final static String OPPRETTET_DATO = "OPPRETTET_DATO";
+    private final static String REAKTIVERING_DATO = "REAKTIVERING_DATO";
+
+    final static String NUS_KODE = "NUS_KODE";
+    final static String YRKESPRAKSIS = "YRKESPRAKSIS";
+    final static String HAR_HELSEUTFORDRINGER = "HAR_HELSEUTFORDRINGER";
+    final static String YRKESBESKRIVELSE = "YRKESBESKRIVELSE";
+    final static String KONSEPT_ID = "KONSEPT_ID";
+    final static String TEKSTER_FOR_BESVARELSE = "TEKSTER_FOR_BESVARELSE";
+
+    final static String ANDRE_UTFORDRINGER = "ANDRE_UTFORDRINGER";
+    final static String BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING";
+    final static String UTDANNING_BESTATT = "UTDANNING_BESTATT";
+    final static String UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE";
+    final static String JOBBHISTORIKK = "JOBBHISTORIKK";
+
+    private final static String AKTOR_ID = "AKTOR_ID";
+
+    public BrukerRegistreringRepositoryImpl(JdbcTemplate db) {
+        this.db = db;
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
+        long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        Stilling stilling = bruker.getSisteStilling();
+        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
+
+        SqlUtils.insert(db, BRUKER_REGISTRERING)
+                .value(BRUKER_REGISTRERING_ID, id)
+                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
+                // Siste stilling
+                .value(YRKESPRAKSIS, stilling.getStyrk08())
+                .value(YRKESBESKRIVELSE, stilling.getLabel())
+                .value(KONSEPT_ID, stilling.getKonseptId())
+                // Besvarelse
+                .value(BEGRUNNELSE_FOR_REGISTRERING, besvarelse.getDinSituasjon().toString())
+                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
+                .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
+                .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
+                .value(HAR_HELSEUTFORDRINGER, besvarelse.getHelseHinder().toString())
+                .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
+                .execute();
+
+        return hentBrukerregistreringForId(id);
+    }
+
+    @Override
+    public long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId) {
+        long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
+        Besvarelse besvarelse = bruker.getBesvarelse();
+        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
+
+        SqlUtils.insert(db, SYKMELDT_REGISTRERING)
+                .value(SYKMELDT_REGISTRERING_ID, id)
+                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
+                // Besvarelse
+                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon()).isPresent() ? besvarelse.getFremtidigSituasjon().toString() : null)
+                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeIArbeid()).isPresent() ? besvarelse.getTilbakeIArbeid().toString() : null)
+                .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(null))
+                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).isPresent() ? besvarelse.getUtdanningBestatt().toString() : null)
+                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).isPresent() ? besvarelse.getUtdanningGodkjent().toString() : null)
+                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).isPresent() ? besvarelse.getAndreForhold().toString() : null)
+                .execute();
+
+        return id;
+    }
+
+    private static String tilJson(List<TekstForSporsmal> obj) {
+        if (obj == null) {
+            return "[]";
+        }
+        try {
+            return (new ObjectMapper()).writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            return "[]";
+        }
+    }
+
+    static List<TekstForSporsmal> tilTeksterForBesvarelse(String json) {
+        try {
+            TekstForSporsmal[] teksterForBesvarelse = (new ObjectMapper()).readValue(json, TekstForSporsmal[].class);
+            return teksterForBesvarelse != null ? Arrays.asList(teksterForBesvarelse) : new ArrayList<>();
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId) {
+        return SqlUtils.select(db, BRUKER_REGISTRERING, OrdinaerBrukerRegistreringMapper::map)
+                .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
+                .column("*")
+                .execute();
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, BRUKER_REGISTRERING, OrdinaerBrukerRegistreringMapper::map)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
+                .limit(1)
+                .column("*")
+                .execute();
+    }
+
+    @Override
+    public SykmeldtRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
+        return SqlUtils.select(db, SYKMELDT_REGISTRERING, SykmeldtRegistreringMapper::map)
+                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .orderBy(OrderClause.desc(SYKMELDT_REGISTRERING_ID))
+                .limit(1)
+                .column("*")
+                .execute();
+    }
+
+    @Override
+    public void lagreReaktiveringForBruker(AktorId aktorId) {
+        long id = nesteFraSekvens(BRUKER_REAKTIVERING_SEQ);
+        SqlUtils.insert(db, BRUKER_REAKTIVERING)
+                .value(BRUKER_REAKTIVERING_ID, id)
+                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(REAKTIVERING_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .execute();
+    }
+
+    private long nesteFraSekvens(String sekvensNavn) {
+        return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
+    }
+
+}
