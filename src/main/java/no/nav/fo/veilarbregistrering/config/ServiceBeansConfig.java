@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
@@ -18,6 +19,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringServi
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
@@ -57,11 +59,10 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    RegistreringResource registreringResource(
+    RegistreringResource arbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
@@ -71,11 +72,40 @@ public class ServiceBeansConfig {
                 pepClient,
                 userService,
                 manuellRegistreringService,
-                arbeidsforholdGateway,
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
                 manuellRegistreringFeature
+        );
+    }
+
+    @Bean
+    ArbeidsforholdResource arbeidsforholdResource(
+            VeilarbAbacPepClient pepClient,
+            UserService userService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            AktorService aktorService
+    ) {
+        return new ArbeidsforholdResource(
+                pepClient,
+                userService,
+                arbeidsforholdGateway,
+                aktorService
+        );
+    }
+
+    @Bean
+    SykemeldingResource arbeidsforholdResource(
+            VeilarbAbacPepClient pepClient,
+            UserService userService,
+            BrukerRegistreringService brukerRegistreringService,
+            AktorService aktorService
+    ) {
+        return new SykemeldingResource(
+                pepClient,
+                userService,
+                brukerRegistreringService,
+                aktorService
         );
     }
 

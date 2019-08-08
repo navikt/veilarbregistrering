@@ -58,6 +58,7 @@ public class ManuellRegistreringService {
 
     }
 
+    //FIXME: Logikk knyttet til URL bør ikke trekkes ned i forretningslaget, men beholdes i Controller-laget.
     public String getEnhetIdFromUrlOrThrow() {
         final String enhetId = requestProvider.get().getParameter("enhetId");
 

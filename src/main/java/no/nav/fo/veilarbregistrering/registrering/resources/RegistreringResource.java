@@ -7,16 +7,12 @@ import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
+import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +32,6 @@ public class RegistreringResource {
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
     private final BrukerRegistreringService brukerRegistreringService;
-    private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
@@ -46,7 +41,6 @@ public class RegistreringResource {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
@@ -54,7 +48,6 @@ public class RegistreringResource {
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
-        this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.aktorService=aktorService;
@@ -145,16 +138,6 @@ public class RegistreringResource {
         rapporterAlder(bruker.getFoedselsnummer());
     }
 
-    @GET
-    @Path("/sistearbeidsforhold")
-    @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
-    public Arbeidsforhold hentSisteArbeidsforhold() {
-        final Bruker bruker = hentBruker();
-
-        pepClient.sjekkLesetilgangTilBruker(bruker);
-        return arbeidsforholdGateway.hentSisteArbeidsforhold(bruker.getFoedselsnummer());
-    }
-
     @POST
     @Path("/startregistrersykmeldt")
     @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
@@ -186,16 +169,6 @@ public class RegistreringResource {
         }
 
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
-    }
-
-    @GET
-    @Path("/sykmeldtinfodata")
-    @ApiOperation(value = "Henter sykmeldt informasjon")
-    public SykmeldtInfoData hentSykmeldtInfoData() {
-        final Bruker bruker = hentBruker();
-
-        pepClient.sjekkLesetilgangTilBruker(bruker);
-        return brukerRegistreringService.hentSykmeldtInfoData(bruker.getFoedselsnummer());
     }
 
     private Bruker hentBruker() {
