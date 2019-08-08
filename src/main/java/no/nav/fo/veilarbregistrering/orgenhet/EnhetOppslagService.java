@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
 
 @Slf4j
 public class EnhetOppslagService {

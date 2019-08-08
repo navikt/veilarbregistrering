@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import lombok.SneakyThrows;
-import no.nav.fo.veilarbregistrering.db.UtdanningUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
 

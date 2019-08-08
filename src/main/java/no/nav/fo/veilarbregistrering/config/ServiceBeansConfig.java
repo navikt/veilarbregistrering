@@ -2,9 +2,11 @@ package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
@@ -14,7 +16,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -134,7 +136,7 @@ public class ServiceBeansConfig {
 
     @Bean
     ArbeidsforholdGateway arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new ArbeidsforholdGateway(arbeidsforholdV3);
+        return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
     }
 
     @Bean
@@ -149,7 +151,7 @@ public class ServiceBeansConfig {
 
     @Bean
     HentEnheterGateway hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
-        return new HentEnheterGateway(organisasjonEnhetService);
+        return new HentEnheterGatewayImpl(organisasjonEnhetService);
     }
 
     @Bean
