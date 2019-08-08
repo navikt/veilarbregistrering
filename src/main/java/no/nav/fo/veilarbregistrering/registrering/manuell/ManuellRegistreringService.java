@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
@@ -12,17 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class ManuellRegistreringService {
 
-    //FIXME: fjern denne ... ikke i bruk
-    private final AktorService aktorService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final EnhetOppslagService enhetOppslagService;
     private final Provider<HttpServletRequest> requestProvider;
 
-    public ManuellRegistreringService(AktorService aktorService,
-                                      ManuellRegistreringRepository manuellRegistreringRepository,
+    public ManuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
                                       EnhetOppslagService enhetOppslagService,
                                       Provider<HttpServletRequest> requestProvider) {
-        this.aktorService = aktorService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
         this.enhetOppslagService = enhetOppslagService;
         this.requestProvider = requestProvider;

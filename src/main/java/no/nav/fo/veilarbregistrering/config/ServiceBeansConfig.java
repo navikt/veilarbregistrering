@@ -112,11 +112,10 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ManuellRegistreringService manuellRegistreringService(AktorService aktorService,
-                                                          ManuellRegistreringRepository manuellRegistreringRepository,
+    ManuellRegistreringService manuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
                                                           EnhetOppslagService enhetOppslagService,
                                                           Provider<HttpServletRequest> provider) {
-        return new ManuellRegistreringService(aktorService, manuellRegistreringRepository, enhetOppslagService, provider);
+        return new ManuellRegistreringService(manuellRegistreringRepository, enhetOppslagService, provider);
     }
 
     @Bean

@@ -8,11 +8,6 @@ import java.util.Optional;
 
 public class AutentiseringUtils {
 
-    public static boolean erEksternBruker() {
-        IdentType identType = SubjectHandler.getIdentType().orElse(null);
-        return IdentType.EksternBruker.equals(identType);
-    }
-
     public static boolean erVeileder() {
         // Dette er en midlertidig hack for å fikse en bug i commons som
         // gjør at IdentType.InternBruker blir returnert for systembruker.
