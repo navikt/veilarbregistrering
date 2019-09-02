@@ -7,14 +7,14 @@ import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.domain.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.service.ArbeidsforholdService;
-import no.nav.fo.veilarbregistrering.service.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.service.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.service.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -137,8 +137,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public ArbeidsforholdService arbeidsforholdService() {
-            return mock(ArbeidsforholdService.class);
+        public ArbeidsforholdGateway arbeidsforholdService() {
+            return mock(ArbeidsforholdGateway.class);
         }
 
         @Bean
@@ -158,7 +158,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 AktorService aktorService,
                 OppfolgingClient oppfolgingClient,
                 SykmeldtInfoClient sykeforloepMetadataClient,
-                ArbeidsforholdService arbeidsforholdService,
+                ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
@@ -167,7 +167,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     aktorService,
                     oppfolgingClient,
                     sykeforloepMetadataClient,
-                    arbeidsforholdService,
+                    arbeidsforholdGateway,
                     manuellRegistreringService,
                     startRegistreringUtils,
                     sykemeldtRegistreringFeature

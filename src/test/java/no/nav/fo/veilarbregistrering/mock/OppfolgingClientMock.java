@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.mock;
 
 import no.nav.apiapp.feil.FeilDTO;
-import no.nav.fo.veilarbregistrering.domain.AktiverBrukerData;
-import no.nav.fo.veilarbregistrering.domain.OppfolgingStatusData;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

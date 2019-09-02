@@ -2,11 +2,17 @@ package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.db.ArbeidssokerregistreringRepository;
-import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.httpclient.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.resources.RegistreringResource;
-import no.nav.fo.veilarbregistrering.service.*;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +32,7 @@ public class ServiceBeansConfig {
             AktorService aktorService,
             OppfolgingClient oppfolgingClient,
             SykmeldtInfoClient sykeforloepMetadataClient,
-            ArbeidsforholdService arbeidsforholdService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
@@ -36,7 +42,7 @@ public class ServiceBeansConfig {
                 aktorService,
                 oppfolgingClient,
                 sykeforloepMetadataClient,
-                arbeidsforholdService,
+                arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
                 sykemeldtRegistreringFeature
@@ -48,7 +54,7 @@ public class ServiceBeansConfig {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
-            ArbeidsforholdService arbeidsforholdService,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
@@ -58,7 +64,7 @@ public class ServiceBeansConfig {
                 pepClient,
                 userService,
                 manuellRegistreringService,
-                arbeidsforholdService,
+                arbeidsforholdGateway,
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
@@ -80,8 +86,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidsforholdService arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new ArbeidsforholdService(arbeidsforholdV3);
+    ArbeidsforholdGateway arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
+        return new ArbeidsforholdGateway(arbeidsforholdV3);
     }
 
     @Bean
@@ -95,13 +101,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    HentEnheterService hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
-        return new HentEnheterService(organisasjonEnhetService);
+    HentEnheterGateway hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
+        return new HentEnheterGateway(organisasjonEnhetService);
     }
 
     @Bean
-    EnhetOppslagService enhetOppslagService(HentEnheterService hentEnheterService) {
-        return new EnhetOppslagService(hentEnheterService);
+    EnhetOppslagService enhetOppslagService(HentEnheterGateway hentEnheterGateway) {
+        return new EnhetOppslagService(hentEnheterGateway);
     }
 
     @Bean

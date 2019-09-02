@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.mock;
 
-import no.nav.fo.veilarbregistrering.domain.InfotrygdData;
-import no.nav.fo.veilarbregistrering.domain.SykmeldtInfoData;
-import no.nav.fo.veilarbregistrering.httpclient.SykmeldtInfoClient;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 
 public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
 
