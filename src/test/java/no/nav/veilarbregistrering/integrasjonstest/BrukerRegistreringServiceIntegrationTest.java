@@ -1,8 +1,8 @@
 package no.nav.veilarbregistrering.integrasjonstest;
 
 import io.vavr.control.Try;
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
@@ -43,7 +43,6 @@ class BrukerRegistreringServiceIntegrationTest {
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
-    private static AktorService aktorService;
     private static OppfolgingClient oppfolgingClient;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
     private static ProfileringRepository profileringRepository;
@@ -69,7 +68,6 @@ class BrukerRegistreringServiceIntegrationTest {
         profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
-        aktorService = context.getBean(AktorService.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
         sykemeldtRegistreringFeature = context.getBean(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
     }
@@ -84,7 +82,7 @@ class BrukerRegistreringServiceIntegrationTest {
         cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingClient).aktiverBruker(any());
 
-        Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident));
+        Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
         assertThat(run.isFailure()).isTrue();
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1l));
@@ -96,7 +94,7 @@ class BrukerRegistreringServiceIntegrationTest {
     public void skalLagreIDatabaseDersomKallTilArenaErOK() {
         cofigureMocks();
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, ident);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, Bruker.fraFnr(ident).medAktoerId("AKTØRID"));
 
         Optional<OrdinaerBrukerRegistrering> reg = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
 
@@ -106,7 +104,6 @@ class BrukerRegistreringServiceIntegrationTest {
     private void cofigureMocks() {
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
-        when(aktorService.getAktorId(any())).thenAnswer((invocation -> Optional.of(invocation.getArgument(0))));
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
     }
@@ -129,11 +126,6 @@ class BrukerRegistreringServiceIntegrationTest {
         @Bean
         public ProfileringRepository profileringRepository(JdbcTemplate db) {
             return new ProfileringRepositoryImpl(db);
-        }
-
-        @Bean
-        public AktorService aktoerService() {
-            return mock(AktorService.class);
         }
 
         @Bean
@@ -166,7 +158,6 @@ class BrukerRegistreringServiceIntegrationTest {
         BrukerRegistreringService brukerRegistreringService(
                 BrukerRegistreringRepository brukerRegistreringRepository,
                 ProfileringRepository profileringRepository,
-                AktorService aktorService,
                 OppfolgingClient oppfolgingClient,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
@@ -177,7 +168,6 @@ class BrukerRegistreringServiceIntegrationTest {
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
                     profileringRepository,
-                    aktorService,
                     oppfolgingClient,
                     sykeforloepMetadataClient,
                     arbeidsforholdGateway,

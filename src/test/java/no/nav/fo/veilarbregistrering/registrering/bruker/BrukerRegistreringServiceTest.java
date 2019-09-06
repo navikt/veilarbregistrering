@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import lombok.SneakyThrows;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.of;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -35,7 +34,6 @@ public class BrukerRegistreringServiceTest {
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
     private SykmeldtInfoClient sykeforloepMetadataClient;
-    private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
@@ -46,7 +44,6 @@ public class BrukerRegistreringServiceTest {
     @BeforeEach
     public void setup() {
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
-        aktorService = mock(AktorService.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         profileringRepository = mock(ProfileringRepository.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -59,7 +56,6 @@ public class BrukerRegistreringServiceTest {
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        aktorService,
                         oppfolgingClient,
                         sykeforloepMetadataClient,
                         arbeidsforholdGateway,
@@ -67,7 +63,6 @@ public class BrukerRegistreringServiceTest {
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature);
 
-        when(aktorService.getAktorId(any())).thenReturn(of("AKTORID"));
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 
@@ -80,7 +75,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
+        registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
 
@@ -89,7 +84,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerSomSkalReaktiveres();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
 
-        brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV);
+        brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
         verify(brukerRegistreringRepository, times(1)).lagreReaktiveringForBruker(any());
     }
 
@@ -102,7 +97,7 @@ public class BrukerRegistreringServiceTest {
                         .withUnderOppfolging(false)
                         .withKanReaktiveres(false)
         );
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
         verify(brukerRegistreringRepository, times(0)).lagreReaktiveringForBruker(any());
     }
 
@@ -112,7 +107,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV);
+        registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
@@ -121,7 +116,7 @@ public class BrukerRegistreringServiceTest {
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
-        assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
     }
 
     @Test
@@ -152,7 +147,7 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtMedArbeidsgiver();
         mockSykmeldtBrukerOver39uker();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV);
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
 
         SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
 
@@ -164,14 +159,14 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBrukerOver39uker();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
     }
 
     @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, FNR_OPPFYLLER_KRAV));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
     }
 
     @Test
@@ -248,8 +243,8 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
     }
 
-    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering bruker, String fnr) {
-        return brukerRegistreringService.registrerBruker(bruker, fnr);
+    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        return brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
     }
 
     private void mockBrukerUnderOppfolging() {

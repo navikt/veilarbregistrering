@@ -39,7 +39,6 @@ public class ServiceBeansConfig {
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
-            AktorService aktorService,
             OppfolgingClient oppfolgingClient,
             SykmeldtInfoClient sykeforloepMetadataClient,
             ArbeidsforholdGateway arbeidsforholdGateway,
@@ -50,7 +49,6 @@ public class ServiceBeansConfig {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
-                aktorService,
                 oppfolgingClient,
                 sykeforloepMetadataClient,
                 arbeidsforholdGateway,
