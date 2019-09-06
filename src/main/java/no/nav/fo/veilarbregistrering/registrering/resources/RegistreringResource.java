@@ -91,7 +91,7 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
 
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
                     registrering.getId(), BrukerRegistreringType.ORDINAER);
@@ -99,7 +99,7 @@ public class RegistreringResource {
             rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
 
         } else {
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
         }
 
         rapporterAlder(bruker.getFoedselsnummer());
@@ -114,7 +114,7 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        return brukerRegistreringService.hentBrukerRegistrering(new Fnr(bruker.getFoedselsnummer()));
+        return brukerRegistreringService.hentBrukerRegistrering(bruker);
     }
 
     @POST
@@ -129,7 +129,7 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
-        brukerRegistreringService.reaktiverBruker(bruker.getFoedselsnummer());
+        brukerRegistreringService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
             rapporterManuellReaktivering();
@@ -160,12 +160,12 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
+            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
             rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
+            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
         rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
