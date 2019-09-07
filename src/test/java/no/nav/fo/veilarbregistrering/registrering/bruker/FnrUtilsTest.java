@@ -3,15 +3,26 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
+import static no.bekk.bekkopen.person.FodselsnummerCalculator.getFodselsnummerForDate;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.antallAarSidenDato;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledFodselsdatoForFnr;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerOnDateMinusYears;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class FnrUtilsTest {
 
     private static final LocalDate dagensDato = LocalDate.of(2017,12,14);
+
+    public static String getFodselsnummerOnDateMinusYears(LocalDate localDate, int minusYears) {
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).minusYears(minusYears).toInstant());
+        return getFodselsnummerForDate(date).toString();
+    }
+
+    public static String getFodselsnummerForPersonWithAge(int age) {
+        return getFodselsnummerOnDateMinusYears(LocalDate.now(), age);
+    }
 
     @Test
     public void skalUtledeKorrektFodselsdato() {
