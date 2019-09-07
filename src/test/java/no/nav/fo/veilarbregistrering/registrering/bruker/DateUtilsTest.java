@@ -1,5 +1,6 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import org.junit.Test;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public class DateUtilsTest {
     public void toTimeStamp()  {
         String utcString = "2017-04-19T12:21:04.963+02:00";
         String expectedString = "2017-04-19 12:21:04.963";
-        Timestamp timestamp = DateUtils.toTimeStamp(utcString);
+        Timestamp timestamp = Timestamp.from(ZonedDateTime.parse(utcString).toInstant());
         String result = timestamp.toString();
         assertEquals(expectedString, result);
     }
@@ -30,41 +31,41 @@ public class DateUtilsTest {
     public void skalVaereSykmeldtOverEllerLik39Uker() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2018, Month.JUNE, 26);
-        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalVaereSykmeldtAkkurat52Uker() {
         String maksDato = "2018-12-11";
         LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 11);
-        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalVaereSykmeldtNesten52Uker() {
         String maksDato = "2018-12-11";
         LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 9);
-        assertEquals(true, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalIkkeVaereSykmeldtOver39Uker() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2018, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalIkkeVaereSykmeldtOver39UkerNarMaksDatoErUnderDagensDato() {
         String maksDato = "2018-10-01";
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 
     @Test
     public void skalHandtereNullVedBeregnSykmeldtOver39uker() {
         String maksDato = null;
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, DateUtils.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
+        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 }

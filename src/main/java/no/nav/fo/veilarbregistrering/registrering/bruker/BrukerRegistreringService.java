@@ -12,14 +12,12 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
-import no.nav.fo.veilarbregistrering.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -29,8 +27,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.getAktorIdOrElseThrow;
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 
@@ -232,6 +229,12 @@ public class BrukerRegistreringService {
         return id;
     }
 
+    public static AktorId getAktorIdOrElseThrow(AktorService aktorService, String fnr) {
+        return aktorService.getAktorId(fnr)
+                .map(AktorId::new)
+                .orElseThrow(() -> new IllegalArgumentException("Fant ikke aktør for fnr: " + fnr));
+    }
+
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
@@ -242,12 +245,23 @@ public class BrukerRegistreringService {
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
         } else {
             InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
-            boolean erSykmeldtOver39Uker = DateUtils.beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
+            boolean erSykmeldtOver39Uker = beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
 
             sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(erSykmeldtOver39Uker);
         }
 
         return sykmeldtInfoData;
+    }
+
+    static boolean beregnSykmeldtMellom39Og52Uker(String maksDato, LocalDate dagenDato) {
+        if (maksDato == null) {
+            return false;
+        }
+        LocalDate dato = LocalDate.parse(maksDato);
+        long GJENSTAENDE_UKER = 13;
+
+        return ChronoUnit.WEEKS.between(dagenDato, dato) >= 0 &&
+                ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
     }
 }

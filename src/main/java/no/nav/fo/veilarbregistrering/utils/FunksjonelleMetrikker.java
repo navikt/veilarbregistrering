@@ -10,7 +10,7 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
 import static java.time.LocalDate.now;
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikkerUtils.brukerSvarerAtDenHarJobbetSisteMander;
 
 public class FunksjonelleMetrikker {

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.bekk.bekkopen.person.FodselsnummerValidator;
@@ -29,9 +29,4 @@ public class FnrUtils {
         return Period.between(dato, dagensDato).getYears();
     }
 
-    public static AktorId getAktorIdOrElseThrow(AktorService aktorService, String fnr) {
-        return aktorService.getAktorId(fnr)
-                .map(AktorId::new)
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke aktør for fnr: " + fnr));
-    }
 }
