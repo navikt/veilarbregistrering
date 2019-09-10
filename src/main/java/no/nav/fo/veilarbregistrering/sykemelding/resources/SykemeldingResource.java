@@ -19,7 +19,7 @@ import javax.ws.rs.Produces;
 @Component
 @Path("/")
 @Produces("application/json")
-@Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
+@Api(value = "SykemeldingResource", description = "Tjenester for uthenting av maksdato for arbeidssøker.")
 public class SykemeldingResource {
 
     private final BrukerRegistreringService brukerRegistreringService;
