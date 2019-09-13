@@ -1,13 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class TekstForSporsmal {
     private String sporsmalId;
     private String sporsmal;
