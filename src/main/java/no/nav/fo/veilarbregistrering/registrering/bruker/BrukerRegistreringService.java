@@ -4,10 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -171,9 +167,10 @@ public class BrukerRegistreringService {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(aktorId);
 
-        Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
-        ordinaerBrukerRegistrering.setProfilering(profilering);
-
+        if (ordinaerBrukerRegistrering != null) {
+            Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
+            ordinaerBrukerRegistrering.setProfilering(profilering);
+        }
 
         SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);
