@@ -26,7 +26,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 
