@@ -164,9 +164,10 @@ public class BrukerRegistreringService {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(aktorId);
 
-        Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
-        ordinaerBrukerRegistrering.setProfilering(profilering);
-
+        if (ordinaerBrukerRegistrering != null) {
+            Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
+            ordinaerBrukerRegistrering.setProfilering(profilering);
+        }
 
         SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
                 .hentSykmeldtregistreringForAktorId(aktorId);

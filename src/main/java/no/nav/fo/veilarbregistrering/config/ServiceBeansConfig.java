@@ -59,7 +59,7 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    RegistreringResource arbeidsforholdResource(
+    RegistreringResource registreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
@@ -95,7 +95,7 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    SykemeldingResource arbeidsforholdResource(
+    SykemeldingResource sykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
