@@ -29,9 +29,4 @@ public class FnrUtils {
         return Period.between(dato, dagensDato).getYears();
     }
 
-    public static AktorId getAktorIdOrElseThrow(AktorService aktorService, String fnr) {
-        return aktorService.getAktorId(fnr)
-                .map(AktorId::new)
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke aktør for fnr: " + fnr));
-    }
 }
