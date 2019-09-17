@@ -13,8 +13,13 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSit
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,6 +35,7 @@ class RegistreringResourceTest {
     private AktorService aktorService;
     private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private Provider<HttpServletRequest> requestProvider;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -42,6 +48,7 @@ class RegistreringResourceTest {
         aktorService = mock(AktorService.class);
         tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
         manuellRegistreringFeature = mock(RemoteFeatureConfig.ManuellRegistreringFeature.class);
+        requestProvider = Mockito.mock(Provider.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
@@ -50,7 +57,8 @@ class RegistreringResourceTest {
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
-                manuellRegistreringFeature
+                manuellRegistreringFeature,
+                requestProvider
         );
     }
 
@@ -98,5 +106,25 @@ class RegistreringResourceTest {
         when(userService.getFnr()).thenReturn(IDENT);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
+    }
+
+    @Test
+    public void skalHenteEnhetIdFraUrl(){
+        String enhetId = "1234";
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getParameter("enhetId")).thenReturn(enhetId);
+        Mockito.when(requestProvider.get()).thenReturn(request);
+
+        String enhetIdFraUrl = registreringResource.getEnhetIdFromUrlOrThrow();
+        Assertions.assertEquals(enhetId, enhetIdFraUrl);
+    }
+
+    @Test
+    public void skalFeileHvisUrlIkkeHarEnhetId(){
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getParameter("enhetId")).thenReturn(null);
+        Mockito.when(requestProvider.get()).thenReturn(request);
+
+        Assertions.assertThrows(RuntimeException.class, () -> registreringResource.getEnhetIdFromUrlOrThrow());
     }
 }

@@ -13,14 +13,12 @@ public class ManuellRegistreringService {
 
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final EnhetOppslagService enhetOppslagService;
-    private final Provider<HttpServletRequest> requestProvider;
 
-    public ManuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
-                                      EnhetOppslagService enhetOppslagService,
-                                      Provider<HttpServletRequest> requestProvider) {
+    public ManuellRegistreringService(
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            EnhetOppslagService enhetOppslagService) {
         this.manuellRegistreringRepository = manuellRegistreringRepository;
         this.enhetOppslagService = enhetOppslagService;
-        this.requestProvider = requestProvider;
     }
 
     public void lagreManuellRegistrering(String veilederIdent, String veilederEnhetId,
@@ -51,17 +49,6 @@ public class ManuellRegistreringService {
                 .setEnhet(enhet)
                 .setIdent(registrering.getVeilederIdent());
 
-    }
-
-    //FIXME: Logikk knyttet til URL bør ikke trekkes ned i forretningslaget, men beholdes i Controller-laget.
-    public String getEnhetIdFromUrlOrThrow() {
-        final String enhetId = requestProvider.get().getParameter("enhetId");
-
-        if (enhetId == null) {
-            throw new RuntimeException("Mangler enhetId");
-        }
-
-        return enhetId;
     }
 
 }

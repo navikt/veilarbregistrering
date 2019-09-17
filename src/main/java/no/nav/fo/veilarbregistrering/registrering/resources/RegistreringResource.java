@@ -15,6 +15,8 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringSer
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,6 +32,7 @@ public class RegistreringResource {
 
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private final Provider<HttpServletRequest> requestProvider;
     private final BrukerRegistreringService brukerRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
@@ -43,7 +46,8 @@ public class RegistreringResource {
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
-            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature,
+            Provider<HttpServletRequest> requestProvider
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
@@ -52,6 +56,7 @@ public class RegistreringResource {
         this.aktorService=aktorService;
         this.tjenesteNedeFeature = tjenesteNedeFeature;
         this.manuellRegistreringFeature = manuellRegistreringFeature;
+        this.requestProvider = requestProvider;
     }
 
     @GET
@@ -86,7 +91,7 @@ public class RegistreringResource {
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String enhetId = getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
@@ -155,7 +160,7 @@ public class RegistreringResource {
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String enhetId = getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
@@ -176,7 +181,15 @@ public class RegistreringResource {
         return Bruker.fraFnr(fnr)
                 .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
     }
+    
+    String getEnhetIdFromUrlOrThrow() {
+        final String enhetId = requestProvider.get().getParameter("enhetId");
 
+        if (enhetId == null) {
+            throw new RuntimeException("Mangler enhetId");
+        }
 
+        return enhetId;
+    }
 
 }

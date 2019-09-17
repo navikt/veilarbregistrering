@@ -66,7 +66,8 @@ public class ServiceBeansConfig {
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
-            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature,
+            Provider<HttpServletRequest> provider
     ) {
         return new RegistreringResource(
                 pepClient,
@@ -75,7 +76,8 @@ public class ServiceBeansConfig {
                 brukerRegistreringService,
                 aktorService,
                 tjenesteNedeFeature,
-                manuellRegistreringFeature
+                manuellRegistreringFeature,
+                provider
         );
     }
 
@@ -111,9 +113,8 @@ public class ServiceBeansConfig {
 
     @Bean
     ManuellRegistreringService manuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
-                                                          EnhetOppslagService enhetOppslagService,
-                                                          Provider<HttpServletRequest> provider) {
-        return new ManuellRegistreringService(manuellRegistreringRepository, enhetOppslagService, provider);
+                                                          EnhetOppslagService enhetOppslagService) {
+        return new ManuellRegistreringService(manuellRegistreringRepository, enhetOppslagService);
     }
 
     @Bean
