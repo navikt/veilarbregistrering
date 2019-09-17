@@ -9,7 +9,6 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;

@@ -64,7 +64,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                 .get();
 
         return response.getArbeidsforhold().stream()
-                .map(arbeidsforhold -> ArbeidsforholdMapper.map(arbeidsforhold))
+                .map(ArbeidsforholdMapper::map)
                 .collect(toList());
     }
 
