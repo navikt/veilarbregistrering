@@ -8,6 +8,9 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
