@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.bekk.bekkopen.person.FodselsnummerValidator;
@@ -15,7 +15,7 @@ public class FnrUtils {
         return antallAarSidenDato(utledFodselsdatoForFnr(fnr), dagensDato);
     }
 
-    public static LocalDate utledFodselsdatoForFnr(String fnr) {
+    static LocalDate utledFodselsdatoForFnr(String fnr) {
         Fodselsnummer fodselsnummer = FodselsnummerValidator.getFodselsnummer(fnr);
 
         return LocalDate.of(
@@ -25,7 +25,7 @@ public class FnrUtils {
         );
     }
 
-    public static int antallAarSidenDato(LocalDate dato, LocalDate dagensDato) {
+    static int antallAarSidenDato(LocalDate dato, LocalDate dagensDato) {
         return Period.between(dato, dagensDato).getYears();
     }
 

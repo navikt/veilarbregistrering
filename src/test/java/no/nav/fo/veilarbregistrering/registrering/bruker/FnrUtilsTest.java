@@ -1,11 +1,11 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.antallAarSidenDato;
-import static no.nav.fo.veilarbregistrering.utils.FnrUtils.utledFodselsdatoForFnr;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.antallAarSidenDato;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledFodselsdatoForFnr;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.getFodselsnummerOnDateMinusYears;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
