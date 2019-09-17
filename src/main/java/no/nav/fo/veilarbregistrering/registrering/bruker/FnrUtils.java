@@ -2,8 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.bekk.bekkopen.person.FodselsnummerValidator;
-import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 
 import java.time.LocalDate;
 import java.time.Period;

@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.security.PepClient;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
@@ -11,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-
-import static no.nav.sbl.dialogarena.common.abac.pep.domain.ResourceType.Person;
 
 @Configuration
 @Import({AbacContext.class})

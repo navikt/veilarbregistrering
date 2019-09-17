@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
