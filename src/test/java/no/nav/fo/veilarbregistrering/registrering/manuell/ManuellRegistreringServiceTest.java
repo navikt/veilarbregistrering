@@ -1,5 +1,7 @@
-package no.nav.fo.veilarbregistrering.orgenhet;
+package no.nav.fo.veilarbregistrering.registrering.manuell;
 
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,15 +14,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class EnhetOppslagServiceTest {
+class ManuellRegistreringServiceTest {
 
-    private EnhetOppslagService enhetOppslagService;
+    private ManuellRegistreringRepository manuellRegistreringRepository;
     private HentEnheterGateway hentEnheterGateway;
+    private ManuellRegistreringService manuellRegistreringService;
 
     @BeforeEach
     public void setup(){
+        manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
         hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
-        enhetOppslagService = new EnhetOppslagService(hentEnheterGateway);
+        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
 
         List<NavEnhet> enheter = Arrays.asList(
                 new NavEnhet("1234", "TEST1"),
@@ -28,16 +32,15 @@ public class EnhetOppslagServiceTest {
         );
         when(hentEnheterGateway.hentAlleEnheter()).thenReturn(enheter);
     }
-
     @Test
     public void skalFinneRiktigEnhet(){
-         NavEnhet enhet = enhetOppslagService.finnEnhet("1234");
-         assertEquals(enhet, new NavEnhet("1234", "TEST1"));
+        NavEnhet enhet = manuellRegistreringService.finnEnhet("1234");
+        assertEquals(enhet, new NavEnhet("1234", "TEST1"));
     }
 
     @Test
     public void skalReturnereNullHvisIngenEnhetErFunnet(){
-        NavEnhet enhet = enhetOppslagService.finnEnhet("2345");
+        NavEnhet enhet = manuellRegistreringService.finnEnhet("2345");
         assertNull(enhet);
     }
 
