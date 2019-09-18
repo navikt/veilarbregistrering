@@ -181,7 +181,7 @@ public class RegistreringResource {
         return Bruker.fraFnr(fnr)
                 .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
     }
-    
+
     String getEnhetIdFromUrlOrThrow() {
         final String enhetId = requestProvider.get().getParameter("enhetId");
 

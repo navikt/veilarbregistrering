@@ -6,21 +6,20 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
-import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
@@ -113,8 +112,8 @@ public class ServiceBeansConfig {
 
     @Bean
     ManuellRegistreringService manuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
-                                                          EnhetOppslagService enhetOppslagService) {
-        return new ManuellRegistreringService(manuellRegistreringRepository, enhetOppslagService);
+                                                          HentEnheterGateway hentEnheterGateway) {
+        return new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
     }
 
     @Bean
@@ -150,11 +149,6 @@ public class ServiceBeansConfig {
     @Bean
     HentEnheterGateway hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
         return new HentEnheterGatewayImpl(organisasjonEnhetService);
-    }
-
-    @Bean
-    EnhetOppslagService enhetOppslagService(HentEnheterGateway hentEnheterGateway) {
-        return new EnhetOppslagService(hentEnheterGateway);
     }
 
     @Bean

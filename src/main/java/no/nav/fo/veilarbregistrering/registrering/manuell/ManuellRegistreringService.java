@@ -1,24 +1,21 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
-
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 public class ManuellRegistreringService {
 
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final EnhetOppslagService enhetOppslagService;
+    private final HentEnheterGateway hentEnheterGateway;
 
     public ManuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
-            EnhetOppslagService enhetOppslagService) {
+            HentEnheterGateway hentEnheterGateway) {
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.enhetOppslagService = enhetOppslagService;
+        this.hentEnheterGateway = hentEnheterGateway;
     }
 
     public void lagreManuellRegistrering(String veilederIdent, String veilederEnhetId,
@@ -43,12 +40,24 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        NavEnhet enhet = enhetOppslagService.finnEnhet(registrering.getVeilederEnhetId());
+        NavEnhet enhet = finnEnhet(registrering.getVeilederEnhetId());
 
         return new Veileder()
                 .setEnhet(enhet)
                 .setIdent(registrering.getVeilederIdent());
 
+    }
+
+    NavEnhet finnEnhet(String enhetId) {
+        try {
+            return hentEnheterGateway.hentAlleEnheter()
+                    .stream()
+                    .filter((enhet) -> enhet.getId().equals(enhetId))
+                    .findFirst().orElseThrow(RuntimeException::new);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
