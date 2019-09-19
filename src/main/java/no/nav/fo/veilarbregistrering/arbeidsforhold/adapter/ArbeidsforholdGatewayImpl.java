@@ -54,11 +54,13 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                             .setFailed()
                             .addTagToReport("aarsak",  f.getClass().getSimpleName())
                             .report();
-                    log.error("Feil ved henting av arbeidsforhold for bruker", f);
+                    log.warn("Feil ved henting av arbeidsforhold for bruker", f);
                 })
                 .mapFailure(
-                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)), (t) -> new ForbiddenException("Ikke tilgang til bruker")),
-                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerUgyldigInput.class)), (t) -> new BadRequestException("Ugyldig bruker identifikator"))
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)),
+                                (t) -> new ForbiddenException("Henting av arbeidsforhold feilet pga. manglende tilgang til bruker")),
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerUgyldigInput.class)),
+                                (t) -> new BadRequestException("Henting av arbeidsforhold feilet pga. ugyldig brukeridentifikator"))
                 )
                 .onSuccess((event) -> timer.stop().report())
                 .get();
