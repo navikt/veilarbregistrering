@@ -32,20 +32,6 @@ public class OppfolgingClient extends BaseClient {
         super(getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
     }
 
-    public void reaktiverBruker(String fnr) {
-        withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerReAktivering(fnr, c)
-        );
-    }
-
-    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerAktivering(aktiverBrukerData, c)
-        );
-    }
-
     public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
@@ -64,10 +50,10 @@ public class OppfolgingClient extends BaseClient {
         }
     }
 
-    public void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
+    public void reaktiverBruker(String fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
+                , c -> postBrukerReAktivering(fnr, c)
         );
     }
 
@@ -77,10 +63,24 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
+    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
+        withClient(
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                , c -> postBrukerAktivering(aktiverBrukerData, c)
+        );
+    }
+
     private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
         return behandleHttpResponse(response, url);
+    }
+
+    public void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
+        withClient(
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
+        );
     }
 
     private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr, Client client) {
@@ -97,6 +97,19 @@ public class OppfolgingClient extends BaseClient {
                 .header("SystemAuthorization",
                         (this.systemUserTokenProvider==null? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
+    }
+
+    private int behandleHttpResponse(Response response, String url) {
+        int status = response.getStatus();
+
+        if (status == 204) {
+            return status;
+        } else if (status == 403) {
+            log.warn("Feil ved kall mot: {}, response : {}. Skyldes sannsynligvis at bruker mangler arbeidstillatelse i Arena.", url, response);
+            throw new WebApplicationException(response);
+        } else {
+            throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
+        }
     }
 
     public void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
