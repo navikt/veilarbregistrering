@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
@@ -35,14 +34,9 @@ public class ArbeidsforholdUtils {
 
     static boolean harArbeidsforholdPaaDato(List<Arbeidsforhold> arbeidsforholdListe, LocalDate innevaerendeMnd) {
         return arbeidsforholdListe.stream()
-                .map(arbeidsforhold -> erDatoInnenforPeriode(arbeidsforhold, innevaerendeMnd))
+                .map(arbeidsforhold -> arbeidsforhold.erDatoInnenforPeriode(innevaerendeMnd))
                 .filter(b -> b)
                 .findAny().orElse(false);
-    }
-
-    static boolean erDatoInnenforPeriode(Arbeidsforhold arbeidsforhold, LocalDate innevaerendeMnd) {
-        return innevaerendeMnd.isAfter(arbeidsforhold.getFom().minusDays(1)) &&
-                (Objects.isNull(arbeidsforhold.getTom()) || innevaerendeMnd.isBefore(arbeidsforhold.getTom().plusDays(1)));
     }
 
     public static Arbeidsforhold hentSisteArbeidsforhold(List<Arbeidsforhold> arbeidsforholdListe) {

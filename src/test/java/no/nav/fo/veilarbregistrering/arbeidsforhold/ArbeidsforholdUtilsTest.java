@@ -13,41 +13,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ArbeidsforholdUtilsTest {
 
     @Test
-    public void datoSkalVaereInneforPeriodeNaarTomErNull() {
-        LocalDate mnd = LocalDate.of(2017,12,1);
-        LocalDate fom = LocalDate.of(2010,12,1);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom);
-        assertThat(erDatoInnenforPeriode(arbeidsforhold,mnd)).isTrue();
-    }
-
-    @Test
-    public void datoSkalVaereInneforPeriode() {
-        LocalDate mnd = LocalDate.of(2017,12,1);
-        LocalDate fom = LocalDate.of(2017,12,1);
-        LocalDate tom = LocalDate.of(2017,12,30);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
-        assertThat(erDatoInnenforPeriode(arbeidsforhold,mnd)).isTrue();
-    }
-
-    @Test
-    public void datoSkalVaereInneforPeriode_2() {
-        LocalDate mnd = LocalDate.of(2017,12,1);
-        LocalDate fom = LocalDate.of(2017,10,1);
-        LocalDate tom = LocalDate.of(2017,12,1);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
-        assertThat(erDatoInnenforPeriode(arbeidsforhold,mnd)).isTrue();
-    }
-
-    @Test
-    public void datoSkalIkkeVaereInneforPeriode() {
-        LocalDate mnd = LocalDate.of(2017,12,1);
-        LocalDate fom = LocalDate.of(2017,9,1);
-        LocalDate tom = LocalDate.of(2017,11,30);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
-        assertThat(erDatoInnenforPeriode(arbeidsforhold,mnd)).isFalse();
-    }
-
-    @Test
     public void skalHaArbeidsforholdPaaDato() {
         LocalDate mnd = LocalDate.of(2017,12,1);
         LocalDate fom1 = LocalDate.of(2017,10,1);
