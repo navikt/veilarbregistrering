@@ -41,8 +41,7 @@ public class SykmeldtInfoClient extends BaseClient {
                             .header("Authorization", "Bearer " + tokenLocator.getToken(request).orElse(null))
                             .get(InfotrygdData.class));
         } catch (Exception e) {
-            log.error("Feil ved kall til tjeneste " + e);
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Hent maksdato fra Infotrygd feilet.", e);
         }
     }
 }
