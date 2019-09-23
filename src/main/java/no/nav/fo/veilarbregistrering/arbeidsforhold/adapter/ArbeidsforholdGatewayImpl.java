@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import io.vavr.control.Try;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
@@ -14,6 +13,8 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.BadRequestException;
@@ -26,9 +27,11 @@ import static io.vavr.Predicates.instanceOf;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
-@Slf4j
 public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
-    private ArbeidsforholdV3 arbeidsforholdV3;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdGatewayImpl.class);
+
+    private final ArbeidsforholdV3 arbeidsforholdV3;
 
     public ArbeidsforholdGatewayImpl(ArbeidsforholdV3 arbeidsforholdV3) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
@@ -54,7 +57,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                             .setFailed()
                             .addTagToReport("aarsak",  f.getClass().getSimpleName())
                             .report();
-                    log.warn("Feil ved henting av arbeidsforhold for bruker", f);
+                    LOG.warn("Feil ved henting av arbeidsforhold for bruker", f);
                 })
                 .mapFailure(
                         Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)),
