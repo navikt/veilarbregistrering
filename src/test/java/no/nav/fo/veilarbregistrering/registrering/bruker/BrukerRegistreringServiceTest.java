@@ -151,7 +151,7 @@ public class BrukerRegistreringServiceTest {
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
 
-        SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
+        SykmeldtBrukerType sykmeldtBrukerType = brukerRegistreringService.finnSykmeldtBrukerType(sykmeldtRegistrering);
 
         verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(sykmeldtBrukerType, FNR_OPPFYLLER_KRAV);
     }

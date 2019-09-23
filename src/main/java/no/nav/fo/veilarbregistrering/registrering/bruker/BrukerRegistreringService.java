@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
@@ -22,9 +23,11 @@ import java.util.Objects;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
+import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils.beregnRegistreringType;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
@@ -216,7 +219,7 @@ public class BrukerRegistreringService {
 
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = new AktorId(bruker.getAktoerId());
-            SykmeldtBrukerType sykmeldtBrukerType = startRegistreringUtils.finnSykmeldtBrukerType(sykmeldtRegistrering);
+            SykmeldtBrukerType sykmeldtBrukerType = finnSykmeldtBrukerType(sykmeldtRegistrering);
             oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType, bruker.getFoedselsnummer());
             id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
@@ -225,6 +228,20 @@ public class BrukerRegistreringService {
         }
 
         return id;
+    }
+
+    //FIXME: Flytt denne ut i en Gateway som mapper mellom intern og ekstern modell.
+    SykmeldtBrukerType finnSykmeldtBrukerType(SykmeldtRegistrering sykmeldtRegistrering) {
+        FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
+        if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
+                || fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER_NY_STILLING
+                || fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER
+        ) {
+            return SKAL_TIL_SAMME_ARBEIDSGIVER;
+        } else {
+            return SKAL_TIL_NY_ARBEIDSGIVER;
+        }
+
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
