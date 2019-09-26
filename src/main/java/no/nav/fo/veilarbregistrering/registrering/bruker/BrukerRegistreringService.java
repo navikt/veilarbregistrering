@@ -126,7 +126,9 @@ public class BrukerRegistreringService {
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setRegistreringType(registreringType)
                 .setErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver)
-                .setMaksDato(maksDato);
+                .setMaksDato(maksDato)
+                .setFormidlingsgruppe(oppfolgingStatusData.getFormidlingsgruppe())
+                .setServicegruppe(oppfolgingStatusData.getServicegruppe());
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(

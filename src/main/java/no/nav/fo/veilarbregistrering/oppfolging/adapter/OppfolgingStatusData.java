@@ -15,6 +15,9 @@ public class OppfolgingStatusData {
     public boolean underOppfolging;
     public Boolean kanReaktiveres;
     public Boolean erSykmeldtMedArbeidsgiver;
+    public String formidlingsgruppe;
+    public String servicegruppe;
+
 
     @Deprecated
     public Boolean erIkkeArbeidssokerUtenOppfolging;
