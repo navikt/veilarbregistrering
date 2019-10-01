@@ -9,15 +9,12 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -25,11 +22,9 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
 import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 
@@ -39,8 +34,8 @@ public class BrukerRegistreringService {
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ProfileringRepository profileringRepository;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private final SykemeldingService sykemeldingService;
     private OppfolgingClient oppfolgingClient;
-    private SykmeldtInfoClient sykmeldtInfoClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
@@ -59,7 +54,7 @@ public class BrukerRegistreringService {
         this.profileringRepository = profileringRepository;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
-        this.sykmeldtInfoClient = sykmeldtInfoClient;
+        this.sykemeldingService = new SykemeldingService(sykmeldtInfoClient);
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
@@ -115,7 +110,7 @@ public class BrukerRegistreringService {
         boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
-                sykeforloepMetaData = hentSykmeldtInfoData(fnr);
+                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
                 maksDato = sykeforloepMetaData.maksDato;
             }
         }
@@ -247,32 +242,6 @@ public class BrukerRegistreringService {
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
-
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
-
-        if (AutentiseringUtils.erVeileder()) {
-            // Veiledere har ikke tilgang til å gjøre kall mot infotrygd
-            // Sett inngang aktiv, slik at de får registrert sykmeldte brukere
-            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
-        } else {
-            InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
-            boolean erSykmeldtOver39Uker = beregnSykmeldtMellom39Og52Uker(infotrygdData.maksDato, now());
-
-            sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
-            sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(erSykmeldtOver39Uker);
-        }
-
-        return sykmeldtInfoData;
-    }
-
-    static boolean beregnSykmeldtMellom39Og52Uker(String maksDato, LocalDate dagenDato) {
-        if (maksDato == null) {
-            return false;
-        }
-        LocalDate dato = LocalDate.parse(maksDato);
-        long GJENSTAENDE_UKER = 13;
-
-        return ChronoUnit.WEEKS.between(dagenDato, dato) >= 0 &&
-                ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
+        return sykemeldingService.hentSykmeldtInfoData(fnr);
     }
 }
