@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 public class StartRegistreringUtils {
 
+    //FIXME: Kan være static
     public boolean harJobbetSammenhengendeSeksAvTolvSisteManeder(
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato
@@ -19,6 +20,7 @@ public class StartRegistreringUtils {
         return ArbeidsforholdUtils.oppfyllerBetingelseOmArbeidserfaring(arbeidsforholdSupplier.get(), dagensDato);
     }
 
+    //FIXME: Kan være static
     public Profilering profilerBruker(
             OrdinaerBrukerRegistrering bruker,
             int alder,

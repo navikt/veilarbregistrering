@@ -1,17 +1,15 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
 
 import java.time.LocalDate;
 
 public class SykemeldingService {
 
-    public final SykmeldtInfoClient sykmeldtInfoClient;
+    public final SykemeldingGateway sykemeldingGateway;
 
-    public SykemeldingService(SykmeldtInfoClient sykmeldtInfoClient) {
-        this.sykmeldtInfoClient = sykmeldtInfoClient;
+    public SykemeldingService(SykemeldingGateway sykemeldingGateway) {
+        this.sykemeldingGateway = sykemeldingGateway;
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
@@ -24,10 +22,10 @@ public class SykemeldingService {
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);
 
         } else {
-            InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
-            boolean erSykmeldtOver39Uker = Maksdato.of(infotrygdData.maksDato).beregnSykmeldtMellom39Og52Uker(LocalDate.now());
+            Maksdato maksdato = sykemeldingGateway.hentReberegnetMaksdato(fnr);
+            boolean erSykmeldtOver39Uker = maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.now());
 
-            sykmeldtInfoData.setMaksDato(infotrygdData.maksDato);
+            sykmeldtInfoData.setMaksDato(maksdato.asString());
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(erSykmeldtOver39Uker);
         }
 

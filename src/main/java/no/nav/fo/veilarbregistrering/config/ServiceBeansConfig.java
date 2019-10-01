@@ -19,7 +19,9 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -35,8 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 public class ServiceBeansConfig {
 
     @Bean
-    SykemeldingService sykemeldingService(SykmeldtInfoClient sykeforloepMetadataClient) {
-        return new SykemeldingService(sykeforloepMetadataClient);
+    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
+        return new SykemeldingService(sykemeldingGateway);
+    }
+
+    @Bean
+    SykemeldingGateway sykemeldingGateway(SykmeldtInfoClient sykeforloepMetadataClient) {
+        return new SykemeldingGatewayImpl(sykeforloepMetadataClient);
     }
 
     @Bean
@@ -47,6 +54,7 @@ public class ServiceBeansConfig {
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
+            //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
     ) {
@@ -137,7 +145,7 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidsforholdGateway arbeidsforholdService(ArbeidsforholdV3 arbeidsforholdV3) {
+    ArbeidsforholdGateway arbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
         return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
     }
 
@@ -156,6 +164,7 @@ public class ServiceBeansConfig {
         return new HentEnheterGatewayImpl(organisasjonEnhetService);
     }
 
+    //FIXME: Overflødig - metodene kan være static
     @Bean
     StartRegistreringUtils startRegistreringUtils() {
         return new StartRegistreringUtils();

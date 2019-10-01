@@ -11,7 +11,7 @@ public class Maksdato {
         this.maksdato = maksdato;
     }
 
-    static Maksdato of(String maksdato) {
+    public static Maksdato of(String maksdato) {
         return new Maksdato(maksdato);
     }
 

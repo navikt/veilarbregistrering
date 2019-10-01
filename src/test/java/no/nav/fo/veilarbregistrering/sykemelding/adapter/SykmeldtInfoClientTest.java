@@ -72,7 +72,7 @@ class SykmeldtInfoClientTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         oppfolgingClient,
-                        new SykemeldingService(sykeforloepMetadataClient),
+                        new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
