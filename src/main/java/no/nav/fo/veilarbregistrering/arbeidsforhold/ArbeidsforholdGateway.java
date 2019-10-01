@@ -6,5 +6,4 @@ public interface ArbeidsforholdGateway {
 
     List<Arbeidsforhold> hentArbeidsforhold(String fnr);
 
-    Arbeidsforhold hentSisteArbeidsforhold(String fnr);
 }

@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -96,9 +97,7 @@ public class BrukerRegistreringService {
             throw e;
         }
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering);
-
-        return opprettBruker(bruker, ordinaerBrukerRegistrering, profilering);
+        return opprettBruker(bruker, ordinaerBrukerRegistrering);
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
@@ -135,11 +134,14 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering, Profilering profilering) {
+    private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         AktorId aktorId = new AktorId(bruker.getAktoerId());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, aktorId);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering);
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
+
         oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(bruker.getFoedselsnummer()), profilering.getInnsatsgruppe()));
 
         rapporterProfilering(profilering);

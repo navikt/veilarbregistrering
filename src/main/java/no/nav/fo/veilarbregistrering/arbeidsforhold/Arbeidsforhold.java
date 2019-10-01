@@ -14,6 +14,10 @@ public class Arbeidsforhold {
     private LocalDate fom;
     private LocalDate tom;
 
+    static Arbeidsforhold utenStyrkkode() {
+        return new Arbeidsforhold().setStyrk("utenstyrkkode");
+    }
+
     boolean erDatoInnenforPeriode(LocalDate innevaerendeMnd) {
         return innevaerendeMnd.isAfter(fom.minusDays(1)) &&
                 (Objects.isNull(tom) || innevaerendeMnd.isBefore(tom.plusDays(1)));

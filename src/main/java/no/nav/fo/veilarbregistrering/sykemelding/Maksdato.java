@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.sykemelding;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 public class Maksdato {
 
@@ -28,5 +29,18 @@ public class Maksdato {
 
     String asString() {
         return maksdato;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Maksdato maksdato1 = (Maksdato) o;
+        return Objects.equals(maksdato, maksdato1.maksdato);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(maksdato);
     }
 }

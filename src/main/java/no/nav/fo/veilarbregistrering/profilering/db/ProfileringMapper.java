@@ -22,7 +22,7 @@ class ProfileringMapper {
                     profilering.setJobbetSammenhengendeSeksAvTolvSisteManeder(rs.getBoolean(ProfileringRepositoryImpl.VERDI));
                     break;
                 case ProfileringRepositoryImpl.RESULTAT_PROFILERING:
-                    profilering.setInnsatsgruppe(Innsatsgruppe.tilInnsatsgruppe(rs.getString(ProfileringRepositoryImpl.VERDI)));
+                    profilering.setInnsatsgruppe(Innsatsgruppe.of(rs.getString(ProfileringRepositoryImpl.VERDI)));
                     break;
             }
 
