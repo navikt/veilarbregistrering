@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 
-@Slf4j
 public class ManuellRegistreringService {
 
     private final ManuellRegistreringRepository manuellRegistreringRepository;
