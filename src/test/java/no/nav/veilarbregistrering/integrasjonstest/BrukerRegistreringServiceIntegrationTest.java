@@ -17,6 +17,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrer
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -169,7 +170,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     brukerRegistreringRepository,
                     profileringRepository,
                     oppfolgingClient,
-                    sykeforloepMetadataClient,
+                    new SykemeldingService(sykeforloepMetadataClient),
                     arbeidsforholdGateway,
                     manuellRegistreringService,
                     startRegistreringUtils,

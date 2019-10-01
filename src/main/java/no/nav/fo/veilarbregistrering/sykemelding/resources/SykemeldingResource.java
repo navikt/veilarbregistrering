@@ -8,7 +8,7 @@ import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import javax.ws.rs.Produces;
 @Api(value = "SykemeldingResource", description = "Tjenester for uthenting av maksdato for arbeidssøker.")
 public class SykemeldingResource {
 
-    private final BrukerRegistreringService brukerRegistreringService;
+    private final SykemeldingService sykemeldingService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
     private final AktorService aktorService;
@@ -30,12 +30,12 @@ public class SykemeldingResource {
     public SykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            BrukerRegistreringService brukerRegistreringService,
+            SykemeldingService sykemeldingService,
             AktorService aktorService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
-        this.brukerRegistreringService = brukerRegistreringService;
+        this.sykemeldingService = sykemeldingService;
         this.aktorService=aktorService;
     }
 
@@ -46,15 +46,16 @@ public class SykemeldingResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        //FIXME: Denne metoden bør flyttes til en egen SykemeldingService.
-        return brukerRegistreringService.hentSykmeldtInfoData(bruker.getFoedselsnummer());
+
+        return sykemeldingService.hentSykmeldtInfoData(bruker.getFoedselsnummer());
     }
 
     private Bruker hentBruker() {
         String fnr = userService.hentFnrFraUrlEllerToken();
 
         return Bruker.fraFnr(fnr)
-                .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
+                .medAktoerIdSupplier(() -> aktorService.getAktorId(fnr)
+                        .orElseThrow(() -> new Feil(FeilType.FINNES_IKKE)));
     }
 
 

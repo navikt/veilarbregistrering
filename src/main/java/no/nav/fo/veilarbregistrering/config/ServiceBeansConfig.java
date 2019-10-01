@@ -19,6 +19,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -33,13 +34,17 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class ServiceBeansConfig {
 
+    @Bean
+    SykemeldingService sykemeldingService(SykmeldtInfoClient sykeforloepMetadataClient) {
+        return new SykemeldingService(sykeforloepMetadataClient);
+    }
 
     @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingClient oppfolgingClient,
-            SykmeldtInfoClient sykeforloepMetadataClient,
+            SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
@@ -49,7 +54,7 @@ public class ServiceBeansConfig {
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingClient,
-                sykeforloepMetadataClient,
+                sykemeldingService,
                 arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
@@ -99,13 +104,13 @@ public class ServiceBeansConfig {
     SykemeldingResource sykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            BrukerRegistreringService brukerRegistreringService,
+            SykemeldingService sykemeldingService,
             AktorService aktorService
     ) {
         return new SykemeldingResource(
                 pepClient,
                 userService,
-                brukerRegistreringService,
+                sykemeldingService,
                 aktorService
         );
     }
