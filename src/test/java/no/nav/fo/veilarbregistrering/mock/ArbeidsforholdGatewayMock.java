@@ -24,11 +24,6 @@ public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
         return arbeidsforholdListe;
     }
 
-    @Override
-    public Arbeidsforhold hentSisteArbeidsforhold(String fnr) {
-        return createArbeidsforhold(now().minusDays(30), null);
-    }
-
     private Arbeidsforhold createArbeidsforhold(LocalDate from, LocalDate to) {
         Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         arbeidsforhold.setStyrk("1234");

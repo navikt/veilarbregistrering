@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import io.vavr.control.Try;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -71,11 +70,6 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
         return response.getArbeidsforhold().stream()
                 .map(ArbeidsforholdMapper::map)
                 .collect(toList());
-    }
-
-    @Override
-    public Arbeidsforhold hentSisteArbeidsforhold(String fnr) {
-        return ArbeidsforholdUtils.hentSisteArbeidsforhold(hentArbeidsforhold(fnr));
     }
 
 }

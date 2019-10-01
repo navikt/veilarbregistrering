@@ -19,4 +19,19 @@ public class Besvarelse {
     private DinSituasjonSvar dinSituasjon;
     private FremtidigSituasjonSvar fremtidigSituasjon;
     private TilbakeIArbeidSvar tilbakeIArbeid;
+
+    public boolean anbefalerBehovForArbeidsevnevurdering() {
+        return HelseHinderSvar.JA.equals(helseHinder)
+                || AndreForholdSvar.JA.equals(andreForhold);
+    }
+
+    public boolean anbefalerStandardInnsats(int alder, boolean oppfyllerKravTilArbeidserfaring) {
+        return (18 <= alder && alder <= 59)
+                && oppfyllerKravTilArbeidserfaring
+                && !UtdanningSvar.INGEN_UTDANNING.equals(utdanning)
+                && UtdanningBestattSvar.JA.equals(utdanningBestatt)
+                && UtdanningGodkjentSvar.JA.equals(utdanningGodkjent)
+                && HelseHinderSvar.NEI.equals(helseHinder)
+                && AndreForholdSvar.NEI.equals(andreForhold);
+    }
 }

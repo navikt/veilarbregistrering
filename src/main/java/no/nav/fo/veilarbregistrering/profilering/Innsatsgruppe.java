@@ -1,7 +1,8 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum Innsatsgruppe {
     STANDARD_INNSATS("IKVAL"),
@@ -18,10 +19,20 @@ public enum Innsatsgruppe {
         return arenakode;
     }
 
-    public static Innsatsgruppe tilInnsatsgruppe(String arenakode) {
-        Optional<Innsatsgruppe> innsatsgruppeOptional = Arrays.stream(Innsatsgruppe.values())
+    public static Innsatsgruppe of(String arenakode) {
+        return Arrays.stream(Innsatsgruppe.values())
                 .filter(innsatsgruppe -> innsatsgruppe.getArenakode().equals(arenakode))
-                .findAny();
-        return innsatsgruppeOptional.orElse(null);
+                .findAny().orElse(null);
     }
+
+    static Innsatsgruppe of(Besvarelse besvarelse, int alder, boolean harJobbetSammenhengendeSeksAvTolvSisteManeder) {
+        if (besvarelse.anbefalerBehovForArbeidsevnevurdering()) {
+            return Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
+        } else if (besvarelse.anbefalerStandardInnsats(alder, harJobbetSammenhengendeSeksAvTolvSisteManeder)) {
+            return Innsatsgruppe.STANDARD_INNSATS;
+        } else {
+            return Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
+        }
+    }
+
 }

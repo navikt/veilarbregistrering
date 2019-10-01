@@ -1,15 +1,8 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.SisteStillingSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.UtdanningBestattSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.UtdanningGodkjentSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.UtdanningSvar;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,9 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static java.time.LocalDate.now;
-import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
-import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.STANDARD_INNSATS;
-import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
+import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StartRegistreringUtilsTest {

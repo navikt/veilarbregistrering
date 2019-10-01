@@ -9,12 +9,14 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Component
 @Path("/")
@@ -46,7 +48,9 @@ public class ArbeidsforholdResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        return arbeidsforholdGateway.hentSisteArbeidsforhold(bruker.getFoedselsnummer());
+        List<Arbeidsforhold> arbeidsforholds = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
+        return FlereArbeidsforhold.of(arbeidsforholds)
+                .siste();
     }
 
     private Bruker hentBruker() {
