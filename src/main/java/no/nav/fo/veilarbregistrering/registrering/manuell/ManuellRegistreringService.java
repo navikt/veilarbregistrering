@@ -3,8 +3,14 @@ package no.nav.fo.veilarbregistrering.registrering.manuell;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public class ManuellRegistreringService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ManuellRegistreringService.class);
 
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final HentEnheterGateway hentEnheterGateway;
@@ -26,7 +32,6 @@ public class ManuellRegistreringService {
                 .setVeilederEnhetId(veilederEnhetId);
 
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
-
     }
 
     public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType){
@@ -38,23 +43,23 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        NavEnhet enhet = finnEnhet(registrering.getVeilederEnhetId());
+        Optional<NavEnhet> enhet = finnEnhet(registrering.getVeilederEnhetId());
 
         return new Veileder()
-                .setEnhet(enhet)
+                .setEnhet(enhet.orElse(null))
                 .setIdent(registrering.getVeilederIdent());
-
     }
 
-    NavEnhet finnEnhet(String enhetId) {
+    Optional<NavEnhet> finnEnhet(String enhetId) {
         try {
             return hentEnheterGateway.hentAlleEnheter()
                     .stream()
                     .filter((enhet) -> enhet.getId().equals(enhetId))
-                    .findFirst().orElseThrow(RuntimeException::new);
+                    .findFirst();
 
         } catch (Exception e) {
-            return null;
+            LOG.error("Feil ved henting av NAV-enheter fra Organisasjonsenhet-tjenesten.", e);
+            return Optional.empty();
         }
     }
 

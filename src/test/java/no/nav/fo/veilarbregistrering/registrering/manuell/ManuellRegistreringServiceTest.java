@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,14 +34,14 @@ class ManuellRegistreringServiceTest {
     }
     @Test
     public void skalFinneRiktigEnhet(){
-        NavEnhet enhet = manuellRegistreringService.finnEnhet("1234");
-        assertEquals(enhet, new NavEnhet("1234", "TEST1"));
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet("1234");
+        assertThat(enhet).hasValue(new NavEnhet("1234", "TEST1"));
     }
 
     @Test
-    public void skalReturnereNullHvisIngenEnhetErFunnet(){
-        NavEnhet enhet = manuellRegistreringService.finnEnhet("2345");
-        assertNull(enhet);
+    public void skalReturnereEmptyHvisIngenEnhetErFunnet(){
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet("2345");
+        assertThat(enhet).isEmpty();
     }
 
 }
