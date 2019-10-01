@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,7 @@ public class BrukerRegistreringServiceTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         oppfolgingClient,
-                        sykeforloepMetadataClient,
+                        new SykemeldingService(sykeforloepMetadataClient),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
@@ -216,14 +217,12 @@ public class BrukerRegistreringServiceTest {
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
 
-
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold()
                 .setArbeidsgiverOrgnummer("orgnummer")
                 .setStyrk("styrk")
                 .setFom(LocalDate.of(2017, 1, 10)));
     }
-
 
     private OppfolgingStatusData inaktivBruker() {
         return new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true);

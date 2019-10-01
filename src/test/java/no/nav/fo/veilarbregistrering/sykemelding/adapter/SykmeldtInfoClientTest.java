@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
@@ -71,7 +72,7 @@ class SykmeldtInfoClientTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         oppfolgingClient,
-                        sykeforloepMetadataClient,
+                        new SykemeldingService(sykeforloepMetadataClient),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,

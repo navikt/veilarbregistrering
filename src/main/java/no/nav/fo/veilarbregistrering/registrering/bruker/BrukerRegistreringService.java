@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSit
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -43,7 +42,7 @@ public class BrukerRegistreringService {
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingClient oppfolgingClient,
-                                     SykmeldtInfoClient sykmeldtInfoClient,
+                                     SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
@@ -54,7 +53,7 @@ public class BrukerRegistreringService {
         this.profileringRepository = profileringRepository;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingClient = oppfolgingClient;
-        this.sykemeldingService = new SykemeldingService(sykmeldtInfoClient);
+        this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
@@ -241,7 +240,4 @@ public class BrukerRegistreringService {
 
     }
 
-    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
-        return sykemeldingService.hentSykmeldtInfoData(fnr);
-    }
 }

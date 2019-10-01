@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
@@ -80,7 +81,7 @@ class OppfolgingClientTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         oppfolgingClient,
-                        sykeforloepMetadataClient,
+                        new SykemeldingService(sykeforloepMetadataClient),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
