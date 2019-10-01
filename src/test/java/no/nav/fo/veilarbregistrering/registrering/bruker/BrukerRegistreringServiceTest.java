@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -320,47 +318,5 @@ public class BrukerRegistreringServiceTest {
                         .setStyrk("styrk")
                         .setFom(LocalDate.of(2017, 1, 10)))
         );
-    }
-
-    @org.junit.Test
-    public void skalVaereSykmeldtOverEllerLik39Uker() {
-        String maksDato = "2018-10-01";
-        LocalDate dagenDato = LocalDate.of(2018, Month.JUNE, 26);
-        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
-    }
-
-    @org.junit.Test
-    public void skalVaereSykmeldtAkkurat52Uker() {
-        String maksDato = "2018-12-11";
-        LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 11);
-        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
-    }
-
-    @org.junit.Test
-    public void skalVaereSykmeldtNesten52Uker() {
-        String maksDato = "2018-12-11";
-        LocalDate dagenDato = LocalDate.of(2018, Month.DECEMBER, 9);
-        assertEquals(true, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
-    }
-
-    @org.junit.Test
-    public void skalIkkeVaereSykmeldtOver39Uker() {
-        String maksDato = "2018-10-01";
-        LocalDate dagenDato = LocalDate.of(2018, Month.APRIL, 9);
-        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
-    }
-
-    @org.junit.Test
-    public void skalIkkeVaereSykmeldtOver39UkerNarMaksDatoErUnderDagensDato() {
-        String maksDato = "2018-10-01";
-        LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
-    }
-
-    @org.junit.Test
-    public void skalHandtereNullVedBeregnSykmeldtOver39uker() {
-        String maksDato = null;
-        LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
-        assertEquals(false, BrukerRegistreringService.beregnSykmeldtMellom39Og52Uker(maksDato, dagenDato));
     }
 }
