@@ -90,39 +90,12 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
-    private static boolean gyldigBesvarelseFremtidigSituasjonLoep1(SykmeldtRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse != null
-                && besvarelse.getFremtidigSituasjon() != null
-                && besvarelse.getTilbakeIArbeid() != null
-                && besvarelse.getUtdanning() == null
-                && besvarelse.getUtdanningGodkjent() == null
-                && besvarelse.getUtdanningBestatt() == null
-                && besvarelse.getAndreForhold() == null;
-    }
-    private static boolean gyldigBesvarelseFremtidigSituasjonLoep234(SykmeldtRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse != null
-                && besvarelse.getFremtidigSituasjon() == null
-                && besvarelse.getTilbakeIArbeid() == null
-                && besvarelse.getUtdanning() != null
-                && besvarelse.getUtdanningGodkjent() != null
-                && besvarelse.getUtdanningBestatt() != null
-                && besvarelse.getAndreForhold() != null;
-    }
-
     private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
         return !bruker.getSisteStilling().equals(Stilling.ingenYrkesbakgrunn());
     }
 
     private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
         assertTrue(value1 == value2);
-    }
-
-    private static void assertBothTrueOrThrowException(boolean value1, boolean value2) {
-        if (value1 != value2) {
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
-        }
     }
 
     private static void assertTrue(boolean value) {
