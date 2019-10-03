@@ -27,8 +27,8 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
 import static java.lang.System.setProperty;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.lagProfilering;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

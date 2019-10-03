@@ -19,8 +19,6 @@ public class ValideringUtils {
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenIkkeHarHattJobb = Collections.singletonList(
             DinSituasjonSvar.ALDRI_HATT_JOBB
     );
-    private static final Stilling ingenYrkesbakgrunn = new Stilling("X", -1L, "X");
-    private static final Stilling tomStilling = new Stilling("", -1L, "-1");
 
     public static void validerBrukerRegistrering(OrdinaerBrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
@@ -29,7 +27,7 @@ public class ValideringUtils {
 
         assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
         assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
-        assertFalse(bruker.getSisteStilling().equals(tomStilling));
+        assertFalse(bruker.getSisteStilling().equals(Stilling.tomStilling()));
 
         DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
         UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
@@ -114,7 +112,7 @@ public class ValideringUtils {
     }
 
     private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
-        return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
+        return !bruker.getSisteStilling().equals(Stilling.ingenYrkesbakgrunn());
     }
 
     private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {

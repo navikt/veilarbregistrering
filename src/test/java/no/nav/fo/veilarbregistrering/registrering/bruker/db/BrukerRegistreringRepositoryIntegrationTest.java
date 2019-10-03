@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.BesvarelseTestdataBuilder;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +33,7 @@ public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTes
     public void registrerBruker() {
 
         AktorId aktorId = new AktorId("11111");
-        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering bruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
 
@@ -46,9 +43,9 @@ public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTes
     @Test
     public void hentBrukerregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        OrdinaerBrukerRegistrering bruker1 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering bruker2 = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
         brukerRegistreringRepository.lagreOrdinaerBruker(bruker1, aktorId);
@@ -61,9 +58,9 @@ public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTes
     @Test
     public void hentSykmeldtregistreringForAktorId() {
         AktorId aktorId = new AktorId("11111");
-        SykmeldtRegistrering bruker1 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
+        SykmeldtRegistrering bruker1 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
-        SykmeldtRegistrering bruker2 = gyldigSykmeldtRegistrering().setBesvarelse(gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
+        SykmeldtRegistrering bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_REDUSERT_STILLING));
 
         brukerRegistreringRepository.lagreSykmeldtBruker(bruker1, aktorId);
@@ -78,7 +75,7 @@ public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTes
 
         AktorId aktorId = new AktorId("11111");
 
-        OrdinaerBrukerRegistrering bruker = gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse()
+        OrdinaerBrukerRegistrering bruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
         OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, aktorId);
