@@ -24,7 +24,6 @@ import java.util.List;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 public class BrukerRegistreringServiceTest {
 
-    private static String FNR_OPPFYLLER_KRAV = getFodselsnummerForPersonWithAge(40);
+    private static String FNR_OPPFYLLER_KRAV = FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40);
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
@@ -76,7 +75,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBruker() {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
@@ -108,7 +107,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBrukerIDatabasen() {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
-        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
@@ -118,7 +117,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
-        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
     }
 
@@ -149,7 +148,7 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSykmeldte() {
         mockSykmeldtMedArbeidsgiver();
         mockSykmeldtBrukerOver39uker();
-        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
+        SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
 
         SykmeldtBrukerType sykmeldtBrukerType = brukerRegistreringService.finnSykmeldtBrukerType(sykmeldtRegistrering);
@@ -168,7 +167,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
-        SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
+        SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
     }
 
@@ -249,7 +248,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(gyldigBrukerRegistrering());
+        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering());
 
     }
 

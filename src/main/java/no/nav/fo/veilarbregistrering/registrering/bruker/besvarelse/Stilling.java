@@ -13,4 +13,12 @@ public class Stilling {
     private String label;
     private long konseptId;
     private String styrk08;
+
+    public static Stilling tomStilling() {
+        return new Stilling("", -1L, "-1");
+    }
+
+    public static Stilling ingenYrkesbakgrunn() {
+        return new Stilling("X", -1L, "X");
+    }
 }
