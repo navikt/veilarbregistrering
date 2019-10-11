@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
+import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -35,14 +37,14 @@ public class BrukerRegistreringService {
     private final ProfileringRepository profileringRepository;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
-    private OppfolgingClient oppfolgingClient;
+    private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
-                                     OppfolgingClient oppfolgingClient,
+                                     OppfolgingGateway oppfolgingGateway,
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
@@ -53,7 +55,7 @@ public class BrukerRegistreringService {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
-        this.oppfolgingClient = oppfolgingClient;
+        this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
@@ -71,7 +73,7 @@ public class BrukerRegistreringService {
         AktorId aktorId = new AktorId(bruker.getAktoerId());
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
-        oppfolgingClient.reaktiverBruker(bruker.getFoedselsnummer());
+        oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
 
         log.info("Reaktivering av bruker med aktørId : {}", aktorId);
     }
@@ -101,11 +103,11 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
-        OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fnr);
+        Oppfolgingsstatus oppfolgingStatusData = oppfolgingGateway.hentOppfolgingsstatus(fnr);
 
         SykmeldtInfoData sykeforloepMetaData = null;
         String maksDato = "";
-        boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false);
+        boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.getErSykmeldtMedArbeidsgiver()).orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
                 sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
@@ -142,7 +144,7 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering);
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(bruker.getFoedselsnummer()), profilering.getInnsatsgruppe()));
+        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
 
         rapporterProfilering(profilering);
         rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
@@ -217,8 +219,7 @@ public class BrukerRegistreringService {
 
         if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             AktorId aktorId = new AktorId(bruker.getAktoerId());
-            SykmeldtBrukerType sykmeldtBrukerType = finnSykmeldtBrukerType(sykmeldtRegistrering);
-            oppfolgingClient.settOppfolgingSykmeldt(sykmeldtBrukerType, bruker.getFoedselsnummer());
+            oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering);
             id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
             log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
         } else {
