@@ -6,7 +6,9 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgngGatewayImpl;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -47,10 +49,15 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    OppfolgingGateway oppfolgingGateway(OppfolgingClient oppfolgingClient) {
+        return new OppfolgngGatewayImpl(oppfolgingClient);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
-            OppfolgingClient oppfolgingClient,
+            OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
@@ -61,7 +68,7 @@ public class ServiceBeansConfig {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
-                oppfolgingClient,
+                oppfolgingGateway,
                 sykemeldingService,
                 arbeidsforholdGateway,
                 manuellRegistreringService,

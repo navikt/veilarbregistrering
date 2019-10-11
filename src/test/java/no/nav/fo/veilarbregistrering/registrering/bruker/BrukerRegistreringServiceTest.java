@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgngGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
@@ -58,7 +59,7 @@ public class BrukerRegistreringServiceTest {
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        oppfolgingClient,
+                        new OppfolgngGatewayImpl(oppfolgingClient),
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

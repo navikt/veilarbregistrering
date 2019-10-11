@@ -82,7 +82,7 @@ class OppfolgingClientTest {
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        oppfolgingClient,
+                        new OppfolgngGatewayImpl(oppfolgingClient),
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

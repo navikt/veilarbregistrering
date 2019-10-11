@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 
 import static java.util.Optional.ofNullable;
@@ -8,15 +8,15 @@ import static java.util.Optional.ofNullable;
 public enum RegistreringType {
     REAKTIVERING, SPERRET, ALLEREDE_REGISTRERT, SYKMELDT_REGISTRERING, ORDINAER_REGISTRERING;
 
-    protected static RegistreringType beregnRegistreringType(OppfolgingStatusData oppfolgingStatusData, SykmeldtInfoData sykeforloepMetaData) {
-        if (oppfolgingStatusData.isUnderOppfolging() && !ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
+    protected static RegistreringType beregnRegistreringType(Oppfolgingsstatus oppfolgingsstatus, SykmeldtInfoData sykeforloepMetaData) {
+        if (oppfolgingsstatus.isUnderOppfolging() && !ofNullable(oppfolgingsstatus.getKanReaktiveres()).orElse(false)) {
             return ALLEREDE_REGISTRERT;
-        } else if (ofNullable(oppfolgingStatusData.getKanReaktiveres()).orElse(false)) {
+        } else if (ofNullable(oppfolgingsstatus.getKanReaktiveres()).orElse(false)) {
             return REAKTIVERING;
-        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+        } else if (ofNullable(oppfolgingsstatus.getErSykmeldtMedArbeidsgiver()).orElse(false)
                 && erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
             return SYKMELDT_REGISTRERING;
-        } else if (ofNullable(oppfolgingStatusData.erSykmeldtMedArbeidsgiver).orElse(false)
+        } else if (ofNullable(oppfolgingsstatus.getErSykmeldtMedArbeidsgiver()).orElse(false)
                 && !erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
             return SPERRET;
         } else {
