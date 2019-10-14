@@ -35,11 +35,12 @@ class StartRegistreringUtilsTest {
             }
             tilfredsstillerKravTilArbeidList.forEach(tilfredsstillerKrav -> {
                 aldre.forEach(alder -> {
+                    final OrdinaerBrukerRegistrering bruker = new OrdinaerBrukerRegistrering().setBesvarelse(besvarelse);
                     validerProfilering(
-                            new OrdinaerBrukerRegistrering().setBesvarelse(besvarelse),
+                            bruker,
                             alder,
                             () -> getArbeidsforholdList(tilfredsstillerKrav),
-                            dagensDato
+                            dagensDato, besvarelse
                     );
                 });
             });
@@ -78,15 +79,14 @@ class StartRegistreringUtilsTest {
             OrdinaerBrukerRegistrering bruker,
             int alder,
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
-            LocalDate dagensDato
+            LocalDate dagensDato, Besvarelse besvarelse
     ) {
+
         Innsatsgruppe innsatsgruppe = startRegistreringUtils.profilerBruker(
-                bruker,
                 alder,
                 arbeidsforholdSupplier,
-                dagensDato
+                dagensDato, besvarelse
         ).getInnsatsgruppe();
-        Besvarelse besvarelse = bruker.getBesvarelse();
 
         Innsatsgruppe onsketInnsatsgruppe;
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
@@ -110,10 +110,10 @@ class StartRegistreringUtilsTest {
     @Test
     void testIKVALBesvarelseMellom30Og59Aar() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
-                hentStandardInnsatsBesvarelse(),
                 35,
                 () -> getArbeidsforholdList(true),
-                now()
+                now(),
+                hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(STANDARD_INNSATS, innsatsgruppe);
     }
@@ -121,10 +121,10 @@ class StartRegistreringUtilsTest {
     @Test
     void testBFORMBesvarelseOver59Aar() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
-                hentStandardInnsatsBesvarelse(),
                 60,
                 () -> getArbeidsforholdList(true),
-                now()
+                now(),
+                hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(SITUASJONSBESTEMT_INNSATS, innsatsgruppe);
     }
@@ -132,30 +132,28 @@ class StartRegistreringUtilsTest {
     @Test
     void testBKARTBesvarelse() {
         Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
-                hentArbeidsEvneVurderingBesvarelse(),
                 40,
                 () -> getArbeidsforholdList(true),
-                now()
+                now(),
+                hentArbeidsEvneVurderingBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(BEHOV_FOR_ARBEIDSEVNEVURDERING, innsatsgruppe);
     }
 
-    private OrdinaerBrukerRegistrering hentStandardInnsatsBesvarelse() {
-        return new OrdinaerBrukerRegistrering()
-                .setBesvarelse(new Besvarelse()
+    private Besvarelse hentStandardInnsatsBesvarelse() {
+        return new Besvarelse()
                         .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
                         .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
                         .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
                         .setUtdanningBestatt(UtdanningBestattSvar.JA)
                         .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
                         .setHelseHinder(HelseHinderSvar.NEI)
-                        .setAndreForhold(AndreForholdSvar.NEI)
-                );
+                        .setAndreForhold(AndreForholdSvar.NEI);
     }
 
-    private OrdinaerBrukerRegistrering hentArbeidsEvneVurderingBesvarelse(){
-        OrdinaerBrukerRegistrering besvarelse = hentStandardInnsatsBesvarelse();
-        besvarelse.getBesvarelse().setHelseHinder(HelseHinderSvar.JA);
+    private Besvarelse hentArbeidsEvneVurderingBesvarelse(){
+        Besvarelse besvarelse = hentStandardInnsatsBesvarelse();
+        besvarelse.setHelseHinder(HelseHinderSvar.JA);
         return besvarelse;
     }
 

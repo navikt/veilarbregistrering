@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -141,7 +142,7 @@ public class BrukerRegistreringService {
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, aktorId);
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering);
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
         oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
@@ -197,12 +198,11 @@ public class BrukerRegistreringService {
 
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, OrdinaerBrukerRegistrering bruker) {
+    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
-                bruker,
                 utledAlderForFnr(fnr, now()),
                 () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
-                now());
+                now(), besvarelse);
     }
 
     @Transactional
@@ -220,7 +220,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering);
+        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
         AktorId aktorId = new AktorId(bruker.getAktoerId());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
