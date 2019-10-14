@@ -215,16 +215,15 @@ public class BrukerRegistreringService {
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
         StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(bruker.getFoedselsnummer());
-        long id;
 
-        if (SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
-            AktorId aktorId = new AktorId(bruker.getAktoerId());
-            oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering);
-            id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
-            log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
-        } else {
+        if (!SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
+
+        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering);
+        AktorId aktorId = new AktorId(bruker.getAktoerId());
+        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
+        log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
     }
