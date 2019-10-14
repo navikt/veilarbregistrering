@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.profilering;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,12 +13,11 @@ public class StartRegistreringUtils {
 
     //FIXME: Burde kunne være static
     public Profilering profilerBruker(
-            OrdinaerBrukerRegistrering bruker,
             int alder,
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
-            LocalDate dagensDato
+            LocalDate dagensDato, Besvarelse besvarelse
     ) {
-        return Profilering.of(bruker.getBesvarelse(), alder, harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato));
+        return Profilering.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato));
     }
 
     //FIXME: Burde kunne være static

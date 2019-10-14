@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
 
 public class OppfolgngGatewayImpl implements OppfolgingGateway {
 
@@ -29,8 +29,8 @@ public class OppfolgngGatewayImpl implements OppfolgingGateway {
     }
 
     @Override
-    public void settOppfolgingSykmeldt(String fodselsnummer, SykmeldtRegistrering sykmeldtRegistrering) {
-        oppfolgingClient.settOppfolgingSykmeldt(SykmeldtBrukerType.of(sykmeldtRegistrering), fodselsnummer);
+    public void settOppfolgingSykmeldt(String fodselsnummer, Besvarelse besvarelse) {
+        oppfolgingClient.settOppfolgingSykmeldt(SykmeldtBrukerType.of(besvarelse), fodselsnummer);
     }
 
 }

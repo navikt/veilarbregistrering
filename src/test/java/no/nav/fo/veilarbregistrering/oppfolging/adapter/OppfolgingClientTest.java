@@ -9,7 +9,10 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -27,8 +30,8 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
 import static java.lang.System.setProperty;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -91,7 +94,7 @@ class OppfolgingClientTest {
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
-        when(startRegistreringUtils.profilerBruker(any(OrdinaerBrukerRegistrering.class), anyInt(), any(), any()))
+        when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any()))
                 .thenReturn(new Profilering()
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
                         .setAlder(50)
@@ -134,7 +137,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
-        when(startRegistreringUtils.profilerBruker(any(), anyInt(), any(), any())).thenReturn(lagProfilering());
+        when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
