@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
 
 public enum SykmeldtBrukerType {
     SKAL_TIL_NY_ARBEIDSGIVER,

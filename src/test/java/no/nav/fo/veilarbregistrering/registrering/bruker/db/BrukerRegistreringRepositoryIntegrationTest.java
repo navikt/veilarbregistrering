@@ -2,9 +2,9 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.AndreForholdSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.BesvarelseTestdataBuilder;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
+import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

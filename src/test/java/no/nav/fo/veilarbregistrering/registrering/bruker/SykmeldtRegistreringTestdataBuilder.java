@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.BesvarelseTestdataBuilder;
+import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
 
 import java.time.LocalDateTime;
 

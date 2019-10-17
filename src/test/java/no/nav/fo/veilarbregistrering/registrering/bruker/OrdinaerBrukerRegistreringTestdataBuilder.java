@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.BesvarelseTestdataBuilder;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.SisteStillingSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.StillingTestdataBuilder;
+import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
+import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.SisteStillingSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder;
 
 import java.time.LocalDateTime;
 

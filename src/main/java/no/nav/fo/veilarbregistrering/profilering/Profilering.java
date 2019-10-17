@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 @Data
 @Accessors(chain = true)

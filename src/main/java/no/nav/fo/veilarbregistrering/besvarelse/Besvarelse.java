@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse;
+package no.nav.fo.veilarbregistrering.besvarelse;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

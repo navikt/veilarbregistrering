@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 import java.util.Arrays;
 

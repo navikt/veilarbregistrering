@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.utils;
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.SisteStillingSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.SisteStillingSvar;
 
 import java.util.Arrays;
 import java.util.List;

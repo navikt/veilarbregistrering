@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.profilering;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 import java.time.LocalDate;
 import java.util.List;

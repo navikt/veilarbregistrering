@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgngGatewayImpl;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -143,18 +142,6 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isFalse();
-    }
-
-    @Test
-    void skalRegistrereSykmeldte() {
-        mockSykmeldtMedArbeidsgiver();
-        mockSykmeldtBrukerOver39uker();
-        SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
-
-        SykmeldtBrukerType sykmeldtBrukerType = brukerRegistreringService.finnSykmeldtBrukerType(sykmeldtRegistrering);
-
-        verify(oppfolgingClient, times(1)).settOppfolgingSykmeldt(sykmeldtBrukerType, FNR_OPPFYLLER_KRAV);
     }
 
     @Test
