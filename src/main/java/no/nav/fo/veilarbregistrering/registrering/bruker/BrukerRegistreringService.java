@@ -3,15 +3,13 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
@@ -23,8 +21,6 @@ import java.util.Objects;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER;
-import static no.nav.fo.veilarbregistrering.oppfolging.adapter.SykmeldtBrukerType.SKAL_TIL_SAMME_ARBEIDSGIVER;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
@@ -226,20 +222,6 @@ public class BrukerRegistreringService {
         log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
-    }
-
-    //FIXME: Flytt denne ut i en Gateway som mapper mellom intern og ekstern modell.
-    SykmeldtBrukerType finnSykmeldtBrukerType(SykmeldtRegistrering sykmeldtRegistrering) {
-        FremtidigSituasjonSvar fremtidigSituasjon = sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon();
-        if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
-                || fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER_NY_STILLING
-                || fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER
-        ) {
-            return SKAL_TIL_SAMME_ARBEIDSGIVER;
-        } else {
-            return SKAL_TIL_NY_ARBEIDSGIVER;
-        }
-
     }
 
 }

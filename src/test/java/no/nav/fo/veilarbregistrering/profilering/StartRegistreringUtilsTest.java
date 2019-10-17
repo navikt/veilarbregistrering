@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 public interface OppfolgingGateway {
 

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 public class OppfolgngGatewayImpl implements OppfolgingGateway {
 

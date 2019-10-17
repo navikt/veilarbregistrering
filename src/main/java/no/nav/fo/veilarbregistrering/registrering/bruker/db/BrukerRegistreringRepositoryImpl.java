@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;

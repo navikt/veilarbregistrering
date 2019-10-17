@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.UtdanningSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar;
 
 import java.util.Collections;
 import java.util.HashMap;

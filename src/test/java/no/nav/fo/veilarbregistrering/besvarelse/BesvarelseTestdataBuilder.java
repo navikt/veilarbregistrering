@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse;
+package no.nav.fo.veilarbregistrering.besvarelse;
 
 public class BesvarelseTestdataBuilder {
     public static Besvarelse gyldigBesvarelse() {

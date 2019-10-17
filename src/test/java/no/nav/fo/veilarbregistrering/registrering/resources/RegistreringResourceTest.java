@@ -8,10 +8,10 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringServi
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.FremtidigSituasjonSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.HelseHinderSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
