@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.utils;
+package no.nav.fo.veilarbregistrering.bruker;
 
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.Subject;

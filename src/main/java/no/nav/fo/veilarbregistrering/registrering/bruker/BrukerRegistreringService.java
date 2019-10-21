@@ -24,7 +24,6 @@ import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
 
 
 @Slf4j
@@ -92,7 +91,7 @@ public class BrukerRegistreringService {
             validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
             log.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
-            rapporterInvalidRegistrering(ordinaerBrukerRegistrering);
+            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(ordinaerBrukerRegistrering);
             throw e;
         }
 
@@ -143,8 +142,8 @@ public class BrukerRegistreringService {
 
         oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
 
-        rapporterProfilering(profilering);
-        rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
+        ProfileringMetrikker.rapporterProfilering(profilering);
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         log.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
         return ordinaerBrukerRegistrering;
     }

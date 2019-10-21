@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
-import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 
 import java.time.LocalDate;
 

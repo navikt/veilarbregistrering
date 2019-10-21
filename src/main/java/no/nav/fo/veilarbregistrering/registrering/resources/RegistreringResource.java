@@ -12,7 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Provider;
@@ -22,7 +22,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
+import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
 @Component
 @Path("/")
@@ -100,13 +100,13 @@ public class RegistreringResource {
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
                     registrering.getId(), BrukerRegistreringType.ORDINAER);
 
-            rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
+            BrukerRegistreringTypeMetrikker.rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
 
         } else {
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
         }
 
-        rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
 
         return registrering;
     }
@@ -136,10 +136,10 @@ public class RegistreringResource {
         brukerRegistreringService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
-            rapporterManuellReaktivering();
+            ManuellReaktiveringMetrikker.rapporterManuellReaktivering();
         }
 
-        rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
     }
 
     @POST
@@ -166,13 +166,13 @@ public class RegistreringResource {
 
             long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
-            rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
+            BrukerRegistreringTypeMetrikker.rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
 
         } else {
             brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
-        rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
+        SykmeldtRegistreringMetrikker.rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
     private Bruker hentBruker() {
