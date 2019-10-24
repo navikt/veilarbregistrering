@@ -34,7 +34,7 @@ public class VeilArbPersonClient extends BaseClient {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
             return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                    c -> c.target(baseUrl + "/person/geografisktilknytning?fnr=" + foedselsnummer.srringValue())
+                    c -> c.target(baseUrl + "/person/geografisktilknytning?fnr=" + foedselsnummer.stringValue())
                             .request()
                             .header(COOKIE, cookies)
                             .get(String.class));
