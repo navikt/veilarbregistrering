@@ -66,14 +66,14 @@ public class PersonGatewayTest {
     }
 
     @Test
-    public void hentGeografiskTilknytning_skal_returnere_() {
+    public void hentGeografiskTilknytning_skal_returnere_kontorid() {
         Foedselsnummer foedselsnummer = Foedselsnummer.of("12345678910");
 
         mockServer.when(
                 request()
                         .withMethod("GET")
                         .withPath("/person/geografisktilknytning")
-                        .withQueryStringParameter("fnr", foedselsnummer.srringValue()))
+                        .withQueryStringParameter("fnr", foedselsnummer.stringValue()))
                 .respond(response()
                         .withBody("1234")
                         .withStatusCode(200));

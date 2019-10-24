@@ -15,7 +15,7 @@ public class Foedselsnummer {
         this.foedselsnummer = foedselsnummer;
     }
 
-    public String srringValue() {
+    public String stringValue() {
         return foedselsnummer;
     }
 
