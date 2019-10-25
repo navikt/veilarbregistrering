@@ -29,10 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
-import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -110,9 +108,8 @@ class OppfolgingClientTest {
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
-        setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(
-                getRequiredProperty(OppfolgingGatewayConfig.OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
+        String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider);
         oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return oppfolgingClient;
     }
