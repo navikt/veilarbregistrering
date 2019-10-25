@@ -8,6 +8,8 @@ import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +33,9 @@ import javax.servlet.ServletContext;
         OppfolgingClientHelseSjekk.class,
         SykmeldtInfoClientHelseSjekk.class,
         RemoteFeatureConfig.class,
-        PersonGatewayConfig.class
+        PersonGatewayConfig.class,
+        OppfolgingGatewayConfig.class,
+        SykemeldingGatewayConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 

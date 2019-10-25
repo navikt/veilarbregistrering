@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
-
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
@@ -19,17 +18,15 @@ import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-@Slf4j
 public class OppfolgingClient extends BaseClient {
 
-    public static final String OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";
+    private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
+
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    @Inject
-    public OppfolgingClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        super(getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
+    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+        super(baseUrl, httpServletRequestProvider);
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
@@ -41,11 +38,11 @@ public class OppfolgingClient extends BaseClient {
                             .header(COOKIE, cookies)
                             .get(OppfolgingStatusData.class));
         } catch (ForbiddenException e) {
-            log.error("Ingen tilgang " + e);
+            LOG.error("Ingen tilgang " + e);
             Response response = e.getResponse();
             throw new WebApplicationException(response);
         } catch (Exception e) {
-            log.error("Feil ved kall til tjeneste " + e);
+            LOG.error("Feil ved kall til tjeneste " + e);
             throw new InternalServerErrorException();
         }
     }
@@ -76,7 +73,7 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
-    public void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
+    void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
@@ -105,14 +102,14 @@ public class OppfolgingClient extends BaseClient {
         if (status == 204) {
             return status;
         } else if (status == 403) {
-            log.warn("Feil ved kall mot: {}, response : {}. Skyldes sannsynligvis at bruker mangler arbeidstillatelse i Arena.", url, response);
+            LOG.warn("Feil ved kall mot: {}, response : {}. Skyldes sannsynligvis at bruker mangler arbeidstillatelse i Arena.", url, response);
             throw new WebApplicationException(response);
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
         }
     }
 
-    public void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
+    void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 }

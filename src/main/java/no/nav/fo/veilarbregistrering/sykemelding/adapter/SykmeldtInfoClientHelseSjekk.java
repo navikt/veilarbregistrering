@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
-import static no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient.INFOTRYGDAPI_URL_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig.INFOTRYGDAPI_URL_PROPERTY_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
 public class SykmeldtInfoClientHelseSjekk implements Helsesjekk {

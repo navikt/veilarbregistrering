@@ -5,11 +5,11 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
-public class OppfolgngGatewayImpl implements OppfolgingGateway {
+public class OppfolgingGatewayImpl implements OppfolgingGateway {
 
     private final OppfolgingClient oppfolgingClient;
 
-    public OppfolgngGatewayImpl(OppfolgingClient oppfolgingClient) {
+    public OppfolgingGatewayImpl(OppfolgingClient oppfolgingClient) {
         this.oppfolgingClient = oppfolgingClient;
     }
 

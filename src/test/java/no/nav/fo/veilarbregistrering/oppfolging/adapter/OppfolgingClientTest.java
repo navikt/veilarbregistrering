@@ -32,6 +32,7 @@ import javax.ws.rs.WebApplicationException;
 import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,7 +86,7 @@ class OppfolgingClientTest {
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        new OppfolgngGatewayImpl(oppfolgingClient),
+                        new OppfolgingGatewayImpl(oppfolgingClient),
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
@@ -110,7 +111,8 @@ class OppfolgingClientTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(
+                getRequiredProperty(OppfolgingGatewayConfig.OPPFOLGING_API_PROPERTY_NAME), httpServletRequestProvider);
         oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return oppfolgingClient;
     }
