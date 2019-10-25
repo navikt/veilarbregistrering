@@ -10,45 +10,51 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-public class VeilArbPersonClient extends BaseClient {
+class VeilArbPersonClient extends BaseClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(VeilArbPersonClient.class);
 
-    static final String PERSON_API_PROPERTY_NAME = "VEILARBPERSONGAPI_URL";
-
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    public VeilArbPersonClient(Provider<HttpServletRequest> httpServletRequestProvider) {
-        super(getRequiredProperty(PERSON_API_PROPERTY_NAME), httpServletRequestProvider);
+    VeilArbPersonClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+        super(baseUrl, httpServletRequestProvider);
     }
 
-    public String geografisktilknytning(Foedselsnummer foedselsnummer) {
+    Optional<String> geografisktilknytning(Foedselsnummer foedselsnummer) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
-            return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
+            return Optional.of(withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(baseUrl + "/person/geografisktilknytning?fnr=" + foedselsnummer.stringValue())
                             .request()
                             .header(COOKIE, cookies)
-                            .get(String.class));
+                            .header("SystemAuthorization",
+                                    (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider))
+                            .get(String.class)));
+        } catch (NotFoundException e) {
+            LOG.warn("Fant ikke geografisk tilknytning for bruker.", e);
+            return Optional.empty();
+
         } catch (ForbiddenException e) {
-            LOG.error("Ingen tilgang " + e);
+            LOG.warn("Bruker har ikke tilgang på å hente ut geografisk tilknytning fra VeilArbPerson-tjenesten.", e);
             Response response = e.getResponse();
             throw new WebApplicationException(response);
+
         } catch (Exception e) {
-            LOG.error("Feil ved kall til tjeneste " + e);
+            LOG.error("Feil ved kall til VeilArbPerson-tjenesten.", e);
             throw new InternalServerErrorException();
         }
     }
 
-    public void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
+    void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 }

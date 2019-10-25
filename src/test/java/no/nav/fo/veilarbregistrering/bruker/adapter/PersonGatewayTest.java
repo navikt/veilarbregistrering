@@ -13,11 +13,8 @@ import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Optional;
 
-import static java.lang.System.setProperty;
-import static no.nav.fo.veilarbregistrering.bruker.adapter.VeilArbPersonClient.PERSON_API_PROPERTY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -59,8 +56,8 @@ public class PersonGatewayTest {
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
-        setProperty(PERSON_API_PROPERTY_NAME, "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
-        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(httpServletRequestProvider);
+        String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
+        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider);
         veilArbPersonClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return veilArbPersonClient;
     }
@@ -81,5 +78,22 @@ public class PersonGatewayTest {
         Optional<GeografiskTilknytning> geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer);
 
         assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of("1234"));
+    }
+
+    @Test
+    public void hentGeografiskTilknytning_skal_returnere_optional_hvis_404() {
+        Foedselsnummer foedselsnummer = Foedselsnummer.of("12345678910");
+
+        mockServer.when(
+                request()
+                        .withMethod("GET")
+                        .withPath("/person/geografisktilknytning")
+                        .withQueryStringParameter("fnr", foedselsnummer.stringValue()))
+                .respond(response()
+                        .withStatusCode(404));
+
+        Optional<GeografiskTilknytning> geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer);
+
+        assertThat(geografiskTilknytning).isEmpty();
     }
 }

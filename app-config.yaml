@@ -42,6 +42,8 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: securityTokenService
     resourceType: baseUrl
+  - alias: veilarbpersonAPI
+    resourceType: restservice
   - alias: veilArbOppfolgingAPI
     resourceType: restservice
   - alias: abac.pdp.endpoint
