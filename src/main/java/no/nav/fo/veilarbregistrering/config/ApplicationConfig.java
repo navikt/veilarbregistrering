@@ -4,6 +4,7 @@ import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
+import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
@@ -29,7 +30,8 @@ import javax.servlet.ServletContext;
         AAregServiceWSConfig.class,
         OppfolgingClientHelseSjekk.class,
         SykmeldtInfoClientHelseSjekk.class,
-        RemoteFeatureConfig.class
+        RemoteFeatureConfig.class,
+        PersonGatewayConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 

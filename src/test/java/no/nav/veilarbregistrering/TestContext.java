@@ -13,14 +13,13 @@ import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERN
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERNAL_USERS_AZUREAD_B2C_EXPECTED_AUDIENCE;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
-import static no.nav.fasit.FasitUtils.getDefaultEnvironment;
-import static no.nav.fasit.FasitUtils.getRestService;
-import static no.nav.fasit.FasitUtils.getServiceUser;
+import static no.nav.fasit.FasitUtils.*;
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
+import static no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig.PERSON_API_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
 import static no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig.UNLEASH_API_URL_PROPERTY;
 import static no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.OPPFOLGING_API_PROPERTY_NAME;
+import static no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 
 
@@ -47,6 +46,8 @@ public class TestContext {
         setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
 
         setProperty(OPPFOLGING_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
+
+        setProperty(PERSON_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarbperson/api");
 
         setProperty(UNLEASH_API_URL_PROPERTY, "https://unleash.nais.adeo.no/api/");
 

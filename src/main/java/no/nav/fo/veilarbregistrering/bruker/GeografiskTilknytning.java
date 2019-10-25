@@ -1,16 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class GeografiskTilknytning {
 
     private final String geografisktilknytning;
-
-    public static Optional<GeografiskTilknytning> ofNullable(String geografisktilknytning) {
-        return geografisktilknytning != null ?
-                Optional.of(new GeografiskTilknytning(geografisktilknytning)) : Optional.empty();
-    }
 
     public static GeografiskTilknytning of(String geografisktilknytning) {
         return new GeografiskTilknytning(geografisktilknytning);
