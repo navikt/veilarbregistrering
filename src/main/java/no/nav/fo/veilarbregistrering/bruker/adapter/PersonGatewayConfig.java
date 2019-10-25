@@ -12,12 +12,12 @@ public class PersonGatewayConfig {
 
     public static final String PERSON_API_PROPERTY_NAME = "VEILARBPERSONGAPI_URL";
 
-    @Value("VEILARBPERSONGAPI_URL")
-    private String baseUrl;
+    @Value(PERSON_API_PROPERTY_NAME)
+    private String baseUrlVeilArbPersonApi;
 
     @Bean
     VeilArbPersonClient veilArbPersonClient(Provider<HttpServletRequest> provider) {
-        return new VeilArbPersonClient(baseUrl, provider);
+        return new VeilArbPersonClient(baseUrlVeilArbPersonApi, provider);
     }
 
     @Bean

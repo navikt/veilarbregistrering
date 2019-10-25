@@ -7,15 +7,13 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgngGatewayImpl;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -23,8 +21,6 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
@@ -41,16 +37,6 @@ public class ServiceBeansConfig {
     @Bean
     SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
         return new SykemeldingService(sykemeldingGateway);
-    }
-
-    @Bean
-    SykemeldingGateway sykemeldingGateway(SykmeldtInfoClient sykeforloepMetadataClient) {
-        return new SykemeldingGatewayImpl(sykeforloepMetadataClient);
-    }
-
-    @Bean
-    OppfolgingGateway oppfolgingGateway(OppfolgingClient oppfolgingClient) {
-        return new OppfolgngGatewayImpl(oppfolgingClient);
     }
 
     @Bean
@@ -154,16 +140,6 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidsforholdGateway arbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
         return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
-    }
-
-    @Bean
-    OppfolgingClient oppfolgingClient(Provider<HttpServletRequest> provider) {
-        return new OppfolgingClient(provider);
-    }
-
-    @Bean
-    SykmeldtInfoClient sykeforloepMetadataClient(Provider<HttpServletRequest> provider) {
-        return new SykmeldtInfoClient(provider);
     }
 
     @Bean

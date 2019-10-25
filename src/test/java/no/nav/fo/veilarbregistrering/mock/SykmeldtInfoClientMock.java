@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
 
     public SykmeldtInfoClientMock() {
-        super(null);
+        super(null, null);
     }
 
     @Override
