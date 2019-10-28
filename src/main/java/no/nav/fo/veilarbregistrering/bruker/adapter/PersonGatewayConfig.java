@@ -11,7 +11,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class PersonGatewayConfig {
 
-    public static final String PERSON_API_PROPERTY_NAME = "VEILARBPERSONGAPI_URL";
+    public static final String PERSON_API_PROPERTY_NAME = "VEILARBPERSONAPI_URL";
 
     @Bean
     VeilArbPersonClient veilArbPersonClient(Provider<HttpServletRequest> provider) {
