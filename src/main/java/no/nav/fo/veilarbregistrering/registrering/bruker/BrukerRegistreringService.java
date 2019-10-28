@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
@@ -16,6 +15,8 @@ import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -30,8 +31,9 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 
 
-@Slf4j
 public class BrukerRegistreringService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BrukerRegistreringService.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ProfileringRepository profileringRepository;
@@ -77,7 +79,7 @@ public class BrukerRegistreringService {
         brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
         oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
 
-        log.info("Reaktivering av bruker med aktørId : {}", aktorId);
+        LOG.info("Reaktivering av bruker med aktørId : {}", aktorId);
     }
 
     @Transactional
@@ -96,7 +98,7 @@ public class BrukerRegistreringService {
         try {
             validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
-            log.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
+            LOG.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
             OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(ordinaerBrukerRegistrering);
             throw e;
         }
@@ -124,6 +126,7 @@ public class BrukerRegistreringService {
             geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
 
         } catch (RuntimeException e) {
+            LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
             geografiskTilknytning = Optional.empty();
         }
 
@@ -143,7 +146,7 @@ public class BrukerRegistreringService {
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
 
-        log.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
+        LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
     }
 
@@ -159,7 +162,7 @@ public class BrukerRegistreringService {
 
         ProfileringMetrikker.rapporterProfilering(profilering);
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
-        log.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
         return ordinaerBrukerRegistrering;
     }
 
@@ -233,7 +236,7 @@ public class BrukerRegistreringService {
         oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
         AktorId aktorId = new AktorId(bruker.getAktoerId());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
-        log.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
+        LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
     }
