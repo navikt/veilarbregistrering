@@ -6,7 +6,10 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.veilarbregistrering.TestContext;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
@@ -60,7 +63,6 @@ public class PersonGatewayTest {
         return veilArbPersonClient;
     }
 
-    @Ignore
     @Test
     public void hentGeografiskTilknytning_skal_returnere_kontorid() {
         Foedselsnummer foedselsnummer = Foedselsnummer.of("12345678910");
@@ -71,7 +73,7 @@ public class PersonGatewayTest {
                         .withPath("/person/geografisktilknytning")
                         .withQueryStringParameter("fnr", foedselsnummer.stringValue()))
                 .respond(response()
-                        .withBody("geografiskTilknytning\":\"{\"geografiskTilknytning\":\"030105\"}", MediaType.JSON_UTF_8)
+                        .withBody("{\"geografiskTilknytning\": "+"1234"+"}", MediaType.JSON_UTF_8)
                         .withStatusCode(200));
 
         Optional<GeografiskTilknytning> geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer);
