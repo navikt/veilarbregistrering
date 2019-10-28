@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
@@ -44,13 +41,10 @@ class VeilArbPersonClient extends BaseClient {
             return Optional.empty();
 
         } catch (ForbiddenException e) {
-            LOG.warn("Bruker har ikke tilgang på å hente ut geografisk tilknytning fra VeilArbPerson-tjenesten.", e);
-            Response response = e.getResponse();
-            throw new WebApplicationException(response);
+            throw new RuntimeException("Bruker har ikke tilgang på å hente ut geografisk tilknytning fra VeilArbPerson-tjenesten.", e);
 
         } catch (Exception e) {
-            LOG.error("Feil ved kall til VeilArbPerson-tjenesten.", e);
-            throw new InternalServerErrorException();
+            throw new RuntimeException("Feil ved kall til VeilArbPerson-tjenesten.", e);
         }
     }
 

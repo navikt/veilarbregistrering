@@ -4,6 +4,8 @@ import lombok.SneakyThrows;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
@@ -38,6 +41,7 @@ public class BrukerRegistreringServiceTest {
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
+    private PersonGateway personGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
@@ -50,6 +54,7 @@ public class BrukerRegistreringServiceTest {
         profileringRepository = mock(ProfileringRepository.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
+        personGateway = mock(PersonGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
@@ -59,6 +64,7 @@ public class BrukerRegistreringServiceTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
+                        personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
@@ -188,6 +194,36 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBrukerUnder39uker();
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SPERRET).isTrue();
+    }
+
+    @Test
+    public void gitt_at_geografiskTilknytning_ikke_ble_funnet_skal_null_returneres() {
+        mockInaktivBrukerUtenReaktivering();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus).isNotNull();
+        assertThat(startRegistreringStatus.getGeografiskTilknytning()).isNull();
+
+    }
+
+    @Test
+    public void gitt_at_geografiskTilknytning_er_1234_skal_1234_returneres() {
+        mockInaktivBrukerUtenReaktivering();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        when(personGateway.hentGeografiskTilknytning(any())).thenReturn(Optional.of(GeografiskTilknytning.of("1234")));
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus).isNotNull();
+        assertThat(startRegistreringStatus.getGeografiskTilknytning()).isEqualTo("1234");
+    }
+
+    @Test
+    public void gitt_at_geografiskTilknytning_kaster_exception_skal_null_returneres() {
+        mockInaktivBrukerUtenReaktivering();
+        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
+        when(personGateway.hentGeografiskTilknytning(any())).thenThrow(new RuntimeException("Ikke tilgang"));
+        StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        assertThat(startRegistreringStatus).isNotNull();
+        assertThat(startRegistreringStatus.getGeografiskTilknytning()).isNull();
     }
 
     @Test

@@ -5,6 +5,7 @@ import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
@@ -44,6 +45,7 @@ public class ServiceBeansConfig {
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
+            PersonGateway personGateway,
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
@@ -55,6 +57,7 @@ public class ServiceBeansConfig {
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
+                personGateway,
                 sykemeldingService,
                 arbeidsforholdGateway,
                 manuellRegistreringService,
