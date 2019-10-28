@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
@@ -137,6 +138,9 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public PersonGateway personGateway() { return mock(PersonGateway.class); }
+
+        @Bean
         public SykmeldtInfoClient sykeforloepMetadataClient() {
             return mock(SykmeldtInfoClient.class);
         }
@@ -162,6 +166,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 BrukerRegistreringRepository brukerRegistreringRepository,
                 ProfileringRepository profileringRepository,
                 OppfolgingClient oppfolgingClient,
+                PersonGateway personGateway,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
@@ -172,6 +177,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     brukerRegistreringRepository,
                     profileringRepository,
                     new OppfolgingGatewayImpl(oppfolgingClient),
+                    personGateway,
                     new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
                     manuellRegistreringService,

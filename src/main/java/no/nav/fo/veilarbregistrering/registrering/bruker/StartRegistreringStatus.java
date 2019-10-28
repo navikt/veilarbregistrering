@@ -13,4 +13,5 @@ public class StartRegistreringStatus {
     private RegistreringType registreringType;
     private String formidlingsgruppe;
     private String servicegruppe;
+    private String geografiskTilknytning;
 }

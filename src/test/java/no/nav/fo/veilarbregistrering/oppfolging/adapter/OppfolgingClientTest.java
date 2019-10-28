@@ -4,6 +4,7 @@ import com.google.common.net.MediaType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -50,6 +51,7 @@ class OppfolgingClientTest {
     private BrukerRegistreringService brukerRegistreringService;
     private ManuellRegistreringService manuellRegistreringService;
     private OppfolgingClient oppfolgingClient;
+    private PersonGateway personGateway;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
@@ -72,6 +74,8 @@ class OppfolgingClientTest {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
         oppfolgingClient = buildClient();
+        personGateway = mock(PersonGateway.class);
+
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -85,6 +89,7 @@ class OppfolgingClientTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
+                        personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

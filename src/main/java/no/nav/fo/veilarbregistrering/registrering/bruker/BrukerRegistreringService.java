@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
@@ -33,6 +37,7 @@ public class BrukerRegistreringService {
     private final ProfileringRepository profileringRepository;
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
+    private final PersonGateway personGateway;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -41,7 +46,7 @@ public class BrukerRegistreringService {
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
-                                     SykemeldingService sykemeldingService,
+                                     PersonGateway personGateway, SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
@@ -50,6 +55,7 @@ public class BrukerRegistreringService {
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
+        this.personGateway = personGateway;
         this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
@@ -113,13 +119,22 @@ public class BrukerRegistreringService {
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
 
+        Optional<GeografiskTilknytning> geografiskTilknytning;
+        try {
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
+
+        } catch (RuntimeException e) {
+            geografiskTilknytning = Optional.empty();
+        }
+
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
                 .setRegistreringType(registreringType)
                 .setErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver)
                 .setMaksDato(maksDato)
                 .setFormidlingsgruppe(oppfolgingStatusData.getFormidlingsgruppe())
-                .setServicegruppe(oppfolgingStatusData.getServicegruppe());
+                .setServicegruppe(oppfolgingStatusData.getServicegruppe())
+                .setGeografiskTilknytning(geografiskTilknytning.map(g -> g.stringValue()).orElse(null));
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
