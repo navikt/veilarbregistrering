@@ -2,6 +2,14 @@ package no.nav.fo.veilarbregistrering.bruker;
 
 import java.util.Objects;
 
+/**
+ * Geografisk tilknytning kan være 1 av 3:
+ * <ul>
+ *     <li>Landkode (3 bokstaver)</li>
+ *     <li>Fylke (4 siffer)</li>
+ *     <li>Bydel (6 siffer)</li>
+ * </ul>
+ */
 public class GeografiskTilknytning {
 
     private final String geografisktilknytning;

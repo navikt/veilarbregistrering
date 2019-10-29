@@ -123,7 +123,11 @@ public class BrukerRegistreringService {
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
         try {
+            LOG.info("Henter geografisk tilknytning for bruker.");
+
+            long t1 = System.currentTimeMillis();
             geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
+            LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {
             LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
