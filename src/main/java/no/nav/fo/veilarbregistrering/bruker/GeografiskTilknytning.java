@@ -114,7 +114,7 @@ public class GeografiskTilknytning implements Metrikkel {
             return Arrays.stream(BydelOslo.values())
                     .filter(bydelOslo -> bydelOslo.kode.equals(geografisktilknytning))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException(""));
+                    .orElseThrow(() -> new IllegalStateException(geografisktilknytning + " er ikke en kjent verdi for noen bydel i Oslo."));
         }
 
         private static boolean contains(String geografisktilknytning) {
