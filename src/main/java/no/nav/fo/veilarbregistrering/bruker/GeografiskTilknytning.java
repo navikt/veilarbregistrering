@@ -44,16 +44,21 @@ public class GeografiskTilknytning implements Metrikkel {
 
     @Override
     public String fiedldName() {
-        String fieldName = null;
+        return "geografiskTilknytning";
+    }
+
+    @Override
+    public String value() {
+        String fieldName;
 
         if (utland()) {
             fieldName = "utland";
         } else if (fylke()) {
             fieldName = "fylke";
         } else if (bydelIkkeOslo()) {
-            fieldName = "bydel.ikke.oslo";
+            fieldName = "bydelIkkeOslo";
         } else if (bydelOslo()) {
-            fieldName = "bydel.oslo." + BydelOslo.of(geografisktilknytning).kode;
+            fieldName = "bydelOslo" + BydelOslo.of(geografisktilknytning).name();
         } else {
             throw new IllegalArgumentException("Geografisk tilknytning har ukjent format: " + geografisktilknytning);
         }
@@ -75,11 +80,6 @@ public class GeografiskTilknytning implements Metrikkel {
 
     private boolean bydelIkkeOslo() {
         return geografisktilknytning.length() == 6 && !BydelOslo.contains(geografisktilknytning);
-    }
-
-    @Override
-    public int value() {
-        return 1;
     }
 
     private enum BydelOslo {
@@ -109,6 +109,10 @@ public class GeografiskTilknytning implements Metrikkel {
             this.kode = kode;
             this.verdi = verdi;
         };
+
+        String verdi() {
+            return verdi;
+        }
 
         private static BydelOslo of(String geografisktilknytning) {
             return Arrays.stream(BydelOslo.values())

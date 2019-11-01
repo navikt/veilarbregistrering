@@ -14,12 +14,9 @@ class PersonGatewayImpl implements PersonGateway {
         this.client = client;
     }
 
-
-
     @Override
     public Optional<GeografiskTilknytning> hentGeografiskTilknytning(Foedselsnummer foedselsnummer) {
-        return client.geografisktilknytning(foedselsnummer)
-                .map(PersonGatewayImpl::map);
+        return client.geografisktilknytning(foedselsnummer).map(PersonGatewayImpl::map);
     }
 
     private static GeografiskTilknytning map(GeografiskTilknytningDto dto) {

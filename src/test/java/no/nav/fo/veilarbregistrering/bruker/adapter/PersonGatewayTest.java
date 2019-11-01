@@ -97,4 +97,22 @@ public class PersonGatewayTest {
 
         assertThat(geografiskTilknytning).isEmpty();
     }
+
+    @Test
+    public void hentGeografiskTilknytning_skal_returnere_optional_hvis_tom_tekst() {
+        Foedselsnummer foedselsnummer = Foedselsnummer.of("12345678910");
+
+        mockServer.when(
+                request()
+                        .withMethod("GET")
+                        .withPath("/person/geografisktilknytning")
+                        .withQueryStringParameter("fnr", foedselsnummer.stringValue()))
+                .respond(response()
+                        .withBody("{\"geografiskTilknytning\": "+"null"+"}", MediaType.JSON_UTF_8)
+                        .withStatusCode(200));
+
+        Optional<GeografiskTilknytning> geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer);
+
+        assertThat(geografiskTilknytning).isEmpty();
+    }
 }

@@ -7,8 +7,8 @@ import no.nav.metrics.MetricsFactory;
 public class GeografiskTilknytningMetrikker {
 
     static void rapporter(GeografiskTilknytning geografiskTilknytning) {
-        Event event = MetricsFactory.createEvent("registrering.bruker.registrering.geografiskTilknytning");
-        event.addFieldToReport(geografiskTilknytning.fiedldName(), geografiskTilknytning.value());
+        Event event = MetricsFactory.createEvent("arbeid.registrering.start");
+        event.addTagToReport(geografiskTilknytning.fiedldName(), geografiskTilknytning.value());
         event.report();
     }
 }

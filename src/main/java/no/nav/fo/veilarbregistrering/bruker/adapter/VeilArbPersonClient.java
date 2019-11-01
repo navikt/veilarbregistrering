@@ -29,13 +29,17 @@ class VeilArbPersonClient extends BaseClient {
     Optional<GeografiskTilknytningDto> geografisktilknytning(Foedselsnummer foedselsnummer) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
-            return Optional.of(withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
+            GeografiskTilknytningDto geografiskTilknytningDto = withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(baseUrl + "/person/geografisktilknytning?fnr=" + foedselsnummer.stringValue())
                             .request()
                             .header(COOKIE, cookies)
                             .header("SystemAuthorization",
                                     (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider))
-                            .get(GeografiskTilknytningDto.class)));
+                            .get(GeografiskTilknytningDto.class));
+
+            return geografiskTilknytningDto != null && geografiskTilknytningDto.getGeografiskTilknytning() != null
+                    ? Optional.of(geografiskTilknytningDto) : Optional.empty();
+
         } catch (NotFoundException e) {
             LOG.warn("Fant ikke geografisk tilknytning for bruker.", e);
             return Optional.empty();

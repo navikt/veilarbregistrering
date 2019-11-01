@@ -4,5 +4,5 @@ public interface Metrikkel {
 
     String fiedldName();
 
-    int value();
+    String value();
 }
