@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
@@ -127,7 +128,10 @@ public class BrukerRegistreringService {
             geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
-            geografiskTilknytning.ifPresent(g -> GeografiskTilknytningMetrikker.rapporter(g));
+            geografiskTilknytning.ifPresent(g -> GeografiskTilknytningMetrikker.rapporter(
+                    g,
+                    of(oppfolgingStatusData.getFormidlingsgruppe()).map(f -> "".equals(f) ? "INGEN_VERDI" : f).get()
+            ));
 
         } catch (RuntimeException e) {
             LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
