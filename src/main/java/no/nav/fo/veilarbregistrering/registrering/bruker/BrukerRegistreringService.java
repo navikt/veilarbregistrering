@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
@@ -121,18 +122,14 @@ public class BrukerRegistreringService {
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
 
-        Optional<GeografiskTilknytning> geografiskTilknytning;
-        try {
-            long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
-            LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
+        Optional<GeografiskTilknytning> geografiskTilknytning = hentGeografiskTilknytning(fnr);
 
-            geografiskTilknytning.ifPresent(g -> GeografiskTilknytningMetrikker.rapporter(g));
-
-        } catch (RuntimeException e) {
-            LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
-            geografiskTilknytning = Optional.empty();
-        }
+        geografiskTilknytning.ifPresent(g -> {
+            String formidlingsgruppe = oppfolgingStatusData.getFormidlingsgruppe();
+            if (formidlingsgruppe != null) {
+                GeografiskTilknytningMetrikker.rapporter(g, formidlingsgruppe);
+            }
+        });
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
                 .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
@@ -152,6 +149,20 @@ public class BrukerRegistreringService {
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
+    }
+
+    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(String fnr) {
+        Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
+        try {
+            long t1 = System.currentTimeMillis();
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
+            LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
+
+        } catch (RuntimeException e) {
+            LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
+        }
+
+        return geografiskTilknytning;
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
