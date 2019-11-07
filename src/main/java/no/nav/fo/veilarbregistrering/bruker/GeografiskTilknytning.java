@@ -60,6 +60,7 @@ public class GeografiskTilknytning implements Metrikkel {
         } else if (bydelOslo()) {
             fieldName = "bydelOslo" + BydelOslo.of(geografisktilknytning).name();
         } else {
+            fieldName = "ukjentVerdi";
             throw new IllegalArgumentException("Geografisk tilknytning har ukjent format: " + geografisktilknytning);
         }
 
