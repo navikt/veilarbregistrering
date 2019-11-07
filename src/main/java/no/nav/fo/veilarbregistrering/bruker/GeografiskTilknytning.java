@@ -43,7 +43,7 @@ public class GeografiskTilknytning implements Metrikkel {
     }
 
     @Override
-    public String fiedldName() {
+    public String fieldName() {
         return "geografiskTilknytning";
     }
 
