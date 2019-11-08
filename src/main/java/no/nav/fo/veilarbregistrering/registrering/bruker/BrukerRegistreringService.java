@@ -127,7 +127,7 @@ public class BrukerRegistreringService {
         geografiskTilknytning.ifPresent(g -> {
             String formidlingsgruppe = oppfolgingStatusData.getFormidlingsgruppe();
             if (formidlingsgruppe != null) {
-                GeografiskTilknytningMetrikker.rapporter(g, formidlingsgruppe);
+                GeografiskTilknytningMetrikker.rapporter(g, formidlingsgruppe, registreringType);
             }
         });
 
