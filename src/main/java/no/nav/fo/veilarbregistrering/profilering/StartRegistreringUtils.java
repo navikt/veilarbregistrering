@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
@@ -25,6 +24,6 @@ public class StartRegistreringUtils {
             Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
             LocalDate dagensDato) {
 
-        return ArbeidsforholdUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(FlereArbeidsforhold.of(arbeidsforholdSupplier.get()), dagensDato);
+        return FlereArbeidsforhold.of(arbeidsforholdSupplier.get()).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato);
     }
 }
