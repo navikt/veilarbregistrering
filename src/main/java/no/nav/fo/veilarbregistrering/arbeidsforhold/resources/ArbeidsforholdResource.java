@@ -47,7 +47,7 @@ public class ArbeidsforholdResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentFlereArbeidsforhold(bruker.getFoedselsnummer());
+        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
         return flereArbeidsforhold.siste();
     }
 

@@ -37,7 +37,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
 
     @Override
     @Cacheable(HENT_ARBEIDSFORHOLD)
-    public FlereArbeidsforhold hentFlereArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentArbeidsforhold(String fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
         Regelverker regelverker = new Regelverker();
         regelverker.setValue("A_ORDNINGEN");
