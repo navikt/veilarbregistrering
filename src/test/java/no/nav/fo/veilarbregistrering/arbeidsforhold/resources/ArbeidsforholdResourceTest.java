@@ -43,7 +43,7 @@ class ArbeidsforholdResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
         when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
-        when(arbeidsforholdGateway.hentFlereArbeidsforhold(IDENT)).thenReturn(flereArbeidsforhold());
+        when(arbeidsforholdGateway.hentArbeidsforhold(IDENT)).thenReturn(flereArbeidsforhold());
         arbeidsforholdResource.hentSisteArbeidsforhold();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }

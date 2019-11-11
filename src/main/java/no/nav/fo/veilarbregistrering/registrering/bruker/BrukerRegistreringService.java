@@ -141,7 +141,7 @@ public class BrukerRegistreringService {
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                    () -> arbeidsforholdGateway.hentFlereArbeidsforhold(fnr),
+                    () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                     now());
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
@@ -228,7 +228,7 @@ public class BrukerRegistreringService {
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
                 utledAlderForFnr(fnr, now()),
-                () -> arbeidsforholdGateway.hentFlereArbeidsforhold(fnr),
+                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now(), besvarelse);
     }
 

@@ -266,7 +266,7 @@ public class BrukerRegistreringServiceTest {
 
     @SneakyThrows
     private void mockArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
-        when(arbeidsforholdGateway.hentFlereArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
+        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
 
     private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
@@ -338,7 +338,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
-        when(arbeidsforholdGateway.hentFlereArbeidsforhold(any())).thenReturn(
+        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(
                 FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
                         .setArbeidsgiverOrgnummer("orgnummer")
                         .setStyrk("styrk")
