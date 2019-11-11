@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
@@ -229,6 +230,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     public void skalReturnereOrdinarRegistrering() {
         mockIkkeSykmeldtBruker();
+        mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatus startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ORDINAER_REGISTRERING).isTrue();
     }
@@ -264,7 +266,7 @@ public class BrukerRegistreringServiceTest {
 
     @SneakyThrows
     private void mockArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
-        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(arbeidsforhold);
+        when(arbeidsforholdGateway.hentFlereArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
 
     private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
@@ -336,11 +338,11 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
-        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(
-                Collections.singletonList(new Arbeidsforhold()
+        when(arbeidsforholdGateway.hentFlereArbeidsforhold(any())).thenReturn(
+                FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
                         .setArbeidsgiverOrgnummer("orgnummer")
                         .setStyrk("styrk")
-                        .setFom(LocalDate.of(2017, 1, 10)))
+                        .setFom(LocalDate.of(2017, 1, 10))))
         );
     }
 }
