@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 import org.junit.jupiter.api.Test;
@@ -78,7 +79,7 @@ class StartRegistreringUtilsTest {
     private void validerProfilering(
             OrdinaerBrukerRegistrering bruker,
             int alder,
-            Supplier<List<Arbeidsforhold>> arbeidsforholdSupplier,
+            Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,
             LocalDate dagensDato, Besvarelse besvarelse
     ) {
 
@@ -157,12 +158,12 @@ class StartRegistreringUtilsTest {
         return besvarelse;
     }
 
-    private List<Arbeidsforhold> getArbeidsforholdList(boolean tilfredsstillerKrav) {
+    private FlereArbeidsforhold getArbeidsforholdList(boolean tilfredsstillerKrav) {
         int antallManeder = tilfredsstillerKrav ? 10 : 2;
-        return Collections.singletonList(
+        return FlereArbeidsforhold.of(Collections.singletonList(
                 new Arbeidsforhold()
                         .setFom(now().minusMonths(antallManeder))
-                        .setTom(now())
+                        .setTom(now()))
         );
 
     }

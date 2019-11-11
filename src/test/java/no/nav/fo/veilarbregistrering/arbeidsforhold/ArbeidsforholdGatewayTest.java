@@ -43,8 +43,8 @@ class ArbeidsforholdGatewayTest {
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentFlereArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentFlereArbeidsforhold("fnr");
         verify(arbeidsforholdV3, times(1)).finnArbeidsforholdPrArbeidstaker(any());
     }
 
@@ -52,8 +52,8 @@ class ArbeidsforholdGatewayTest {
     public void skalIkkeCacheVedKallPaaForskjelligFnr() throws Exception {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
-        arbeidsforholdGateway.hentArbeidsforhold("fnr2");
+        arbeidsforholdGateway.hentFlereArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentFlereArbeidsforhold("fnr2");
         verify(arbeidsforholdV3, times(2)).finnArbeidsforholdPrArbeidstaker(any());
     }
 

@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import io.vavr.control.Try;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -18,7 +18,6 @@ import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
-import java.util.List;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -38,7 +37,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
 
     @Override
     @Cacheable(HENT_ARBEIDSFORHOLD)
-    public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentFlereArbeidsforhold(String fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
         Regelverker regelverker = new Regelverker();
         regelverker.setValue("A_ORDNINGEN");
@@ -54,7 +53,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                 .onFailure(f -> {
                     timer.stop()
                             .setFailed()
-                            .addTagToReport("aarsak",  f.getClass().getSimpleName())
+                            .addTagToReport("aarsak", f.getClass().getSimpleName())
                             .report();
                     LOG.warn("Feil ved henting av arbeidsforhold for bruker", f);
                 })
@@ -67,9 +66,10 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                 .onSuccess((event) -> timer.stop().report())
                 .get();
 
-        return response.getArbeidsforhold().stream()
-                .map(ArbeidsforholdMapper::map)
-                .collect(toList());
+        return FlereArbeidsforhold.of(
+                response.getArbeidsforhold().stream()
+                        .map(ArbeidsforholdMapper::map)
+                        .collect(toList()));
     }
 
 }

@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
@@ -142,7 +141,7 @@ public class BrukerRegistreringService {
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                    () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                    () -> arbeidsforholdGateway.hentFlereArbeidsforhold(fnr),
                     now());
             startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
@@ -229,7 +228,7 @@ public class BrukerRegistreringService {
     private Profilering profilerBrukerTilInnsatsgruppe(String fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
                 utledAlderForFnr(fnr, now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                () -> arbeidsforholdGateway.hentFlereArbeidsforhold(fnr),
                 now(), besvarelse);
     }
 
