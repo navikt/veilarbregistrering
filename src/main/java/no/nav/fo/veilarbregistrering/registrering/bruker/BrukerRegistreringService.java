@@ -69,8 +69,8 @@ public class BrukerRegistreringService {
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
 
-        Boolean kanReaktiveres = hentStartRegistreringStatus(bruker.getFoedselsnummer()).getRegistreringType() == RegistreringType.REAKTIVERING;
-        if (!kanReaktiveres) {
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
@@ -85,13 +85,13 @@ public class BrukerRegistreringService {
     @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
 
-        StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
-        if (startRegistreringStatus.isUnderOppfolging()) {
+        if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
         }
 
-        if (!ORDINAER_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
+        if (!brukersTilstand.erOrdinaerRegistrering()) {
             throw new RuntimeException("Brukeren kan ikke registreres. Krever registreringtypen ordinær.");
         }
 
@@ -106,37 +106,43 @@ public class BrukerRegistreringService {
         return opprettBruker(bruker, ordinaerBrukerRegistrering);
     }
 
-    public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
+    BrukersTilstand hentBrukersTilstand(String fnr) {
         Oppfolgingsstatus oppfolgingStatusData = oppfolgingGateway.hentOppfolgingsstatus(fnr);
 
         SykmeldtInfoData sykeforloepMetaData = null;
-        String maksDato = "";
         boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.getErSykmeldtMedArbeidsgiver()).orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
                 sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
-                maksDato = sykeforloepMetaData.maksDato;
             }
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
 
+        return new BrukersTilstand(oppfolgingStatusData, sykeforloepMetaData, registreringType);
+    }
+
+    public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
+
+        RegistreringType registreringType = brukersTilstand.getRegistreringstype();
+
         Optional<GeografiskTilknytning> geografiskTilknytning = hentGeografiskTilknytning(fnr);
 
         geografiskTilknytning.ifPresent(g -> {
-            String formidlingsgruppe = oppfolgingStatusData.getFormidlingsgruppe();
+            String formidlingsgruppe = brukersTilstand.getFormidlingsgruppe();
             if (formidlingsgruppe != null) {
                 GeografiskTilknytningMetrikker.rapporter(g, formidlingsgruppe, registreringType);
             }
         });
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
-                .setUnderOppfolging(oppfolgingStatusData.isUnderOppfolging())
+                .setUnderOppfolging(brukersTilstand.isUnderOppfolging())
                 .setRegistreringType(registreringType)
-                .setErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver)
-                .setMaksDato(maksDato)
-                .setFormidlingsgruppe(oppfolgingStatusData.getFormidlingsgruppe())
-                .setServicegruppe(oppfolgingStatusData.getServicegruppe())
+                .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
+                .setMaksDato(brukersTilstand.getMaksDato())
+                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe())
+                .setServicegruppe(brukersTilstand.getServicegruppe())
                 .setGeografiskTilknytning(geografiskTilknytning.map(g -> g.stringValue()).orElse(null));
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
@@ -241,9 +247,9 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        StartRegistreringStatus startRegistreringStatus = hentStartRegistreringStatus(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
-        if (!SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())) {
+        if (!brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
