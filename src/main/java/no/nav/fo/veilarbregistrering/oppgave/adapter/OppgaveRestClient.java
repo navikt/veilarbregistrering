@@ -22,16 +22,11 @@ public class OppgaveRestClient extends BaseClient {
         super(baseUrl, httpServletRequestProvider);
     }
 
-    OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
-        try {
-            return withClient(
-                    builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                    , c -> postOppgave(oppgaveDto, c)
-            );
-
-        } catch (Exception e) {
-            throw new RuntimeException("Opprettelse av oppgave feilet: ", e);
-        }
+    protected OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
+        return withClient(
+                builder().readTimeout(HTTP_READ_TIMEOUT).build()
+                , c -> postOppgave(oppgaveDto, c)
+        );
     }
 
     private OppgaveResponseDto postOppgave(OppgaveDto oppgaveDto, Client client) {
@@ -45,11 +40,7 @@ public class OppgaveRestClient extends BaseClient {
             return response.readEntity(OppgaveResponseDto.class);
         }
 
-        if (status.equals(Response.Status.NOT_FOUND)) {
-            throw new RuntimeException("Opprett oppgave feilet med statuskode: " + status + " - " + response);
-        }
-
-        throw new RuntimeException("Opprett oppgave feilet med statuskode: " + status);
+        throw new RuntimeException("Opprett oppgave feilet med statuskode: " + status + " - " + response);
     }
 
     private Invocation.Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
@@ -58,7 +49,7 @@ public class OppgaveRestClient extends BaseClient {
                 .request()
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization",
-                        (this.systemUserTokenProvider==null? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
     }
 
