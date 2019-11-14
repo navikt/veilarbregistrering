@@ -67,7 +67,7 @@ class OppgaveGatewayTest {
         mockServer.when(
                 request()
                         .withMethod("POST")
-                        .withPath("/v1/oppgaver")
+                        .withPath("/oppgaver")
                         .withBody("{" +
                                 "\"aktoerId\":\"12e1e3\"," +
                                 "\"beskrivelse\":\"Bruker får ikke registrert seg som arbeidssøker pga. mulig IARBS i Arena.\"," +

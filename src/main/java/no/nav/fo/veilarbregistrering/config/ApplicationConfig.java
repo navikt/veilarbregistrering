@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
+import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
@@ -35,6 +36,7 @@ import javax.servlet.ServletContext;
         RemoteFeatureConfig.class,
         PersonGatewayConfig.class,
         OppfolgingGatewayConfig.class,
+        OppgaveGatewayConfig.class,
         SykemeldingGatewayConfig.class
 })
 public class ApplicationConfig implements ApiApplication {

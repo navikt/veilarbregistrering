@@ -35,7 +35,7 @@ public class OppgaveRestClient extends BaseClient {
     }
 
     private OppgaveResponseDto postOppgave(OppgaveDto oppgaveDto, Client client) {
-        String url = baseUrl + "/v1/oppgaver";
+        String url = baseUrl + "/oppgaver";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url)
                 .post(json(oppgaveDto));
 

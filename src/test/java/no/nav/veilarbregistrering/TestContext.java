@@ -30,6 +30,7 @@ public class TestContext {
         ServiceUser srvveilarbregistrering = getServiceUser("srvveilarbregistrering", APPLICATION_NAME);
 
         setProperty("NAIS_APP_NAME", APPLICATION_NAME);
+        setProperty("FASIT_ENVIRONMENT_NAME", "q0");
 
         //sts
         setProperty(StsSecurityConstants.STS_URL_KEY, securityTokenService);
