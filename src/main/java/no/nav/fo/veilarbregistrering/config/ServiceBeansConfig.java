@@ -8,6 +8,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdReso
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -117,6 +119,16 @@ public class ServiceBeansConfig {
                 sykemeldingService,
                 aktorService
         );
+    }
+
+    @Bean
+    OppgaveResource oppgaveResource(
+            VeilarbAbacPepClient pepClient,
+            UserService userService,
+            OppgaveGateway oppgaveGateway,
+            AktorService aktorService
+    ) {
+        return new OppgaveResource(pepClient, userService, oppgaveGateway, aktorService);
     }
 
     @Bean
