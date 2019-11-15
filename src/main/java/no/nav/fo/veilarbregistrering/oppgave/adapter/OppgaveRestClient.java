@@ -47,11 +47,13 @@ public class OppgaveRestClient extends BaseClient {
     }
 
     private Invocation.Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        String systemUserToken = (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                .getToken();
+        String authorizationToken = SubjectHandler.getSsoToken(OIDC).orElseThrow(IllegalArgumentException::new);
         return client.target(url)
                 .request()
-                .header("Authorization", "Bearer " + systemUserToken);
+                .header("Authorization", "Bearer " + authorizationToken)
+                .header("SystemAuthorization",
+                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                                .getToken());
     }
 
     void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
