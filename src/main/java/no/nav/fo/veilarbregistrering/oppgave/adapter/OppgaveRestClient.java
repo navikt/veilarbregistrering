@@ -47,10 +47,7 @@ public class OppgaveRestClient extends BaseClient {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         return client.target(url)
                 .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization",
-                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                                .getToken());
+                .header(COOKIE, cookies);
     }
 
     void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
