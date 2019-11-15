@@ -50,10 +50,7 @@ public class OppgaveRestClient extends BaseClient {
         String authorizationToken = SubjectHandler.getSsoToken(OIDC).orElseThrow(IllegalArgumentException::new);
         return client.target(url)
                 .request()
-                .header("Authorization", "Bearer " + authorizationToken)
-                .header("SystemAuthorization",
-                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                                .getToken());
+                .header("Authorization", "Bearer " + authorizationToken);
     }
 
     void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
