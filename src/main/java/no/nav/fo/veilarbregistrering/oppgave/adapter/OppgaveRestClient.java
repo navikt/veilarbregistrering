@@ -50,7 +50,7 @@ public class OppgaveRestClient extends BaseClient {
         String authorizationToken = SubjectHandler.getSsoToken(OIDC).orElseThrow(IllegalArgumentException::new);
         return client.target(url)
                 .request()
-                .header(COOKIE, AZUREADB2C_OIDC_COOKIE_NAME_SBS + "=" + authorizationToken)
+                .header("Authorization", AZUREADB2C_OIDC_COOKIE_NAME_SBS + "=" + authorizationToken)
                 .header("SystemAuthorization",
                         (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
