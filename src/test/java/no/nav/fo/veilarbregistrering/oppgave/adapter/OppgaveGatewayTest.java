@@ -6,6 +6,7 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
+import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
@@ -90,23 +91,21 @@ class OppgaveGatewayTest {
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        long oppgaveId = SubjectHandler.withSubject(
+        Oppgave oppgave = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveGateway.opprettOppgave("12e1e3")
         );
 
-        assertThat(oppgaveId).isEqualTo(5436732);
+        assertThat(oppgave.getId()).isEqualTo(5436732);
+        assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
     }
 
     private String okRegistreringBody() {
         return "{\n" +
                 "\"id\": \"5436732\",\n" +
-                "\"aktoerId\": \"12e1e3\"\n" +
+                "\"aktoerId\": \"12e1e3\",\n" +
+                "\"tildeltEnhetsnr\": \"3012\"\n" +
                 "}";
     }
 
-    @Test
-    public void skal() {
-
-    }
 }

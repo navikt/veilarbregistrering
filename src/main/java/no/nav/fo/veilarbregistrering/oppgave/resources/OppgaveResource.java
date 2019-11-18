@@ -8,7 +8,10 @@ import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.POST;
@@ -20,6 +23,8 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 @Api(value = "OppgaveResource")
 public class OppgaveResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveResource.class);
 
     private final OppgaveGateway oppgaveGateway;
     private final UserService userService;
@@ -46,7 +51,11 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
-        return oppgaveGateway.opprettOppgave(bruker.getAktoerId());
+        Oppgave oppgave = oppgaveGateway.opprettOppgave(bruker.getAktoerId());
+
+        LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
+
+        return oppgave.getId();
     }
 
     private Bruker hentBruker() {

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
+import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public long opprettOppgave(String aktoerId) {
+    public Oppgave opprettOppgave(String aktoerId) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(aktoerId);
         oppgaveDto.setBeskrivelse("Bruker får ikke registrert seg som arbeidssøker pga. mulig IARBS i Arena.");
@@ -23,8 +24,6 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
         oppgaveDto.setAktivDato(LocalDate.now().toString());
         oppgaveDto.setPrioritet("LAV");
 
-        OppgaveResponseDto oppgaveResponseDto = restClient.opprettOppgave(oppgaveDto);
-
-        return oppgaveResponseDto.getId();
+        return restClient.opprettOppgave(oppgaveDto);
     }
 }
