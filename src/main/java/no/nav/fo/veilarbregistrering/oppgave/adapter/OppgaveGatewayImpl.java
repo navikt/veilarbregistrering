@@ -19,7 +19,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
         oppgaveDto.setBeskrivelse("Bruker får ikke registrert seg som arbeidssøker pga. mulig IARBS i Arena.");
         oppgaveDto.setTema("OPP");
         oppgaveDto.setOppgavetype("KONT_BRUK");
-        oppgaveDto.setFristFerdigstillelse(LocalDate.now().plusDays(2).toString()   );
+        oppgaveDto.setFristFerdigstillelse(LocalDate.now().plusDays(2).toString());
         oppgaveDto.setAktivDato(LocalDate.now().toString());
         oppgaveDto.setPrioritet("LAV");
 

@@ -41,12 +41,12 @@ public class OppgaveResource {
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public void opprettOppgave() {
+    public long opprettOppgave() {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
-        oppgaveGateway.opprettOppgave(bruker.getAktoerId());
+        return oppgaveGateway.opprettOppgave(bruker.getAktoerId());
     }
 
     private Bruker hentBruker() {
