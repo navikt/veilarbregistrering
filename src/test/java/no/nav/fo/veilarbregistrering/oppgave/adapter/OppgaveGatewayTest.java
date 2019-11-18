@@ -1,7 +1,12 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import com.google.common.net.MediaType;
+import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.auth.SsoToken;
+import no.nav.common.auth.Subject;
+import no.nav.common.auth.SubjectHandler;
+import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +18,7 @@ import org.mockserver.integration.ClientAndServer;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,20 +91,21 @@ class OppgaveGatewayTest {
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        long oppgaveId = oppgaveGateway.opprettOppgave("12e1e3");
+        Oppgave oppgave = SubjectHandler.withSubject(
+                new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
+                () -> oppgaveGateway.opprettOppgave("12e1e3")
+        );
 
-        assertThat(oppgaveId).isEqualTo(5436732);
+        assertThat(oppgave.getId()).isEqualTo(5436732);
+        assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
     }
 
     private String okRegistreringBody() {
         return "{\n" +
                 "\"id\": \"5436732\",\n" +
-                "\"aktoerId\": \"12e1e3\"\n" +
+                "\"aktoerId\": \"12e1e3\",\n" +
+                "\"tildeltEnhetsnr\": \"3012\"\n" +
                 "}";
     }
 
-    @Test
-    public void skal() {
-
-    }
 }

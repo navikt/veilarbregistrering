@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 
 import javax.inject.Provider;
@@ -11,6 +12,8 @@ import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.brukerdialog.security.Constants.AZUREADB2C_OIDC_COOKIE_NAME_SBS;
+import static no.nav.common.auth.SsoToken.Type.OIDC;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
@@ -44,12 +47,10 @@ public class OppgaveRestClient extends BaseClient {
     }
 
     private Invocation.Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         return client.target(url)
                 .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization",
-                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                .header("Authorization",
+                        "Bearer " + (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
     }
 
