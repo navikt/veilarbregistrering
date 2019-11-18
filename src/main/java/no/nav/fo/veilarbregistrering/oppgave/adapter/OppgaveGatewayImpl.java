@@ -17,7 +17,11 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     public Oppgave opprettOppgave(String aktoerId) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(aktoerId);
-        oppgaveDto.setBeskrivelse("Bruker får ikke registrert seg som arbeidssøker pga. mulig IARBS i Arena.");
+        oppgaveDto.setBeskrivelse(
+                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
+                " Brukeren får ikke registrert seg som arbeidssøker." +
+                " Kontaktperson ved NAV Grünerløkka er Avdullah Demiri.");
+        oppgaveDto.setTilordnetRessurs("D113328"); // Avdullah Demiri
         oppgaveDto.setTema("OPP");
         oppgaveDto.setOppgavetype("KONT_BRUK");
         oppgaveDto.setFristFerdigstillelse(LocalDate.now().plusDays(2).toString());

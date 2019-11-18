@@ -13,6 +13,7 @@ class OppgaveDto {
 
     private String aktoerId;
     private String beskrivelse;
+    private String tilordnetRessurs;
     private String tema;
     private String oppgavetype;
     private String fristFerdigstillelse;
