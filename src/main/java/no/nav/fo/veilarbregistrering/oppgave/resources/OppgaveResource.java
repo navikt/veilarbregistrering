@@ -18,6 +18,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
+
 @Component
 @Path("/oppgave")
 @Produces("application/json")
@@ -46,7 +48,7 @@ public class OppgaveResource {
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public long opprettOppgave() {
+    public OppgaveDto opprettOppgave() {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
@@ -55,7 +57,7 @@ public class OppgaveResource {
 
         LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
-        return oppgave.getId();
+        return map(oppgave);
     }
 
     private Bruker hentBruker() {
