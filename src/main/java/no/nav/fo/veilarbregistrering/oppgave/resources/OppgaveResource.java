@@ -7,9 +7,10 @@ import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class OppgaveResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveResource.class);
 
-    private final OppgaveGateway oppgaveGateway;
+    private final OppgaveService oppgaveService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
     private final AktorService aktorService;
@@ -36,12 +37,12 @@ public class OppgaveResource {
     public OppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveGateway oppgaveGateway,
+            OppgaveService oppgaveService,
             AktorService aktorService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
-        this.oppgaveGateway = oppgaveGateway;
+        this.oppgaveService = oppgaveService;
         this.aktorService = aktorService;
     }
 
@@ -53,7 +54,9 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
-        Oppgave oppgave = oppgaveGateway.opprettOppgave(bruker.getAktoerId());
+        Oppgave oppgave = oppgaveService.opprettOppgave(
+                bruker.getAktoerId(),
+                Foedselsnummer.of(bruker.getFoedselsnummer()));
 
         LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
 

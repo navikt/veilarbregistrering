@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
@@ -122,13 +123,18 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway) {
+        return new OppgaveService(oppgaveGateway, personGateway);
+    }
+
+    @Bean
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveGateway oppgaveGateway,
+            OppgaveService oppgaveService,
             AktorService aktorService
     ) {
-        return new OppgaveResource(pepClient, userService, oppgaveGateway, aktorService);
+        return new OppgaveResource(pepClient, userService, oppgaveService, aktorService);
     }
 
     @Bean
