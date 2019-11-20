@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -11,7 +13,7 @@ import java.util.Objects;
  *     <li>Bydel (6 siffer)</li>
  * </ul>
  */
-public class GeografiskTilknytning implements Metrikkel {
+public class GeografiskTilknytning implements Metric {
 
     private final String geografisktilknytning;
 
