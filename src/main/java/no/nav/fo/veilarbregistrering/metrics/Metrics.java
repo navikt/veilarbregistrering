@@ -13,7 +13,10 @@ public class Metrics {
     }
 
     public enum Event {
-        OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave");
+        OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave"),
+        START_REGISTRERING_EVENT("arbeid.registrering.start"),
+        PROFILERING_EVENT("registrering.bruker.profilering"),
+        INVALID_REGISTRERING_EVENT("registrering.invalid.registrering");
 
         private final String name;
 

@@ -26,8 +26,12 @@ import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 
 
@@ -127,13 +131,11 @@ public class BrukerRegistreringService {
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
-        Optional<GeografiskTilknytning> geografiskTilknytning = hentGeografiskTilknytning(fnr);
+        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
-        geografiskTilknytning.ifPresent(g -> {
-            String formidlingsgruppe = brukersTilstand.getFormidlingsgruppe();
-            if (formidlingsgruppe != null) {
-                GeografiskTilknytningMetrikker.rapporter(g, formidlingsgruppe, registreringType);
-            }
+        muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
+            Formidlingsgruppe formidlingsgruppe = brukersTilstand.getFormidlingsgruppe();
+            report(START_REGISTRERING_EVENT, geografiskTilknytning, formidlingsgruppe, registreringType);
         });
 
         StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
@@ -141,9 +143,9 @@ public class BrukerRegistreringService {
                 .setRegistreringType(registreringType)
                 .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
                 .setMaksDato(brukersTilstand.getMaksDato())
-                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe())
+                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().stringValue())
                 .setServicegruppe(brukersTilstand.getServicegruppe())
-                .setGeografiskTilknytning(geografiskTilknytning.map(g -> g.stringValue()).orElse(null));
+                .setGeografiskTilknytning(muligGeografiskTilknytning.map(g -> g.stringValue()).orElse(null));
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
@@ -179,8 +181,8 @@ public class BrukerRegistreringService {
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
         oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+        report(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
-        ProfileringMetrikker.rapporterProfilering(profilering);
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
         return ordinaerBrukerRegistrering;

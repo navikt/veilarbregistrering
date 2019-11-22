@@ -33,8 +33,8 @@ public class BrukersTilstand {
         return oppfolgingStatusData.isUnderOppfolging();
     }
 
-    public String getFormidlingsgruppe() {
-        return oppfolgingStatusData.getFormidlingsgruppe();
+    public Formidlingsgruppe getFormidlingsgruppe() {
+        return Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe());
     }
 
     public RegistreringType getRegistreringstype() {

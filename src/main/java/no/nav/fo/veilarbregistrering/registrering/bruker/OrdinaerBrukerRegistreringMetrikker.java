@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.INVALID_REGISTRERING_EVENT;
+
 class OrdinaerBrukerRegistreringMetrikker {
     static void rapporterInvalidRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
-        Event event = MetricsFactory.createEvent("registrering.invalid.registrering");
+        Event event = MetricsFactory.createEvent(INVALID_REGISTRERING_EVENT.name());
         event.addFieldToReport("registrering", toJson(ordinaerBrukerRegistrering.getBesvarelse()));
         event.addFieldToReport("stilling", toJson(ordinaerBrukerRegistrering.getSisteStilling()));
         event.report();
