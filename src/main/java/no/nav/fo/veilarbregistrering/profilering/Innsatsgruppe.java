@@ -1,10 +1,11 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.util.Arrays;
 
-public enum Innsatsgruppe {
+public enum Innsatsgruppe implements Metric {
     STANDARD_INNSATS("IKVAL"),
     SITUASJONSBESTEMT_INNSATS("BFORM"),
     BEHOV_FOR_ARBEIDSEVNEVURDERING("BKART");
@@ -35,4 +36,13 @@ public enum Innsatsgruppe {
         }
     }
 
+    @Override
+    public String fieldName() {
+        return "innsatsgruppe";
+    }
+
+    @Override
+    public String value() {
+        return this.toString();
+    }
 }
