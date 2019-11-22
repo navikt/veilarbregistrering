@@ -7,7 +7,6 @@ import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
@@ -16,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import static no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdMapper.map;
 
 @Component
 @Path("/")
@@ -43,12 +44,13 @@ public class ArbeidsforholdResource {
     @GET
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
-    public Arbeidsforhold hentSisteArbeidsforhold() {
+    public ArbeidsforholdDto hentSisteArbeidsforhold() {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
+
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
-        return flereArbeidsforhold.siste();
+        return map(flereArbeidsforhold.siste());
     }
 
     private Bruker hentBruker() {
