@@ -2,11 +2,11 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.binding.OrganisasjonEnhetV2;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.Oppgavebehandlerfilter;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.Organisasjonsenhet;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.meldinger.HentFullstendigEnhetListeRequest;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.meldinger.HentFullstendigEnhetListeResponse;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.WSOppgavebehandlerfilter;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.informasjon.WSOrganisasjonsenhet;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.meldinger.WSHentFullstendigEnhetListeRequest;
+import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.meldinger.WSHentFullstendigEnhetListeResponse;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class HentEnheterGatewayImpl implements HentEnheterGateway {
     @Override
     @Cacheable(HENT_ALLE_ENHETER)
     public List<NavEnhet> hentAlleEnheter() {
-        HentFullstendigEnhetListeResponse hentFullstendigEnhetListeResponse =
+        WSHentFullstendigEnhetListeResponse hentFullstendigEnhetListeResponse =
                 organisasjonEnhetV2.hentFullstendigEnhetListe(lagHentFullstendigEnhetListeRequest());
 
         return hentFullstendigEnhetListeResponse.getEnhetListe().stream()
@@ -33,14 +33,14 @@ public class HentEnheterGatewayImpl implements HentEnheterGateway {
                 .collect(Collectors.toList());
     }
 
-    private HentFullstendigEnhetListeRequest lagHentFullstendigEnhetListeRequest() {
-        final HentFullstendigEnhetListeRequest request = new HentFullstendigEnhetListeRequest();
-        request.setOppgavebehandlerfilter(Oppgavebehandlerfilter.UFILTRERT);
+    private WSHentFullstendigEnhetListeRequest lagHentFullstendigEnhetListeRequest() {
+        final WSHentFullstendigEnhetListeRequest request = new WSHentFullstendigEnhetListeRequest();
+        request.setOppgavebehandlerfilter(WSOppgavebehandlerfilter.UFILTRERT);
 
         return request;
     }
 
-    private static NavEnhet orgEnhetTilPortefoljeEnhet(Organisasjonsenhet orgEnhet) {
+    private static NavEnhet orgEnhetTilPortefoljeEnhet(WSOrganisasjonsenhet orgEnhet) {
         return new NavEnhet(orgEnhet.getEnhetId(), orgEnhet.getEnhetNavn());
     }
 
