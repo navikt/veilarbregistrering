@@ -9,19 +9,20 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.Fnr;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.utils.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import static no.nav.fo.veilarbregistrering.utils.FunksjonelleMetrikker.*;
+import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
 @Component
 @Path("/")
@@ -31,6 +32,7 @@ public class RegistreringResource {
 
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private final Provider<HttpServletRequest> requestProvider;
     private final BrukerRegistreringService brukerRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
@@ -44,7 +46,8 @@ public class RegistreringResource {
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
             RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
-            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature
+            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature,
+            Provider<HttpServletRequest> requestProvider
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
@@ -53,6 +56,7 @@ public class RegistreringResource {
         this.aktorService=aktorService;
         this.tjenesteNedeFeature = tjenesteNedeFeature;
         this.manuellRegistreringFeature = manuellRegistreringFeature;
+        this.requestProvider = requestProvider;
     }
 
     @GET
@@ -87,22 +91,22 @@ public class RegistreringResource {
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String enhetId = getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
 
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId,
                     registrering.getId(), BrukerRegistreringType.ORDINAER);
 
-            rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
+            BrukerRegistreringTypeMetrikker.rapporterManuellRegistrering(BrukerRegistreringType.ORDINAER);
 
         } else {
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker.getFoedselsnummer());
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
         }
 
-        rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
 
         return registrering;
     }
@@ -114,7 +118,7 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        return brukerRegistreringService.hentBrukerRegistrering(new Fnr(bruker.getFoedselsnummer()));
+        return brukerRegistreringService.hentBrukerRegistrering(bruker);
     }
 
     @POST
@@ -129,13 +133,13 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
-        brukerRegistreringService.reaktiverBruker(bruker.getFoedselsnummer());
+        brukerRegistreringService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
-            rapporterManuellReaktivering();
+            ManuellReaktiveringMetrikker.rapporterManuellReaktivering();
         }
 
-        rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
     }
 
     @POST
@@ -156,19 +160,19 @@ public class RegistreringResource {
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
+            final String enhetId = getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
+            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, BrukerRegistreringType.SYKMELDT);
-            rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
+            BrukerRegistreringTypeMetrikker.rapporterManuellRegistrering(BrukerRegistreringType.SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker.getFoedselsnummer());
+            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
-        rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
+        SykmeldtRegistreringMetrikker.rapporterSykmeldtBesvarelse(sykmeldtRegistrering);
     }
 
     private Bruker hentBruker() {
@@ -178,6 +182,14 @@ public class RegistreringResource {
                 .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
     }
 
+    String getEnhetIdFromUrlOrThrow() {
+        final String enhetId = requestProvider.get().getParameter("enhetId");
 
+        if (enhetId == null) {
+            throw new RuntimeException("Mangler enhetId");
+        }
+
+        return enhetId;
+    }
 
 }

@@ -11,4 +11,7 @@ public class StartRegistreringStatus {
     private boolean erSykmeldtMedArbeidsgiver;
     private Boolean jobbetSeksAvTolvSisteManeder;
     private RegistreringType registreringType;
+    private String formidlingsgruppe;
+    private String servicegruppe;
+    private String geografiskTilknytning;
 }

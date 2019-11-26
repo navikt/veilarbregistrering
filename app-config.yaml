@@ -1,6 +1,6 @@
 # ref https://raw.githubusercontent.com/nais/naisd/master/nais_example.yaml
 image: docker.adeo.no:5000/fo/veilarbregistrering
-team: bos
+team: paw
 replicas:
   min: 2
   max: 4
@@ -42,6 +42,8 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: securityTokenService
     resourceType: baseUrl
+  - alias: veilarbpersonAPI
+    resourceType: restservice
   - alias: veilArbOppfolgingAPI
     resourceType: restservice
   - alias: abac.pdp.endpoint

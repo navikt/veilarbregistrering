@@ -1,26 +1,25 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
-@Slf4j
 public class ManuellRegistreringService {
 
-    private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final EnhetOppslagService enhetOppslagService;
-    private final Provider<HttpServletRequest> requestProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(ManuellRegistreringService.class);
 
-    public ManuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
-                                      EnhetOppslagService enhetOppslagService,
-                                      Provider<HttpServletRequest> requestProvider) {
+    private final ManuellRegistreringRepository manuellRegistreringRepository;
+    private final HentEnheterGateway hentEnheterGateway;
+
+    public ManuellRegistreringService(
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            HentEnheterGateway hentEnheterGateway) {
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.enhetOppslagService = enhetOppslagService;
-        this.requestProvider = requestProvider;
+        this.hentEnheterGateway = hentEnheterGateway;
     }
 
     public void lagreManuellRegistrering(String veilederIdent, String veilederEnhetId,
@@ -33,7 +32,6 @@ public class ManuellRegistreringService {
                 .setVeilederEnhetId(veilederEnhetId);
 
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
-
     }
 
     public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType){
@@ -45,23 +43,24 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        NavEnhet enhet = enhetOppslagService.finnEnhet(registrering.getVeilederEnhetId());
+        Optional<NavEnhet> enhet = finnEnhet(registrering.getVeilederEnhetId());
 
         return new Veileder()
-                .setEnhet(enhet)
+                .setEnhet(enhet.orElse(null))
                 .setIdent(registrering.getVeilederIdent());
-
     }
 
-    //FIXME: Logikk knyttet til URL bør ikke trekkes ned i forretningslaget, men beholdes i Controller-laget.
-    public String getEnhetIdFromUrlOrThrow() {
-        final String enhetId = requestProvider.get().getParameter("enhetId");
+    Optional<NavEnhet> finnEnhet(String enhetId) {
+        try {
+            return hentEnheterGateway.hentAlleEnheter()
+                    .stream()
+                    .filter((enhet) -> enhet.getId().equals(enhetId))
+                    .findFirst();
 
-        if (enhetId == null) {
-            throw new RuntimeException("Mangler enhetId");
+        } catch (Exception e) {
+            LOG.error("Feil ved henting av NAV-enheter fra Organisasjonsenhet-tjenesten.", e);
+            return Optional.empty();
         }
-
-        return enhetId;
     }
 
 }

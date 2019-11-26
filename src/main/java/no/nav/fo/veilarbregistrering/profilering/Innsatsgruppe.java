@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
-import java.util.Arrays;
-import java.util.Optional;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
 
-public enum Innsatsgruppe {
+import java.util.Arrays;
+
+public enum Innsatsgruppe implements Metric {
     STANDARD_INNSATS("IKVAL"),
     SITUASJONSBESTEMT_INNSATS("BFORM"),
     BEHOV_FOR_ARBEIDSEVNEVURDERING("BKART");
@@ -18,10 +20,29 @@ public enum Innsatsgruppe {
         return arenakode;
     }
 
-    public static Innsatsgruppe tilInnsatsgruppe(String arenakode) {
-        Optional<Innsatsgruppe> innsatsgruppeOptional = Arrays.stream(Innsatsgruppe.values())
+    public static Innsatsgruppe of(String arenakode) {
+        return Arrays.stream(Innsatsgruppe.values())
                 .filter(innsatsgruppe -> innsatsgruppe.getArenakode().equals(arenakode))
-                .findAny();
-        return innsatsgruppeOptional.orElse(null);
+                .findAny().orElse(null);
+    }
+
+    static Innsatsgruppe of(Besvarelse besvarelse, int alder, boolean harJobbetSammenhengendeSeksAvTolvSisteManeder) {
+        if (besvarelse.anbefalerBehovForArbeidsevnevurdering()) {
+            return Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
+        } else if (besvarelse.anbefalerStandardInnsats(alder, harJobbetSammenhengendeSeksAvTolvSisteManeder)) {
+            return Innsatsgruppe.STANDARD_INNSATS;
+        } else {
+            return Innsatsgruppe.SITUASJONSBESTEMT_INNSATS;
+        }
+    }
+
+    @Override
+    public String fieldName() {
+        return "innsatsgruppe";
+    }
+
+    @Override
+    public String value() {
+        return this.toString();
     }
 }

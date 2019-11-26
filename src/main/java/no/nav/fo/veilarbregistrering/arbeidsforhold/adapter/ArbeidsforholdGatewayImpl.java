@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import io.vavr.control.Try;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdUtils;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -14,11 +12,12 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
-import java.util.List;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -26,9 +25,11 @@ import static io.vavr.Predicates.instanceOf;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
-@Slf4j
 public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
-    private ArbeidsforholdV3 arbeidsforholdV3;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdGatewayImpl.class);
+
+    private final ArbeidsforholdV3 arbeidsforholdV3;
 
     public ArbeidsforholdGatewayImpl(ArbeidsforholdV3 arbeidsforholdV3) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
@@ -36,7 +37,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
 
     @Override
     @Cacheable(HENT_ARBEIDSFORHOLD)
-    public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentArbeidsforhold(String fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
         Regelverker regelverker = new Regelverker();
         regelverker.setValue("A_ORDNINGEN");
@@ -52,25 +53,23 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
                 .onFailure(f -> {
                     timer.stop()
                             .setFailed()
-                            .addTagToReport("aarsak",  f.getClass().getSimpleName())
+                            .addTagToReport("aarsak", f.getClass().getSimpleName())
                             .report();
-                    log.error("Feil ved henting av arbeidsforhold for bruker", f);
+                    LOG.warn("Feil ved henting av arbeidsforhold for bruker", f);
                 })
                 .mapFailure(
-                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)), (t) -> new ForbiddenException("Ikke tilgang til bruker")),
-                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerUgyldigInput.class)), (t) -> new BadRequestException("Ugyldig bruker identifikator"))
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning.class)),
+                                (t) -> new ForbiddenException("Henting av arbeidsforhold feilet pga. manglende tilgang til bruker")),
+                        Case($(instanceOf(FinnArbeidsforholdPrArbeidstakerUgyldigInput.class)),
+                                (t) -> new BadRequestException("Henting av arbeidsforhold feilet pga. ugyldig brukeridentifikator"))
                 )
                 .onSuccess((event) -> timer.stop().report())
                 .get();
 
-        return response.getArbeidsforhold().stream()
-                .map(arbeidsforhold -> ArbeidsforholdMapper.map(arbeidsforhold))
-                .collect(toList());
-    }
-
-    @Override
-    public Arbeidsforhold hentSisteArbeidsforhold(String fnr) {
-        return ArbeidsforholdUtils.hentSisteArbeidsforhold(hentArbeidsforhold(fnr));
+        return FlereArbeidsforhold.of(
+                response.getArbeidsforhold().stream()
+                        .map(ArbeidsforholdMapper::map)
+                        .collect(toList()));
     }
 
 }

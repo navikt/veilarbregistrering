@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.mock;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 
 import java.time.LocalDate;
@@ -16,17 +17,12 @@ public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
     }
 
     @Override
-    public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentArbeidsforhold(String fnr) {
         List arbeidsforholdListe = new ArrayList();
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(200), now().minusDays(30)));
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(30), null));
 
-        return arbeidsforholdListe;
-    }
-
-    @Override
-    public Arbeidsforhold hentSisteArbeidsforhold(String fnr) {
-        return createArbeidsforhold(now().minusDays(30), null);
+        return FlereArbeidsforhold.of(arbeidsforholdListe);
     }
 
     private Arbeidsforhold createArbeidsforhold(LocalDate from, LocalDate to) {

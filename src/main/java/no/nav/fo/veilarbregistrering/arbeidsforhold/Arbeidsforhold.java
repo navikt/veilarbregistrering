@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @Accessors(chain = true)
@@ -13,4 +14,12 @@ public class Arbeidsforhold {
     private LocalDate fom;
     private LocalDate tom;
 
+    static Arbeidsforhold utenStyrkkode() {
+        return new Arbeidsforhold().setStyrk("utenstyrkkode");
+    }
+
+    boolean erDatoInnenforPeriode(LocalDate innevaerendeMnd) {
+        return innevaerendeMnd.isAfter(fom.minusDays(1)) &&
+                (Objects.isNull(tom) || innevaerendeMnd.isBefore(tom.plusDays(1)));
+    }
 }

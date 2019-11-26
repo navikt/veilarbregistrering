@@ -1,55 +1,47 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
-import no.nav.fo.veilarbregistrering.orgenhet.EnhetOppslagService;
-import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
-import org.junit.jupiter.api.Assertions;
+import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-public class ManuellRegistreringServiceTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    private final static String MOCK_AKTOR_ID = "7986543233647548";
+class ManuellRegistreringServiceTest {
 
-    private ManuellRegistreringRepositoryImpl manuellRegistreringRepository;
-    private Provider<HttpServletRequest> requestProvider;
-    private EnhetOppslagService enhetOppslagService;
+    private ManuellRegistreringRepository manuellRegistreringRepository;
+    private HentEnheterGateway hentEnheterGateway;
     private ManuellRegistreringService manuellRegistreringService;
 
     @BeforeEach
-    public void setup() {
+    public void setup(){
+        manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
+        hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
+        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
 
-        manuellRegistreringRepository = Mockito.mock(ManuellRegistreringRepositoryImpl.class);
-        requestProvider = Mockito.mock(Provider.class);
-        enhetOppslagService = Mockito.mock(EnhetOppslagService.class);
-
-        manuellRegistreringService = new ManuellRegistreringService(
-                manuellRegistreringRepository,
-                enhetOppslagService,
-                requestProvider);
+        List<NavEnhet> enheter = Arrays.asList(
+                new NavEnhet("1234", "TEST1"),
+                new NavEnhet("5678", "TEST2")
+        );
+        when(hentEnheterGateway.hentAlleEnheter()).thenReturn(enheter);
+    }
+    @Test
+    public void skalFinneRiktigEnhet(){
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet("1234");
+        assertThat(enhet).hasValue(new NavEnhet("1234", "TEST1"));
     }
 
     @Test
-    public void skalHenteEnhetIdFraUrl(){
-        String enhetId = "1234";
-        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        Mockito.when(request.getParameter("enhetId")).thenReturn(enhetId);
-        Mockito.when(requestProvider.get()).thenReturn(request);
-
-        String enhetIdFraUrl = manuellRegistreringService.getEnhetIdFromUrlOrThrow();
-        Assertions.assertEquals(enhetId, enhetIdFraUrl);
-    }
-
-    @Test
-    public void skalFeileHvisUrlIkkeHarEnhetId(){
-        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        Mockito.when(request.getParameter("enhetId")).thenReturn(null);
-        Mockito.when(requestProvider.get()).thenReturn(request);
-
-        Assertions.assertThrows(RuntimeException.class, () -> manuellRegistreringService.getEnhetIdFromUrlOrThrow());
+    public void skalReturnereEmptyHvisIngenEnhetErFunnet(){
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet("2345");
+        assertThat(enhet).isEmpty();
     }
 
 }

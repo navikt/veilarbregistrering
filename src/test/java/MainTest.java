@@ -1,11 +1,8 @@
 import no.nav.apiapp.ApiApp;
-import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
 import no.nav.fo.veilarbregistrering.config.ApplicationTestConfig;
 import no.nav.testconfig.ApiAppTest;
 import no.nav.veilarbregistrering.TestContext;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
-
-import static java.lang.System.getProperty;
 
 public class MainTest {
     public static final String TEST_PORT = "8810";

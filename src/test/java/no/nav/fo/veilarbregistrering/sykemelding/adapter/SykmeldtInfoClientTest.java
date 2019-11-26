@@ -1,29 +1,30 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import com.google.common.net.MediaType;
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus;
-import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
-import static java.lang.System.setProperty;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.utils.TestUtils.gyldigSykmeldtRegistrering;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,9 +40,9 @@ class SykmeldtInfoClientTest {
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
-    private AktorService aktorService;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
+    private PersonGateway personGateway;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -63,8 +64,8 @@ class SykmeldtInfoClientTest {
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
-        aktorService = mock(AktorService.class);
         oppfolgingClient = buildOppfolgingClient();
+        personGateway = mock(PersonGateway.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -77,9 +78,9 @@ class SykmeldtInfoClientTest {
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        aktorService,
-                        oppfolgingClient,
-                        sykeforloepMetadataClient,
+                        new OppfolgingGatewayImpl(oppfolgingClient),
+                        personGateway,
+                        new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
@@ -87,20 +88,19 @@ class SykmeldtInfoClientTest {
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
-        when(aktorService.getAktorId(any())).thenReturn(Optional.of("AKTORID"));
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
-        setProperty("SYKEFRAVAERAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/");
-        return sykeforloepMetadataClient = new SykmeldtInfoClient(httpServletRequestProvider);
+        String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/";
+        return sykeforloepMetadataClient = new SykmeldtInfoClient(baseUrl, httpServletRequestProvider);
     }
 
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
-        setProperty("VEILARBOPPFOLGINGAPI_URL", "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT);
-        return oppfolgingClient = new OppfolgingClient(httpServletRequestProvider);
+        String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
+        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider);
     }
 
     @Test
@@ -110,7 +110,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(204));
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, ident);
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID"));
     }
 
     @Test
@@ -128,7 +128,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(502));
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, ident));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
     }
 
     // TODO: FIKS når infotrygd api er klar

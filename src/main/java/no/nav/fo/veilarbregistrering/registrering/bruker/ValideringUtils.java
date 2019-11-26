@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +19,6 @@ public class ValideringUtils {
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenIkkeHarHattJobb = Collections.singletonList(
             DinSituasjonSvar.ALDRI_HATT_JOBB
     );
-    private static final Stilling ingenYrkesbakgrunn = new Stilling("X", -1L, "X");
-    private static final Stilling tomStilling = new Stilling("", -1L, "-1");
 
     public static void validerBrukerRegistrering(OrdinaerBrukerRegistrering bruker) {
         Besvarelse besvarelse = bruker.getBesvarelse();
@@ -29,7 +27,7 @@ public class ValideringUtils {
 
         assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
         assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
-        assertFalse(bruker.getSisteStilling().equals(tomStilling));
+        assertFalse(bruker.getSisteStilling().equals(Stilling.tomStilling()));
 
         DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
         UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
@@ -92,39 +90,12 @@ public class ValideringUtils {
                 || besvarelse.getAndreForhold() == null;
     }
 
-    private static boolean gyldigBesvarelseFremtidigSituasjonLoep1(SykmeldtRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse != null
-                && besvarelse.getFremtidigSituasjon() != null
-                && besvarelse.getTilbakeIArbeid() != null
-                && besvarelse.getUtdanning() == null
-                && besvarelse.getUtdanningGodkjent() == null
-                && besvarelse.getUtdanningBestatt() == null
-                && besvarelse.getAndreForhold() == null;
-    }
-    private static boolean gyldigBesvarelseFremtidigSituasjonLoep234(SykmeldtRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse != null
-                && besvarelse.getFremtidigSituasjon() == null
-                && besvarelse.getTilbakeIArbeid() == null
-                && besvarelse.getUtdanning() != null
-                && besvarelse.getUtdanningGodkjent() != null
-                && besvarelse.getUtdanningBestatt() != null
-                && besvarelse.getAndreForhold() != null;
-    }
-
     private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
-        return !bruker.getSisteStilling().equals(ValideringUtils.ingenYrkesbakgrunn);
+        return !bruker.getSisteStilling().equals(Stilling.ingenYrkesbakgrunn());
     }
 
     private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
         assertTrue(value1 == value2);
-    }
-
-    private static void assertBothTrueOrThrowException(boolean value1, boolean value2) {
-        if (value1 != value2) {
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
-        }
     }
 
     private static void assertTrue(boolean value) {

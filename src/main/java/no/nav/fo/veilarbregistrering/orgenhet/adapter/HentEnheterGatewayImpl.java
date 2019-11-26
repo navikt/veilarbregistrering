@@ -16,7 +16,7 @@ import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ALLE_ENHETER
 
 public class HentEnheterGatewayImpl implements HentEnheterGateway {
 
-    private OrganisasjonEnhetV2 organisasjonEnhetV2;
+    private final OrganisasjonEnhetV2 organisasjonEnhetV2;
 
     public HentEnheterGatewayImpl(OrganisasjonEnhetV2 organisasjonEnhetV2){
         this.organisasjonEnhetV2 = organisasjonEnhetV2;

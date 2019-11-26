@@ -3,10 +3,11 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
-import no.nav.fo.veilarbregistrering.registrering.bruker.besvarelse.*;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
-public class BrukerRegistreringRepositoryImpl implements no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository {
+public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepository {
 
     private JdbcTemplate db;
 
