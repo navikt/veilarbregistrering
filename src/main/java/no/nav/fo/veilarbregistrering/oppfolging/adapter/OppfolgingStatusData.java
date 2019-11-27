@@ -22,5 +22,5 @@ public class OppfolgingStatusData implements Oppfolgingsstatus {
 
     @Deprecated
     public Boolean erIkkeArbeidssokerUtenOppfolging;
-
+    
 }
