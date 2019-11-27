@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
@@ -64,7 +63,7 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
-        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
         when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
@@ -72,7 +71,7 @@ class RegistreringResourceTest {
 
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
-        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatus());
+        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
         when(userService.hentFnrFraUrlEllerToken()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());

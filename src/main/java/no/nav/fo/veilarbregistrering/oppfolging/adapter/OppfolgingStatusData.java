@@ -18,6 +18,7 @@ public class OppfolgingStatusData implements Oppfolgingsstatus {
     public Boolean erSykmeldtMedArbeidsgiver;
     public String formidlingsgruppe;
     public String servicegruppe;
+    public String rettighetsgruppe;
 
     @Deprecated
     public Boolean erIkkeArbeidssokerUtenOppfolging;

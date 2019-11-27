@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.slf4j.Logger;
@@ -126,7 +127,7 @@ public class BrukerRegistreringService {
         return new BrukersTilstand(oppfolgingStatusData, sykeforloepMetaData, registreringType);
     }
 
-    public StartRegistreringStatus hentStartRegistreringStatus(String fnr) {
+    public StartRegistreringStatusDto hentStartRegistreringStatus(String fnr) {
         BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
@@ -138,13 +139,14 @@ public class BrukerRegistreringService {
             report(START_REGISTRERING_EVENT, geografiskTilknytning, formidlingsgruppe, registreringType);
         });
 
-        StartRegistreringStatus startRegistreringStatus = new StartRegistreringStatus()
+        StartRegistreringStatusDto startRegistreringStatus = new StartRegistreringStatusDto()
                 .setUnderOppfolging(brukersTilstand.isUnderOppfolging())
                 .setRegistreringType(registreringType)
                 .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
                 .setMaksDato(brukersTilstand.getMaksDato())
                 .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().stringValue())
                 .setServicegruppe(brukersTilstand.getServicegruppe())
+                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe())
                 .setGeografiskTilknytning(muligGeografiskTilknytning.map(g -> g.stringValue()).orElse(null));
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {

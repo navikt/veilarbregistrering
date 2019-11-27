@@ -1,11 +1,12 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType;
 
 @Data
 @Accessors(chain = true)
-public class StartRegistreringStatus {
+public class StartRegistreringStatusDto {
     private String maksDato;
     private boolean underOppfolging;
     private boolean erSykmeldtMedArbeidsgiver;
@@ -13,5 +14,6 @@ public class StartRegistreringStatus {
     private RegistreringType registreringType;
     private String formidlingsgruppe;
     private String servicegruppe;
+    private String rettighetsgruppe;
     private String geografiskTilknytning;
 }
