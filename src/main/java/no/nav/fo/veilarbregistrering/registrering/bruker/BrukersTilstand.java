@@ -33,20 +33,20 @@ public class BrukersTilstand {
         return oppfolgingStatusData.isUnderOppfolging();
     }
 
-    public Formidlingsgruppe getFormidlingsgruppe() {
-        return Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe());
-    }
-
     public RegistreringType getRegistreringstype() {
         return registreringType;
     }
 
-    public String getServicegruppe() {
-        return oppfolgingStatusData.getServicegruppe();
+    public Formidlingsgruppe getFormidlingsgruppe() {
+        return Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe());
     }
 
-    public String getRettighetsgruppe() {
-        return oppfolgingStatusData.getRettighetsgruppe();
+    public Servicegruppe getServicegruppe() {
+        return Servicegruppe.of(oppfolgingStatusData.getServicegruppe());
+    }
+
+    public Rettighetsgruppe getRettighetsgruppe() {
+        return Rettighetsgruppe.of(oppfolgingStatusData.getRettighetsgruppe());
     }
 
     public String getMaksDato() {

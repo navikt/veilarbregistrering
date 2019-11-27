@@ -145,8 +145,8 @@ public class BrukerRegistreringService {
                 .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
                 .setMaksDato(brukersTilstand.getMaksDato())
                 .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().stringValue())
-                .setServicegruppe(brukersTilstand.getServicegruppe())
-                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe())
+                .setServicegruppe(brukersTilstand.getServicegruppe().stringValue())
+                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe().stringValue())
                 .setGeografiskTilknytning(muligGeografiskTilknytning.map(g -> g.stringValue()).orElse(null));
 
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
