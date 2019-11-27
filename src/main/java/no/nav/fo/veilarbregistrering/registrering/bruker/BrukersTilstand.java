@@ -1,11 +1,16 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.fo.veilarbregistrering.metrics.HasMetrics;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 
-public class BrukersTilstand {
+public class BrukersTilstand implements HasMetrics {
 
     private final SykmeldtInfoData sykmeldtInfoData;
     private final RegistreringType registreringType;
@@ -51,5 +56,10 @@ public class BrukersTilstand {
 
     public String getMaksDato() {
         return sykmeldtInfoData != null ? sykmeldtInfoData.maksDato : null;
+    }
+
+    @Override
+    public List<Metric> metrics() {
+        return asList(getFormidlingsgruppe(), getRettighetsgruppe(), getServicegruppe(), registreringType);
     }
 }

@@ -12,6 +12,13 @@ public class Metrics {
         metricsEvent.report();
     }
 
+    public static void report(Event event, HasMetrics hasMetrics, Metric... metric) {
+        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
+        hasMetrics.metrics().stream().forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+        Arrays.stream(metric).forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+        metricsEvent.report();
+    }
+
     public enum Event {
         OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave"),
         START_REGISTRERING_EVENT("arbeid.registrering.start"),

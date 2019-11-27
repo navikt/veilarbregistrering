@@ -135,10 +135,7 @@ public class BrukerRegistreringService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            Formidlingsgruppe formidlingsgruppe = brukersTilstand.getFormidlingsgruppe();
-            Rettighetsgruppe rettighetsgruppe = brukersTilstand.getRettighetsgruppe();
-            Servicegruppe servicegruppe = brukersTilstand.getServicegruppe();
-            report(START_REGISTRERING_EVENT, geografiskTilknytning, formidlingsgruppe, rettighetsgruppe, servicegruppe, registreringType);
+            report(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
         });
 
         StartRegistreringStatusDto startRegistreringStatus = new StartRegistreringStatusDto()
