@@ -62,11 +62,11 @@ public class RegistreringResource {
     @GET
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
-    public StartRegistreringStatus hentStartRegistreringStatus() {
+    public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        StartRegistreringStatus status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
+        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
         rapporterRegistreringsstatus(status);
         return status;
     }

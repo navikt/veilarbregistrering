@@ -11,4 +11,6 @@ public interface Oppfolgingsstatus {
     String getFormidlingsgruppe();
 
     String getServicegruppe();
+
+    String getRettighetsgruppe();
 }

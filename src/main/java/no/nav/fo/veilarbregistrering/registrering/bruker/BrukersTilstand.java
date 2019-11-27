@@ -45,6 +45,10 @@ public class BrukersTilstand {
         return oppfolgingStatusData.getServicegruppe();
     }
 
+    public String getRettighetsgruppe() {
+        return oppfolgingStatusData.getRettighetsgruppe();
+    }
+
     public String getMaksDato() {
         return sykmeldtInfoData != null ? sykmeldtInfoData.maksDato : null;
     }
