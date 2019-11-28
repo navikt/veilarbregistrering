@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.oppfolging;
 
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
@@ -8,14 +8,14 @@ public class Formidlingsgruppe implements Metric {
 
     private final String formidlingsgruppe;
 
-    static Formidlingsgruppe of(String formidlingsgruppe) {
-        return formidlingsgruppe != null ? new Formidlingsgruppe(formidlingsgruppe) : new NullableFormidlingsgruppe();
+    public static Formidlingsgruppe of(String formidlingsgruppe) {
+        return new Formidlingsgruppe(formidlingsgruppe);
     }
 
     private Formidlingsgruppe(String formidlingsgruppe) {
         if (formidlingsgruppe == null) {
             throw new IllegalArgumentException("Formidlingsgruppe skal ikke kunne være null. " +
-                    "Hvis null, skal NullableFormdlingsgruppe brukes i stedet.");
+                    "Hvis null, kan NullableFormdlingsgruppe brukes i stedet.");
         }
         this.formidlingsgruppe = formidlingsgruppe;
     }
@@ -42,6 +42,10 @@ public class Formidlingsgruppe implements Metric {
         return Objects.equals(formidlingsgruppe, that.formidlingsgruppe);
     }
 
+    public static NullableFormidlingsgruppe nullable() {
+        return new NullableFormidlingsgruppe();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(formidlingsgruppe);
@@ -52,8 +56,8 @@ public class Formidlingsgruppe implements Metric {
      */
     public static class NullableFormidlingsgruppe extends Formidlingsgruppe {
 
-        NullableFormidlingsgruppe() {
-            super("UKJENT");
+        private NullableFormidlingsgruppe() {
+            super("INGEN_VERDI");
         }
 
         @Override

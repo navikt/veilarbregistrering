@@ -2,10 +2,14 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.metrics.HasMetrics;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
+import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
+import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
@@ -16,8 +20,8 @@ public class BrukersTilstand implements HasMetrics {
     private final RegistreringType registreringType;
     private final Oppfolgingsstatus oppfolgingStatusData;
 
-    BrukersTilstand(Oppfolgingsstatus oppfolgingStatusData, SykmeldtInfoData sykmeldtInfoData, RegistreringType registreringType) {
-        this.oppfolgingStatusData = oppfolgingStatusData;
+    public BrukersTilstand(Oppfolgingsstatus Oppfolgingsstatus, SykmeldtInfoData sykmeldtInfoData, RegistreringType registreringType) {
+        this.oppfolgingStatusData = Oppfolgingsstatus;
         this.sykmeldtInfoData = sykmeldtInfoData;
         this.registreringType = registreringType;
     }
@@ -42,16 +46,16 @@ public class BrukersTilstand implements HasMetrics {
         return registreringType;
     }
 
-    public Formidlingsgruppe getFormidlingsgruppe() {
-        return Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe());
+    public Optional<Formidlingsgruppe> getFormidlingsgruppe() {
+        return oppfolgingStatusData.getFormidlingsgruppe();
     }
 
-    public Servicegruppe getServicegruppe() {
-        return Servicegruppe.of(oppfolgingStatusData.getServicegruppe());
+    public Optional<Servicegruppe> getServicegruppe() {
+        return oppfolgingStatusData.getServicegruppe();
     }
 
-    public Rettighetsgruppe getRettighetsgruppe() {
-        return Rettighetsgruppe.of(oppfolgingStatusData.getRettighetsgruppe());
+    public Optional<Rettighetsgruppe> getRettighetsgruppe() {
+        return oppfolgingStatusData.getRettighetsgruppe();
     }
 
     public String getMaksDato() {
@@ -60,6 +64,10 @@ public class BrukersTilstand implements HasMetrics {
 
     @Override
     public List<Metric> metrics() {
-        return asList(getFormidlingsgruppe(), getRettighetsgruppe(), getServicegruppe(), registreringType);
+        return asList(
+                getFormidlingsgruppe().orElse(Formidlingsgruppe.nullable()),
+                getRettighetsgruppe().orElse(Rettighetsgruppe.nullable()),
+                getServicegruppe().orElse(Servicegruppe.nullable()),
+                registreringType);
     }
 }

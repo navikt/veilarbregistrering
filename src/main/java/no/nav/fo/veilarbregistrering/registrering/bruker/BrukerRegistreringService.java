@@ -33,6 +33,7 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
+import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 
 
@@ -112,25 +113,23 @@ public class BrukerRegistreringService {
     }
 
     BrukersTilstand hentBrukersTilstand(String fnr) {
-        Oppfolgingsstatus oppfolgingStatusData = oppfolgingGateway.hentOppfolgingsstatus(fnr);
+        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
 
         SykmeldtInfoData sykeforloepMetaData = null;
-        boolean erSykmeldtMedArbeidsgiver = ofNullable(oppfolgingStatusData.getErSykmeldtMedArbeidsgiver()).orElse(false);
+        boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
                 sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
             }
         }
 
-        RegistreringType registreringType = beregnRegistreringType(oppfolgingStatusData, sykeforloepMetaData);
+        RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
 
-        return new BrukersTilstand(oppfolgingStatusData, sykeforloepMetaData, registreringType);
+        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, registreringType);
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(String fnr) {
         BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
-
-        RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
@@ -138,22 +137,17 @@ public class BrukerRegistreringService {
             report(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
         });
 
-        StartRegistreringStatusDto startRegistreringStatus = new StartRegistreringStatusDto()
-                .setUnderOppfolging(brukersTilstand.isUnderOppfolging())
-                .setRegistreringType(registreringType)
-                .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
-                .setMaksDato(brukersTilstand.getMaksDato())
-                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().stringValue())
-                .setServicegruppe(brukersTilstand.getServicegruppe().stringValue())
-                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe().stringValue())
-                .setGeografiskTilknytning(muligGeografiskTilknytning.map(g -> g.stringValue()).orElse(null));
+        RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
+        Boolean oppfyllerBetingelseOmArbeidserfaring = null;
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
-            boolean oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
+            oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
                     () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                     now());
-            startRegistreringStatus.setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring);
         }
+
+        StartRegistreringStatusDto startRegistreringStatus = map(
+                brukersTilstand, muligGeografiskTilknytning, oppfyllerBetingelseOmArbeidserfaring);
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;

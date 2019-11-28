@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Wither;
-import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 
 @Wither
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class OppfolgingStatusData implements Oppfolgingsstatus {
+public class OppfolgingStatusData {
     public boolean underOppfolging;
     public Boolean kanReaktiveres;
     public Boolean erSykmeldtMedArbeidsgiver;

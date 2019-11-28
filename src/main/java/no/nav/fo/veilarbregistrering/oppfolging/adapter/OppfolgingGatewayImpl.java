@@ -4,6 +4,9 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
+import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 
 public class OppfolgingGatewayImpl implements OppfolgingGateway {
 
@@ -15,7 +18,22 @@ public class OppfolgingGatewayImpl implements OppfolgingGateway {
 
     @Override
     public Oppfolgingsstatus hentOppfolgingsstatus(String fodselsnummer) {
-        return oppfolgingClient.hentOppfolgingsstatus(fodselsnummer);
+        OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer);
+
+        return map(oppfolgingStatusData);
+    }
+
+    private static Oppfolgingsstatus map(OppfolgingStatusData oppfolgingStatusData) {
+        return new Oppfolgingsstatus(
+                oppfolgingStatusData.isUnderOppfolging(),
+                oppfolgingStatusData.getKanReaktiveres(),
+                oppfolgingStatusData.getErSykmeldtMedArbeidsgiver(),
+                oppfolgingStatusData.getFormidlingsgruppe() != null ?
+                        Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe()) : null,
+                oppfolgingStatusData.getServicegruppe() != null ?
+                        Servicegruppe.of(oppfolgingStatusData.getServicegruppe()) : null,
+                oppfolgingStatusData.getRettighetsgruppe() != null ?
+                        Rettighetsgruppe.of(oppfolgingStatusData.getRettighetsgruppe()) : null);
     }
 
     @Override
