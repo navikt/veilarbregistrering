@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.oppfolging;
 
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
@@ -8,14 +8,14 @@ public class Servicegruppe implements Metric {
 
     private final String servicegruppe;
 
-    static Servicegruppe of(String servicegruppe) {
-        return servicegruppe != null ? new Servicegruppe(servicegruppe) : new NullableServicegruppe();
+    public static Servicegruppe of(String servicegruppe) {
+        return new Servicegruppe(servicegruppe);
     }
 
     private Servicegruppe(String servicegruppe) {
         if (servicegruppe == null) {
             throw new IllegalArgumentException("Servicegruppe skal ikke kunne være null. " +
-                    "Hvis null, skal NullableServicegruppe brukes i stedet.");
+                    "Hvis null, kan NullableServicegruppe brukes i stedet.");
         }
         this.servicegruppe = servicegruppe;
     }
@@ -47,13 +47,17 @@ public class Servicegruppe implements Metric {
         return Objects.hash(servicegruppe);
     }
 
+    public static NullableServicegruppe nullable() {
+        return new NullableServicegruppe();
+    }
+
     /**
      * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
      */
     public static class NullableServicegruppe extends Servicegruppe {
 
-        NullableServicegruppe() {
-            super("UKJENT");
+        private NullableServicegruppe() {
+            super("INGEN_VERDI");
         }
 
         @Override
