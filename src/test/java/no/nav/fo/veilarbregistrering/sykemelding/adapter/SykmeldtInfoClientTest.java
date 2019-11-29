@@ -12,11 +12,10 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
 
@@ -53,11 +52,6 @@ class SykmeldtInfoClientTest {
     @AfterEach
     public void tearDown() {
         mockServer.stop();
-    }
-
-    @BeforeAll
-    public static void before() {
-        TestContext.setup();
     }
 
     @BeforeEach
