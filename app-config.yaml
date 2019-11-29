@@ -22,6 +22,8 @@ resources: # Optional. See: http://kubernetes.io/docs/user-guide/compute-resourc
     memory: 1024Mi
   requests:
     memory: 512Mi
+vault:
+  enabled: true
 fasitResources:
   used:
   - alias: loadbalancer:veilarbregistrering
