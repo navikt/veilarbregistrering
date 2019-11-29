@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.mock;
+package no.nav.fo.veilarbregistrering.oppfolging;
 
 import no.nav.apiapp.feil.FeilDTO;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerData;

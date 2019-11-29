@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.mock;
+package no.nav.fo.veilarbregistrering.sykemelding;
 
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
