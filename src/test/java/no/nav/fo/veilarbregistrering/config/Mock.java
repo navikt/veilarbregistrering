@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.mock;
+package no.nav.fo.veilarbregistrering.config;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

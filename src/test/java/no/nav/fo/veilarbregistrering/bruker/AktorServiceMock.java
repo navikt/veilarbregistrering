@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.mock;
+package no.nav.fo.veilarbregistrering.bruker;
 
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.dialogarena.aktor.AktorServiceImpl;

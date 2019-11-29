@@ -1,7 +1,5 @@
-package no.nav.fo.veilarbregistrering.mock;
+package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 
 import java.time.LocalDate;
