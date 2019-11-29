@@ -1,9 +1,7 @@
 package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
-import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
-import no.nav.testconfig.ApiAppTest;
-import no.nav.veilarbregistrering.TestContext;
+import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,7 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-public abstract class IntegrasjonsTest {
+public abstract class DbIntegrasjonsTest {
 
     private static AnnotationConfigApplicationContext annotationConfigApplicationContext;
     private static PlatformTransactionManager platformTransactionManager;
@@ -28,10 +26,8 @@ public abstract class IntegrasjonsTest {
     @BeforeAll
     @BeforeClass
     public static void setupContext() {
-        ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
-        TestContext.setup();
         setupContext(
-                ApplicationConfig.class
+                DatabaseConfig.class
         );
     }
 

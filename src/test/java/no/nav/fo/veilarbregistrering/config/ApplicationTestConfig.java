@@ -3,9 +3,10 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.mock.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.mock.*;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -61,7 +62,7 @@ public class ApplicationTestConfig extends ApplicationConfig {
 
     @Bean
     @Conditional(Mock.class)
-    public UnleashServiceMock unleashService() {
+    public UnleashService unleashService() {
         return new UnleashServiceMock();
     }
 }

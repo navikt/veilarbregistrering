@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering.db;
 
-import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 
-public class ProfileringRepositoryIntegrationTest extends IntegrasjonsTest {
+public class ProfileringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     @Inject
     private JdbcTemplate jdbcTemplate;
