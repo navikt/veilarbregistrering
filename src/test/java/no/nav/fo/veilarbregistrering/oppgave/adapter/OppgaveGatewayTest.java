@@ -8,9 +8,7 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
-import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
@@ -37,11 +35,6 @@ class OppgaveGatewayTest {
     @AfterEach
     public void tearDown() {
         mockServer.stop();
-    }
-
-    @BeforeAll
-    public static void before() {
-        TestContext.setup();
     }
 
     @BeforeEach

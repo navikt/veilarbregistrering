@@ -5,10 +5,8 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.veilarbregistrering.TestContext;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockserver.integration.ClientAndServer;
 
@@ -31,11 +29,6 @@ public class PersonGatewayTest {
     private ClientAndServer mockServer;
     private VeilArbPersonClient veilArbPersonClient;
     private PersonGateway personGateway;
-
-    @BeforeClass
-    public static void before() {
-        TestContext.setup();
-    }
 
     @Before
     public void setup() {

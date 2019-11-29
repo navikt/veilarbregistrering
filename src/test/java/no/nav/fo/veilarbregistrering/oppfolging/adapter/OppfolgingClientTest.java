@@ -18,9 +18,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringSer
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.veilarbregistrering.TestContext;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
@@ -61,11 +59,6 @@ class OppfolgingClientTest {
     @AfterEach
     public void tearDown() {
         mockServer.stop();
-    }
-
-    @BeforeAll
-    public static void before() {
-        TestContext.setup();
     }
 
     @BeforeEach
