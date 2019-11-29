@@ -1,9 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell.db;
 
-import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +12,7 @@ import javax.inject.Inject;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ManuellRegistreringRepositoryIntegrationTest extends IntegrasjonsTest {
+public class ManuellRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     @Inject
     private JdbcTemplate jdbcTemplate;

@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(value = Parameterized.class)
-public class ViewTest extends IntegrasjonsTest {
+public class ViewDbIntegrationTest extends DbIntegrasjonsTest {
 
     @Parameters(name = "{0}")
     public static Object[] views() {
@@ -86,6 +86,6 @@ public class ViewTest extends IntegrasjonsTest {
     }
 
     private static String lesInnholdFraFil(String filNavn) {
-        return new Scanner(ViewTest.class.getClassLoader().getResourceAsStream(filNavn), "UTF-8").useDelimiter("\\A").next();
+        return new Scanner(ViewDbIntegrationTest.class.getClassLoader().getResourceAsStream(filNavn), "UTF-8").useDelimiter("\\A").next();
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
-import no.nav.fo.veilarbregistrering.db.IntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class BrukerRegistreringRepositoryIntegrationTest extends IntegrasjonsTest {
+public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     @Inject
     private JdbcTemplate jdbcTemplate;
