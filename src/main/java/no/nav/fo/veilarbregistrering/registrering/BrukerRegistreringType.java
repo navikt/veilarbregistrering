@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering;
 
 
-public enum BrukerRegistreringType {
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
+public enum BrukerRegistreringType implements Metric {
     ORDINAER("ORDINAER"),
     SYKMELDT("SYKMELDT");
 
@@ -14,5 +16,15 @@ public enum BrukerRegistreringType {
     @Override
     public String toString() {
         return brukerRegistreringType;
+    }
+
+    @Override
+    public String fieldName() {
+        return "type";
+    }
+
+    @Override
+    public String value() {
+        return this.toString();
     }
 }
