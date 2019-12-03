@@ -33,7 +33,7 @@ public class OppfolgingClient extends BaseClient {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
             return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                    c -> c.target(baseUrl + "/oppfolging?brukArenaDirekte=true&fnr=" + fnr)
+                    c -> c.target(baseUrl + "/oppfolging?fnr=" + fnr)
                             .request()
                             .header(COOKIE, cookies)
                             .get(OppfolgingStatusData.class));
