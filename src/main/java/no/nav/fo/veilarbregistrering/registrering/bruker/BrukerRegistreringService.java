@@ -29,12 +29,12 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
-import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
+import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
 
 public class BrukerRegistreringService {
@@ -134,7 +134,7 @@ public class BrukerRegistreringService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            report(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
+            reportTags(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
         });
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
@@ -176,7 +176,7 @@ public class BrukerRegistreringService {
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
         oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
-        report(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);

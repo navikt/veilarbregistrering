@@ -3,13 +3,13 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 
 public class OppgaveService {
 
@@ -34,7 +34,7 @@ public class OppgaveService {
         }
 
         geografiskTilknytning.ifPresent(gt -> {
-            Metrics.report(OPPGAVE_OPPRETTET_EVENT, gt, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
+            reportTags(OPPGAVE_OPPRETTET_EVENT, gt, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
         });
 
         return oppgave;
