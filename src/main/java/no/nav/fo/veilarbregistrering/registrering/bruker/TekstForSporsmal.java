@@ -5,7 +5,6 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor
 public class TekstForSporsmal {
     private String sporsmalId;
     private String sporsmal;
