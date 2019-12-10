@@ -1,0 +1,34 @@
+name: Build, push, and deploy
+
+on: [push]
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering:${{ github.sha }}
+
+jobs:
+
+  build:
+    name: Build and push Docker container
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build and publish Docker image
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        docker build --tag ${IMAGE} .
+        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+        docker push ${IMAGE}
+
+  deploy:
+    name: Deploy to NAIS
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: dev-fss
+        RESOURCE: naiserator-dev.yml
