@@ -1,0 +1,109 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: veilarbregistrering
+  namespace: default
+  labels:
+    team: paw
+spec:
+  env:
+    - name: NAV_TRUSTSTORE_KEYSTOREALIAS
+      value: na
+    - name: VEILARBREGISTRERINGDB_OEMENDPOINT
+      value: /em/cloud/dbaas/pluggabledbplatforminstance/byrequest/1746
+    - VEILARBREGISTRERINGDB_URL
+    - VEILARBREGISTRERINGDB_USERNAME
+    - SRVVEILARBREGISTRERING_USERNAME
+    - name: MIN_ALDER_AUTOMATISK_REGISTRERING
+      value: "30"
+    - name: MAKS_ALDER_AUTOMATISK_REGISTRERING
+      value: "59"
+    - APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
+    - name: APPDYNAMICS_CONTROLLER_HOST_NAME
+      value: appdynamics.adeo.no
+    - name: APPDYNAMICS_CONTROLLER_PORT
+      value: "443"
+    - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
+      value: "true"
+    - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
+      value: NON-PROD
+    - name: FEATURE_ENDPOINT_URL
+      value: https://feature-fss-q0.nais.preprod.local/feature
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN
+      value: SAML
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
+      value: https://modapp-q0.adeo.no/aareg-services/ArbeidsforholdService/v3
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL
+      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-arbeidsforhold-v3-tjenestespesifikasjon/3.0.0/nav-arbeidsforhold-v3-tjenestespesifikasjon-3.0.0.zip
+    - name: AKTOER_V2_WSDLURL
+      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-aktoer-v2-tjenestespesifikasjon/2.0.1/nav-fim-aktoer-v2-tjenestespesifikasjon-2.0.1.zip
+    - name: AKTOER_V2_SECURITYTOKEN
+      value: SAML
+    - name: AKTOER_V2_ENDPOINTURL
+      value: https://app-q0.adeo.no/aktoerregister/ws/Aktoer/v2
+    - name: SECURITYTOKENSERVICE_URL
+      value: https://sts-q0.preprod.local/SecurityTokenServiceProvider/
+    - name: VEILARBPERSONAPI_URL
+      value: https://veilarbperson-q0.nais.preprod.local/veilarbperson/api
+    - name: VEILARBOPPFOLGINGAPI_URL
+      value: https://veilarboppfolging-q0.nais.preprod.local/veilarboppfolging/api
+    - name: ABAC_PDP_ENDPOINT_DESCRIPTION
+      value: The XACML JSON Endpoint for evaluating attributes against policies
+    - name: ABAC_PDP_ENDPOINT_URL
+      value: https://wasapp-q0.adeo.no/asm-pdp/authorize
+    - name: UNLEASH_API_URL
+      value: https://unleash.nais.adeo.no/api/
+    - name: VIRKSOMHET_ORGANISASJONENHET_V2_SECURITYTOKEN
+      value: SAML
+    - name: VIRKSOMHET_ORGANISASJONENHET_V2_ENDPOINTURL
+      value: https://app-q0.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+    - name: VIRKSOMHET_ORGANISASJONENHET_V2_WSDLURL
+      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-organisasjonEnhet-v2-tjenestespesifikasjon/2.1.0/nav-organisasjonEnhet-v2-tjenestespesifikasjon-2.1.0.zip
+    - AAD_B2C_CLIENTID_USERNAME
+    - AAD_B2C_DISCOVERY_URL
+    - ISSO_HOST_URL
+    - ISSO_JWKS_URL
+    - ISSO_ISSUER_URL
+    - name: ISSO_ISALIVE_URL
+      value: https://isso-q.adeo.no/isso/isAlive.jsp
+    - name: ISSO_RP_USER_USERNAME
+      value: veilarblogin-q0
+    - name: VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
+      value: Login for veilarb
+    - OIDC_REDIRECT_URL
+  image: docker.adeo.no:5000/fo/veilarbregistrering
+  ingresses:
+    - https://veilarbregistrering.nais.preprod.local
+    - https://app-q0.adeo.no/veilarbregistrering
+  liveness:
+    path: veilarbregistrering/internal/isAlive
+    port: 8080
+    initialDelay: 60
+  port: 8080
+  prometheus:
+    enabled: true
+    path: veilarbregistrering/internal/metrics
+  readiness:
+    path: veilarbregistrering/internal/isReady
+    port: 8080
+    initialDelay: 60
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: "3"
+      memory: 1024Mi
+    requests:
+      memory: 512Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /oracle/data/dev/creds/veilarbdemo_q0-user
+        mountPath: /var/run/secrets/nais.io/veilarbregistreringDB
+      - kvPath: /serviceuser/data/dev/srvveilarbregistrering
+        mountPath: /var/run/secrets/nais.io/srvveilarbregistrering
+      - kvPath: /kv/preprod/fss/veilarbregistrering/default
+        mountPath: /var/run/secrets/nais.io/vault
+  webproxy: true
