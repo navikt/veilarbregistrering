@@ -1,4 +1,4 @@
-FROM maven
+FROM maven:3-jdk-8
 ADD / /source
 WORKDIR /source
 RUN mvn package -DskipTests
