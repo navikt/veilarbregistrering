@@ -4,4 +4,4 @@ WORKDIR /source
 RUN mvn package -DskipTests
 
 FROM navikt/pus-nais-java-app
-COPY /target/veilarbregistrering /app
+COPY /source/target/veilarbregistrering /app
