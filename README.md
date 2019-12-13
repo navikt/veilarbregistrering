@@ -1,7 +1,10 @@
-Veilarbregistrering
-================
+# Veilarbregistrering
 
 Applikasjon for nyregistrering av arbeidssøkere.
+
+## Avhengigheter
+- veilarboppfolging (og Arena)
+- veilarbperson
 
 # Komme i gang
 
