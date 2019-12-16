@@ -2,7 +2,7 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: veilarbregistrering
-  namespace: default
+  namespace: q0
   labels:
     team: paw
 spec:
