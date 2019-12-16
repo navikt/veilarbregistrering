@@ -11,14 +11,10 @@ spec:
       value: na
     - name: VEILARBREGISTRERINGDB_OEMENDPOINT
       value: /em/cloud/dbaas/pluggabledbplatforminstance/byrequest/1746
-    - VEILARBREGISTRERINGDB_URL
-    - VEILARBREGISTRERINGDB_USERNAME
-    - SRVVEILARBREGISTRERING_USERNAME
     - name: MIN_ALDER_AUTOMATISK_REGISTRERING
       value: "30"
     - name: MAKS_ALDER_AUTOMATISK_REGISTRERING
       value: "59"
-    - APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
     - name: APPDYNAMICS_CONTROLLER_HOST_NAME
       value: appdynamics.adeo.no
     - name: APPDYNAMICS_CONTROLLER_PORT
@@ -59,18 +55,12 @@ spec:
       value: https://app-q0.adeo.no/norg2/ws/OrganisasjonEnhet/v2
     - name: VIRKSOMHET_ORGANISASJONENHET_V2_WSDLURL
       value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-organisasjonEnhet-v2-tjenestespesifikasjon/2.1.0/nav-organisasjonEnhet-v2-tjenestespesifikasjon-2.1.0.zip
-    - AAD_B2C_CLIENTID_USERNAME
-    - AAD_B2C_DISCOVERY_URL
-    - ISSO_HOST_URL
-    - ISSO_JWKS_URL
-    - ISSO_ISSUER_URL
     - name: ISSO_ISALIVE_URL
       value: https://isso-q.adeo.no/isso/isAlive.jsp
     - name: ISSO_RP_USER_USERNAME
       value: veilarblogin-q0
     - name: VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
       value: Login for veilarb
-    - OIDC_REDIRECT_URL
   image: docker.adeo.no:5000/fo/veilarbregistrering
   ingresses:
     - https://veilarbregistrering.nais.preprod.local
