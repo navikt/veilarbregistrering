@@ -5,6 +5,8 @@ Applikasjon for nyregistrering av arbeidssøkere.
 ## Avhengigheter
 - veilarboppfolging (og Arena)
 - veilarbperson
+- Aktør-service
+- ABAC
 
 # Komme i gang
 
