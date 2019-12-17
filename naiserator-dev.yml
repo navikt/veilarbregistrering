@@ -91,7 +91,7 @@ spec:
     enabled: true
     paths:
       - kvPath: /oracle/data/dev/creds/veilarbregistrering_q1-user
-        mountPath: /var/run/secrets/nais.io/veilarbregistreringDB
+        mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /oracle/data/dev/creds/veilarbdemo_q0-user
         mountPath: /var/run/secrets/nais.io/veilarbregistreringDB
       - kvPath: /serviceuser/data/dev/srvveilarbregistrering
