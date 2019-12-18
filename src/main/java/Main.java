@@ -1,5 +1,8 @@
 import no.nav.apiapp.ApiApp;
+import no.nav.common.utils.NaisUtils;
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.System.setProperty;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
@@ -11,10 +14,21 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class Main {
 
+
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+
     public static void main(String... args) throws Exception {
 
-        setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));
-        setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"));
+        NaisUtils.Credentials oracle_creds = NaisUtils.getCredentials("oracle_creds");
+        LOG.info("Oracle_creds (true/false): " + Boolean.valueOf(oracle_creds != null));
+
+        if (oracle_creds != null) {
+            setProperty(SYSTEMUSER_USERNAME, oracle_creds.username);
+            setProperty(SYSTEMUSER_PASSWORD, oracle_creds.password);
+        } else {
+            setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));
+            setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"));
+        }
 
         setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty("AKTOER_V2_ENDPOINTURL"));
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty("ABAC_PDP_ENDPOINT_URL"));
