@@ -7,6 +7,7 @@ Applikasjon for nyregistrering av arbeidssøkere.
 - veilarbperson
 - Aktør-service
 - ABAC
+- Aareg
 
 # Komme i gang
 
