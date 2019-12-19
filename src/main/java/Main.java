@@ -21,9 +21,9 @@ public class Main {
 
         NaisUtils.Credentials oracle_creds = NaisUtils.getCredentials("oracle_creds");
         LOG.info("Oracle_creds (true/false): " + Boolean.valueOf(oracle_creds != null));
-
+        System.out.println();
         if (oracle_creds != null) {
-            LOG.info("Benytter oracle_creds.");
+            LOG.info("Benytter oracle_creds. -> USERNAME: " + oracle_creds.username);
             setProperty(SYSTEMUSER_USERNAME, oracle_creds.username);
             setProperty(SYSTEMUSER_PASSWORD, oracle_creds.password);
         } else {
