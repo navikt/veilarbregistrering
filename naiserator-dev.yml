@@ -61,7 +61,7 @@ spec:
       value: veilarblogin-q0
     - name: VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
       value: Login for veilarb
-  image: docker.adeo.no:5000/fo/veilarbregistrering
+  image: {{image}}
   ingresses:
     - https://veilarbregistrering.nais.preprod.local
     - https://app-q0.adeo.no/veilarbregistrering

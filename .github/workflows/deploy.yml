@@ -19,6 +19,7 @@ jobs:
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
+        echo ::set-env name=IMAGE::${IMAGE}
 
   deploy:
     name: Deploy to NAIS
