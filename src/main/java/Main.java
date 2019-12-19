@@ -19,13 +19,15 @@ public class Main {
 
     public static void main(String... args) throws Exception {
 
-        NaisUtils.Credentials oracle_creds = NaisUtils.getCredentials("oracle_creds");
-        LOG.info("Oracle_creds (true/false): " + Boolean.valueOf(oracle_creds != null));
+        NaisUtils.Credentials serviceuser_creds = NaisUtils.getCredentials("serviceuser_creds");
+
+        //NaisUtils.Credentials oracle_creds = NaisUtils.getCredentials("oracle_creds");
+        LOG.info("Oracle_creds (true/false): " + Boolean.valueOf(serviceuser_creds != null));
         System.out.println();
-        if (oracle_creds != null) {
-            LOG.info("Benytter oracle_creds. -> USERNAME: " + oracle_creds.username);
-            setProperty(SYSTEMUSER_USERNAME, oracle_creds.username);
-            setProperty(SYSTEMUSER_PASSWORD, oracle_creds.password);
+        if (serviceuser_creds != null) {
+            LOG.info("Benytter serviceuser_creds. -> USERNAME: " + serviceuser_creds.username);
+            setProperty(SYSTEMUSER_USERNAME, serviceuser_creds.username);
+            setProperty(SYSTEMUSER_PASSWORD, serviceuser_creds.password);
         } else {
             LOG.info("Benytter gammel konfig.");
             setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));

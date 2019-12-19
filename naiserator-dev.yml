@@ -93,7 +93,7 @@ spec:
       - kvPath: /oracle/data/dev/creds/veilarbdemo_q0-user
         mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /serviceuser/data/dev/srvveilarbregistrering
-        mountPath: /var/run/secrets/nais.io/srvveilarbregistrering
+        mountPath: /var/run/secrets/nais.io/serviceuser_creds
       - kvPath: /kv/preprod/fss/veilarbregistrering/q0
         mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
