@@ -23,9 +23,11 @@ public class Main {
         LOG.info("Oracle_creds (true/false): " + Boolean.valueOf(oracle_creds != null));
 
         if (oracle_creds != null) {
+            LOG.info("Benytter oracle_creds.");
             setProperty(SYSTEMUSER_USERNAME, oracle_creds.username);
             setProperty(SYSTEMUSER_PASSWORD, oracle_creds.password);
         } else {
+            LOG.info("Benytter gammel konfig.");
             setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"));
             setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"));
         }
