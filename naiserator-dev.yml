@@ -63,7 +63,7 @@ spec:
       value: Login for veilarb
   image: {{image}}
   ingresses:
-    - https://veilarbregistrering.nais.preprod.local
+    - https://veilarbregistrering-q0.nais.preprod.local
     - https://app-q0.adeo.no/veilarbregistrering
   liveness:
     path: veilarbregistrering/internal/isAlive
