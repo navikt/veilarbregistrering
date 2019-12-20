@@ -14,7 +14,7 @@ public class OppgaveGatewayConfig {
 
     @Bean
     OppgaveRestClient oppgaveRestClient(Provider<HttpServletRequest> provider) {
-        return new OppgaveRestClient(oppgaveUrl(getRequiredProperty("FASIT_ENVIRONMENT_NAME")), provider);
+        return new OppgaveRestClient(oppgaveUrl(getRequiredProperty("NAIS_NAMESPACE")), provider);
     }
 
     @Bean
