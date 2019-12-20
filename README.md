@@ -10,6 +10,7 @@ Applikasjon for nyregistrering av arbeidssøkere.
 - Aareg (siste arbeidsforhold)
 - NAV Enhet (for veileder pr ident)
 - Infotrygd (maksdato)
+- Unleash (feature toggle)
 
 # Komme i gang
 
