@@ -8,6 +8,7 @@ Applikasjon for nyregistrering av arbeidssøkere.
 - Aktør-service (fnr/dnr -> aktørId)
 - ABAC (tilgangskontroll)
 - Aareg (siste arbeidsforhold)
+- NAV Enhet (for veileder pr ident)
 - Infotrygd (maksdato)
 
 # Komme i gang
