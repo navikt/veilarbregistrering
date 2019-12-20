@@ -5,9 +5,10 @@ Applikasjon for nyregistrering av arbeidssøkere.
 ## Avhengigheter
 - veilarboppfolging (og Arena)
 - veilarbperson
-- Aktør-service
-- ABAC
-- Aareg
+- Aktør-service (fnr/dnr -> aktørId)
+- ABAC (tilgangskontroll)
+- Aareg (siste arbeidsforhold)
+- Infotrygd (maksdato)
 
 # Komme i gang
 
