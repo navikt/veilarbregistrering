@@ -20,12 +20,10 @@ public class Main {
     public static void main(String... args) throws Exception {
 
         NaisUtils.Credentials serviceuser_creds = NaisUtils.getCredentials("serviceuser_creds");
-        LOG.info("Benytter serviceuser_creds -> USERNAME: " + serviceuser_creds.username);
         setProperty("SRVVEILARBREGISTRERING_USERNAME", serviceuser_creds.username);
         setProperty("SRVVEILARBREGISTRERING_PASSWORD", serviceuser_creds.password);
 
         NaisUtils.Credentials oracle_creds_creds = NaisUtils.getCredentials("oracle_creds");
-        LOG.info("Benytter oracle_creds_creds -> USERNAME: " + oracle_creds_creds.username);
         setProperty(VEILARBREGISTRERINGDB_USERNAME, oracle_creds_creds.username);
         setProperty(VEILARBREGISTRERINGDB_PASSWORD, oracle_creds_creds.password);
 
