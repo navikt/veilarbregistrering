@@ -1,6 +1,6 @@
 # Veilarbregistrering
 
-Backend-applikasjon for Arbeidssøkerregistrering (https://github.com/navikt/arbeidssokerregistrering) som tar i mot nyregistrering av arbeidssøkere.
+Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/arbeidssokerregistrering) som tar i mot nyregistrering av arbeidssøkere.
 
 ## Avhengigheter
 - veilarboppfolging (og Arena)
