@@ -18,9 +18,12 @@ public class Main {
     public static void main(String... args) throws Exception {
 
         NaisUtils.Credentials serviceuser_creds = NaisUtils.getCredentials("serviceuser_creds");
-        LOG.info("Benytter serviceuser_creds. -> USERNAME: " + serviceuser_creds.username);
+        LOG.info("Benytter serviceuser_creds -> USERNAME: " + serviceuser_creds.username);
         setProperty("SRVVEILARBREGISTRERING_USERNAME", serviceuser_creds.username);
         setProperty("SRVVEILARBREGISTRERING_PASSWORD", serviceuser_creds.password);
+
+        NaisUtils.Credentials isso_rp_creds = NaisUtils.getCredentials("isso-rp_creds");
+        LOG.info("Benytter isso_rp_creds -> USERNAME: " + isso_rp_creds.username);
 
         setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty("AKTOER_V2_ENDPOINTURL"));
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty("ABAC_PDP_ENDPOINT_URL"));

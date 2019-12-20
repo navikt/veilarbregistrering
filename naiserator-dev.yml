@@ -96,4 +96,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/serviceuser_creds
       - kvPath: /kv/preprod/fss/veilarbregistrering/q0
         mountPath: /var/run/secrets/nais.io/vault
+      - kvPath: /credential/dev/isso-rp-user
+        mountPath: /var/run/secrets/nais.io/isso-rp_creds
   webproxy: true
