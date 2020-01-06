@@ -3,7 +3,7 @@ name: Build, push, and deploy
 on: [push]
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering:${{ github.sha }}
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
 
 jobs:
 
@@ -12,10 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Create pretty TAG
+      run: echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        echo "::set-env name=IMAGE::$IMAGE_BASE:$PRETTY_TAG"
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
