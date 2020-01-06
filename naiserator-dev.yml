@@ -61,6 +61,8 @@ spec:
       value: veilarblogin-q0
     - name: VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
       value: Login for veilarb
+    - name: APP_ENVIRONMENT_NAME
+      value: "q0"
   image: {{image}}
   ingresses:
     - https://veilarbregistrering-q0.nais.preprod.local
