@@ -19,10 +19,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "::set-env name=IMAGE::$IMAGE_BASE:$PRETTY_TAG"
-        docker build --tag ${IMAGE} .
+        docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
-        docker push ${IMAGE}
-        echo ::set-env name=IMAGE::${IMAGE}
+        docker push ${IMAGE_BASE}
 
   deploy:
     name: Deploy to NAIS
