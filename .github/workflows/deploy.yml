@@ -3,8 +3,7 @@ name: Build, push, and deploy
 on: [push]
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering:${{ github.sha }}
-  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
 
 jobs:
 
@@ -19,10 +18,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${IMAGE} .
+        docker build --tag ${PRETTY_TAG} .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
-        echo ::set-env name=IMAGE::${IMAGE}
 
   deploy:
     name: Deploy to NAIS
