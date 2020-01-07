@@ -18,7 +18,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${PRETTY_TAG} .
+        docker build --tag ${IMAGE}:${PRETTY_TAG} .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
 
