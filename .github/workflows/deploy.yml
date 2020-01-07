@@ -20,9 +20,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${env.IMAGE} --tag ${IMAGE_BASE}:latest .
+        docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
-        docker push ${env.IMAGE}
+        docker push ${IMAGE}
 
   deploy:
     name: Deploy to NAIS
