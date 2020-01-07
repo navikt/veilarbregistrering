@@ -3,6 +3,7 @@ name: Build, push, and deploy
 on: [push]
 
 env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering:${{ github.sha }}
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
 
 jobs:
