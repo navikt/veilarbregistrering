@@ -13,16 +13,18 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Create pretty TAG
-      run: echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
+      env:
+        IMAGE: ${{env.IMAGE_BASE}}:${{ github.sha }}
+      run: |
+        echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
+        echo "::set-env name=IMAGE::${IMAGE}"
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        IMAGE: ${{env.IMAGE_BASE}}:${{ github.sha }}
       run: |
         docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
-        echo "::set-env name=IMAGE::${IMAGE}"
 
   deploy:
     name: Deploy to NAIS
