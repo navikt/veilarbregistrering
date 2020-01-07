@@ -17,7 +17,7 @@ jobs:
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        IMAGE: ${IMAGE_BASE}:${{ github.sha }}
+        IMAGE: ${{IMAGE_BASE}}:${{ github.sha }}
       run: |
         docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
