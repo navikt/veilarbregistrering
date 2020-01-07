@@ -23,7 +23,7 @@ jobs:
       run: |
         docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
-        docker push ${IMAGE_BASE}
+        docker push ${IMAGE}
 
   deploy:
     name: Deploy to NAIS
