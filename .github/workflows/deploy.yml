@@ -4,7 +4,7 @@ on: [push]
 
 env:
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
-  IMAGE: ${{env.IMAGE_BASE}}:${{ github.sha }}
+  IMAGE: ${{IMAGE_BASE}}:${{ github.sha }}
 
 jobs:
 
