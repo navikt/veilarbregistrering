@@ -15,14 +15,6 @@ spec:
       value: "30"
     - name: MAKS_ALDER_AUTOMATISK_REGISTRERING
       value: "59"
-    - name: APPDYNAMICS_CONTROLLER_HOST_NAME
-      value: appdynamics.adeo.no
-    - name: APPDYNAMICS_CONTROLLER_PORT
-      value: "443"
-    - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
-      value: "true"
-    - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
-      value: NON-PROD
     - name: FEATURE_ENDPOINT_URL
       value: https://feature-fss-q0.nais.preprod.local/feature
     - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN
