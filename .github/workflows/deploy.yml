@@ -14,12 +14,10 @@ jobs:
     - uses: actions/checkout@v1
     - name: Create pretty TAG
       run: echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
-    - name: Compile
-      env:
-        IMAGE: ${IMAGE_BASE}:${{ github.sha }}
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        IMAGE: ${IMAGE_BASE}:${{ github.sha }}
       run: |
         docker build --tag ${env.IMAGE} --tag ${IMAGE_BASE}:latest .
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
