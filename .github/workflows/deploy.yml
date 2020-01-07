@@ -17,7 +17,7 @@ jobs:
         IMAGE: ${{env.IMAGE_BASE}}:${{ github.sha }}
       run: |
         echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
-        echo "::set-env name=IMAGE::${IMAGE}"
+        echo "::set-env name=IMAGE::${env.IMAGE}"
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
