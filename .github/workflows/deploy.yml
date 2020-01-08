@@ -18,12 +18,17 @@ jobs:
     - name: Create pretty TAG
       run: echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
 
-    - name: Use Maven cache
+    - name: Get Maven cache
       uses: actions/cache@v1
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven-
+
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
 
     - name: Build and publish Docker image
       env:
