@@ -49,8 +49,6 @@ spec:
     value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-organisasjonEnhet-v2-tjenestespesifikasjon/2.1.0/nav-organisasjonEnhet-v2-tjenestespesifikasjon-2.1.0.zip
   - name: ISSO_ISALIVE_URL
     value: https://isso-q.adeo.no/isso/isAlive.jsp
-  - name: VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
-    value: Login for veilarb
   - name: APP_ENVIRONMENT_NAME
     value: "q1"
   image: {{image}}

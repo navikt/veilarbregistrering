@@ -47,7 +47,7 @@ spec:
     value: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
   - name: ISSO_ISALIVE_URL
     value: https://isso.adeo.no/isso/isAlive.jsp
-  - name: APPENVIRONMENT_NAME
+  - name: APP_ENVIRONMENT_NAME
     value: "p"
   image: {{image}}
   ingresses:
