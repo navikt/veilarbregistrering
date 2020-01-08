@@ -13,10 +13,6 @@ spec:
   env:
   - name: NAV_TRUSTSTORE_KEYSTOREALIAS
     value: na
-  - name: MIN_ALDER_AUTOMATISK_REGISTRERING
-    value: "0"
-  - name: MAKS_ALDER_AUTOMATISK_REGISTRERING
-    value: "0"
   - name: FEATURE_ENDPOINT_URL
     value: https://feature-fss.nais.adeo.no/feature
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL
