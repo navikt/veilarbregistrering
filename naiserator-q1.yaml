@@ -11,10 +11,10 @@ spec:
     - https://veilarbregistrering-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbregistrering
   env:
+  - name: APP_ENVIRONMENT_NAME
+    value: "q1"
   - name: NAV_TRUSTSTORE_KEYSTOREALIAS
     value: na
-  - name: VEILARBREGISTRERINGDB_OEMENDPOINT
-    value: /em/cloud/dbaas/pluggabledbplatforminstance/byrequest/1741
   - name: FEATURE_ENDPOINT_URL
     value: https://feature-fss-q1.nais.preprod.local/feature
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN
@@ -49,8 +49,8 @@ spec:
     value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-organisasjonEnhet-v2-tjenestespesifikasjon/2.1.0/nav-organisasjonEnhet-v2-tjenestespesifikasjon-2.1.0.zip
   - name: ISSO_ISALIVE_URL
     value: https://isso-q.adeo.no/isso/isAlive.jsp
-  - name: APP_ENVIRONMENT_NAME
-    value: "q1"
+  - name: VEILARBREGISTRERINGDB_OEMENDPOINT
+    value: /em/cloud/dbaas/pluggabledbplatforminstance/byrequest/1741
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
