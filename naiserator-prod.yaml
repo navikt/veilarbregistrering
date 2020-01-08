@@ -27,8 +27,6 @@ spec:
     value: https://veilarbperson.nais.adeo.no/veilarbperson/api
   - name: VEILARBOPPFOLGINGAPI_URL
     value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
-  - name: ABAC_PDP_ENDPOINT_DESCRIPTION
-    value: The XACML JSON Endpoint for evaluating attributes against policies
   - name: ABAC_PDP_ENDPOINT_URL
     value: https://wasapp.adeo.no/asm-pdp/authorize
   - name: UNLEASH_API_URL

@@ -27,8 +27,6 @@ spec:
       value: https://veilarbperson-q0.nais.preprod.local/veilarbperson/api
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging-q0.nais.preprod.local/veilarboppfolging/api
-    - name: ABAC_PDP_ENDPOINT_DESCRIPTION
-      value: The XACML JSON Endpoint for evaluating attributes against policies
     - name: ABAC_PDP_ENDPOINT_URL
       value: https://wasapp-q0.adeo.no/asm-pdp/authorize
     - name: UNLEASH_API_URL
@@ -37,8 +35,6 @@ spec:
       value: https://app-q0.adeo.no/norg2/ws/OrganisasjonEnhet/v2
     - name: ISSO_ISALIVE_URL
       value: https://isso-q.adeo.no/isso/isAlive.jsp
-    - name: VEILARBREGISTRERINGDB_OEMENDPOINT
-      value: /em/cloud/dbaas/pluggabledbplatforminstance/byrequest/1746
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
