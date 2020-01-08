@@ -6,6 +6,10 @@ metadata:
   labels:
     team: paw
 spec:
+  image: {{image}}
+  ingresses:
+    - https://veilarbregistrering-q0.nais.preprod.local
+    - https://app-q0.adeo.no/veilarbregistrering
   env:
     - name: NAV_TRUSTSTORE_KEYSTOREALIAS
       value: na
@@ -51,10 +55,6 @@ spec:
       value: https://isso-q.adeo.no/isso/isAlive.jsp
     - name: APP_ENVIRONMENT_NAME
       value: "q0"
-  image: {{image}}
-  ingresses:
-    - https://veilarbregistrering-q0.nais.preprod.local
-    - https://app-q0.adeo.no/veilarbregistrering
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
