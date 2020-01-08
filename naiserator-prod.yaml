@@ -21,14 +21,10 @@ spec:
     value: SAML
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
     value: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
-  - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL
-    value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-arbeidsforhold-v3-tjenestespesifikasjon/3.0.0/nav-arbeidsforhold-v3-tjenestespesifikasjon-3.0.0.zip
   - name: AKTOER_V2_SECURITYTOKEN
     value: SAML
   - name: AKTOER_V2_ENDPOINTURL
     value: https://app.adeo.no/aktoerregister/ws/Aktoer/v2
-  - name: AKTOER_V2_WSDLURL
-    value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-aktoer-v2-tjenestespesifikasjon/2.0.1/nav-fim-aktoer-v2-tjenestespesifikasjon-2.0.1.zip
   - name: SECURITYTOKENSERVICE_URL
     value: https://sts.adeo.no/SecurityTokenServiceProvider/
   - name: VEILARBPERSONAPI_URL
@@ -45,8 +41,6 @@ spec:
     value: SAML
   - name: VIRKSOMHET_ORGANISASJONENHET_V2_ENDPOINTURL
     value: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
-  - name: VIRKSOMHET_ORGANISASJONENHET_V2_WSDLURL
-    value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-organisasjonEnhet-v2-tjenestespesifikasjon/2.1.0/nav-organisasjonEnhet-v2-tjenestespesifikasjon-2.1.0.zip
   - name: ISSO_ISALIVE_URL
     value: https://isso.adeo.no/isso/isAlive.jsp
   liveness:
