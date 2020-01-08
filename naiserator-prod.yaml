@@ -17,12 +17,8 @@ spec:
     value: na
   - name: FEATURE_ENDPOINT_URL
     value: https://feature-fss.nais.adeo.no/feature
-  - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN
-    value: SAML
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
     value: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
-  - name: AKTOER_V2_SECURITYTOKEN
-    value: SAML
   - name: AKTOER_V2_ENDPOINTURL
     value: https://app.adeo.no/aktoerregister/ws/Aktoer/v2
   - name: SECURITYTOKENSERVICE_URL
@@ -37,8 +33,6 @@ spec:
     value: https://wasapp.adeo.no/asm-pdp/authorize
   - name: UNLEASH_API_URL
     value: https://unleash.nais.adeo.no/api/
-  - name: VIRKSOMHET_ORGANISASJONENHET_V2_SECURITYTOKEN
-    value: SAML
   - name: VIRKSOMHET_ORGANISASJONENHET_V2_ENDPOINTURL
     value: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
   - name: ISSO_ISALIVE_URL

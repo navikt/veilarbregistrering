@@ -46,9 +46,11 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q0.yaml
+        DRY_RUN: false
     - name: Deploy til Q1
       uses: nais/deploy/actions/deploy@v1
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q1.yaml
+        DRY_RUN: true
