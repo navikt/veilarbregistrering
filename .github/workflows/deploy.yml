@@ -48,17 +48,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Deploy til Q0
+
+    - name: Deploy to Q0
       uses: nais/deploy/actions/deploy@v1
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q0.yaml
         DRY_RUN: false
-    - name: Deploy til Q1
+
+    - name: Deploy to Q1
       uses: nais/deploy/actions/deploy@v1
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q1.yaml
+        DRY_RUN: true
+
+    - name: Deploy to production
+      uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: prod-fss
+        RESOURCE: naiserator-prod.yaml
         DRY_RUN: true
