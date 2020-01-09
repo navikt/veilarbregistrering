@@ -55,7 +55,7 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q0.yaml
-        VAR: version=${IMAGE_TAG}
+        VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: false
 
     - name: Deploy to Q1
@@ -64,7 +64,7 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         RESOURCE: naiserator-q1.yaml
-        VAR: version=${IMAGE_TAG}
+        VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: true
 
     - name: Deploy to production
@@ -73,5 +73,5 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
         RESOURCE: naiserator-prod.yaml
-        VAR: version=${IMAGE_TAG}
+        VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: true
