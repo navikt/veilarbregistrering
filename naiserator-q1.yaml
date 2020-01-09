@@ -6,7 +6,7 @@ metadata:
   labels:
     team: paw
 spec:
-  image: {{image}}
+  image: {{image}}:{{version}}
   ingresses:
     - https://veilarbregistrering-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbregistrering
