@@ -88,3 +88,12 @@ jobs:
         RESOURCE: naiserator-prod.yaml
         VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: true
+
+    - name: Create release
+      uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release/prod@${{ env.IMAGE_TAG }}
+          release_name: Release to prod
+          prerelease: false
