@@ -41,10 +41,9 @@ jobs:
         docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
         docker push ${IMAGE}:${IMAGE_TAG}
 
-  deploy:
-    name: Deploy to NAIS
+  deploy-q0:
+    name: Deploy application to q0
     needs: test-build-and-push
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -58,6 +57,13 @@ jobs:
         VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: false
 
+  deploy-q1:
+    name: Deploy application to q1
+    needs: test-build-and-push
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
     - name: Deploy to Q1
       uses: nais/deploy/actions/deploy@v1
       env:
@@ -66,6 +72,13 @@ jobs:
         RESOURCE: naiserator-q1.yaml
         VAR: version=${{ env.IMAGE_TAG }}
         DRY_RUN: true
+
+  deploy-prod:
+    name: Deploy application to production
+    needs: deploy-q0
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
 
     - name: Deploy to production
       uses: nais/deploy/actions/deploy@v1
