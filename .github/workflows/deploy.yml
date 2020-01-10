@@ -87,7 +87,7 @@ jobs:
         CLUSTER: prod-fss
         RESOURCE: naiserator-prod.yaml
         VAR: version=${{ env.IMAGE_TAG }}
-        DRY_RUN: true
+        DRY_RUN: false
 
     - name: Create release
       uses: actions/create-release@v1
