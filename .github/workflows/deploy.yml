@@ -71,7 +71,7 @@ jobs:
         CLUSTER: dev-fss
         RESOURCE: naiserator-q1.yaml
         VAR: version=${{ env.IMAGE_TAG }}
-        DRY_RUN: true
+        DRY_RUN: false
 
   deploy-prod:
     name: Deploy application to production
