@@ -7,6 +7,10 @@ import java.time.LocalDate;
 
 public class OppgaveGatewayImpl implements OppgaveGateway {
 
+    private static final String KONTAKT_BRUKER = "KONT_BRUK";
+    private static final String OPPFOLGING = "OPP";
+    private static final String LAV = "LAV";
+
     private final OppgaveRestClient restClient;
 
     public OppgaveGatewayImpl(OppgaveRestClient restClient) {
@@ -14,19 +18,16 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgave(String aktoerId) {
+    public Oppgave opprettOppgave(String aktoerId, String tilordnetRessurs, String beskrivelse) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(aktoerId);
-        oppgaveDto.setBeskrivelse(
-                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
-                " Brukeren får ikke registrert seg som arbeidssøker." +
-                " Kontaktperson ved NAV Grünerløkka er Avdullah Demiri.");
-        oppgaveDto.setTilordnetRessurs("D113328"); // Avdullah Demiri
-        oppgaveDto.setTema("OPP");
-        oppgaveDto.setOppgavetype("KONT_BRUK");
+        oppgaveDto.setBeskrivelse(beskrivelse);
+        oppgaveDto.setTilordnetRessurs(tilordnetRessurs);
+        oppgaveDto.setTema(OPPFOLGING);
+        oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
         oppgaveDto.setFristFerdigstillelse(LocalDate.now().plusDays(2).toString());
         oppgaveDto.setAktivDato(LocalDate.now().toString());
-        oppgaveDto.setPrioritet("LAV");
+        oppgaveDto.setPrioritet(LAV);
 
         return restClient.opprettOppgave(oppgaveDto);
     }

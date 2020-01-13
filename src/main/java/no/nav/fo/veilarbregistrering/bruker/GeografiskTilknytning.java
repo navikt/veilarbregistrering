@@ -45,6 +45,11 @@ public class GeografiskTilknytning implements Metric {
     }
 
     @Override
+    public String toString() {
+        return "Geografisk tilknytning[" + geografisktilknytning + "]";
+    }
+
+    @Override
     public String fieldName() {
         return "geografiskTilknytning";
     }
