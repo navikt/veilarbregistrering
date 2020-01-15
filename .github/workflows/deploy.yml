@@ -85,7 +85,8 @@ jobs:
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
-        RESOURCE: nais/naiserator-prod.yaml
+        RESOURCE: nais/naiserator.yaml
+        VARS: nais/vars-p.yaml
         VAR: version=${{ env.IMAGE_TAG }}
 
     - name: Create release

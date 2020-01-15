@@ -1,0 +1,17 @@
+namespace: default
+app_environment_name: p
+feature_endpoint_url: https://feature-fss.nais.adeo.no/feature
+aareg_url: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
+aktoer_url: https://app.adeo.no/aktoerregister/ws/Aktoer/v2
+securitytokenservice_url: https://sts.adeo.no/SecurityTokenServiceProvider/
+veilarbpersonapi_url: https://veilarbperson.nais.adeo.no/veilarbperson/api
+veilarboppfolgingapi_url: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
+abac_pdp_endpoint_url: https://wasapp.adeo.no/asm-pdp/authorize
+norg_url: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+isso_isalive_url: https://isso.adeo.no/isso/isAlive.jsp
+ingresses:
+  - https://veilarbregistrering.nais.adeo.no
+  - https://app.adeo.no/veilarbregistrering
+oracleuser_path: /oracle/data/prod/creds/veilarbregistrering-user
+serviceuser_path: /serviceuser/data/prod/srvveilarbregistrering
+secrets_path: /kv/prod/fss/veilarbregistrering/default
