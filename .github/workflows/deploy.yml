@@ -106,11 +106,19 @@ jobs:
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-p.yaml
 
-    - name: Create release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: release/prod@${{ env.TAG }}
-        release_name: Release to prod
-        prerelease: false
+  release:
+    name: Tag and release
+    needs: deploy-prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lag tag for release
+        run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')"
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release/prod@${{ env.TAG }}
+          release_name: Release to prod
+          prerelease: false
