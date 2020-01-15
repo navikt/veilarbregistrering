@@ -13,8 +13,6 @@ spec:
   env:
   - name: APP_ENVIRONMENT_NAME
     value: "q1"
-  - name: NAV_TRUSTSTORE_KEYSTOREALIAS
-    value: na
   - name: FEATURE_ENDPOINT_URL
     value: https://feature-fss-q1.nais.preprod.local/feature
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL

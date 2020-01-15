@@ -2,39 +2,38 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: veilarbregistrering
-  namespace: default
+  namespace: {{ namespace }}
   labels:
     team: paw
 spec:
   image: {{image}}:{{version}}
   ingresses:
-    - https://veilarbregistrering.nais.adeo.no
-    - https://app.adeo.no/veilarbregistrering
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
   env:
   - name: APP_ENVIRONMENT_NAME
-    value: "p"
-  - name: NAV_TRUSTSTORE_KEYSTOREALIAS
-    value: na
+    value: {{ app_environment_name }}
   - name: FEATURE_ENDPOINT_URL
-    value: https://feature-fss.nais.adeo.no/feature
+    value: {{ feature_endpoint_url }}
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
-    value: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
+    value: {{ aareg_url }}
   - name: AKTOER_V2_ENDPOINTURL
-    value: https://app.adeo.no/aktoerregister/ws/Aktoer/v2
+    value: {{ aktoer_url }}
   - name: SECURITYTOKENSERVICE_URL
-    value: https://sts.adeo.no/SecurityTokenServiceProvider/
+    value: {{ securitytokenservice_url }}
   - name: VEILARBPERSONAPI_URL
-    value: https://veilarbperson.nais.adeo.no/veilarbperson/api
+    value: {{ veilarbpersonapi_url }}
   - name: VEILARBOPPFOLGINGAPI_URL
-    value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
+    value: {{ veilarboppfolgingapi_url }}
   - name: ABAC_PDP_ENDPOINT_URL
-    value: https://wasapp.adeo.no/asm-pdp/authorize
+    value: {{ abac_pdp_endpoint_url }}
   - name: UNLEASH_API_URL
     value: https://unleash.nais.adeo.no/api/
   - name: VIRKSOMHET_ORGANISASJONENHET_V2_ENDPOINTURL
-    value: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+    value: {{ norg_url }}
   - name: ISSO_ISALIVE_URL
-    value: https://isso.adeo.no/isso/isAlive.jsp
+    value: {{ isso_isalive_url }}
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
@@ -60,10 +59,10 @@ spec:
   vault:
     enabled: true
     paths:
-    - kvPath: /oracle/data/prod/creds/veilarbregistrering-user
+    - kvPath: {{ oracleuser_path }}
       mountPath: /var/run/secrets/nais.io/oracle_creds
-    - kvPath: /serviceuser/data/prod/srvveilarbregistrering
+    - kvPath: {{ serviceuser_path }}
       mountPath: /var/run/secrets/nais.io/serviceuser_creds
-    - kvPath: /kv/prod/fss/veilarbregistrering/default
+    - kvPath: {{ secrets_path }}
       mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
