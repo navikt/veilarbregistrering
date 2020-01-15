@@ -3,8 +3,7 @@ name: Build, push, and deploy
 on: [push]
 
 env:
-  IMAGE_TAG: ${{ github.sha }}
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
 
 jobs:
 
@@ -15,8 +14,11 @@ jobs:
 
     - uses: actions/checkout@v1
 
-    - name: Create pretty TAG
-      run: echo "::set-env name=PRETTY_TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"
+    - name: Lag tag for image
+      run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')"
+
+    - name: Lag full image referanse
+      run: echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
 
     - name: Set up Maven cache
       uses: actions/cache@v1
@@ -37,16 +39,22 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${IMAGE}:${IMAGE_TAG} --tag ${IMAGE}:latest .
-        docker login docker.pkg.github.com -u veilarbregistrering -p ${GITHUB_TOKEN}
-        docker push ${IMAGE}:${IMAGE_TAG}
+        docker build --tag ${IMAGE} .
+        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+        docker push ${IMAGE}
 
   deploy-q0:
-    name: Deploy application to q0
+    name: Deploy to q0 FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+
+    - name: Lag tag for image
+      run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')"
+
+    - name: Lag full image referanse
+      run: echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
 
     - name: Deploy to Q0
       uses: nais/deploy/actions/deploy@v1
@@ -55,14 +63,19 @@ jobs:
         CLUSTER: dev-fss
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-q0.yaml
-        VAR: version=${{ env.IMAGE_TAG }}
 
   deploy-q1:
-    name: Deploy application to q1
+    name: Deploy to q1 FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+
+    - name: Lag tag for image
+      run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')"
+
+    - name: Lag full image referanse
+      run: echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
 
     - name: Deploy to Q1
       uses: nais/deploy/actions/deploy@v1
@@ -71,14 +84,19 @@ jobs:
         CLUSTER: dev-fss
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-q1.yaml
-        VAR: version=${{ env.IMAGE_TAG }}
 
   deploy-prod:
-    name: Deploy application to production
+    name: Deploy to Prod FSS
     needs: deploy-q0
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+
+    - name: Lag tag for image
+      run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')"
+
+    - name: Lag full image referanse
+      run: echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
 
     - name: Deploy to production
       uses: nais/deploy/actions/deploy@v1
@@ -87,13 +105,12 @@ jobs:
         CLUSTER: prod-fss
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-p.yaml
-        VAR: version=${{ env.IMAGE_TAG }}
 
     - name: Create release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: release/prod@${{ env.IMAGE_TAG }}
+        tag_name: release/prod@${{ env.TAG }}
         release_name: Release to prod
         prerelease: false

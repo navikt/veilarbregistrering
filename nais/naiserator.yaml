@@ -6,7 +6,7 @@ metadata:
   labels:
     team: paw
 spec:
-  image: {{image}}:{{version}}
+  image: {{image}}
   ingresses:
   {{#each ingresses as |url|}}
      - {{url}}
