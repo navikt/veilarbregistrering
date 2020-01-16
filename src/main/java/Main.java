@@ -1,8 +1,6 @@
 import no.nav.apiapp.ApiApp;
 import no.nav.common.utils.NaisUtils;
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.lang.System.setProperty;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
@@ -13,9 +11,6 @@ import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.STS_URL_KEY
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class Main {
-
-
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws Exception {
 

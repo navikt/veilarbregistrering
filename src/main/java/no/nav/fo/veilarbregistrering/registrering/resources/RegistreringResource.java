@@ -19,10 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
@@ -122,7 +119,13 @@ public class RegistreringResource {
         final Bruker bruker = hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
-        return brukerRegistreringService.hentBrukerRegistrering(bruker);
+
+        BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
+        if (brukerRegistreringWrapper == null) {
+            throw new NotFoundException("Bruker ble ikke funnet i databasen. Mulig årsak: ny AktørId");
+        }
+
+        return brukerRegistreringWrapper;
     }
 
     @POST

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
@@ -9,22 +10,25 @@ import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotFoundException;
 
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class RegistreringResourceTest {
+public class RegistreringResourceTest {
 
     private VeilarbAbacPepClient pepClient;
     private RegistreringResource registreringResource;
@@ -38,7 +42,7 @@ class RegistreringResourceTest {
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
-    @BeforeEach
+    @Before
     public void setup() {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
@@ -80,9 +84,18 @@ class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
+        BrukerRegistreringWrapper response = new BrukerRegistreringWrapper(gyldigBrukerRegistrering());
+        when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(response);
         when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void skalKasteNotFoundHvisBrukerIkkeFinnesIDatabasen() {
+        when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(null);
+        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
+        registreringResource.hentRegistrering();
     }
 
     @Test
@@ -115,15 +128,15 @@ class RegistreringResourceTest {
         Mockito.when(requestProvider.get()).thenReturn(request);
 
         String enhetIdFraUrl = registreringResource.getEnhetIdFromUrlOrThrow();
-        Assertions.assertEquals(enhetId, enhetIdFraUrl);
+        Assert.assertEquals(enhetId, enhetIdFraUrl);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void skalFeileHvisUrlIkkeHarEnhetId(){
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getParameter("enhetId")).thenReturn(null);
         Mockito.when(requestProvider.get()).thenReturn(request);
 
-        Assertions.assertThrows(RuntimeException.class, () -> registreringResource.getEnhetIdFromUrlOrThrow());
+        registreringResource.getEnhetIdFromUrlOrThrow();
     }
 }
