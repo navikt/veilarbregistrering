@@ -15,6 +15,8 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapp
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Provider;
@@ -32,6 +34,8 @@ import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistre
 @Produces("application/json")
 @Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
 public class RegistreringResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
 
     private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
     private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
@@ -122,7 +126,7 @@ public class RegistreringResource {
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
         if (brukerRegistreringWrapper == null) {
-            throw new NotFoundException("Bruker ble ikke funnet i databasen. Mulig årsak: ny AktørId");
+            LOG.warn("Bruker ble ikke funnet i databasen. Mulig årsak: ny AktørId");
         }
 
         return brukerRegistreringWrapper;

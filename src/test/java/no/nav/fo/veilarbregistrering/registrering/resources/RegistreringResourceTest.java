@@ -21,7 +21,6 @@ import org.mockito.Mockito;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.NotFoundException;
 
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -89,13 +88,6 @@ public class RegistreringResourceTest {
         when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void skalKasteNotFoundHvisBrukerIkkeFinnesIDatabasen() {
-        when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(null);
-        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
-        registreringResource.hentRegistrering();
     }
 
     @Test
