@@ -1,0 +1,10 @@
+<settings>
+    <servers>
+        <!-- i tilfelle bygget kjører som en Github Action, vil tokenet automatisk injectes her -->
+        <server>
+            <id>github-package-registry-navikt</id>
+            <username>token</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+</settings>

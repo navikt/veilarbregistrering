@@ -15,6 +15,19 @@
     <version>1</version>
     <packaging>war</packaging>
 
+    <repositories>
+        <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
+        <repository>
+            <id>internal-mirror-github-navikt</id>
+            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -28,6 +41,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>no.nav.arbeid</groupId>
+            <artifactId>veilarbregistrering-skjema</artifactId>
+            <version>1.202001221229-e4fa8e3</version>
+        </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
