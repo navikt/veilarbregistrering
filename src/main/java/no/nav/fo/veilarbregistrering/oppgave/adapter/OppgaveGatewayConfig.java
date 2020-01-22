@@ -12,20 +12,15 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class OppgaveGatewayConfig {
 
+    public static final String OPPGAVE_PROPERTY_NAME = "OPPGAVE_URL";
+
     @Bean
     OppgaveRestClient oppgaveRestClient(Provider<HttpServletRequest> provider) {
-        return new OppgaveRestClient(oppgaveUrl(getRequiredProperty("NAIS_NAMESPACE")), provider);
+        return new OppgaveRestClient(getRequiredProperty(OPPGAVE_PROPERTY_NAME), provider);
     }
 
     @Bean
     OppgaveGateway oppgaveGateway(OppgaveRestClient oppgaveRestClient) {
         return new OppgaveGatewayImpl(oppgaveRestClient);
-    }
-
-    private String oppgaveUrl(String namespace) {
-        if ("p".equals(namespace)) {
-            return "https://oppgave.nais.adeo.no/api/v1";
-        }
-        return "https://oppgave.nais.preprod.local/api/v1";
     }
 }

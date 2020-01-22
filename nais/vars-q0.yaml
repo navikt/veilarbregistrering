@@ -8,6 +8,7 @@ veilarbpersonapi_url: https://veilarbperson-q0.nais.preprod.local/veilarbperson/
 veilarboppfolgingapi_url: https://veilarboppfolging-q0.nais.preprod.local/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp-q0.adeo.no/asm-pdp/authorize
 norg_url: https://app-q0.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+oppgave_url: https://oppgave.nais.preprod.local/api/v1
 isso_isalive_url: https://isso-q.adeo.no/isso/isAlive.jsp
 ingresses:
   - https://veilarbregistrering-q0.nais.preprod.local

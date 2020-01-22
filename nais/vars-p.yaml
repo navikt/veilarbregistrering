@@ -8,6 +8,7 @@ veilarbpersonapi_url: https://veilarbperson.nais.adeo.no/veilarbperson/api
 veilarboppfolgingapi_url: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp.adeo.no/asm-pdp/authorize
 norg_url: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+oppgave_url: https://oppgave.nais.adeo.no/api/v1
 isso_isalive_url: https://isso.adeo.no/isso/isAlive.jsp
 ingresses:
   - https://veilarbregistrering.nais.adeo.no
