@@ -36,10 +36,6 @@ spec:
     value: {{ oppgave_url }}
   - name: ISSO_ISALIVE_URL
     value: {{ isso_isalive_url }}
-  - name: KAFKA_SERVERS
-    value: {{ kafka_url }}
-  - name: KAFKA_SCHEMA
-    value: {{ kafka_schema_url }}
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
