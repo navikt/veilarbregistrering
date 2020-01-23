@@ -36,7 +36,7 @@ jobs:
         java-version: 1.8
 
     - name: Build with Maven
-      run: mvn -B package --settings maven-settings.xml
+      run: mvn -Pgithub -B package --settings maven-settings.xml
 
     - name: Build and publish Docker image
       env:

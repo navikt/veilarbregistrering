@@ -25,4 +25,4 @@ jobs:
           java-version: 1.8
 
       - name: Build with Maven
-        run: mvn -B test package --settings maven-settings.xml
+        run: mvn -Pgithub -B test package --settings maven-settings.xml

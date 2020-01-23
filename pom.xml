@@ -15,18 +15,6 @@
     <version>1</version>
     <packaging>war</packaging>
 
-    <repositories>
-        <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
-        <repository>
-            <id>internal-mirror-github-navikt</id>
-            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-        </repository>
-        <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -263,5 +251,34 @@
     <build>
         <finalName>veilarbregistrering</finalName>
     </build>
+    <profiles>
+        <profile>
+            <id>github</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <repositories>
+                <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
+                <repository>
+                    <id>github-package-registry-navikt</id>
+                    <url>https://maven.pkg.github.com/navikt/maven-release</url>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
+                <repository>
+                    <id>internal-mirror-github-navikt</id>
+                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+                </repository>
+            </repositories>
+
+        </profile>
+    </profiles>
 
 </project>
