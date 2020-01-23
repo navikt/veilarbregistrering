@@ -26,3 +26,5 @@ jobs:
 
       - name: Build with Maven
         run: mvn -Pgithub -B test package --settings maven-settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

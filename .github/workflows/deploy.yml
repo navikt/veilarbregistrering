@@ -37,6 +37,8 @@ jobs:
 
     - name: Build with Maven
       run: mvn -Pgithub -B package --settings maven-settings.xml
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and publish Docker image
       env:
