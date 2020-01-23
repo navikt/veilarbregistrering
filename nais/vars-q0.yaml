@@ -16,3 +16,5 @@ ingresses:
 oracleuser_path: /oracle/data/dev/creds/veilarbdemo_q0-user
 serviceuser_path: /serviceuser/data/dev/srvveilarbregistrering
 secrets_path: /kv/preprod/fss/veilarbregistrering/q0
+kafka_url: "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443"
+kafka_schema_url: "https://kafka-schema-registry.nais.preprod.local"
