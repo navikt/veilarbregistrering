@@ -19,6 +19,8 @@ import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.kafka.KafkaRegistrerer;
+import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
@@ -44,6 +46,10 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    MeldingsSender meldingsSender() {
+        return new KafkaRegistrerer();
+    }
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
@@ -54,7 +60,8 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
+            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+            MeldingsSender meldingsSender
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -65,7 +72,8 @@ public class ServiceBeansConfig {
                 arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
-                sykemeldtRegistreringFeature
+                sykemeldtRegistreringFeature,
+                meldingsSender
         );
     }
 

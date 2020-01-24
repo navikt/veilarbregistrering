@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.kafka;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import no.nav.arbeid.veilarbregistrering.Registrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -15,16 +14,22 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import java.io.File;
 import java.util.Properties;
 
-import static java.lang.System.*;
+import static java.lang.System.getProperty;
+import static java.lang.System.getenv;
 
-public class KafkaRegistrerer {
+public class KafkaRegistrerer implements MeldingsSender {
+    KafkaProducer<String, Registrering> producer;
 
-    public static void sendRegistrering(String aktorId) {
-        try (KafkaProducer<String, Registrering> producer = new KafkaProducer<>(getKafkaConfig())) {
-            Registrering registrering = Registrering.newBuilder().setAktorid(aktorId).build();
-            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, registrering));
-        }
+    public KafkaRegistrerer() {
+        this.producer = new KafkaProducer<>(getKafkaConfig());
     }
+
+    @Override
+    public void sendRegistreringsMelding(String aktorId) {
+        Registrering registrering = Registrering.newBuilder().setAktorid(aktorId).build();
+        producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, registrering));
+    }
+
 
     private static String getEnvSuffix() {
         String envName = getenv("APP_ENVIRONMENT_NAME");

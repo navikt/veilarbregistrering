@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.kafka.KafkaRegistrerer;
+import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -47,6 +48,7 @@ public class BrukerRegistreringService {
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
+    private final MeldingsSender meldingsSender;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -59,7 +61,8 @@ public class BrukerRegistreringService {
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
-                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
+                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+                                     MeldingsSender meldingsSender
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
@@ -71,6 +74,7 @@ public class BrukerRegistreringService {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
+        this.meldingsSender = meldingsSender;
     }
 
     @Transactional
@@ -182,12 +186,12 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        KafkaRegistrerer.sendRegistrering(aktorId.getAktorId());
+        meldingsSender.sendRegistreringsMelding(aktorId.getAktorId());
 
         return ordinaerBrukerRegistrering;
     }
 
-    private void setManueltRegistrertAv(BrukerRegistrering...registreringer){
+    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
         Arrays.stream(registreringer)
                 .filter(Objects::nonNull)
                 .forEach((registrering) -> {

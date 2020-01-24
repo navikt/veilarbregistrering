@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -48,6 +49,7 @@ public class BrukerRegistreringServiceTest {
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private MeldingsSender meldingsSender;
 
     @BeforeEach
     public void setup() {
@@ -60,6 +62,7 @@ public class BrukerRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
+        meldingsSender = (aktorId) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -71,7 +74,8 @@ public class BrukerRegistreringServiceTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        sykemeldtRegistreringFeature);
+                        sykemeldtRegistreringFeature,
+                        meldingsSender);
 
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }

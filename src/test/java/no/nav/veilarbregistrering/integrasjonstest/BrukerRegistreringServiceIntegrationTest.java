@@ -18,6 +18,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringServi
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -171,7 +172,8 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
-                RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature) {
+                RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+                MeldingsSender meldingsSender) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -182,13 +184,21 @@ class BrukerRegistreringServiceIntegrationTest {
                     arbeidsforholdGateway,
                     manuellRegistreringService,
                     startRegistreringUtils,
-                    sykemeldtRegistreringFeature
+                    sykemeldtRegistreringFeature,
+                    meldingsSender
             );
         }
 
         @Bean
         VeilarbAbacPepClient pepClient() {
             return mock(VeilarbAbacPepClient.class);
+        }
+
+        @Bean
+        MeldingsSender meldingsSender() {
+            return aktorId -> {
+                //noop
+            };
         }
     }
 

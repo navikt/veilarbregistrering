@@ -36,11 +36,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>no.nav.arbeid</groupId>
-            <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202001221229-e4fa8e3</version>
-        </dependency>
-        <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
