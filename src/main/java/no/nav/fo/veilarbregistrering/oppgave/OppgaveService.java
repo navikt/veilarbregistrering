@@ -20,14 +20,14 @@ public class OppgaveService {
 
     private final OppgaveGateway oppgaveGateway;
     private final PersonGateway personGateway;
-    private final OppgaveSender oppgaveSender;
+    private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
 
     private final Map<GeografiskTilknytning, NavKontor> navKontorMap = new HashMap<>(3);
 
-    public OppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, OppgaveSender oppgaveSender) {
+    public OppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
         this.oppgaveGateway = oppgaveGateway;
         this.personGateway = personGateway;
-        this.oppgaveSender = oppgaveSender;
+        this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
         initNavKontor();
     }
 
@@ -39,7 +39,7 @@ public class OppgaveService {
 
     public Oppgave opprettOppgave(String aktorId, Foedselsnummer foedselsnummer) {
 
-        oppgaveSender.sendMelding(aktorId);
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(aktorId);
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = Optional.empty();
         try {

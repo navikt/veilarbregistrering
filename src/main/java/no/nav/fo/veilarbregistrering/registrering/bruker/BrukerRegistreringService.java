@@ -46,7 +46,7 @@ public class BrukerRegistreringService {
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
-    private final ArbeidssokerregistreringSender arbeidssokerregistreringSender;
+    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -61,7 +61,7 @@ public class BrukerRegistreringService {
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
-                                     ArbeidssokerregistreringSender arbeidssokerregistreringSender
+                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
@@ -73,7 +73,7 @@ public class BrukerRegistreringService {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
-        this.arbeidssokerregistreringSender = arbeidssokerregistreringSender;
+        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
     }
 
     @Transactional
@@ -185,7 +185,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        arbeidssokerregistreringSender.sendRegistreringsMelding(aktorId.getAktorId());
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(aktorId.getAktorId());
 
         return ordinaerBrukerRegistrering;
     }
