@@ -18,7 +18,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringServi
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerregistreringSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -173,7 +173,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
-                MeldingsSender meldingsSender) {
+                ArbeidssokerregistreringSender arbeidssokerregistreringSender) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -185,7 +185,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     manuellRegistreringService,
                     startRegistreringUtils,
                     sykemeldtRegistreringFeature,
-                    meldingsSender
+                    arbeidssokerregistreringSender
             );
         }
 
@@ -195,7 +195,7 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        MeldingsSender meldingsSender() {
+        ArbeidssokerregistreringSender meldingsSender() {
             return aktorId -> {
                 //noop
             };

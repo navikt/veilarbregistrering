@@ -12,8 +12,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.kafka.KafkaRegistrerer;
-import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -48,7 +46,7 @@ public class BrukerRegistreringService {
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
-    private final MeldingsSender meldingsSender;
+    private final ArbeidssokerregistreringSender arbeidssokerregistreringSender;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -57,12 +55,13 @@ public class BrukerRegistreringService {
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
-                                     PersonGateway personGateway, SykemeldingService sykemeldingService,
+                                     PersonGateway personGateway,
+                                     SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
-                                     MeldingsSender meldingsSender
+                                     ArbeidssokerregistreringSender arbeidssokerregistreringSender
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
@@ -74,7 +73,7 @@ public class BrukerRegistreringService {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
-        this.meldingsSender = meldingsSender;
+        this.arbeidssokerregistreringSender = arbeidssokerregistreringSender;
     }
 
     @Transactional
@@ -186,7 +185,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        meldingsSender.sendRegistreringsMelding(aktorId.getAktorId());
+        arbeidssokerregistreringSender.sendRegistreringsMelding(aktorId.getAktorId());
 
         return ordinaerBrukerRegistrering;
     }

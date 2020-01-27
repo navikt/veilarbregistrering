@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerregistreringSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -47,7 +47,7 @@ class SykmeldtInfoClientTest {
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
     private StartRegistreringUtils startRegistreringUtils;
-    private MeldingsSender meldingsSender;
+    private ArbeidssokerregistreringSender arbeidssokerregistreringSender;
     private ClientAndServer mockServer;
     private String ident;
 
@@ -68,7 +68,7 @@ class SykmeldtInfoClientTest {
         sykeforloepMetadataClient = buildSykeForloepClient();
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
-        meldingsSender = (aktorId) -> {}; //Noop, vi trenger ikke kafka
+        arbeidssokerregistreringSender = (aktorId) -> {}; //Noop, vi trenger ikke kafka
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
@@ -82,7 +82,7 @@ class SykmeldtInfoClientTest {
                         manuellRegistreringService,
                         startRegistreringUtils,
                         sykemeldtRegistreringFeature,
-                        meldingsSender);
+                        arbeidssokerregistreringSender);
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);

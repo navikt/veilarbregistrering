@@ -1,12 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import no.nav.arbeid.veilarbregistrering.Registrering;
 import org.apache.kafka.clients.CommonClientConfigs;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -17,30 +14,9 @@ import java.util.Properties;
 import static java.lang.System.getProperty;
 import static java.lang.System.getenv;
 
-public class KafkaRegistrerer implements MeldingsSender {
-    KafkaProducer<String, Registrering> producer;
+class KafkaConfig {
 
-    public KafkaRegistrerer() {
-        this.producer = new KafkaProducer<>(getKafkaConfig());
-    }
-
-    @Override
-    public void sendRegistreringsMelding(String aktorId) {
-        Registrering registrering = Registrering.newBuilder().setAktorid(aktorId).build();
-        producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, registrering));
-    }
-
-
-    private static String getEnvSuffix() {
-        String envName = getenv("APP_ENVIRONMENT_NAME");
-        if (envName != null) {
-            return "-" + envName.toLowerCase();
-        } else {
-            return "";
-        }
-    }
-
-    private static Properties getKafkaConfig() {
+    static Properties getKafkaConfig() {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
         properties.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));

@@ -24,7 +24,7 @@ public class OppgaveServiceTest {
         oppgaveGateway = Mockito.mock(OppgaveGateway.class);
         personGateway = Mockito.mock(PersonGateway.class);
 
-        oppgaveService = new OppgaveService(oppgaveGateway, personGateway);
+        oppgaveService = new OppgaveService(oppgaveGateway, personGateway, (aktorId) -> {});
     }
 
     @Test

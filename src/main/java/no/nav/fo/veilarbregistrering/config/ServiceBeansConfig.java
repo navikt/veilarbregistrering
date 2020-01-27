@@ -7,8 +7,10 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.kafka.KafkaProducer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveSender;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
@@ -16,11 +18,10 @@ import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerregistreringSender;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.kafka.KafkaRegistrerer;
-import no.nav.fo.veilarbregistrering.registrering.kafka.MeldingsSender;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
@@ -46,9 +47,10 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    MeldingsSender meldingsSender() {
-        return new KafkaRegistrerer();
+    KafkaProducer kafkaProducer() {
+        return new KafkaProducer();
     }
+
     @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
@@ -61,7 +63,7 @@ public class ServiceBeansConfig {
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
             RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
-            MeldingsSender meldingsSender
+            ArbeidssokerregistreringSender arbeidssokerregistreringSender
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -73,7 +75,7 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 startRegistreringUtils,
                 sykemeldtRegistreringFeature,
-                meldingsSender
+                arbeidssokerregistreringSender
         );
     }
 
@@ -131,8 +133,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway) {
-        return new OppgaveService(oppgaveGateway, personGateway);
+    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, OppgaveSender oppgaveSender) {
+        return new OppgaveService(oppgaveGateway, personGateway, oppgaveSender);
     }
 
     @Bean
