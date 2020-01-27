@@ -1,4 +1,4 @@
-name: Build, push, deploy
+name: Build, push, deploy 💪
 
 on:
   push:
