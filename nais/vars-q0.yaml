@@ -13,6 +13,6 @@ isso_isalive_url: https://isso-q.adeo.no/isso/isAlive.jsp
 ingresses:
   - https://veilarbregistrering-q0.nais.preprod.local
   - https://app-q0.adeo.no/veilarbregistrering
-oracleuser_path: /oracle/data/dev/creds/veilarbregistrering_q0-user
+oracleuser_path: /oracle/data/dev/creds/veilarbdemo_q0-user
 serviceuser_path: /serviceuser/data/dev/srvveilarbregistrering
 secrets_path: /kv/preprod/fss/veilarbregistrering/q0
