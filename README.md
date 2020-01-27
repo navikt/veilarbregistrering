@@ -5,13 +5,13 @@ Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/ar
 ![](https://github.com/navikt/veilarbregistrering/workflows/Build,%20push,%20and%20deploy/badge.svg)
 
 ## Avhengigheter
-- veilarboppfolging (og Arena)
-- veilarbperson
-- Aktør-service (fnr/dnr -> aktørId)
+- veilarboppfolging (og Arena) : REST
+- veilarbperson : REST
+- Aktør-service (fnr/dnr -> aktørId) : SOAP
 - ABAC (tilgangskontroll)
 - Aareg (siste arbeidsforhold)
 - NAV Enhet (for veileder pr ident)
-- Infotrygd (maksdato)
+- Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
 
 # Komme i gang
