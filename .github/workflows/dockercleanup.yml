@@ -1,7 +1,7 @@
 name: Remove package versions
 on:
   schedule:
-    - cron:  '0 8 * * *'
+    - cron: '0 8 * * *'
 jobs:
   remove-package-versions:
     runs-on: ubuntu-latest
