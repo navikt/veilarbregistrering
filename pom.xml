@@ -14,7 +14,7 @@
     <artifactId>veilarbregistrering</artifactId>
     <version>1</version>
     <packaging>war</packaging>
-    
+
     <repositories>
         <repository>
             <id>confluent</id>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>no.nav.arbeid</groupId>
             <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202001241331-27f9cd3</version>
+            <version>1.202001282217-e4c3ccc</version>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
-import no.nav.arbeid.soker.oppgave.Henvendelse;
-import no.nav.arbeid.soker.registrering.Registrering;
+import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
+import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
@@ -37,13 +37,13 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
             return;
         }
 
-        Registrering registrering = Registrering.newBuilder().setAktorid(aktorId).build();
+        ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertEvent.newBuilder().setAktorid(aktorId).build();
         try {
-            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, registrering)).get(2, TimeUnit.SECONDS);
+            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
             LOG.info("Arbeidssoker registrert-event publisert på topic, aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            LOG.warn("Sending av registrering til Kafka feilet", e);
+            LOG.warn("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
         }
     }
 
@@ -58,13 +58,13 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
             return;
         }
 
-        Henvendelse henvendelse = Henvendelse.newBuilder().setAktorid(aktorId).build();
+        KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId).build();
         try {
-            henvendelseProducer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-henvendelse-opprettet" + getEnvSuffix(), aktorId, henvendelse)).get(2, TimeUnit.SECONDS);
-            LOG.info("Kontakt bruker-henvendelse publisert på topic, aapen-arbeid-arbeidssoker-henvendelse-opprettet" + getEnvSuffix());
+            henvendelseProducer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId, kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
+            LOG.info("KontaktBrukerOpprettetEvent publisert på topic, aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            LOG.warn("Sending av henvendelse til Kafka feilet", e);
+            LOG.warn("Sending av KontaktBrukerOpprettetEvent til Kafka feilet", e);
         }
     }
 
