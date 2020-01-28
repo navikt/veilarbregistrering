@@ -32,7 +32,8 @@ public class OppgaveService {
     private void initNavKontor() {
         this.navKontorMap.put(GeografiskTilknytning.of("030102"), grünerlokka());
         this.navKontorMap.put(GeografiskTilknytning.of("0412"), ringsaker());
-        this.navKontorMap.put(GeografiskTilknytning.of("5701"), falkenborg());
+        this.navKontorMap.put(GeografiskTilknytning.of("500101"), falkenborg()); // Midtbyen - Trondheim
+        this.navKontorMap.put(GeografiskTilknytning.of("500102"), falkenborg()); // Østbyen - Trondheim
     }
 
     public Oppgave opprettOppgave(String aktorId, Foedselsnummer foedselsnummer) {
