@@ -11,7 +11,7 @@ norg_url: https://app-q0.adeo.no/norg2/ws/OrganisasjonEnhet/v2
 oppgave_url: https://oppgave.nais.preprod.local/api/v1
 isso_isalive_url: https://isso-q.adeo.no/isso/isAlive.jsp
 kafka_url: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-kafka_schema_url: https://kafka-schema-registry.nais.preprod.local
+kafka_schema_url: http://kafka-schema-registry.tpa:8081
 ingresses:
   - https://veilarbregistrering-q0.nais.preprod.local
   - https://app-q0.adeo.no/veilarbregistrering
