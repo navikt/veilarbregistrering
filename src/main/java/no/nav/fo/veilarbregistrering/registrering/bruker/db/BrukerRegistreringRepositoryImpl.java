@@ -68,7 +68,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
-                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(AKTOR_ID, aktorId.asString())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling
@@ -96,7 +96,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         SqlUtils.insert(db, SYKMELDT_REGISTRERING)
                 .value(SYKMELDT_REGISTRERING_ID, id)
-                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(AKTOR_ID, aktorId.asString())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Besvarelse
@@ -142,7 +142,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     @Override
     public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, BRUKER_REGISTRERING, OrdinaerBrukerRegistreringMapper::map)
-                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .where(WhereClause.equals(AKTOR_ID, aktorId.asString()))
                 .orderBy(OrderClause.desc(BRUKER_REGISTRERING_ID))
                 .limit(1)
                 .column("*")
@@ -152,7 +152,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     @Override
     public SykmeldtRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId) {
         return SqlUtils.select(db, SYKMELDT_REGISTRERING, SykmeldtRegistreringMapper::map)
-                .where(WhereClause.equals(AKTOR_ID, aktorId.getAktorId()))
+                .where(WhereClause.equals(AKTOR_ID, aktorId.asString()))
                 .orderBy(OrderClause.desc(SYKMELDT_REGISTRERING_ID))
                 .limit(1)
                 .column("*")
@@ -164,7 +164,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         long id = nesteFraSekvens(BRUKER_REAKTIVERING_SEQ);
         SqlUtils.insert(db, BRUKER_REAKTIVERING)
                 .value(BRUKER_REAKTIVERING_ID, id)
-                .value(AKTOR_ID, aktorId.getAktorId())
+                .value(AKTOR_ID, aktorId.asString())
                 .value(REAKTIVERING_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .execute();
     }

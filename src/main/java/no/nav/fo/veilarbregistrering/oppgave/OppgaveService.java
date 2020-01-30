@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class OppgaveService {
         this.navKontorMap.put(GeografiskTilknytning.of("500102"), falkenborg()); // Østbyen - Trondheim
     }
 
-    public Oppgave opprettOppgave(String aktorId, Foedselsnummer foedselsnummer) {
+    public Oppgave opprettOppgave(AktorId aktorId, Foedselsnummer foedselsnummer) {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(aktorId);
 

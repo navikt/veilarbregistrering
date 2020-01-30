@@ -84,7 +84,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
-        AktorId aktorId = new AktorId(bruker.getAktoerId());
+        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
         oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
@@ -172,7 +172,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        AktorId aktorId = new AktorId(bruker.getAktoerId());
+        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, aktorId);
 
@@ -185,7 +185,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(aktorId.getAktorId());
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(aktorId);
 
         return ordinaerBrukerRegistrering;
     }
@@ -201,7 +201,7 @@ public class BrukerRegistreringService {
 
     public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
 
-        AktorId aktorId = new AktorId(bruker.getAktoerId());
+        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(aktorId);
@@ -258,7 +258,7 @@ public class BrukerRegistreringService {
         }
 
         oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
-        AktorId aktorId = new AktorId(bruker.getAktoerId());
+        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 

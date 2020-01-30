@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -31,15 +32,15 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
     }
 
     @Override
-    public void publiserArbeidssokerRegistrert(String aktorId) {
+    public void publiserArbeidssokerRegistrert(AktorId aktorId) {
         if (!skalArbeidssokerRegistrertPubliseres()) {
             LOG.info("Feature toggle, arbeidssokerregistrering.arbeidssokerRegistrert, er skrudd av. Det publiseres ingen Kafka-event");
             return;
         }
 
-        ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertEvent.newBuilder().setAktorid(aktorId).build();
+        ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
-            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId, arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
+            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId.asString(), arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
             LOG.info("Arbeidssoker registrert-event publisert på topic, aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -52,15 +53,15 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
     }
 
     @Override
-    public void publiserHenvendelse(String aktorId) {
+    public void publiserHenvendelse(AktorId aktorId) {
         if (!skalKontaktBrukerHenvendelsePubliseres()) {
             LOG.info("Feature toggle, arbeidssokerregistrering.kontantBrukerHenvendelse, er skrudd av. Det publiseres ingen Kafka-event");
             return;
         }
 
-        KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId).build();
+        KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
-            henvendelseProducer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId, kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
+            henvendelseProducer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
             LOG.info("KontaktBrukerOpprettetEvent publisert på topic, aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 
 import java.time.LocalDate;
 
@@ -18,9 +19,9 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgave(String aktoerId, String tilordnetRessurs, String beskrivelse) {
+    public Oppgave opprettOppgave(AktorId aktoerId, String tilordnetRessurs, String beskrivelse) {
         OppgaveDto oppgaveDto = new OppgaveDto();
-        oppgaveDto.setAktoerId(aktoerId);
+        oppgaveDto.setAktoerId(aktoerId.asString());
         oppgaveDto.setBeskrivelse(beskrivelse);
         oppgaveDto.setTilordnetRessurs(tilordnetRessurs);
         oppgaveDto.setTema(OPPFOLGING);

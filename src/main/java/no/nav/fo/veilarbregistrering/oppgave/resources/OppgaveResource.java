@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -55,7 +56,7 @@ public class OppgaveResource {
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
         Oppgave oppgave = oppgaveService.opprettOppgave(
-                bruker.getAktoerId(),
+                AktorId.valueOf(bruker.getAktoerId()),
                 Foedselsnummer.of(bruker.getFoedselsnummer()));
 
         LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());

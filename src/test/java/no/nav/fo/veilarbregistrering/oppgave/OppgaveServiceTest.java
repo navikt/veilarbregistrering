@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -13,6 +14,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class OppgaveServiceTest {
+
+    private static final AktorId AKTOER_ID = AktorId.valueOf("123");
 
     private OppgaveService oppgaveService;
 
@@ -31,7 +34,7 @@ public class OppgaveServiceTest {
     public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_ikke_er_satt() {
         when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.empty());
         when(oppgaveGateway.opprettOppgave(
-                "123",
+                AKTOER_ID,
                 "H134912",
                 "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                 " Brukeren får ikke registrert seg som arbeidssøker." +
@@ -48,14 +51,14 @@ public class OppgaveServiceTest {
             }
         });
 
-        oppgaveService.opprettOppgave("123", Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
     }
 
     @Test
     public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_er_030102() {
         when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.empty());
         when(oppgaveGateway.opprettOppgave(
-                "123",
+                AKTOER_ID,
                 "H134912",
                 "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                         " Brukeren får ikke registrert seg som arbeidssøker." +
@@ -72,14 +75,14 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave("123", Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
     }
 
     @Test
     public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_ikke_er_mappet_opp() {
         when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("030105")));
         when(oppgaveGateway.opprettOppgave(
-                "123",
+                AKTOER_ID,
                 "H134912",
                 "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                         " Brukeren får ikke registrert seg som arbeidssøker." +
@@ -96,14 +99,14 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave("123", Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
     }
 
     @Test
     public void skal_tilordne_oppgave_til_B125772_naar_geografisk_tilknytning_er_0412() {
         when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("0412")));
         when(oppgaveGateway.opprettOppgave(
-                "123",
+                AKTOER_ID,
                 "B125772",
                 "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Ringsaker." +
                         " Brukeren får ikke registrert seg som arbeidssøker." +
@@ -120,6 +123,6 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave("123", Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
     }
 }

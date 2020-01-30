@@ -8,6 +8,7 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +92,7 @@ class OppgaveGatewayTest {
         Oppgave oppgave = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveGateway.opprettOppgave(
-                        "12e1e3",
+                        AktorId.valueOf("12e1e3"),
                         "D113328",
                         "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                         " Brukeren får ikke registrert seg som arbeidssøker." +
