@@ -126,7 +126,7 @@ public class RegistreringResource {
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
         if (brukerRegistreringWrapper == null) {
-            LOG.warn("Bruker ble ikke funnet i databasen. Mulig årsak: ny AktørId");
+            LOG.info("Bruker ble ikke funnet i databasen.");
         }
 
         return brukerRegistreringWrapper;
