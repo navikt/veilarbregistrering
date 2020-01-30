@@ -15,6 +15,12 @@
     <version>1</version>
     <packaging>war</packaging>
 
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -29,11 +35,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>no.nav.arbeid</groupId>
-            <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202001221229-e4fa8e3</version>
-        </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
@@ -91,6 +92,20 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>fasit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.arbeid</groupId>
+            <artifactId>veilarbregistrering-skjema</artifactId>
+            <version>1.202001282217-e4c3ccc</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>5.0.2</version>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>

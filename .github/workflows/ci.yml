@@ -2,8 +2,8 @@ name: Build Branches and Pull requests
 
 on:
   push:
-    branches:
-      - "!master"
+    branches-ignore:
+      - master
 
 jobs:
 

@@ -7,8 +7,10 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.kafka.KafkaProducer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
@@ -16,6 +18,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
@@ -26,6 +29,7 @@ import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +48,11 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    KafkaProducer kafkaProducer(UnleashService unleashService) {
+        return new KafkaProducer(unleashService);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
@@ -54,7 +63,8 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
+            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -65,7 +75,8 @@ public class ServiceBeansConfig {
                 arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
-                sykemeldtRegistreringFeature
+                sykemeldtRegistreringFeature,
+                arbeidssokerRegistrertProducer
         );
     }
 
@@ -123,8 +134,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway) {
-        return new OppgaveService(oppgaveGateway, personGateway);
+    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+        return new OppgaveService(oppgaveGateway, personGateway, kontaktBrukerHenvendelseProducer);
     }
 
     @Bean

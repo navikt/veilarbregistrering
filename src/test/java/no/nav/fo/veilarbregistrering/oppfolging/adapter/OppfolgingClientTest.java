@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -53,6 +54,7 @@ class OppfolgingClientTest {
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
+    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private ClientAndServer mockServer;
     private String ident;
 
@@ -75,6 +77,7 @@ class OppfolgingClientTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
+        arbeidssokerRegistrertProducer = (aktorId) -> {};
         ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
@@ -87,7 +90,8 @@ class OppfolgingClientTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        sykemeldtRegistreringFeature);
+                        sykemeldtRegistreringFeature,
+                        arbeidssokerRegistrertProducer);
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);

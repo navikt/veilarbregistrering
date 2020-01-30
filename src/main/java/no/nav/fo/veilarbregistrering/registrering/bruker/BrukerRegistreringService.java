@@ -46,6 +46,7 @@ public class BrukerRegistreringService {
     private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
+    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -54,11 +55,13 @@ public class BrukerRegistreringService {
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
-                                     PersonGateway personGateway, SykemeldingService sykemeldingService,
+                                     PersonGateway personGateway,
+                                     SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
-                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature
+                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
@@ -70,6 +73,7 @@ public class BrukerRegistreringService {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
+        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
     }
 
     @Transactional
@@ -180,10 +184,13 @@ public class BrukerRegistreringService {
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(aktorId.getAktorId());
+
         return ordinaerBrukerRegistrering;
     }
 
-    private void setManueltRegistrertAv(BrukerRegistrering...registreringer){
+    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
         Arrays.stream(registreringer)
                 .filter(Objects::nonNull)
                 .forEach((registrering) -> {

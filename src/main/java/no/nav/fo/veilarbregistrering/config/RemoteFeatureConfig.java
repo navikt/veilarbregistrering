@@ -25,16 +25,6 @@ public class RemoteFeatureConfig {
         return new SykemeldtRegistreringFeature(unleashService);
     }
 
-    @Bean
-    public TjenesteNedeFeature tjenesteNedeFeature(UnleashService unleashService) {
-        return new TjenesteNedeFeature(unleashService);
-    }
-
-    @Bean
-    public ManuellRegistreringFeature manuellRegistreringFeature(UnleashService unleashService) {
-        return new ManuellRegistreringFeature(unleashService);
-    }
-
     public static class SykemeldtRegistreringFeature extends RemoteFeatureConfig {
         protected UnleashService unleashService;
         public SykemeldtRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
@@ -42,6 +32,11 @@ public class RemoteFeatureConfig {
         public boolean erSykemeldtRegistreringAktiv() {
             return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
         }
+    }
+
+    @Bean
+    public TjenesteNedeFeature tjenesteNedeFeature(UnleashService unleashService) {
+        return new TjenesteNedeFeature(unleashService);
     }
 
     public static class TjenesteNedeFeature extends RemoteFeatureConfig {
@@ -54,6 +49,11 @@ public class RemoteFeatureConfig {
 
     }
 
+    @Bean
+    public ManuellRegistreringFeature manuellRegistreringFeature(UnleashService unleashService) {
+        return new ManuellRegistreringFeature(unleashService);
+    }
+
     public static class ManuellRegistreringFeature extends RemoteFeatureConfig {
         protected UnleashService unleashService;
         public ManuellRegistreringFeature(UnleashService unleashService) { this.unleashService = unleashService; }
@@ -61,7 +61,41 @@ public class RemoteFeatureConfig {
         public boolean skalBrukereBliManueltRegistrert() {
             return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
         }
-
     }
 
+    @Bean
+    public KontaktBrukerHenvendelseFeature kontaktBrukerHenvendelseFeature(UnleashService unleashService) {
+        return new KontaktBrukerHenvendelseFeature(unleashService);
+    }
+
+    public static class KontaktBrukerHenvendelseFeature extends RemoteFeatureConfig {
+
+        protected final UnleashService unleashService;
+
+        public KontaktBrukerHenvendelseFeature(UnleashService unleashService) {
+            this.unleashService = unleashService;
+        }
+
+        public boolean skalKontaktBrukerHenvendelsePubliseres() {
+            return unleashService.isEnabled("arbeidssokerregistrering.kontantBrukerHenvendelse");
+        }
+    }
+
+    @Bean
+    public ArbeidssokerRegistrertFeature arbeidssokerRegistrertFeature(UnleashService unleashService) {
+        return new ArbeidssokerRegistrertFeature(unleashService);
+    }
+
+    private class ArbeidssokerRegistrertFeature {
+
+        protected final UnleashService unleashService;
+
+        public ArbeidssokerRegistrertFeature(UnleashService unleashService) {
+            this.unleashService = unleashService;
+        }
+
+        public boolean skalArbeidssokerRegistrertPubliseres() {
+            return unleashService.isEnabled("arbeidssokerregistrering.arbeidssokerRegistrert");
+        }
+    }
 }

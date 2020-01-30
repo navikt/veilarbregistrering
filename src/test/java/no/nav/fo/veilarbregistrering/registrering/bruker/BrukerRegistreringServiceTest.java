@@ -48,6 +48,7 @@ public class BrukerRegistreringServiceTest {
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
     private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
     @BeforeEach
     public void setup() {
@@ -60,6 +61,7 @@ public class BrukerRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
+        arbeidssokerRegistrertProducer = (aktorId) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -71,7 +73,8 @@ public class BrukerRegistreringServiceTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        sykemeldtRegistreringFeature);
+                        sykemeldtRegistreringFeature,
+                        arbeidssokerRegistrertProducer);
 
         when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
     }
