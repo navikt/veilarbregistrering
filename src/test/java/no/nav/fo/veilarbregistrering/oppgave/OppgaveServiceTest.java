@@ -103,8 +103,8 @@ public class OppgaveServiceTest {
     }
 
     @Test
-    public void skal_tilordne_oppgave_til_B125772_naar_geografisk_tilknytning_er_0412() {
-        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("0412")));
+    public void skal_tilordne_oppgave_til_B125772_naar_geografisk_tilknytning_er_3411() {
+        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("3411")));
         when(oppgaveGateway.opprettOppgave(
                 AKTOER_ID,
                 "B125772",
