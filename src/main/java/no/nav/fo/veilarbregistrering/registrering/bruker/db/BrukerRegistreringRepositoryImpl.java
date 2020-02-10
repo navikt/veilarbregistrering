@@ -100,12 +100,12 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Besvarelse
-                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon()).isPresent() ? besvarelse.getFremtidigSituasjon().toString() : null)
-                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeIArbeid()).isPresent() ? besvarelse.getTilbakeIArbeid().toString() : null)
+                .value(FREMTIDIG_SITUASJON, ofNullable(besvarelse.getFremtidigSituasjon()).map(Enum::toString).orElse(null))
+                .value(TILBAKE_ETTER_52_UKER, ofNullable(besvarelse.getTilbakeIArbeid()).map(Enum::toString).orElse(null))
                 .value(NUS_KODE, ofNullable(UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning())).orElse(null))
-                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).isPresent() ? besvarelse.getUtdanningBestatt().toString() : null)
-                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).isPresent() ? besvarelse.getUtdanningGodkjent().toString() : null)
-                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).isPresent() ? besvarelse.getAndreForhold().toString() : null)
+                .value(UTDANNING_BESTATT, ofNullable(besvarelse.getUtdanningBestatt()).map(Enum::toString).orElse(null))
+                .value(UTDANNING_GODKJENT_NORGE, ofNullable(besvarelse.getUtdanningGodkjent()).map(Enum::toString).orElse(null))
+                .value(ANDRE_UTFORDRINGER, ofNullable(besvarelse.getAndreForhold()).map(Enum::toString).orElse(null))
                 .execute();
 
         return id;
