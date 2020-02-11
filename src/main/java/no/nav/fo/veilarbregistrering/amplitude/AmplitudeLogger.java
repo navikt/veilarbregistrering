@@ -14,14 +14,16 @@ public class AmplitudeLogger {
 
     private static final Logger LOG = LoggerFactory.getLogger(AmplitudeLogger.class);
 
-    public static void log(String maksdato) {
+    public static void log() {
+        String jsonData = "{\"api_key\":\"2f190e67f31d7e4719c5ff048ad3d3e6\",\"events\":[{\"device_id\":\"veilarbregistrering\", \"event_type\":\"test_httppost\", \"user_properties\":{\"maksdato\":\"maksdato2020\"}}]}";
+        StringBuffer response = new StringBuffer();
+
         try {
             URL url = new URL("https://api.amplitude.com/2/httpapi");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
 
-            String jsonData = "{\"api_key\":\"2f190e67f31d7e4719c5ff048ad3d3e6\",\"events\":[{\"device_id\":\"veilarbregistrering\", \"event_type\":\"test_httppost\", \"user_properties\":{\"maksdato\":\""+maksdato+"\"}}]}";
 
             connection.setDoOutput(true);
             DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -34,7 +36,6 @@ public class AmplitudeLogger {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(connection.getInputStream()));
             String output;
-            StringBuffer response = new StringBuffer();
 
             while ((output = in.readLine()) != null) {
                 response.append(output);
@@ -43,7 +44,7 @@ public class AmplitudeLogger {
 
             LOG.info("Event sendt til Amplitude. Response: " + response.toString());
         } catch (IOException e) {
-            LOG.error("Feil ved logging til Amplitude", e);
+            LOG.error("Feil ved logging til Amplitude.\nPayload: " + jsonData + "\nResponse: " + response.toString(), e);
         }
     }
 }
