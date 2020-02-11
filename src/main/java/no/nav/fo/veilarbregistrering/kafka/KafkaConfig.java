@@ -7,6 +7,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.util.Properties;
@@ -14,9 +16,11 @@ import java.util.Properties;
 import static java.lang.System.getProperty;
 import static java.lang.System.getenv;
 
-class KafkaConfig {
+@Configuration
+public class KafkaConfig {
 
-    static Properties getKafkaConfig() {
+    @Bean
+    Properties kafkaProperties() {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
         properties.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));

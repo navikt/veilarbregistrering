@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
@@ -26,6 +27,7 @@ import javax.servlet.ServletContext;
         ServiceBeansConfig.class,
         DatabaseConfig.class,
         DataSourceHelsesjekk.class,
+        KafkaConfig.class,
         AktorConfig.class,
         PepConfig.class,
         OrganisasjonEnhetV2Config.class,
