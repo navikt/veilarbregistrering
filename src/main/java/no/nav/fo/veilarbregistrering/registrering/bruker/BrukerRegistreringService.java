@@ -263,7 +263,7 @@ public class BrukerRegistreringService {
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
-        AmplitudeLogger.log(brukersTilstand.getMaksDato());
+        AmplitudeLogger.log();
 
         return id;
     }
