@@ -22,14 +22,12 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
     private static final Logger LOG = LoggerFactory.getLogger(KafkaProducer.class);
 
     private final org.apache.kafka.clients.producer.KafkaProducer producer;
-    private final org.apache.kafka.clients.producer.KafkaProducer henvendelseProducer;
 
     private final UnleashService unleashService;
 
     public KafkaProducer(Properties kafkaProperties, UnleashService unleashService) {
         this.unleashService = unleashService;
         this.producer = new org.apache.kafka.clients.producer.KafkaProducer(kafkaProperties);
-        this.henvendelseProducer = new org.apache.kafka.clients.producer.KafkaProducer(kafkaProperties);
     }
 
     @Override
@@ -62,7 +60,7 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
 
         KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
-            henvendelseProducer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
+            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
             LOG.info("KontaktBrukerOpprettetEvent publisert på topic, aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
