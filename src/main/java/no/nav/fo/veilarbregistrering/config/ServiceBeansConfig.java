@@ -9,8 +9,8 @@ import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.kafka.KafkaProducer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
@@ -38,6 +38,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 @Configuration
 public class ServiceBeansConfig {
@@ -48,8 +49,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    KafkaProducer kafkaProducer(UnleashService unleashService) {
-        return new KafkaProducer(unleashService);
+    KafkaProducer kafkaProducer(Properties kafkaProperties, UnleashService unleashService) {
+        return new KafkaProducer(kafkaProperties, unleashService);
     }
 
     @Bean

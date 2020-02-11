@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -25,10 +26,10 @@ public class KafkaProducer implements ArbeidssokerRegistrertProducer, KontaktBru
 
     private final UnleashService unleashService;
 
-    public KafkaProducer(UnleashService unleashService) {
+    public KafkaProducer(Properties kafkaProperties, UnleashService unleashService) {
         this.unleashService = unleashService;
-        this.producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.getKafkaConfig());
-        this.henvendelseProducer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.getKafkaConfig());
+        this.producer = new org.apache.kafka.clients.producer.KafkaProducer(kafkaProperties);
+        this.henvendelseProducer = new org.apache.kafka.clients.producer.KafkaProducer(kafkaProperties);
     }
 
     @Override
