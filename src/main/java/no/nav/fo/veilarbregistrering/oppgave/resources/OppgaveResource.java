@@ -2,11 +2,8 @@ package no.nav.fo.veilarbregistrering.oppgave.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
@@ -33,25 +30,22 @@ public class OppgaveResource {
     private final OppgaveService oppgaveService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
-    private final AktorService aktorService;
 
     public OppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService,
-            AktorService aktorService
+            OppgaveService oppgaveService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.oppgaveService = oppgaveService;
-        this.aktorService = aktorService;
     }
 
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
     public OppgaveDto opprettOppgave() {
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
@@ -64,11 +58,4 @@ public class OppgaveResource {
         return map(oppgave);
     }
 
-    private Bruker hentBruker() {
-        String fnr = userService.hentFnrFraUrlEllerToken();
-
-        return Bruker.fraFnr(fnr)
-                .medAktoerIdSupplier(() -> aktorService.getAktorId(fnr)
-                        .orElseThrow(() -> new Feil(FeilType.FINNES_IKKE)));
-    }
 }

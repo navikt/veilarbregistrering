@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceMock extends UserService {
 
     public UserServiceMock(Provider<HttpServletRequest> requestProvider) {
-        super(requestProvider);
+        super(requestProvider, null);
     }
 
     public String getFnr() {

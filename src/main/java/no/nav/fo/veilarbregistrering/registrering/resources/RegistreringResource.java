@@ -2,11 +2,8 @@ package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
@@ -19,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,36 +36,30 @@ public class RegistreringResource {
     private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
 
     private final UnleashService unleashService;
-    private final Provider<HttpServletRequest> requestProvider;
     private final BrukerRegistreringService brukerRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
-    private final AktorService aktorService;
 
     public RegistreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            AktorService aktorService,
-            UnleashService unleashService,
-            Provider<HttpServletRequest> requestProvider
+            UnleashService unleashService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
-        this.aktorService=aktorService;
         this.unleashService = unleashService;
-        this.requestProvider = requestProvider;
     }
 
     @GET
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
@@ -88,17 +77,17 @@ public class RegistreringResource {
         }
 
         OrdinaerBrukerRegistrering registrering;
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!skalBrukereBliManueltRegistrert()){
+            if (!brukereSkalBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = getEnhetIdFromUrlOrThrow();
+            final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
@@ -120,7 +109,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(bruker);
 
@@ -141,7 +130,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
         brukerRegistreringService.reaktiverBruker(bruker);
@@ -162,16 +151,16 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = hentBruker();
+        final Bruker bruker = userService.hentBruker();
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!skalBrukereBliManueltRegistrert()){
+            if (!brukereSkalBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
-            final String enhetId = getEnhetIdFromUrlOrThrow();
+            final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
@@ -189,24 +178,7 @@ public class RegistreringResource {
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
     }
 
-    private Bruker hentBruker() {
-        String fnr = userService.hentFnrFraUrlEllerToken();
-
-        return Bruker.fraFnr(fnr)
-                .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
-    }
-
-    String getEnhetIdFromUrlOrThrow() {
-        final String enhetId = requestProvider.get().getParameter("enhetId");
-
-        if (enhetId == null) {
-            throw new RuntimeException("Mangler enhetId");
-        }
-
-        return enhetId;
-    }
-
-    private boolean skalBrukereBliManueltRegistrert() {
+    private boolean brukereSkalBliManueltRegistrert() {
         return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
     }
 

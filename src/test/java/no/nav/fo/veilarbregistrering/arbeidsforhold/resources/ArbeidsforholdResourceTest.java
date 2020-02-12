@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
@@ -21,7 +21,6 @@ class ArbeidsforholdResourceTest {
     private ArbeidsforholdResource arbeidsforholdResource;
     private UserService userService;
     private ArbeidsforholdGateway arbeidsforholdGateway;
-    private AktorService aktorService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -30,19 +29,17 @@ class ArbeidsforholdResourceTest {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
-        aktorService = mock(AktorService.class);
 
         arbeidsforholdResource = new ArbeidsforholdResource(
                 pepClient,
                 userService,
-                arbeidsforholdGateway,
-                aktorService
+                arbeidsforholdGateway
         );
     }
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
-        when(userService.hentFnrFraUrlEllerToken()).thenReturn(IDENT);
+        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
         when(arbeidsforholdGateway.hentArbeidsforhold(IDENT)).thenReturn(flereArbeidsforhold());
         arbeidsforholdResource.hentSisteArbeidsforhold();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());

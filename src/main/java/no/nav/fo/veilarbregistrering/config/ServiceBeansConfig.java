@@ -85,9 +85,7 @@ public class ServiceBeansConfig {
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
-                aktorService,
-                unleashService,
-                provider
+                unleashService
         );
     }
 
@@ -101,8 +99,7 @@ public class ServiceBeansConfig {
         return new ArbeidsforholdResource(
                 pepClient,
                 userService,
-                arbeidsforholdGateway,
-                aktorService
+                arbeidsforholdGateway
         );
     }
 
@@ -116,8 +113,7 @@ public class ServiceBeansConfig {
         return new SykemeldingResource(
                 pepClient,
                 userService,
-                sykemeldingService,
-                aktorService
+                sykemeldingService
         );
     }
 
@@ -133,7 +129,7 @@ public class ServiceBeansConfig {
             OppgaveService oppgaveService,
             AktorService aktorService
     ) {
-        return new OppgaveResource(pepClient, userService, oppgaveService, aktorService);
+        return new OppgaveResource(pepClient, userService, oppgaveService);
     }
 
     @Bean
@@ -164,8 +160,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    UserService userService(Provider<HttpServletRequest> provider) {
-        return new UserService(provider);
+    UserService userService(Provider<HttpServletRequest> provider, AktorService aktorService) {
+        return new UserService(provider, aktorService);
     }
 
 }
