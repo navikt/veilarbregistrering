@@ -19,7 +19,7 @@ public class AmplitudeLogger {
         StringBuffer response = new StringBuffer();
 
         try {
-            URL url = new URL("https://api.amplitude.com/2/httpapi");
+            URL url = new URL("https://amplitude.nav.no/collect");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
