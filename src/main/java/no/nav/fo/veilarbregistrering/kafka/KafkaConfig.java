@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
@@ -18,6 +20,23 @@ import static java.lang.System.getenv;
 
 @Configuration
 public class KafkaConfig {
+
+    @Bean
+    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
+            KafkaProducer kafkaProducer, UnleashService unleashService) {
+        return new ArbeidssokerRegistrertKafkaProducer(kafkaProducer, unleashService);
+    }
+
+    @Bean
+    KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(
+            KafkaProducer kafkaProducer, UnleashService unleashService) {
+        return new KontaktBrukerOpprettetKafkaProducer(kafkaProducer, unleashService);
+    }
+
+    @Bean
+    KafkaProducer kafkaProducer() {
+        return new KafkaProducer(kafkaProperties());
+    }
 
     @Bean
     Properties kafkaProperties() {

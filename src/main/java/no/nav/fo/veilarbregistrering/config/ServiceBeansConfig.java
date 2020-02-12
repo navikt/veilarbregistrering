@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.kafka.KafkaProducer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
@@ -29,7 +28,6 @@ import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +36,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Properties;
 
 @Configuration
 public class ServiceBeansConfig {
@@ -46,11 +43,6 @@ public class ServiceBeansConfig {
     @Bean
     SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
         return new SykemeldingService(sykemeldingGateway);
-    }
-
-    @Bean
-    KafkaProducer kafkaProducer(Properties kafkaProperties, UnleashService unleashService) {
-        return new KafkaProducer(kafkaProperties, unleashService);
     }
 
     @Bean
