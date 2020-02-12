@@ -9,19 +9,22 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
@@ -37,8 +40,7 @@ public class RegistreringResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
 
-    private final RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
-    private final RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private final UnleashService unleashService;
     private final Provider<HttpServletRequest> requestProvider;
     private final BrukerRegistreringService brukerRegistreringService;
     private final UserService userService;
@@ -52,8 +54,7 @@ public class RegistreringResource {
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
-            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
-            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature,
+            UnleashService unleashService,
             Provider<HttpServletRequest> requestProvider
     ) {
         this.pepClient = pepClient;
@@ -61,8 +62,7 @@ public class RegistreringResource {
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.aktorService=aktorService;
-        this.tjenesteNedeFeature = tjenesteNedeFeature;
-        this.manuellRegistreringFeature = manuellRegistreringFeature;
+        this.unleashService = unleashService;
         this.requestProvider = requestProvider;
     }
 
@@ -83,7 +83,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
 
-        if(tjenesteNedeFeature.erTjenesteNede()){
+        if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
@@ -94,7 +94,7 @@ public class RegistreringResource {
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+            if (!skalBrukereBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
@@ -137,7 +137,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
     public void reaktivering() {
 
-        if(tjenesteNedeFeature.erTjenesteNede()){
+        if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
@@ -158,7 +158,7 @@ public class RegistreringResource {
     @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
 
-        if(tjenesteNedeFeature.erTjenesteNede()){
+        if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
@@ -167,7 +167,7 @@ public class RegistreringResource {
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!manuellRegistreringFeature.skalBrukereBliManueltRegistrert()){
+            if (!skalBrukereBliManueltRegistrert()){
                 throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
             }
 
@@ -206,4 +206,11 @@ public class RegistreringResource {
         return enhetId;
     }
 
+    private boolean skalBrukereBliManueltRegistrert() {
+        return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
+    }
+
+    private boolean tjenesteErNede() {
+        return unleashService.isEnabled("arbeidssokerregistrering.nedetid");
+    }
 }

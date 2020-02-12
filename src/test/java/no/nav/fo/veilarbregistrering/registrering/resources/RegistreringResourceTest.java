@@ -8,12 +8,12 @@ import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +35,7 @@ public class RegistreringResourceTest {
     private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
     private AktorService aktorService;
-    private RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature;
-    private RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature;
+    private UnleashService unleashService;
     private Provider<HttpServletRequest> requestProvider;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
@@ -48,8 +47,7 @@ public class RegistreringResourceTest {
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         aktorService = mock(AktorService.class);
-        tjenesteNedeFeature = mock(RemoteFeatureConfig.TjenesteNedeFeature.class);
-        manuellRegistreringFeature = mock(RemoteFeatureConfig.ManuellRegistreringFeature.class);
+        unleashService = mock(UnleashService.class);
         requestProvider = Mockito.mock(Provider.class);
 
         registreringResource = new RegistreringResource(
@@ -58,8 +56,7 @@ public class RegistreringResourceTest {
                 manuellRegistreringService,
                 brukerRegistreringService,
                 aktorService,
-                tjenesteNedeFeature,
-                manuellRegistreringFeature,
+                unleashService,
                 requestProvider
         );
     }

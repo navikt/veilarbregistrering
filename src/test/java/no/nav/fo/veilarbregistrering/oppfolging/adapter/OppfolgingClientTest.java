@@ -5,20 +5,16 @@ import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +40,7 @@ class OppfolgingClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
-    private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private UnleashService unleashService;
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
     private BrukerRegistreringService brukerRegistreringService;
@@ -67,7 +63,7 @@ class OppfolgingClientTest {
     public void setup() {
 
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
+        unleashService = mock(UnleashService.class);
         oppfolgingClient = buildClient();
         personGateway = mock(PersonGateway.class);
 
@@ -90,7 +86,7 @@ class OppfolgingClientTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        sykemeldtRegistreringFeature,
+                        unleashService,
                         arbeidssokerRegistrertProducer);
 
 
@@ -100,7 +96,7 @@ class OppfolgingClientTest {
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
                         .setAlder(50)
                         .setJobbetSammenhengendeSeksAvTolvSisteManeder(true));
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(unleashService.isEnabled(any())).thenReturn(true);
     }
 
     private OppfolgingClient buildClient() {

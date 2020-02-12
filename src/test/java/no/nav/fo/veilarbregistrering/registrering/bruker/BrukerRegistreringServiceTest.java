@@ -7,10 +7,9 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -19,6 +18,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,12 +47,12 @@ public class BrukerRegistreringServiceTest {
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
-    private RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private UnleashService unleashService;
     private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
     @BeforeEach
     public void setup() {
-        sykemeldtRegistreringFeature = mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
+        unleashService = mock(UnleashService.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         profileringRepository = mock(ProfileringRepository.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -73,10 +73,10 @@ public class BrukerRegistreringServiceTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        sykemeldtRegistreringFeature,
+                        unleashService,
                         arbeidssokerRegistrertProducer);
 
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(unleashService.isEnabled(any())).thenReturn(true);
     }
 
     /*

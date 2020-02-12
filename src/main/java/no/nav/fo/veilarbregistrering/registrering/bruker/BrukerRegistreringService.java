@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -17,6 +16,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringSer
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ public class BrukerRegistreringService {
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ProfileringRepository profileringRepository;
-    private final RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private final UnleashService unleashService;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
@@ -61,14 +61,14 @@ public class BrukerRegistreringService {
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
-                                     RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+                                     UnleashService unleashService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
-        this.sykemeldtRegistreringFeature = sykemeldtRegistreringFeature;
+        this.unleashService = unleashService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
@@ -123,7 +123,7 @@ public class BrukerRegistreringService {
         SykmeldtInfoData sykeforloepMetaData = null;
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
-            if (sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
+            if (sykemeldtRegistreringErAktiv()) {
                 sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
             }
         }
@@ -245,7 +245,7 @@ public class BrukerRegistreringService {
 
     @Transactional
     public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
-        if (!sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()) {
+        if (!sykemeldtRegistreringErAktiv()) {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
 
@@ -266,6 +266,10 @@ public class BrukerRegistreringService {
         AmplitudeLogger.log();
 
         return id;
+    }
+
+    private boolean sykemeldtRegistreringErAktiv() {
+        return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
     }
 
 }

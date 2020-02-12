@@ -28,6 +28,7 @@ import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +57,7 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
-            RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+            UnleashService unleashService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
     ) {
         return new BrukerRegistreringService(
@@ -68,7 +69,7 @@ public class ServiceBeansConfig {
                 arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
-                sykemeldtRegistreringFeature,
+                unleashService,
                 arbeidssokerRegistrertProducer
         );
     }
@@ -80,8 +81,7 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
             AktorService aktorService,
-            RemoteFeatureConfig.TjenesteNedeFeature tjenesteNedeFeature,
-            RemoteFeatureConfig.ManuellRegistreringFeature manuellRegistreringFeature,
+            UnleashService unleashService,
             Provider<HttpServletRequest> provider
     ) {
         return new RegistreringResource(
@@ -90,8 +90,7 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 brukerRegistreringService,
                 aktorService,
-                tjenesteNedeFeature,
-                manuellRegistreringFeature,
+                unleashService,
                 provider
         );
     }

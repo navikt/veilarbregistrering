@@ -35,7 +35,7 @@ import javax.servlet.ServletContext;
         AAregServiceWSConfig.class,
         OppfolgingClientHelseSjekk.class,
         SykmeldtInfoClientHelseSjekk.class,
-        RemoteFeatureConfig.class,
+        UnleashConfig.class,
         PersonGatewayConfig.class,
         OppfolgingGatewayConfig.class,
         OppgaveGatewayConfig.class,

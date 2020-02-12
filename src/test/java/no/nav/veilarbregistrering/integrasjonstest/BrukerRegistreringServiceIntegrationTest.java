@@ -6,23 +6,23 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
-import no.nav.fo.veilarbregistrering.config.RemoteFeatureConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +35,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 
 class BrukerRegistreringServiceIntegrationTest {
 
-    private static RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature;
+    private static UnleashService unleashService;
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
@@ -74,7 +74,7 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
-        sykemeldtRegistreringFeature = context.getBean(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
+        unleashService = context.getBean(UnleashService.class);
     }
 
     @AfterEach
@@ -107,7 +107,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
-        when(sykemeldtRegistreringFeature.erSykemeldtRegistreringAktiv()).thenReturn(true);
+        when(unleashService.isEnabled(any())).thenReturn(true);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
@@ -119,8 +119,8 @@ class BrukerRegistreringServiceIntegrationTest {
     public static class BrukerregistreringConfigTest {
 
         @Bean
-        public RemoteFeatureConfig.SykemeldtRegistreringFeature registreringFeature() {
-            return mock(RemoteFeatureConfig.SykemeldtRegistreringFeature.class);
+        public UnleashService unleashService() {
+            return mock(UnleashService.class);
         }
 
         @Bean
@@ -172,7 +172,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
-                RemoteFeatureConfig.SykemeldtRegistreringFeature sykemeldtRegistreringFeature,
+                UnleashService unleashServicee,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
 
             return new BrukerRegistreringService(
@@ -184,7 +184,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     arbeidsforholdGateway,
                     manuellRegistreringService,
                     startRegistreringUtils,
-                    sykemeldtRegistreringFeature,
+                    unleashServicee,
                     arbeidssokerRegistrertProducer
             );
         }
