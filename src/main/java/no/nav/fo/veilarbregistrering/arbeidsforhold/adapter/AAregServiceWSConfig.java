@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -15,12 +16,11 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class AAregServiceWSConfig {
     public static final String AAREG_ENDPOINT_URL = "VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL";
-    final static String url = getRequiredProperty(AAREG_ENDPOINT_URL);
+    private final static String URL = getRequiredProperty(AAREG_ENDPOINT_URL);
 
-    public static CXFClient<ArbeidsforholdV3> arbeidsforholdV3CXFClient() {
-        return new CXFClient<>(ArbeidsforholdV3.class)
-                .withOutInterceptor(new LoggingOutInterceptor())
-                .address(url);
+    @Bean
+    ArbeidsforholdGateway arbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
+        return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
     }
 
     @Bean
@@ -38,7 +38,7 @@ public class AAregServiceWSConfig {
                 .build();
 
         Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(
-                "ArbeidsforholdV3 via " + url,
+                "ArbeidsforholdV3 via " + URL,
                 "Ping av ArbeidsforholdV3. Henter informasjon om arbeidsforhold fra aareg.",
                 false
         );
@@ -53,5 +53,10 @@ public class AAregServiceWSConfig {
         };
     }
 
+    private static CXFClient<ArbeidsforholdV3> arbeidsforholdV3CXFClient() {
+        return new CXFClient<>(ArbeidsforholdV3.class)
+                .withOutInterceptor(new LoggingOutInterceptor())
+                .address(URL);
+    }
 
 }

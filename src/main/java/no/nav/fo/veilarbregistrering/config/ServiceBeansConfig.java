@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
@@ -13,7 +12,6 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
@@ -29,8 +27,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -159,16 +155,6 @@ public class ServiceBeansConfig {
     @Bean
     ProfileringRepository profileringRepository(JdbcTemplate db) {
         return new ProfileringRepositoryImpl(db);
-    }
-
-    @Bean
-    ArbeidsforholdGateway arbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
-    }
-
-    @Bean
-    HentEnheterGateway hentEnheterService(OrganisasjonEnhetV2 organisasjonEnhetService) {
-        return new HentEnheterGatewayImpl(organisasjonEnhetService);
     }
 
     //FIXME: Overflødig - metodene kan være static
