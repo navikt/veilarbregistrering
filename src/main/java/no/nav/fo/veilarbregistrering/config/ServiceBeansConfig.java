@@ -76,9 +76,7 @@ public class ServiceBeansConfig {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            AktorService aktorService,
-            UnleashService unleashService,
-            Provider<HttpServletRequest> provider
+            UnleashService unleashService
     ) {
         return new RegistreringResource(
                 pepClient,
@@ -93,8 +91,7 @@ public class ServiceBeansConfig {
     ArbeidsforholdResource arbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
-            AktorService aktorService
+            ArbeidsforholdGateway arbeidsforholdGateway
     ) {
         return new ArbeidsforholdResource(
                 pepClient,
@@ -107,8 +104,7 @@ public class ServiceBeansConfig {
     SykemeldingResource sykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            SykemeldingService sykemeldingService,
-            AktorService aktorService
+            SykemeldingService sykemeldingService
     ) {
         return new SykemeldingResource(
                 pepClient,
@@ -126,8 +122,7 @@ public class ServiceBeansConfig {
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService,
-            AktorService aktorService
+            OppgaveService oppgaveService
     ) {
         return new OppgaveResource(pepClient, userService, oppgaveService);
     }

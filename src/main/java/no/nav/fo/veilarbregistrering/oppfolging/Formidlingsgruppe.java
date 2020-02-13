@@ -4,6 +4,13 @@ import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.util.Objects;
 
+/**
+ * Formidlingsgruppe:
+ *
+ * ARBS - Arbeidssøker
+ * IARBS - Ikke arbeidssøker
+ * ISERV - Ikke servicebruker
+ */
 public class Formidlingsgruppe implements Metric {
 
     private final String formidlingsgruppe;
