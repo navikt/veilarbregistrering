@@ -13,18 +13,20 @@ public class Maksdato {
 
     private final String maksdato;
 
-    private Maksdato(String maksdato) {
-        this.maksdato = maksdato;
+    public static Maksdato nullable() {
+        return new Maksdato.NullableMaksdato();
     }
 
     public static Maksdato of(String maksdato) {
         return new Maksdato(maksdato);
     }
 
+    private Maksdato(String maksdato) {
+        Objects.requireNonNull(maksdato, "Maksdato kan ikke være null");
+        this.maksdato = maksdato;
+    }
+
     boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
-        if (maksdato == null) {
-            return false;
-        }
         LocalDate dato = LocalDate.parse(maksdato);
         long GJENSTAENDE_UKER = 13;
 
@@ -36,17 +38,21 @@ public class Maksdato {
         return maksdato;
     }
 
+    @Override
+    public String toString() {
+        return "Maksdato{ " +
+                maksdato + " (maksdato) - " +
+                LocalDate.now() + " (dagens dato) = " +
+                this.antallUkerSykmeldt(LocalDate.now()) + " (uker sykmeldt) " +
+                '}';
+    }
+
     /**
      * Regner ut antall uker en person har hatt sykepenger, gitt en dato og maksdato som er hentet fra Infotrygd.
      */
     long antallUkerSykmeldt(LocalDate dato) {
         LocalDate _maksdato = LocalDate.parse(maksdato);
         return MAKS_ANTALL_UKER_MED_SYKEPENGER - ChronoUnit.WEEKS.between(dato, _maksdato);
-    }
-
-    @Override
-    public String toString() {
-        return maksdato;
     }
 
     @Override
@@ -60,5 +66,33 @@ public class Maksdato {
     @Override
     public int hashCode() {
         return Objects.hash(maksdato);
+    }
+
+    /**
+     * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
+     */
+    public static class NullableMaksdato extends Maksdato {
+
+        private NullableMaksdato() {
+            super("INGEN_VERDI");
+        }
+
+        @Override
+        boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
+            return false;
+        }
+
+        String asString() {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Maksdato{ " +
+                    null + " (maksdato) - " +
+                    LocalDate.now() + " (dagens dato) = " +
+                    "ukjent (uker sykmeldt) " +
+                    '}';
+        }
     }
 }

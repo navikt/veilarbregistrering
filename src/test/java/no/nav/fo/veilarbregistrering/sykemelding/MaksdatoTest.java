@@ -45,7 +45,7 @@ public class MaksdatoTest {
         assertEquals(false, Maksdato.of(maksDato).beregnSykmeldtMellom39Og52Uker(dagenDato));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void skalHandtereNullVedBeregnSykmeldtOver39uker() {
         String maksDato = null;
         LocalDate dagenDato = LocalDate.of(2019, Month.APRIL, 9);
