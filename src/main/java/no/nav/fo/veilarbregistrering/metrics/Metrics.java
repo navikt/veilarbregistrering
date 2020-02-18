@@ -42,7 +42,8 @@ public class Metrics {
         SYKMELDT_BESVARELSE_EVENT("registrering.sykmeldt.besvarelse"),
         PROFILERING_EVENT("registrering.bruker.profilering"),
         BRUKER_ALDER_EVENT("registrering.bruker.alder"),
-        INVALID_REGISTRERING_EVENT("registrering.invalid.registrering");
+        INVALID_REGISTRERING_EVENT("registrering.invalid.registrering"),
+        MAKSDATO_EVENT("registrering.maksdato");
 
         private final String name;
 

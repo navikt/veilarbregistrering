@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -7,7 +9,7 @@ import java.util.Objects;
 /**
  * Maksdato angir det tidspunktet hvor bruker når maks antall dager på sykepenger.
  */
-public class Maksdato {
+public class Maksdato implements Metric {
 
     private static final int MAKS_ANTALL_UKER_MED_SYKEPENGER = 52;
 
@@ -68,6 +70,16 @@ public class Maksdato {
         return Objects.hash(maksdato);
     }
 
+    @Override
+    public String fieldName() {
+        return "maksdato";
+    }
+
+    @Override
+    public String value() {
+        return Long.toString(antallUkerSykmeldt(LocalDate.now()));
+    }
+
     /**
      * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
      */
@@ -82,8 +94,14 @@ public class Maksdato {
             return false;
         }
 
+        @Override
         String asString() {
             return null;
+        }
+
+        @Override
+        public String value() {
+            return super.asString();
         }
 
         @Override
