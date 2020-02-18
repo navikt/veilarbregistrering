@@ -1,10 +1,14 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
 public class SykemeldingService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SykemeldingService.class);
 
     public final SykemeldingGateway sykemeldingGateway;
 
@@ -23,6 +27,14 @@ public class SykemeldingService {
 
         } else {
             Maksdato maksdato = sykemeldingGateway.hentReberegnetMaksdato(fnr);
+
+            //TODO: Maksdato kan i dag inneholde `null`. Dette bør løses ved at vi i stedet returnerer Optional.
+            if (maksdato.asString() == null) {
+                LOG.info("Maksdato: null");
+            } else {
+                LOG.info("{} (maksdato) - {} (dagens dato) = {} (uker sykmeldt)", maksdato, LocalDate.now(), maksdato.antallUkerSykmeldt(LocalDate.now()));
+            }
+
             boolean erSykmeldtOver39Uker = maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.now());
 
             sykmeldtInfoData.setMaksDato(maksdato.asString());

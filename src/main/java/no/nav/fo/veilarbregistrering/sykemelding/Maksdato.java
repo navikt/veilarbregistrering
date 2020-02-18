@@ -4,7 +4,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+/**
+ * Maksdato angir det tidspunktet hvor bruker når maks antall dager på sykepenger.
+ */
 public class Maksdato {
+
+    private static final int MAKS_ANTALL_UKER_MED_SYKEPENGER = 52;
 
     private final String maksdato;
 
@@ -28,6 +33,19 @@ public class Maksdato {
     }
 
     String asString() {
+        return maksdato;
+    }
+
+    /**
+     * Regner ut antall uker en person har hatt sykepenger, gitt en dato og maksdato som er hentet fra Infotrygd.
+     */
+    long antallUkerSykmeldt(LocalDate dato) {
+        LocalDate _maksdato = LocalDate.parse(maksdato);
+        return MAKS_ANTALL_UKER_MED_SYKEPENGER - ChronoUnit.WEEKS.between(dato, _maksdato);
+    }
+
+    @Override
+    public String toString() {
         return maksdato;
     }
 
