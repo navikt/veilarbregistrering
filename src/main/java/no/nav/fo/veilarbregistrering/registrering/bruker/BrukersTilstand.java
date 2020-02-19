@@ -34,8 +34,12 @@ public class BrukersTilstand implements HasMetrics {
         return ORDINAER_REGISTRERING.equals(registreringType);
     }
 
-    public boolean erRegistrertSomSykmeldtMedArbeidsgiver() {
-        return SYKMELDT_REGISTRERING.equals(registreringType);
+    public boolean ikkeErSykemeldtRegistrering() {
+        return !this.equals(SYKMELDT_REGISTRERING);
+    }
+
+    public boolean isErSykmeldtMedArbeidsgiver() {
+        return oppfolgingStatusData.getErSykmeldtMedArbeidsgiver().orElse(false);
     }
 
     public boolean isUnderOppfolging() {

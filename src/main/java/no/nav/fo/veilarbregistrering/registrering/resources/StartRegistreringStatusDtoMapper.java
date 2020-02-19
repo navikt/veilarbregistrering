@@ -18,16 +18,12 @@ public class StartRegistreringStatusDtoMapper {
         return new StartRegistreringStatusDto()
                 .setUnderOppfolging(brukersTilstand.isUnderOppfolging())
                 .setRegistreringType(brukersTilstand.getRegistreringstype())
-                .setErSykmeldtMedArbeidsgiver(brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver())
+                .setErSykmeldtMedArbeidsgiver(brukersTilstand.isErSykmeldtMedArbeidsgiver())
                 .setMaksDato(brukersTilstand.getMaksDato())
                 .setJobbetSeksAvTolvSisteManeder(oppfyllerBetingelseOmArbeidserfaring)
-                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe()
-                        .orElse(Formidlingsgruppe.nullable()).stringValue())
-                .setServicegruppe(brukersTilstand.getServicegruppe()
-                        .orElse(Servicegruppe.nullable()).stringValue())
-                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe()
-                        .orElse(Rettighetsgruppe.nullable()).stringValue())
-                .setGeografiskTilknytning(muligGeografiskTilknytning.map(GeografiskTilknytning::stringValue)
-                        .orElse(null));
+                .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().orElse(Formidlingsgruppe.nullable()).stringValue())
+                .setServicegruppe(brukersTilstand.getServicegruppe().orElse(Servicegruppe.nullable()).stringValue())
+                .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe().orElse(Rettighetsgruppe.nullable()).stringValue())
+                .setGeografiskTilknytning(muligGeografiskTilknytning.map(GeografiskTilknytning::stringValue).orElse(null));
     }
 }
