@@ -10,14 +10,16 @@ public enum RegistreringType implements Metric {
     protected static RegistreringType beregnRegistreringType(Oppfolgingsstatus oppfolgingsstatus, SykmeldtInfoData sykeforloepMetaData) {
         if (oppfolgingsstatus.isUnderOppfolging() && !oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
             return ALLEREDE_REGISTRERT;
+
         } else if (oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
             return REAKTIVERING;
-        } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)
-                && erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
-            return SYKMELDT_REGISTRERING;
-        } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)
-                && !erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
-            return SPERRET;
+
+        } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)) {
+            if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
+                return SYKMELDT_REGISTRERING;
+            } else {
+                return SPERRET;
+            }
         } else {
             return ORDINAER_REGISTRERING;
         }

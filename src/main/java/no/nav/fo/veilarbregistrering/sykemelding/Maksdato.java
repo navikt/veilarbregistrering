@@ -15,10 +15,6 @@ public class Maksdato implements Metric {
 
     private final String maksdato;
 
-    public static Maksdato nullable() {
-        return new Maksdato.NullableMaksdato();
-    }
-
     public static Maksdato of(String maksdato) {
         return new Maksdato(maksdato);
     }
@@ -28,7 +24,11 @@ public class Maksdato implements Metric {
         this.maksdato = maksdato;
     }
 
-    boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
+    public static Maksdato nullable() {
+        return new Maksdato.NullableMaksdato();
+    }
+
+    public boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
         LocalDate dato = LocalDate.parse(maksdato);
         long GJENSTAENDE_UKER = 13;
 
@@ -36,7 +36,7 @@ public class Maksdato implements Metric {
                 ChronoUnit.WEEKS.between(dagenDato, dato) <= GJENSTAENDE_UKER;
     }
 
-    String asString() {
+    public String asString() {
         return maksdato;
     }
 
@@ -90,12 +90,12 @@ public class Maksdato implements Metric {
         }
 
         @Override
-        boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
+        public boolean beregnSykmeldtMellom39Og52Uker(LocalDate dagenDato) {
             return false;
         }
 
         @Override
-        String asString() {
+        public String asString() {
             return null;
         }
 

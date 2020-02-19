@@ -32,8 +32,7 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EV
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
@@ -254,7 +253,7 @@ public class BrukerRegistreringService {
 
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
-        if (!brukersTilstand.erRegistrertSomSykmeldtMedArbeidsgiver()) {
+        if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
