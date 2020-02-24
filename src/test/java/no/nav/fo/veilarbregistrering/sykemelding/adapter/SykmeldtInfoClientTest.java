@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
@@ -40,6 +42,9 @@ class SykmeldtInfoClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
+    private static final String IDENT = "10108000398"; //Aremark fiktivt fnr.";;
+    private static final BrukerIntern BRUKER = BrukerIntern.of(Foedselsnummer.of(IDENT), AktorId.valueOf("AKTØRID"));
+
     private UnleashService unleashService;
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
@@ -52,7 +57,6 @@ class SykmeldtInfoClientTest {
     private StartRegistreringUtils startRegistreringUtils;
     private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private ClientAndServer mockServer;
-    private String ident;
 
     @AfterEach
     public void tearDown() {
@@ -72,7 +76,6 @@ class SykmeldtInfoClientTest {
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         arbeidssokerRegistrertProducer = (aktorId) -> {}; //Noop, vi trenger ikke kafka
-        ident = "10108000398"; //Aremark fiktivt fnr.";
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -111,7 +114,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(204));
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID"));
+        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER);
     }
 
     @Test
@@ -119,7 +122,7 @@ class SykmeldtInfoClientTest {
     public void testAtHentingAvSykeforloepMetadataGirOk() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
-        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(ident);
+        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(Foedselsnummer.of(IDENT));
         assertTrue(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING);
     }
 
@@ -129,7 +132,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(502));
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER));
     }
 
     // TODO: FIKS når infotrygd api er klar

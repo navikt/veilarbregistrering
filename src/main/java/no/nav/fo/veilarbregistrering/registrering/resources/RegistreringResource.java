@@ -2,9 +2,9 @@ package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;
@@ -59,9 +60,9 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final Bruker bruker = userService.hentBruker();
+        final BrukerIntern bruker = userService.hentBrukerIntern();
 
-        pepClient.sjekkLesetilgangTilBruker(bruker);
+        pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
         rapporterRegistreringsstatus(status);
         return status;
@@ -76,11 +77,11 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
+        final BrukerIntern bruker = userService.hentBrukerIntern();
+
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+
         OrdinaerBrukerRegistrering registrering;
-        final Bruker bruker = userService.hentBruker();
-
-        pepClient.sjekkSkrivetilgangTilBruker(bruker);
-
         if (AutentiseringUtils.erVeileder()) {
 
             if (!brukereSkalBliManueltRegistrert()){
@@ -109,9 +110,9 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final Bruker bruker = userService.hentBruker();
+        final BrukerIntern bruker = userService.hentBrukerIntern();
 
-        pepClient.sjekkLesetilgangTilBruker(bruker);
+        pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
         if (brukerRegistreringWrapper == null) {
@@ -130,9 +131,9 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBruker();
+        final BrukerIntern bruker = userService.hentBrukerIntern();
 
-        pepClient.sjekkSkrivetilgangTilBruker(bruker);
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         brukerRegistreringService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
@@ -151,8 +152,8 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBruker();
-        pepClient.sjekkSkrivetilgangTilBruker(bruker);
+        final BrukerIntern bruker = userService.hentBrukerIntern();
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (AutentiseringUtils.erVeileder()) {
 

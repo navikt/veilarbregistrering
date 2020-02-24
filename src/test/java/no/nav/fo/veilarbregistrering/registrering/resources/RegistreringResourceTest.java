@@ -1,11 +1,13 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
@@ -52,7 +54,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
+        when(userService.hentBrukerIntern()).thenReturn(BrukerIntern.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -60,7 +62,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.hentBruker()).thenCallRealMethod();
+        when(userService.hentBrukerIntern()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
         verify(pepClient, times(0)).sjekkLesetilgangTilBruker(any());
@@ -69,8 +71,8 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
         BrukerRegistreringWrapper response = new BrukerRegistreringWrapper(gyldigBrukerRegistrering());
-        when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(response);
-        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
+        when(brukerRegistreringService.hentBrukerRegistrering(any(BrukerIntern.class))).thenReturn(response);
+        when(userService.hentBrukerIntern()).thenReturn(BrukerIntern.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -81,7 +83,7 @@ public class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse()
                         .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
-        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
+        when(userService.hentBrukerIntern()).thenReturn(BrukerIntern.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
@@ -91,7 +93,7 @@ public class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
-        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
+        when(userService.hentBrukerIntern()).thenReturn(BrukerIntern.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }

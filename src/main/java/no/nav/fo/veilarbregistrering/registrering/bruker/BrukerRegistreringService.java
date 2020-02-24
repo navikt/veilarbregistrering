@@ -1,13 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.amplitude.AmplitudeLogger;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -78,25 +74,23 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public void reaktiverBruker(Bruker bruker) {
+    public void reaktiverBruker(BrukerIntern bruker) {
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: frn
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
-        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
+        brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
+        oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
 
-        brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
-        oppfolgingGateway.reaktiverBruker(Foedselsnummer.of(bruker.getFoedselsnummer())); //FIXME: fnr
-
-        LOG.info("Reaktivering av bruker med aktørId : {}", aktorId);
+        LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());
     }
 
     @Transactional
-    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, BrukerIntern bruker) {
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: fnr
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
@@ -133,8 +127,8 @@ public class BrukerRegistreringService {
         return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, registreringType);
     }
 
-    public StartRegistreringStatusDto hentStartRegistreringStatus(String fnr) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
+    public StartRegistreringStatusDto hentStartRegistreringStatus(Foedselsnummer fnr) {
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr.stringValue()); //FIXME: fnr
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
@@ -147,7 +141,7 @@ public class BrukerRegistreringService {
         Boolean oppfyllerBetingelseOmArbeidserfaring = null;
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                    () -> arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of(fnr)), //FIXME: fnr
+                    () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                     now());
         }
 
@@ -158,11 +152,11 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(String fnr) {
+    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(Foedselsnummer fnr) {
         Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
         try {
             long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(Foedselsnummer.of(fnr));
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(fnr);
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {
@@ -172,21 +166,19 @@ public class BrukerRegistreringService {
         return geografiskTilknytning;
     }
 
-    private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
-
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, aktorId);
+    private OrdinaerBrukerRegistrering opprettBruker(BrukerIntern bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, bruker.getAktorId());
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
-        oppfolgingGateway.aktiverBruker(Foedselsnummer.of(bruker.getFoedselsnummer()), profilering.getInnsatsgruppe()); //FIXME: fnr
+        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe()); //FIXME: fnr
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(aktorId);
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(bruker.getAktorId());
 
         return ordinaerBrukerRegistrering;
     }
@@ -200,12 +192,9 @@ public class BrukerRegistreringService {
                 });
     }
 
-    public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
-
-        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
-
+    public BrukerRegistreringWrapper hentBrukerRegistrering(BrukerIntern bruker) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringForAktorId(aktorId);
+                .hentOrdinaerBrukerregistreringForAktorId(bruker.getAktorId());
 
         if (ordinaerBrukerRegistrering != null) {
             Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
@@ -213,7 +202,7 @@ public class BrukerRegistreringService {
         }
 
         SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
-                .hentSykmeldtregistreringForAktorId(aktorId);
+                .hentSykmeldtregistreringForAktorId(bruker.getAktorId());
 
         setManueltRegistrertAv(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
 
@@ -236,15 +225,15 @@ public class BrukerRegistreringService {
 
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(String fnr, Besvarelse besvarelse) {
+    private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
-                utledAlderForFnr(fnr, now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of(fnr)), //FIXME
+                utledAlderForFnr(fnr.stringValue(), now()), //TODO: flytt logikk inn i Foedselsnummer
+                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now(), besvarelse);
     }
 
     @Transactional
-    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
+    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, BrukerIntern bruker) {
         if (!sykemeldtRegistreringErAktiv()) {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
@@ -252,19 +241,18 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: fnr
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
-        oppfolgingGateway.settOppfolgingSykmeldt(Foedselsnummer.of(bruker.getFoedselsnummer()), sykmeldtRegistrering.getBesvarelse()); //FIXME: fnr
-        AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
-        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
+        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
+        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         if (unleashService.isEnabled("veilarbregistrering.amplitude.test")) {
-            AmplitudeLogger.log(aktorId);
+            AmplitudeLogger.log(bruker.getAktorId());
         }
 
         return id;

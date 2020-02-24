@@ -1,13 +1,10 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import lombok.SneakyThrows;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -37,7 +34,8 @@ import static org.mockito.Mockito.*;
 
 public class BrukerRegistreringServiceTest {
 
-    private static String FNR_OPPFYLLER_KRAV = FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40);
+    private static Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
+    private static BrukerIntern BRUKER_INTERN = BrukerIntern.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
@@ -89,7 +87,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
+        registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
 
@@ -98,7 +96,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerSomSkalReaktiveres();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
 
-        brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
+        brukerRegistreringService.reaktiverBruker(BRUKER_INTERN);
         verify(brukerRegistreringRepository, times(1)).lagreReaktiveringForBruker(any());
     }
 
@@ -111,7 +109,7 @@ public class BrukerRegistreringServiceTest {
                         .withUnderOppfolging(false)
                         .withKanReaktiveres(false)
         );
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(BRUKER_INTERN));
         verify(brukerRegistreringRepository, times(0)).lagreReaktiveringForBruker(any());
     }
 
@@ -121,7 +119,7 @@ public class BrukerRegistreringServiceTest {
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
-        registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID"));
+        registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
@@ -130,7 +128,7 @@ public class BrukerRegistreringServiceTest {
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
         OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, BRUKER_INTERN));
     }
 
     @Test
@@ -161,14 +159,14 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBrukerOver39uker();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
     }
 
     @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, Bruker.fraFnr(FNR_OPPFYLLER_KRAV).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
     }
 
     @Test
@@ -265,7 +263,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     @SneakyThrows
-    private StartRegistreringStatusDto getStartRegistreringStatus(String fnr) {
+    private StartRegistreringStatusDto getStartRegistreringStatus(Foedselsnummer fnr) {
         return brukerRegistreringService.hentStartRegistreringStatus(fnr);
     }
 
@@ -274,7 +272,7 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
 
-    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, BrukerIntern bruker) {
         return brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
     }
 
