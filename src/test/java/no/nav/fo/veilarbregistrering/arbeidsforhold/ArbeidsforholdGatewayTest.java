@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
@@ -43,8 +44,8 @@ class ArbeidsforholdGatewayTest {
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
+        arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
+        arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
         verify(arbeidsforholdV3, times(1)).finnArbeidsforholdPrArbeidstaker(any());
     }
 
@@ -52,8 +53,8 @@ class ArbeidsforholdGatewayTest {
     public void skalIkkeCacheVedKallPaaForskjelligFnr() throws Exception {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
         when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
-        arbeidsforholdGateway.hentArbeidsforhold("fnr");
-        arbeidsforholdGateway.hentArbeidsforhold("fnr2");
+        arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
+        arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("109987654321"));
         verify(arbeidsforholdV3, times(2)).finnArbeidsforholdPrArbeidstaker(any());
     }
 

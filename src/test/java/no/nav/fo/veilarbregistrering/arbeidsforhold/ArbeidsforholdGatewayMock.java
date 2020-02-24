@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
     }
 
     @Override
-    public FlereArbeidsforhold hentArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
         List arbeidsforholdListe = new ArrayList();
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(200), now().minusDays(30)));
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(30), null));
