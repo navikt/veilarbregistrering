@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

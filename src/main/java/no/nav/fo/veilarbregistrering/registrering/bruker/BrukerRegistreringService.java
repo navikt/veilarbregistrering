@@ -4,6 +4,7 @@ import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.fo.veilarbregistrering.amplitude.AmplitudeLogger;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;

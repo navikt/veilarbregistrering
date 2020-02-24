@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
