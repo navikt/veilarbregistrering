@@ -36,7 +36,7 @@ public class OppgaveService {
         this.navKontorMap.put(GeografiskTilknytning.of("500102"), falkenborg()); // Østbyen - Trondheim
     }
 
-    public Oppgave opprettOppgave(BrukerIntern bruker) {
+    public Oppgave opprettOppgave(Bruker bruker) {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 

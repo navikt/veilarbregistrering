@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 public class OppgaveServiceTest {
 
     private static final AktorId AKTOER_ID = AktorId.valueOf("123");
-    private static final BrukerIntern bruker = BrukerIntern.of(Foedselsnummer.of("12345678910"), AKTOER_ID);
+    private static final Bruker bruker = Bruker.of(Foedselsnummer.of("12345678910"), AKTOER_ID);
 
     private OppgaveService oppgaveService;
 

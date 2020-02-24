@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 public class BrukerRegistreringServiceTest {
 
     private static Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
-    private static BrukerIntern BRUKER_INTERN = BrukerIntern.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
+    private static Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
@@ -272,7 +272,7 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
 
-    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, BrukerIntern bruker) {
+    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         return brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
     }
 

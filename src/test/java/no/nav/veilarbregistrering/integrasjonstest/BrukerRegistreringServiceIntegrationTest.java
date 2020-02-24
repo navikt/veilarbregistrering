@@ -4,7 +4,7 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
@@ -56,7 +56,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtils startRegistreringUtils;
 
     private static Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
-    private static BrukerIntern BRUKER = BrukerIntern.of(ident, AktorId.valueOf("AKTØRID"));
+    private static Bruker BRUKER = Bruker.of(ident, AktorId.valueOf("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
@@ -44,7 +44,7 @@ public class OppgaveResource {
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
     public OppgaveDto opprettOppgave() {
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 

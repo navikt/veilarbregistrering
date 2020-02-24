@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.apiapp.security.veilarbabac.Bruker;
-
 public class BrukerAdapter {
 
-    public static Bruker map(BrukerIntern bruker) {
-        return Bruker
+    public static no.nav.apiapp.security.veilarbabac.Bruker map(Bruker bruker) {
+        return no.nav.apiapp.security.veilarbabac.Bruker
                 .fraFnr(bruker.getFoedselsnummer().stringValue())
                 .medAktoerId(bruker.getAktorId().asString());
     }

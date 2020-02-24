@@ -74,9 +74,9 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public void reaktiverBruker(BrukerIntern bruker) {
+    public void reaktiverBruker(Bruker bruker) {
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: frn
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
@@ -88,9 +88,9 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, BrukerIntern bruker) {
+    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: fnr
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
@@ -111,14 +111,14 @@ public class BrukerRegistreringService {
         return opprettBruker(bruker, ordinaerBrukerRegistrering);
     }
 
-    BrukersTilstand hentBrukersTilstand(String fnr) {
-        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer.of(fnr)); //FIXME: fnr
+    BrukersTilstand hentBrukersTilstand(Foedselsnummer fnr) {
+        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
 
         SykmeldtInfoData sykeforloepMetaData = null;
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringErAktiv()) {
-                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(Foedselsnummer.of(fnr)); //FIXME: fnr
+                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
             }
         }
 
@@ -128,7 +128,7 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Foedselsnummer fnr) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr.stringValue()); //FIXME: fnr
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
@@ -166,7 +166,7 @@ public class BrukerRegistreringService {
         return geografiskTilknytning;
     }
 
-    private OrdinaerBrukerRegistrering opprettBruker(BrukerIntern bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
+    private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, bruker.getAktorId());
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
@@ -192,7 +192,7 @@ public class BrukerRegistreringService {
                 });
     }
 
-    public BrukerRegistreringWrapper hentBrukerRegistrering(BrukerIntern bruker) {
+    public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(bruker.getAktorId());
 
@@ -233,7 +233,7 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, BrukerIntern bruker) {
+    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
         if (!sykemeldtRegistreringErAktiv()) {
             throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
         }
@@ -241,7 +241,7 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer().stringValue()); //FIXME: fnr
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");

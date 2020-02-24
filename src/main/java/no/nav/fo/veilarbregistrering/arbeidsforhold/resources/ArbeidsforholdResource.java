@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +40,7 @@ public class ArbeidsforholdResource {
     @Path("/sistearbeidsforhold")
     @ApiOperation(value = "Henter informasjon om brukers siste arbeidsforhold.")
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
