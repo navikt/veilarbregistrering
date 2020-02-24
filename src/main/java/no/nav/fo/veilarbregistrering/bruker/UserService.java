@@ -21,6 +21,14 @@ public class UserService {
         this.aktorService = aktorService;
     }
 
+    public BrukerIntern hentBrukerIntern() {
+        String fnr = hentFnrFraUrlEllerToken();
+
+        String aktorId = aktorService.getAktorId(fnr).orElseThrow(() -> new Feil(FeilType.FINNES_IKKE));
+
+        return BrukerIntern.of(Foedselsnummer.of(fnr), AktorId.valueOf(aktorId));
+    }
+
     public Bruker hentBruker() {
         String fnr = hentFnrFraUrlEllerToken();
 

@@ -1,10 +1,9 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import no.nav.brukerdialog.security.jaspic.TokenLocator;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.sbl.rest.RestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -16,14 +15,12 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 
 public class SykmeldtInfoClient extends BaseClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SykmeldtInfoClient.class);
-
     public SykmeldtInfoClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
         super(baseUrl, httpServletRequestProvider);
     }
 
-    public InfotrygdData hentSykmeldtInfoData(String fnr) {
-        return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr);
+    public InfotrygdData hentSykmeldtInfoData(Foedselsnummer fnr) {
+        return getSykeforloepMetadata(baseUrl + "/hentMaksdato?fnr=" + fnr.stringValue());
     }
 
     private InfotrygdData getSykeforloepMetadata(String url) {

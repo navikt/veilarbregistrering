@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public class SykemeldingService {
         this.sykemeldingGateway = sykemeldingGateway;
     }
 
-    public SykmeldtInfoData hentSykmeldtInfoData(String fnr) {
+    public SykmeldtInfoData hentSykmeldtInfoData(Foedselsnummer fnr) {
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
 
