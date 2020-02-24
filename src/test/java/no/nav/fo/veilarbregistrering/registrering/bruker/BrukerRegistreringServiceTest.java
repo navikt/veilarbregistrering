@@ -245,7 +245,7 @@ public class BrukerRegistreringServiceTest {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
         StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
-        verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData(anyString());
+        verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData(any());
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
 
@@ -321,7 +321,7 @@ public class BrukerRegistreringServiceTest {
 
     private void mockSykmeldtBrukerOver39uker() {
         String dagensDatoMinus13Uker = now().plusWeeks(13).toString();
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
+        when(sykeforloepMetadataClient.hentSykmeldtInfoData(any())).thenReturn(
                 new InfotrygdData()
                         .withMaksDato(dagensDatoMinus13Uker)
         );
@@ -329,7 +329,7 @@ public class BrukerRegistreringServiceTest {
 
     private void mockSykmeldtBrukerUnder39uker() {
         String dagensDatoMinus14Uker = now().plusWeeks(14).toString();
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData(anyString())).thenReturn(
+        when(sykeforloepMetadataClient.hentSykmeldtInfoData(any())).thenReturn(
                 new InfotrygdData()
                         .withMaksDato(dagensDatoMinus14Uker)
         );

@@ -124,7 +124,7 @@ public class BrukerRegistreringService {
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
             if (sykemeldtRegistreringErAktiv()) {
-                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
+                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(Foedselsnummer.of(fnr)); //FIXME: fnr
             }
         }
 
