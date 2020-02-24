@@ -31,7 +31,6 @@ public class SykmeldtInfoClient extends BaseClient {
         TokenLocator tokenLocator = new TokenLocator(AZUREADB2C_OIDC_COOKIE_NAME_SBS, null);
 
         try {
-            LOG.info("Kaller infotrygd-sykepenger på url : " + url);
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(url)
                             .request()

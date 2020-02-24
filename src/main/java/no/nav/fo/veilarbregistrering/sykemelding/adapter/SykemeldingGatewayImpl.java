@@ -14,6 +14,11 @@ public class SykemeldingGatewayImpl implements SykemeldingGateway {
     @Override
     public Maksdato hentReberegnetMaksdato(String fnr) {
         InfotrygdData infotrygdData = sykmeldtInfoClient.hentSykmeldtInfoData(fnr);
+
+        if (infotrygdData == null || infotrygdData.maksDato == null) {
+            return Maksdato.nullable();
+        }
+
         return Maksdato.of(infotrygdData.maksDato);
     }
 }

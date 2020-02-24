@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StartRegistreringStatusDtoMapperTest {
 
@@ -77,5 +78,25 @@ public class StartRegistreringStatusDtoMapperTest {
         softAssertions.assertThat(dto.getServicegruppe()).isEqualTo("SERV");
 
         softAssertions.assertAll();
+    }
+
+    @Test
+    public void map_skal_mappe_erSykmeldtMedArbeidsgiver_Til() {
+        Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
+                true,
+                true,
+                false,
+                Formidlingsgruppe.of("IARBS"),
+                Servicegruppe.of("SERV"),
+                Rettighetsgruppe.of("AAP"));
+        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData("01122019", true);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, SYKMELDT_REGISTRERING);
+
+        StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
+                brukersTilstand,
+                Optional.of(GeografiskTilknytning.of("030109")),
+                false);
+
+        assertThat(dto.isErSykmeldtMedArbeidsgiver()).isEqualTo(false);
     }
 }

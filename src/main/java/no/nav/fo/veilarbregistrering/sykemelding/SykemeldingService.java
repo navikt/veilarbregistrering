@@ -1,10 +1,17 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MAKSDATO_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
+
 public class SykemeldingService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SykemeldingService.class);
 
     public final SykemeldingGateway sykemeldingGateway;
 
@@ -23,6 +30,10 @@ public class SykemeldingService {
 
         } else {
             Maksdato maksdato = sykemeldingGateway.hentReberegnetMaksdato(fnr);
+
+            LOG.info(maksdato.toString());
+            reportTags(MAKSDATO_EVENT, maksdato);
+
             boolean erSykmeldtOver39Uker = maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.now());
 
             sykmeldtInfoData.setMaksDato(maksdato.asString());
