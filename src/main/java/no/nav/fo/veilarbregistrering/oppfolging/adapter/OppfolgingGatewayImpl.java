@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
@@ -17,7 +18,7 @@ public class OppfolgingGatewayImpl implements OppfolgingGateway {
     }
 
     @Override
-    public Oppfolgingsstatus hentOppfolgingsstatus(String fodselsnummer) {
+    public Oppfolgingsstatus hentOppfolgingsstatus(Foedselsnummer fodselsnummer) {
         OppfolgingStatusData oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer);
 
         return map(oppfolgingStatusData);
@@ -37,18 +38,17 @@ public class OppfolgingGatewayImpl implements OppfolgingGateway {
     }
 
     @Override
-    public void aktiverBruker(String foedselsnummer, Innsatsgruppe innsatsgruppe) {
-        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(foedselsnummer), innsatsgruppe));
+    public void aktiverBruker(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(foedselsnummer.stringValue()), innsatsgruppe));
     }
 
     @Override
-    public void reaktiverBruker(String fodselsnummer) {
+    public void reaktiverBruker(Foedselsnummer fodselsnummer) {
         oppfolgingClient.reaktiverBruker(fodselsnummer);
     }
 
     @Override
-    public void settOppfolgingSykmeldt(String fodselsnummer, Besvarelse besvarelse) {
+    public void settOppfolgingSykmeldt(Foedselsnummer fodselsnummer, Besvarelse besvarelse) {
         oppfolgingClient.settOppfolgingSykmeldt(SykmeldtBrukerType.of(besvarelse), fodselsnummer);
     }
-
 }

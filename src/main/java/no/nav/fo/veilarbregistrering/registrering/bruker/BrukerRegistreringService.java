@@ -88,7 +88,7 @@ public class BrukerRegistreringService {
         AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(aktorId);
-        oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
+        oppfolgingGateway.reaktiverBruker(Foedselsnummer.of(bruker.getFoedselsnummer())); //FIXME: fnr
 
         LOG.info("Reaktivering av bruker med aktørId : {}", aktorId);
     }
@@ -118,7 +118,7 @@ public class BrukerRegistreringService {
     }
 
     BrukersTilstand hentBrukersTilstand(String fnr) {
-        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
+        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer.of(fnr)); //FIXME: fnr
 
         SykmeldtInfoData sykeforloepMetaData = null;
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
@@ -180,7 +180,7 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
-        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+        oppfolgingGateway.aktiverBruker(Foedselsnummer.of(bruker.getFoedselsnummer()), profilering.getInnsatsgruppe()); //FIXME: fnr
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
@@ -258,7 +258,7 @@ public class BrukerRegistreringService {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
+        oppfolgingGateway.settOppfolgingSykmeldt(Foedselsnummer.of(bruker.getFoedselsnummer()), sykmeldtRegistrering.getBesvarelse()); //FIXME: fnr
         AktorId aktorId = AktorId.valueOf(bruker.getAktoerId());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, aktorId);
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);

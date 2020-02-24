@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +30,11 @@ public class OppfolgingClient extends BaseClient {
         super(baseUrl, httpServletRequestProvider);
     }
 
-    public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
+    public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         try {
             return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                    c -> c.target(baseUrl + "/oppfolging?fnr=" + fnr)
+                    c -> c.target(baseUrl + "/oppfolging?fnr=" + fnr.stringValue())
                             .request()
                             .header(COOKIE, cookies)
                             .get(OppfolgingStatusData.class));
@@ -47,16 +48,16 @@ public class OppfolgingClient extends BaseClient {
         }
     }
 
-    public void reaktiverBruker(String fnr) {
+    public void reaktiverBruker(Foedselsnummer fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerReAktivering(fnr, c)
         );
     }
 
-    private int postBrukerReAktivering(String fnr, Client client) {
+    private int postBrukerReAktivering(Foedselsnummer fnr, Client client) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(new Fnr(fnr)));
+        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(new Fnr(fnr.stringValue())));
         return behandleHttpResponse(response, url);
     }
 
@@ -73,10 +74,10 @@ public class OppfolgingClient extends BaseClient {
         return behandleHttpResponse(response, url);
     }
 
-    void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr) {
+    void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
+                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr.stringValue(), c)
         );
     }
 

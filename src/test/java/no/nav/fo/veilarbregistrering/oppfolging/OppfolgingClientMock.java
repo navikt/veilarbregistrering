@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
 import no.nav.apiapp.feil.FeilDTO;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
@@ -15,7 +16,7 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     @Override
-    public OppfolgingStatusData hentOppfolgingsstatus(String fnr) {
+    public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
         return new OppfolgingStatusData()
                 .withUnderOppfolging(false)
                 .withKanReaktiveres(false)
@@ -31,7 +32,7 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     @Override
-    public void reaktiverBruker(String fnr) {
+    public void reaktiverBruker(Foedselsnummer fnr) {
 
     }
 
