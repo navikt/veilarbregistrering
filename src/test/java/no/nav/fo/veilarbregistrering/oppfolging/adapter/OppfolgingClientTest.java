@@ -1,16 +1,20 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -41,6 +45,9 @@ class OppfolgingClientTest {
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1080;
 
+    private static final Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
+    private static final BrukerIntern BRUKER = BrukerIntern.of(IDENT, AktorId.valueOf("AKTØRID"));
+
     private UnleashService unleashService;
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;
@@ -53,7 +60,6 @@ class OppfolgingClientTest {
     private StartRegistreringUtils startRegistreringUtils;
     private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private ClientAndServer mockServer;
-    private String ident;
 
     @AfterEach
     public void tearDown() {
@@ -75,7 +81,7 @@ class OppfolgingClientTest {
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         arbeidssokerRegistrertProducer = (aktorId) -> {};
-        ident = "10108000398"; //Aremark fiktivt fnr.";
+
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -119,7 +125,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
         when (brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(new OrdinaerBrukerRegistrering());
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
     }
 
 
@@ -128,7 +134,7 @@ class OppfolgingClientTest {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
     }
 
 
@@ -141,7 +147,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertNotNull(brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertNotNull(brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
     }
 
     @Test
@@ -149,7 +155,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(BRUKER));
     }
 
     @Test
@@ -158,7 +164,7 @@ class OppfolgingClientTest {
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, true), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(response().withStatusCode(204));
 
-        brukerRegistreringService.reaktiverBruker(Bruker.fraFnr(ident).medAktoerId("AKTØRID"));
+        brukerRegistreringService.reaktiverBruker(BRUKER);
     }
 
     @Test
@@ -166,25 +172,25 @@ class OppfolgingClientTest {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, Bruker.fraFnr(ident).medAktoerId("AKTØRID")));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
     }
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }
 
     @Test
     public void testAtGirWebApplicationExceptionExceptionDersomIngenTilgang() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(403));
-        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }
 
     @Test
@@ -192,7 +198,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
-        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }
 
     @Test
@@ -200,16 +206,16 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(null, null), MediaType.JSON_UTF_8).withStatusCode(200));
 
-        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(ident));
+        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }
 
     private void mockUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", ident))
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", IDENT.stringValue()))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false)).withStatusCode(200));
     }
 
     private void mockIkkeUnderOppfolgingApi() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", ident))
+        mockServer.when(request().withMethod("GET").withPath("/oppfolging").withQueryStringParameter("fnr", IDENT.stringValue()))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
     }
 

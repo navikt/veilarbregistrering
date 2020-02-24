@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.bruker;
 
 import no.nav.apiapp.feil.Feil;
 import no.nav.apiapp.feil.FeilType;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.dialogarena.aktor.AktorService;
 
 import javax.inject.Provider;
@@ -27,13 +26,6 @@ public class UserService {
         String aktorId = aktorService.getAktorId(fnr).orElseThrow(() -> new Feil(FeilType.FINNES_IKKE));
 
         return BrukerIntern.of(Foedselsnummer.of(fnr), AktorId.valueOf(aktorId));
-    }
-
-    public Bruker hentBruker() {
-        String fnr = hentFnrFraUrlEllerToken();
-
-        return Bruker.fraFnr(fnr)
-                .medAktoerIdSupplier(()->aktorService.getAktorId(fnr).orElseThrow(()->new Feil(FeilType.FINNES_IKKE)));
     }
 
     private String hentFnrFraUrlEllerToken() {
