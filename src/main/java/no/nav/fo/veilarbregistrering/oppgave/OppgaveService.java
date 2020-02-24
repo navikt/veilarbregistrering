@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +36,13 @@ public class OppgaveService {
         this.navKontorMap.put(GeografiskTilknytning.of("500102"), falkenborg()); // Østbyen - Trondheim
     }
 
-    public Oppgave opprettOppgave(AktorId aktorId, Foedselsnummer foedselsnummer) {
+    public Oppgave opprettOppgave(BrukerIntern bruker) {
 
-        kontaktBrukerHenvendelseProducer.publiserHenvendelse(aktorId);
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = Optional.empty();
         try {
-            muligGeografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer);
+            muligGeografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getFoedselsnummer());
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet ifm. opprettelse av oppgave. ", e);
         }
@@ -59,7 +56,7 @@ public class OppgaveService {
         }
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
-                aktorId,
+                bruker.getAktorId(),
                 navKontor.tilordnetRessurs(),
                 navKontor.beskrivelse());
 
