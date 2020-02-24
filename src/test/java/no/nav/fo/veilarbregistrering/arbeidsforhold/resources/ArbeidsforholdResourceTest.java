@@ -1,10 +1,12 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class ArbeidsforholdResourceTest {
     private UserService userService;
     private ArbeidsforholdGateway arbeidsforholdGateway;
 
-    private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
+    private static Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
 
     @BeforeEach
     public void setup() {
@@ -39,7 +41,7 @@ class ArbeidsforholdResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
-        when(userService.hentBruker()).thenReturn(Bruker.fraFnr(IDENT).medAktoerId("1234"));
+        when(userService.hentBrukerIntern()).thenReturn(BrukerIntern.of(IDENT, AktorId.valueOf("1234")));
         when(arbeidsforholdGateway.hentArbeidsforhold(IDENT)).thenReturn(flereArbeidsforhold());
         arbeidsforholdResource.hentSisteArbeidsforhold();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());

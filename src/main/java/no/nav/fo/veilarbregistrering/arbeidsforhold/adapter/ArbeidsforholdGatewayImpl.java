@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import io.vavr.control.Try;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -37,13 +38,13 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
 
     @Override
     @Cacheable(HENT_ARBEIDSFORHOLD)
-    public FlereArbeidsforhold hentArbeidsforhold(String fnr) {
+    public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
         Regelverker regelverker = new Regelverker();
         regelverker.setValue("A_ORDNINGEN");
         request.setRapportertSomRegelverk(regelverker);
         NorskIdent ident = new NorskIdent();
-        ident.setIdent(fnr);
+        ident.setIdent(fnr.stringValue());
         request.setIdent(ident);
 
         FinnArbeidsforholdPrArbeidstakerResponse response;
