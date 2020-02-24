@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 public interface OppgaveGateway {
 

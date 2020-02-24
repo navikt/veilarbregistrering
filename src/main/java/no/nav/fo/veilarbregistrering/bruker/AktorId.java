@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker;
 
 
 import java.util.Objects;

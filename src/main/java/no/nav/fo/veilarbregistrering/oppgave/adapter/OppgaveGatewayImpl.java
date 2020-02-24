@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 import java.time.LocalDate;
 

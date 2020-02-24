@@ -4,6 +4,7 @@ import com.google.common.net.MediaType;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
