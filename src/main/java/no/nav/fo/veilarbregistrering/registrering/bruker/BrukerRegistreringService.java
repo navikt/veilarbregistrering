@@ -264,7 +264,7 @@ public class BrukerRegistreringService {
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         if (unleashService.isEnabled("veilarbregistrering.amplitude.ukersykmeldt")) {
-            AmplitudeLogger.log();
+            AmplitudeLogger.log(aktorId);
         }
 
         return id;

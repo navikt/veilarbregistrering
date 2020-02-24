@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.amplitude;
 
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,9 @@ public class AmplitudeLogger {
 
     private static final Logger LOG = LoggerFactory.getLogger(AmplitudeLogger.class);
 
-    public static void log() {
-        String jsonData = "{\"api_key\":\"2f190e67f31d7e4719c5ff048ad3d3e6\",\"events\":[{\"device_id\":\"veilarbregistrering\", \"event_type\":\"test_httppost\", \"user_properties\":{\"maksdato\":\"maksdato2020\"}}]}";
+    public static void log(AktorId aktorId) {
+
+        String jsonData = "{\"api_key\":\"2f190e67f31d7e4719c5ff048ad3d3e6\",\"events\":[{\"device_id\":\"veilarbregistrering\", \"event_type\":\""+aktorId.hashCode()+"\", \"user_properties\":{\"maksdato\":\"maksdato2020\"}}]}";
         StringBuffer response = new StringBuffer();
 
         try {
