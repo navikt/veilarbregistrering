@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,6 +13,7 @@ import static org.mockito.Mockito.when;
 public class OppgaveServiceTest {
 
     private static final AktorId AKTOER_ID = AktorId.valueOf("123");
+    private static final BrukerIntern bruker = BrukerIntern.of(Foedselsnummer.of("12345678910"), AKTOER_ID);
 
     private OppgaveService oppgaveService;
 
@@ -51,7 +49,7 @@ public class OppgaveServiceTest {
             }
         });
 
-        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(bruker);
     }
 
     @Test
@@ -75,7 +73,7 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(bruker);
     }
 
     @Test
@@ -99,7 +97,7 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(bruker);
     }
 
     @Test
@@ -123,6 +121,6 @@ public class OppgaveServiceTest {
                     }
                 });
 
-        oppgaveService.opprettOppgave(AKTOER_ID, Foedselsnummer.of("12345678910"));
+        oppgaveService.opprettOppgave(bruker);
     }
 }

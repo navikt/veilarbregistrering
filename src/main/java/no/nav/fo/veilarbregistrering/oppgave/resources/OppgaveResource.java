@@ -2,13 +2,11 @@ package no.nav.fo.veilarbregistrering.oppgave.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 
 @Component
@@ -45,17 +44,14 @@ public class OppgaveResource {
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
     public OppgaveDto opprettOppgave() {
-        final Bruker bruker = userService.hentBruker();
+        final BrukerIntern bruker = userService.hentBrukerIntern();
 
-        pepClient.sjekkSkrivetilgangTilBruker(bruker);
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        Oppgave oppgave = oppgaveService.opprettOppgave(
-                AktorId.valueOf(bruker.getAktoerId()),
-                Foedselsnummer.of(bruker.getFoedselsnummer()));
+        Oppgave oppgave = oppgaveService.opprettOppgave(bruker);
 
         LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
         return map(oppgave);
     }
-
 }
