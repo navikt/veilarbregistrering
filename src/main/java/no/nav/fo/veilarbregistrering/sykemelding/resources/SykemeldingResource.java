@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
@@ -38,7 +38,7 @@ public class SykemeldingResource {
     @Path("/sykmeldtinfodata")
     @ApiOperation(value = "Henter sykmeldt informasjon")
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 

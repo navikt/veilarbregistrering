@@ -1,15 +1,15 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-public class BrukerIntern {
+public class Bruker {
 
     private final Foedselsnummer foedselsnummer;
     private final AktorId aktorId;
 
-    public static BrukerIntern of(Foedselsnummer foedselsnummer, AktorId aktorId) {
-        return new BrukerIntern(foedselsnummer, aktorId);
+    public static Bruker of(Foedselsnummer foedselsnummer, AktorId aktorId) {
+        return new Bruker(foedselsnummer, aktorId);
     }
 
-    private BrukerIntern(Foedselsnummer foedselsnummer, AktorId aktorId) {
+    private Bruker(Foedselsnummer foedselsnummer, AktorId aktorId) {
         this.foedselsnummer = foedselsnummer;
         this.aktorId = aktorId;
     }

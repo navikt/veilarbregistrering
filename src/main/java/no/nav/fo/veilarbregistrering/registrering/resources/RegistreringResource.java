@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIntern;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
@@ -60,7 +60,7 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
@@ -77,7 +77,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
@@ -110,7 +110,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
@@ -131,7 +131,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         brukerRegistreringService.reaktiverBruker(bruker);
@@ -152,7 +152,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final BrukerIntern bruker = userService.hentBrukerIntern();
+        final Bruker bruker = userService.hentBruker();
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (AutentiseringUtils.erVeileder()) {
