@@ -77,12 +77,12 @@ public class OppfolgingClient extends BaseClient {
     void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr) {
         withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr.stringValue(), c)
+                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
         );
     }
 
-    private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, String fnr, Client client) {
-        String url = baseUrl + "/oppfolging/aktiverSykmeldt/?fnr=" + fnr;
+    private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr, Client client) {
+        String url = baseUrl + "/oppfolging/aktiverSykmeldt/?fnr=" + fnr.stringValue();
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(sykmeldtBrukerType));
         return behandleHttpResponse(response, url);
     }
