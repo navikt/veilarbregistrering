@@ -172,7 +172,7 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
-        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe()); //FIXME: fnr
+        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);

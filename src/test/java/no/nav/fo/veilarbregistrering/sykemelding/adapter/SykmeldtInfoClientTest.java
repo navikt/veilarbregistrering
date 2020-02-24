@@ -135,13 +135,6 @@ class SykmeldtInfoClientTest {
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER));
     }
 
-    // TODO: FIKS når infotrygd api er klar
-//    @Test
-//    public void testAtGirInternalServerErrorExceptionDersomHentingAvSykeforloepMetadataFeiler() {
-//        mockSykmeldtIArena();
-//        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(ident));
-//    }
-
     private void mockSykmeldtOver39u() {
         mockServer.when(request().withMethod("GET").withPath("/sykeforloep/metadata"))
                 .respond(response().withBody(sykmeldtOver39u(), MediaType.JSON_UTF_8).withStatusCode(200));
