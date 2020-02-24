@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,8 +7,8 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import static no.bekk.bekkopen.person.FodselsnummerCalculator.getFodselsnummerForDate;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.antallAarSidenDato;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledFodselsdatoForFnr;
+import static no.nav.fo.veilarbregistrering.bruker.FnrUtils.antallAarSidenDato;
+import static no.nav.fo.veilarbregistrering.bruker.FnrUtils.utledFodselsdatoForFnr;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class FnrUtilsTest {

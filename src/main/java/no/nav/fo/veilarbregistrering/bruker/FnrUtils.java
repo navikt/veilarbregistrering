@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.bekk.bekkopen.person.FodselsnummerValidator;
@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.time.Period;
 
 
-public class FnrUtils {
+class FnrUtils {
 
-    public static int utledAlderForFnr(String fnr, LocalDate dagensDato) {
+    static int utledAlderForFnr(String fnr, LocalDate dagensDato) {
         return antallAarSidenDato(utledFodselsdatoForFnr(fnr), dagensDato);
     }
 

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Foedselsnummer {
@@ -30,5 +31,9 @@ public class Foedselsnummer {
     @Override
     public int hashCode() {
         return Objects.hash(foedselsnummer);
+    }
+
+    public int alder(LocalDate dato) {
+        return FnrUtils.utledAlderForFnr(foedselsnummer, dato);
     }
 }

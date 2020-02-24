@@ -28,7 +28,6 @@ import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.FnrUtils.utledAlderForFnr;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
@@ -227,7 +226,7 @@ public class BrukerRegistreringService {
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
-                utledAlderForFnr(fnr.stringValue(), now()), //TODO: flytt logikk inn i Foedselsnummer
+                fnr.alder(now()),
                 () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now(), besvarelse);
     }
