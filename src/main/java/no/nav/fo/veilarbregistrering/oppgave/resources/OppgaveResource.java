@@ -54,4 +54,19 @@ public class OppgaveResource {
 
         return map(oppgave);
     }
+
+    @POST
+    @Path("/dagpenger")
+    @ApiOperation(value = "Oppretter oppgave 'kontakt bruker' med hensikt å gi bruker ARBS slik at vedtak om dagpenger kan fattes")
+    public OppgaveDto opprettOppgaveDagpenger() {
+        final Bruker bruker = userService.hentBruker();
+
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+
+        Oppgave oppgave = oppgaveService.opprettOppgaveDagpenger(bruker);
+
+        LOG.info("Oppgave {} ble opprettet", oppgave.getId());
+
+        return map(oppgave);
+    }
 }

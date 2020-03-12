@@ -64,4 +64,22 @@ public class OppgaveService {
 
         return oppgave;
     }
+
+    public Oppgave opprettOppgaveDagpenger(Bruker bruker) {
+
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
+
+        String beskrivelse = String.format("%s skal nå søke om dagpenger, men får en feilmelding i arbeidssøkerregistreringen." +
+                " Det er saksbehandler i Arena som vurderer og gjør endringer i status i Arena." +
+                " Jeg ber dere vurdere og eventuelt gjøre endringene i Arena, og %s ønsker en tilbakemelding på telefon (nummer)",
+                bruker.getFoedselsnummer(), bruker.getFoedselsnummer());
+
+        Oppgave oppgave = oppgaveGateway.opprettOppgaveDagpenger(
+                bruker.getAktorId(),
+                beskrivelse);
+
+        reportTags(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
+
+        return oppgave;
+    }
 }
