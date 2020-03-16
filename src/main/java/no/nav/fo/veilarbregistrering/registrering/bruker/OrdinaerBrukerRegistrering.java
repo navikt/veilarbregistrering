@@ -30,4 +30,9 @@ public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
         return ORDINAER;
     }
 
+    @Override
+    public DinSituasjonSvar getBrukersSituasjon() {
+        return besvarelse != null ? besvarelse.getDinSituasjon() : null;
+    }
+
 }

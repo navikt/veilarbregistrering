@@ -177,7 +177,10 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(bruker.getAktorId());
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+                bruker.getAktorId(),
+                brukerRegistrering.getBrukersSituasjon(),
+                brukerRegistrering.getOpprettetDato());
 
         return ordinaerBrukerRegistrering;
     }
