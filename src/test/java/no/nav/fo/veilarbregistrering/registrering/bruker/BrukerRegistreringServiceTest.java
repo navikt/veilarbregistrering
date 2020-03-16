@@ -60,7 +60,7 @@ public class BrukerRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
-        arbeidssokerRegistrertProducer = (aktorId) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
+        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
