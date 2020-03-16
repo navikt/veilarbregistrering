@@ -179,8 +179,8 @@ public class BrukerRegistreringService {
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
-                brukerRegistrering.getBrukersSituasjon(),
-                brukerRegistrering.getOpprettetDato());
+                ordinaerBrukerRegistrering.getBrukersSituasjon(),
+                ordinaerBrukerRegistrering.getOpprettetDato());
 
         return ordinaerBrukerRegistrering;
     }
