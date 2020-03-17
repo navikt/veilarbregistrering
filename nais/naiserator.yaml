@@ -59,9 +59,10 @@ spec:
   resources:
     limits:
       cpu: "3"
-      memory: 1024Mi
+      memory: 2048Mi
     requests:
-      memory: 512Mi
+      memory: 1024Mi
+      cpu: "1"
   vault:
     enabled: true
     paths:
