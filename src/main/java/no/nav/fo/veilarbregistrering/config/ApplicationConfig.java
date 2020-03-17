@@ -11,9 +11,10 @@ import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClientHelseSjekk;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,7 @@ import javax.servlet.ServletContext;
         KafkaConfig.class,
         AktorConfig.class,
         PepConfig.class,
+        OverforTilArenaSchedulerConfig.class,
         OrganisasjonEnhetV2Config.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
