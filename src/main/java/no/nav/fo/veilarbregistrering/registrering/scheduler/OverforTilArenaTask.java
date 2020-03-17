@@ -10,7 +10,7 @@ public class OverforTilArenaTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(OverforTilArenaTask.class);
 
-    @Scheduled(cron = "*/5 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void sendRegistreringerTilArenaCronJob() {
 
         LOG.info("Test av Job for å overføre registreringer");
