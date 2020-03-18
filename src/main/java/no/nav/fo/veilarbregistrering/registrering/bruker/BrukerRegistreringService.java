@@ -27,6 +27,7 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
@@ -132,7 +133,7 @@ public class BrukerRegistreringService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            reportTags(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
+            reportFields(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
         });
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
