@@ -18,15 +18,17 @@ public class ArenaOverforingServiceTest {
 
     private ArenaOverforingService arenaOverforingService;
     private ProfileringRepository profileringRepository;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
     private OppfolgingGateway oppfolgingClient;
-
 
     @Before
     public void setUp() {
         profileringRepository = mock(ProfileringRepository.class);
+        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         oppfolgingClient = mock(OppfolgingGateway.class);
 
-        arenaOverforingService = new ArenaOverforingService(profileringRepository, oppfolgingClient);
+        arenaOverforingService = new ArenaOverforingService(
+                profileringRepository, brukerRegistreringRepository, oppfolgingClient);
     }
 
     @Test

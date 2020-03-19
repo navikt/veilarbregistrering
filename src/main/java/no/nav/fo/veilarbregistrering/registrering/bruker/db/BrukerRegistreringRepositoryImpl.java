@@ -12,9 +12,11 @@ import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -175,7 +177,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value("ID", id)
                 .value("UUID", registreringTilstand.getUuid().toString())
                 .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
-                .value("OPPRETTET", registreringTilstand.getOpprettet())
+                .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
                 .value("SIST_ENDRET", registreringTilstand.getSistEndret())
                 .value("STATUS", registreringTilstand.getStatus().toString())
                 .execute();
@@ -190,6 +192,19 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .column("*")
                 .execute();
     }
+
+    @Override
+    public Optional<RegistreringTilstand> finnNesteRegistreringForOverforing() {
+        RegistreringTilstand registreringTilstand = SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
+                .where(WhereClause.equals("STATUS", "MOTTATT"))
+                .orderBy(OrderClause.asc("OPPRETTET"))
+                .limit(1)
+                .column("*")
+                .execute();
+
+        return Optional.ofNullable(registreringTilstand);
+    }
+
 
     private long nesteFraSekvens(String sekvensNavn) {
         return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();

@@ -11,17 +11,27 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 public class ArenaOverforingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArenaOverforingService.class);
 
     private final ProfileringRepository profileringRepository;
+    private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final OppfolgingGateway oppfolgingGateway;
 
-    public ArenaOverforingService(ProfileringRepository profileringRepository, OppfolgingGateway oppfolgingGateway) {
+    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway) {
         this.profileringRepository = profileringRepository;
+        this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
+    }
+
+    public Optional<RegistreringTilstand> hentNesteRegistreringForOverforing() {
+
+        Optional<RegistreringTilstand> registreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+
+        return registreringTilstand;
     }
 
     //TODO: Hente fnr fra aktørService eller lagre i databasen på vei ned?
