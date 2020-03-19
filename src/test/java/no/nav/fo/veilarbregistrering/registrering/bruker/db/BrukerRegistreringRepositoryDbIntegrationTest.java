@@ -1,17 +1,18 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,5 +103,24 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     private void assertSykmeldtRegistrertBruker(SykmeldtRegistrering bruker, SykmeldtRegistrering sykmeldtRegistrering) {
         assertThat(sykmeldtRegistrering.getBesvarelse()).isEqualTo(bruker.getBesvarelse());
         assertThat(sykmeldtRegistrering.getTeksterForBesvarelse()).isEqualTo(bruker.getTeksterForBesvarelse());
+    }
+
+    @Test
+    public void skal_lagre_og_hente_registreringTilstand() {
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(1235124L);
+
+        long id = brukerRegistreringRepository.lagre(registreringTilstand);
+
+        assertThat(id).isNotNegative();
+
+        RegistreringTilstand lagretTilstand = brukerRegistreringRepository.hentRegistreringTilstand(id);
+
+        assertThat(lagretTilstand.getId()).isEqualTo(id);
+        assertThat(lagretTilstand.getUuid()).isNotNull();
+        assertThat(lagretTilstand.getBrukerRegistreringId()).isEqualTo(1235124L);
+        assertThat(lagretTilstand.getOpprettet()).isBetween(now().minusSeconds(10), now().plusSeconds(10));
+        assertThat(lagretTilstand.getSistEndret()).isNull();
+        assertThat(lagretTilstand.getStatus()).isEqualTo(Status.MOTTATT);
+
     }
 }

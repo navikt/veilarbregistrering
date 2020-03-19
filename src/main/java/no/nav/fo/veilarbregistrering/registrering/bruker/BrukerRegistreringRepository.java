@@ -15,4 +15,8 @@ public interface BrukerRegistreringRepository {
     SykmeldtRegistrering hentSykmeldtregistreringForAktorId(AktorId aktorId);
 
     void lagreReaktiveringForBruker(AktorId aktorId);
+
+    long lagre(RegistreringTilstand registreringTilstand);
+
+    RegistreringTilstand hentRegistreringTilstand(long id);
 }
