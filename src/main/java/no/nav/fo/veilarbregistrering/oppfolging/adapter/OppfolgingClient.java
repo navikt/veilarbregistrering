@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +26,14 @@ public class OppfolgingClient extends BaseClient {
     private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
 
     private SystemUserTokenProvider systemUserTokenProvider;
+    private final UnleashService unleashService;
 
-    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+    public OppfolgingClient(
+            String baseUrl,
+            Provider<HttpServletRequest> httpServletRequestProvider,
+            UnleashService unleashService) {
         super(baseUrl, httpServletRequestProvider);
+        this.unleashService = unleashService;
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
@@ -103,7 +109,18 @@ public class OppfolgingClient extends BaseClient {
         if (status == 204) {
             return status;
         } else if (status == 403) {
-            LOG.warn("Feil ved kall mot: {}, response : {}. Skyldes sannsynligvis at bruker mangler arbeidstillatelse i Arena.", url, response);
+            LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
+
+            if (logArenaException()) {
+                try {
+                    String json = response.readEntity(String.class);
+                    LOG.info("Json-response: {}", json);
+
+                } catch (Exception e) {
+                    LOG.warn("Parsing av response feilet: ", e);
+                }
+            }
+
             throw new WebApplicationException(response);
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
@@ -112,5 +129,9 @@ public class OppfolgingClient extends BaseClient {
 
     void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
         this.systemUserTokenProvider = systemUserTokenProvider;
+    }
+
+    private boolean logArenaException() {
+        return unleashService.isEnabled("veilarbregistrering.arenaExceptionEnabled");
     }
 }

@@ -82,7 +82,6 @@ class OppfolgingClientTest {
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {};
 
-
         brukerRegistreringService =
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
@@ -114,7 +113,7 @@ class OppfolgingClientTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, unleashService);
         oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return oppfolgingClient;
     }
@@ -194,6 +193,14 @@ class OppfolgingClientTest {
     }
 
     @Test
+    public void bruker_mangler_oppholdstillatelse_eller_arbeidstillatelse() {
+        mockUnderOppfolgingApi();
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withBody("").withStatusCode(403));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+    }
+
+    @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
@@ -222,7 +229,6 @@ class OppfolgingClientTest {
     private String settOppfolgingOgReaktivering(Boolean oppfolging, Boolean reaktivering) {
         return "{\"kanReaktiveres\": "+reaktivering+", \"underOppfolging\": "+oppfolging+"}";
     }
-
 
     private String okRegistreringBody() {
         return "{\n" +
