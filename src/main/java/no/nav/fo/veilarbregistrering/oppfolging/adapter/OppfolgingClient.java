@@ -113,6 +113,7 @@ public class OppfolgingClient extends BaseClient {
 
             if (logArenaException()) {
                 try {
+                    response.bufferEntity();
                     String json = response.readEntity(String.class);
                     LOG.info("Json-response: {}", json);
 
