@@ -56,4 +56,5 @@ public class RegistreringTilstand {
     public long getId() {
         return id;
     }
+
 }

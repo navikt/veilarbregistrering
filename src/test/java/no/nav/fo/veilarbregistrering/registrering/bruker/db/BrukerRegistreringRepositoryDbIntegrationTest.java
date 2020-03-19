@@ -12,7 +12,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import static java.time.LocalDateTime.now;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandTestdataBuilder.registreringTilstand;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.ARENA_OK;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -121,6 +126,60 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         assertThat(lagretTilstand.getOpprettet()).isBetween(now().minusSeconds(10), now().plusSeconds(10));
         assertThat(lagretTilstand.getSistEndret()).isNull();
         assertThat(lagretTilstand.getStatus()).isEqualTo(Status.MOTTATT);
+    }
 
+    @Test
+    public void skal_finne_den_eldste_tilstanden_med_status_mottatt() {
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
+                .brukerRegistreringId(112233L)
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .build();
+        long id1 = brukerRegistreringRepository.lagre(eldsteRegistrering);
+
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
+                .brukerRegistreringId(332211)
+                .opprettet(LocalDateTime.now().minusMinutes(1))
+                .build();
+        brukerRegistreringRepository.lagre(nyesteRegistering);
+
+        RegistreringTilstand midtersteRegistering = registreringTilstand()
+                .brukerRegistreringId(666666)
+                .opprettet(LocalDateTime.now().minusMinutes(3))
+                .build();
+        brukerRegistreringRepository.lagre(midtersteRegistering);
+
+        Optional<RegistreringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+
+        assertThat(lagretTilstand.get().getId()).isEqualTo(id1);
+        assertThat(lagretTilstand.get().getBrukerRegistreringId()).isEqualTo(112233L);
+        assertThat(lagretTilstand.get().getStatus()).isEqualTo(Status.MOTTATT);
+    }
+
+    @Test
+    public void skal_returnere_empty_naar_ingen_flere_mottatte() {
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
+                .brukerRegistreringId(112233L)
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(ARENA_OK)
+                .build();
+        brukerRegistreringRepository.lagre(eldsteRegistrering);
+
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
+                .brukerRegistreringId(332211)
+                .opprettet(LocalDateTime.now().minusMinutes(1))
+                .status(ARENA_OK)
+                .build();
+        brukerRegistreringRepository.lagre(nyesteRegistering);
+
+        RegistreringTilstand midtersteRegistering = registreringTilstand()
+                .brukerRegistreringId(666666)
+                .opprettet(LocalDateTime.now().minusMinutes(3))
+                .status(ARENA_OK)
+                .build();
+        brukerRegistreringRepository.lagre(midtersteRegistering);
+
+        Optional<RegistreringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+
+        assertThat(lagretTilstand.isPresent()).isFalse();
     }
 }
