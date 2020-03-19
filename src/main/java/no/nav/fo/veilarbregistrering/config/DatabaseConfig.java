@@ -29,7 +29,7 @@ public class DatabaseConfig {
         config.setJdbcUrl(getRequiredProperty(VEILARBREGISTRERINGDB_URL));
         config.setUsername(getRequiredProperty(VEILARBREGISTRERINGDB_USERNAME));
         config.setPassword(getRequiredProperty(VEILARBREGISTRERINGDB_PASSWORD));
-        config.setMaximumPoolSize(10);
+        config.setMaximumPoolSize(20);
         config.setMinimumIdle(2);
 
         return new HikariDataSource(config);
