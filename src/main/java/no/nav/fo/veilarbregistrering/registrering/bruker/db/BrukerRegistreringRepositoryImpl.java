@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
@@ -30,6 +27,8 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING";
     final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
     final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
+
+    private final static String REGISTRERING_TILSTAND_SEQ = "REGISTRERING_TILSTAND_SEQ";
 
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
@@ -166,6 +165,29 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value(BRUKER_REAKTIVERING_ID, id)
                 .value(AKTOR_ID, aktorId.asString())
                 .value(REAKTIVERING_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .execute();
+    }
+
+    @Override
+    public long lagre(RegistreringTilstand registreringTilstand) {
+        long id = nesteFraSekvens(REGISTRERING_TILSTAND_SEQ);
+        SqlUtils.insert(db, "REGISTRERING_TILSTAND")
+                .value("ID", id)
+                .value("UUID", registreringTilstand.getUuid().toString())
+                .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
+                .value("OPPRETTET", registreringTilstand.getOpprettet())
+                .value("SIST_ENDRET", registreringTilstand.getSistEndret())
+                .value("STATUS", registreringTilstand.getStatus().toString())
+                .execute();
+
+        return id;
+    }
+
+    @Override
+    public RegistreringTilstand hentRegistreringTilstand(long id) {
+        return SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
+                .where(WhereClause.equals("ID", id))
+                .column("*")
                 .execute();
     }
 
