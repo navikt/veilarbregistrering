@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
+import no.nav.json.JsonUtils;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +117,8 @@ public class OppfolgingClient extends BaseClient {
                 try {
                     response.bufferEntity();
                     String json = response.readEntity(String.class);
-                    LOG.info("Json-response: {}", json);
+                    AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
+                    LOG.info("Json-response: {}\nType: {}", json, aktiverBrukerFeil.getType());
 
                 } catch (Exception e) {
                     LOG.warn("Parsing av response feilet: ", e);
