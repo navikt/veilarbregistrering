@@ -9,7 +9,6 @@ import no.nav.sbl.rest.RestUtils;
 import javax.ws.rs.client.Entity;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -23,7 +22,7 @@ public class PdlOppslagService {
 
     public PdlPerson hentPerson(String fnr) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(fnr, false));
-        return kall(fnr, request);
+        return kall(fnr, request).getData().getHentPerson();
     }
 
     private PdlResponse kall(String fnr, PdlRequest request) {
