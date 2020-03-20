@@ -1,4 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-public class PdlHentPerson {
+
+public class PdlHentPerson  {
+
+
 }
