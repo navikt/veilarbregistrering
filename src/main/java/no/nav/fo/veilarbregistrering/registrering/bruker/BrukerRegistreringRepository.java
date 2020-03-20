@@ -23,4 +23,6 @@ public interface BrukerRegistreringRepository {
     RegistreringTilstand hentRegistreringTilstand(long id);
 
     Optional<RegistreringTilstand> finnNesteRegistreringForOverforing();
+
+    void oppdater(RegistreringTilstand registreringTilstand1);
 }

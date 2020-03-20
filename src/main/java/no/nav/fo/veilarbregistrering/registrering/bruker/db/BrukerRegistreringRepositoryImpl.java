@@ -178,11 +178,21 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value("UUID", registreringTilstand.getUuid().toString())
                 .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
                 .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
-                .value("SIST_ENDRET", registreringTilstand.getSistEndret())
+                .value("SIST_ENDRET", ofNullable(registreringTilstand.getSistEndret())
+                        .map(Timestamp::valueOf).orElse(null))
                 .value("STATUS", registreringTilstand.getStatus().toString())
                 .execute();
 
         return id;
+    }
+
+    @Override
+    public void oppdater(RegistreringTilstand registreringTilstand) {
+        SqlUtils.update(db, "REGISTRERING_TILSTAND")
+                .set("STATUS", registreringTilstand.getStatus())
+                .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
+                .whereEquals("ID", registreringTilstand.getId())
+                .execute();
     }
 
     @Override
@@ -202,9 +212,8 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .column("*")
                 .execute();
 
-        return Optional.ofNullable(registreringTilstand);
+        return ofNullable(registreringTilstand);
     }
-
 
     private long nesteFraSekvens(String sekvensNavn) {
         return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();

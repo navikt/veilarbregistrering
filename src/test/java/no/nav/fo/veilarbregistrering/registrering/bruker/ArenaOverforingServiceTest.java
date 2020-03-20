@@ -35,7 +35,7 @@ public class ArenaOverforingServiceTest {
     public void gitt_at_overfoer_gikk_bra_skal_status_vaere_ARENA_OK() {
         when(profileringRepository.hentProfileringForId(BRUKER_REGISTRERING_ID)).thenReturn(lagProfilering());
 
-        Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, BRUKER_REGISTRERING_ID);
+        Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, STANDARD_INNSATS);
 
         verify(oppfolgingClient, times(1)).aktiverBruker(FOEDSELSNUMMER, STANDARD_INNSATS);
         assertThat(status).isEqualTo(Status.ARENA_OK);
@@ -47,7 +47,7 @@ public class ArenaOverforingServiceTest {
         doThrow(new RuntimeException("Noe teknisk feilet"))
                 .when(oppfolgingClient).aktiverBruker(FOEDSELSNUMMER, STANDARD_INNSATS);
 
-        Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, BRUKER_REGISTRERING_ID);
+        Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, STANDARD_INNSATS);
 
         assertThat(status).isEqualTo(Status.TEKNISK_FEIL);
     }
