@@ -4,7 +4,9 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.Variables;
+import no.nav.log.MDCConstants;
 import no.nav.sbl.rest.RestUtils;
+import org.slf4j.MDC;
 
 import javax.ws.rs.client.Entity;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class PdlOppslagService {
                 client.target("PDL_URL, TODO")
                         .request()
                         .header(NAV_PERSONIDENT_HEADER, fnr)
-                        .header(NAV_CALL_ID_HEADER, "TODO")
+                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                         .header("Authorization", "Bearer TODO_TOKEN")
                         .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer TODO_TOKEN")
                         .header(TEMA_HEADER, ALLE_TEMA_HEADERVERDI)
