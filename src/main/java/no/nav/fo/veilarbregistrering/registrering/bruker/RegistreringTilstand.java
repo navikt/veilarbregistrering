@@ -57,4 +57,9 @@ public class RegistreringTilstand {
         return id;
     }
 
+    public RegistreringTilstand oppdaterStatus(Status status) {
+        this.status = status;
+        this.sistEndret = LocalDateTime.now();
+        return this;
+    }
 }
