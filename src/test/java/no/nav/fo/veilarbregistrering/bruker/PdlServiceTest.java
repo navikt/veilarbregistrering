@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class PdlServiceTest {
     }
 
     @Test
+    @Disabled
     public void skalHenteOppholdTilPerson(){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -39,16 +41,24 @@ public class PdlServiceTest {
 
 
         PdlResponse response = new PdlResponse();
-
-
         response.setData(PdlPerson.builder().pdlPersonOpphold(
                                     PdlPersonOpphold.builder()
                                             .oppholdFra(localDatefom)
                                             .oppholdTil(localDatetom)
                                             .build()).build());
 
+        String fnr = "10108000398";
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("fnr")).thenReturn("10108000398");
+        when(requestProvider.get()).thenReturn(request);
+
+        PdlPerson res = pdlOppslagService.hentPerson(fnr);
+        Assert.assertEquals(res.getPdlPersonOpphold(), response.getData().getPdlPersonOpphold());
+
+
     }
 
+    @Disabled
     @Test(expected = RuntimeException.class)
     public void skalFeileHvisBrukerIkkeFinnes(){
 
