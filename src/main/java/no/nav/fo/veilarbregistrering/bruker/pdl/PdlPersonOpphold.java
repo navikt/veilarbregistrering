@@ -11,19 +11,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class PdlPersonOpphold {
-    private String type;
+    private Oppholdstype type;
     private LocalDate oppholdFra;
     private LocalDate oppholdTil;
+
+
+    enum Oppholdstype {
+        MIDLERTIDIG ,
+        PERMANENT,
+        OPPLYSNING_MANGLER
+    }
+
 }
 
-/*
 
-enum Oppholdstype {
-    MIDLERTIDIG MIDLERTIDIG,
-  PERMANENT,
-//    OPPLYSNING_MANGLER,
-    }
-*/
+
 
 
 

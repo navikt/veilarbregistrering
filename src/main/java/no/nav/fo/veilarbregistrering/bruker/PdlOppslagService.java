@@ -20,17 +20,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class PdlOppslagService {
 
-    /*
-        - name: PDL_BASE_URL
-    value: http://pdl-api.default.svc.nais.local/graphql*/
-
-
-    @Value("${pdl.url}")
-    private String pdlEndpointUrl;
-
-    @Value("${application.name}")
-    private String srvUserName;
-
     public static final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     public static final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
     public static final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
