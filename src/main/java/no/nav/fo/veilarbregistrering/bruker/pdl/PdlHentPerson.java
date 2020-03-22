@@ -1,12 +1,16 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import lombok.*;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class PdlHentPerson  {
     private PdlPerson hentPerson;
+
+    public PdlHentPerson() {
+    }
+
+    public PdlPerson getHentPerson() {
+        return hentPerson;
+    }
+
+    public void setHentPerson(PdlPerson hentPerson) {
+        this.hentPerson = hentPerson;
+    }
 }
