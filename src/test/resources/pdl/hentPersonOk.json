@@ -1,0 +1,13 @@
+{
+  "data": {
+    "hentPerson": {
+      "opphold": [
+        {
+          "type": "MIDLERTIDIG",
+          "oppholdFra": "2020-01-01",
+          "oppholdTil": "2020-05-05"
+        }
+      ]
+    }
+  }
+}

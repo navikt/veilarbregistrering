@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlHentPerson;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPersonOpphold;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +9,14 @@ import org.junit.jupiter.api.Disabled;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,37 +33,29 @@ public class PdlServiceTest {
 
     @Test
     @Disabled
-    public void skalHenteOppholdTilPerson(){
+    public void skalHenteOppholdTilPerson() {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String tom = "16.08.2020";
-        String fom = "01.01.2000";
-        LocalDate localDatetom = LocalDate.parse(tom, formatter);
-        LocalDate localDatefom = LocalDate.parse(fom, formatter);
+        PdlOppslagService service = mock(PdlOppslagService.class);
+        when(service.pdlJson(any(), any())).thenReturn(okJson());
 
+        PdlPerson person = service.hentPerson("");
 
-        PdlResponse response = new PdlResponse();
-        response.setData(PdlPerson.builder().pdlPersonOpphold(
-                                    PdlPersonOpphold.builder()
-                                            .oppholdFra(localDatefom)
-                                            .oppholdTil(localDatetom)
-                                            .build()).build());
-
-        String fnr = "10108000398";
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("fnr")).thenReturn("10108000398");
-        when(requestProvider.get()).thenReturn(request);
-
-        PdlPerson res = pdlOppslagService.hentPerson(fnr);
-        Assert.assertEquals(res.getPdlPersonOpphold(), response.getData().getPdlPersonOpphold());
-
-
+        Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
     }
 
     @Disabled
     @Test(expected = RuntimeException.class)
-    public void skalFeileHvisBrukerIkkeFinnes(){
+    public void skalFeileHvisBrukerIkkeFinnes() {
 
+    }
+
+    private final String okJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
