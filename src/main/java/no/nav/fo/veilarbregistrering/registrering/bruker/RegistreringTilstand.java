@@ -62,4 +62,16 @@ public class RegistreringTilstand {
         this.sistEndret = LocalDateTime.now();
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "RegistreringTilstand{" +
+                "id=" + id +
+                ", uuid=" + uuid +
+                ", brukerRegistreringId=" + brukerRegistreringId +
+                ", opprettet=" + opprettet +
+                ", sistEndret=" + sistEndret +
+                ", status=" + status +
+                '}';
+    }
 }

@@ -114,7 +114,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     public void skal_lagre_og_hente_registreringTilstand() {
         RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(1235124L);
 
-        long id = brukerRegistreringRepository.lagre(registreringTilstand);
+        long id = brukerRegistreringRepository.opprett(registreringTilstand);
 
         assertThat(id).isNotNegative();
 
@@ -134,19 +134,19 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
                 .brukerRegistreringId(112233L)
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .build();
-        long id1 = brukerRegistreringRepository.lagre(eldsteRegistrering);
+        long id1 = brukerRegistreringRepository.opprett(eldsteRegistrering);
 
         RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(332211)
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .build();
-        brukerRegistreringRepository.lagre(nyesteRegistering);
+        brukerRegistreringRepository.opprett(nyesteRegistering);
 
         RegistreringTilstand midtersteRegistering = registreringTilstand()
                 .brukerRegistreringId(666666)
                 .opprettet(LocalDateTime.now().minusMinutes(3))
                 .build();
-        brukerRegistreringRepository.lagre(midtersteRegistering);
+        brukerRegistreringRepository.opprett(midtersteRegistering);
 
         Optional<RegistreringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
 
@@ -162,21 +162,21 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(ARENA_OK)
                 .build();
-        brukerRegistreringRepository.lagre(eldsteRegistrering);
+        brukerRegistreringRepository.opprett(eldsteRegistrering);
 
         RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(332211)
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .status(ARENA_OK)
                 .build();
-        brukerRegistreringRepository.lagre(nyesteRegistering);
+        brukerRegistreringRepository.opprett(nyesteRegistering);
 
         RegistreringTilstand midtersteRegistering = registreringTilstand()
                 .brukerRegistreringId(666666)
                 .opprettet(LocalDateTime.now().minusMinutes(3))
                 .status(ARENA_OK)
                 .build();
-        brukerRegistreringRepository.lagre(midtersteRegistering);
+        brukerRegistreringRepository.opprett(midtersteRegistering);
 
         Optional<RegistreringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
 

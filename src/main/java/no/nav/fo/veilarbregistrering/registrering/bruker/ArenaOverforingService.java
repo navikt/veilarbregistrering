@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -33,11 +34,12 @@ public class ArenaOverforingService {
      * 1) Hente neste registrering som er klar for overføring
      * - avbryt hvis det ikke er flere som er klare
      * 2) Hent grunnlaget for registreringen;
-     * - fødselsnummer (fra Aktørregisteret, evt. om vi tar vare på den ved innsending)
+     * - fødselsnummer (fra registreringen
      * - innsatsgruppe (fra profileringen)
      * 3) Kalle Arena og tolke evt. feil i retur
      * 4) Oppdatere status på registreringen
      */
+    @Transactional
     public void utforOverforing() {
 
         Optional<RegistreringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
@@ -49,9 +51,11 @@ public class ArenaOverforingService {
 
         RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
 
-        //TODO: Hente fnr fra aktørService eller lagre i databasen på vei ned?
-        Foedselsnummer foedselsnummer = null;
-        Profilering profilering = profileringRepository.hentProfileringForId(registreringTilstand.getBrukerRegistreringId());
+        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
+
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
+        Foedselsnummer foedselsnummer = null; ////TODO: ordinaerBrukerRegistrering.getFoedselsnummer()
+                Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
         Status status = overfoerRegistreringTilArena(foedselsnummer, profilering.getInnsatsgruppe());
 

@@ -18,7 +18,7 @@ public interface BrukerRegistreringRepository {
 
     void lagreReaktiveringForBruker(AktorId aktorId);
 
-    long lagre(RegistreringTilstand registreringTilstand);
+    long opprett(RegistreringTilstand registreringTilstand);
 
     RegistreringTilstand hentRegistreringTilstand(long id);
 

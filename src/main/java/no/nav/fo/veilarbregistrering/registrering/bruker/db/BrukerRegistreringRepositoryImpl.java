@@ -171,7 +171,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public long lagre(RegistreringTilstand registreringTilstand) {
+    public long opprett(RegistreringTilstand registreringTilstand) {
         long id = nesteFraSekvens(REGISTRERING_TILSTAND_SEQ);
         SqlUtils.insert(db, "REGISTRERING_TILSTAND")
                 .value("ID", id)
@@ -186,8 +186,20 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         return id;
     }
 
+    /**
+     * Oppdaterer registreringTilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
+     * @param registreringTilstand
+     * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
+     */
     @Override
     public void oppdater(RegistreringTilstand registreringTilstand) {
+        RegistreringTilstand original = hentRegistreringTilstand(registreringTilstand.getId());
+
+        if (original.getSistEndret() != null && original.getSistEndret().isAfter(registreringTilstand.getSistEndret())) {
+            throw new IllegalStateException("RegistreringTilstand hadde allerede blitt oppdatert " +
+                    original.getSistEndret().toString() + "Detaljer: " + registreringTilstand);
+        }
+
         SqlUtils.update(db, "REGISTRERING_TILSTAND")
                 .set("STATUS", registreringTilstand.getStatus())
                 .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
