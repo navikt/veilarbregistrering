@@ -15,4 +15,3 @@ target
 *.jsp
 activemq-data/
 bash.exe.stackdump
-my-maven.xml

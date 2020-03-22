@@ -1,16 +1,18 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import java.util.List;
+
 public class PdlPerson {
-    private PdlPersonOpphold pdlPersonOpphold;
+    private List<PdlPersonOpphold> opphold;
 
     public PdlPerson() {
     }
 
-    public PdlPersonOpphold getPdlPersonOpphold() {
-        return pdlPersonOpphold;
+    public List<PdlPersonOpphold> getOpphold() {
+        return opphold;
     }
 
-    public void setPdlPersonOpphold(PdlPersonOpphold pdlPersonOpphold) {
-        this.pdlPersonOpphold = pdlPersonOpphold;
+    public void setOpphold(List<PdlPersonOpphold> opphold) {
+        this.opphold = opphold;
     }
 }

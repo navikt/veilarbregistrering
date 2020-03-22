@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.bruker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
@@ -35,7 +39,7 @@ public class PdlOppslagService {
     private final String ALLE_TEMA_HEADERVERDI = "GEN";
     private final String PDL_PROPERTY_NAME = "PDL_URL";
 
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
     public PdlPerson hentPerson(String fnr) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(fnr, false));
@@ -72,6 +76,18 @@ public class PdlOppslagService {
            throw new RuntimeException(e);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static final class LocalDateAdapter extends TypeAdapter<LocalDate> {
+        @Override
+        public void write(final JsonWriter jsonWriter, final LocalDate localDate ) throws IOException {
+            jsonWriter.value(localDate.toString());
+        }
+
+        @Override
+        public LocalDate read( final JsonReader jsonReader ) throws IOException {
+            return LocalDate.parse(jsonReader.nextString());
         }
     }
 }
