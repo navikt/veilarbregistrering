@@ -26,7 +26,6 @@ public class PdlServiceTest {
     }
 
     @Test
-    @Disabled
     public void skalHenteOppholdTilPerson() {
         PdlOppslagService service = new PdlOppslagService() {
             @Override
@@ -40,9 +39,30 @@ public class PdlServiceTest {
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
     }
 
+    @Test(expected = RuntimeException.class)
+    public void skalFeileVedError() {
+        PdlOppslagService service = new PdlOppslagService() {
+            @Override
+            String pdlJson(String fnr, PdlRequest request) {
+                return feilJson();
+            }
+        };
+
+        service.hentPerson("");
+    }
+
     private final String okJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final String feilJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPersonError.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
