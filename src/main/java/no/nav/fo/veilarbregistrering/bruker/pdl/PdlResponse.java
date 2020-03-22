@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PdlResponse {
-    private PdlPerson data;
+    private PdlHentPerson data;
     private List<PdlError> errors;
 }

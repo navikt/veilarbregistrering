@@ -1,11 +1,17 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.Variables;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient;
+import no.nav.log.MDCConstants;
 import no.nav.sbl.rest.RestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -20,32 +26,42 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class PdlOppslagService {
 
-    public static final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
-    public static final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
-    public static final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
-    public static final String TEMA_HEADER = "Tema";
-    public static final String ALLE_TEMA_HEADERVERDI = "GEN";
-    public static final String PDL_PROPERTY_NAME = "PDL_URL";
+    private final Logger logger = LoggerFactory.getLogger(PdlOppslagService.class);
+
+    private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
+    private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
+    private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
+    private final String TEMA_HEADER = "Tema";
+    private final String ALLE_TEMA_HEADERVERDI = "GEN";
+    private final String PDL_PROPERTY_NAME = "PDL_URL";
+
+    private final Gson gson = new GsonBuilder().create();
 
     public PdlPerson hentPerson(String fnr) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(fnr, false));
-        return kall(fnr, request).getData().getHentPerson();
+        String json = pdlJson(fnr, request);
+        PdlResponse resp = gson.fromJson(json, PdlResponse.class);
+        validateResponse(resp);
+        return resp.getData().getHentPerson();
     }
 
-    private PdlResponse kall(String fnr, PdlRequest request) {
-
-
-        String response = RestUtils.withClient(client ->
+    String pdlJson(String fnr, PdlRequest request) {
+        return RestUtils.withClient(client ->
                 client.target(getRequiredProperty(PDL_PROPERTY_NAME))
                         .request()
                         .header(NAV_PERSONIDENT_HEADER, fnr)
-                        .header(NAV_CALL_ID_HEADER, "TODO")
+                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                         .header("Authorization", "Bearer TODO_TOKEN")
                         .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer TODO_TOKEN")
                         .header(TEMA_HEADER, ALLE_TEMA_HEADERVERDI)
                         .post(Entity.json(request), String.class));
+    }
 
-        return new PdlResponse(); // TODO Gjør om responsejson til objekt
+    private void validateResponse(PdlResponse response) {
+        if (response.getErrors() != null && response.getErrors().size() > 0) {
+            logger.warn("Error from PDL: " + gson.toJson(response.getErrors()));
+            throw new RuntimeException("Error from PDL");
+        }
     }
 
     private String hentQuery() {
