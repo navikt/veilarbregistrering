@@ -139,7 +139,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
+        when(brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));

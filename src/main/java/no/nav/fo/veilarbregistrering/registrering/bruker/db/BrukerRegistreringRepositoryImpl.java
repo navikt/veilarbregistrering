@@ -92,6 +92,36 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
+    public OrdinaerBrukerRegistrering lagreOrdinaerBrukerMedFnr(OrdinaerBrukerRegistrering registrering, Bruker bruker) {
+        long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
+        Besvarelse besvarelse = registrering.getBesvarelse();
+        Stilling stilling = registrering.getSisteStilling();
+        String teksterForBesvarelse = tilJson(registrering.getTeksterForBesvarelse());
+
+        SqlUtils.insert(db, BRUKER_REGISTRERING)
+                .value(BRUKER_REGISTRERING_ID, id)
+                .value(AKTOR_ID, bruker.getAktorId().asString())
+                .value("FOEDSELSNUMMER", bruker.getFoedselsnummer().stringValue())
+                .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
+                // Siste stilling
+                .value(YRKESPRAKSIS, stilling.getStyrk08())
+                .value(YRKESBESKRIVELSE, stilling.getLabel())
+                .value(KONSEPT_ID, stilling.getKonseptId())
+                // Besvarelse
+                .value(BEGRUNNELSE_FOR_REGISTRERING, besvarelse.getDinSituasjon().toString())
+                .value(NUS_KODE, UtdanningUtils.mapTilNuskode(besvarelse.getUtdanning()))
+                .value(UTDANNING_GODKJENT_NORGE, besvarelse.getUtdanningGodkjent().toString())
+                .value(UTDANNING_BESTATT, besvarelse.getUtdanningBestatt().toString())
+                .value(HAR_HELSEUTFORDRINGER, besvarelse.getHelseHinder().toString())
+                .value(ANDRE_UTFORDRINGER, besvarelse.getAndreForhold().toString())
+                .value(JOBBHISTORIKK, besvarelse.getSisteStilling().toString())
+                .execute();
+
+        return hentBrukerregistreringForId(id);
+    }
+
+    @Override
     public long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId) {
         long id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ);
         Besvarelse besvarelse = bruker.getBesvarelse();
