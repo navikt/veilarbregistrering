@@ -116,9 +116,14 @@ public class OppfolgingClient extends BaseClient {
             if (logArenaException()) {
                 try {
                     response.bufferEntity();
-                    String json = response.readEntity(String.class);
-                    AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
-                    LOG.info("Json-response: {}\nType: {}", json, aktiverBrukerFeil.getType());
+                    String responseBody = response.readEntity(String.class);
+                    AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(responseBody, AktiverBrukerFeil.class);
+                    LOG.info("Json-response: {}\nType: {}", responseBody, aktiverBrukerFeil.getType());
+
+                    Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FORBIDDEN);
+                    responseBuilder.entity(responseBody);
+                    Response newResponse = responseBuilder.build();
+                    throw new WebApplicationException(newResponse);
 
                 } catch (Exception e) {
                     LOG.warn("Parsing av response feilet: ", e);
