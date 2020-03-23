@@ -122,6 +122,8 @@ public class OppfolgingClient extends BaseClient {
 
                 } catch (Exception e) {
                     LOG.warn("Parsing av response feilet: ", e);
+                } finally {
+                    response.close();
                 }
             }
 
