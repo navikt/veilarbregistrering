@@ -86,7 +86,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
     }
@@ -118,7 +118,7 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());

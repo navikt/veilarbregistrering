@@ -4,6 +4,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
+    private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
     private static final AktorId AKTOR_ID_11111 = AktorId.valueOf("11111");
+    private static final Bruker BRUKER = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111);
 
     @Inject
     private JdbcTemplate jdbcTemplate;
@@ -41,24 +45,24 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void registrerBruker() {
-        OrdinaerBrukerRegistrering bruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, AKTOR_ID_11111);
-        assertRegistrertBruker(bruker, ordinaerBrukerRegistrering);
+        OrdinaerBrukerRegistrering registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);
+        assertRegistrertBruker(registrering, ordinaerBrukerRegistrering);
     }
 
     @Test
     public void hentBrukerregistreringForAktorId() {
 
-        OrdinaerBrukerRegistrering bruker1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering bruker2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
-        brukerRegistreringRepository.lagreOrdinaerBruker(bruker1, AKTOR_ID_11111);
-        brukerRegistreringRepository.lagreOrdinaerBruker(bruker2, AKTOR_ID_11111);
+        brukerRegistreringRepository.lagreOrdinaerBruker(registrering1, BRUKER);
+        brukerRegistreringRepository.lagreOrdinaerBruker(registrering2, BRUKER);
 
         OrdinaerBrukerRegistrering registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111);
-        assertRegistrertBruker(bruker2, registrering);
+        assertRegistrertBruker(registrering2, registrering);
     }
 
     @Test
@@ -77,16 +81,16 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void hentOrdinaerBrukerRegistreringForAktorId(){
-        OrdinaerBrukerRegistrering bruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
-        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(bruker, AKTOR_ID_11111);
-        bruker.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
+        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);
+        registrering.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111);
 
-        assertEquals(bruker, ordinaerBrukerRegistrering);
+        assertEquals(registrering, ordinaerBrukerRegistrering);
 
     }
 

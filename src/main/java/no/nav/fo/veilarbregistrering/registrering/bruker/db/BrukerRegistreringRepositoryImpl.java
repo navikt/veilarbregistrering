@@ -2,9 +2,11 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
@@ -61,15 +63,15 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
+    public OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering registrering, Bruker bruker) {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        Stilling stilling = bruker.getSisteStilling();
-        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
+        Besvarelse besvarelse = registrering.getBesvarelse();
+        Stilling stilling = registrering.getSisteStilling();
+        String teksterForBesvarelse = tilJson(registrering.getTeksterForBesvarelse());
 
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
-                .value(AKTOR_ID, aktorId.asString())
+                .value(AKTOR_ID, bruker.getAktorId().asString())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling
