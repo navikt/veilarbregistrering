@@ -106,7 +106,6 @@ public class OppfolgingClient extends BaseClient {
     }
 
     private int behandleHttpResponse(Response response, String url) {
-        response.bufferEntity();
         int status = response.getStatus();
 
         if (status == 204) {
@@ -116,6 +115,7 @@ public class OppfolgingClient extends BaseClient {
 
             if (logArenaException()) {
                 try {
+                    response.bufferEntity();
                     String json = response.readEntity(String.class);
                     AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
                     LOG.info("Json-response: {}\nType: {}", json, aktiverBrukerFeil.getType());
