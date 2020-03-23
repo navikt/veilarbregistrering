@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandTestdataBuilder.registreringTilstand;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.ARENA_OK;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
@@ -45,7 +46,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void registrerBruker() {
-        OrdinaerBrukerRegistrering registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);
         assertRegistrertBruker(registrering, ordinaerBrukerRegistrering);
     }
@@ -53,9 +54,9 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     @Test
     public void hentBrukerregistreringForAktorId() {
 
-        OrdinaerBrukerRegistrering registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
         brukerRegistreringRepository.lagreOrdinaerBruker(registrering1, BRUKER);
@@ -81,7 +82,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void hentOrdinaerBrukerRegistreringForAktorId(){
-        OrdinaerBrukerRegistrering registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
         OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);

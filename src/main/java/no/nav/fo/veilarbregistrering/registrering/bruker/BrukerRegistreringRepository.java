@@ -9,6 +9,8 @@ public interface BrukerRegistreringRepository {
 
     OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering registrering, Bruker bruker);
 
+    OrdinaerBrukerRegistrering lagreOrdinaerBrukerMedFnr(OrdinaerBrukerRegistrering registrering, Bruker bruker);
+
     long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId);
 
     OrdinaerBrukerRegistrering hentBrukerregistreringForId(long brukerregistreringId);
