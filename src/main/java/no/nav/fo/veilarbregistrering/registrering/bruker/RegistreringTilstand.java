@@ -16,6 +16,10 @@ public class RegistreringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
+    public static RegistreringTilstand ofArenaOk(long brukerRegistreringId) {
+        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.ARENA_OK);
+    }
+
     public static RegistreringTilstand ofMottattRegistrering(long brukerRegistreringId) {
         return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
     }

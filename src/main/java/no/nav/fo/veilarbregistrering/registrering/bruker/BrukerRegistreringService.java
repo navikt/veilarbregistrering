@@ -178,6 +178,12 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
+        //TODO: Må endre til å lagre tilstand som MOTTATT når Arena skal håndteres i etterkant.
+        if (lagreTilstandErAktiv()) {
+            LOG.info("Lagrer RegistreringTilstand med ARENA_OK");
+            brukerRegistreringRepository.lagre(RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId()));
+        }
+
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
@@ -263,5 +269,9 @@ public class BrukerRegistreringService {
 
     private boolean sykemeldtRegistreringErAktiv() {
         return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
+    }
+
+    private boolean lagreTilstandErAktiv() {
+        return unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv");
     }
 }

@@ -105,7 +105,6 @@ class BrukerRegistreringServiceIntegrationTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER);
 
         Optional<OrdinaerBrukerRegistrering> reg = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
-
         assertThat(reg.isPresent()).isTrue();
     }
 
