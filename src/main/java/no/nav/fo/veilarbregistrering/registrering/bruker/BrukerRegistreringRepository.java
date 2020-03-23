@@ -1,12 +1,13 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 
 import java.util.Optional;
 
 public interface BrukerRegistreringRepository {
 
-    OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId);
+    OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering registrering, Bruker bruker);
 
     long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId);
 
