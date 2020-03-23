@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface BrukerRegistreringRepository {
 
-    OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering registrering, Bruker bruker);
-
-    OrdinaerBrukerRegistrering lagreOrdinaerBrukerMedFnr(OrdinaerBrukerRegistrering registrering, Bruker bruker);
+    OrdinaerBrukerRegistrering lagre(OrdinaerBrukerRegistrering registrering, Bruker bruker);
 
     long lagreSykmeldtBruker(SykmeldtRegistrering bruker, AktorId aktorId);
 
@@ -21,7 +19,7 @@ public interface BrukerRegistreringRepository {
 
     void lagreReaktiveringForBruker(AktorId aktorId);
 
-    long opprett(RegistreringTilstand registreringTilstand);
+    long lagre(RegistreringTilstand registreringTilstand);
 
     RegistreringTilstand hentRegistreringTilstand(long id);
 

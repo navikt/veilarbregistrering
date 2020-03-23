@@ -167,7 +167,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(brukerRegistrering, bruker);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);

@@ -87,9 +87,9 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
+        when(brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
-        verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBrukerMedFnr(any(), any());
+        verify(brukerRegistreringRepository, times(1)).lagre(any(), any());
     }
 
     @Test
@@ -119,10 +119,10 @@ public class BrukerRegistreringServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
+        when(brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
-        verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBrukerMedFnr(any(), any());
+        verify(brukerRegistreringRepository, times(1)).lagre(any(), any());
     }
 
     @Test
@@ -278,7 +278,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(any(), any())).thenReturn(gyldigBrukerRegistrering());
+        when(brukerRegistreringRepository.lagre(any(), any())).thenReturn(gyldigBrukerRegistrering());
 
     }
 
