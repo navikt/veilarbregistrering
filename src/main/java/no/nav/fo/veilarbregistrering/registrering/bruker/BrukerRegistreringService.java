@@ -167,14 +167,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering;
-        if (lagringMedFoedselsnummer()) {
-            LOG.info("lagreOrdinaerBrukerMedFnr ");
-            ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(brukerRegistrering, bruker);
-        } else {
-            LOG.info("lagreOrdinaerBruker");
-            ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, bruker);
-        }
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(brukerRegistrering, bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
@@ -270,9 +263,5 @@ public class BrukerRegistreringService {
 
     private boolean sykemeldtRegistreringErAktiv() {
         return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
-    }
-
-    private boolean lagringMedFoedselsnummer() {
-        return unleashService.isEnabled("veilarbregistrering.lagreOrdinaerBrukerMedFnr");
     }
 }

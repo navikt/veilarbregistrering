@@ -47,7 +47,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     @Test
     public void registrerBruker() {
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(registrering, BRUKER);
         assertRegistrertBruker(registrering, ordinaerBrukerRegistrering);
     }
 
@@ -59,8 +59,8 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
-        brukerRegistreringRepository.lagreOrdinaerBruker(registrering1, BRUKER);
-        brukerRegistreringRepository.lagreOrdinaerBruker(registrering2, BRUKER);
+        brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(registrering1, BRUKER);
+        brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(registrering2, BRUKER);
 
         OrdinaerBrukerRegistrering registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111);
         assertRegistrertBruker(registrering2, registrering);
@@ -85,7 +85,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
-        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBruker(registrering, BRUKER);
+        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagreOrdinaerBrukerMedFnr(registrering, BRUKER);
         registrering.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
