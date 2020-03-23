@@ -97,7 +97,7 @@ public class BrukerRegistreringService {
         }
 
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
-            throw new RuntimeException("Brukeren kan ikke registreres. Krever registreringtypen ordinær.");
+            throw new RuntimeException(String.format("Brukeren kan ikke registreres ordinært fordi utledet registreringstype er {}.", brukersTilstand.getRegistreringstype()));
         }
 
         try {
