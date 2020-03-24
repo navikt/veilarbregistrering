@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 public class OppfolgingClientMock extends OppfolgingClient {
 
     public OppfolgingClientMock() {
-        super(null, null, null);
+        super(null, null);
     }
 
     @Override

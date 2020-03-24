@@ -113,7 +113,7 @@ class OppfolgingClientTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, unleashService);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider);
         oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return oppfolgingClient;
     }
