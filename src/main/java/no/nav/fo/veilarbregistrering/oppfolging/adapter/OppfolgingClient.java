@@ -3,9 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
-import no.nav.json.JsonUtils;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,14 +25,9 @@ public class OppfolgingClient extends BaseClient {
     private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
 
     private SystemUserTokenProvider systemUserTokenProvider;
-    private final UnleashService unleashService;
 
-    public OppfolgingClient(
-            String baseUrl,
-            Provider<HttpServletRequest> httpServletRequestProvider,
-            UnleashService unleashService) {
+    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
         super(baseUrl, httpServletRequestProvider);
-        this.unleashService = unleashService;
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
@@ -101,30 +93,17 @@ public class OppfolgingClient extends BaseClient {
                 .request()
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization",
-                        (this.systemUserTokenProvider==null? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
     }
 
     private int behandleHttpResponse(Response response, String url) {
-        response.bufferEntity();
         int status = response.getStatus();
 
         if (status == 204) {
             return status;
         } else if (status == 403) {
             LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
-
-            if (logArenaException()) {
-                try {
-                    String json = response.readEntity(String.class);
-                    AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
-                    LOG.info("Json-response: {}\nType: {}", json, aktiverBrukerFeil.getType());
-
-                } catch (Exception e) {
-                    LOG.warn("Parsing av response feilet: ", e);
-                }
-            }
-
             throw new WebApplicationException(response);
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
@@ -135,7 +114,4 @@ public class OppfolgingClient extends BaseClient {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
-    private boolean logArenaException() {
-        return unleashService.isEnabled("veilarbregistrering.arenaExceptionEnabled");
-    }
 }
