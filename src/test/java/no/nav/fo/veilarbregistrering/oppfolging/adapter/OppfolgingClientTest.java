@@ -80,8 +80,7 @@ class OppfolgingClientTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidssokerRegistrertProducer = (aktorId) -> {};
-
+        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {};
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -124,7 +123,7 @@ class OppfolgingClientTest {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        when (brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(new OrdinaerBrukerRegistrering());
+        when (brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(new OrdinaerBrukerRegistrering());
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
     }
 
@@ -140,7 +139,7 @@ class OppfolgingClientTest {
 
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
+        when(brukerRegistreringRepository.lagre(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
@@ -194,6 +193,14 @@ class OppfolgingClientTest {
     }
 
     @Test
+    public void bruker_mangler_oppholdstillatelse_eller_arbeidstillatelse() {
+        mockUnderOppfolgingApi();
+        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withBody("").withStatusCode(403));
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+    }
+
+    @Test
     public void testAtGirIngenExceptionsDersomKun200OK() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
@@ -222,7 +229,6 @@ class OppfolgingClientTest {
     private String settOppfolgingOgReaktivering(Boolean oppfolging, Boolean reaktivering) {
         return "{\"kanReaktiveres\": "+reaktivering+", \"underOppfolging\": "+oppfolging+"}";
     }
-
 
     private String okRegistreringBody() {
         return "{\n" +

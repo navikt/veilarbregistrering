@@ -2,12 +2,11 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
-import no.nav.fo.veilarbregistrering.besvarelse.*;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
@@ -15,9 +14,11 @@ import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -30,6 +31,8 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING";
     final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
     final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
+
+    private final static String REGISTRERING_TILSTAND_SEQ = "REGISTRERING_TILSTAND_SEQ";
 
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
@@ -60,15 +63,16 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public OrdinaerBrukerRegistrering lagreOrdinaerBruker(OrdinaerBrukerRegistrering bruker, AktorId aktorId) {
+    public OrdinaerBrukerRegistrering lagre(OrdinaerBrukerRegistrering registrering, Bruker bruker) {
         long id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ);
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        Stilling stilling = bruker.getSisteStilling();
-        String teksterForBesvarelse = tilJson(bruker.getTeksterForBesvarelse());
+        Besvarelse besvarelse = registrering.getBesvarelse();
+        Stilling stilling = registrering.getSisteStilling();
+        String teksterForBesvarelse = tilJson(registrering.getTeksterForBesvarelse());
 
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
-                .value(AKTOR_ID, aktorId.asString())
+                .value(AKTOR_ID, bruker.getAktorId().asString())
+                .value("FOEDSELSNUMMER", bruker.getFoedselsnummer().stringValue())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling
@@ -167,6 +171,63 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value(AKTOR_ID, aktorId.asString())
                 .value(REAKTIVERING_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .execute();
+    }
+
+    @Override
+    public long lagre(RegistreringTilstand registreringTilstand) {
+        long id = nesteFraSekvens(REGISTRERING_TILSTAND_SEQ);
+        SqlUtils.insert(db, "REGISTRERING_TILSTAND")
+                .value("ID", id)
+                .value("UUID", registreringTilstand.getUuid().toString())
+                .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
+                .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
+                .value("SIST_ENDRET", ofNullable(registreringTilstand.getSistEndret())
+                        .map(Timestamp::valueOf).orElse(null))
+                .value("STATUS", registreringTilstand.getStatus().toString())
+                .execute();
+
+        return id;
+    }
+
+    /**
+     * Oppdaterer registreringTilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
+     * @param registreringTilstand
+     * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
+     */
+    @Override
+    public void oppdater(RegistreringTilstand registreringTilstand) {
+        RegistreringTilstand original = hentRegistreringTilstand(registreringTilstand.getId());
+
+        if (original.getSistEndret() != null && original.getSistEndret().isAfter(registreringTilstand.getSistEndret())) {
+            throw new IllegalStateException("RegistreringTilstand hadde allerede blitt oppdatert " +
+                    original.getSistEndret().toString() + "Detaljer: " + registreringTilstand);
+        }
+
+        SqlUtils.update(db, "REGISTRERING_TILSTAND")
+                .set("STATUS", registreringTilstand.getStatus())
+                .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
+                .whereEquals("ID", registreringTilstand.getId())
+                .execute();
+    }
+
+    @Override
+    public RegistreringTilstand hentRegistreringTilstand(long id) {
+        return SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
+                .where(WhereClause.equals("ID", id))
+                .column("*")
+                .execute();
+    }
+
+    @Override
+    public Optional<RegistreringTilstand> finnNesteRegistreringForOverforing() {
+        RegistreringTilstand registreringTilstand = SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
+                .where(WhereClause.equals("STATUS", "MOTTATT"))
+                .orderBy(OrderClause.asc("OPPRETTET"))
+                .limit(1)
+                .column("*")
+                .execute();
+
+        return ofNullable(registreringTilstand);
     }
 
     private long nesteFraSekvens(String sekvensNavn) {

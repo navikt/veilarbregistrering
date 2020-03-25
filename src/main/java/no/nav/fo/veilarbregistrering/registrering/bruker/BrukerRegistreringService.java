@@ -27,6 +27,7 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
@@ -96,7 +97,7 @@ public class BrukerRegistreringService {
         }
 
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
-            throw new RuntimeException("Brukeren kan ikke registreres. Krever registreringtypen ordinær.");
+            throw new RuntimeException(String.format("Brukeren kan ikke registreres ordinært fordi utledet registreringstype er {}.", brukersTilstand.getRegistreringstype()));
         }
 
         try {
@@ -132,7 +133,7 @@ public class BrukerRegistreringService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            reportTags(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
+            reportFields(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
         });
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
@@ -166,7 +167,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, bruker.getAktorId());
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
@@ -177,7 +178,16 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(bruker.getAktorId());
+        //TODO: Må endre til å lagre tilstand som MOTTATT når Arena skal håndteres i etterkant.
+        if (lagreTilstandErAktiv()) {
+            LOG.info("Lagrer RegistreringTilstand med ARENA_OK");
+            brukerRegistreringRepository.lagre(RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId()));
+        }
+
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+                bruker.getAktorId(),
+                ordinaerBrukerRegistrering.getBrukersSituasjon(),
+                ordinaerBrukerRegistrering.getOpprettetDato());
 
         return ordinaerBrukerRegistrering;
     }
@@ -261,4 +271,7 @@ public class BrukerRegistreringService {
         return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
     }
 
+    private boolean lagreTilstandErAktiv() {
+        return unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv");
+    }
 }

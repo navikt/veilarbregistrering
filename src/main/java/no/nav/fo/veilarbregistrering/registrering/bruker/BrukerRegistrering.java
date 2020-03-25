@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import lombok.Data;
+import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
 
@@ -12,4 +13,6 @@ public abstract class BrukerRegistrering {
     public abstract BrukerRegistreringType hentType();
 
     public abstract long getId();
+
+    public abstract DinSituasjonSvar getBrukersSituasjon();
 }

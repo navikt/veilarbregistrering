@@ -34,6 +34,17 @@ public class Metrics {
         metricsEvent.report();
     }
 
+    public static void reportFields(Event event, HasMetrics hasMetrics, Metric... metric) {
+        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
+        hasMetrics.metrics().stream()
+                .filter(Objects::nonNull)
+                .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
+        Arrays.stream(metric)
+                .filter(Objects::nonNull)
+                .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
+        metricsEvent.report();
+    }
+
     public enum Event {
         OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave"),
         START_REGISTRERING_EVENT("arbeid.registrering.start"),

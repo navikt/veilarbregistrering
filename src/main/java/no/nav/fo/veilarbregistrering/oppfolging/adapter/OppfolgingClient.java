@@ -93,7 +93,7 @@ public class OppfolgingClient extends BaseClient {
                 .request()
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization",
-                        (this.systemUserTokenProvider==null? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
                                 .getToken());
     }
 
@@ -103,7 +103,7 @@ public class OppfolgingClient extends BaseClient {
         if (status == 204) {
             return status;
         } else if (status == 403) {
-            LOG.warn("Feil ved kall mot: {}, response : {}. Skyldes sannsynligvis at bruker mangler arbeidstillatelse i Arena.", url, response);
+            LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
             throw new WebApplicationException(response);
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
@@ -113,4 +113,5 @@ public class OppfolgingClient extends BaseClient {
     void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
+
 }

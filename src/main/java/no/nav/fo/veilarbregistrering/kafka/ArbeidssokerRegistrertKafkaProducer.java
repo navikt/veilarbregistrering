@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
+import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
@@ -8,11 +9,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static java.lang.System.getenv;
+import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 
 public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
 
@@ -27,14 +30,18 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
     }
 
     @Override
-    public void publiserArbeidssokerRegistrert(AktorId aktorId) {
+    public void publiserArbeidssokerRegistrert(
+            AktorId aktorId,
+            DinSituasjonSvar brukersSituasjon,
+            LocalDateTime opprettetDato) {
+
         if (!skalArbeidssokerRegistrertPubliseres()) {
             LOG.info("Feature toggle, arbeidssokerregistrering.arbeidssokerRegistrert, er skrudd av. Det publiseres ingen Kafka-event");
             return;
         }
 
-        ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
+            ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
             producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId.asString(), arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
             LOG.info("Arbeidssoker registrert-event publisert på topic, aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
 

@@ -54,14 +54,15 @@ spec:
     initialDelay: 60
   replicas:
     min: 2
-    max: 4
-    cpuThresholdPercentage: 50
+    max: 6
+    cpuThresholdPercentage: 85
   resources:
     limits:
       cpu: "3"
-      memory: 1024Mi
+      memory: 3048Mi
     requests:
-      memory: 512Mi
+      memory: 2048Mi
+      cpu: "1"
   vault:
     enabled: true
     paths:
