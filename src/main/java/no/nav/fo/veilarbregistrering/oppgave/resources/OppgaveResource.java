@@ -54,4 +54,19 @@ public class OppgaveResource {
 
         return map(oppgave);
     }
+
+    @POST
+    @Path("/arbeidstillatelse")
+    @ApiOperation(value = "Oppretter oppgave 'kontakt bruker' - arbeidssøkerregistrering der NAV ikke vet om brukeren har arbeidstillatelse")
+    public OppgaveDto opprettOppgaveArbeidstillatelse() {
+        final Bruker bruker = userService.hentBruker();
+
+        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+
+        Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker);
+
+        LOG.info("Oppgave {} ble opprettet", oppgave.getId());
+
+        return map(oppgave);
+    }
 }

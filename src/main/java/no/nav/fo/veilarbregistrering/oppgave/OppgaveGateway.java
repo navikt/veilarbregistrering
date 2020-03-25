@@ -6,4 +6,6 @@ public interface OppgaveGateway {
 
     Oppgave opprettOppgave(AktorId aktoerId, String tilordnetRessurs, String beskrivelse);
 
+    Oppgave opprettOppgaveArbeidstillatelse(AktorId aktoerId, String beskrivelse);
+
 }

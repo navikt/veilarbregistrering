@@ -32,4 +32,10 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
 
         return restClient.opprettOppgave(oppgaveDto);
     }
+
+    @Override
+    public Oppgave opprettOppgaveArbeidstillatelse(AktorId aktoerId, String beskrivelse) {
+        return opprettOppgave(aktoerId, null, beskrivelse);
+    }
+
 }

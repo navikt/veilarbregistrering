@@ -64,4 +64,19 @@ public class OppgaveService {
 
         return oppgave;
     }
+
+    public Oppgave opprettOppgaveArbeidstillatelse(Bruker bruker) {
+
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
+
+        String beskrivelse = String.format("");
+
+        Oppgave oppgave = oppgaveGateway.opprettOppgaveArbeidstillatelse(
+                bruker.getAktorId(),
+                beskrivelse);
+
+        reportTags(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
+
+        return oppgave;
+    }
 }
