@@ -69,7 +69,9 @@ public class OppgaveService {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
-        String beskrivelse = String.format("");
+        String beskrivelse = "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                "og har selv opprettet denne oppgaven. " +
+                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.";
 
         Oppgave oppgave = oppgaveGateway.opprettOppgaveArbeidstillatelse(
                 bruker.getAktorId(),
