@@ -7,6 +7,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,29 +31,40 @@ public class OppgaveResource {
     private final OppgaveService oppgaveService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
+    private final UnleashService unleashService;
 
     public OppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService
+            OppgaveService oppgaveService,
+            UnleashService unleashService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.oppgaveService = oppgaveService;
+        this.unleashService = unleashService;
     }
 
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public OppgaveDto opprettOppgave() {
+    public OppgaveDto opprettOppgaveArbeidstillatelse() {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        Oppgave oppgave = oppgaveService.opprettOppgave(bruker);
+        if (skalOppretteOppgave()) {
 
-        LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
+            Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, OppgaveType.OPPHOLDSTILLATELSE);
+            LOG.info("Oppgave {} ble opprettet", oppgave.getId());
+            return map(oppgave);
 
-        return map(oppgave);
+        } else {
+            return new OppgaveDto();
+        }
+    }
+
+    private boolean skalOppretteOppgave() {
+        return unleashService.isEnabled("arbeidssøkerregistrering.oppretteoppgave");
     }
 }
