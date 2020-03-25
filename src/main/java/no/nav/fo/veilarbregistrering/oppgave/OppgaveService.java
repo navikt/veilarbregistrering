@@ -1,13 +1,11 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import io.vavr.collection.Array;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
