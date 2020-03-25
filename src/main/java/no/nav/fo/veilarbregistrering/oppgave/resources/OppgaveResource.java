@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -56,14 +57,14 @@ public class OppgaveResource {
     }
 
     @POST
-    @Path("/arbeidstillatelse")
-    @ApiOperation(value = "Oppretter oppgave 'kontakt bruker' - arbeidssøkerregistrering der NAV ikke vet om brukeren har arbeidstillatelse")
+    @Path("/oppholdstillatelse")
+    @ApiOperation(value = "Oppretter oppgave 'kontakt bruker' - arbeidssøkerregistrering der NAV ikke vet om brukeren har oppholdstillatelse")
     public OppgaveDto opprettOppgaveArbeidstillatelse() {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker);
+        Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, OppgaveType.OPPHOLDSTILLATELSE);
 
         LOG.info("Oppgave {} ble opprettet", oppgave.getId());
 
