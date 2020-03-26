@@ -3,9 +3,21 @@ package no.nav.fo.veilarbregistrering.metrics;
 import no.nav.metrics.MetricsFactory;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Metrics {
+
+    public static void report(Event event, List<Metric> fields, List<Metric> tags) {
+        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
+        fields.stream()
+                .filter(Objects::isNull)
+                .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
+        tags.stream()
+                .filter(Objects::isNull)
+                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+        metricsEvent.report();
+    }
 
     public static void reportTags(Event event, Metric... metric) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);

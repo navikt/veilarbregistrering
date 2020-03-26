@@ -1,5 +1,17 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-public enum OppgaveType {
-    OPPHOLDSTILLATELSE
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
+public enum OppgaveType implements Metric {
+    OPPHOLDSTILLATELSE;
+
+    @Override
+    public String fieldName() {
+        return "oppgavetype";
+    }
+
+    @Override
+    public String value() {
+        return this.name();
+    }
 }

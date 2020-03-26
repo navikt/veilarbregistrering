@@ -4,11 +4,11 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import static java.util.Collections.singletonList;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.oppgave.NavKontor.*;
 
@@ -84,7 +84,7 @@ public class OppgaveService {
                 bruker.getAktorId(),
                 beskrivelser.get(oppgaveType));
 
-        reportTags(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
+        report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
 
         return oppgave;
     }
