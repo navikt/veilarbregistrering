@@ -11,15 +11,9 @@ import no.nav.testconfig.util.Util;
 import static java.lang.System.setProperty;
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERNAL_USERS_AZUREAD_B2C_DISCOVERY_URL;
 import static no.nav.brukerdialog.security.oidc.provider.AzureADB2CConfig.EXTERNAL_USERS_AZUREAD_B2C_EXPECTED_AUDIENCE;
-import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fasit.FasitUtils.*;
-import static no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig.AAREG_ENDPOINT_URL;
-import static no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig.PERSON_API_PROPERTY_NAME;
 import static no.nav.fo.veilarbregistrering.config.ApplicationConfig.APPLICATION_NAME;
-import static no.nav.fo.veilarbregistrering.config.UnleashConfig.UNLEASH_API_URL_PROPERTY;
-import static no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig.OPPFOLGING_API_PROPERTY_NAME;
-import static no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config.NORG2_ORGANISASJONENHET_V2_URL;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 
 
@@ -42,18 +36,6 @@ public class TestContext {
         setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, srvveilarbregistrering.getPassword());
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize");
 
-        setProperty(AKTOER_ENDPOINT_URL, "https://app-" + getDefaultEnvironment() + ".adeo.no/aktoerid/AktoerService/v2");
-
-        setProperty(AAREG_ENDPOINT_URL, "https://modapp-" + getDefaultEnvironment() + ".adeo.no/aareg-core/ArbeidsforholdService/v3");
-
-        setProperty(OPPFOLGING_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarboppfolging/api");
-
-        setProperty(PERSON_API_PROPERTY_NAME, "https://localhost.nav.no:8443/veilarbperson/api");
-
-        setProperty(UNLEASH_API_URL_PROPERTY, "https://unleash.nais.adeo.no/api/");
-
-        setProperty(NORG2_ORGANISASJONENHET_V2_URL, "https://app-" + getDefaultEnvironment() + ".adeo.no/norg2/ws/OrganisasjonEnhet/v2");
-
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
@@ -74,6 +56,5 @@ public class TestContext {
         ServiceUser azureADClientId = getServiceUser("aad_b2c_clientid", APPLICATION_NAME);
         Util.setProperty(EXTERNAL_USERS_AZUREAD_B2C_DISCOVERY_URL, FasitUtils.getBaseUrl("aad_b2c_discovery"));
         Util.setProperty(EXTERNAL_USERS_AZUREAD_B2C_EXPECTED_AUDIENCE, azureADClientId.username);
-
     }
 }

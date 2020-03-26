@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 
 public class OppfolgingClientMock extends OppfolgingClient {
 
-    public OppfolgingClientMock() {
+    OppfolgingClientMock() {
         super(null, null);
     }
 
