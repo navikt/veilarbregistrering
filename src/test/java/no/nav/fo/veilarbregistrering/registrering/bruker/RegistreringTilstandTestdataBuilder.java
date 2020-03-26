@@ -26,7 +26,7 @@ public class RegistreringTilstandTestdataBuilder {
         }
 
         public Builder brukerRegistreringId(long brukerRegistreringId) {
-            brukerRegistreringId = brukerRegistreringId;
+            this.brukerRegistreringId = brukerRegistreringId;
             return this;
         }
 
