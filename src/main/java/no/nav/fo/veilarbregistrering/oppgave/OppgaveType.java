@@ -2,17 +2,8 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
-public class OppgaveType implements Metric {
-
-    private Type type;
-
-    public OppgaveType(Type type) {
-        this.type = type;
-    }
-
-    public static OppgaveType of(Type type) {
-        return new OppgaveType(type);
-    }
+public enum OppgaveType implements Metric {
+    OPPHOLDSTILLATELSE;
 
     @Override
     public String fieldName() {
@@ -21,11 +12,6 @@ public class OppgaveType implements Metric {
 
     @Override
     public String value() {
-        return this.type.toString();
+        return this.name();
     }
-
-    public enum Type {
-        OPPHOLDSTILLATELSE
-    }
-
 }

@@ -17,7 +17,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.Type.OPPHOLDSTILLATELSE;
 import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 
 @Component

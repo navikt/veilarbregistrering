@@ -11,7 +11,6 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRET
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.oppgave.NavKontor.*;
-import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.Type.OPPHOLDSTILLATELSE;
 
 public class OppgaveService {
 
@@ -34,7 +33,7 @@ public class OppgaveService {
 
     private void initBeskrivelser() {
         this.beskrivelser.put(
-                OppgaveType.of(OPPHOLDSTILLATELSE),
+                OppgaveType.OPPHOLDSTILLATELSE,
                 "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                         "og har selv opprettet denne oppgaven. " +
                         "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
