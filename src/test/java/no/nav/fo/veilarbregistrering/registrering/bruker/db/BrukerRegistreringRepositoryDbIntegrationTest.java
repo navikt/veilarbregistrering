@@ -117,16 +117,14 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void skal_kaste_DataIntegrityViolationException_hvis_registreringstilstand_lagres_uten_at_registrering_er_lagret() {
-        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
 
         assertThrows(DataIntegrityViolationException.class, () -> brukerRegistreringRepository.lagre(RegistreringTilstand.ofMottattRegistrering(registrering.getId())));
     }
 
     @Test
     public void skal_lagre_og_hente_registreringTilstand() {
-        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER);
 
         RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(lagretRegistrering.getId());
@@ -147,12 +145,9 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void skal_finne_den_eldste_tilstanden_med_status_mottatt() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
+        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER);
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER);
         OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER);
@@ -185,12 +180,9 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void skal_returnere_empty_naar_ingen_flere_mottatte() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
-        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA));
+        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER);
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER);
         OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER);
