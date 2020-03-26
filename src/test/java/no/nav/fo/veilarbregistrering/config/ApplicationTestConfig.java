@@ -1,22 +1,7 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGatewayMock;
-import no.nav.fo.veilarbregistrering.bruker.AktorServiceMock;
-import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.bruker.UserServiceMock;
-import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingClientMock;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
-
-import static org.mockito.Mockito.mock;
 
 @Configuration
 public class ApplicationTestConfig extends ApplicationConfig {
@@ -30,36 +15,6 @@ public class ApplicationTestConfig extends ApplicationConfig {
        } else {
            apiAppConfigurator.azureADB2CLogin().sts();
        }
-    }
-
-    @Bean
-    @Conditional(Mock.class)
-    public AktorService aktorService() {
-        return new AktorServiceMock();
-    }
-
-    @Bean
-    @Conditional(Mock.class)
-    public ArbeidsforholdGateway arbeidsforholdService() {
-        return new ArbeidsforholdGatewayMock();
-    }
-
-    @Bean
-    @Conditional(Mock.class)
-    public UserService userService(Provider<HttpServletRequest> requestProvider) {
-        return new UserServiceMock(requestProvider);
-    }
-
-    @Bean
-    @Conditional(Mock.class)
-    public VeilarbAbacPepClient pepClient() {
-        return mock(VeilarbAbacPepClient.class);
-    }
-
-    @Bean
-    @Conditional(Mock.class)
-    public OppfolgingClientMock oppfolgingClient() {
-        return new OppfolgingClientMock();
     }
 
 }

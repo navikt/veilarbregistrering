@@ -75,7 +75,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
@@ -89,7 +88,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
@@ -117,9 +115,7 @@ public class BrukerRegistreringService {
         SykmeldtInfoData sykeforloepMetaData = null;
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
-            if (sykemeldtRegistreringErAktiv()) {
-                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
-            }
+            sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
@@ -192,13 +188,11 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
-    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
-        Arrays.stream(registreringer)
-                .filter(Objects::nonNull)
-                .forEach((registrering) -> {
-                    registrering.setManueltRegistrertAv(manuellRegistreringService
-                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
-                });
+    private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
+        return startRegistreringUtils.profilerBruker(
+                fnr.alder(now()),
+                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                now(), besvarelse);
     }
 
     public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
@@ -234,19 +228,19 @@ public class BrukerRegistreringService {
 
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
-        return startRegistreringUtils.profilerBruker(
-                fnr.alder(now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
-                now(), besvarelse);
+    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
+        Arrays.stream(registreringer)
+                .filter(Objects::nonNull)
+                .forEach((registrering) -> {
+                    registrering.setManueltRegistrertAv(manuellRegistreringService
+                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
+                });
     }
+
+
 
     @Transactional
     public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
-        if (!sykemeldtRegistreringErAktiv()) {
-            throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
-        }
-
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
@@ -265,10 +259,6 @@ public class BrukerRegistreringService {
         }
 
         return id;
-    }
-
-    private boolean sykemeldtRegistreringErAktiv() {
-        return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
     }
 
     private boolean lagreTilstandErAktiv() {
