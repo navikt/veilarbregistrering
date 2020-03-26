@@ -76,11 +76,11 @@ public class OppgaveService {
         return oppgave;
     }
 
-    public Oppgave opprettOppgaveArbeidstillatelse(Bruker bruker, OppgaveType oppgaveType) {
+    public Oppgave opprettOppgaveOppholdstillatelse(Bruker bruker, OppgaveType oppgaveType) {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
-        Oppgave oppgave = oppgaveGateway.opprettOppgaveArbeidstillatelse(
+        Oppgave oppgave = oppgaveGateway.opprettOppgaveOppholdstillatelse(
                 bruker.getAktorId(),
                 beskrivelser.get(oppgaveType));
 

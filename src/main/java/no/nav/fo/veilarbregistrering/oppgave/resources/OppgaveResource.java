@@ -47,14 +47,14 @@ public class OppgaveResource {
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public OppgaveDto opprettOppgaveArbeidstillatelse(OppgaveDto oppgaveDto) {
+    public OppgaveDto opprettOppgaveOppholdstillatelse(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (skalOppretteOppgave()) {
 
-            Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, oppgaveDto.oppgaveType);
+            Oppgave oppgave = oppgaveService.opprettOppgaveOppholdstillatelse(bruker, oppgaveDto.oppgaveType);
             LOG.info("Oppgave ble opprettet med id: {}", oppgave.getId());
             return map(oppgave, oppgaveDto.oppgaveType);
 
