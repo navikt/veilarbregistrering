@@ -9,7 +9,7 @@ public class MainTest {
 
     public static void main(String[] args) {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
-        DatabaseTestContext.setupContext("Q6");
+        DatabaseTestContext.setupInMemoryDatabaseContext();
         TestContext.setup();
         String arguments[] = {TEST_PORT};
         ApiApp.runApp(ApplicationTestConfig.class, arguments);
