@@ -74,7 +74,6 @@ class OppgaveGatewayTest {
                                 "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                                 " Brukeren får ikke registrert seg som arbeidssøker." +
                                 " Kontaktperson ved NAV Grünerløkka er Avdullah Demiri.\"," +
-                                "\"tilordnetRessurs\":\"D113328\"," +
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
@@ -93,7 +92,6 @@ class OppgaveGatewayTest {
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveGateway.opprettOppgave(
                         AktorId.valueOf("12e1e3"),
-                        "D113328",
                         "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
                         " Brukeren får ikke registrert seg som arbeidssøker." +
                         " Kontaktperson ved NAV Grünerløkka er Avdullah Demiri."));

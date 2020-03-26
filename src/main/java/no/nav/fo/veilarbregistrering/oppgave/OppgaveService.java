@@ -30,11 +30,11 @@ public class OppgaveService {
         );
     }
 
-    public Oppgave opprettOppgaveOppholdstillatelse(Bruker bruker, OppgaveType oppgaveType) {
+    public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
-        Oppgave oppgave = oppgaveGateway.opprettOppgaveOppholdstillatelse(
+        Oppgave oppgave = oppgaveGateway.opprettOppgave(
                 bruker.getAktorId(),
                 beskrivelser.get(oppgaveType));
 
