@@ -57,7 +57,9 @@ public class OppgaveResource {
 
             Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, OppgaveType.OPPHOLDSTILLATELSE);
             LOG.info("Oppgave {} ble opprettet", oppgave.getId());
-            return map(oppgave);
+            OppgaveDto o = map(oppgave);
+            o.setOppgaveType(OppgaveType.OPPHOLDSTILLATELSE);
+            return o;
 
         } else {
             return new OppgaveDto();
