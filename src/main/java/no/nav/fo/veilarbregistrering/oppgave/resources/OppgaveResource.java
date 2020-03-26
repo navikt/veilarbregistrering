@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,16 +47,16 @@ public class OppgaveResource {
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public OppgaveDto opprettOppgaveArbeidstillatelse() {
+    public OppgaveDto opprettOppgaveArbeidstillatelse(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (skalOppretteOppgave()) {
 
-            Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, OppgaveType.OPPHOLDSTILLATELSE);
+            Oppgave oppgave = oppgaveService.opprettOppgaveArbeidstillatelse(bruker, oppgaveDto.oppgaveType);
             LOG.info("Oppgave {} ble opprettet", oppgave.getId());
-            return map(oppgave);
+            return map(oppgave, oppgaveDto.oppgaveType);
 
         } else {
             return new OppgaveDto();
