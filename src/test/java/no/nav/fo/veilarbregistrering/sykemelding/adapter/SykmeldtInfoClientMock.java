@@ -1,8 +1,6 @@
-package no.nav.fo.veilarbregistrering.sykemelding;
+package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 
 public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
 

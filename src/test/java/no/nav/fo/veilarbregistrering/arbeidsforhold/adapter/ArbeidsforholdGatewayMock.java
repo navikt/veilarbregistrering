@@ -1,6 +1,7 @@
-package no.nav.fo.veilarbregistrering.arbeidsforhold;
+package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
 import java.time.LocalDate;

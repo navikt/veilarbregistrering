@@ -21,12 +21,23 @@ public class OppgaveService {
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
 
     private final Map<GeografiskTilknytning, NavKontor> navKontorMap = new HashMap<>(3);
+    private final Map<OppgaveType, String> beskrivelser = new HashMap<>(1);
 
     public OppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
         this.oppgaveGateway = oppgaveGateway;
         this.personGateway = personGateway;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
         initNavKontor();
+        initBeskrivelser();
+    }
+
+    private void initBeskrivelser() {
+        this.beskrivelser.put(
+                OppgaveType.OPPHOLDSTILLATELSE,
+                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                        "og har selv opprettet denne oppgaven. " +
+                        "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
+        );
     }
 
     private void initNavKontor() {
@@ -61,6 +72,19 @@ public class OppgaveService {
                 navKontor.beskrivelse());
 
         reportTags(OPPGAVE_OPPRETTET_EVENT, geografiskTilknytning, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
+
+        return oppgave;
+    }
+
+    public Oppgave opprettOppgaveArbeidstillatelse(Bruker bruker, OppgaveType oppgaveType) {
+
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
+
+        Oppgave oppgave = oppgaveGateway.opprettOppgaveArbeidstillatelse(
+                bruker.getAktorId(),
+                beskrivelser.get(oppgaveType));
+
+        reportTags(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()));
 
         return oppgave;
     }
