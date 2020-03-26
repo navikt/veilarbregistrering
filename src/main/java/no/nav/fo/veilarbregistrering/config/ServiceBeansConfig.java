@@ -16,6 +16,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArenaOverforingService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
@@ -147,6 +148,14 @@ public class ServiceBeansConfig {
     @Bean
     ProfileringRepository profileringRepository(JdbcTemplate db) {
         return new ProfileringRepositoryImpl(db);
+    }
+
+    @Bean
+    ArenaOverforingService arenaOverforingService(
+            ProfileringRepository profileringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            OppfolgingGateway oppfolgingGateway) {
+        return new ArenaOverforingService(profileringRepository, brukerRegistreringRepository, oppfolgingGateway);
     }
 
     //FIXME: Overflødig - metodene kan være static

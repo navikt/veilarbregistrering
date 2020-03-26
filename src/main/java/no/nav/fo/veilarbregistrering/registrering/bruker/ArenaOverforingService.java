@@ -45,7 +45,7 @@ public class ArenaOverforingService {
         Optional<RegistreringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
 
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Fant ingen nye registreringer.");
+            LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring.");
             return;
         }
 
@@ -56,12 +56,14 @@ public class ArenaOverforingService {
         Foedselsnummer foedselsnummer = brukerRegistreringRepository.hentFoedselsnummerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
+        LOG.info("Overfører registrering med tilstand: {}", registreringTilstand);
         Status status = overfoerRegistreringTilArena(foedselsnummer, profilering.getInnsatsgruppe());
 
+        LOG.info("Oppdaterer tilstand, UUID={} med status={}", registreringTilstand.getUuid(), status);
         brukerRegistreringRepository.oppdater(registreringTilstand.oppdaterStatus(status));
     }
 
-    public Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
+    Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
 
         try {
             oppfolgingGateway.aktiverBruker(foedselsnummer, innsatsgruppe);
