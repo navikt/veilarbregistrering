@@ -1,9 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
-import no.nav.dialogarena.aktor.AktorService;
-
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,22 +9,22 @@ import static no.nav.common.auth.SubjectHandler.getIdent;
 public class UserService {
 
     private final Provider<HttpServletRequest> requestProvider;
-    private final AktorService aktorService;
+    private final AktorGateway aktorGateway;
 
-    public UserService(Provider<HttpServletRequest> requestProvider, AktorService aktorService) {
+    public UserService(Provider<HttpServletRequest> requestProvider, AktorGateway aktorGateway) {
         this.requestProvider = requestProvider;
-        this.aktorService = aktorService;
+        this.aktorGateway = aktorGateway;
     }
 
     public Bruker hentBruker() {
-        String fnr = hentFnrFraUrlEllerToken();
+        Foedselsnummer fnr = hentFnrFraUrlEllerToken();
 
-        String aktorId = aktorService.getAktorId(fnr).orElseThrow(() -> new Feil(FeilType.FINNES_IKKE));
+        AktorId aktorId = aktorGateway.hentAktorIdFor(fnr);
 
-        return Bruker.of(Foedselsnummer.of(fnr), AktorId.valueOf(aktorId));
+        return Bruker.of(fnr, aktorId);
     }
 
-    private String hentFnrFraUrlEllerToken() {
+    private Foedselsnummer hentFnrFraUrlEllerToken() {
 
         String fnr = getFnrFromUrl();
 
@@ -40,7 +36,7 @@ public class UserService {
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }
 
-        return fnr;
+        return Foedselsnummer.of(fnr);
     }
 
     public String getFnrFromUrl() {

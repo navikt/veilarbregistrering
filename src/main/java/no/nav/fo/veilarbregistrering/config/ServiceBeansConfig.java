@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
+import no.nav.fo.veilarbregistrering.bruker.AktorGateway;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
@@ -156,8 +156,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    UserService userService(Provider<HttpServletRequest> provider, AktorService aktorService) {
-        return new UserService(provider, aktorService);
+    UserService userService(Provider<HttpServletRequest> provider, AktorGateway aktorGateway) {
+        return new UserService(provider, aktorGateway);
     }
 
 }
