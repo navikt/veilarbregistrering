@@ -34,7 +34,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgaveArbeidstillatelse(AktorId aktoerId, String beskrivelse) {
+    public Oppgave opprettOppgaveOppholdstillatelse(AktorId aktoerId, String beskrivelse) {
         return opprettOppgave(aktoerId, null, beskrivelse);
     }
 

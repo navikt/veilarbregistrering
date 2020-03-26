@@ -22,7 +22,7 @@ public class OppgaveGatewayConfig {
             }
 
             @Override
-            public Oppgave opprettOppgaveArbeidstillatelse(AktorId aktoerId, String beskrivelse) {
+            public Oppgave opprettOppgaveOppholdstillatelse(AktorId aktoerId, String beskrivelse) {
                 return null;
             }
         };
