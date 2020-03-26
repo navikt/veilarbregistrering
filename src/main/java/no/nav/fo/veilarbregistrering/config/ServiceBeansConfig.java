@@ -114,8 +114,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-        return new OppgaveService(oppgaveGateway, personGateway, kontaktBrukerHenvendelseProducer);
+    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+        return new OppgaveService(oppgaveGateway, kontaktBrukerHenvendelseProducer);
     }
 
     @Bean
