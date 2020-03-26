@@ -17,14 +17,10 @@ public class OppgaveGatewayConfig {
         return new OppgaveGateway() {
 
             @Override
-            public Oppgave opprettOppgave(AktorId aktoerId, String tilordnetRessurs, String beskrivelse) {
+            public Oppgave opprettOppgave(AktorId aktoerId, String beskrivelse) {
                 return null;
             }
 
-            @Override
-            public Oppgave opprettOppgaveOppholdstillatelse(AktorId aktoerId, String beskrivelse) {
-                return null;
-            }
         };
     }
 }
