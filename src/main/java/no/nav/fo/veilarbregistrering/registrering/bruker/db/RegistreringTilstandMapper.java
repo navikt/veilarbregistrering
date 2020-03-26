@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.db;
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,9 +11,10 @@ import java.util.UUID;
 
 import static java.util.Optional.ofNullable;
 
-class RegistreringTilstandMapper {
+class RegistreringTilstandMapper implements RowMapper<RegistreringTilstand> {
 
-    static RegistreringTilstand map(ResultSet rs) throws SQLException {
+    @Override
+    public RegistreringTilstand mapRow(ResultSet rs, int i) throws SQLException {
         return RegistreringTilstand.fromDb(
                 rs.getLong("ID"),
                 UUID.fromString(rs.getString("UUID")),

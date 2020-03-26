@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
@@ -211,23 +212,26 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
+    public Foedselsnummer hentFoedselsnummerTilknyttet(long brukerRegistreringId) {
+        String sql = "SELECT FOEDSELSNUMMER FROM BRUKER_REGISTRERING WHERE BRUKER_REGISTRERING_ID = ?";
+        return Foedselsnummer.of(db.queryForObject(sql, new Object[]{brukerRegistreringId}, String.class));
+    }
+
+    @Override
     public RegistreringTilstand hentRegistreringTilstand(long id) {
-        return SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
-                .where(WhereClause.equals("ID", id))
-                .column("*")
-                .execute();
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE ID = ?";
+        return db.queryForObject(sql, new Object[]{id}, new RegistreringTilstandMapper());
     }
 
     @Override
     public Optional<RegistreringTilstand> finnNesteRegistreringForOverforing() {
-        RegistreringTilstand registreringTilstand = SqlUtils.select(db, "REGISTRERING_TILSTAND", RegistreringTilstandMapper::map)
-                .where(WhereClause.equals("STATUS", "MOTTATT"))
-                .orderBy(OrderClause.asc("OPPRETTET"))
-                .limit(1)
-                .column("*")
-                .execute();
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
+                " WHERE STATUS = ?" +
+                " ORDER BY OPPRETTET" +
+                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        return ofNullable(registreringTilstand);
+        List<RegistreringTilstand> registreringTilstand = db.query(sql, new Object[]{"MOTTATT", 0, 1}, new RegistreringTilstandMapper());
+        return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 
     private long nesteFraSekvens(String sekvensNavn) {

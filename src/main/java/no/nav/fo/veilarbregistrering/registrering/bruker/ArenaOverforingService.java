@@ -53,9 +53,8 @@ public class ArenaOverforingService {
 
         long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
-        Foedselsnummer foedselsnummer = null; ////TODO: ordinaerBrukerRegistrering.getFoedselsnummer()
-                Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
+        Foedselsnummer foedselsnummer = brukerRegistreringRepository.hentFoedselsnummerTilknyttet(brukerRegistreringId);
+        Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
         Status status = overfoerRegistreringTilArena(foedselsnummer, profilering.getInnsatsgruppe());
 
