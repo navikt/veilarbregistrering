@@ -64,6 +64,6 @@ public class OppgaveResource {
     }
 
     private boolean skalOppretteOppgave() {
-        return unleashService.isEnabled("arbeidssøkerregistrering.oppretteoppgave");
+        return unleashService.isEnabled("veilarbregistrering.opprettOppgave");
     }
 }
