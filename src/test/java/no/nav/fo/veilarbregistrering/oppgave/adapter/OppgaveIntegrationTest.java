@@ -88,7 +88,7 @@ public class OppgaveIntegrationTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"LAV\"" +
+                                "\"prioritet\":\"NORM\"" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
@@ -132,7 +132,7 @@ public class OppgaveIntegrationTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"LAV\"" +
+                                "\"prioritet\":\"NORM\"" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)

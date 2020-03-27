@@ -10,7 +10,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
 
     private static final String KONTAKT_BRUKER = "KONT_BRUK";
     private static final String OPPFOLGING = "OPP";
-    private static final String LAV = "LAV";
+    private static final String NORM = "NORM";
 
     private final OppgaveRestClient restClient;
 
@@ -27,7 +27,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
         oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
         oppgaveDto.setFristFerdigstillelse(LocalDate.now().plusDays(2).toString());
         oppgaveDto.setAktivDato(LocalDate.now().toString());
-        oppgaveDto.setPrioritet(LAV);
+        oppgaveDto.setPrioritet(NORM);
 
         return restClient.opprettOppgave(oppgaveDto);
     }

@@ -82,7 +82,7 @@ class OppgaveGatewayTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"LAV\"" +
+                                "\"prioritet\":\"NORM\"" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
