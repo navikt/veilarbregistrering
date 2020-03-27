@@ -61,6 +61,15 @@ public class ArenaOverforingService {
 
         LOG.info("Oppdaterer tilstand, UUID={} med status={}", registreringTilstand.getUuid(), status);
         brukerRegistreringRepository.oppdater(registreringTilstand.oppdaterStatus(status));
+
+        //TODO: Publiser hendelse ved vellykket publisering
+        /*
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+                bruker.getAktorId(),
+                ordinaerBrukerRegistrering.getBrukersSituasjon(),
+                ordinaerBrukerRegistrering.getOpprettetDato());
+
+         */
     }
 
     Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {

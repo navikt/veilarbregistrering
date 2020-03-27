@@ -188,6 +188,22 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
+    private OrdinaerBrukerRegistrering mottattBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+
+        LOG.info("Lagrer RegistreringTilstand med MOTTATT");
+        brukerRegistreringRepository.lagre(RegistreringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId()));
+
+        return ordinaerBrukerRegistrering;
+    }
+
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
         return startRegistreringUtils.profilerBruker(
                 fnr.alder(now()),

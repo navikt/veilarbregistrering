@@ -25,11 +25,11 @@ public class OverforTilArenaTask {
     @SchedulerLock(name = "overforTilArena")
     public void sendRegistreringerTilArenaCronJob() {
         if (!asynkOverforingTilArenaEnabled()) {
-            LOG.info("Asynk overføring til Arena er togglet av.");
+            LOG.info("Asynk overføring til Arena er togglet av");
             return;
         }
 
-        LOG.info("Asynk overføring til Arena er togglet på.");
+        LOG.info("Asynk overføring til Arena er togglet på");
         arenaOverforingService.utforOverforing();
     }
 
