@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
+
 public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
@@ -40,6 +44,12 @@ public class OppgaveService {
                 beskrivelser.get(oppgaveType));
 
         LOG.info("Oppgave ble opprettet med id: {} og ble tildelt enhet: {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
+
+        try {
+            report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
+        } catch (Exception e) {
+            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: {}, Oppgavetype: {}", TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()).value(), oppgaveType.value()), e);
+        }
 
         return oppgave;
     }
