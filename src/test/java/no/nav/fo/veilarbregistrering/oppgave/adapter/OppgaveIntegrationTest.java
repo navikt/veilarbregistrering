@@ -7,8 +7,12 @@ import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-class OppgaveGatewayTest {
+public class OppgaveIntegrationTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
@@ -60,6 +64,8 @@ class OppgaveGatewayTest {
     public void vellykket_opprettelse_av_oppgave_skal_gi_201() {
 
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+        OppgaveService oppgaveService = new OppgaveService(oppgaveGateway, aktorId -> {
+        });
 
         String dagensdato = LocalDate.now().toString();
         String to_dager_senere = LocalDate.now().plusDays(2).toString();
@@ -90,11 +96,9 @@ class OppgaveGatewayTest {
 
         Oppgave oppgave = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
-                () -> oppgaveGateway.opprettOppgave(
-                        AktorId.valueOf("12e1e3"),
-                        "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                                "og har selv opprettet denne oppgaven. " +
-                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."));
+                () -> oppgaveService.opprettOppgave(
+                        Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3")),
+                        OppgaveType.OPPHOLDSTILLATELSE));
 
         assertThat(oppgave.getId()).isEqualTo(5436732);
         assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
@@ -107,5 +111,4 @@ class OppgaveGatewayTest {
                 "\"tildeltEnhetsnr\": \"3012\"\n" +
                 "}";
     }
-
 }
