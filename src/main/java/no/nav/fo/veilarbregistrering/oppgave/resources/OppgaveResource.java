@@ -52,9 +52,9 @@ public class OppgaveResource {
             throw new RuntimeException("Toggle `veilarbregistrering.opprettOppgave` er skrudd av");
         }
 
-        Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.oppgaveType);
+        Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 
-        return map(oppgave, oppgaveDto.oppgaveType);
+        return map(oppgave, oppgaveDto.getOppgaveType());
     }
 
     private boolean skalOppretteOppgave() {
