@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.metrics;
 
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.metrics.MetricsFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,15 +11,22 @@ import java.util.Objects;
 
 public class Metrics {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
+
     public static void report(Event event, List<Metric> fields, List<Metric> tags) {
-        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
-        fields.stream()
-                .filter(Objects::isNull)
-                .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
-        tags.stream()
-                .filter(Objects::isNull)
-                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
-        metricsEvent.report();
+        try {
+            no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
+            fields.stream()
+                    .filter(Objects::isNull)
+                    .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
+            tags.stream()
+                    .filter(Objects::isNull)
+                    .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+            metricsEvent.report();
+        } catch (Exception e) {
+            LOG.warn("Feil ved opprettelse av metrikk");
+        }
+
     }
 
     public static void reportTags(Event event, Metric... metric) {
