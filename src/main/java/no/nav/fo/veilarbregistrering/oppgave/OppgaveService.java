@@ -35,7 +35,7 @@ public class OppgaveService {
         try {
             report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
         } catch (Exception e) {
-            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: {}, Oppgavetype: {}", TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()).value(), oppgaveType.value()), e);
+            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: %s, Oppgavetype: %s", oppgave.getTildeltEnhetsnr(), oppgaveType), e);
         }
 
         return oppgave;

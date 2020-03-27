@@ -104,6 +104,50 @@ public class OppgaveIntegrationTest {
         assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
     }
 
+    @Test
+    public void opprettelse_av_oppgave_skal_håndtere_null_for_oppgavetype() {
+
+        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+        OppgaveService oppgaveService = new OppgaveService(oppgaveGateway, aktorId -> {
+        });
+
+        String dagensdato = LocalDate.now().toString();
+        String to_dager_senere = LocalDate.now().plusDays(2).toString();
+
+        mockServer.when(
+                request()
+                        .withMethod("POST")
+                        .withPath("/oppgaver")
+                        .withBody("{" +
+                                "\"aktoerId\":\"12e1e3\"," +
+                                "\"beskrivelse\":\"" +
+                                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                                "og har selv opprettet denne oppgaven. " +
+                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.\"," +
+                                "\"tema\":\"OPP\"," +
+                                "\"oppgavetype\":\"KONT_BRUK\"," +
+                                "\"fristFerdigstillelse\":\"" +
+                                to_dager_senere +
+                                "\"," +
+                                "\"aktivDato\":\"" +
+                                dagensdato +
+                                "\"," +
+                                "\"prioritet\":\"LAV\"" +
+                                "}"))
+                .respond(response()
+                        .withStatusCode(201)
+                        .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
+
+        Oppgave oppgave = SubjectHandler.withSubject(
+                new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
+                () -> oppgaveService.opprettOppgave(
+                        Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3")),
+                        null));
+
+        assertThat(oppgave.getId()).isEqualTo(5436732);
+        assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
+    }
+
     private String okRegistreringBody() {
         return "{\n" +
                 "\"id\": \"5436732\",\n" +
