@@ -44,7 +44,12 @@ public class OppgaveService {
                 beskrivelser.get(oppgaveType));
 
         LOG.info("Oppgave ble opprettet med id: {} og ble tildelt enhet: {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
-        report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
+
+        try {
+            report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
+        } catch (Exception e) {
+            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: {}, Oppgavetype: {}", TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()).value(), oppgaveType.value()), e);
+        }
 
         return oppgave;
     }
