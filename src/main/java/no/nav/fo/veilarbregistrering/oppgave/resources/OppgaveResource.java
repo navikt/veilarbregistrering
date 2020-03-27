@@ -8,8 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.POST;
@@ -24,8 +22,6 @@ import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 @Produces("application/json")
 @Api(value = "OppgaveResource")
 public class OppgaveResource {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveResource.class);
 
     private final OppgaveService oppgaveService;
     private final UserService userService;
@@ -52,15 +48,13 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        if (skalOppretteOppgave()) {
-
-            Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.oppgaveType);
-            LOG.info("Oppgave ble opprettet med id: {}", oppgave.getId());
-            return map(oppgave, oppgaveDto.oppgaveType);
-
-        } else {
-            return new OppgaveDto();
+        if (!skalOppretteOppgave()) {
+            throw new RuntimeException("Toggle `veilarbregistrering.opprettOppgave` er skrudd av");
         }
+
+        Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.oppgaveType);
+
+        return map(oppgave, oppgaveDto.oppgaveType);
     }
 
     private boolean skalOppretteOppgave() {

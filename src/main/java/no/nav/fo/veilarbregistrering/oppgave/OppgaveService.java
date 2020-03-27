@@ -1,14 +1,15 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
-import static java.util.Collections.singletonList;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OppgaveService {
+
+    private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
 
     private final OppgaveGateway oppgaveGateway;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
@@ -38,7 +39,7 @@ public class OppgaveService {
                 bruker.getAktorId(),
                 beskrivelser.get(oppgaveType));
 
-        report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
+        LOG.info("Oppgave ble opprettet med id: {} og ble tildelt enhet: {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
         return oppgave;
     }
