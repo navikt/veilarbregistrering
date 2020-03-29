@@ -174,10 +174,10 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        //TODO: Må endre til å lagre tilstand som MOTTATT når Arena skal håndteres i etterkant.
         if (lagreTilstandErAktiv()) {
-            LOG.info("Lagrer RegistreringTilstand med ARENA_OK");
-            brukerRegistreringRepository.lagre(RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId()));
+            RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
+            LOG.info("Lagrer: {}", registreringTilstand);
+            brukerRegistreringRepository.lagre(registreringTilstand);
         }
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
@@ -188,6 +188,7 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
+    //TODO: Ta denne metoden i bruk bak et toggle
     private OrdinaerBrukerRegistrering mottattBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
@@ -198,8 +199,9 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        LOG.info("Lagrer RegistreringTilstand med MOTTATT");
-        brukerRegistreringRepository.lagre(RegistreringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId()));
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId());
+        LOG.info("Lagrer: {}", registreringTilstand);
+        brukerRegistreringRepository.lagre(registreringTilstand);
 
         return ordinaerBrukerRegistrering;
     }
@@ -241,7 +243,6 @@ public class BrukerRegistreringService {
         } else {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
         }
-
     }
 
     private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
@@ -252,8 +253,6 @@ public class BrukerRegistreringService {
                             .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
                 });
     }
-
-
 
     @Transactional
     public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {

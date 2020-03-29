@@ -115,7 +115,6 @@ class BrukerRegistreringServiceIntegrationTest {
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
     }
 
-
     @Configuration
     @ComponentScan
     public static class BrukerregistreringConfigTest {
@@ -162,7 +161,6 @@ class BrukerRegistreringServiceIntegrationTest {
         public StartRegistreringUtils startRegistreringUtils() {
             return mock(StartRegistreringUtils.class);
         }
-
 
         @Bean
         BrukerRegistreringService brukerRegistreringService(

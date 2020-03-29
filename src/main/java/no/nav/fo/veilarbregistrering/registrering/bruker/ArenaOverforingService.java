@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
@@ -22,11 +23,13 @@ public class ArenaOverforingService {
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final OppfolgingGateway oppfolgingGateway;
+    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
-    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway) {
+    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
+        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
     }
 
     /**
@@ -38,42 +41,38 @@ public class ArenaOverforingService {
      * - innsatsgruppe (fra profileringen)
      * 3) Kalle Arena og tolke evt. feil i retur
      * 4) Oppdatere status på registreringen
+     * 5) Publiser event på Kafka
      */
     @Transactional
     public void utforOverforing() {
-
         Optional<RegistreringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
-
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring.");
+            LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring");
             return;
         }
 
         RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-
         long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
-        Foedselsnummer foedselsnummer = brukerRegistreringRepository.hentFoedselsnummerTilknyttet(brukerRegistreringId);
+        Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
         LOG.info("Overfører registrering med tilstand: {}", registreringTilstand);
-        Status status = overfoerRegistreringTilArena(foedselsnummer, profilering.getInnsatsgruppe());
+        Status status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
 
-        LOG.info("Oppdaterer tilstand, UUID={} med status={}", registreringTilstand.getUuid(), status);
-        brukerRegistreringRepository.oppdater(registreringTilstand.oppdaterStatus(status));
+        RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(status);
+        LOG.info("Ny tilstand: {}", oppdatertRegistreringTilstand);
+        brukerRegistreringRepository.oppdater(oppdatertRegistreringTilstand);
 
-        //TODO: Publiser hendelse ved vellykket publisering
-        /*
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
+
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
                 ordinaerBrukerRegistrering.getOpprettetDato());
-
-         */
     }
 
     Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
-
         try {
             oppfolgingGateway.aktiverBruker(foedselsnummer, innsatsgruppe);
 

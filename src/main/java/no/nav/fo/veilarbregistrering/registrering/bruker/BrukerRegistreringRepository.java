@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
 import java.util.Optional;
 
@@ -28,5 +27,5 @@ public interface BrukerRegistreringRepository {
 
     void oppdater(RegistreringTilstand registreringTilstand1);
 
-    Foedselsnummer hentFoedselsnummerTilknyttet(long brukerRegistreringId);
+    Bruker hentBrukerTilknyttet(long brukerRegistreringId);
 }

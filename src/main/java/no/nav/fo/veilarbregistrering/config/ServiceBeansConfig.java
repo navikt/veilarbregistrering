@@ -154,11 +154,16 @@ public class ServiceBeansConfig {
     ArenaOverforingService arenaOverforingService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            OppfolgingGateway oppfolgingGateway) {
-        return new ArenaOverforingService(profileringRepository, brukerRegistreringRepository, oppfolgingGateway);
+            OppfolgingGateway oppfolgingGateway,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+
+        return new ArenaOverforingService(
+                profileringRepository,
+                brukerRegistreringRepository,
+                oppfolgingGateway,
+                arbeidssokerRegistrertProducer);
     }
 
-    //FIXME: Overflødig - metodene kan være static
     @Bean
     StartRegistreringUtils startRegistreringUtils() {
         return new StartRegistreringUtils();
