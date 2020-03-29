@@ -13,8 +13,11 @@ import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -212,9 +215,18 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public Foedselsnummer hentFoedselsnummerTilknyttet(long brukerRegistreringId) {
-        String sql = "SELECT FOEDSELSNUMMER FROM BRUKER_REGISTRERING WHERE BRUKER_REGISTRERING_ID = ?";
-        return Foedselsnummer.of(db.queryForObject(sql, new Object[]{brukerRegistreringId}, String.class));
+    public Bruker hentBrukerTilknyttet(long brukerRegistreringId) {
+        String sql = "SELECT FOEDSELSNUMMER, AKTOR_ID FROM BRUKER_REGISTRERING WHERE BRUKER_REGISTRERING_ID = ?";
+
+        return db.queryForObject(sql, new Object[]{brukerRegistreringId}, new RowMapper<Bruker>() {
+            @Override
+            public Bruker mapRow(ResultSet rs, int i) throws SQLException {
+                return Bruker.of(
+                        Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
+                        AktorId.valueOf(rs.getString("AKTOR_ID"))
+                );
+            }
+        });
     }
 
     @Override

@@ -24,7 +24,7 @@ public class OverforTilArenaTask {
     @Scheduled(cron = "0 */5 * * * *")
     @SchedulerLock(name = "overforTilArena")
     public void sendRegistreringerTilArenaCronJob() {
-        if (!asynkOverforingTilArenaEnabled()) {
+        if (!asynkArenaOverforing()) {
             LOG.info("Asynk overføring til Arena er togglet av");
             return;
         }
@@ -33,8 +33,7 @@ public class OverforTilArenaTask {
         arenaOverforingService.utforOverforing();
     }
 
-    private boolean asynkOverforingTilArenaEnabled() {
+    private boolean asynkArenaOverforing() {
         return unleashService.isEnabled("veilarbregistrering.asynkArenaOverforing");
     }
-
 }

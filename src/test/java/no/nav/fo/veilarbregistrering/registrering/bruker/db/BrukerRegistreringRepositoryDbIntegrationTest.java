@@ -216,7 +216,8 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     public void skal_hente_foedselsnummer_tilknyttet_ordinaerBrukerRegistrering() {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER);
 
-        Foedselsnummer foedselsnummer = brukerRegistreringRepository.hentFoedselsnummerTilknyttet(ordinaerBrukerRegistrering.getId());
-        assertThat(foedselsnummer).isEqualTo(BRUKER.getFoedselsnummer());
+        Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.getId());
+        assertThat(bruker.getFoedselsnummer()).isEqualTo(BRUKER.getFoedselsnummer());
+        assertThat(bruker.getAktorId()).isEqualTo(BRUKER.getAktorId());
     }
 }
