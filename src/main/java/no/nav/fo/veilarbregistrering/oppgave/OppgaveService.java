@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.singletonList;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.report;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
 
 public class OppgaveService {
 
@@ -33,7 +33,7 @@ public class OppgaveService {
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}", oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
         try {
-            report(OPPGAVE_OPPRETTET_EVENT, singletonList(TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr())), singletonList(oppgaveType));
+            reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
         } catch (Exception e) {
             LOG.warn(String.format("Logging til influx feilet. Enhetsnr: %s, Oppgavetype: %s", oppgave.getTildeltEnhetsnr(), oppgaveType), e);
         }
