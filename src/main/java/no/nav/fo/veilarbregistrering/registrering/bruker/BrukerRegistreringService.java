@@ -176,8 +176,8 @@ public class BrukerRegistreringService {
 
         if (lagreTilstandErAktiv()) {
             RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
-            LOG.info("Lagrer: {}", registreringTilstand);
             brukerRegistreringRepository.lagre(registreringTilstand);
+            LOG.info("Lagret: {}", registreringTilstand);
         }
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
