@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ public class PdlOppslagConfig {
     private final String PDL_PROPERTY_NAME = "PDL_URL";
 
     @Bean
-    PdlOppslagService pdlOppslagService() {
-        return new PdlOppslagService(null, null, null) {
+    PdlOppslagGatewayImpl pdlOppslagService() {
+        return new PdlOppslagGatewayImpl(null, null, null) {
         };
     }
 }

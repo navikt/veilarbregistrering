@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,20 +6,14 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlRequest;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.Variables;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
-import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +25,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+public class PdlOppslagGatewayImpl extends BaseClient implements PdlOppslagGateway {
 
-public class PdlOppslagService extends BaseClient {
-
-    private final Logger logger = LoggerFactory.getLogger(PdlOppslagService.class);
+    private final Logger logger = LoggerFactory.getLogger(PdlOppslagGatewayImpl.class);
 
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
@@ -48,7 +40,7 @@ public class PdlOppslagService extends BaseClient {
     private SystemUserTokenProvider systemUserTokenProvider;
     private final UnleashService unleashService;
 
-    public PdlOppslagService(
+    public PdlOppslagGatewayImpl(
             String baseUrl,
             Provider<HttpServletRequest> httpServletRequestProvider,
             UnleashService unleashService
@@ -92,7 +84,7 @@ public class PdlOppslagService extends BaseClient {
 
     private String hentQuery() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPerson.graphql").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPerson.graphql").toURI()));
             return new String(bytes).replaceAll("[\n\r]]", "");
         } catch (IOException e) {
            throw new RuntimeException(e);

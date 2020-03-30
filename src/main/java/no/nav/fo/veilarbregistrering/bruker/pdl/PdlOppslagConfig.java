@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ public class PdlOppslagConfig {
     private final String PDL_PROPERTY_NAME = "PDL_URL";
 
     @Bean
-    PdlOppslagService pdlOppslagService(Provider<HttpServletRequest> provider, UnleashService unleashService) {
-        return new PdlOppslagService(getRequiredProperty(PDL_PROPERTY_NAME), provider, unleashService);
+    PdlOppslagGatewayImpl pdlOppslagService(Provider<HttpServletRequest> provider, UnleashService unleashService) {
+        return new PdlOppslagGatewayImpl(getRequiredProperty(PDL_PROPERTY_NAME), provider, unleashService);
     }
 }

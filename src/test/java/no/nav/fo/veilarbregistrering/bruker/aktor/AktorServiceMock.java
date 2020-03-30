@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker.aktor;
 
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.dialogarena.aktor.AktorServiceImpl;

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
-import no.nav.fo.veilarbregistrering.bruker.PdlOppslagConfig;
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;

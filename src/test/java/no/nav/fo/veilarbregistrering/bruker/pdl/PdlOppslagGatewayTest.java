@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.*;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +7,6 @@ import org.junit.Test;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -17,7 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PdlServiceTest {
+public class PdlOppslagGatewayTest {
 
     private Provider<HttpServletRequest> requestProvider;
     private UnleashService unleash;
@@ -30,7 +28,7 @@ public class PdlServiceTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagService service = new PdlOppslagService("", requestProvider, unleash) {
+        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
@@ -44,7 +42,7 @@ public class PdlServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagService service = new PdlOppslagService("", requestProvider, unleash) {
+        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
@@ -56,7 +54,7 @@ public class PdlServiceTest {
 
     private final String okJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonOk.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -65,7 +63,7 @@ public class PdlServiceTest {
 
     private final String feilJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagService.class.getResource("/pdl/hentPersonError.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonError.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
