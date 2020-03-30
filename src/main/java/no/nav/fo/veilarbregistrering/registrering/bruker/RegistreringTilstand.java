@@ -70,8 +70,7 @@ public class RegistreringTilstand {
     @Override
     public String toString() {
         return "RegistreringTilstand{" +
-                "id=" + id +
-                ", uuid=" + uuid +
+                "uuid=" + uuid +
                 ", brukerRegistreringId=" + brukerRegistreringId +
                 ", opprettet=" + opprettet +
                 ", sistEndret=" + sistEndret +
