@@ -76,7 +76,8 @@ public class BrukerRegistreringServiceTest {
                         unleashService,
                         arbeidssokerRegistrertProducer);
 
-        when(unleashService.isEnabled(any())).thenReturn(true);
+        when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
+        when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
     }
 
     /*
