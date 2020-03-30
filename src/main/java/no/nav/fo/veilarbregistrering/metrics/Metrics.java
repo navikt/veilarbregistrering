@@ -3,19 +3,14 @@ package no.nav.fo.veilarbregistrering.metrics;
 import no.nav.metrics.MetricsFactory;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class Metrics {
 
-    public static void report(Event event, List<Metric> fields, List<Metric> tags) {
+    public static void reportSimple(Event event, Metric field, Metric tag) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
-        fields.stream()
-                .filter(Objects::isNull)
-                .forEach(m -> metricsEvent.addFieldToReport(m.fieldName(), m.value()));
-        tags.stream()
-                .filter(Objects::isNull)
-                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+        metricsEvent.addFieldToReport(field.fieldName(), field.value());
+        metricsEvent.addTagToReport(tag.fieldName(), tag.value());
         metricsEvent.report();
     }
 
