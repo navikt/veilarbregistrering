@@ -12,6 +12,6 @@ public enum OppgaveType implements Metric {
 
     @Override
     public String value() {
-        return this.name();
+        return this.toString();
     }
 }
