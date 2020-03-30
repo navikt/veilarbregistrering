@@ -16,6 +16,10 @@ public class RegistreringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
+    public static RegistreringTilstand ofArenaOk(long brukerRegistreringId) {
+        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.ARENA_OK);
+    }
+
     public static RegistreringTilstand ofMottattRegistrering(long brukerRegistreringId) {
         return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
     }
@@ -57,4 +61,21 @@ public class RegistreringTilstand {
         return id;
     }
 
+    public RegistreringTilstand oppdaterStatus(Status status) {
+        this.status = status;
+        this.sistEndret = LocalDateTime.now();
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "RegistreringTilstand{" +
+                "id=" + id +
+                ", uuid=" + uuid +
+                ", brukerRegistreringId=" + brukerRegistreringId +
+                ", opprettet=" + opprettet +
+                ", sistEndret=" + sistEndret +
+                ", status=" + status +
+                '}';
+    }
 }

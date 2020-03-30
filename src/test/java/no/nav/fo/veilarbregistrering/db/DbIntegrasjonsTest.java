@@ -33,7 +33,7 @@ public abstract class DbIntegrasjonsTest {
 
     @SneakyThrows
     private static void setupContext(Class<?>... classes) {
-        DatabaseTestContext.setupContext(System.getProperty("database"));
+        DatabaseTestContext.setupInMemoryDatabaseContext();
 
         annotationConfigApplicationContext = new AnnotationConfigApplicationContext(classes);
         annotationConfigApplicationContext.start();

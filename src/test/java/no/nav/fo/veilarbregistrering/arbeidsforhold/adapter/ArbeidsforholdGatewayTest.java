@@ -1,5 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidsforhold;
+package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayImpl;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;

@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
+import no.nav.fo.veilarbregistrering.bruker.AktorGateway;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
@@ -16,6 +16,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArenaOverforingService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
@@ -114,17 +115,18 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, PersonGateway personGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-        return new OppgaveService(oppgaveGateway, personGateway, kontaktBrukerHenvendelseProducer);
+    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+        return new OppgaveService(oppgaveGateway, kontaktBrukerHenvendelseProducer);
     }
 
     @Bean
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService
+            OppgaveService oppgaveService,
+            UnleashService unleashService
     ) {
-        return new OppgaveResource(pepClient, userService, oppgaveService);
+        return new OppgaveResource(pepClient, userService, oppgaveService, unleashService);
     }
 
     @Bean
@@ -148,15 +150,28 @@ public class ServiceBeansConfig {
         return new ProfileringRepositoryImpl(db);
     }
 
-    //FIXME: Overflødig - metodene kan være static
+    @Bean
+    ArenaOverforingService arenaOverforingService(
+            ProfileringRepository profileringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            OppfolgingGateway oppfolgingGateway,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+
+        return new ArenaOverforingService(
+                profileringRepository,
+                brukerRegistreringRepository,
+                oppfolgingGateway,
+                arbeidssokerRegistrertProducer);
+    }
+
     @Bean
     StartRegistreringUtils startRegistreringUtils() {
         return new StartRegistreringUtils();
     }
 
     @Bean
-    UserService userService(Provider<HttpServletRequest> provider, AktorService aktorService) {
-        return new UserService(provider, aktorService);
+    UserService userService(Provider<HttpServletRequest> provider, AktorGateway aktorGateway) {
+        return new UserService(provider, aktorGateway);
     }
 
 }

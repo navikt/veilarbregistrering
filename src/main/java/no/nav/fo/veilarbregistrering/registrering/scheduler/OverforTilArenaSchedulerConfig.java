@@ -4,6 +4,8 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfiguration;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfigurationBuilder;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArenaOverforingService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -30,7 +32,9 @@ public class OverforTilArenaSchedulerConfig {
     }
 
     @Bean
-    public OverforTilArenaTask overforTilArenaTask() {
-        return new OverforTilArenaTask();
+    public OverforTilArenaTask overforTilArenaTask(
+            ArenaOverforingService arenaOverforingService,
+            UnleashService unleashService) {
+        return new OverforTilArenaTask(arenaOverforingService, unleashService);
     }
 }

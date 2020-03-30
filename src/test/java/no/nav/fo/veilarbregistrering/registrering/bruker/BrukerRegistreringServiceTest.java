@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -85,10 +86,10 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBruker() {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
+        when(brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
-        verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
+        verify(brukerRegistreringRepository, times(1)).lagre(any(), any());
     }
 
     @Test
@@ -117,17 +118,17 @@ public class BrukerRegistreringServiceTest {
     void skalRegistrereSelvgaaendeBrukerIDatabasen() {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
-        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(OrdinaerBrukerRegistrering.class), any(AktorId.class))).thenReturn(selvgaaendeBruker);
+        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
+        when(brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
         verify(oppfolgingClient, times(1)).aktiverBruker(any());
-        verify(brukerRegistreringRepository, times(1)).lagreOrdinaerBruker(any(), any());
+        verify(brukerRegistreringRepository, times(1)).lagre(any(), any());
     }
 
     @Test
     void skalIkkeLagreRegistreringSomErUnderOppfolging() {
         mockBrukerUnderOppfolging();
-        OrdinaerBrukerRegistrering selvgaaendeBruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, BRUKER_INTERN));
     }
 
@@ -277,7 +278,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void mockBrukerUnderOppfolging() {
-        when(brukerRegistreringRepository.lagreOrdinaerBruker(any(), any())).thenReturn(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering());
+        when(brukerRegistreringRepository.lagre(any(), any())).thenReturn(gyldigBrukerRegistrering());
 
     }
 

@@ -1,18 +1,15 @@
-package no.nav.fo.veilarbregistrering.oppfolging;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.apiapp.feil.FeilDTO;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerData;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 public class OppfolgingClientMock extends OppfolgingClient {
 
-    public OppfolgingClientMock() {
-        super(null, null, null);
+    OppfolgingClientMock() {
+        super(null, null);
     }
 
     @Override

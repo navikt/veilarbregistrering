@@ -1,13 +1,16 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -20,26 +23,58 @@ public class ArenaOverforingService {
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final OppfolgingGateway oppfolgingGateway;
+    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
-    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway) {
+    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
+        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
     }
 
-    public Optional<RegistreringTilstand> hentNesteRegistreringForOverforing() {
+    /**
+     * Stegene som skal gjøres:
+     * 1) Hente neste registrering som er klar for overføring
+     * - avbryt hvis det ikke er flere som er klare
+     * 2) Hent grunnlaget for registreringen;
+     * - fødselsnummer (fra registreringen
+     * - innsatsgruppe (fra profileringen)
+     * 3) Kalle Arena og tolke evt. feil i retur
+     * 4) Oppdatere status på registreringen
+     * 5) Publiser event på Kafka
+     */
+    @Transactional
+    public void utforOverforing() {
+        Optional<RegistreringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+        if (!muligRegistreringTilstand.isPresent()) {
+            LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring");
+            return;
+        }
 
-        Optional<RegistreringTilstand> registreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+        RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
+        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
-        return registreringTilstand;
-    }
-
-    //TODO: Hente fnr fra aktørService eller lagre i databasen på vei ned?
-    public Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, long brukerRegistreringId) {
+        Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
+        LOG.info("Overfører registrering med tilstand: {}", registreringTilstand);
+        Status status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+
+        RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(status);
+        LOG.info("Ny tilstand: {}", oppdatertRegistreringTilstand);
+        brukerRegistreringRepository.oppdater(oppdatertRegistreringTilstand);
+
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
+
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+                bruker.getAktorId(),
+                ordinaerBrukerRegistrering.getBrukersSituasjon(),
+                ordinaerBrukerRegistrering.getOpprettetDato());
+    }
+
+    Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
         try {
-            oppfolgingGateway.aktiverBruker(foedselsnummer, profilering.getInnsatsgruppe());
+            oppfolgingGateway.aktiverBruker(foedselsnummer, innsatsgruppe);
 
         } catch (WebApplicationException e) {
             Response response = e.getResponse();

@@ -75,7 +75,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
@@ -89,7 +88,6 @@ public class BrukerRegistreringService {
 
     @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
@@ -97,7 +95,7 @@ public class BrukerRegistreringService {
         }
 
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
-            throw new RuntimeException("Brukeren kan ikke registreres. Krever registreringtypen ordinær.");
+            throw new RuntimeException(String.format("Brukeren kan ikke registreres ordinært fordi utledet registreringstype er {}.", brukersTilstand.getRegistreringstype()));
         }
 
         try {
@@ -117,9 +115,7 @@ public class BrukerRegistreringService {
         SykmeldtInfoData sykeforloepMetaData = null;
         boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
         if (erSykmeldtMedArbeidsgiver) {
-            if (sykemeldtRegistreringErAktiv()) {
-                sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
-            }
+            sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
         }
 
         RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
@@ -167,7 +163,7 @@ public class BrukerRegistreringService {
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagreOrdinaerBruker(brukerRegistrering, bruker.getAktorId());
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
@@ -178,6 +174,12 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
+        if (lagreTilstandErAktiv()) {
+            RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
+            LOG.info("Lagrer: {}", registreringTilstand);
+            brukerRegistreringRepository.lagre(registreringTilstand);
+        }
+
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
@@ -186,13 +188,29 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
-    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
-        Arrays.stream(registreringer)
-                .filter(Objects::nonNull)
-                .forEach((registrering) -> {
-                    registrering.setManueltRegistrertAv(manuellRegistreringService
-                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
-                });
+    //TODO: Ta denne metoden i bruk bak et toggle
+    private OrdinaerBrukerRegistrering mottattBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
+
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId());
+        LOG.info("Lagrer: {}", registreringTilstand);
+        brukerRegistreringRepository.lagre(registreringTilstand);
+
+        return ordinaerBrukerRegistrering;
+    }
+
+    private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
+        return startRegistreringUtils.profilerBruker(
+                fnr.alder(now()),
+                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                now(), besvarelse);
     }
 
     public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
@@ -225,22 +243,19 @@ public class BrukerRegistreringService {
         } else {
             return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
         }
-
     }
 
-    private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
-        return startRegistreringUtils.profilerBruker(
-                fnr.alder(now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
-                now(), besvarelse);
+    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
+        Arrays.stream(registreringer)
+                .filter(Objects::nonNull)
+                .forEach((registrering) -> {
+                    registrering.setManueltRegistrertAv(manuellRegistreringService
+                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
+                });
     }
 
     @Transactional
     public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
-        if (!sykemeldtRegistreringErAktiv()) {
-            throw new RuntimeException("Tjenesten for sykmeldt-registrering er togglet av.");
-        }
-
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
@@ -261,8 +276,7 @@ public class BrukerRegistreringService {
         return id;
     }
 
-    private boolean sykemeldtRegistreringErAktiv() {
-        return unleashService.isEnabled("veilarbregistrering.sykemeldtregistrering");
+    private boolean lagreTilstandErAktiv() {
+        return unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv");
     }
-
 }

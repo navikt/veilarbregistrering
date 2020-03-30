@@ -23,7 +23,7 @@ public class TildeltEnhetsnr implements Metric {
 
     @Override
     public String value() {
-        return tildeltEnhetsnr;
+        return this.tildeltEnhetsnr;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class TildeltEnhetsnr implements Metric {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TildeltEnhetsnr that = (TildeltEnhetsnr) o;
-        return Objects.equals(tildeltEnhetsnr, that.tildeltEnhetsnr);
+        return Objects.equals(this.tildeltEnhetsnr, that.tildeltEnhetsnr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tildeltEnhetsnr);
+        return Objects.hash(this.tildeltEnhetsnr);
     }
 }

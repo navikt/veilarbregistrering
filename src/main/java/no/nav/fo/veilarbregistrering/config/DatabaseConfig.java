@@ -3,9 +3,11 @@ package no.nav.fo.veilarbregistrering.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,6 +18,7 @@ import javax.sql.DataSource;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
+@Import(DataSourceHelsesjekk.class)
 @EnableTransactionManagement
 public class DatabaseConfig {
 

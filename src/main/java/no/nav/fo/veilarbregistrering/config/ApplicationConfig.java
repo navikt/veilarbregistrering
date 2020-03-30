@@ -2,20 +2,17 @@ package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
-import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
+import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClientHelseSjekk;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClientHelseSjekk;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,7 +25,6 @@ import javax.servlet.ServletContext;
 @Import({
         ServiceBeansConfig.class,
         DatabaseConfig.class,
-        DataSourceHelsesjekk.class,
         KafkaConfig.class,
         AktorConfig.class,
         PepConfig.class,
@@ -36,8 +32,6 @@ import javax.servlet.ServletContext;
         OrganisasjonEnhetV2Config.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
-        OppfolgingClientHelseSjekk.class,
-        SykmeldtInfoClientHelseSjekk.class,
         UnleashConfig.class,
         PersonGatewayConfig.class,
         OppfolgingGatewayConfig.class,

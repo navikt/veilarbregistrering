@@ -4,6 +4,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 public interface OppgaveGateway {
 
-    Oppgave opprettOppgave(AktorId aktoerId, String tilordnetRessurs, String beskrivelse);
+    Oppgave opprettOppgave(AktorId aktoerId, String beskrivelse);
 
 }

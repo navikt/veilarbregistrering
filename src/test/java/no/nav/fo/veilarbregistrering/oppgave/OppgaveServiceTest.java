@@ -1,126 +1,40 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.bruker.*;
-import org.junit.Before;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppgaveServiceTest {
 
-    private static final AktorId AKTOER_ID = AktorId.valueOf("123");
-    private static final Bruker bruker = Bruker.of(Foedselsnummer.of("12345678910"), AKTOER_ID);
-
-    private OppgaveService oppgaveService;
-
-    private OppgaveGateway oppgaveGateway;
-    private PersonGateway personGateway;
-
-    @Before
-    public void setup() {
-        oppgaveGateway = Mockito.mock(OppgaveGateway.class);
-        personGateway = Mockito.mock(PersonGateway.class);
-
-        oppgaveService = new OppgaveService(oppgaveGateway, personGateway, (aktorId) -> {});
-    }
+    public static final Bruker BRUKER = Bruker.of(
+            Foedselsnummer.of("12345678911"),
+            AktorId.valueOf("2134"));
 
     @Test
-    public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_ikke_er_satt() {
-        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprettOppgave(
-                AKTOER_ID,
-                "H134912",
-                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
-                " Brukeren får ikke registrert seg som arbeidssøker." +
-                " Kontaktperson ved NAV Grünerløkka er Marthe Harsvik."))
-                .thenReturn(new Oppgave() {
-            @Override
-            public long getId() {
-                return 213L;
-            }
+    public void opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
+        OppgaveService oppgaveService = new OppgaveService((aktoerId, beskrivelse) -> {
 
-            @Override
-            public String getTildeltEnhetsnr() {
-                return "3242";
-            }
+            assertThat(beskrivelse).isEqualTo("Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                    "og har selv opprettet denne oppgaven. " +
+                    "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
+
+            return new Oppgave() {
+                @Override
+                public long getId() {
+                    return 324;
+                }
+
+                @Override
+                public String getTildeltEnhetsnr() {
+                    return "0125";
+                }
+            };
+        }, aktorId -> {
         });
 
-        oppgaveService.opprettOppgave(bruker);
-    }
-
-    @Test
-    public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_er_030102() {
-        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprettOppgave(
-                AKTOER_ID,
-                "H134912",
-                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
-                        " Brukeren får ikke registrert seg som arbeidssøker." +
-                        " Kontaktperson ved NAV Grünerløkka er Marthe Harsvik."))
-                .thenReturn(new Oppgave() {
-                    @Override
-                    public long getId() {
-                        return 213L;
-                    }
-
-                    @Override
-                    public String getTildeltEnhetsnr() {
-                        return "3242";
-                    }
-                });
-
-        oppgaveService.opprettOppgave(bruker);
-    }
-
-    @Test
-    public void skal_tilordne_oppgave_til_H134912_naar_geografisk_tilknytning_ikke_er_mappet_opp() {
-        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("030105")));
-        when(oppgaveGateway.opprettOppgave(
-                AKTOER_ID,
-                "H134912",
-                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Grünerløkka." +
-                        " Brukeren får ikke registrert seg som arbeidssøker." +
-                        " Kontaktperson ved NAV Grünerløkka er Marthe Harsvik."))
-                .thenReturn(new Oppgave() {
-                    @Override
-                    public long getId() {
-                        return 213L;
-                    }
-
-                    @Override
-                    public String getTildeltEnhetsnr() {
-                        return "3242";
-                    }
-                });
-
-        oppgaveService.opprettOppgave(bruker);
-    }
-
-    @Test
-    public void skal_tilordne_oppgave_til_B125772_naar_geografisk_tilknytning_er_3411() {
-        when(personGateway.hentGeografiskTilknytning(any(Foedselsnummer.class))).thenReturn(Optional.of(GeografiskTilknytning.of("3411")));
-        when(oppgaveGateway.opprettOppgave(
-                AKTOER_ID,
-                "B125772",
-                "Denne oppgaven har bruker selv opprettet, og er en pilotering på NAV Ringsaker." +
-                        " Brukeren får ikke registrert seg som arbeidssøker." +
-                        " Kontaktperson ved NAV Ringsaker er Inger Johanne Bryn."))
-                .thenReturn(new Oppgave() {
-                    @Override
-                    public long getId() {
-                        return 213L;
-                    }
-
-                    @Override
-                    public String getTildeltEnhetsnr() {
-                        return "3242";
-                    }
-                });
-
-        oppgaveService.opprettOppgave(bruker);
+        oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE);
     }
 }

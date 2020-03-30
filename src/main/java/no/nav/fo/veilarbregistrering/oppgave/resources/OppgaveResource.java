@@ -7,8 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.POST;
@@ -24,34 +23,41 @@ import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 @Api(value = "OppgaveResource")
 public class OppgaveResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveResource.class);
-
     private final OppgaveService oppgaveService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
+    private final UnleashService unleashService;
 
     public OppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService
+            OppgaveService oppgaveService,
+            UnleashService unleashService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.oppgaveService = oppgaveService;
+        this.unleashService = unleashService;
     }
 
     @POST
     @Path("/")
     @ApiOperation(value = "Oppretter oppgave 'kontakt bruker'")
-    public OppgaveDto opprettOppgave() {
+    public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        Oppgave oppgave = oppgaveService.opprettOppgave(bruker);
+        if (!skalOppretteOppgave()) {
+            throw new RuntimeException("Toggle `veilarbregistrering.opprettOppgave` er skrudd av");
+        }
 
-        LOG.info("Oppgave {} ble opprettet og tildelt {}", oppgave.getId(), oppgave.getTildeltEnhetsnr());
+        Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 
-        return map(oppgave);
+        return map(oppgave, oppgaveDto.getOppgaveType());
+    }
+
+    private boolean skalOppretteOppgave() {
+        return unleashService.isEnabled("veilarbregistrering.opprettOppgave");
     }
 }
