@@ -5,12 +5,15 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlPerson;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.Variables;
+import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient;
 import no.nav.log.MDCConstants;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
 import java.io.IOException;
@@ -25,10 +29,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-public class PdlOppslagService {
+public class PdlOppslagService extends BaseClient {
 
     private final Logger logger = LoggerFactory.getLogger(PdlOppslagService.class);
 
@@ -37,26 +42,43 @@ public class PdlOppslagService {
     private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
     private final String TEMA_HEADER = "Tema";
     private final String ALLE_TEMA_HEADERVERDI = "GEN";
-    private final String PDL_PROPERTY_NAME = "PDL_URL";
 
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
-    public PdlPerson hentPerson(String fnr) {
+    private SystemUserTokenProvider systemUserTokenProvider;
+    private final UnleashService unleashService;
+
+    public PdlOppslagService(
+            String baseUrl,
+            Provider<HttpServletRequest> httpServletRequestProvider,
+            UnleashService unleashService
+    ) {
+        super(baseUrl, httpServletRequestProvider);
+        this.unleashService = unleashService;
+    }
+
+    public Optional<PdlPerson> hentPerson(String fnr) {
+        if (!isPdlEnabled()) {
+            return Optional.empty();
+        }
+
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(fnr, false));
         String json = pdlJson(fnr, request);
         PdlResponse resp = gson.fromJson(json, PdlResponse.class);
         validateResponse(resp);
-        return resp.getData().getHentPerson();
+        return Optional.of(resp.getData().getHentPerson());
     }
 
     String pdlJson(String fnr, PdlRequest request) {
+        String token = (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
+                .getToken();
         return RestUtils.withClient(client ->
-                client.target(getRequiredProperty(PDL_PROPERTY_NAME))
+                client.target(baseUrl)
                         .request()
                         .header(NAV_PERSONIDENT_HEADER, fnr)
                         .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", "Bearer TODO_TOKEN")
-                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer TODO_TOKEN")
+                        .header("Authorization", token)
+                        .header(NAV_CONSUMER_TOKEN_HEADER, token)
                         .header(TEMA_HEADER, ALLE_TEMA_HEADERVERDI)
                         .post(Entity.json(request), String.class));
     }
@@ -89,5 +111,9 @@ public class PdlOppslagService {
         public LocalDate read( final JsonReader jsonReader ) throws IOException {
             return LocalDate.parse(jsonReader.nextString());
         }
+    }
+
+    private boolean isPdlEnabled() {
+        return unleashService.isEnabled("veilarbregistrering.pdlEnabled");
     }
 }

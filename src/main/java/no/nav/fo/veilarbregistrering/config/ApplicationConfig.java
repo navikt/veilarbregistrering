@@ -4,6 +4,7 @@ import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
@@ -41,7 +42,8 @@ import javax.servlet.ServletContext;
         PersonGatewayConfig.class,
         OppfolgingGatewayConfig.class,
         OppgaveGatewayConfig.class,
-        SykemeldingGatewayConfig.class
+        SykemeldingGatewayConfig.class,
+        PdlOppslagConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 

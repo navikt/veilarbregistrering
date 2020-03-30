@@ -9,6 +9,7 @@ veilarboppfolgingapi_url: https://veilarboppfolging.nais.adeo.no/veilarboppfolgi
 abac_pdp_endpoint_url: https://wasapp.adeo.no/asm-pdp/authorize
 norg_url: https://app.adeo.no/norg2/ws/OrganisasjonEnhet/v2
 oppgave_url: https://oppgave.nais.adeo.no/api/v1
+pdl_url: http://pdl-api.default.svc.nais.local/graphql
 isso_isalive_url: https://isso.adeo.no/isso/isAlive.jsp
 kafka_url: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
 kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
