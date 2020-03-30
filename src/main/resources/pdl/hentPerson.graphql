@@ -4,6 +4,11 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
         type,
         oppholdFra,
         oppholdTil
+    },
+    statsborgerskap {
+        land,
+        gyldigFraOgMed,
+        gyldigTilOgMed
     }
   }
 }
