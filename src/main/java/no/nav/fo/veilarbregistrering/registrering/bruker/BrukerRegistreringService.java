@@ -197,7 +197,6 @@ public class BrukerRegistreringService {
         return ordinaerBrukerRegistrering;
     }
 
-    //TODO: Ta denne metoden i bruk bak et toggle
     private OrdinaerBrukerRegistrering mottattBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
