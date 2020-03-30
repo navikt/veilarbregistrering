@@ -106,7 +106,16 @@ public class BrukerRegistreringService {
             throw e;
         }
 
-        return opprettBruker(bruker, ordinaerBrukerRegistrering);
+        OrdinaerBrukerRegistrering oppettetBrukerRegistrering;
+        if (lagreUtenArenaOverforing()) {
+            LOG.info("Oppretter bruker uten synkron overføring til Arena");
+            oppettetBrukerRegistrering = mottattBruker(bruker, ordinaerBrukerRegistrering);
+        } else {
+            LOG.info("Oppretter bruker med synkron overføring til Arena");
+            oppettetBrukerRegistrering = opprettBruker(bruker, ordinaerBrukerRegistrering);
+        }
+
+        return oppettetBrukerRegistrering;
     }
 
     BrukersTilstand hentBrukersTilstand(Foedselsnummer fnr) {
@@ -278,5 +287,9 @@ public class BrukerRegistreringService {
 
     private boolean lagreTilstandErAktiv() {
         return unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv");
+    }
+
+    private boolean lagreUtenArenaOverforing() {
+        return unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing");
     }
 }
