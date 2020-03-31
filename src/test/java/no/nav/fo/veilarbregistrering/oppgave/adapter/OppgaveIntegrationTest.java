@@ -9,10 +9,8 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
+import no.nav.fo.veilarbregistrering.oppgave.*;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +34,11 @@ public class OppgaveIntegrationTest {
     private static final int MOCKSERVER_PORT = 1081;
 
     private ClientAndServer mockServer;
+    private OppgaveGateway oppgaveGateway;
+    private OppgaveRepository oppgaveRepository;
+    private UnleashService unleashService;
+
+    private OppgaveService oppgaveService;
 
     @AfterEach
     public void tearDown() {
@@ -44,7 +47,16 @@ public class OppgaveIntegrationTest {
 
     @BeforeEach
     public void setup() {
+        oppgaveRepository = mock(OppgaveRepository.class);
+        unleashService = mock(UnleashService.class);
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
+        oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+
+        oppgaveService = new OppgaveService(
+                oppgaveGateway,
+                oppgaveRepository,
+                aktorId -> { },
+                unleashService);
     }
 
     private OppgaveRestClient buildClient() {
@@ -62,11 +74,6 @@ public class OppgaveIntegrationTest {
 
     @Test
     public void vellykket_opprettelse_av_oppgave_skal_gi_201() {
-
-        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
-        OppgaveService oppgaveService = new OppgaveService(oppgaveGateway, aktorId -> {
-        });
-
         String dagensdato = LocalDate.now().toString();
         String to_dager_senere = LocalDate.now().plusDays(2).toString();
 
@@ -106,11 +113,6 @@ public class OppgaveIntegrationTest {
 
     @Test
     public void opprettelse_av_oppgave_skal_håndtere_null_for_oppgavetype() {
-
-        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
-        OppgaveService oppgaveService = new OppgaveService(oppgaveGateway, aktorId -> {
-        });
-
         String dagensdato = LocalDate.now().toString();
         String to_dager_senere = LocalDate.now().plusDays(2).toString();
 
