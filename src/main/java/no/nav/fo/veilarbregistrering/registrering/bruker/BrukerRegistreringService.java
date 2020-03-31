@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
@@ -212,6 +213,19 @@ public class BrukerRegistreringService {
         brukerRegistreringRepository.lagre(registreringTilstand);
 
         return ordinaerBrukerRegistrering;
+    }
+
+    public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
+        RegistreringTilstand original = brukerRegistreringRepository.hentRegistreringTilstand(registreringTilstandDto.getId());
+        RegistreringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
+        brukerRegistreringRepository.oppdater(RegistreringTilstand.of(
+                oppdatert.getId(),
+                oppdatert.getUuid(),
+                oppdatert.getBrukerRegistreringId(),
+                oppdatert.getOpprettet(),
+                oppdatert.getSistEndret(),
+                oppdatert.getStatus()
+        ));
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {

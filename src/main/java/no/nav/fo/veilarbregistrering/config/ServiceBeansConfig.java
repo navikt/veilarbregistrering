@@ -23,6 +23,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRe
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -86,6 +87,11 @@ public class ServiceBeansConfig {
                 brukerRegistreringService,
                 unleashService
         );
+    }
+
+    @Bean
+    InternalRegistreringResource internalRegistreringResource(BrukerRegistreringService brukerRegistreringService) {
+        return new InternalRegistreringResource(brukerRegistreringService);
     }
 
     @Bean

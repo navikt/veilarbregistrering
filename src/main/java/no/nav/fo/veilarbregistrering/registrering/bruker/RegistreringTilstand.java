@@ -24,7 +24,7 @@ public class RegistreringTilstand {
         return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
     }
 
-    public static RegistreringTilstand fromDb(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+    public static RegistreringTilstand of(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
         return new RegistreringTilstand(id, uuid, brukerRegistreringId, opprettet, sistEndret, status);
     }
 

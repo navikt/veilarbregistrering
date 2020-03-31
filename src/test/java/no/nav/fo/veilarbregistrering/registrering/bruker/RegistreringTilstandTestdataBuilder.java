@@ -16,7 +16,7 @@ public class RegistreringTilstandTestdataBuilder {
         private Status status = Status.MOTTATT;
 
         public RegistreringTilstand build() {
-            return RegistreringTilstand.fromDb(
+            return RegistreringTilstand.of(
                     -1L,
                     UUID.randomUUID(),
                     brukerRegistreringId,
