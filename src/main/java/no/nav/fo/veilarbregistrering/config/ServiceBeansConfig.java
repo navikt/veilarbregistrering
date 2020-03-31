@@ -9,7 +9,9 @@ import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -115,8 +117,22 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveService oppgaveService(OppgaveGateway oppgaveGateway, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-        return new OppgaveService(oppgaveGateway, kontaktBrukerHenvendelseProducer);
+    OppgaveRepository oppgaveRepository(JdbcTemplate jdbcTemplate) {
+        return new OppgaveRepositoryImpl(jdbcTemplate);
+    }
+
+    @Bean
+    OppgaveService oppgaveService(
+            OppgaveGateway oppgaveGateway,
+            OppgaveRepository oppgaveRepository,
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
+            UnleashService unleashService) {
+
+        return new OppgaveService(
+                oppgaveGateway,
+                oppgaveRepository,
+                kontaktBrukerHenvendelseProducer,
+                unleashService);
     }
 
     @Bean
