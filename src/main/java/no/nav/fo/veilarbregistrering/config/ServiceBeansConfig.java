@@ -139,10 +139,9 @@ public class ServiceBeansConfig {
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService,
-            UnleashService unleashService
+            OppgaveService oppgaveService
     ) {
-        return new OppgaveResource(pepClient, userService, oppgaveService, unleashService);
+        return new OppgaveResource(pepClient, userService, oppgaveService);
     }
 
     @Bean

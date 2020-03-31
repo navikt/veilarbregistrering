@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.POST;
@@ -26,18 +25,15 @@ public class OppgaveResource {
     private final OppgaveService oppgaveService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
-    private final UnleashService unleashService;
 
     public OppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService,
-            UnleashService unleashService
+            OppgaveService oppgaveService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.oppgaveService = oppgaveService;
-        this.unleashService = unleashService;
     }
 
     @POST
@@ -48,16 +44,8 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        if (!skalOppretteOppgave()) {
-            throw new RuntimeException("Toggle `veilarbregistrering.opprettOppgave` er skrudd av");
-        }
-
         Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 
         return map(oppgave, oppgaveDto.getOppgaveType());
-    }
-
-    private boolean skalOppretteOppgave() {
-        return unleashService.isEnabled("veilarbregistrering.opprettOppgave");
     }
 }
