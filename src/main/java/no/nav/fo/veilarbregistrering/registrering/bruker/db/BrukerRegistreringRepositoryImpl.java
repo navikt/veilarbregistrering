@@ -12,6 +12,9 @@ import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -250,4 +253,28 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
     }
 
+    @Override
+    public Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable) {
+        String rowCountSql = "SELECT count(1) AS row_count " +
+                "FROM BRUKER_REGISTRERING";
+
+        int total = this.db.queryForObject(rowCountSql, Integer.class);
+
+        String querySql = "SELECT BRUKER_REGISTRERING_ID, AKTOR_ID, BEGRUNNELSE_FOR_REGISTRERING, OPPRETTET_DATO " +
+                "FROM BRUKER_REGISTRERING " +
+                "ORDER BY BRUKER_REGISTRERING_ID ASC " +
+                "LIMIT " + pageable.getPageSize() + " " +
+                "OFFSET " + pageable.getOffset();
+
+        List<ArbeidssokerRegistrertEventDto> dto = db.query(
+                querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(
+                        rowNum,
+                        rs.getLong("BRUKER_REGISTRERING_ID"),
+                        AktorId.valueOf(rs.getString("AKTOR_ID")),
+                        rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
+                        rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
+                ));
+
+        return new PageImpl<>(dto, pageable, total);
+    }
 }
