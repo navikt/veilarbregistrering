@@ -11,10 +11,11 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,7 +31,13 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
     private static final AktorId AKTOR_ID_11111 = AktorId.valueOf("11111");
-    private static final Bruker BRUKER = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111);
+    private static final Bruker BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111);
+    private static final Foedselsnummer FOEDSELSNUMMER_2 = Foedselsnummer.of("22345678911");
+    private static final AktorId AKTOR_ID_22222 = AktorId.valueOf("22222");
+    private static final Bruker BRUKER_2 = Bruker.of(FOEDSELSNUMMER_2, AKTOR_ID_22222);
+    private static final Foedselsnummer FOEDSELSNUMMER_3 = Foedselsnummer.of("32345678911");
+    private static final AktorId AKTOR_ID_33333 = AktorId.valueOf("33333");
+    private static final Bruker BRUKER_3 = Bruker.of(FOEDSELSNUMMER_3, AKTOR_ID_33333);
 
     @Inject
     private JdbcTemplate jdbcTemplate;
@@ -46,7 +53,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     @Test
     public void registrerBruker() {
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
         assertRegistrertBruker(registrering, ordinaerBrukerRegistrering);
     }
 
@@ -58,8 +65,8 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI));
 
-        brukerRegistreringRepository.lagre(registrering1, BRUKER);
-        brukerRegistreringRepository.lagre(registrering2, BRUKER);
+        brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
+        brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
 
         OrdinaerBrukerRegistrering registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111);
         assertRegistrertBruker(registrering2, registrering);
@@ -84,7 +91,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA));
 
-        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagre(registrering, BRUKER);
+        OrdinaerBrukerRegistrering lagretBruker = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
         registrering.setId(lagretBruker.getId()).setOpprettetDato(lagretBruker.getOpprettetDato());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
@@ -124,7 +131,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     @Test
     public void skal_lagre_og_hente_registreringTilstand() {
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER);
+        OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
 
         RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(lagretRegistrering.getId());
 
@@ -147,9 +154,9 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER);
-        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER);
+        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
 
 
         RegistreringTilstand eldsteRegistrering = registreringTilstand()
@@ -182,9 +189,9 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER);
-        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER);
+        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
 
         RegistreringTilstand eldsteRegistrering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
@@ -214,10 +221,34 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void skal_hente_foedselsnummer_tilknyttet_ordinaerBrukerRegistrering() {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.getId());
-        assertThat(bruker.getFoedselsnummer()).isEqualTo(BRUKER.getFoedselsnummer());
-        assertThat(bruker.getAktorId()).isEqualTo(BRUKER.getAktorId());
+        assertThat(bruker.getFoedselsnummer()).isEqualTo(BRUKER_1.getFoedselsnummer());
+        assertThat(bruker.getAktorId()).isEqualTo(BRUKER_1.getAktorId());
+    }
+
+    @Test
+    public void findRegistreringByPage_skal_returnere_eldste_registrering_pa_bakgrunn_av_id() {
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
+
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+
+        assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
+    }
+
+    @Test
+    public void findRegistreringByPage_skal_paging_for_a_levere_batcher_med_rader() {
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+
+        assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
     }
 }

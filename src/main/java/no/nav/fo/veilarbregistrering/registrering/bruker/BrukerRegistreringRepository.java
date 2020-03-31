@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -28,4 +30,6 @@ public interface BrukerRegistreringRepository {
     void oppdater(RegistreringTilstand registreringTilstand1);
 
     Bruker hentBrukerTilknyttet(long brukerRegistreringId);
+
+    Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable);
 }
