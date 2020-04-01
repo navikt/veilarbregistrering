@@ -17,10 +17,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArenaOverforingService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -70,6 +67,19 @@ public class ServiceBeansConfig {
                 startRegistreringUtils,
                 unleashService,
                 arbeidssokerRegistrertProducer
+        );
+    }
+
+    @Bean
+    PubliseringAvHistorikkTask publiseringAvHistorikkTask (
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            UnleashService unleashService
+    ) {
+        return new PubliseringAvHistorikkTask (
+                brukerRegistreringRepository,
+                arbeidssokerRegistrertProducer,
+                unleashService
         );
     }
 
