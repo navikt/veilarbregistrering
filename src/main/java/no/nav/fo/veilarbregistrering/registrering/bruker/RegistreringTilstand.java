@@ -62,9 +62,7 @@ public class RegistreringTilstand {
     }
 
     public RegistreringTilstand oppdaterStatus(Status status) {
-        this.status = status;
-        this.sistEndret = LocalDateTime.now();
-        return this;
+        return new RegistreringTilstand(this.id, this.uuid, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
     }
 
     @Override
