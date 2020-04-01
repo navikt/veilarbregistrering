@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,9 +47,16 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
 
         assertThat(id).isNotEqualTo(0);
 
-        OppgaveImpl oppgave = oppgaveRepository.hentOppgaveFor(AktorId.valueOf("12353"));
+        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.valueOf("12353"));
+        OppgaveImpl oppgave = oppgaver.get(0);
         assertThat(oppgave.getId()).isEqualTo(id);
         assertThat(oppgave.getOppgavetype()).isEqualTo(OppgaveType.OPPHOLDSTILLATELSE);
         assertThat(oppgave.getEksternOppgaveId()).isEqualTo(3242L);
+    }
+
+    @Test
+    public void hentOppgaveForUkjentAktorId() {
+        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.valueOf("12353"));
+        assertThat(oppgaver).isEmpty();
     }
 }
