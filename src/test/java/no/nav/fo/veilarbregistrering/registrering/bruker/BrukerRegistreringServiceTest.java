@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
@@ -19,8 +20,10 @@ import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -247,6 +250,31 @@ public class BrukerRegistreringServiceTest {
         StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData(any());
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
+    }
+
+    @Test
+    public void skal_oppdatere_registreringtilstand_med_status_og_sistendret() {
+        LocalDateTime sistEndret = LocalDateTime.now();
+        RegistreringTilstand original = RegistreringTilstandTestdataBuilder
+                .registreringTilstand()
+                .status(Status.ARENA_OK)
+                .opprettet(sistEndret.minusDays(1))
+                .sistEndret(sistEndret)
+                .build();
+        when(brukerRegistreringRepository.hentRegistreringTilstand(original.getId())).thenReturn(original);
+
+        brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.BRUKER_MANGLER_ARBEIDSTILLATELSE));
+
+        ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
+        verify(brukerRegistreringRepository).oppdater(argumentCaptor.capture());
+        RegistreringTilstand capturedArgument = argumentCaptor.<RegistreringTilstand> getValue();
+
+        assertThat(capturedArgument.getId()).isEqualTo(original.getId());
+        assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());
+        assertThat(capturedArgument.getBrukerRegistreringId()).isEqualTo(original.getBrukerRegistreringId());
+        assertThat(capturedArgument.getOpprettet()).isEqualTo(original.getOpprettet());
+        assertThat(capturedArgument.getStatus()).isEqualTo(Status.BRUKER_MANGLER_ARBEIDSTILLATELSE);
+
     }
 
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {

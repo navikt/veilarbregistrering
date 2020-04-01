@@ -14,6 +14,7 @@ public class RegistreringTilstandTestdataBuilder {
         private long brukerRegistreringId = 112233L;
         private LocalDateTime opprettet = LocalDateTime.now();
         private Status status = Status.MOTTATT;
+        private LocalDateTime sistEndret = null;
 
         public RegistreringTilstand build() {
             return RegistreringTilstand.of(
@@ -21,7 +22,7 @@ public class RegistreringTilstandTestdataBuilder {
                     UUID.randomUUID(),
                     brukerRegistreringId,
                     opprettet,
-                    null,
+                    sistEndret,
                     status);
         }
 
@@ -37,6 +38,11 @@ public class RegistreringTilstandTestdataBuilder {
 
         public Builder status(Status status) {
             this.status = status;
+            return this;
+        }
+
+        public Builder sistEndret(LocalDateTime sistEndret) {
+            this.sistEndret = sistEndret;
             return this;
         }
     }
