@@ -15,7 +15,7 @@ class RegistreringTilstandMapper implements RowMapper<RegistreringTilstand> {
 
     @Override
     public RegistreringTilstand mapRow(ResultSet rs, int i) throws SQLException {
-        return RegistreringTilstand.fromDb(
+        return RegistreringTilstand.of(
                 rs.getLong("ID"),
                 UUID.fromString(rs.getString("UUID")),
                 rs.getLong("BRUKER_REGISTRERING_ID"),
