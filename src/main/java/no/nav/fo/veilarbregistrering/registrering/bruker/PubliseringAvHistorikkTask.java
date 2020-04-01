@@ -64,6 +64,6 @@ public class PubliseringAvHistorikkTask implements Runnable {
     }
 
     private boolean sjekkFeatureErPa () {
-        return this.unleashService.isEnabled("kjekt-feature-navn"); // TODO FINN UT HVA FEATUREN HETER
+        return this.unleashService.isEnabled("veilarbregistrering.publiserHistorikkTilKafka");
     }
 }
