@@ -90,8 +90,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringResource internalRegistreringResource(BrukerRegistreringService brukerRegistreringService) {
-        return new InternalRegistreringResource(brukerRegistreringService);
+    InternalRegistreringResource internalRegistreringResource(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+        return new InternalRegistreringResource(brukerRegistreringService, unleashService);
     }
 
     @Bean
