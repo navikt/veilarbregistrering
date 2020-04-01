@@ -263,8 +263,8 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         String querySql = "SELECT BRUKER_REGISTRERING_ID, AKTOR_ID, BEGRUNNELSE_FOR_REGISTRERING, OPPRETTET_DATO " +
                 "FROM BRUKER_REGISTRERING " +
                 "ORDER BY BRUKER_REGISTRERING_ID ASC " +
-                "LIMIT " + pageable.getPageSize() + " " +
-                "OFFSET " + pageable.getOffset();
+                "OFFSET " + pageable.getOffset() + "ROWS" +
+                "FETCH NEXT " + pageable.getPageSize() + " ROWS ONLY";
 
         List<ArbeidssokerRegistrertEventDto> dto = db.query(
                 querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(

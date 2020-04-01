@@ -75,3 +75,4 @@ spec:
     - kvPath: {{ secrets_path }}
       mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
+  leaderElection: true
