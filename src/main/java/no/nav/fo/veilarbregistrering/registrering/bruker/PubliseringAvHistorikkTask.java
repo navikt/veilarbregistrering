@@ -51,7 +51,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
         int totalPages = registreringer.getTotalPages();
         long totalElements = registreringer.getTotalElements();
 
-        LOG.info("Hentet historiske registreringer av totalt {} elementer og {} sider", totalElements, totalPages);
+        LOG.info("Henter side {} av totalt {} -> totalt {} brukerregistreringer", initPage, totalPages, totalElements);
         return registreringer;
     }
 
