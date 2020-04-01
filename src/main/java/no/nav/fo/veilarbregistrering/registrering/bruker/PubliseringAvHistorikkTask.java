@@ -31,14 +31,15 @@ public class PubliseringAvHistorikkTask implements Runnable {
     }
 
     public void run() {
-        int antalRaderIDatabasen = 100000; //TODO FINN UT HVA DENNE FAKTISKT ER
-        int initPage = 0;
-
-        do {
-            hentRegistreringer(initPage).forEach(this::publiserPaKafka);
-            initPage+= PAGESIZE;
+        int currentPage = 0;
+        while(this.sjekkFeatureErPa()) {
+            Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(currentPage);
+            if(currentPage > registreringer.getTotalElements()) {
+                break;
+            }
+            registreringer.forEach(this::publiserPaKafka);
+            currentPage+= PAGESIZE;
         }
-        while(this.sjekkFeatureErPa() && initPage < antalRaderIDatabasen);
     }
 
     private Page<ArbeidssokerRegistrertEventDto> hentRegistreringer(int initPage) {
