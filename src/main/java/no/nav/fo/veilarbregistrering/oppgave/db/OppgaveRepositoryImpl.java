@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OppgaveRepositoryImpl implements OppgaveRepository {
 
@@ -41,15 +42,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public OppgaveImpl hentOppgaveFor(AktorId aktorId) {
+    public List<OppgaveImpl> hentOppgaverFor(AktorId aktorId) {
         String sql = "SELECT * FROM OPPGAVE WHERE AKTOR_ID = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{aktorId.asString()}, (rs, row) -> {
-            return new OppgaveImpl(
-                    rs.getLong("ID"),
-                    AktorId.valueOf(rs.getString("AKTOR_ID")),
-                    OppgaveType.valueOf(rs.getString("OPPGAVETYPE")),
-                    rs.getLong("EKSTERN_OPPGAVE_ID"),
-                    rs.getTimestamp("OPPRETTET").toLocalDateTime());
-        });
+        return jdbcTemplate.query(sql, new Object[]{aktorId.asString()}, (rs, row) -> new OppgaveImpl(
+                rs.getLong("ID"),
+                AktorId.valueOf(rs.getString("AKTOR_ID")),
+                OppgaveType.valueOf(rs.getString("OPPGAVETYPE")),
+                rs.getLong("EKSTERN_OPPGAVE_ID"),
+                rs.getTimestamp("OPPRETTET").toLocalDateTime()));
     }
 }

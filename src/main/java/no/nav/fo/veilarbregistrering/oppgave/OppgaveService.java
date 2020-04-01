@@ -5,12 +5,20 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
 
 public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
+
+    private static final int ANTALL_TIMER_GRENSE = 48;
 
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
@@ -30,6 +38,9 @@ public class OppgaveService {
     }
 
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
+        if (skalValidereNyOppgaveMotAktive()) {
+            validerNyOppgaveMotAktive(bruker, oppgaveType);
+        }
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
@@ -54,7 +65,25 @@ public class OppgaveService {
         return oppgave;
     }
 
+    private void validerNyOppgaveMotAktive(Bruker bruker, OppgaveType oppgaveType) {
+        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(bruker.getAktorId());
+        Optional<OppgaveImpl> muligOppgave = oppgaver.stream()
+                .filter(oppgave -> oppgave.getOppgavetype().equals(oppgaveType))
+                .filter(oppgave -> oppgave.getOpprettet().isAfter(LocalDateTime.now().minusHours(ANTALL_TIMER_GRENSE)))
+                .findFirst();
+
+        muligOppgave.ifPresent(oppgave -> {
+            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - mindre enn {} timer siden", oppgave.getOpprettet(), ANTALL_TIMER_GRENSE);
+            throw new ClientErrorException(String.format("Du kan ikke opprette en ny oppgave før det har gått %s time.", ANTALL_TIMER_GRENSE), Response.Status.TOO_MANY_REQUESTS);
+        });
+    }
+
+    private boolean skalValidereNyOppgaveMotAktive() {
+        return unleashService.isEnabled("veilarbregistrering.validereOppgave");
+    }
+
     private boolean skalLagreOppgave() {
         return unleashService.isEnabled("veilarbregistrering.lagreOppgave");
     }
+
 }
