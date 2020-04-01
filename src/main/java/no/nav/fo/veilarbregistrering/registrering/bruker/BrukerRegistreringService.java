@@ -184,11 +184,8 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        if (lagreTilstandErAktiv()) {
-            RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
-            brukerRegistreringRepository.lagre(registreringTilstand);
-            LOG.info("Lagret: {}", registreringTilstand);
-        }
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
+        brukerRegistreringRepository.lagre(registreringTilstand);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
@@ -289,10 +286,6 @@ public class BrukerRegistreringService {
         }
 
         return id;
-    }
-
-    private boolean lagreTilstandErAktiv() {
-        return unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv");
     }
 
     private boolean lagreUtenArenaOverforing() {
