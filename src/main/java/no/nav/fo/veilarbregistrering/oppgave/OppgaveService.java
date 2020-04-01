@@ -51,10 +51,7 @@ public class OppgaveService {
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}", oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
-        if (skalLagreOppgave()) {
-            LOG.info("Lagring av oppgave er togglet pa");
-            oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
-        }
+        oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
 
         try {
             reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
@@ -81,9 +78,4 @@ public class OppgaveService {
     private boolean skalValidereNyOppgaveMotAktive() {
         return unleashService.isEnabled("veilarbregistrering.validereOppgave");
     }
-
-    private boolean skalLagreOppgave() {
-        return unleashService.isEnabled("veilarbregistrering.lagreOppgave");
-    }
-
 }

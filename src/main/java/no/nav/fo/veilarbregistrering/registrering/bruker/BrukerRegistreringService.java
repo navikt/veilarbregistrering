@@ -218,14 +218,7 @@ public class BrukerRegistreringService {
     public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
         RegistreringTilstand original = brukerRegistreringRepository.hentRegistreringTilstand(registreringTilstandDto.getId());
         RegistreringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
-        brukerRegistreringRepository.oppdater(RegistreringTilstand.of(
-                oppdatert.getId(),
-                oppdatert.getUuid(),
-                oppdatert.getBrukerRegistreringId(),
-                oppdatert.getOpprettet(),
-                oppdatert.getSistEndret(),
-                oppdatert.getStatus()
-        ));
+        brukerRegistreringRepository.oppdater(oppdatert);
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
