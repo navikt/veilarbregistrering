@@ -72,22 +72,30 @@ public class OppgaveService {
 
         muligOppgave.ifPresent(oppgave -> {
             LOG.warn("Fant en oppgave av samme type som ble opprettet {} - mindre enn {} timer siden", oppgave.getOpprettet(), ANTALL_TIMER_GRENSE);
-            // throw new ClientErrorException(String.format("Du kan ikke opprette en ny oppgave før det har gått %s time.", ANTALL_TIMER_GRENSE), Response.Status.TOO_MANY_REQUESTS);
-            throw new Feil(new Feil.Type() {
-                @Override
-                public String getName() {
-                    return "ALLEREDE_OPPRETTET_OPPGAVE";
-                }
 
-                @Override
-                public Response.Status getStatus() {
-                    return Response.Status.TOO_MANY_REQUESTS;
-                }
-            }, String.format("Du kan ikke opprette en ny oppgave før det har gått %s timer.", ANTALL_TIMER_GRENSE));
+            if (skalKasteEgenkomponertFeil()) {
+                throw new Feil(new Feil.Type() {
+                    @Override
+                    public String getName() {
+                        return "ALLEREDE_OPPRETTET_OPPGAVE";
+                    }
+
+                    @Override
+                    public Response.Status getStatus() {
+                        return Response.Status.TOO_MANY_REQUESTS;
+                    }
+                }, String.format("Du kan ikke opprette en ny oppgave før det har gått %s timer.", ANTALL_TIMER_GRENSE));
+            } else {
+                throw new ClientErrorException(String.format("Du kan ikke opprette en ny oppgave før det har gått %s time.", ANTALL_TIMER_GRENSE), Response.Status.TOO_MANY_REQUESTS);
+            }
         });
     }
 
     private boolean skalValidereNyOppgaveMotAktive() {
         return unleashService.isEnabled("veilarbregistrering.validereOppgave");
+    }
+
+    private boolean skalKasteEgenkomponertFeil() {
+        return unleashService.isEnabled("veilarbregistrering.validereOppgave.egenkomponertfeil");
     }
 }
