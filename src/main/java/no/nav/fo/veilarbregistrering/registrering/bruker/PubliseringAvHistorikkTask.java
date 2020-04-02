@@ -1,13 +1,17 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.common.leaderelection.LeaderElection;
 import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
-import no.nav.jobutils.JobUtils;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.concurrent.Executors;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class PubliseringAvHistorikkTask implements Runnable {
 
@@ -26,20 +30,23 @@ public class PubliseringAvHistorikkTask implements Runnable {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.unleashService = unleashService;
-        JobUtils.runAsyncJobOnLeader(this);
 
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleWithFixedDelay(this, 1, 1, MINUTES);
     }
 
     @Override
     public void run() {
-        int currentPage = 0;
-        while(this.sjekkFeatureErPa()) {
-            Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(currentPage);
-            if(currentPage > registreringer.getTotalElements()) {
-                break;
+        if(LeaderElection.isLeader()) {
+            int currentPage = 0;
+            while (this.sjekkFeatureErPa()) {
+                Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(currentPage);
+                if (currentPage > registreringer.getTotalElements()) {
+                    break;
+                }
+                registreringer.forEach(this::publiserPaKafka);
+                currentPage += PAGESIZE;
             }
-            registreringer.forEach(this::publiserPaKafka);
-            currentPage+= PAGESIZE;
         }
     }
 
