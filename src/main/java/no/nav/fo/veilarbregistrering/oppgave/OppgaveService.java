@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
 
@@ -71,7 +75,21 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - mindre enn {} timer siden", oppgave.getOpprettet(), ANTALL_TIMER_GRENSE);
+            long timerSidenForrigeOppgave = ChronoUnit.HOURS.between(oppgave.getOpprettet(), LocalDateTime.now());
+
+            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden", oppgave.getOpprettet(), timerSidenForrigeOppgave);
+
+            Metrics.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, new Metric() {
+                @Override
+                public String fieldName() {
+                    return "timer";
+                }
+
+                @Override
+                public String value() {
+                    return String.valueOf(timerSidenForrigeOppgave);
+                }
+            }, oppgaveType);
 
             if (skalKasteEgenkomponertFeil()) {
                 throw new Feil(new Feil.Type() {
