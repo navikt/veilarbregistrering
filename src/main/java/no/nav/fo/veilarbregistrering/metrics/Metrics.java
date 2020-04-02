@@ -10,7 +10,7 @@ public class Metrics {
     public static void reportSimple(Event event, Metric field, Metric tag) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         metricsEvent.addFieldToReport(field.fieldName(), field.value());
-        metricsEvent.addTagToReport(tag.fieldName(), tag.value());
+        metricsEvent.addTagToReport(tag.fieldName(), tag.value().toString());
         metricsEvent.report();
     }
 
@@ -18,7 +18,7 @@ public class Metrics {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         Arrays.stream(metric)
                 .filter(Objects::isNull)
-                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value().toString()));
         metricsEvent.report();
     }
 
@@ -26,10 +26,10 @@ public class Metrics {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         hasMetrics.metrics().stream()
                 .filter(Objects::nonNull)
-                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value().toString()));
         Arrays.stream(metric)
                 .filter(Objects::nonNull)
-                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value()));
+                .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value().toString()));
         metricsEvent.report();
     }
 
