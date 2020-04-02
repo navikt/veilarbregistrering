@@ -100,11 +100,9 @@ public class OppgaveService {
 
                     @Override
                     public Response.Status getStatus() {
-                        return Response.Status.TOO_MANY_REQUESTS;
+                        return Response.Status.FORBIDDEN;
                     }
-                }, new ClientErrorException(String.format("Du kan ikke opprette en ny oppgave før det har gått %s timer.", ANTALL_TIMER_GRENSE), Response.Status.TOO_MANY_REQUESTS));
-            } else {
-                throw new ClientErrorException(String.format("Du kan ikke opprette en ny oppgave før det har gått %s time.", ANTALL_TIMER_GRENSE), Response.Status.TOO_MANY_REQUESTS);
+                });
             }
         });
     }
