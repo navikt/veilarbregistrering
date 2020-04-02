@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+package no.nav.fo.veilarbregistrering.db;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

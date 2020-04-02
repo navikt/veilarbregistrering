@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.registrering.manuell.db;
+package no.nav.fo.veilarbregistrering.db;
 
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl.*;
+import static no.nav.fo.veilarbregistrering.db.BrukerRegistreringRepositoryImpl.*;
 
 class SykmeldtRegistreringMapper {
 

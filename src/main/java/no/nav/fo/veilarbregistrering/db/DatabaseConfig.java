@@ -1,9 +1,8 @@
-package no.nav.fo.veilarbregistrering.config;
+package no.nav.fo.veilarbregistrering.db;
 
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

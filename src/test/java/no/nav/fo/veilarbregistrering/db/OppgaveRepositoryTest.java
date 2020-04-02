@@ -1,10 +1,10 @@
-package no.nav.fo.veilarbregistrering.oppgave.db;
+package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveImpl;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
+import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

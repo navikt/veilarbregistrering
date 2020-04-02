@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.profilering.db;
+package no.nav.fo.veilarbregistrering.db;
 
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;

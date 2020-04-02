@@ -11,17 +11,13 @@ import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.bruker.db.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.manuell.db.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
@@ -30,7 +26,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -133,11 +128,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveRepository oppgaveRepository(JdbcTemplate jdbcTemplate) {
-        return new OppgaveRepositoryImpl(jdbcTemplate);
-    }
-
-    @Bean
     OppgaveService oppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
@@ -164,21 +154,6 @@ public class ServiceBeansConfig {
     ManuellRegistreringService manuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
                                                           HentEnheterGateway hentEnheterGateway) {
         return new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
-    }
-
-    @Bean
-    BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
-        return new BrukerRegistreringRepositoryImpl(db);
-    }
-
-    @Bean
-    ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
-        return new ManuellRegistreringRepositoryImpl(db);
-    }
-
-    @Bean
-    ProfileringRepository profileringRepository(JdbcTemplate db) {
-        return new ProfileringRepositoryImpl(db);
     }
 
     @Bean

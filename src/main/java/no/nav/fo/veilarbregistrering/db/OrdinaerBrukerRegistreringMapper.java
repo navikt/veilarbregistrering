@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.besvarelse.*;

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.profilering.db;
+package no.nav.fo.veilarbregistrering.db;
 
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
