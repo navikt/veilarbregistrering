@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.concurrent.Executors;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class PubliseringAvHistorikkTask implements Runnable {
 
@@ -32,45 +32,48 @@ public class PubliseringAvHistorikkTask implements Runnable {
         this.unleashService = unleashService;
 
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this, 60, 30, SECONDS);
+                .scheduleAtFixedRate(this, 5, 5, MINUTES);
     }
 
     @Override
     public void run() {
         LOG.info("run");
+
         if(LeaderElection.isLeader()) {
             LOG.info("I´am the leader");
-            int currentPage = 0;
+
+            Pageable pageable = PageRequest.of(0, PAGESIZE).first();
             while (this.sjekkFeatureErPa()) {
-                Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(currentPage);
-                if (currentPage > registreringer.getTotalElements()) {
+                Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(pageable);
+                registreringer.forEach(this::publiserPaKafka);
+                
+                if (!registreringer.hasNext()) {
                     break;
                 }
-                registreringer.forEach(this::publiserPaKafka);
-                currentPage += PAGESIZE;
+
+                pageable = registreringer.nextPageable();
             }
         }
     }
 
-    private Page<ArbeidssokerRegistrertEventDto> hentRegistreringer(int initPage) {
-
-        Pageable initPageRequest = PageRequest.of(initPage, PAGESIZE);
+    private Page<ArbeidssokerRegistrertEventDto> hentRegistreringer(Pageable pageable) {
         Page<ArbeidssokerRegistrertEventDto> registreringer =
-                brukerRegistreringRepository.findRegistreringByPage(initPageRequest);
+                brukerRegistreringRepository.findRegistreringByPage(pageable);
 
+        int pageNumber = pageable.getPageNumber();
         int totalPages = registreringer.getTotalPages();
         long totalElements = registreringer.getTotalElements();
 
-        LOG.info("Henter side {} av totalt {} -> totalt {} brukerregistreringer", initPage, totalPages, totalElements);
+        LOG.info("Henter side {} av totalt {} -> totalt {} brukerregistreringer", pageNumber, totalPages, totalElements);
         return registreringer;
     }
 
     private void publiserPaKafka(ArbeidssokerRegistrertEventDto dto) {
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                dto.getAktor_id(),
+                dto.getAktorId(),
                 //TODO: Sjekk om alle verdiene vi har i databasen er støttet
-                DinSituasjonSvar.valueOf(dto.getBegrunnelse_for_registrering()),
-                dto.getOpprettet_dato());
+                DinSituasjonSvar.valueOf(dto.getBegrunnelseForRegistrering()),
+                dto.getOpprettetDato());
     }
 
     private boolean sjekkFeatureErPa () {

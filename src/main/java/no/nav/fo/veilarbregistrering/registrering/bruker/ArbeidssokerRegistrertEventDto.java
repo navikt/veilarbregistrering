@@ -32,15 +32,15 @@ public class ArbeidssokerRegistrertEventDto {
         return bruker_registrering_id;
     }
 
-    public AktorId getAktor_id() {
+    public AktorId getAktorId() {
         return aktor_id;
     }
 
-    public String getBegrunnelse_for_registrering() {
+    public String getBegrunnelseForRegistrering() {
         return begrunnelse_for_registrering;
     }
 
-    public LocalDateTime getOpprettet_dato() {
+    public LocalDateTime getOpprettetDato() {
         return opprettet_dato;
     }
 }
