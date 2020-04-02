@@ -30,6 +30,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
 
     }
 
+    @Override
     public void run() {
         int currentPage = 0;
         while(this.sjekkFeatureErPa()) {
