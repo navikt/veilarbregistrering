@@ -54,6 +54,7 @@ public class Metrics {
 
     public enum Event {
         OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave"),
+        OPPGAVE_ALLEREDE_OPPRETTET_EVENT("arbeid.registrert.oppgave.allerede-opprettet"),
         START_REGISTRERING_EVENT("arbeid.registrering.start"),
         MANUELL_REGISTRERING_EVENT("registrering.manuell-registrering"),
         MANUELL_REAKTIVERING_EVENT("registrering.manuell-reaktivering"),
