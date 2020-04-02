@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
+import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -75,9 +76,10 @@ public class OppgaveServiceTest {
         }
     }
 
-    @Test(expected = ClientErrorException.class)
+    @Test(expected = Feil.class)
     public void skal_kaste_exception_dersom_det_finnes_nyere_oppgave_fra_for() {
         when(unleashService.isEnabled("veilarbregistrering.validereOppgave")).thenReturn(true);
+        when(unleashService.isEnabled("veilarbregistrering.validereOppgave.egenkomponertfeil")).thenReturn(true);
 
         OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.now().minusDays(1));
         List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetDagenFor);
