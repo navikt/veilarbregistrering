@@ -86,8 +86,8 @@ public class OppgaveService {
                 }
 
                 @Override
-                public String value() {
-                    return String.valueOf(timerSidenForrigeOppgave);
+                public Long value() {
+                    return timerSidenForrigeOppgave;
                 }
             }, oppgaveType);
 

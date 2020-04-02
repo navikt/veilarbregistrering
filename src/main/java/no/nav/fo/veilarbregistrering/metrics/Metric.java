@@ -4,5 +4,5 @@ public interface Metric {
 
     String fieldName();
 
-    String value();
+    Object value();
 }
