@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,19 +15,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static java.lang.System.getenv;
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 
 public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerRegistrertKafkaProducer.class);
 
-    private final org.apache.kafka.clients.producer.KafkaProducer producer;
+    private final KafkaProducer producer;
     private final UnleashService unleashService;
+    private final String topic;
 
-    public ArbeidssokerRegistrertKafkaProducer(org.apache.kafka.clients.producer.KafkaProducer kafkaProducer, UnleashService unleashService) {
+    public ArbeidssokerRegistrertKafkaProducer(
+            KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
         this.unleashService = unleashService;
         this.producer = kafkaProducer;
+        this.topic = topic;
     }
 
     @Override
@@ -42,8 +45,8 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
 
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
-            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix(), aktorId.asString(), arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
-            LOG.info("Arbeidssoker registrert-event publisert på topic, aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
+            producer.send(new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
+            LOG.info("Arbeidssoker registrert-event publisert på topic, {}", topic);
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             LOG.warn("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
@@ -56,14 +59,4 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
     private boolean skalArbeidssokerRegistrertPubliseres() {
         return unleashService.isEnabled("arbeidssokerregistrering.arbeidssokerRegistrert");
     }
-
-    private static String getEnvSuffix() {
-        String envName = getenv("APP_ENVIRONMENT_NAME");
-        if (envName != null) {
-            return "-" + envName.toLowerCase();
-        } else {
-            return "";
-        }
-    }
-
 }

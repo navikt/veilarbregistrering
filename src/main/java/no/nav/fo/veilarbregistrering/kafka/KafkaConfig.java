@@ -24,13 +24,19 @@ public class KafkaConfig {
     @Bean
     ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
             KafkaProducer kafkaProducer, UnleashService unleashService) {
-        return new ArbeidssokerRegistrertKafkaProducer(kafkaProducer, unleashService);
+        return new ArbeidssokerRegistrertKafkaProducer(
+                kafkaProducer,
+                unleashService,
+                "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
     }
 
     @Bean
     KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(
             KafkaProducer kafkaProducer, UnleashService unleashService) {
-        return new KontaktBrukerOpprettetKafkaProducer(kafkaProducer, unleashService);
+        return new KontaktBrukerOpprettetKafkaProducer(
+                kafkaProducer,
+                unleashService,
+                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
     }
 
     @Bean
@@ -69,5 +75,14 @@ public class KafkaConfig {
             props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, getenv("NAV_TRUSTSTORE_PASSWORD"));
         }
         return props;
+    }
+
+    private static String getEnvSuffix() {
+        String envName = getenv("APP_ENVIRONMENT_NAME");
+        if (envName != null) {
+            return "-" + envName.toLowerCase();
+        } else {
+            return "";
+        }
     }
 }

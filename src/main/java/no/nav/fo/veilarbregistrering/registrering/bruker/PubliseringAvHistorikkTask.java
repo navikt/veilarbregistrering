@@ -37,7 +37,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
 
     @Override
     public void run() {
-        LOG.info("run");
+        LOG.info("Running");
 
         if(LeaderElection.isLeader()) {
             LOG.info("I´am the leader");
@@ -46,7 +46,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
             while (this.sjekkFeatureErPa()) {
                 Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(pageable);
                 registreringer.forEach(this::publiserPaKafka);
-                
+
                 if (!registreringer.hasNext()) {
                     break;
                 }

@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
-import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,18 +13,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static java.lang.System.getenv;
-
 public class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelseProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(KontaktBrukerOpprettetKafkaProducer.class);
 
-    private final org.apache.kafka.clients.producer.KafkaProducer producer;
+    private final KafkaProducer producer;
     private final UnleashService unleashService;
+    private final String topic;
 
-    public KontaktBrukerOpprettetKafkaProducer(org.apache.kafka.clients.producer.KafkaProducer kafkaProducer, UnleashService unleashService) {
+    public KontaktBrukerOpprettetKafkaProducer(
+            KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
         this.unleashService = unleashService;
         this.producer = kafkaProducer;
+        this.topic = topic;
     }
 
     @Override
@@ -35,8 +37,8 @@ public class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvend
 
         KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
-            producer.send(new ProducerRecord<>("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(), aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
-            LOG.info("KontaktBrukerOpprettetEvent publisert på topic, aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
+            producer.send(new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
+            LOG.info("KontaktBrukerOpprettetEvent publisert på topic, {}", topic);
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             LOG.warn("Sending av KontaktBrukerOpprettetEvent til Kafka feilet", e);
@@ -49,14 +51,4 @@ public class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvend
     private boolean skalKontaktBrukerHenvendelsePubliseres() {
         return unleashService.isEnabled("arbeidssokerregistrering.kontantBrukerHenvendelse");
     }
-
-    private static String getEnvSuffix() {
-        String envName = getenv("APP_ENVIRONMENT_NAME");
-        if (envName != null) {
-            return "-" + envName.toLowerCase();
-        } else {
-            return "";
-        }
-    }
-
 }
