@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -35,9 +36,16 @@ public class PubliseringAvHistorikkTask implements Runnable {
                 .schedule(this, 1, MINUTES);
     }
 
+    @PostConstruct
+    private void postConstruct() {
+        LOG.info("postConstruct");
+    }
+
     @Override
     public void run() {
+        LOG.info("run");
         if(LeaderElection.isLeader()) {
+            LOG.info("This is the leader");
             int currentPage = 0;
             while (this.sjekkFeatureErPa()) {
                 Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(currentPage);
