@@ -77,7 +77,7 @@ public class OppgaveService {
         muligOppgave.ifPresent(oppgave -> {
             long timerSidenForrigeOppgave = ChronoUnit.HOURS.between(oppgave.getOpprettet(), LocalDateTime.now());
 
-            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden", oppgave.getOpprettet(), timerSidenForrigeOppgave);
+            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.", oppgave.getOpprettet(), timerSidenForrigeOppgave);
 
             Metrics.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, new Metric() {
                 @Override
