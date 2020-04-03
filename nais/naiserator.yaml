@@ -22,6 +22,8 @@ spec:
     value: {{ aktoer_url }}
   - name: SECURITYTOKENSERVICE_URL
     value: {{ securitytokenservice_url }}
+  - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
+    value: {{ securitytokenservice_openid_configuration_url }}
   - name: VEILARBPERSONAPI_URL
     value: {{ veilarbpersonapi_url }}
   - name: VEILARBOPPFOLGINGAPI_URL
