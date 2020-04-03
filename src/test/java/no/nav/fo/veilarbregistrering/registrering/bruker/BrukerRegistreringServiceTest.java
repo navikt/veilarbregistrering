@@ -51,7 +51,7 @@ public class BrukerRegistreringServiceTest {
     private StartRegistreringUtils startRegistreringUtils;
     private ManuellRegistreringService manuellRegistreringService;
     private UnleashService unleashService;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer;
 
     @BeforeEach
     public void setup() {
@@ -64,7 +64,7 @@ public class BrukerRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         startRegistreringUtils = new StartRegistreringUtils();
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
+        ordinaerBrukerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -77,7 +77,7 @@ public class BrukerRegistreringServiceTest {
                         manuellRegistreringService,
                         startRegistreringUtils,
                         unleashService,
-                        arbeidssokerRegistrertProducer);
+                        ordinaerBrukerRegistrertProducer);
 
         when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
         when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
@@ -157,21 +157,6 @@ public class BrukerRegistreringServiceTest {
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
         StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isFalse();
-    }
-
-    @Test
-    void skalIkkeRegistrereSykmeldteMedTomBesvarelse() {
-        mockSykmeldtBrukerOver39uker();
-        mockSykmeldtMedArbeidsgiver();
-        SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
-    }
-
-    @Test
-    void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
-        mockSykmeldtMedArbeidsgiver();
-        SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
     }
 
     @Test
@@ -360,13 +345,6 @@ public class BrukerRegistreringServiceTest {
         when(sykeforloepMetadataClient.hentSykmeldtInfoData(any())).thenReturn(
                 new InfotrygdData()
                         .withMaksDato(dagensDatoMinus14Uker)
-        );
-    }
-
-
-    private void mockSykmeldtMedArbeidsgiver() {
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true).withKanReaktiveres(false)
         );
     }
 

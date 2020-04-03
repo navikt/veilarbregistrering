@@ -9,10 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
@@ -30,6 +27,7 @@ public class RegistreringResourceTest {
     private UserService userService;
     private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
+    private SykmeldtBrukerRegistreringService sykmeldtBrukerRegistreringService;
     private UnleashService unleashService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
@@ -40,6 +38,7 @@ public class RegistreringResourceTest {
         userService = mock(UserService.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+        sykmeldtBrukerRegistreringService = mock(SykmeldtBrukerRegistreringService.class);
         unleashService = mock(UnleashService.class);
 
         registreringResource = new RegistreringResource(
@@ -47,8 +46,8 @@ public class RegistreringResourceTest {
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
-                unleashService
-        );
+                unleashService,
+                sykmeldtBrukerRegistreringService);
     }
 
     @Test

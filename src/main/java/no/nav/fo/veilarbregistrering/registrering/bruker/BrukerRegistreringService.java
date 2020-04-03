@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.amplitude.AmplitudeLogger;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -25,12 +27,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
@@ -44,7 +46,7 @@ public class BrukerRegistreringService {
     private final UnleashService unleashService;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
-    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private final OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer;
     private OppfolgingGateway oppfolgingGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private ManuellRegistreringService manuellRegistreringService;
@@ -59,7 +61,7 @@ public class BrukerRegistreringService {
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      UnleashService unleashService,
-                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
+                                     OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer
 
     ) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
@@ -71,7 +73,7 @@ public class BrukerRegistreringService {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
-        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
+        this.ordinaerBrukerRegistrertProducer = ordinaerBrukerRegistrertProducer;
     }
 
     @Transactional
@@ -187,7 +189,7 @@ public class BrukerRegistreringService {
         RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
         brukerRegistreringRepository.lagre(registreringTilstand);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+        ordinaerBrukerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
                 ordinaerBrukerRegistrering.getOpprettetDato());
@@ -264,28 +266,6 @@ public class BrukerRegistreringService {
                     registrering.setManueltRegistrertAv(manuellRegistreringService
                             .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
                 });
-    }
-
-    @Transactional
-    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
-        ofNullable(sykmeldtRegistrering.getBesvarelse())
-                .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
-
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
-
-        if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
-            throw new RuntimeException("Bruker kan ikke registreres.");
-        }
-
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
-        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
-        LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
-
-        if (unleashService.isEnabled("veilarbregistrering.amplitude.test")) {
-            AmplitudeLogger.log(bruker.getAktorId());
-        }
-
-        return id;
     }
 
     private boolean lagreUtenArenaOverforing() {

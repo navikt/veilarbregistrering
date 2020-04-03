@@ -55,7 +55,7 @@ public class ServiceBeansConfig {
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
             UnleashService unleashService,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
+            OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -67,21 +67,35 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 startRegistreringUtils,
                 unleashService,
-                arbeidssokerRegistrertProducer
+                ordinaerBrukerRegistrertProducer
         );
     }
 
     @Bean
     PubliseringAvHistorikkTask publiseringAvHistorikkTask (
             BrukerRegistreringRepository brukerRegistreringRepository,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer,
             UnleashService unleashService
     ) {
         return new PubliseringAvHistorikkTask (
                 brukerRegistreringRepository,
-                arbeidssokerRegistrertProducer,
+                ordinaerBrukerRegistrertProducer,
                 unleashService
         );
+    }
+
+    @Bean
+    SykmeldtBrukerRegistreringService sykmeldtBrukerRegistreringService(
+            BrukerRegistreringService brukerRegistreringService,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            OppfolgingGateway oppfolgingGateway,
+            UnleashService unleashService
+    ) {
+        return new SykmeldtBrukerRegistreringService(
+                brukerRegistreringService,
+                brukerRegistreringRepository,
+                oppfolgingGateway,
+                unleashService);
     }
 
     @Bean
@@ -90,6 +104,7 @@ public class ServiceBeansConfig {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
+            SykmeldtBrukerRegistreringService sykmeldtBrukerRegistreringService,
             UnleashService unleashService
     ) {
         return new RegistreringResource(
@@ -97,8 +112,8 @@ public class ServiceBeansConfig {
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
-                unleashService
-        );
+                unleashService,
+                sykmeldtBrukerRegistreringService);
     }
 
     @Bean
@@ -186,13 +201,13 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             OppfolgingGateway oppfolgingGateway,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+            OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer) {
 
         return new ArenaOverforingService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 oppfolgingGateway,
-                arbeidssokerRegistrertProducer);
+                ordinaerBrukerRegistrertProducer);
     }
 
     @Bean
