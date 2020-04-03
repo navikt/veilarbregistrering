@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProvider;
+import no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProviderConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
@@ -20,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+
+import static no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProviderConfig.STS_OIDC_CONFIGURATION_URL_PROPERTY;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
@@ -48,10 +53,16 @@ public class ApplicationConfig implements ApiApplication {
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
+
+        SecurityTokenServiceOidcProvider securityTokenServiceOidcProvider = new SecurityTokenServiceOidcProvider(SecurityTokenServiceOidcProviderConfig.builder()
+                .discoveryUrl(getRequiredProperty(STS_OIDC_CONFIGURATION_URL_PROPERTY))
+                .build());
+
         apiAppConfigurator
                 .validateAzureAdExternalUserTokens()
                 .issoLogin()
-                .sts();
+                .sts()
+                .oidcProvider(securityTokenServiceOidcProvider);
     }
 
     @Transactional

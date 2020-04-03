@@ -4,6 +4,7 @@ feature_endpoint_url: https://feature-fss-q0.nais.preprod.local/feature
 aareg_url: https://modapp-q0.adeo.no/aareg-services/ArbeidsforholdService/v3
 aktoer_url: https://app-q0.adeo.no/aktoerregister/ws/Aktoer/v2
 securitytokenservice_url: https://sts-q0.preprod.local/SecurityTokenServiceProvider/
+securitytokenservice_openid_configuration_url: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
 veilarbpersonapi_url: https://veilarbperson-q0.nais.preprod.local/veilarbperson/api
 veilarboppfolgingapi_url: https://veilarboppfolging-q0.nais.preprod.local/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp-q0.adeo.no/asm-pdp/authorize
