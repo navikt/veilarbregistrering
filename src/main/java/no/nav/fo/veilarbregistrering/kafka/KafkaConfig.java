@@ -22,9 +22,9 @@ import static java.lang.System.getenv;
 public class KafkaConfig {
 
     @Bean
-    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
+    OrdinaerBrukerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
             KafkaProducer kafkaProducer, UnleashService unleashService) {
-        return new ArbeidssokerRegistrertKafkaProducer(
+        return new OrdinaerBrukerRegistrertKafkaProducer(
                 kafkaProducer,
                 unleashService,
                 "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());

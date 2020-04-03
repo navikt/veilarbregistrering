@@ -11,7 +11,7 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
@@ -58,7 +58,7 @@ class OppfolgingClientTest {
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer;
     private ClientAndServer mockServer;
 
     @AfterEach
@@ -80,7 +80,7 @@ class OppfolgingClientTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {};
+        ordinaerBrukerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {};
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -93,7 +93,7 @@ class OppfolgingClientTest {
                         manuellRegistreringService,
                         startRegistreringUtils,
                         unleashService,
-                        arbeidssokerRegistrertProducer);
+                        ordinaerBrukerRegistrertProducer);
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);

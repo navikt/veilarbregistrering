@@ -18,17 +18,17 @@ public class PubliseringAvHistorikkTask implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvHistorikkTask.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private final OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer;
     private final UnleashService unleashService;
     private static final int PAGESIZE = 100;
 
     public PubliseringAvHistorikkTask(
             BrukerRegistreringRepository brukerRegistreringRepository,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer,
             UnleashService unleashService) {
 
         this.brukerRegistreringRepository = brukerRegistreringRepository;
-        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
+        this.ordinaerBrukerRegistrertProducer = ordinaerBrukerRegistrertProducer;
         this.unleashService = unleashService;
 
         Executors.newSingleThreadScheduledExecutor()
@@ -69,7 +69,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
     }
 
     private void publiserPaKafka(ArbeidssokerRegistrertEventDto dto) {
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+        ordinaerBrukerRegistrertProducer.publiserArbeidssokerRegistrert(
                 dto.getAktorId(),
                 //TODO: Sjekk om alle verdiene vi har i databasen er støttet
                 DinSituasjonSvar.valueOf(dto.getBegrunnelseForRegistrering()),

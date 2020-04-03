@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
 import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrertProducer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -17,15 +17,15 @@ import java.util.concurrent.TimeoutException;
 
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 
-public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
+public class OrdinaerBrukerRegistrertKafkaProducer implements OrdinaerBrukerRegistrertProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerRegistrertKafkaProducer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrdinaerBrukerRegistrertKafkaProducer.class);
 
     private final KafkaProducer producer;
     private final UnleashService unleashService;
     private final String topic;
 
-    public ArbeidssokerRegistrertKafkaProducer(
+    public OrdinaerBrukerRegistrertKafkaProducer(
             KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
         this.unleashService = unleashService;
         this.producer = kafkaProducer;

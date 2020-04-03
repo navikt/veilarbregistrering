@@ -23,13 +23,13 @@ public class ArenaOverforingService {
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final OppfolgingGateway oppfolgingGateway;
-    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private final OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer;
 
-    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
-        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
+        this.ordinaerBrukerRegistrertProducer = ordinaerBrukerRegistrertProducer;
     }
 
     /**
@@ -66,7 +66,7 @@ public class ArenaOverforingService {
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+        ordinaerBrukerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
                 ordinaerBrukerRegistrering.getOpprettetDato());

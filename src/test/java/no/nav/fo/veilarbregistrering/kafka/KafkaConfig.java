@@ -9,8 +9,8 @@ import static org.mockito.Mockito.mock;
 public class KafkaConfig {
 
     @Bean
-    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer() {
-        return mock(ArbeidssokerRegistrertKafkaProducer.class);
+    OrdinaerBrukerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer() {
+        return mock(OrdinaerBrukerRegistrertKafkaProducer.class);
     }
 
     @Bean

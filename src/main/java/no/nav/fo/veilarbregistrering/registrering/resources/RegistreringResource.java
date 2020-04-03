@@ -6,10 +6,7 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
@@ -38,6 +35,7 @@ public class RegistreringResource {
 
     private final UnleashService unleashService;
     private final BrukerRegistreringService brukerRegistreringService;
+    private final SykmeldtBrukerRegistreringService sykmeldtBrukerRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
@@ -47,13 +45,14 @@ public class RegistreringResource {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            UnleashService unleashService
-    ) {
+            UnleashService unleashService,
+            SykmeldtBrukerRegistreringService sykmeldtBrukerRegistreringService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.unleashService = unleashService;
+        this.sykmeldtBrukerRegistreringService = sykmeldtBrukerRegistreringService;
     }
 
     @GET
@@ -165,13 +164,13 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            long id = sykmeldtBrukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, SYKMELDT);
 
             reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            sykmeldtBrukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
         reportFields(SYKMELDT_BESVARELSE_EVENT,

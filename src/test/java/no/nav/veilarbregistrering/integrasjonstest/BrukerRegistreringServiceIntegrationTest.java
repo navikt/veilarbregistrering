@@ -15,7 +15,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
@@ -174,7 +174,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 UnleashService unleashServicee,
-                ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+                OrdinaerBrukerRegistrertProducer ordinaerBrukerRegistrertProducer) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -186,7 +186,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     manuellRegistreringService,
                     startRegistreringUtils,
                     unleashServicee,
-                    arbeidssokerRegistrertProducer
+                    ordinaerBrukerRegistrertProducer
             );
         }
 
@@ -196,7 +196,7 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        ArbeidssokerRegistrertProducer meldingsSender() {
+        OrdinaerBrukerRegistrertProducer meldingsSender() {
             return (aktorId, brukersSituasjon, opprettetDato) -> {
                 //noop
             };

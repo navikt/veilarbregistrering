@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 import java.time.LocalDateTime;
 
-public interface ArbeidssokerRegistrertProducer {
+public interface SykmeldtBrukerRegistrertProducer {
 
     void publiserArbeidssokerRegistrert(
             AktorId aktorId,
