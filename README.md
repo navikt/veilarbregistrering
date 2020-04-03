@@ -13,6 +13,7 @@ Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/ar
 - NAV Enhet (for veileder pr ident)
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
+- Oppgave : REST
 
 # Komme i gang
 
