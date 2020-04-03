@@ -32,7 +32,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
         this.unleashService = unleashService;
 
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this, 5, 5, MINUTES);
+                .schedule(this, 5, MINUTES);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
             producer.send(new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerRegistrertEvent)).get(2, TimeUnit.SECONDS);
-            LOG.info("Arbeidssoker registrert-event publisert på topic, {}", topic);
+            LOG.trace("Arbeidssoker registrert-event publisert på topic, {}", topic);
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             LOG.warn("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
