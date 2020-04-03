@@ -71,7 +71,6 @@ public class PubliseringAvHistorikkTask implements Runnable {
     private void publiserPaKafka(ArbeidssokerRegistrertEventDto dto) {
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 dto.getAktorId(),
-                //TODO: Sjekk om alle verdiene vi har i databasen er støttet
                 DinSituasjonSvar.valueOf(dto.getBegrunnelseForRegistrering()),
                 dto.getOpprettetDato());
     }
