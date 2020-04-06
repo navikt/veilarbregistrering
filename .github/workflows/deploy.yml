@@ -108,7 +108,7 @@ jobs:
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
-        DRY_RUN: true
+        DRY_RUN: false
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-p.yaml
 
