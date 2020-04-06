@@ -4,11 +4,9 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -28,24 +26,20 @@ public class OppgaveService {
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
-    private final UnleashService unleashService;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            UnleashService unleashService) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
-        this.unleashService = unleashService;
     }
 
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
-        if (skalValidereNyOppgaveMotAktive()) {
-            validerNyOppgaveMotAktive(bruker, oppgaveType);
-        }
+        validerNyOppgaveMotAktive(bruker, oppgaveType);
+
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
@@ -58,11 +52,7 @@ public class OppgaveService {
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
 
-        try {
-            reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
-        } catch (Exception e) {
-            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: %s, Oppgavetype: %s", oppgave.getTildeltEnhetsnr(), oppgaveType), e);
-        }
+        reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
 
         return oppgave;
     }
@@ -91,27 +81,17 @@ public class OppgaveService {
                 }
             }, oppgaveType);
 
-            if (skalKasteEgenkomponertFeil()) {
-                throw new Feil(new Feil.Type() {
-                    @Override
-                    public String getName() {
-                        return "ALLEREDE_OPPRETTET_OPPGAVE";
-                    }
+            throw new Feil(new Feil.Type() {
+                @Override
+                public String getName() {
+                    return "ALLEREDE_OPPRETTET_OPPGAVE";
+                }
 
-                    @Override
-                    public Response.Status getStatus() {
-                        return Response.Status.FORBIDDEN;
-                    }
-                });
-            }
+                @Override
+                public Response.Status getStatus() {
+                    return Response.Status.FORBIDDEN;
+                }
+            });
         });
-    }
-
-    private boolean skalValidereNyOppgaveMotAktive() {
-        return unleashService.isEnabled("veilarbregistrering.validereOppgave");
-    }
-
-    private boolean skalKasteEgenkomponertFeil() {
-        return unleashService.isEnabled("veilarbregistrering.validereOppgave.egenkomponertfeil");
     }
 }

@@ -4,11 +4,9 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.ClientErrorException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -27,19 +25,15 @@ public class OppgaveServiceTest {
 
     private OppgaveGateway oppgaveGateway;
     private OppgaveRepository oppgaveRepository;
-    private UnleashService unleashService;
 
     @Before
     public void setUp() {
         oppgaveGateway = mock(OppgaveGateway.class);
         oppgaveRepository = mock(OppgaveRepository.class);
-        unleashService = mock(UnleashService.class);
         oppgaveService = new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
-                aktorId -> {
-                },
-                unleashService);
+                aktorId -> { });
     }
 
     @Test
@@ -55,7 +49,6 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
-        when(unleashService.isEnabled("veilarbregistrering.lagreOppgave")).thenReturn(true);
         when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
@@ -78,9 +71,6 @@ public class OppgaveServiceTest {
 
     @Test(expected = Feil.class)
     public void skal_kaste_exception_dersom_det_finnes_nyere_oppgave_fra_for() {
-        when(unleashService.isEnabled("veilarbregistrering.validereOppgave")).thenReturn(true);
-        when(unleashService.isEnabled("veilarbregistrering.validereOppgave.egenkomponertfeil")).thenReturn(true);
-
         OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.now().minusDays(1));
         List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetDagenFor);
 
@@ -93,8 +83,6 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
-        when(unleashService.isEnabled("veilarbregistrering.validereOppgave")).thenReturn(true);
-
         OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.now().minusDays(3));
         List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetTreDagerFor);
 
@@ -110,7 +98,6 @@ public class OppgaveServiceTest {
 
     @Test
     public void ingen_tidligere_oppgaver() {
-        when(unleashService.isEnabled("veilarbregistrering.validereOppgave")).thenReturn(true);
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList());
         when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
 
