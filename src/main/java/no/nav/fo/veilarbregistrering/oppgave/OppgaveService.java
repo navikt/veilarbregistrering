@@ -43,9 +43,8 @@ public class OppgaveService {
     }
 
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
-        if (skalValidereNyOppgaveMotAktive()) {
-            validerNyOppgaveMotAktive(bruker, oppgaveType);
-        }
+        validerNyOppgaveMotAktive(bruker, oppgaveType);
+
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
@@ -58,11 +57,7 @@ public class OppgaveService {
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
 
-        try {
-            reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
-        } catch (Exception e) {
-            LOG.warn(String.format("Logging til influx feilet. Enhetsnr: %s, Oppgavetype: %s", oppgave.getTildeltEnhetsnr(), oppgaveType), e);
-        }
+        reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
 
         return oppgave;
     }
@@ -91,27 +86,17 @@ public class OppgaveService {
                 }
             }, oppgaveType);
 
-            if (skalKasteEgenkomponertFeil()) {
-                throw new Feil(new Feil.Type() {
-                    @Override
-                    public String getName() {
-                        return "ALLEREDE_OPPRETTET_OPPGAVE";
-                    }
+            throw new Feil(new Feil.Type() {
+                @Override
+                public String getName() {
+                    return "ALLEREDE_OPPRETTET_OPPGAVE";
+                }
 
-                    @Override
-                    public Response.Status getStatus() {
-                        return Response.Status.FORBIDDEN;
-                    }
-                });
-            }
+                @Override
+                public Response.Status getStatus() {
+                    return Response.Status.FORBIDDEN;
+                }
+            });
         });
-    }
-
-    private boolean skalValidereNyOppgaveMotAktive() {
-        return unleashService.isEnabled("veilarbregistrering.validereOppgave");
-    }
-
-    private boolean skalKasteEgenkomponertFeil() {
-        return unleashService.isEnabled("veilarbregistrering.validereOppgave.egenkomponertfeil");
     }
 }
