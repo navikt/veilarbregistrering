@@ -45,6 +45,7 @@ public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
 
         while (konsumeringAvKontaktBruker()) {
             ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofMinutes(2));
+            LOG.info("Leser {} events fra topic aapen-arbeid-arbeidssoker-kontaktbruker-opprettet", consumerRecords.count());
             consumerRecords.forEach(record -> {
                 LOG.info("Behandler kontaktBrukerOpprettetEvent");
 

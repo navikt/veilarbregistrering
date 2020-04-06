@@ -31,8 +31,11 @@ public class PubliseringAvHistorikkTask implements Runnable {
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.unleashService = unleashService;
 
+        /*
+        Kan taes inn ved behov for å kjøre ny batch
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
+         */
     }
 
     @Override
