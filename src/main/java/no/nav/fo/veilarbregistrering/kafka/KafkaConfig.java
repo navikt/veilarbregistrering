@@ -1,18 +1,25 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
+import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstillatelseService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Properties;
 
 import static java.lang.System.getProperty;
@@ -57,6 +64,42 @@ public class KafkaConfig {
             properties.putAll(getSecurityConfig());
         }
         return properties;
+    }
+
+    @Bean
+    KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
+            KafkaConsumer kafkaConsumer,
+            UnleashService unleashService,
+            DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService
+    ) {
+        return new KontaktBrukerOpprettetKafkaConsumer(
+                kafkaConsumer,
+                unleashService,
+                datakvalitetOppholdstillatelseService);
+    }
+
+    @Bean
+    KafkaConsumer kafkaConsumer() {
+        KafkaConsumer kafkaConsumer = new KafkaConsumer(kafkaConsumerProperties());
+        kafkaConsumer.subscribe(Collections.singletonList("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix()));
+        return kafkaConsumer;
+    }
+
+    @Bean
+    Properties kafkaConsumerProperties() {
+        Properties properties = new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());
+        properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return properties;
+    }
+
+    private String getGroupId() {
+        return "veilarbregistrering";
     }
 
     private static Properties getSecurityConfig() {
