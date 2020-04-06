@@ -68,21 +68,14 @@ public class KafkaConfig {
 
     @Bean
     KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
-            KafkaConsumer kafkaConsumer,
             UnleashService unleashService,
             DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService
     ) {
         return new KontaktBrukerOpprettetKafkaConsumer(
-                kafkaConsumer,
+                kafkaConsumerProperties(),
                 unleashService,
+                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(),
                 datakvalitetOppholdstillatelseService);
-    }
-
-    @Bean
-    KafkaConsumer kafkaConsumer() {
-        KafkaConsumer kafkaConsumer = new KafkaConsumer(kafkaConsumerProperties());
-        kafkaConsumer.subscribe(Collections.singletonList("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix()));
-        return kafkaConsumer;
     }
 
     @Bean
