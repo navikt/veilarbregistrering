@@ -4,11 +4,9 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -28,18 +26,15 @@ public class OppgaveService {
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
-    private final UnleashService unleashService;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            UnleashService unleashService) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
-        this.unleashService = unleashService;
     }
 
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {

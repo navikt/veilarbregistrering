@@ -141,14 +141,12 @@ public class ServiceBeansConfig {
     OppgaveService oppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            UnleashService unleashService) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
-                kontaktBrukerHenvendelseProducer,
-                unleashService);
+                kontaktBrukerHenvendelseProducer);
     }
 
     @Bean
