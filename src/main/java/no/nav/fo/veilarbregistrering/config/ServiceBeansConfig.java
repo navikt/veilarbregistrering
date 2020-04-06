@@ -205,4 +205,9 @@ public class ServiceBeansConfig {
         return new UserService(provider, aktorGateway);
     }
 
+    @Bean
+    DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService() {
+        return new DatakvalitetOppholdstillatelseServiceImpl();
+    }
+
 }
