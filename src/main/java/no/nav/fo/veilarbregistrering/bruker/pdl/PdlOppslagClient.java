@@ -32,7 +32,7 @@ public class PdlOppslagClient extends BaseClient {
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
     private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
     private final String TEMA_HEADER = "Tema";
-    private final String ALLE_TEMA_HEADERVERDI = "GEN";
+    private final String OPPFOLGING_TEMA_HEADERVERDI = "OPP";
 
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
@@ -64,7 +64,7 @@ public class PdlOppslagClient extends BaseClient {
                         .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                         .header("Authorization", "Bearer " + token)
                         .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                        .header(TEMA_HEADER, ALLE_TEMA_HEADERVERDI)
+                        .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
                         .post(Entity.json(request), String.class));
     }
 
