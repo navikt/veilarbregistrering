@@ -70,8 +70,8 @@ public class PdlOppslagClient extends BaseClient {
                         .request()
                         .header(NAV_PERSONIDENT_HEADER, fnr)
                         .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", token)
-                        .header(NAV_CONSUMER_TOKEN_HEADER, token)
+                        .header("Authorization", "Bearer " + token)
+                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
                         .header(TEMA_HEADER, ALLE_TEMA_HEADERVERDI)
                         .post(Entity.json(request), String.class));
     }
