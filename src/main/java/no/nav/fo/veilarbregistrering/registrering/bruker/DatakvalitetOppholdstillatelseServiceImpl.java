@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.bruker.Person;
-import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +22,7 @@ public class DatakvalitetOppholdstillatelseServiceImpl implements DatakvalitetOp
         try {
             Person person = pdlOppslagGateway.hentPerson(aktorid);
             LOG.info("Persondata fra PDL: {}", person);
+
         } catch (Exception e) {
             LOG.error("Feil ved henting av data fra PDL", e);
         }

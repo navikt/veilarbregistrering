@@ -4,7 +4,7 @@ public class Variables {
 
     private String ident;
 
-    private boolean navnHistorikk;
+    private boolean oppholdHistorikk;
 
     public String getIdent() {
         return ident;
@@ -14,17 +14,17 @@ public class Variables {
         this.ident = ident;
     }
 
-    public boolean isNavnHistorikk() {
-        return navnHistorikk;
+    public boolean isOppholdHistorikk() {
+        return oppholdHistorikk;
     }
 
-    public void setNavnHistorikk(boolean navnHistorikk) {
-        this.navnHistorikk = navnHistorikk;
+    public void setOppholdHistorikk(boolean oppholdHistorikk) {
+        this.oppholdHistorikk = oppholdHistorikk;
     }
 
-    public Variables(String ident, boolean navnHistorikk) {
+    public Variables(String ident, boolean oppholdHistorikk) {
         this.ident = ident;
-        this.navnHistorikk = navnHistorikk;
+        this.oppholdHistorikk = oppholdHistorikk;
     }
 
 
