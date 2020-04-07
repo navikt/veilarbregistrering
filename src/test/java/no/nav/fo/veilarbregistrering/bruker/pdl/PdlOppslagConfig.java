@@ -9,8 +9,8 @@ public class PdlOppslagConfig {
     private final String PDL_PROPERTY_NAME = "PDL_URL";
 
     @Bean
-    PdlOppslagGatewayImpl pdlOppslagService() {
-        return new PdlOppslagGatewayImpl(null, null, null) {
+    PdlOppslagClient pdlOppslagService() {
+        return new PdlOppslagClient(null, null, null) {
         };
     }
 }

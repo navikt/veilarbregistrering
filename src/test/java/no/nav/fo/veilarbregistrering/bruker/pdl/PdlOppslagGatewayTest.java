@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,33 +29,33 @@ public class PdlOppslagGatewayTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
             }
         };
         when(unleash.isEnabled(any())).thenReturn(true);
-        Optional<PdlPerson> person = service.hentPerson("");
+        Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
 
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
     }
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
             }
         };
         when(unleash.isEnabled(any())).thenReturn(true);
-        service.hentPerson("");
+        service.hentPerson(AktorId.valueOf("111lll"));
     }
 
     private final String okJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -63,7 +64,7 @@ public class PdlOppslagGatewayTest {
 
     private final String feilJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonError.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonError.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
