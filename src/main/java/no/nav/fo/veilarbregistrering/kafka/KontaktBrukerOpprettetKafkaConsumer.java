@@ -52,7 +52,7 @@ public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
             consumer.subscribe(Collections.singletonList(topic));
 
             while (konsumeringAvKontaktBruker()) {
-                ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofSeconds(1));
+                ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
