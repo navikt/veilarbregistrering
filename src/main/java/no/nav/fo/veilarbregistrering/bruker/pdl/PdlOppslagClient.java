@@ -9,7 +9,6 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,22 +37,15 @@ public class PdlOppslagClient extends BaseClient {
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
     private SystemUserTokenProvider systemUserTokenProvider;
-    private final UnleashService unleashService;
 
     public PdlOppslagClient(
             String baseUrl,
-            Provider<HttpServletRequest> httpServletRequestProvider,
-            UnleashService unleashService
+            Provider<HttpServletRequest> httpServletRequestProvider
     ) {
         super(baseUrl, httpServletRequestProvider);
-        this.unleashService = unleashService;
     }
 
     public Optional<PdlPerson> hentPerson(AktorId aktorId) {
-        if (!isPdlEnabled()) {
-            return Optional.empty();
-        }
-
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
         String json = pdlJson(aktorId.asString(), request);
         LOG.info("json-response fra PDL: {}", json);
@@ -104,9 +96,5 @@ public class PdlOppslagClient extends BaseClient {
         public LocalDate read( final JsonReader jsonReader ) throws IOException {
             return LocalDate.parse(jsonReader.nextString());
         }
-    }
-
-    private boolean isPdlEnabled() {
-        return unleashService.isEnabled("veilarbregistrering.pdlEnabled");
     }
 }
