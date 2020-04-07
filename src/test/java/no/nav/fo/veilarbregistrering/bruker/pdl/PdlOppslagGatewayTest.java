@@ -28,7 +28,7 @@ public class PdlOppslagGatewayTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
@@ -42,7 +42,7 @@ public class PdlOppslagGatewayTest {
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagGatewayImpl service = new PdlOppslagGatewayImpl("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
@@ -54,7 +54,7 @@ public class PdlOppslagGatewayTest {
 
     private final String okJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -63,7 +63,7 @@ public class PdlOppslagGatewayTest {
 
     private final String feilJson() {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagGatewayImpl.class.getResource("/pdl/hentPersonError.json").toURI()));
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonError.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
