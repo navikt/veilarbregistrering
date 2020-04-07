@@ -6,7 +6,7 @@ public class PdlError {
     private String message;
     private List<PdlErrorLocation> locations;
     private List<String> path;
-    private List<PdlErrorExtension> extensions;
+    private PdlErrorExtension extensions;
 
     public PdlError() {}
 
@@ -34,11 +34,11 @@ public class PdlError {
         this.path = path;
     }
 
-    public List<PdlErrorExtension> getExtensions() {
+    public PdlErrorExtension getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<PdlErrorExtension> extensions) {
+    public void setExtensions(PdlErrorExtension extensions) {
         this.extensions = extensions;
     }
 }

@@ -27,7 +27,7 @@ import java.util.Optional;
 
 public class PdlOppslagClient extends BaseClient {
 
-    private final Logger logger = LoggerFactory.getLogger(PdlOppslagClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagClient.class);
 
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
@@ -56,6 +56,7 @@ public class PdlOppslagClient extends BaseClient {
 
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
         String json = pdlJson(aktorId.asString(), request);
+        LOG.info("json-response fra PDL: {}", json);
         PdlResponse resp = gson.fromJson(json, PdlResponse.class);
         validateResponse(resp);
         return Optional.of(resp.getData().getHentPerson());
@@ -77,7 +78,7 @@ public class PdlOppslagClient extends BaseClient {
 
     private void validateResponse(PdlResponse response) {
         if (response.getErrors() != null && response.getErrors().size() > 0) {
-            logger.warn("Error from PDL: " + gson.toJson(response.getErrors()));
+            LOG.warn("Error from PDL: " + gson.toJson(response.getErrors()));
             throw new RuntimeException("Error from PDL");
         }
     }
