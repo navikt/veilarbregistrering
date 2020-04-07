@@ -68,21 +68,14 @@ public class KafkaConfig {
 
     @Bean
     KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
-            KafkaConsumer kafkaConsumer,
             UnleashService unleashService,
             DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService
     ) {
         return new KontaktBrukerOpprettetKafkaConsumer(
-                kafkaConsumer,
+                kafkaConsumerProperties(),
                 unleashService,
+                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(),
                 datakvalitetOppholdstillatelseService);
-    }
-
-    @Bean
-    KafkaConsumer kafkaConsumer() {
-        KafkaConsumer kafkaConsumer = new KafkaConsumer(kafkaConsumerProperties());
-        kafkaConsumer.subscribe(Collections.singletonList("aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix()));
-        return kafkaConsumer;
     }
 
     @Bean
@@ -95,6 +88,9 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+            properties.putAll(getSecurityConfig());
+        }
         return properties;
     }
 

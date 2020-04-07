@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -23,16 +25,19 @@ public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(KontaktBrukerOpprettetKafkaConsumer.class);
 
-    private final KafkaConsumer<String, KontaktBrukerOpprettetEvent> consumer;
+    private final Properties kafkaConsumerProperties;
     private final UnleashService unleashService;
+    private final String topic;
     private final DatakvalitetOppholdstillatelseService bruker;
 
     public KontaktBrukerOpprettetKafkaConsumer(
-            KafkaConsumer<String, KontaktBrukerOpprettetEvent> consumer,
+            Properties kafkaConsumerProperties,
             UnleashService unleashService,
+            String topic,
             DatakvalitetOppholdstillatelseService bruker) {
-        this.consumer = consumer;
+        this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.unleashService = unleashService;
+        this.topic = topic;
         this.bruker = bruker;
 
         Executors.newSingleThreadScheduledExecutor()
@@ -43,17 +48,23 @@ public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
     public void run() {
         LOG.info("Running");
 
-        while (konsumeringAvKontaktBruker()) {
-            ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofMinutes(2));
-            LOG.info("Leser {} events fra topic aapen-arbeid-arbeidssoker-kontaktbruker-opprettet", consumerRecords.count());
-            consumerRecords.forEach(record -> {
-                LOG.info("Behandler kontaktBrukerOpprettetEvent");
+        try(KafkaConsumer<String, KontaktBrukerOpprettetEvent> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
+            consumer.subscribe(Collections.singletonList(topic));
 
-                KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
-                bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
-                //TODO: Skal dette gjøres pr. record, eller pr. poll?
+            while (konsumeringAvKontaktBruker()) {
+                ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofSeconds(1));
+                LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
+
+                consumerRecords.forEach(record -> {
+                    LOG.info("Behandler kontaktBrukerOpprettetEvent");
+
+                    KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
+                    bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
+                });
                 consumer.commitSync();
-            });
+            }
+        } catch (Exception e) {
+            LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
         }
     }
 
