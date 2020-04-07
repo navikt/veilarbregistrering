@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class PdlOppslagClient extends BaseClient {
+class PdlOppslagClient extends BaseClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagClient.class);
 
@@ -38,14 +38,14 @@ public class PdlOppslagClient extends BaseClient {
 
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    public PdlOppslagClient(
+    PdlOppslagClient(
             String baseUrl,
             Provider<HttpServletRequest> httpServletRequestProvider
     ) {
         super(baseUrl, httpServletRequestProvider);
     }
 
-    public Optional<PdlPerson> hentPerson(AktorId aktorId) {
+    Optional<PdlPerson> hentPerson(AktorId aktorId) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
         String json = pdlJson(aktorId.asString(), request);
         LOG.info("json-response fra PDL: {}", json);

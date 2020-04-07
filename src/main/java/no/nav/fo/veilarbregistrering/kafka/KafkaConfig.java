@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstil
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
@@ -19,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Properties;
 
 import static java.lang.System.getProperty;
@@ -30,19 +28,17 @@ public class KafkaConfig {
 
     @Bean
     ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
-            KafkaProducer kafkaProducer, UnleashService unleashService) {
+            KafkaProducer kafkaProducer) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducer,
-                unleashService,
                 "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
     }
 
     @Bean
     KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(
-            KafkaProducer kafkaProducer, UnleashService unleashService) {
+            KafkaProducer kafkaProducer) {
         return new KontaktBrukerOpprettetKafkaProducer(
                 kafkaProducer,
-                unleashService,
                 "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
     }
 

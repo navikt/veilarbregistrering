@@ -21,7 +21,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  * 2. Den skal kjøre i evig løkka
  * 3. Den skal kalle på et internt API for å hente oppholdstillatelse
  */
-public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
+class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(KontaktBrukerOpprettetKafkaConsumer.class);
 
@@ -30,7 +30,7 @@ public class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
     private final String topic;
     private final DatakvalitetOppholdstillatelseService bruker;
 
-    public KontaktBrukerOpprettetKafkaConsumer(
+    KontaktBrukerOpprettetKafkaConsumer(
             Properties kafkaConsumerProperties,
             UnleashService unleashService,
             String topic,

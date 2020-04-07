@@ -6,11 +6,11 @@ import no.nav.fo.veilarbregistrering.bruker.Person;
 
 import java.util.Optional;
 
-public class PdlOppslagGatewayImpl implements PdlOppslagGateway {
+class PdlOppslagGatewayImpl implements PdlOppslagGateway {
 
     private PdlOppslagClient pdlOppslagClient;
 
-    public PdlOppslagGatewayImpl(PdlOppslagClient pdlOppslagClient) {
+    PdlOppslagGatewayImpl(PdlOppslagClient pdlOppslagClient) {
         this.pdlOppslagClient = pdlOppslagClient;
     }
 

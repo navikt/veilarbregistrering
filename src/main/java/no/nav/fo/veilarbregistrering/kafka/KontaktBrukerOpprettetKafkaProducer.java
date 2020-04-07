@@ -13,28 +13,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelseProducer {
+class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelseProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(KontaktBrukerOpprettetKafkaProducer.class);
 
     private final KafkaProducer producer;
-    private final UnleashService unleashService;
     private final String topic;
 
-    public KontaktBrukerOpprettetKafkaProducer(
-            KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
-        this.unleashService = unleashService;
+    KontaktBrukerOpprettetKafkaProducer(KafkaProducer kafkaProducer, String topic) {
         this.producer = kafkaProducer;
         this.topic = topic;
     }
 
     @Override
     public void publiserHenvendelse(AktorId aktorId) {
-        if (!skalKontaktBrukerHenvendelsePubliseres()) {
-            LOG.info("Feature toggle, arbeidssokerregistrering.kontantBrukerHenvendelse, er skrudd av. Det publiseres ingen Kafka-event");
-            return;
-        }
-
         KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
             producer.send(new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
@@ -46,9 +38,5 @@ public class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvend
         } catch (Exception e) {
             LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
         }
-    }
-
-    private boolean skalKontaktBrukerHenvendelsePubliseres() {
-        return unleashService.isEnabled("arbeidssokerregistrering.kontantBrukerHenvendelse");
     }
 }

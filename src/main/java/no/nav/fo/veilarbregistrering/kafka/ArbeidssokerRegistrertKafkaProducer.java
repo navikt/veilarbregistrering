@@ -17,17 +17,14 @@ import java.util.concurrent.TimeoutException;
 
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 
-public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
+class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerRegistrertKafkaProducer.class);
 
     private final KafkaProducer producer;
-    private final UnleashService unleashService;
     private final String topic;
 
-    public ArbeidssokerRegistrertKafkaProducer(
-            KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
-        this.unleashService = unleashService;
+    ArbeidssokerRegistrertKafkaProducer(KafkaProducer kafkaProducer, String topic) {
         this.producer = kafkaProducer;
         this.topic = topic;
     }
@@ -37,11 +34,6 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
             AktorId aktorId,
             DinSituasjonSvar brukersSituasjon,
             LocalDateTime opprettetDato) {
-
-        if (!skalArbeidssokerRegistrertPubliseres()) {
-            LOG.info("Feature toggle, arbeidssokerregistrering.arbeidssokerRegistrert, er skrudd av. Det publiseres ingen Kafka-event");
-            return;
-        }
 
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
@@ -54,9 +46,5 @@ public class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistre
         } catch (Exception e) {
             LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
         }
-    }
-
-    private boolean skalArbeidssokerRegistrertPubliseres() {
-        return unleashService.isEnabled("arbeidssokerregistrering.arbeidssokerRegistrert");
     }
 }
