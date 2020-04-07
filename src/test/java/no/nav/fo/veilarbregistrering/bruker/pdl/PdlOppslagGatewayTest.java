@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,23 +18,20 @@ import static org.mockito.Mockito.when;
 public class PdlOppslagGatewayTest {
 
     private Provider<HttpServletRequest> requestProvider;
-    private UnleashService unleash;
 
     @Before
     public void setUp() {
-        unleash = mock(UnleashService.class);
         requestProvider = mock(Provider.class);
     }
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
             }
         };
-        when(unleash.isEnabled(any())).thenReturn(true);
         Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
 
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
@@ -43,13 +39,12 @@ public class PdlOppslagGatewayTest {
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, unleash) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
             }
         };
-        when(unleash.isEnabled(any())).thenReturn(true);
         service.hentPerson(AktorId.valueOf("111lll"));
     }
 
