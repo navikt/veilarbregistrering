@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +36,7 @@ public class PdlOppslagGatewayTest {
             }
         };
         when(unleash.isEnabled(any())).thenReturn(true);
-        Optional<PdlPerson> person = service.hentPerson("");
+        Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
 
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
     }
@@ -49,7 +50,7 @@ public class PdlOppslagGatewayTest {
             }
         };
         when(unleash.isEnabled(any())).thenReturn(true);
-        service.hentPerson("");
+        service.hentPerson(AktorId.valueOf("111lll"));
     }
 
     private final String okJson() {
