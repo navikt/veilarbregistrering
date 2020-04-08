@@ -14,6 +14,7 @@ Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/ar
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
 - Oppgave : REST
+- PDL
 
 # Komme i gang
 
