@@ -68,7 +68,6 @@ jobs:
         CLUSTER: dev-fss
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-q0.yaml
-        DRY_RUN: true
 
   deploy-q1:
     name: Deploy to q1 FSS
@@ -90,7 +89,6 @@ jobs:
         CLUSTER: dev-fss
         RESOURCE: nais/naiserator.yaml
         VARS: nais/vars-q1.yaml
-        DRY_RUN: true
 
   deploy-prod:
     name: Deploy to Prod FSS
