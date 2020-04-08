@@ -38,12 +38,12 @@ public class SykemeldingServiceTest {
     @Test
     public void hentSykmeldtInfoData_skal_håndtere_maksdato_mellom_39_og_52_uker() {
         SykemeldingGateway sykemeldingGateway = mock(SykemeldingGateway.class);
-        when(sykemeldingGateway.hentReberegnetMaksdato(any())).thenReturn(Maksdato.of("2020-04-01"));
+        when(sykemeldingGateway.hentReberegnetMaksdato(any())).thenReturn(Maksdato.of("2020-06-01"));
 
         sykemeldingService = new SykemeldingService(sykemeldingGateway);
 
         SykmeldtInfoData sykmeldtInfoData = sykemeldingService.hentSykmeldtInfoData(any());
-        assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo("2020-04-01");
+        assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo("2020-06-01");
         assertThat(sykmeldtInfoData.isErArbeidsrettetOppfolgingSykmeldtInngangAktiv()).isTrue();
     }
 }
