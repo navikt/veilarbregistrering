@@ -53,7 +53,7 @@ spec:
     enabled: true
     path: veilarbregistrering/internal/metrics
   readiness:
-    path: veilarbregistrering/internal/isReady
+    path: veilarbregistrering/internal/isAlive
     port: 8080
     initialDelay: 60
   replicas:
