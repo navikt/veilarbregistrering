@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.Optional;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvTypeOppholdstillatelse;
 
 public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
-
-    private static final int ANTALL_TIMER_GRENSE = 48;
 
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
@@ -60,8 +61,8 @@ public class OppgaveService {
     private void validerNyOppgaveMotAktive(Bruker bruker, OppgaveType oppgaveType) {
         List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(bruker.getAktorId());
         Optional<OppgaveImpl> muligOppgave = oppgaver.stream()
-                .filter(oppgave -> oppgave.getOppgavetype().equals(oppgaveType))
-                .filter(oppgave -> oppgave.getOpprettet().isAfter(LocalDateTime.now().minusHours(ANTALL_TIMER_GRENSE)))
+                .filter(oppgaveAvTypeOppholdstillatelse())
+                .filter(oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(idag()))
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
@@ -93,5 +94,12 @@ public class OppgaveService {
                 }
             });
         });
+    }
+
+    /**
+     * Protected metode for å kunne overstyre ifm. test.
+     */
+    protected LocalDate idag() {
+        return LocalDate.now();
     }
 }

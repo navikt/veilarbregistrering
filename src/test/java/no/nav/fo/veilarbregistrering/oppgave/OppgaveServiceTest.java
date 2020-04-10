@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,7 @@ public class OppgaveServiceTest {
     public void setUp() {
         oppgaveGateway = mock(OppgaveGateway.class);
         oppgaveRepository = mock(OppgaveRepository.class);
-        oppgaveService = new OppgaveService(
+        oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 aktorId -> { });
@@ -56,22 +57,9 @@ public class OppgaveServiceTest {
                 .opprettOppgave(BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 234L);
     }
 
-    private static class DummyOppgaveResponse implements Oppgave {
-
-        @Override
-        public long getId() {
-            return 234L;
-        }
-
-        @Override
-        public String getTildeltEnhetsnr() {
-            return "0393";
-        }
-    }
-
     @Test(expected = Feil.class)
     public void skal_kaste_exception_dersom_det_finnes_nyere_oppgave_fra_for() {
-        OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.now().minusDays(1));
+        OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
         List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetDagenFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
@@ -83,7 +71,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
-        OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.now().minusDays(3));
+        OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0));
         List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetTreDagerFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
@@ -106,5 +94,30 @@ public class OppgaveServiceTest {
         verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
+    }
+
+    private static class DummyOppgaveResponse implements Oppgave {
+
+        @Override
+        public long getId() {
+            return 234L;
+        }
+
+        @Override
+        public String getTildeltEnhetsnr() {
+            return "0393";
+        }
+    }
+
+    class CustomOppgaveService extends OppgaveService {
+
+        public CustomOppgaveService(OppgaveGateway oppgaveGateway, OppgaveRepository oppgaveRepository, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+            super(oppgaveGateway, oppgaveRepository, kontaktBrukerHenvendelseProducer);
+        }
+
+        @Override
+        protected LocalDate idag() {
+            return LocalDate.of(2020, 4, 10);
+        }
     }
 }
