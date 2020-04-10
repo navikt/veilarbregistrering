@@ -14,7 +14,6 @@ class OppgaveOpprettet {
         this.dato = dato;
     }
 
-    //TORSDAG -> TIRSDAG = FREDAG, helg, helg, MANDAG
     boolean erMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
         int antallArbeidsdager = 0;
 
