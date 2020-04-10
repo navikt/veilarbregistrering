@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
 public class OppgavePredicates {
@@ -9,8 +9,7 @@ public class OppgavePredicates {
         return o -> o.getOppgavetype().equals(OppgaveType.OPPHOLDSTILLATELSE);
     }
 
-    public static Predicate<OppgaveImpl> oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
-        return o -> new OppgaveOpprettet(o.getOpprettet().toLocalDate())
-                .erMindreEnnToArbeidsdagerSiden(dagensDato);
+    public static Predicate<OppgaveImpl> oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(LocalDateTime dagensDato) {
+        return o -> o.getOpprettet().erMindreEnnToArbeidsdagerSiden(dagensDato);
     }
 }

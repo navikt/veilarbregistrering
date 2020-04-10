@@ -38,8 +38,8 @@ public class OppgaveImpl {
         return oppgavetype;
     }
 
-    public LocalDateTime getOpprettet() {
-        return opprettet;
+    public OppgaveOpprettet getOpprettet() {
+        return new OppgaveOpprettet(opprettet);
     }
 
     public long getEksternOppgaveId() {

@@ -109,15 +109,15 @@ public class OppgaveServiceTest {
         }
     }
 
-    class CustomOppgaveService extends OppgaveService {
+    private class CustomOppgaveService extends OppgaveService {
 
         public CustomOppgaveService(OppgaveGateway oppgaveGateway, OppgaveRepository oppgaveRepository, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
             super(oppgaveGateway, oppgaveRepository, kontaktBrukerHenvendelseProducer);
         }
 
         @Override
-        protected LocalDate idag() {
-            return LocalDate.of(2020, 4, 10);
+        protected LocalDateTime idag() {
+            return LocalDateTime.of(2020, 4, 10, 22, 00);
         }
     }
 }
