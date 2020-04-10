@@ -1,28 +1,30 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import java.time.LocalDate;
-import java.util.function.Predicate;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Inneholder dato for når oppgaven ble opprettet, med tilhørende logikk.
  */
-class OppgaveOpprettet {
+class OppgaveOpprettet implements Metric {
 
-    private final LocalDate dato;
+    private final LocalDateTime oppgaveOpprettet;
 
-    OppgaveOpprettet(LocalDate dato) {
-        this.dato = dato;
+    public OppgaveOpprettet(LocalDateTime oppgaveOpprettet) {
+        this.oppgaveOpprettet = oppgaveOpprettet;
     }
 
-    boolean erMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
+    boolean erMindreEnnToArbeidsdagerSiden(LocalDateTime dagensDato) {
         int antallArbeidsdager = 0;
 
-        for (LocalDate date = dato.plusDays(1); date.isBefore(dagensDato); date = date.plusDays(1)) {
-            if (Ukedag.erHelg(date)) {
+        for (LocalDateTime date = oppgaveOpprettet.plusDays(1); date.isBefore(dagensDato); date = date.plusDays(1)) {
+            if (Ukedag.erHelg(date.toLocalDate())) {
                 continue;
             }
 
-            if (Helligdager.erHelligdag(date)) {
+            if (Helligdager.erHelligdag(date.toLocalDate())) {
                 continue;
             }
 
@@ -35,5 +37,23 @@ class OppgaveOpprettet {
         }
 
         return antallArbeidsdager < 2;
+    }
+
+    long antallTimerSiden() {
+        return ChronoUnit.HOURS.between(this.oppgaveOpprettet, LocalDateTime.now());
+    }
+
+    LocalDateTime tidspunkt() {
+        return oppgaveOpprettet;
+    }
+
+    @Override
+    public String fieldName() {
+        return "timer";
+    }
+
+    @Override
+    public Long value() {
+        return antallTimerSiden();
     }
 }

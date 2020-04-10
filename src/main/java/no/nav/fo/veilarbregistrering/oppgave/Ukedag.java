@@ -5,7 +5,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.time.DayOfWeek.*;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 
 class Ukedag {
 

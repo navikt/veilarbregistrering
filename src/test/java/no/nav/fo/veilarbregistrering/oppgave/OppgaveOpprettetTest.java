@@ -3,24 +3,25 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppgaveOpprettetTest {
 
-    private static final LocalDate MANDAG_1 = LocalDate.of(2020, 3, 30);
-    private static final LocalDate TIRSDAG_1 = LocalDate.of(2020, 3, 31);
-    private static final LocalDate ONSDAG_1 = LocalDate.of(2020, 4, 1);
-    private static final LocalDate TORDAG_1 = LocalDate.of(2020, 4, 2);
-    private static final LocalDate LØRDAG_1 = LocalDate.of(2020, 4, 4);
-    private static final LocalDate SØNDAG_1 = LocalDate.of(2020, 4, 5);
-    private static final LocalDate MANDAG_2 = LocalDate.of(2020, 4, 6);
-    private static final LocalDate TIRSDAG_2 = LocalDate.of(2020, 4,7);
-    private static final LocalDate ONSDAG_2 = LocalDate.of(2020, 4,8);
-    private static final LocalDate TORSDAG_HELLIGDAG = LocalDate.of(2020, 4,9);
-    private static final LocalDate TIRSDAG_3 = LocalDate.of(2020, 4,14);
-    private static final LocalDate ONSDAG_3 = LocalDate.of(2020, 4,15);
-    private static final LocalDate TORSDAG_3 = LocalDate.of(2020, 4,16);
+    private static final LocalDateTime MANDAG_1 = LocalDate.of(2020, 3, 30).atStartOfDay();
+    private static final LocalDateTime TIRSDAG_1 = LocalDate.of(2020, 3, 31).atStartOfDay();
+    private static final LocalDateTime ONSDAG_1 = LocalDate.of(2020, 4, 1).atStartOfDay();
+    private static final LocalDateTime TORDAG_1 = LocalDate.of(2020, 4, 2).atStartOfDay();
+    private static final LocalDateTime LØRDAG_1 = LocalDate.of(2020, 4, 4).atStartOfDay();
+    private static final LocalDateTime SØNDAG_1 = LocalDate.of(2020, 4, 5).atStartOfDay();
+    private static final LocalDateTime MANDAG_2 = LocalDate.of(2020, 4, 6).atStartOfDay();
+    private static final LocalDateTime TIRSDAG_2 = LocalDate.of(2020, 4,7).atStartOfDay();
+    private static final LocalDateTime ONSDAG_2 = LocalDate.of(2020, 4,8).atStartOfDay();
+    private static final LocalDateTime TORSDAG_HELLIGDAG = LocalDate.of(2020, 4,9).atStartOfDay();
+    private static final LocalDateTime TIRSDAG_3 = LocalDate.of(2020, 4,14).atStartOfDay();
+    private static final LocalDateTime ONSDAG_3 = LocalDate.of(2020, 4,15).atStartOfDay();
+    private static final LocalDateTime TORSDAG_3 = LocalDate.of(2020, 4,16).atStartOfDay();
 
     @Test // MANDAG - MANDAG => true
     public void mindreEnnToArbeidsdagerSiden_er_true_når_dagensdato_er_lik_oppgave_dato() {

@@ -2,23 +2,20 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
-import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvTypeOppholdstillatelse;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
 
 public class OppgaveService {
 
@@ -66,21 +63,11 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            long timerSidenForrigeOppgave = ChronoUnit.HOURS.between(oppgave.getOpprettet(), LocalDateTime.now());
+            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.",
+                    oppgave.getOpprettet().tidspunkt(),
+                    oppgave.getOpprettet().antallTimerSiden());
 
-            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.", oppgave.getOpprettet(), timerSidenForrigeOppgave);
-
-            Metrics.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, new Metric() {
-                @Override
-                public String fieldName() {
-                    return "timer";
-                }
-
-                @Override
-                public Long value() {
-                    return timerSidenForrigeOppgave;
-                }
-            }, oppgaveType);
+            Metrics.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
 
             throw new Feil(new Feil.Type() {
                 @Override
@@ -97,9 +84,9 @@ public class OppgaveService {
     }
 
     /**
-     * Protected metode for å kunne overstyre ifm. test.
+     * Protected metode for å kunne overskrive ifm. test.
      */
-    protected LocalDate idag() {
-        return LocalDate.now();
+    protected LocalDateTime idag() {
+        return LocalDateTime.now();
     }
 }
