@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -16,15 +17,20 @@ class OppgaveOpprettet implements Metric {
         this.oppgaveOpprettet = oppgaveOpprettet;
     }
 
-    boolean erMindreEnnToArbeidsdagerSiden(LocalDateTime dagensDato) {
+    /**
+     * Returnerer true dersom det er mindre enn to arbeidsdager (ikke helg (lørdag/søndag) eller
+     * helligdag) mellom når oppgaven ble opprettet og dagens dato. Regner ikke med når på dagen
+     * oppgaven ble opprettet.
+     */
+    boolean erMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
         int antallArbeidsdager = 0;
 
-        for (LocalDateTime date = oppgaveOpprettet.plusDays(1); date.isBefore(dagensDato); date = date.plusDays(1)) {
-            if (Ukedag.erHelg(date.toLocalDate())) {
+        for (LocalDate date = oppgaveOpprettet.toLocalDate().plusDays(1); date.isBefore(dagensDato); date = date.plusDays(1)) {
+            if (Ukedag.erHelg(date)) {
                 continue;
             }
 
-            if (Helligdager.erHelligdag(date.toLocalDate())) {
+            if (Helligdager.erHelligdag(date)) {
                 continue;
             }
 
