@@ -30,8 +30,7 @@ class OppgaveOpprettet implements Metric {
 
             antallArbeidsdager++;
 
-            // for å unngå og loope mer enn nødvendig, så stopper vi på maks 5 iterasjoner
-            if (antallArbeidsdager == 5) {
+            if (antallArbeidsdager == 2) {
                 return false;
             }
         }
