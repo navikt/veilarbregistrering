@@ -116,8 +116,8 @@ public class OppgaveServiceTest {
         }
 
         @Override
-        protected LocalDateTime idag() {
-            return LocalDateTime.of(2020, 4, 10, 22, 00);
+        protected LocalDate idag() {
+            return LocalDate.of(2020, 4, 10);
         }
     }
 }
