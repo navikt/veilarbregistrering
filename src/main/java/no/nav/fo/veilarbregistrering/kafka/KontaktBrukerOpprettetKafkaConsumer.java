@@ -1,13 +1,16 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
+import no.nav.common.utils.IdUtils;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstillatelseService;
+import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -56,6 +59,7 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
+                    mdcLog();
                     LOG.info("Behandler kontaktBrukerOpprettetEvent");
 
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
@@ -65,6 +69,12 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
             }
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
+        }
+    }
+
+    private void mdcLog() {
+        if (MDC.get(MDCConstants.MDC_CALL_ID) != null) {
+            MDC.put(MDCConstants.MDC_CALL_ID, IdUtils.generateId());
         }
     }
 
