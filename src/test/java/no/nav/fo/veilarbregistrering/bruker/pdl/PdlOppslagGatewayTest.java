@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class PdlOppslagGatewayTest {
 
@@ -26,7 +25,7 @@ public class PdlOppslagGatewayTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
@@ -39,7 +38,7 @@ public class PdlOppslagGatewayTest {
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider) {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
