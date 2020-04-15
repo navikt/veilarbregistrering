@@ -59,7 +59,7 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
-                    mdcLog();
+                    MDC.put(MDCConstants.MDC_CALL_ID, IdUtils.generateId());
                     LOG.info("Behandler kontaktBrukerOpprettetEvent");
 
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
@@ -69,12 +69,6 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
             }
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
-        }
-    }
-
-    private void mdcLog() {
-        if (MDC.get(MDCConstants.MDC_CALL_ID) != null) {
-            MDC.put(MDCConstants.MDC_CALL_ID, IdUtils.generateId());
         }
     }
 
