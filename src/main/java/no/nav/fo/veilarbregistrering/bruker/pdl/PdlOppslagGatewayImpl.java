@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.bruker.Person;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 class PdlOppslagGatewayImpl implements PdlOppslagGateway {
 
@@ -20,16 +19,14 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         return map(pdlOppslagClient.hentPerson(aktorid));
     }
 
-    private Person map(Optional<PdlPerson> person) {
-        return person.map(pdlPerson ->
-                Person.of(
-                        pdlPerson.getSisteOpphold()
-                                .map(PdlOppslagGatewayImpl::map)
-                                .orElse(null),
-                        pdlPerson.getSisteStatsborgerskap()
-                                .map(PdlOppslagGatewayImpl::map)
-                                .orElse(null))
-        ).orElse(null);
+    private Person map(PdlPerson pdlPerson) {
+        return Person.of(
+                pdlPerson.getSisteOpphold()
+                        .map(PdlOppslagGatewayImpl::map)
+                        .orElse(null),
+                pdlPerson.getSisteStatsborgerskap()
+                        .map(PdlOppslagGatewayImpl::map)
+                        .orElse(null));
     }
 
     private static Person.Opphold map(PdlPersonOpphold pdlPersonOpphold) {
