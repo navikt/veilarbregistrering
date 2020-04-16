@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+
 import java.time.LocalDate;
 
 public class Person {
@@ -32,7 +34,7 @@ public class Person {
                 '}';
     }
 
-    public static class Opphold {
+    public static class Opphold implements Metric {
 
         private final Oppholdstype type;
         private final Periode periode;
@@ -51,6 +53,16 @@ public class Person {
         }
 
         @Override
+        public String fieldName() {
+            return "oppholdstype";
+        }
+
+        @Override
+        public Object value() {
+            return type.toString();
+        }
+
+        @Override
         public String toString() {
             return "Opphold{" +
                     "type=" + type +
@@ -63,9 +75,9 @@ public class Person {
         MIDLERTIDIG,
         PERMANENT,
         OPPLYSNING_MANGLER
-
     }
-    public static class Statsborgerskap {
+
+    public static class Statsborgerskap implements Metric {
 
         private final String statsborgerskap;
         private final Periode periode;
@@ -88,6 +100,16 @@ public class Person {
                     "statsborgerskap='" + statsborgerskap + '\'' +
                     ", periode=" + periode +
                     '}';
+        }
+
+        @Override
+        public String fieldName() {
+            return "statsborgerskap";
+        }
+
+        @Override
+        public Object value() {
+            return statsborgerskap;
         }
     }
     public static class Periode {

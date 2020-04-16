@@ -62,7 +62,8 @@ public class Metrics {
         PROFILERING_EVENT("registrering.bruker.profilering"),
         BRUKER_ALDER_EVENT("registrering.bruker.alder"),
         INVALID_REGISTRERING_EVENT("registrering.invalid.registrering"),
-        MAKSDATO_EVENT("registrering.maksdato");
+        MAKSDATO_EVENT("registrering.maksdato"),
+        OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse");
 
         private final String name;
 
