@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
@@ -17,6 +15,7 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,7 +32,7 @@ class PdlOppslagClient extends BaseClient {
     private final String TEMA_HEADER = "Tema";
     private final String OPPFOLGING_TEMA_HEADERVERDI = "OPP";
 
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
     private OidcSystemUserTokenProvider oidcSystemUserTokenProvider;
 
@@ -95,6 +94,16 @@ class PdlOppslagClient extends BaseClient {
         @Override
         public LocalDate read( final JsonReader jsonReader ) throws IOException {
             return LocalDate.parse(jsonReader.nextString());
+        }
+    }
+
+    private class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+        public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+
+            return Optional.ofNullable(json.getAsJsonPrimitive().getAsString())
+                    .map(LocalDate::parse)
+                    .orElse(null);
         }
     }
 }

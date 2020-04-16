@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
