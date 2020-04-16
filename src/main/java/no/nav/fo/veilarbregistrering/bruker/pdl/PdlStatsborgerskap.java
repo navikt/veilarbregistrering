@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import java.time.LocalDate;
-
 public class PdlStatsborgerskap {
     private String land;
-    private LocalDate gyldigFraOgMed;
-    private LocalDate gyldigTilOgMed;
+    private String gyldigFraOgMed;
+    private String gyldigTilOgMed;
 
     public PdlStatsborgerskap() {
 
@@ -19,19 +17,19 @@ public class PdlStatsborgerskap {
         this.land = land;
     }
 
-    public LocalDate getGyldigFraOgMed() {
+    public String getGyldigFraOgMed() {
         return gyldigFraOgMed;
     }
 
-    public void setGyldigFraOgMed(LocalDate gyldigFraOgMed) {
+    public void setGyldigFraOgMed(String gyldigFraOgMed) {
         this.gyldigFraOgMed = gyldigFraOgMed;
     }
 
-    public LocalDate getGyldigTilOgMed() {
+    public String getGyldigTilOgMed() {
         return gyldigTilOgMed;
     }
 
-    public void setGyldigTilOgMed(LocalDate gyldigTilOgMed) {
+    public void setGyldigTilOgMed(String gyldigTilOgMed) {
         this.gyldigTilOgMed = gyldigTilOgMed;
     }
 }

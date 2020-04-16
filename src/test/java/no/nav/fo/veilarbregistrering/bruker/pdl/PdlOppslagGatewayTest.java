@@ -36,6 +36,19 @@ public class PdlOppslagGatewayTest {
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
     }
 
+    @Test
+    public void skalHenteOppholdUtenPeriodeTilPerson() {
+        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
+            @Override
+            String pdlJson(String fnr, PdlRequest request) {
+                return okUtenPerioderJson();
+            }
+        };
+        Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
+
+        Assert.assertEquals(Oppholdstype.PERMANENT, person.get().getOpphold().get(0).getType());
+    }
+
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
         PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
@@ -50,6 +63,15 @@ public class PdlOppslagGatewayTest {
     private final String okJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final String okUtenPerioderJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOkUtenPerioder.json").toURI()));
             return new String(bytes);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,0 +1,20 @@
+{
+  "data": {
+    "hentPerson": {
+      "opphold": [
+        {
+          "type": "PERMANENT",
+          "oppholdFra": null,
+          "oppholdTil": null
+        }
+      ],
+      "statsborgerskap": [
+        {
+          "land": "PHL",
+          "gyldigFraOgMed": null,
+          "gyldigTilOgMed": null
+        }
+      ]
+    }
+  }
+}

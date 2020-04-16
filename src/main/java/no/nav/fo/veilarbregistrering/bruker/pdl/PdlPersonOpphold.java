@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import java.time.LocalDate;
-
 public class PdlPersonOpphold {
     private Oppholdstype type;
-    private LocalDate oppholdFra;
-    private LocalDate oppholdTil;
+    private String oppholdFra;
+    private String oppholdTil;
 
     public PdlPersonOpphold() {
     }
@@ -18,19 +16,19 @@ public class PdlPersonOpphold {
         this.type = type;
     }
 
-    public LocalDate getOppholdFra() {
+    public String getOppholdFra() {
         return oppholdFra;
     }
 
-    public void setOppholdFra(LocalDate oppholdFra) {
+    public void setOppholdFra(String oppholdFra) {
         this.oppholdFra = oppholdFra;
     }
 
-    public LocalDate getOppholdTil() {
+    public String getOppholdTil() {
         return oppholdTil;
     }
 
-    public void setOppholdTil(LocalDate oppholdTil) {
+    public void setOppholdTil(String oppholdTil) {
         this.oppholdTil = oppholdTil;
     }
 }
