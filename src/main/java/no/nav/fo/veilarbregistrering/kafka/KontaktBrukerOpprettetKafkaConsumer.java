@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstillatelseService;
+import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -32,13 +32,13 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
     private final Properties kafkaConsumerProperties;
     private final UnleashService unleashService;
     private final String topic;
-    private final DatakvalitetOppholdstillatelseService bruker;
+    private final OppholdstillatelseService bruker;
 
     KontaktBrukerOpprettetKafkaConsumer(
             Properties kafkaConsumerProperties,
             UnleashService unleashService,
             String topic,
-            DatakvalitetOppholdstillatelseService bruker) {
+            OppholdstillatelseService bruker) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.unleashService = unleashService;
         this.topic = topic;

@@ -4,7 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstillatelseService;
+import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -65,13 +65,13 @@ public class KafkaConfig {
     @Bean
     KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
             UnleashService unleashService,
-            DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService
+            OppholdstillatelseService oppholdstillatelseService
     ) {
         return new KontaktBrukerOpprettetKafkaConsumer(
                 kafkaConsumerProperties(),
                 unleashService,
                 "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(),
-                datakvalitetOppholdstillatelseService);
+                oppholdstillatelseService);
     }
 
     @Bean
