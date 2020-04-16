@@ -10,7 +10,7 @@ public class PdlOppslagConfig {
 
     @Bean
     PdlOppslagClient pdlOppslagService() {
-        return new PdlOppslagClient(null, null) {
+        return new PdlOppslagClient(null, null, null) {
         };
     }
 }

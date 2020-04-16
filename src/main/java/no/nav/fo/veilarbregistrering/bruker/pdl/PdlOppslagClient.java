@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
@@ -36,13 +35,14 @@ class PdlOppslagClient extends BaseClient {
 
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
-    private SystemUserTokenProvider systemUserTokenProvider;
+    private OidcSystemUserTokenProvider oidcSystemUserTokenProvider;
 
     PdlOppslagClient(
             String baseUrl,
-            Provider<HttpServletRequest> httpServletRequestProvider
-    ) {
+            Provider<HttpServletRequest> httpServletRequestProvider,
+            OidcSystemUserTokenProvider oidcSystemUserTokenProvider) {
         super(baseUrl, httpServletRequestProvider);
+        this.oidcSystemUserTokenProvider = oidcSystemUserTokenProvider;
     }
 
     Optional<PdlPerson> hentPerson(AktorId aktorId) {
@@ -55,8 +55,8 @@ class PdlOppslagClient extends BaseClient {
     }
 
     String pdlJson(String fnr, PdlRequest request) {
-        String token = (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                .getToken();
+        String token = this.oidcSystemUserTokenProvider.getSystemUserAccessToken();
+
         return RestUtils.withClient(client ->
                 client.target(baseUrl)
                         .request()

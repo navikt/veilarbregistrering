@@ -14,9 +14,17 @@ public class PdlOppslagConfig {
 
     private final String PDL_PROPERTY_NAME = "PDL_URL";
 
+    @Bean OidcSystemUserTokenProvider oidcSystemUserTokenProvider() {
+        return new OidcSystemUserTokenProvider(
+                getRequiredProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"),
+                getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"),
+                getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD")
+        );
+    }
+
     @Bean
-    PdlOppslagClient pdlOppslagClient(Provider<HttpServletRequest> provider) {
-        return new PdlOppslagClient(getRequiredProperty(PDL_PROPERTY_NAME), provider);
+    PdlOppslagClient pdlOppslagClient(Provider<HttpServletRequest> provider, OidcSystemUserTokenProvider oidcSystemUserTokenProvider) {
+        return new PdlOppslagClient(getRequiredProperty(PDL_PROPERTY_NAME), provider, oidcSystemUserTokenProvider);
     }
 
     @Bean
