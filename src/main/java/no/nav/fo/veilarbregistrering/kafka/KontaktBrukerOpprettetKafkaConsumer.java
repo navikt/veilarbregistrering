@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -60,7 +61,7 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
 
                 consumerRecords.forEach(record -> {
                     Header header = record.headers().lastHeader(MDCConstants.MDC_CALL_ID);
-                    String callId = new String(header.value());
+                    String callId = new String(header.value(), StandardCharsets.UTF_8);
 
                     MDC.put(MDCConstants.MDC_CALL_ID, callId);
                     LOG.info("Behandler kontaktBrukerOpprettetEvent - callId: {}", callId);
