@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
-import no.nav.fo.veilarbregistrering.bruker.AktorGateway;
-import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
-import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
@@ -205,8 +202,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    DatakvalitetOppholdstillatelseService datakvalitetOppholdstillatelseService(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
-        return new DatakvalitetOppholdstillatelseServiceImpl(pdlOppslagGateway, unleashService);
+    OppholdstillatelseService datakvalitetOppholdstillatelseService(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
+        return new OppholdstillatelseServiceImpl(pdlOppslagGateway, unleashService);
     }
 
 }

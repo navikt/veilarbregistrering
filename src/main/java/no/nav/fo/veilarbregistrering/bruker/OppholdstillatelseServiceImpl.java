@@ -1,8 +1,5 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
-import no.nav.fo.veilarbregistrering.bruker.Person;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
@@ -10,14 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPHOLDSTILLATELSE_EVENT;
 
-public class DatakvalitetOppholdstillatelseServiceImpl implements DatakvalitetOppholdstillatelseService {
+public class OppholdstillatelseServiceImpl implements OppholdstillatelseService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DatakvalitetOppholdstillatelseServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppholdstillatelseServiceImpl.class);
 
     private PdlOppslagGateway pdlOppslagGateway;
     private UnleashService unleashService;
 
-    public DatakvalitetOppholdstillatelseServiceImpl(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
+    public OppholdstillatelseServiceImpl(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
         this.pdlOppslagGateway = pdlOppslagGateway;
         this.unleashService = unleashService;
     }
