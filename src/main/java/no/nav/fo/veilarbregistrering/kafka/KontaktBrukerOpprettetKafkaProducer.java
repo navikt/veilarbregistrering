@@ -5,12 +5,17 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelseProducer {
 
@@ -28,7 +33,9 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
     public void publiserHenvendelse(AktorId aktorId) {
         KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
-            producer.send(new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent)).get(2, TimeUnit.SECONDS);
+            ProducerRecord<String, KontaktBrukerOpprettetEvent> record = new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent);
+            record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
+            producer.send(record).get(2, TimeUnit.SECONDS);
             LOG.info("KontaktBrukerOpprettetEvent publisert på topic, {}", topic);
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {

@@ -1,13 +1,13 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
-import no.nav.common.utils.IdUtils;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.DatakvalitetOppholdstillatelseService;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.header.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -59,8 +59,11 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
-                    MDC.put(MDCConstants.MDC_CALL_ID, IdUtils.generateId());
-                    LOG.info("Behandler kontaktBrukerOpprettetEvent");
+                    Header header = record.headers().lastHeader(MDCConstants.MDC_CALL_ID);
+                    String callId = new String(header.value());
+
+                    MDC.put(MDCConstants.MDC_CALL_ID, callId);
+                    LOG.info("Behandler kontaktBrukerOpprettetEvent - callId: {}", callId);
 
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
                     bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
