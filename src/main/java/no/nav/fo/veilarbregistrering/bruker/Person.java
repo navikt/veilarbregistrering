@@ -16,6 +16,14 @@ public class Person {
         this.statsborgerskap = statsborgerskap;
     }
 
+    public Opphold getOpphold() {
+        return opphold;
+    }
+
+    public Statsborgerskap getStatsborgerskap() {
+        return statsborgerskap;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -36,6 +44,10 @@ public class Person {
         private Opphold(Oppholdstype type, Periode periode) {
             this.type = type;
             this.periode = periode;
+        }
+
+        public Oppholdstype getType() {
+            return type;
         }
 
         @Override
@@ -64,6 +76,10 @@ public class Person {
         private Statsborgerskap(String statsborgerskap, Periode periode) {
             this.statsborgerskap = statsborgerskap;
             this.periode = periode;
+        }
+
+        public String getStatsborgerskap() {
+            return statsborgerskap;
         }
 
         @Override
