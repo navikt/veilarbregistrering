@@ -31,9 +31,9 @@ public class PdlOppslagClientTest {
                 return okJson();
             }
         };
-        Optional<PdlPerson> person = client.hentPerson(AktorId.valueOf("444hhh"));
+        PdlPerson person = client.hentPerson(AktorId.valueOf("444hhh"));
 
-        Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
+        Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
     }
 
     @Test
@@ -44,20 +44,20 @@ public class PdlOppslagClientTest {
                 return okUtenPerioderJson();
             }
         };
-        Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
+        PdlPerson person = service.hentPerson(AktorId.valueOf("444hhh"));
 
-        Assert.assertEquals(Oppholdstype.PERMANENT, person.get().getOpphold().get(0).getType());
+        Assert.assertEquals(Oppholdstype.PERMANENT, person.getOpphold().get(0).getType());
     }
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return feilJson();
             }
         };
-        service.hentPerson(AktorId.valueOf("111lll"));
+        pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
     }
 
     private final String okJson() {

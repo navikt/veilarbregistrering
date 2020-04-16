@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
@@ -44,13 +42,13 @@ class PdlOppslagClient extends BaseClient {
         this.oidcSystemUserTokenProvider = oidcSystemUserTokenProvider;
     }
 
-    Optional<PdlPerson> hentPerson(AktorId aktorId) {
+    PdlPerson hentPerson(AktorId aktorId) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
         String json = pdlJson(aktorId.asString(), request);
         LOG.info("json-response fra PDL: {}", json);
         PdlResponse resp = gson.fromJson(json, PdlResponse.class);
         validateResponse(resp);
-        return Optional.of(resp.getData().getHentPerson());
+        return resp.getData().getHentPerson();
     }
 
     String pdlJson(String fnr, PdlRequest request) {
@@ -69,8 +67,7 @@ class PdlOppslagClient extends BaseClient {
 
     private void validateResponse(PdlResponse response) {
         if (response.getErrors() != null && response.getErrors().size() > 0) {
-            LOG.warn("Error from PDL: " + gson.toJson(response.getErrors()));
-            throw new RuntimeException("Error from PDL");
+            throw new RuntimeException("Integrasjon mot PDL feilet: " + gson.toJson(response.getErrors()));
         }
     }
 
@@ -78,10 +75,8 @@ class PdlOppslagClient extends BaseClient {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
             return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException e) {
-           throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | URISyntaxException e) {
+           throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
         }
     }
 
