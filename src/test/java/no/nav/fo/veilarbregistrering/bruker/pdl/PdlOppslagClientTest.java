@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
-public class PdlOppslagGatewayTest {
+public class PdlOppslagClientTest {
 
     private Provider<HttpServletRequest> requestProvider;
 
@@ -25,13 +25,13 @@ public class PdlOppslagGatewayTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient client = new PdlOppslagClient("", requestProvider, null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return okJson();
             }
         };
-        Optional<PdlPerson> person = service.hentPerson(AktorId.valueOf("444hhh"));
+        Optional<PdlPerson> person = client.hentPerson(AktorId.valueOf("444hhh"));
 
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.get().getOpphold().get(0).getType());
     }
