@@ -16,11 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +28,7 @@ import static java.util.Optional.ofNullable;
 
 public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepository {
 
-    private JdbcTemplate db;
+    private final JdbcTemplate db;
 
     private final static String SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ";
     final static String SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID";
@@ -245,7 +242,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     private long nesteFraSekvens(String sekvensNavn) {
-        return this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class).longValue();
+        return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }
 
     @Override
@@ -253,7 +250,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         String rowCountSql = "SELECT count(1) AS row_count " +
                 "FROM BRUKER_REGISTRERING";
 
-        int total = this.db.queryForObject(rowCountSql, Integer.class);
+        int total = db.queryForObject(rowCountSql, Integer.class);
 
         String querySql = "SELECT BRUKER_REGISTRERING_ID, AKTOR_ID, BEGRUNNELSE_FOR_REGISTRERING, OPPRETTET_DATO " +
                 "FROM BRUKER_REGISTRERING " +

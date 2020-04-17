@@ -27,16 +27,14 @@ import static java.lang.System.getenv;
 public class KafkaConfig {
 
     @Bean
-    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(
-            KafkaProducer kafkaProducer) {
+    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(KafkaProducer kafkaProducer) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducer,
                 "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
     }
 
     @Bean
-    KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(
-            KafkaProducer kafkaProducer) {
+    KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(KafkaProducer kafkaProducer) {
         return new KontaktBrukerOpprettetKafkaProducer(
                 kafkaProducer,
                 "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());

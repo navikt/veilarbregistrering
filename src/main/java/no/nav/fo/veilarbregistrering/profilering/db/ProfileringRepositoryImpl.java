@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ProfileringRepositoryImpl implements ProfileringRepository {
 
-    private JdbcTemplate db;
+    private final JdbcTemplate db;
 
     private final static String BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID";
 

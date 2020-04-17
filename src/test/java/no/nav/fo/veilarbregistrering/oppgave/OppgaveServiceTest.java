@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,8 @@ public class OppgaveServiceTest {
         oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
-                aktorId -> { });
+                aktorId -> {
+                });
     }
 
     @Test
@@ -110,7 +110,7 @@ public class OppgaveServiceTest {
         }
     }
 
-    private class CustomOppgaveService extends OppgaveService {
+    private static class CustomOppgaveService extends OppgaveService {
 
         public CustomOppgaveService(OppgaveGateway oppgaveGateway, OppgaveRepository oppgaveRepository, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
             super(oppgaveGateway, oppgaveRepository, kontaktBrukerHenvendelseProducer);

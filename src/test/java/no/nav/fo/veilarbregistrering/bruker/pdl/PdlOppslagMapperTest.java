@@ -4,9 +4,6 @@ import no.nav.fo.veilarbregistrering.bruker.Opphold;
 import no.nav.fo.veilarbregistrering.bruker.Person;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 

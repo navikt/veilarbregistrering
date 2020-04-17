@@ -149,7 +149,7 @@ class SykmeldtInfoClientTest {
                 "}";
     }
 
-    private class ConfigBuildClient {
+    private static class ConfigBuildClient {
         public Provider<HttpServletRequest> invoke() {
             SystemUserTokenProvider systemUserTokenProvider = mock(SystemUserTokenProvider.class);
             Provider<HttpServletRequest> httpServletRequestProvider = mock(Provider.class);

@@ -80,7 +80,7 @@ class PdlOppslagClient extends BaseClient {
         }
     }
 
-    private class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
         public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
 

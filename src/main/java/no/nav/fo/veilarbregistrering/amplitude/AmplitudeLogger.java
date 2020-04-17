@@ -18,7 +18,7 @@ public class AmplitudeLogger {
     public static void log(AktorId aktorId) {
 
         String jsonData = "{\"api_key\":\"2f190e67f31d7e4719c5ff048ad3d3e6\",\"events\":[{\"device_id\":\"veilarbregistrering\", \"event_type\":\""+aktorId.hashCode()+"\", \"user_properties\":{\"maksdato\":\"maksdato2020\"}}]}";
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         try {
             URL url = new URL("https://amplitude.nav.no/collect");

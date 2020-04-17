@@ -91,7 +91,7 @@ class BrukerRegistreringServiceIntegrationTest {
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER));
         assertThat(run.isFailure()).isTrue();
 
-        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1l));
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
     }

@@ -38,7 +38,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     private long nesteFraSekvens() {
-        return jdbcTemplate.queryForObject("select OPPGAVE_SEQ.nextval from dual", Long.class).longValue();
+        return jdbcTemplate.queryForObject("select OPPGAVE_SEQ.nextval from dual", Long.class);
     }
 
     @Override
