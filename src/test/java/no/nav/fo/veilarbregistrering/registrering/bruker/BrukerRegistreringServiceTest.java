@@ -37,8 +37,8 @@ import static org.mockito.Mockito.*;
 
 public class BrukerRegistreringServiceTest {
 
-    private static Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
-    private static Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
+    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
+    private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private ProfileringRepository profileringRepository;

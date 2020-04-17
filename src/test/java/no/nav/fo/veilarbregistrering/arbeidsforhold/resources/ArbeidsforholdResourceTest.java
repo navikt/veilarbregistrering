@@ -23,7 +23,7 @@ class ArbeidsforholdResourceTest {
     private UserService userService;
     private ArbeidsforholdGateway arbeidsforholdGateway;
 
-    private static Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
+    private static final Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
 
     @BeforeEach
     public void setup() {

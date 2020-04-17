@@ -30,8 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -123,7 +122,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
         StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(Foedselsnummer.of(IDENT));
-        assertTrue(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING);
+        assertSame(startRegistreringStatus.getRegistreringType(), SYKMELDT_REGISTRERING);
     }
 
     @Test

@@ -116,7 +116,7 @@ public class GeografiskTilknytning implements Metric {
         BydelOslo(String kode, String verdi) {
             this.kode = kode;
             this.verdi = verdi;
-        };
+        }
 
         String verdi() {
             return verdi;

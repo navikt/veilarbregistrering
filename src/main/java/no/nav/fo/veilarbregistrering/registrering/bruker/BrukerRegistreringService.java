@@ -45,10 +45,10 @@ public class BrukerRegistreringService {
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
-    private OppfolgingGateway oppfolgingGateway;
-    private ArbeidsforholdGateway arbeidsforholdGateway;
-    private ManuellRegistreringService manuellRegistreringService;
-    private StartRegistreringUtils startRegistreringUtils;
+    private final OppfolgingGateway oppfolgingGateway;
+    private final ArbeidsforholdGateway arbeidsforholdGateway;
+    private final ManuellRegistreringService manuellRegistreringService;
+    private final StartRegistreringUtils startRegistreringUtils;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,

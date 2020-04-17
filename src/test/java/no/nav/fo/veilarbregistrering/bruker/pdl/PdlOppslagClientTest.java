@@ -58,7 +58,7 @@ public class PdlOppslagClientTest {
         pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
     }
 
-    private final String okJson() {
+    private String okJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
             return new String(bytes);
@@ -67,7 +67,7 @@ public class PdlOppslagClientTest {
         }
     }
 
-    private final String okUtenPerioderJson() {
+    private String okUtenPerioderJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOkUtenPerioder.json").toURI()));
             return new String(bytes);
@@ -76,7 +76,7 @@ public class PdlOppslagClientTest {
         }
     }
 
-    private final String feilJson() {
+    private String feilJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonError.json").toURI()));
             return new String(bytes);

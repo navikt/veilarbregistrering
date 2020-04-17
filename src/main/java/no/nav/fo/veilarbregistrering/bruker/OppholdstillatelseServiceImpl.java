@@ -11,8 +11,8 @@ public class OppholdstillatelseServiceImpl implements OppholdstillatelseService 
 
     private static final Logger LOG = LoggerFactory.getLogger(OppholdstillatelseServiceImpl.class);
 
-    private PdlOppslagGateway pdlOppslagGateway;
-    private UnleashService unleashService;
+    private final PdlOppslagGateway pdlOppslagGateway;
+    private final UnleashService unleashService;
 
     public OppholdstillatelseServiceImpl(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
         this.pdlOppslagGateway = pdlOppslagGateway;
