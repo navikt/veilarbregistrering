@@ -112,11 +112,7 @@ public class RegistreringResource {
     public BrukerRegistreringWrapper hentRegistrering() {
         final Bruker bruker = userService.hentBruker();
 
-        LOG.info("Henter registreringen til en bruker - før ABAC-sjekk");
-
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
-
-        LOG.info("Henter registreringen til en bruker - etter ABAC-sjekk");
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
         if (brukerRegistreringWrapper == null) {
