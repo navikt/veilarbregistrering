@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.Opphold;
 import no.nav.fo.veilarbregistrering.bruker.Person;
 import org.junit.Test;
 
@@ -40,6 +41,6 @@ public class PdlOppslagMapperTest {
 
         Person person = PdlOppslagMapper.map(pdlPerson);
 
-        assertThat(person.getOpphold().getType()).isEqualTo(Person.Oppholdstype.PERMANENT);
+        assertThat(person.getOpphold().getType()).isEqualTo(Opphold.Oppholdstype.PERMANENT);
     }
 }
