@@ -21,11 +21,10 @@ public class OppholdstillatelseServiceImpl implements OppholdstillatelseService 
 
     @Override
     public void hentOgSammenlignOppholdFor(AktorId aktorid) {
-        LOG.info("hentOgSammenlignOppholdFor {}", aktorid.hashCode());
-
         if (!pdlIsEnabled()) {
             return;
         }
+
         try {
             Person person = pdlOppslagGateway.hentPerson(aktorid);
             LOG.info("Persondata fra PDL: {}", person);

@@ -45,7 +45,7 @@ class PdlOppslagClient extends BaseClient {
     PdlPerson hentPerson(AktorId aktorId) {
         PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
         String json = pdlJson(aktorId.asString(), request);
-        LOG.info("json-response fra PDL: {}", json);
+        LOG.debug("json-response fra PDL: {}", json);
         PdlResponse resp = gson.fromJson(json, PdlResponse.class);
         validateResponse(resp);
         return resp.getData().getHentPerson();

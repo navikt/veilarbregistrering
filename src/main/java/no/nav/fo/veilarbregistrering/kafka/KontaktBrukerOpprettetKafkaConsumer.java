@@ -62,9 +62,9 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                 consumerRecords.forEach(record -> {
                     Header header = record.headers().lastHeader(MDCConstants.MDC_CALL_ID);
                     String callId = new String(header.value(), StandardCharsets.UTF_8);
-
                     MDC.put(MDCConstants.MDC_CALL_ID, callId);
-                    LOG.info("Behandler kontaktBrukerOpprettetEvent - callId: {}", callId);
+
+                    LOG.info("Behandler kontaktBrukerOpprettetEvent");
 
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
                     bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
