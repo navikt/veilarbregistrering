@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
@@ -32,14 +33,14 @@ class PdlOppslagClient extends BaseClient {
 
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
-    private OidcSystemUserTokenProvider oidcSystemUserTokenProvider;
+    private SystemUserTokenProvider systemUserTokenProvider;
 
     PdlOppslagClient(
             String baseUrl,
             Provider<HttpServletRequest> httpServletRequestProvider,
-            OidcSystemUserTokenProvider oidcSystemUserTokenProvider) {
+            SystemUserTokenProvider systemUserTokenProvider) {
         super(baseUrl, httpServletRequestProvider);
-        this.oidcSystemUserTokenProvider = oidcSystemUserTokenProvider;
+        this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
     PdlPerson hentPerson(AktorId aktorId) {
@@ -52,7 +53,7 @@ class PdlOppslagClient extends BaseClient {
     }
 
     String pdlJson(String fnr, PdlRequest request) {
-        String token = this.oidcSystemUserTokenProvider.getSystemUserAccessToken();
+        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
 
         return RestUtils.withClient(client ->
                 client.target(baseUrl)

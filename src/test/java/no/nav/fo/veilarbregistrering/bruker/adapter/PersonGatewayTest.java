@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
@@ -49,10 +49,9 @@ public class PersonGatewayTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
-        when(systemUserTokenProvider.getToken()).thenReturn("testToken");
+        when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider);
-        veilArbPersonClient.settSystemUserTokenProvider(systemUserTokenProvider);
+        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
         return veilArbPersonClient;
     }
 

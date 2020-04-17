@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +15,9 @@ public class PdlOppslagConfig {
 
     private static final String PDL_PROPERTY_NAME = "PDL_URL";
 
-    @Bean OidcSystemUserTokenProvider oidcSystemUserTokenProvider() {
-        return new OidcSystemUserTokenProvider(
-                getRequiredProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"),
-                getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"),
-                getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD")
-        );
-    }
-
     @Bean
-    PdlOppslagClient pdlOppslagClient(Provider<HttpServletRequest> provider, OidcSystemUserTokenProvider oidcSystemUserTokenProvider) {
-        return new PdlOppslagClient(getRequiredProperty(PDL_PROPERTY_NAME), provider, oidcSystemUserTokenProvider);
+    PdlOppslagClient pdlOppslagClient(Provider<HttpServletRequest> provider, SystemUserTokenProvider systemUserTokenProvider) {
+        return new PdlOppslagClient(getRequiredProperty(PDL_PROPERTY_NAME), provider, systemUserTokenProvider);
     }
 
     @Bean
