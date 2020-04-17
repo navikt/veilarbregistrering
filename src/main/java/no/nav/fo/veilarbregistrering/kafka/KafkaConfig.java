@@ -73,6 +73,14 @@ public class KafkaConfig {
     }
 
     @Bean
+    FormidlingsgruppeKafkaConsumer formidlingsgruppeKafkaConsumer(UnleashService unleashService) {
+        return new FormidlingsgruppeKafkaConsumer(
+                kafkaConsumerProperties(),
+                unleashService,
+                "gg-arena-formidlinggruppe-v1" + getEnvSuffix());
+    }
+
+    @Bean
     Properties kafkaConsumerProperties() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
