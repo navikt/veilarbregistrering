@@ -16,14 +16,12 @@ import static org.mockito.Mockito.when;
 
 class ManuellRegistreringServiceTest {
 
-    private ManuellRegistreringRepository manuellRegistreringRepository;
-    private HentEnheterGateway hentEnheterGateway;
     private ManuellRegistreringService manuellRegistreringService;
 
     @BeforeEach
     public void setup(){
-        manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
-        hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
+        ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
+        HentEnheterGateway hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
         manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
 
         List<NavEnhet> enheter = Arrays.asList(

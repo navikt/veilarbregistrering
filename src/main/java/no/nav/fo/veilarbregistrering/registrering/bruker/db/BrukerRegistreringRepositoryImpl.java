@@ -221,15 +221,10 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     public Bruker hentBrukerTilknyttet(long brukerRegistreringId) {
         String sql = "SELECT FOEDSELSNUMMER, AKTOR_ID FROM BRUKER_REGISTRERING WHERE BRUKER_REGISTRERING_ID = ?";
 
-        return db.queryForObject(sql, new Object[]{brukerRegistreringId}, new RowMapper<Bruker>() {
-            @Override
-            public Bruker mapRow(ResultSet rs, int i) throws SQLException {
-                return Bruker.of(
-                        Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
-                        AktorId.valueOf(rs.getString("AKTOR_ID"))
-                );
-            }
-        });
+        return db.queryForObject(sql, new Object[]{brukerRegistreringId}, (rs, i) -> Bruker.of(
+                Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
+                AktorId.valueOf(rs.getString("AKTOR_ID"))
+        ));
     }
 
     @Override
@@ -250,7 +245,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     private long nesteFraSekvens(String sekvensNavn) {
-        return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
+        return this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class).longValue();
     }
 
     @Override

@@ -27,9 +27,7 @@ public class RegistreringResourceTest {
     private VeilarbAbacPepClient pepClient;
     private RegistreringResource registreringResource;
     private UserService userService;
-    private ManuellRegistreringService manuellRegistreringService;
     private BrukerRegistreringService brukerRegistreringService;
-    private UnleashService unleashService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -37,9 +35,9 @@ public class RegistreringResourceTest {
     public void setup() {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
-        manuellRegistreringService = mock(ManuellRegistreringService.class);
+        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
-        unleashService = mock(UnleashService.class);
+        UnleashService unleashService = mock(UnleashService.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,

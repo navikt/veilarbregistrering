@@ -51,7 +51,6 @@ class BrukerRegistreringServiceIntegrationTest {
     private static BrukerRegistreringService brukerRegistreringService;
     private static OppfolgingClient oppfolgingClient;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
-    private static ProfileringRepository profileringRepository;
     private static StartRegistreringUtils startRegistreringUtils;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
@@ -72,7 +71,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
-        profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
+        ProfileringRepository profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);

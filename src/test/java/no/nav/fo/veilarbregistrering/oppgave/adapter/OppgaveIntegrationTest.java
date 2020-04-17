@@ -33,8 +33,6 @@ public class OppgaveIntegrationTest {
     private static final int MOCKSERVER_PORT = 1081;
 
     private ClientAndServer mockServer;
-    private OppgaveGateway oppgaveGateway;
-    private OppgaveRepository oppgaveRepository;
 
     private OppgaveService oppgaveService;
 
@@ -45,9 +43,9 @@ public class OppgaveIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        oppgaveRepository = mock(OppgaveRepository.class);
+        OppgaveRepository oppgaveRepository = mock(OppgaveRepository.class);
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
 
         oppgaveService = new OppgaveService(
                 oppgaveGateway,

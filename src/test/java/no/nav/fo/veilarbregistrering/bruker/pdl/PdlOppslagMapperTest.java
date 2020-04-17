@@ -5,7 +5,9 @@ import no.nav.fo.veilarbregistrering.bruker.Person;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PdlOppslagMapperTest {
@@ -19,8 +21,8 @@ public class PdlOppslagMapperTest {
         statsborgerskap.setLand("NOR");
 
         PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setOpphold(Arrays.asList(pdlPersonOpphold));
-        pdlPerson.setStatsborgerskap(Arrays.asList(statsborgerskap));
+        pdlPerson.setOpphold(singletonList(pdlPersonOpphold));
+        pdlPerson.setStatsborgerskap(singletonList(statsborgerskap));
 
         Person person = PdlOppslagMapper.map(pdlPerson);
 
@@ -36,8 +38,8 @@ public class PdlOppslagMapperTest {
         statsborgerskap.setLand("NOR");
 
         PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setOpphold(Arrays.asList(pdlPersonOpphold));
-        pdlPerson.setStatsborgerskap(Arrays.asList(statsborgerskap));
+        pdlPerson.setOpphold(singletonList(pdlPersonOpphold));
+        pdlPerson.setStatsborgerskap(singletonList(statsborgerskap));
 
         Person person = PdlOppslagMapper.map(pdlPerson);
 

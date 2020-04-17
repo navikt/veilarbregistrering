@@ -44,17 +44,9 @@ class SykmeldtInfoClientTest {
     private static final String IDENT = "10108000398"; //Aremark fiktivt fnr.";;
     private static final Bruker BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("AKTØRID"));
 
-    private UnleashService unleashService;
-    private BrukerRegistreringRepository brukerRegistreringRepository;
-    private ProfileringRepository profileringRepository;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private PersonGateway personGateway;
     private SykmeldtInfoClient sykeforloepMetadataClient;
-    private ArbeidsforholdGateway arbeidsforholdGateway;
-    private ManuellRegistreringService manuellRegistreringService;
-    private StartRegistreringUtils startRegistreringUtils;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private ClientAndServer mockServer;
 
     @AfterEach
@@ -65,16 +57,17 @@ class SykmeldtInfoClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        unleashService = mock(UnleashService.class);
+        UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildOppfolgingClient();
-        personGateway = mock(PersonGateway.class);
-        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
-        profileringRepository = mock(ProfileringRepository.class);
-        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
+        PersonGateway personGateway = mock(PersonGateway.class);
+        BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
+        ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
+        ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
-        startRegistreringUtils = mock(StartRegistreringUtils.class);
-        manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {}; //Noop, vi trenger ikke kafka
+        StartRegistreringUtils startRegistreringUtils = mock(StartRegistreringUtils.class);
+        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        }; //Noop, vi trenger ikke kafka
 
         brukerRegistreringService =
                 new BrukerRegistreringService(

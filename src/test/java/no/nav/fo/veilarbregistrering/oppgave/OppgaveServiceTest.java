@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -60,7 +61,7 @@ public class OppgaveServiceTest {
     @Test(expected = Feil.class)
     public void skal_kaste_exception_dersom_det_finnes_nyere_oppgave_fra_for() {
         OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
-        List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetDagenFor);
+        List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetDagenFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
 
@@ -72,7 +73,7 @@ public class OppgaveServiceTest {
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
         OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0));
-        List<OppgaveImpl> oppgaver = Arrays.asList(oppgaveSomBleOpprettetTreDagerFor);
+        List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetTreDagerFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
         when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
