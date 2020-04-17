@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static java.util.Arrays.asList;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ArbeidsforholdResourceTest {

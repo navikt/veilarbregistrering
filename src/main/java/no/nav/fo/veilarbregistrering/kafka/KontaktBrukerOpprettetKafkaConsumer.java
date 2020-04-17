@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
-import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
