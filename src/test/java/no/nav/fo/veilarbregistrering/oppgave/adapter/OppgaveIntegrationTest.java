@@ -63,7 +63,7 @@ public class OppgaveIntegrationTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppgaveRestClient oppgaveRestClient = new OppgaveRestClient(baseUrl, httpServletRequestProvider);
+        OppgaveRestClient oppgaveRestClient = new OppgaveRestClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
         oppgaveRestClient.settSystemUserTokenProvider(systemUserTokenProvider);
         return oppgaveRestClient;
     }

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import org.slf4j.Logger;
@@ -22,8 +22,9 @@ class VeilArbPersonClient extends BaseClient {
 
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    VeilArbPersonClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+    VeilArbPersonClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider) {
         super(baseUrl, httpServletRequestProvider);
+        this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
     Optional<GeografiskTilknytningDto> geografisktilknytning(Foedselsnummer foedselsnummer) {
@@ -33,8 +34,7 @@ class VeilArbPersonClient extends BaseClient {
                     c -> c.target(baseUrl + "/person/geografisktilknytning?fnr=" + foedselsnummer.stringValue())
                             .request()
                             .header(COOKIE, cookies)
-                            .header("SystemAuthorization",
-                                    (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider))
+                            .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserAccessToken())
                             .get(GeografiskTilknytningDto.class));
 
             return geografiskTilknytningDto != null && geografiskTilknytningDto.getGeografiskTilknytning() != null
@@ -50,9 +50,5 @@ class VeilArbPersonClient extends BaseClient {
         } catch (Exception e) {
             throw new RuntimeException("Feil ved kall til VeilArbPerson-tjenesten.", e);
         }
-    }
-
-    void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
-        this.systemUserTokenProvider = systemUserTokenProvider;
     }
 }

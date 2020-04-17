@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 public class OppfolgingClientMock extends OppfolgingClient {
 
     OppfolgingClientMock() {
-        super(null, null);
+        super(null, null, oidcSystemUserTokenProvider);
     }
 
     @Override

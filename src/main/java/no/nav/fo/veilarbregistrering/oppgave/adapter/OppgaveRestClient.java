@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 
 import javax.inject.Provider;
@@ -17,8 +17,9 @@ public class OppgaveRestClient extends BaseClient {
 
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    public OppgaveRestClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+    public OppgaveRestClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider) {
         super(baseUrl, httpServletRequestProvider);
+        this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
     protected OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
@@ -46,11 +47,6 @@ public class OppgaveRestClient extends BaseClient {
         return client.target(url)
                 .request()
                 .header("Authorization",
-                        "Bearer " + (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                                .getToken());
-    }
-
-    void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
-        this.systemUserTokenProvider = systemUserTokenProvider;
+                        "Bearer " + this.systemUserTokenProvider.getSystemUserAccessToken());
     }
 }

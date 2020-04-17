@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2020.02.11-12.17-1a30837bb4f2</version>
+        <version>1.2020.02.24_13.30-8f314608e23a</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -118,12 +118,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
-            <artifactId>oidc-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
             <artifactId>oidc</artifactId>
-            <version>1.2020.03.19_11.53-26f52be04676</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
