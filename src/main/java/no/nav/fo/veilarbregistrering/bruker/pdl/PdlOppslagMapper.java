@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.Opphold;
+import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.Person;
+import no.nav.fo.veilarbregistrering.bruker.Statsborgerskap;
 
 import java.time.LocalDate;
 
@@ -16,24 +19,24 @@ class PdlOppslagMapper {
                         .orElse(null));
     }
 
-    private static Person.Opphold map(PdlPersonOpphold pdlPersonOpphold) {
-        return Person.Opphold.of(
-                Person.Oppholdstype.valueOf(pdlPersonOpphold.getType().name()),
+    private static Opphold map(PdlPersonOpphold pdlPersonOpphold) {
+        return Opphold.of(
+                Opphold.Oppholdstype.valueOf(pdlPersonOpphold.getType().name()),
                 mapPeriode(pdlPersonOpphold.getOppholdFra(), pdlPersonOpphold.getOppholdTil()));
     }
 
-    private static Person.Statsborgerskap map(PdlStatsborgerskap pdlStatsborgerskap) {
-        return Person.Statsborgerskap.of(
+    private static Statsborgerskap map(PdlStatsborgerskap pdlStatsborgerskap) {
+        return Statsborgerskap.of(
                 pdlStatsborgerskap.getLand(),
                 mapPeriode(pdlStatsborgerskap.getGyldigFraOgMed(), pdlStatsborgerskap.getGyldigTilOgMed()));
     }
 
-    private static Person.Periode mapPeriode(LocalDate gyldigFraOgMed, LocalDate gyldigTilOgMed) {
+    private static Periode mapPeriode(LocalDate gyldigFraOgMed, LocalDate gyldigTilOgMed) {
         if (gyldigFraOgMed == null && gyldigTilOgMed == null) {
             return null;
         }
 
-        return Person.Periode.of(
+        return Periode.of(
                 gyldigFraOgMed,
                 gyldigTilOgMed);
     }

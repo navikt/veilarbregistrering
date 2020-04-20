@@ -13,7 +13,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class PdlOppslagConfig {
 
-    private final String PDL_PROPERTY_NAME = "PDL_URL";
+    private static final String PDL_PROPERTY_NAME = "PDL_URL";
 
     @Bean
     PdlOppslagClient pdlOppslagClient(Provider<HttpServletRequest> provider, SystemUserTokenProvider systemUserTokenProvider) {

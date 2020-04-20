@@ -18,7 +18,7 @@ public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
 
     @Override
     public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
-        List arbeidsforholdListe = new ArrayList();
+        List<Arbeidsforhold> arbeidsforholdListe = new ArrayList();
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(200), now().minusDays(30)));
         arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(30), null));
 

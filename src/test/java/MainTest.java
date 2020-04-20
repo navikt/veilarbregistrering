@@ -11,7 +11,7 @@ public class MainTest {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName("veilarbregistrering").build());
         DatabaseTestContext.setupInMemoryDatabaseContext();
         TestContext.setup();
-        String arguments[] = {TEST_PORT};
+        String[] arguments = {TEST_PORT};
         ApiApp.runApp(ApplicationTestConfig.class, arguments);
     }
 }

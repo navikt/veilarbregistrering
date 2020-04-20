@@ -8,7 +8,7 @@ import static no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map;
 
 class PdlOppslagGatewayImpl implements PdlOppslagGateway {
 
-    private PdlOppslagClient pdlOppslagClient;
+    private final PdlOppslagClient pdlOppslagClient;
 
     PdlOppslagGatewayImpl(PdlOppslagClient pdlOppslagClient) {
         this.pdlOppslagClient = pdlOppslagClient;

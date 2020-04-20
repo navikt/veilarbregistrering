@@ -48,17 +48,10 @@ class OppfolgingClientTest {
     private static final Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
     private static final Bruker BRUKER = Bruker.of(IDENT, AktorId.valueOf("AKTØRID"));
 
-    private UnleashService unleashService;
     private BrukerRegistreringRepository brukerRegistreringRepository;
-    private ProfileringRepository profileringRepository;
     private BrukerRegistreringService brukerRegistreringService;
-    private ManuellRegistreringService manuellRegistreringService;
     private OppfolgingClient oppfolgingClient;
-    private PersonGateway personGateway;
-    private SykmeldtInfoClient sykeforloepMetadataClient;
-    private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private ClientAndServer mockServer;
 
     @AfterEach
@@ -70,17 +63,18 @@ class OppfolgingClientTest {
     public void setup() {
 
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        unleashService = mock(UnleashService.class);
+        UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildClient();
-        personGateway = mock(PersonGateway.class);
+        PersonGateway personGateway = mock(PersonGateway.class);
 
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
-        profileringRepository = mock(ProfileringRepository.class);
-        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
-        sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
+        ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
+        ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
+        SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
-        manuellRegistreringService = mock(ManuellRegistreringService.class);
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {};
+        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        };
 
         brukerRegistreringService =
                 new BrukerRegistreringService(

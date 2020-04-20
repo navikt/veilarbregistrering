@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
-import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -19,6 +18,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 /**
  * 1. Den skal konsumere TOPIC for "Kontakt bruker opprettet"
@@ -60,14 +60,16 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
-                    Header header = record.headers().lastHeader(MDCConstants.MDC_CALL_ID);
+                    Header header = record.headers().lastHeader(MDC_CALL_ID);
                     String callId = new String(header.value(), StandardCharsets.UTF_8);
-                    MDC.put(MDCConstants.MDC_CALL_ID, callId);
+                    MDC.put(MDC_CALL_ID, callId);
 
                     LOG.info("Behandler kontaktBrukerOpprettetEvent");
 
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
                     bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
+
+                    MDC.remove(MDC_CALL_ID);
                 });
                 consumer.commitSync();
             }

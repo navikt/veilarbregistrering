@@ -116,7 +116,7 @@ public class GeografiskTilknytning implements Metric {
         BydelOslo(String kode, String verdi) {
             this.kode = kode;
             this.verdi = verdi;
-        };
+        }
 
         String verdi() {
             return verdi;
@@ -131,9 +131,7 @@ public class GeografiskTilknytning implements Metric {
 
         private static boolean contains(String geografisktilknytning) {
             return Arrays.stream(BydelOslo.values())
-                    .filter(bydelOslo -> bydelOslo.kode.equals(geografisktilknytning))
-                    .findAny()
-                    .isPresent();
+                    .anyMatch(bydelOslo -> bydelOslo.kode.equals(geografisktilknytning));
         }
     }
 

@@ -18,16 +18,15 @@ public class ArenaOverforingServiceTest {
 
     private ArenaOverforingService arenaOverforingService;
     private ProfileringRepository profileringRepository;
-    private BrukerRegistreringRepository brukerRegistreringRepository;
     private OppfolgingGateway oppfolgingClient;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
     @Before
     public void setUp() {
         profileringRepository = mock(ProfileringRepository.class);
-        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
+        BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         oppfolgingClient = mock(OppfolgingGateway.class);
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        // uten innhold
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
             // uten innhold
         };
         arenaOverforingService = new ArenaOverforingService(

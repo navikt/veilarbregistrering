@@ -14,7 +14,7 @@ public class FlereArbeidsforhold {
     static int antallMnd = 12;
     static int minAntallMndSammenhengendeJobb = 6;
     static int dagIMnd = 1;
-    
+
     private final List<Arbeidsforhold> flereArbeidsforhold;
 
     private FlereArbeidsforhold(List<Arbeidsforhold> flereArbeidsforhold) {
@@ -49,10 +49,8 @@ public class FlereArbeidsforhold {
     }
 
     public Arbeidsforhold siste() {
-        return flereArbeidsforhold.stream()
-                .sorted(sorterArbeidsforholdEtterTilDato()
-                        .thenComparing(comparing(Arbeidsforhold::getFom)))
-                .findFirst()
+        return flereArbeidsforhold.stream().min(sorterArbeidsforholdEtterTilDato()
+                .thenComparing(Arbeidsforhold::getFom))
                 .orElse(Arbeidsforhold.utenStyrkkode());
     }
 

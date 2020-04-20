@@ -33,38 +33,33 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRe
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class BrukerRegistreringServiceTest {
 
-    private static Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
-    private static Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
+    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
+    private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.valueOf("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
-    private ProfileringRepository profileringRepository;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private PersonGateway personGateway;
     private ArbeidsforholdGateway arbeidsforholdGateway;
-    private StartRegistreringUtils startRegistreringUtils;
-    private ManuellRegistreringService manuellRegistreringService;
-    private UnleashService unleashService;
-    private ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
 
     @BeforeEach
     public void setup() {
-        unleashService = mock(UnleashService.class);
+        UnleashService unleashService = mock(UnleashService.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
-        profileringRepository = mock(ProfileringRepository.class);
-        manuellRegistreringService = mock(ManuellRegistreringService.class);
+        ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
+        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
         personGateway = mock(PersonGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
-        startRegistreringUtils = new StartRegistreringUtils();
-        arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {}; //NoOp siden vi ikke ønsker å teste Kafka her
+        StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        }; //NoOp siden vi ikke ønsker å teste Kafka her
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -267,7 +262,7 @@ public class BrukerRegistreringServiceTest {
 
         ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
         verify(brukerRegistreringRepository).oppdater(argumentCaptor.capture());
-        RegistreringTilstand capturedArgument = argumentCaptor.<RegistreringTilstand> getValue();
+        RegistreringTilstand capturedArgument = argumentCaptor.getValue();
 
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());
         assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());
@@ -302,8 +297,8 @@ public class BrukerRegistreringServiceTest {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
 
-    private OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        return brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+    private void registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
     }
 
     private void mockBrukerUnderOppfolging() {

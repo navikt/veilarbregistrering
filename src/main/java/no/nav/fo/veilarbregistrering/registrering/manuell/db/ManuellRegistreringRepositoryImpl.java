@@ -48,7 +48,7 @@ public class ManuellRegistreringRepositoryImpl implements ManuellRegistreringRep
     }
 
     private long nesteFraSekvens(String sekvensNavn) {
-        return ((Long)this.db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class)).longValue();
+        return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }
 
 

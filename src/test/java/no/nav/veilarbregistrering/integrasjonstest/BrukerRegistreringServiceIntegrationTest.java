@@ -41,7 +41,6 @@ import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuild
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class BrukerRegistreringServiceIntegrationTest {
@@ -52,11 +51,10 @@ class BrukerRegistreringServiceIntegrationTest {
     private static BrukerRegistreringService brukerRegistreringService;
     private static OppfolgingClient oppfolgingClient;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
-    private static ProfileringRepository profileringRepository;
     private static StartRegistreringUtils startRegistreringUtils;
 
-    private static Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
-    private static Bruker BRUKER = Bruker.of(ident, AktorId.valueOf("AKTØRID"));
+    private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
+    private static final Bruker BRUKER = Bruker.of(ident, AktorId.valueOf("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
@@ -73,7 +71,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
-        profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
+        ProfileringRepository profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
@@ -93,7 +91,7 @@ class BrukerRegistreringServiceIntegrationTest {
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER));
         assertThat(run.isFailure()).isTrue();
 
-        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1l));
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
     }
