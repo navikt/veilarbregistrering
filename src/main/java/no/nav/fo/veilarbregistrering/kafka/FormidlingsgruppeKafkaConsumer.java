@@ -61,11 +61,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                     //String key = record.key();
                     String formidlingsgruppeEvent = record.value();
 
-                    LOG.info("Behandler kontaktBrukerOpprettetEvent: {}", formidlingsgruppeEvent);
+                    LOG.info("Behandler FormidlingsgruppeEvent: {}", formidlingsgruppeEvent);
 
                     MDC.remove(MDC_CALL_ID);
                 });
-                //consumer.commitSync();
+                consumer.commitSync();
             }
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
