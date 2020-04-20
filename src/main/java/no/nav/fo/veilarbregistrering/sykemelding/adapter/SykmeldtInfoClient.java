@@ -27,8 +27,7 @@ public class SykmeldtInfoClient extends BaseClient {
     private InfotrygdData getSykeforloepMetadata(String url) {
         HttpServletRequest request = httpServletRequestProvider.get();
 
-        // TODO: Flytt ut til konfig
-        TokenLocator tokenLocator = new TokenLocator(getRequiredProperty(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME), null);
+        TokenLocator tokenLocator = new TokenLocator(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME);
 
         try {
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
