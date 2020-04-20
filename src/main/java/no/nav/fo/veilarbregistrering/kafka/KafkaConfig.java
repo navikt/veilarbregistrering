@@ -75,9 +75,9 @@ public class KafkaConfig {
     @Bean
     FormidlingsgruppeKafkaConsumer formidlingsgruppeKafkaConsumer(UnleashService unleashService) {
         return new FormidlingsgruppeKafkaConsumer(
-                kafkaConsumerProperties(),
+                dummyKafkaConsumerProperties(),
                 unleashService,
-                "gg-arena-formidlinggruppe-v1" + getEnvSuffix());
+                "gg-arena-formidlinggruppe-v1" + (getEnvSuffix().equals("-p") ? "-p" : "-q"));
     }
 
     @Bean
@@ -85,6 +85,22 @@ public class KafkaConfig {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());
+        properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+            properties.putAll(getSecurityConfig());
+        }
+        return properties;
+    }
+
+    @Bean
+    Properties dummyKafkaConsumerProperties() {
+        Properties properties = new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "dummy-veilarbregistrering" + getEnvSuffix());
         properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
