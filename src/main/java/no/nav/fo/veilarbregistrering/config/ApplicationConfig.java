@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
@@ -70,8 +71,8 @@ public class ApplicationConfig implements ApiApplication {
                 .withDiscoveryUrl(discoveryUrl)
                 .withClientId(clientId)
                 .withRefreshUrl(refreshUrl)
-                .withRefreshTokenCookieName(REFRESH_TOKEN_COOKIE_NAME)
-                .withIdTokenCookieName(ID_TOKEN_COOKIE_NAME)
+                .withRefreshTokenCookieName(Constants.REFRESH_TOKEN_COOKIE_NAME)
+                .withIdTokenCookieName(Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME) //FIXME: Verifiser riktig bruk
                 .withIdentType(IdentType.InternBruker);
     }
 
@@ -82,7 +83,7 @@ public class ApplicationConfig implements ApiApplication {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(discoveryUrl)
                 .withClientId(clientId)
-                .withIdTokenCookieName(AZUREADB2C_OIDC_COOKIE_NAME_SBS)
+                .withIdTokenCookieName(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME)
                 .withIdentType(IdentType.EksternBruker);
     }
 

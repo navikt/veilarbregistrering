@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
+import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.utils.TokenLocator;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
@@ -27,7 +28,7 @@ public class SykmeldtInfoClient extends BaseClient {
         HttpServletRequest request = httpServletRequestProvider.get();
 
         // TODO: Flytt ut til konfig
-        TokenLocator tokenLocator = new TokenLocator(getRequiredProperty("AZUREADB2C_OIDC_COOKIE_NAME_SBS"), null);
+        TokenLocator tokenLocator = new TokenLocator(getRequiredProperty(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME), null);
 
         try {
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),

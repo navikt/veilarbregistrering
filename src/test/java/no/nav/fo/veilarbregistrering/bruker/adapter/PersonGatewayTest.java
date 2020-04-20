@@ -51,7 +51,7 @@ public class PersonGatewayTest {
         when(httpServletRequest.getHeader(any())).thenReturn("");
         when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider, oidcSystemUserTokenProvider);
+        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
         return veilArbPersonClient;
     }
 

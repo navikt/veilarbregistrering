@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
@@ -104,7 +104,7 @@ class SykmeldtInfoClientTest {
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, oidcSystemUserTokenProvider);
+        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null);
     }
 
     @Test
@@ -164,7 +164,7 @@ class SykmeldtInfoClientTest {
             HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
             when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
             when(httpServletRequest.getHeader(any())).thenReturn("");
-            when(systemUserTokenProvider.getToken()).thenReturn("testToken");
+            when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
             return httpServletRequestProvider;
         }
     }

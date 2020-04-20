@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
@@ -112,10 +112,9 @@ class OppfolgingClientTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
-        when(systemUserTokenProvider.getToken()).thenReturn("testToken");
+        when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, oidcSystemUserTokenProvider);
-        oppfolgingClient.settSystemUserTokenProvider(systemUserTokenProvider);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
         return oppfolgingClient;
     }
 
