@@ -12,7 +12,6 @@ import javax.ws.rs.InternalServerErrorException;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.withClient;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class SykmeldtInfoClient extends BaseClient {
 
