@@ -65,17 +65,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         }
     }
 
-    private void behandleRecord(ConsumerRecord<String, String> record) {
-        //String key = record.key();
-        String formidlingsgruppeEvent = record.value();
+    FormidlingsgruppeEvent behandleRecord(ConsumerRecord<String, String> record) {
+        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
+        LOG.info("Behandler FormidlingsgruppeEvent: {}", formidlingsgruppeEvent);
 
-        String maskertEvent = maskerEvent(formidlingsgruppeEvent);
-
-        LOG.info("Behandler FormidlingsgruppeEvent: {}", maskertEvent);
-    }
-
-    static String maskerEvent(String formidlingsgruppeEvent) {
-        return formidlingsgruppeEvent.replaceAll("[0-9]{11}", "***********");
+        return formidlingsgruppeEvent;
     }
 
     private boolean konsumeringAvFormidlingsgruppe() {

@@ -20,6 +20,10 @@ public class Foedselsnummer {
         return foedselsnummer;
     }
 
+    public String maskert() {
+        return foedselsnummer.replaceAll("[0-9]{11}", "***********");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
