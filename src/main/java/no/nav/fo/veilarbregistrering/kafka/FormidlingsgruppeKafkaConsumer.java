@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import com.google.gson.Gson;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.header.Header;
@@ -51,25 +53,29 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             while (konsumeringAvFormidlingsgruppe()) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
-                LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
+                LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
-                    Header header = record.headers().lastHeader(MDC_CALL_ID);
-                    String callId = new String(header.value(), StandardCharsets.UTF_8);
-                    MDC.put(MDC_CALL_ID, callId);
-
-                    //String key = record.key();
-                    String formidlingsgruppeEvent = record.value();
-
-                    LOG.info("Behandler FormidlingsgruppeEvent: {}", formidlingsgruppeEvent);
-
-                    MDC.remove(MDC_CALL_ID);
+                    behandleRecord(record);
                 });
                 consumer.commitSync();
             }
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
         }
+    }
+
+    private void behandleRecord(ConsumerRecord<String, String> record) {
+        //String key = record.key();
+        String formidlingsgruppeEvent = record.value();
+
+        String maskertEvent = maskerEvent(formidlingsgruppeEvent);
+
+        LOG.info("Behandler FormidlingsgruppeEvent: {}", maskertEvent);
+    }
+
+    static String maskerEvent(String formidlingsgruppeEvent) {
+        return formidlingsgruppeEvent.replaceAll("[0-9]{11}", "***********");
     }
 
     private boolean konsumeringAvFormidlingsgruppe() {
