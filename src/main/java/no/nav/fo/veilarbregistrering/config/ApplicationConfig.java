@@ -59,6 +59,11 @@ public class ApplicationConfig implements ApiApplication {
         );
     }
 
+    @Bean
+    GammelSystemUserTokenProvider gammelSystemUserTokenProvider() {
+        return new GammelSystemUserTokenProvider();
+    }
+
     @Inject
     private JdbcTemplate jdbcTemplate;
 
