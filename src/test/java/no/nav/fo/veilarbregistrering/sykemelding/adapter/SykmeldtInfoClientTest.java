@@ -96,7 +96,7 @@ class SykmeldtInfoClientTest {
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null);
+        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null, null);
     }
 
     @Test
