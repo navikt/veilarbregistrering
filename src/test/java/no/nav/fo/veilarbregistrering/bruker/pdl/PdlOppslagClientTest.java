@@ -58,6 +58,17 @@ public class PdlOppslagClientTest {
         pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void skalFeileVedNotFound() {
+        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
+            @Override
+            String pdlJson(String fnr, PdlRequest request) {
+                return personNotFound();
+            }
+        };
+        pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
+    }
+
     private String okJson() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
@@ -85,4 +96,12 @@ public class PdlOppslagClientTest {
         }
     }
 
+    private String personNotFound() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonNotFound.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
