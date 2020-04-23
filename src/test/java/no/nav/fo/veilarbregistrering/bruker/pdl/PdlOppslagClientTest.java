@@ -34,6 +34,15 @@ public class PdlOppslagClientTest {
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
     }
 
+    private String okJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     public void skalHenteOppholdUtenPeriodeTilPerson() {
         PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
@@ -47,6 +56,15 @@ public class PdlOppslagClientTest {
         Assert.assertEquals(Oppholdstype.PERMANENT, person.getOpphold().get(0).getType());
     }
 
+    private String okUtenPerioderJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOkUtenPerioder.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
@@ -58,6 +76,15 @@ public class PdlOppslagClientTest {
         pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
     }
 
+    private String feilJson() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonError.json").toURI()));
+            return new String(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test(expected = RuntimeException.class)
     public void skalFeileVedNotFound() {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
@@ -67,33 +94,6 @@ public class PdlOppslagClientTest {
             }
         };
         pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
-    }
-
-    private String okJson() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOk.json").toURI()));
-            return new String(bytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String okUtenPerioderJson() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonOkUtenPerioder.json").toURI()));
-            return new String(bytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String feilJson() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPersonError.json").toURI()));
-            return new String(bytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private String personNotFound() {
