@@ -2,7 +2,7 @@
 
 Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/arbeidssokerregistrering) som tar i mot nyregistrering av arbeidssøkere.
 
-![](https://github.com/navikt/veilarbregistrering/workflows/Build,%20push,%20and%20deploy/badge.svg)
+![](https://github.com/navikt/veilarbregistrering/workflows/Build,%20push,%20deploy%20%F0%9F%92%AA/badge.svg)
 
 ## Avhengigheter
 - veilarboppfolging (og Arena) : REST

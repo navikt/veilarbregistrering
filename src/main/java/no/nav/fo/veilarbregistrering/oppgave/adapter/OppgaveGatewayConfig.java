@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,8 @@ public class OppgaveGatewayConfig {
     public static final String OPPGAVE_PROPERTY_NAME = "OPPGAVE_URL";
 
     @Bean
-    OppgaveRestClient oppgaveRestClient(Provider<HttpServletRequest> provider) {
-        return new OppgaveRestClient(getRequiredProperty(OPPGAVE_PROPERTY_NAME), provider);
+    OppgaveRestClient oppgaveRestClient(Provider<HttpServletRequest> provider, SystemUserTokenProvider systemUserTokenProvider) {
+        return new OppgaveRestClient(getRequiredProperty(OPPGAVE_PROPERTY_NAME), provider, systemUserTokenProvider);
     }
 
     @Bean

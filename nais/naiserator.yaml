@@ -20,6 +20,12 @@ spec:
     value: {{ aareg_url }}
   - name: AKTOER_V2_ENDPOINTURL
     value: {{ aktoer_url }}
+  - name: OPENAM_DISCOVERY_URL
+    value: {{ openam_discovery_url }}
+  - name: VEILARBLOGIN_OPENAM_CLIENT_ID
+    value: {{ veilarblogin_openam_clientid }}
+  - name: VEILARBLOGIN_OPENAM_REFRESH_URL
+    value: {{ veilarblogin_openam_refresh_url }}
   - name: SECURITYTOKENSERVICE_URL
     value: {{ securitytokenservice_url }}
   - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL

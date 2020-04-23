@@ -1,7 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,12 @@ public class OppfolgingClient extends BaseClient {
     private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
 
     private SystemUserTokenProvider systemUserTokenProvider;
+    private GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
-    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider, GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
         super(baseUrl, httpServletRequestProvider);
+        this.systemUserTokenProvider = systemUserTokenProvider;
+        this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
@@ -92,9 +96,7 @@ public class OppfolgingClient extends BaseClient {
         return client.target(url)
                 .request()
                 .header(COOKIE, cookies)
-                .header("SystemAuthorization",
-                        (this.systemUserTokenProvider == null ? new SystemUserTokenProvider() : this.systemUserTokenProvider)
-                                .getToken());
+                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
     }
 
     private int behandleHttpResponse(Response response, String url) {
@@ -109,9 +111,4 @@ public class OppfolgingClient extends BaseClient {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
         }
     }
-
-    void settSystemUserTokenProvider(SystemUserTokenProvider systemUserTokenProvider) {
-        this.systemUserTokenProvider = systemUserTokenProvider;
-    }
-
 }

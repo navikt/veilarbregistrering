@@ -2,10 +2,10 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import com.google.common.net.MediaType;
 import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
+import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
@@ -49,10 +49,9 @@ class OppgaveGatewayTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
-        when(systemUserTokenProvider.getToken()).thenReturn("testToken");
+        when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppgaveRestClient oppgaveRestClient = new OppgaveRestClient(baseUrl, httpServletRequestProvider);
-        oppgaveRestClient.settSystemUserTokenProvider(systemUserTokenProvider);
+        OppgaveRestClient oppgaveRestClient = new OppgaveRestClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
         return oppgaveRestClient;
     }
 

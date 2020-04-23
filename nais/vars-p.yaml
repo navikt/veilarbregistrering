@@ -3,6 +3,9 @@ app_environment_name: p
 feature_endpoint_url: https://feature-fss.nais.adeo.no/feature
 aareg_url: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
 aktoer_url: https://app.adeo.no/aktoerregister/ws/Aktoer/v2
+openam_discovery_url: https://isso.adeo.no/isso/oauth2/.well-known/openid-configuration
+veilarblogin_openam_clientid: veilarblogin-p
+veilarblogin_openam_refresh_url: https://app.adeo.no/veilarblogin/api/openam-refresh
 securitytokenservice_url: https://sts.adeo.no/SecurityTokenServiceProvider/
 securitytokenservice_openid_configuration_url: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
 veilarbpersonapi_url: https://veilarbperson.nais.adeo.no/veilarbperson/api
