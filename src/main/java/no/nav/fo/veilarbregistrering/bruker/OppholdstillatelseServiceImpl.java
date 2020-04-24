@@ -30,6 +30,9 @@ public class OppholdstillatelseServiceImpl implements OppholdstillatelseService 
             LOG.info("Persondata fra PDL: {}", person);
             Metrics.reportSimple(OPPHOLDSTILLATELSE_EVENT, person.getStatsborgerskap(), person.getOpphold());
 
+        } catch (BrukerIkkeFunnetException e) {
+            LOG.warn("Feil ved henting av data fra PDL", e);
+
         } catch (Exception e) {
             LOG.error("Feil ved henting av data fra PDL", e);
         }
