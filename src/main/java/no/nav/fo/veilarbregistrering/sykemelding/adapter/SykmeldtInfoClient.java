@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import no.nav.common.oidc.Constants;
-import no.nav.common.oidc.utils.TokenLocator;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.sbl.rest.RestUtils;
