@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 import com.google.gson.*;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.rest.RestUtils;
@@ -68,8 +69,19 @@ class PdlOppslagClient extends BaseClient {
 
     private void validateResponse(PdlResponse response) {
         if (response.getErrors() != null && response.getErrors().size() > 0) {
+            if (response.getErrors().stream().anyMatch(PdlOppslagClient::not_found)) {
+                throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
+            }
+
             throw new RuntimeException("Integrasjon mot PDL feilet: " + gson.toJson(response.getErrors()));
         }
+    }
+
+    private static boolean not_found(PdlError pdlError) {
+        if (pdlError == null || pdlError.getExtensions() == null) {
+            return false;
+        }
+        return "not_found".equals(pdlError.getExtensions().getCode());
     }
 
     private String hentQuery() {
