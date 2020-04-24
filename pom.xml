@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2020.03.09_15.32-9fad31995403</version>
+        <version>1.2020.03.10_14.24-54e88b1fadad</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -88,10 +88,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>fasit</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
