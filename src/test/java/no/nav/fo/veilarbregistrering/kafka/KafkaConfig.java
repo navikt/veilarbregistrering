@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,13 +11,13 @@ import static org.mockito.Mockito.mock;
 public class KafkaConfig {
 
     @Bean
-    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer() {
-        return mock(ArbeidssokerRegistrertKafkaProducer.class);
+    ArbeidssokerRegistrertProducer arbeidssokerRegistrertKafkaProducer() {
+        return mock(ArbeidssokerRegistrertProducer.class);
     }
 
     @Bean
-    KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer() {
-        return mock(KontaktBrukerOpprettetKafkaProducer.class);
+    KontaktBrukerHenvendelseProducer kontaktBrukerOpprettetKafkaProducer() {
+        return mock(KontaktBrukerHenvendelseProducer.class);
     }
 }
 
