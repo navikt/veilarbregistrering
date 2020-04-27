@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
@@ -35,11 +32,14 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
         try {
             ProducerRecord<String, KontaktBrukerOpprettetEvent> record = new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
-            producer.send(record).get(2, TimeUnit.SECONDS);
-            LOG.info("KontaktBrukerOpprettetEvent publisert på topic, {}", topic);
+            producer.send(record, (recordMetadata, e) -> {
+               if (e != null) {
+                   LOG.error(String.format("KontaktBrukerOpprettetEvent publisert på topic, %s", topic), e);
 
-        } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            LOG.warn("Sending av KontaktBrukerOpprettetEvent til Kafka feilet", e);
+               } else {
+                   LOG.info("KontaktBrukerOpprettetEvent publisert på topic, {}. RecordMetaData {}", topic, recordMetadata);
+               }
+            });
 
         } catch (Exception e) {
             LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
