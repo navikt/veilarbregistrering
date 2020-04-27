@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
-import no.nav.common.oidc.utils.TokenUtils;
+import no.nav.common.oidc.Constants;
+import no.nav.common.oidc.utils.TokenLocator;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.sbl.rest.RestUtils;
@@ -25,12 +26,14 @@ public class SykmeldtInfoClient extends BaseClient {
     private InfotrygdData getSykeforloepMetadata(String url) {
         HttpServletRequest request = httpServletRequestProvider.get();
 
+        TokenLocator tokenLocator = new TokenLocator(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME);
+
         try {
             return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                     c -> c.target(url)
                             .request()
                             .header(COOKIE, request.getHeader(COOKIE))
-                            .header("Authorization", "Bearer " + TokenUtils.getTokenFromHeader(request).orElse(null))
+                            .header("Authorization", "Bearer " + tokenLocator.getIdToken(request).orElse(null))
                             .get(InfotrygdData.class));
         } catch (Exception e) {
             throw new InternalServerErrorException("Hent maksdato fra Infotrygd feilet.", e);
