@@ -7,6 +7,7 @@ import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
+import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
@@ -44,7 +45,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         OppfolgingGatewayConfig.class,
         OppgaveGatewayConfig.class,
         SykemeldingGatewayConfig.class,
-        PdlOppslagConfig.class
+        PdlOppslagConfig.class,
+        KrrConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 

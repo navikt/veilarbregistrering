@@ -42,6 +42,8 @@ spec:
     value: {{ norg_url }}
   - name: OPPGAVE_URL
     value: {{ oppgave_url }}
+  - name: KRR_BASE_URL
+    value: http://dkif.default.svc.nais.local/api/
   - name: PDL_URL
     value: {{pdl_url}}
   - name: ISSO_ISALIVE_URL
