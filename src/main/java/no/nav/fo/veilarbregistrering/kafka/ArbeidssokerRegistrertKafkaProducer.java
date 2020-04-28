@@ -13,9 +13,6 @@ import org.slf4j.MDC;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 import static no.nav.log.MDCConstants.MDC_CALL_ID;
@@ -42,11 +39,14 @@ class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProdu
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
             ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerRegistrertEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
-            producer.send(record).get(2, TimeUnit.SECONDS);
-            LOG.info("Arbeidssoker registrert-event publisert på topic, {}", topic);
+            producer.send(record, (recordMetadata, e) -> {
+                if (e != null) {
+                    LOG.error(String.format("ArbeidssokerRegistrertEvent publisert på topic, %s", topic), e);
 
-        } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            LOG.warn("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
+                } else {
+                    LOG.info("ArbeidssokerRegistrertEvent publisert: {}", recordMetadata);
+                }
+            });
 
         } catch (Exception e) {
             LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);

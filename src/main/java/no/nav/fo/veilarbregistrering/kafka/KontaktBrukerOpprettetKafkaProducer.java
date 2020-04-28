@@ -28,8 +28,8 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
 
     @Override
     public void publiserHenvendelse(AktorId aktorId) {
-        KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
         try {
+            KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
             ProducerRecord<String, KontaktBrukerOpprettetEvent> record = new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
             producer.send(record, (recordMetadata, e) -> {
@@ -37,7 +37,7 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
                    LOG.error(String.format("KontaktBrukerOpprettetEvent publisert på topic, %s", topic), e);
 
                } else {
-                   LOG.info("KontaktBrukerOpprettetEvent publisert på topic, {}. RecordMetaData {}", topic, recordMetadata);
+                   LOG.info("KontaktBrukerOpprettetEvent publisert: {}", recordMetadata);
                }
             });
 
