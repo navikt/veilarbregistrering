@@ -4,6 +4,7 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
@@ -70,12 +71,12 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    PubliseringAvHistorikkTask publiseringAvHistorikkTask (
+    PubliseringAvHistorikkTask publiseringAvHistorikkTask(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             UnleashService unleashService
     ) {
-        return new PubliseringAvHistorikkTask (
+        return new PubliseringAvHistorikkTask(
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
                 unleashService
@@ -206,4 +207,12 @@ public class ServiceBeansConfig {
         return new OppholdstillatelseServiceImpl(pdlOppslagGateway, unleashService);
     }
 
+    @Bean
+    KontaktinfoResource kontaktinfoResource(
+            VeilarbAbacPepClient pepClient,
+            UserService userService,
+            KrrGateway krrGateway,
+            UnleashService unleashService) {
+        return new KontaktinfoResource(pepClient, userService, krrGateway, unleashService);
+    }
 }
