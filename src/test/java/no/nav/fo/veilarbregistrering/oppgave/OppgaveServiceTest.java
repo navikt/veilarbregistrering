@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.DOD_UTVANDRET;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE;
 import static org.mockito.Mockito.*;
 
@@ -23,7 +24,6 @@ public class OppgaveServiceTest {
             AktorId.valueOf("2134"));
 
     private OppgaveService oppgaveService;
-
     private OppgaveGateway oppgaveGateway;
     private OppgaveRepository oppgaveRepository;
 
@@ -47,6 +47,15 @@ public class OppgaveServiceTest {
         verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
+    }
+
+    @Test
+    public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
+        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+
+        oppgaveService.opprettOppgave(BRUKER, DOD_UTVANDRET);
+
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Død eller utvandret");
     }
 
     @Test
