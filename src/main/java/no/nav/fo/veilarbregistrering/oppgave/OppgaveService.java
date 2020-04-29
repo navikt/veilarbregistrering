@@ -26,7 +26,7 @@ public class OppgaveService {
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
-    private Map<OppgaveType, String> beskrivelser;
+    private final Map<OppgaveType, String> beskrivelser;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
