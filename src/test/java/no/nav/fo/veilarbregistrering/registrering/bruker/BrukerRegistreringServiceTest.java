@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -60,6 +61,8 @@ public class BrukerRegistreringServiceTest {
         StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
         }; //NoOp siden vi ikke ønsker å teste Kafka her
+        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profileringGjennomfort) -> {
+        };
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -72,7 +75,8 @@ public class BrukerRegistreringServiceTest {
                         manuellRegistreringService,
                         startRegistreringUtils,
                         unleashService,
-                        arbeidssokerRegistrertProducer);
+                        arbeidssokerRegistrertProducer,
+                        arbeidssokerProfilertProducer);
 
         when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
         when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);

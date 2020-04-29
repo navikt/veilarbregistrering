@@ -54,7 +54,8 @@ public class ServiceBeansConfig {
             //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
             UnleashService unleashService,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -66,8 +67,8 @@ public class ServiceBeansConfig {
                 manuellRegistreringService,
                 startRegistreringUtils,
                 unleashService,
-                arbeidssokerRegistrertProducer
-        );
+                arbeidssokerRegistrertProducer,
+                arbeidssokerProfilertProducer);
     }
 
     @Bean
