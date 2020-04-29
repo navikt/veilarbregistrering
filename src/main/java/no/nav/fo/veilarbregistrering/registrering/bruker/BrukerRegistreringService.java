@@ -49,6 +49,7 @@ public class BrukerRegistreringService {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final ManuellRegistreringService manuellRegistreringService;
     private final StartRegistreringUtils startRegistreringUtils;
+    private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -59,9 +60,9 @@ public class BrukerRegistreringService {
                                      ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      UnleashService unleashService,
-                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer
+                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
 
-    ) {
+                                     ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
@@ -72,6 +73,7 @@ public class BrukerRegistreringService {
         this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
+        this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
     }
 
     @Transactional
@@ -190,6 +192,11 @@ public class BrukerRegistreringService {
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
                 ordinaerBrukerRegistrering.getBrukersSituasjon(),
+                ordinaerBrukerRegistrering.getOpprettetDato());
+
+        arbeidssokerProfilertProducer.publiserProfilering(
+                bruker.getAktorId(),
+                profilering.getInnsatsgruppe(),
                 ordinaerBrukerRegistrering.getOpprettetDato());
 
         return ordinaerBrukerRegistrering;

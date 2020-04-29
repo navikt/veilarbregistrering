@@ -41,6 +41,13 @@ public class KafkaConfig {
     }
 
     @Bean
+    ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer) {
+        return new ArbeidssokerProfilertKafkaProducer(
+                kafkaProducer,
+                "aapen-arbeid-arbeidssoker-profilert" + getEnvSuffix());
+    }
+
+    @Bean
     KafkaProducer kafkaProducer() {
         return new KafkaProducer(kafkaProperties());
     }

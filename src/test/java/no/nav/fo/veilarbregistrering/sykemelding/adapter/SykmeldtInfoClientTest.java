@@ -11,10 +11,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -68,6 +65,8 @@ class SykmeldtInfoClientTest {
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
         }; //Noop, vi trenger ikke kafka
+        ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        }; //Noop, vi trenger ikke kafka
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -80,7 +79,8 @@ class SykmeldtInfoClientTest {
                         manuellRegistreringService,
                         startRegistreringUtils,
                         unleashService,
-                        arbeidssokerRegistrertProducer);
+                        arbeidssokerRegistrertProducer,
+                        arbeidssokerProfileringProducer);
 
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
