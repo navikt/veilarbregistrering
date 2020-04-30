@@ -55,7 +55,9 @@ public class OppgaveServiceTest {
 
         oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Død eller utvandret");
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
+                "og har selv opprettet denne oppgaven. " +
+                "Ring bruker og følg vanlig rutine for slike tilfeller.");
     }
 
     @Test
