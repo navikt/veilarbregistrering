@@ -44,8 +44,11 @@ public class OppgaveService {
                         "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
         );
         beskrivelser.put(
-                OppgaveType.DOD_UTVANDRET,
-                "Død eller utvandret"
+                OppgaveType.UTVANDRET,
+                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
+                        "og har selv opprettet denne oppgaven. " +
+                        "Ring bruker og følg vanlig rutine for slike tilfeller."
+
         );
     }
 

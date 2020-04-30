@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.DOD_UTVANDRET;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE;
 import static org.mockito.Mockito.*;
 
@@ -53,7 +53,7 @@ public class OppgaveServiceTest {
     public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
         when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
 
-        oppgaveService.opprettOppgave(BRUKER, DOD_UTVANDRET);
+        oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
 
         verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Død eller utvandret");
     }
