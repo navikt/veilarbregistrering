@@ -16,4 +16,5 @@ public class StartRegistreringStatusDto {
     private String servicegruppe;
     private String rettighetsgruppe;
     private String geografiskTilknytning;
+    private int alder;
 }
