@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 
 public interface ArbeidssokerProfilertProducer {
 
-    void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profileringGjennomfort);
+    void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato);
 }

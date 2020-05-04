@@ -65,7 +65,7 @@ class SykmeldtInfoClientTest {
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
         }; //Noop, vi trenger ikke kafka
-        ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         }; //Noop, vi trenger ikke kafka
 
         brukerRegistreringService =

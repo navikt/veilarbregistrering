@@ -61,7 +61,7 @@ public class BrukerRegistreringServiceTest {
         StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
         }; //NoOp siden vi ikke ønsker å teste Kafka her
-        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profileringGjennomfort) -> {
+        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         };
 
         brukerRegistreringService =

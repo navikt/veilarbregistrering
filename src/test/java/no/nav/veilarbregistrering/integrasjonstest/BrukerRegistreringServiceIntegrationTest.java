@@ -200,7 +200,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer() {
-            return (aktorId, innsatsgruppe, profileringGjennomfort) -> {
+            return (aktorId, innsatsgruppe, profilertDato) -> {
                 //noop
             };
         }
