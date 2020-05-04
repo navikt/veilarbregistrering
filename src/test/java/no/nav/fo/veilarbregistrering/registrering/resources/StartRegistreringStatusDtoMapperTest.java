@@ -33,7 +33,8 @@ public class StartRegistreringStatusDtoMapperTest {
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
                 Optional.empty(),
-                false);
+                false,
+                0);
 
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(dto.getRegistreringType()).isEqualTo(ORDINAER_REGISTRERING);
@@ -64,7 +65,8 @@ public class StartRegistreringStatusDtoMapperTest {
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
                 Optional.of(GeografiskTilknytning.of("030109")),
-                true);
+                true,
+                30);
 
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(dto.getRegistreringType()).isEqualTo(SYKMELDT_REGISTRERING);
@@ -95,7 +97,8 @@ public class StartRegistreringStatusDtoMapperTest {
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
                 Optional.of(GeografiskTilknytning.of("030109")),
-                false);
+                false,
+                30);
 
         assertThat(dto.isErSykmeldtMedArbeidsgiver()).isEqualTo(false);
     }

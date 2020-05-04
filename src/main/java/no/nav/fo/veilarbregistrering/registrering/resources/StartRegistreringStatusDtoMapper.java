@@ -13,7 +13,8 @@ public class StartRegistreringStatusDtoMapper {
     public static StartRegistreringStatusDto map(
             BrukersTilstand brukersTilstand,
             Optional<GeografiskTilknytning> muligGeografiskTilknytning,
-            Boolean oppfyllerBetingelseOmArbeidserfaring) {
+            Boolean oppfyllerBetingelseOmArbeidserfaring,
+            int alder) {
 
         return new StartRegistreringStatusDto()
                 .setUnderOppfolging(brukersTilstand.isUnderOppfolging())
@@ -24,6 +25,7 @@ public class StartRegistreringStatusDtoMapper {
                 .setFormidlingsgruppe(brukersTilstand.getFormidlingsgruppe().orElse(Formidlingsgruppe.nullable()).stringValue())
                 .setServicegruppe(brukersTilstand.getServicegruppe().orElse(Servicegruppe.nullable()).stringValue())
                 .setRettighetsgruppe(brukersTilstand.getRettighetsgruppe().orElse(Rettighetsgruppe.nullable()).stringValue())
-                .setGeografiskTilknytning(muligGeografiskTilknytning.map(GeografiskTilknytning::stringValue).orElse(null));
+                .setGeografiskTilknytning(muligGeografiskTilknytning.map(GeografiskTilknytning::stringValue).orElse(null))
+                .setAlder(alder);
     }
 }

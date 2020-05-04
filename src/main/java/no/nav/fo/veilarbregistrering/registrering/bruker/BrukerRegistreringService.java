@@ -154,7 +154,10 @@ public class BrukerRegistreringService {
         }
 
         StartRegistreringStatusDto startRegistreringStatus = map(
-                brukersTilstand, muligGeografiskTilknytning, oppfyllerBetingelseOmArbeidserfaring);
+                brukersTilstand,
+                muligGeografiskTilknytning,
+                oppfyllerBetingelseOmArbeidserfaring,
+                fnr.alder(now()));
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
