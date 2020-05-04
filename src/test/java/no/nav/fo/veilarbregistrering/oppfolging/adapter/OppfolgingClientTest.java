@@ -75,7 +75,7 @@ class OppfolgingClientTest {
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
         };
-        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profileringGjennomfort) -> {
+        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         };
 
         brukerRegistreringService =
