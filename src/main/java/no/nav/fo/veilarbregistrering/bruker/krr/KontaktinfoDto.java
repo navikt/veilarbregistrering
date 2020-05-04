@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.krr;
 
+import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
+
 public class KontaktinfoDto {
 
     private String epostadresse;
@@ -14,6 +16,10 @@ public class KontaktinfoDto {
      * Hvorvidt brukeren har reservert seg for digital post
      */
     private boolean reservert;
+
+    KontaktinfoDto() {
+        //default constructor
+    }
 
     KontaktinfoDto(String epostadresse, boolean kanVarsles, String mobiltelefonnummer, boolean reservert) {
         this.epostadresse = epostadresse;
