@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 public enum OppgaveType implements Metric {
-    OPPHOLDSTILLATELSE;
+    OPPHOLDSTILLATELSE, UTVANDRET;
 
     @Override
     public String fieldName() {

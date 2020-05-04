@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
@@ -24,6 +26,7 @@ public class OppgaveService {
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
+    private final Map<OppgaveType, String> beskrivelser;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
@@ -33,6 +36,20 @@ public class OppgaveService {
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
+        beskrivelser = new HashMap<>(2);
+        beskrivelser.put(
+                OppgaveType.OPPHOLDSTILLATELSE,
+                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                        "og har selv opprettet denne oppgaven. " +
+                        "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
+        );
+        beskrivelser.put(
+                OppgaveType.UTVANDRET,
+                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
+                        "og har selv opprettet denne oppgaven. " +
+                        "Ring bruker og følg vanlig rutine for slike tilfeller."
+
+        );
     }
 
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
@@ -42,9 +59,8 @@ public class OppgaveService {
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
                 bruker.getAktorId(),
-                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                        "og har selv opprettet denne oppgaven. " +
-                        "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
+                beskrivelser.get(oppgaveType)
+        );
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}", oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
