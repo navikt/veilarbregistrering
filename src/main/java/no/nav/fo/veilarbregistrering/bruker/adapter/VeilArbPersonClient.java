@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.bruker.adapter;
 
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +15,19 @@ import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-class VeilArbPersonClient extends BaseClient {
+class VeilArbPersonClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(VeilArbPersonClient.class);
 
+    private static final int HTTP_READ_TIMEOUT = 120000;
+
+    private final String baseUrl;
+    private final Provider<HttpServletRequest> httpServletRequestProvider;
     private SystemUserTokenProvider systemUserTokenProvider;
 
     VeilArbPersonClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider) {
-        super(baseUrl, httpServletRequestProvider);
+        this.baseUrl = baseUrl;
+        this.httpServletRequestProvider = httpServletRequestProvider;
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
