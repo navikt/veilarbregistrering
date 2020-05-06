@@ -148,9 +148,9 @@ public class BrukerRegistreringService {
 
         Boolean oppfyllerBetingelseOmArbeidserfaring = null;
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
-            oppfyllerBetingelseOmArbeidserfaring = startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(
-                    () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
-                    now());
+            oppfyllerBetingelseOmArbeidserfaring =
+                    arbeidsforholdGateway.hentArbeidsforhold(fnr)
+                            .harJobbetSammenhengendeSeksAvTolvSisteManeder(now());
         }
 
         StartRegistreringStatusDto startRegistreringStatus = map(

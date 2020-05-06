@@ -83,7 +83,6 @@ class SykmeldtInfoClientTest {
                         arbeidssokerProfileringProducer);
 
 
-        when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(unleashService.isEnabled(any())).thenReturn(true);
     }
 

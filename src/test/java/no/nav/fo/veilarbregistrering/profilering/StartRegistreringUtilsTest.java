@@ -93,7 +93,7 @@ class StartRegistreringUtilsTest {
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
         } else if ((18 <= alder && alder <= 59)
-                    && startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato)
+                    && arbeidsforholdSupplier.get().harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)
                     && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
                     && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
                     && besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.JA)
