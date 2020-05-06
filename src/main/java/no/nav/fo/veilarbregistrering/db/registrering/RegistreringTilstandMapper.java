@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+package no.nav.fo.veilarbregistrering.db.registrering;
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;

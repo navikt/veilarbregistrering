@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.manuell.db;
+package no.nav.fo.veilarbregistrering.db.registrering;
 
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
