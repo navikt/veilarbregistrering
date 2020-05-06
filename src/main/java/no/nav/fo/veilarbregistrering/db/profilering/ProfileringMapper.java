@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.profilering.db;
+package no.nav.fo.veilarbregistrering.db.profilering;
 
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;

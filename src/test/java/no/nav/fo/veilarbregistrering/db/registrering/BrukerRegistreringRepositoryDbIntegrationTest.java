@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.db;
+package no.nav.fo.veilarbregistrering.db.registrering;
 
 import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder;
@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
