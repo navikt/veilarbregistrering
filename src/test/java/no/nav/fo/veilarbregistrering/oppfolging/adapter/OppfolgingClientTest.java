@@ -28,8 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
-import java.time.LocalDateTime;
-
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -91,7 +89,6 @@ class OppfolgingClientTest {
                         unleashService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer);
-
 
         when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any()))

@@ -7,45 +7,31 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class FlereArbeidsforholdTest {
 
     @Test
     public void skalHenteSisteEllerPaagendeArbeidsforhold() {
-        LocalDate fom0 = LocalDate.of(2017,11,1);
-        LocalDate tom0 = null;
-        LocalDate fom1 = LocalDate.of(2017,11,1);
-        LocalDate tom1 = LocalDate.of(2017,11,30);
-        LocalDate fom2 = LocalDate.of(2017,9,1);
-        LocalDate tom2 = LocalDate.of(2017,9,30);
-        LocalDate fom3 = LocalDate.of(2017,4,1);
-        LocalDate tom3 = LocalDate.of(2017,4,30);
 
-        Arbeidsforhold paagaaendeArbeidsforhold = new Arbeidsforhold().setFom(fom0).setTom(tom0);
-        Arbeidsforhold sisteArbeidsforhold = new Arbeidsforhold().setFom(fom1).setTom(tom1);
-        Arbeidsforhold nestSisteArbeidsforhold = new Arbeidsforhold().setFom(fom2).setTom(tom2);
-        Arbeidsforhold eldreArbeidsforhold = new Arbeidsforhold().setFom(fom3).setTom(tom3);
+        assertThat(FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert().siste()).isEqualTo(siste());
 
-        // Skal hente sistearbeidsforhold
-        List<Arbeidsforhold> tilfeldigSortertListe = asList(eldreArbeidsforhold, sisteArbeidsforhold, nestSisteArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(tilfeldigSortertListe).siste()).isEqualTo(sisteArbeidsforhold);
+        List<Arbeidsforhold> stigendeSortertListe = asList(eldre(), nestSiste(), siste());
+        assertThat(FlereArbeidsforhold.of(stigendeSortertListe).siste()).isEqualTo(siste());
 
-        List<Arbeidsforhold> stigendeSortertListe = asList(eldreArbeidsforhold, nestSisteArbeidsforhold, sisteArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(stigendeSortertListe).siste()).isEqualTo(sisteArbeidsforhold);
-
-        List<Arbeidsforhold> synkendeSortertListe = asList(sisteArbeidsforhold, nestSisteArbeidsforhold, eldreArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(synkendeSortertListe).siste()).isEqualTo(sisteArbeidsforhold);
+        List<Arbeidsforhold> synkendeSortertListe = asList(siste(), nestSiste(), eldre());
+        assertThat(FlereArbeidsforhold.of(synkendeSortertListe).siste()).isEqualTo(siste());
 
         // Skal hente paagendeArbeidsforhold
-        List<Arbeidsforhold> tilfeldigSortertListeMedPaagaaende = asList(eldreArbeidsforhold, paagaaendeArbeidsforhold, sisteArbeidsforhold, nestSisteArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(tilfeldigSortertListeMedPaagaaende).siste()).isEqualTo(paagaaendeArbeidsforhold);
+        List<Arbeidsforhold> tilfeldigSortertListeMedPaagaaende = asList(eldre(), paagaaende(), siste(), nestSiste());
+        assertThat(FlereArbeidsforhold.of(tilfeldigSortertListeMedPaagaaende).siste()).isEqualTo(paagaaende());
 
-        List<Arbeidsforhold> stigendeSortertListePaagaande = asList(eldreArbeidsforhold, nestSisteArbeidsforhold, sisteArbeidsforhold, paagaaendeArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(stigendeSortertListePaagaande).siste()).isEqualTo(paagaaendeArbeidsforhold);
+        List<Arbeidsforhold> stigendeSortertListePaagaande = asList(eldre(), nestSiste(), siste(), paagaaende());
+        assertThat(FlereArbeidsforhold.of(stigendeSortertListePaagaande).siste()).isEqualTo(paagaaende());
 
-        List<Arbeidsforhold> synkendeSortertListePaagaande = asList(paagaaendeArbeidsforhold, sisteArbeidsforhold, nestSisteArbeidsforhold, eldreArbeidsforhold);
-        assertThat(FlereArbeidsforhold.of(synkendeSortertListePaagaande).siste()).isEqualTo(paagaaendeArbeidsforhold);
+        List<Arbeidsforhold> synkendeSortertListePaagaande = asList(paagaaende(), siste(), nestSiste(), eldre());
+        assertThat(FlereArbeidsforhold.of(synkendeSortertListePaagaande).siste()).isEqualTo(paagaaende());
     }
 
     @Test
