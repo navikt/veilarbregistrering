@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
+import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,6 +50,7 @@ class OppfolgingClientTest {
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
     private StartRegistreringUtils startRegistreringUtils;
     private ClientAndServer mockServer;
 
@@ -67,7 +69,7 @@ class OppfolgingClientTest {
 
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
-        ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
+        arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -90,7 +92,6 @@ class OppfolgingClientTest {
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer);
 
-        when(startRegistreringUtils.harJobbetSammenhengendeSeksAvTolvSisteManeder(any(), any())).thenReturn(true);
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any()))
                 .thenReturn(new Profilering()
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
@@ -208,6 +209,8 @@ class OppfolgingClientTest {
     public void testAtGirIngenExceptionsDersomKun200MedKanReaktiveresNull() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(null, null), MediaType.JSON_UTF_8).withStatusCode(200));
+
+        when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(flereArbeidsforholdTilfeldigSortert());
 
         assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(IDENT));
     }

@@ -14,14 +14,6 @@ public class StartRegistreringUtils {
             Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,
             LocalDate dagensDato, Besvarelse besvarelse
     ) {
-        return Profilering.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder(arbeidsforholdSupplier, dagensDato));
-    }
-
-    //FIXME: Burde kunne være static
-    public boolean harJobbetSammenhengendeSeksAvTolvSisteManeder(
-            Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,
-            LocalDate dagensDato) {
-
-        return arbeidsforholdSupplier.get().harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato);
+        return Profilering.of(besvarelse, alder, arbeidsforholdSupplier.get().harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato));
     }
 }
