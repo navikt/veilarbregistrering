@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,15 +20,21 @@ import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-public class OppfolgingClient extends BaseClient {
+public class OppfolgingClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
+
+    private static final int HTTP_READ_TIMEOUT = 120000;
+
+    private final String baseUrl;
+    private final Provider<HttpServletRequest> httpServletRequestProvider;
 
     private SystemUserTokenProvider systemUserTokenProvider;
     private GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
     public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider, GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
-        super(baseUrl, httpServletRequestProvider);
+        this.baseUrl = baseUrl;
+        this.httpServletRequestProvider = httpServletRequestProvider;
         this.systemUserTokenProvider = systemUserTokenProvider;
         this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
     }

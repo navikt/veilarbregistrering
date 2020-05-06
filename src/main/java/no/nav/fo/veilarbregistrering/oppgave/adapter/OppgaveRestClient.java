@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import no.nav.common.oidc.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
@@ -13,12 +10,16 @@ import static javax.ws.rs.client.Entity.json;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-public class OppgaveRestClient extends BaseClient {
+public class OppgaveRestClient {
+
+    private static final int HTTP_READ_TIMEOUT = 120000;
+
+    private final String baseUrl;
 
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    public OppgaveRestClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider) {
-        super(baseUrl, httpServletRequestProvider);
+    public OppgaveRestClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
+        this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 

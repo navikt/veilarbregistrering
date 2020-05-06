@@ -30,7 +30,7 @@ public class PdlOppslagClientTest {
 
     @Test
     public void skalHenteOppholdTilPerson() {
-        PdlOppslagClient client = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return toJson(OK_JSON);
@@ -43,7 +43,7 @@ public class PdlOppslagClientTest {
 
     @Test
     public void skalHenteOppholdUtenPeriodeTilPerson() {
-        PdlOppslagClient service = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient service = new PdlOppslagClient("", null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return toJson(OK_UTEN_PERIODER_JSON);
@@ -56,7 +56,7 @@ public class PdlOppslagClientTest {
 
     @Test(expected = RuntimeException.class)
     public void skalFeileVedError() {
-        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return toJson(FEIL_JSON);
@@ -67,7 +67,7 @@ public class PdlOppslagClientTest {
 
     @Test(expected = BrukerIkkeFunnetException.class)
     public void skalFeileVedNotFound() {
-        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", requestProvider, null) {
+        PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
             String pdlJson(String fnr, PdlRequest request) {
                 return toJson(PERSON_NOT_FOUND_JSON);

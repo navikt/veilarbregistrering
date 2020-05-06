@@ -1,16 +1,13 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
-import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.utils.TokenUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.inject.Provider;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
-
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -18,10 +15,16 @@ import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.common.oidc.Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-public class SykmeldtInfoClient extends BaseClient {
+public class SykmeldtInfoClient {
+
+    private static final int HTTP_READ_TIMEOUT = 120000;
+
+    private final String baseUrl;
+    private final Provider<HttpServletRequest> httpServletRequestProvider;
 
     public SykmeldtInfoClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
-        super(baseUrl, httpServletRequestProvider);
+        this.baseUrl = baseUrl;
+        this.httpServletRequestProvider = httpServletRequestProvider;
     }
 
     public InfotrygdData hentSykmeldtInfoData(Foedselsnummer fnr) {

@@ -16,8 +16,8 @@ public class OppgaveGatewayConfig {
     public static final String OPPGAVE_PROPERTY_NAME = "OPPGAVE_URL";
 
     @Bean
-    OppgaveRestClient oppgaveRestClient(Provider<HttpServletRequest> provider, SystemUserTokenProvider systemUserTokenProvider) {
-        return new OppgaveRestClient(getRequiredProperty(OPPGAVE_PROPERTY_NAME), provider, systemUserTokenProvider);
+    OppgaveRestClient oppgaveRestClient(SystemUserTokenProvider systemUserTokenProvider) {
+        return new OppgaveRestClient(getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider);
     }
 
     @Bean

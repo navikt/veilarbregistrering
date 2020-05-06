@@ -4,15 +4,12 @@ import com.google.gson.*;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
-import no.nav.fo.veilarbregistrering.httpclient.BaseClient;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -22,7 +19,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 
-class PdlOppslagClient extends BaseClient {
+class PdlOppslagClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagClient.class);
 
@@ -34,13 +31,14 @@ class PdlOppslagClient extends BaseClient {
 
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
+    private final String baseUrl;
+
     private SystemUserTokenProvider systemUserTokenProvider;
 
     PdlOppslagClient(
             String baseUrl,
-            Provider<HttpServletRequest> httpServletRequestProvider,
             SystemUserTokenProvider systemUserTokenProvider) {
-        super(baseUrl, httpServletRequestProvider);
+        this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
