@@ -7,8 +7,8 @@ import no.nav.apiapp.feil.FeilType;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.log.MDCConstants;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -24,19 +24,17 @@ class KrrClient {
     private static final Logger LOG = LoggerFactory.getLogger(KrrClient.class);
 
     private final SystemUserTokenProvider systemUserTokenProvider;
-    private final UnleashService unleashService;
     private final String baseUrl;
 
-    private final Gson gson = new GsonBuilder().create();
+    private static final Gson gson = new GsonBuilder().create();
 
-    KrrClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider, UnleashService unleashService) {
+    KrrClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
-        this.unleashService = unleashService;
     }
 
-    KontaktinfoDto hentKontaktinfo(Foedselsnummer foedselsnummer) {
-        KontaktinfoDto kontaktinfoDto;
+    KrrKontaktinfoDto hentKontaktinfo(Foedselsnummer foedselsnummer) {
+        KrrKontaktinfoDto kontaktinfoDto;
         try {
             String jsonResponse = RestUtils.withClient(c ->
                     c.target(baseUrl + "v1/personer/kontaktinformasjon")
@@ -48,11 +46,7 @@ class KrrClient {
                             .header("Nav-Personidenter", foedselsnummer.stringValue())
                             .get(String.class));
 
-            if (unleashService.isEnabled("veilarbregistrering.kontaktinfo")) {
-                LOG.info("JsonResponse: ", jsonResponse);
-            }
-
-            kontaktinfoDto = gson.fromJson(jsonResponse, KontaktinfoDto.class);
+            kontaktinfoDto = map(jsonResponse, foedselsnummer);
 
         } catch (NotAuthorizedException | ForbiddenException e) {
             throw new Feil(FeilType.INGEN_TILGANG, e);
@@ -63,5 +57,17 @@ class KrrClient {
         }
 
         return kontaktinfoDto;
+    }
+
+    /**
+     * Benytter JSONObject til mapping i parallell med GSON pga. dynamisk json.
+     */
+    static KrrKontaktinfoDto map(String jsonResponse, Foedselsnummer foedselsnummer) {
+
+        JSONObject kontaktinfo = new JSONObject(jsonResponse)
+                .getJSONObject("kontaktinfo")
+                .getJSONObject(foedselsnummer.stringValue());
+
+        return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
     }
 }

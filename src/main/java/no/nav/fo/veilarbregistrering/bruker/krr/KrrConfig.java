@@ -14,8 +14,8 @@ public class KrrConfig {
     private static final String KRR_PROPERTY_NAME = "KRR_BASE_URL";
 
     @Bean
-    KrrClient krrClient(SystemUserTokenProvider systemUserTokenProvider, UnleashService unleashService) {
-        return new KrrClient(getRequiredProperty(KRR_PROPERTY_NAME), systemUserTokenProvider, unleashService);
+    KrrClient krrClient(SystemUserTokenProvider systemUserTokenProvider) {
+        return new KrrClient(getRequiredProperty(KRR_PROPERTY_NAME), systemUserTokenProvider);
     }
 
     @Bean

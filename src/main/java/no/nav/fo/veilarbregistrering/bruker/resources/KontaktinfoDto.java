@@ -7,7 +7,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class KontaktinfoDto {
 
-    private String epost;
     private String telefon;
 
 }
