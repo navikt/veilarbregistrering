@@ -4,23 +4,21 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
 
-public class KrrGatewayImpl implements KrrGateway {
+class KrrGatewayImpl implements KrrGateway {
 
     private final KrrClient krrClient;
 
-    public KrrGatewayImpl(KrrClient krrClient) {
+    KrrGatewayImpl(KrrClient krrClient) {
         this.krrClient = krrClient;
     }
 
     @Override
     public Kontaktinfo hentKontaktinfo(Bruker bruker) {
-        KontaktinfoDto kontaktinfoDto = krrClient.hentKontaktinfo(bruker.getFoedselsnummer());
+        KrrKontaktinfoDto kontaktinfoDto = krrClient.hentKontaktinfo(bruker.getFoedselsnummer());
         return map(kontaktinfoDto);
     }
 
-    private Kontaktinfo map(KontaktinfoDto kontaktinfoDto) {
-        return Kontaktinfo.of(
-                kontaktinfoDto.getEpostadresse(),
-                kontaktinfoDto.getMobiltelefonnummer());
+    private Kontaktinfo map(KrrKontaktinfoDto kontaktinfoDto) {
+        return Kontaktinfo.of(kontaktinfoDto.getMobiltelefonnummer());
     }
 }
