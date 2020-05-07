@@ -6,6 +6,8 @@ import java.util.Optional;
 public class PdlPerson {
     private List<PdlPersonOpphold> opphold;
     private List<PdlStatsborgerskap> statsborgerskap;
+    private PdlTelefonnummer telefonnummer;
+    private PdlFoedsel foedsel;
 
     public PdlPerson() {
     }
@@ -38,5 +40,21 @@ public class PdlPerson {
             return Optional.empty();
         }
         return Optional.of(this.opphold.get(this.opphold.size() - 1));
+    }
+
+    public PdlTelefonnummer getTelefonnummer() {
+        return telefonnummer;
+    }
+
+    public void setTelefonnummer(PdlTelefonnummer telefonnummer) {
+        this.telefonnummer = telefonnummer;
+    }
+
+    public PdlFoedsel getFoedsel() {
+        return foedsel;
+    }
+
+    public void setFoedsel(PdlFoedsel foedsel) {
+        this.foedsel = foedsel;
     }
 }
