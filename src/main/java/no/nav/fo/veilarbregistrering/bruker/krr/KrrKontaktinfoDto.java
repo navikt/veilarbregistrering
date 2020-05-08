@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.krr;
 
-import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
+class KrrKontaktinfoDto {
 
-public class KontaktinfoDto {
-
-    private String epostadresse;
     /**
      * Hvorvidt brukeren ikke har reservert seg for digital post, og han/hun kan varsles digitalt
      * i henhold til eForvaltningsforskriftens §32
@@ -17,30 +14,25 @@ public class KontaktinfoDto {
      */
     private boolean reservert;
 
-    KontaktinfoDto() {
+    KrrKontaktinfoDto() {
         //default constructor
     }
 
-    KontaktinfoDto(String epostadresse, boolean kanVarsles, String mobiltelefonnummer, boolean reservert) {
-        this.epostadresse = epostadresse;
+    KrrKontaktinfoDto(boolean kanVarsles, String mobiltelefonnummer, boolean reservert) {
         this.kanVarsles = kanVarsles;
         this.mobiltelefonnummer = mobiltelefonnummer;
         this.reservert = reservert;
     }
 
-    public String getEpostadresse() {
-        return epostadresse;
-    }
-
-    public String getMobiltelefonnummer() {
+    String getMobiltelefonnummer() {
         return mobiltelefonnummer;
     }
 
-    public boolean isKanVarsles() {
+    boolean isKanVarsles() {
         return kanVarsles;
     }
 
-    public boolean isReservert() {
+    boolean isReservert() {
         return reservert;
     }
 }

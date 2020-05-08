@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.bruker.krr;
 
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
