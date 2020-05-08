@@ -4,14 +4,18 @@ public class Person {
 
     private final Opphold opphold;
     private final Statsborgerskap statsborgerskap;
+    private final Telefonnummer telefonnummer;
+    private final Foedselsdato foedselsdato;
 
-    public static Person of(Opphold opphold, Statsborgerskap statsborgerskap) {
-        return new Person(opphold, statsborgerskap);
+    public static Person of(Opphold opphold, Statsborgerskap statsborgerskap, Telefonnummer telefonnummer, Foedselsdato foedselsdato) {
+        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato);
     }
 
-    private Person(Opphold opphold, Statsborgerskap statsborgerskap) {
+    private Person(Opphold opphold, Statsborgerskap statsborgerskap, Telefonnummer telefonnummer, Foedselsdato foedselsdato) {
         this.opphold = opphold;
         this.statsborgerskap = statsborgerskap;
+        this.telefonnummer = telefonnummer;
+        this.foedselsdato = foedselsdato;
     }
 
     public Opphold getOpphold() {
