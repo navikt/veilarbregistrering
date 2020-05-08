@@ -42,16 +42,16 @@ public class PdlPerson {
         return Optional.of(this.opphold.get(this.opphold.size() - 1));
     }
 
-    public PdlTelefonnummer getTelefonnummer() {
-        return telefonnummer;
+    public Optional<PdlTelefonnummer> getTelefonnummer() {
+        return Optional.of(this.telefonnummer);
     }
 
     public void setTelefonnummer(PdlTelefonnummer telefonnummer) {
         this.telefonnummer = telefonnummer;
     }
 
-    public PdlFoedsel getFoedsel() {
-        return foedsel;
+    public Optional<PdlFoedsel> getFoedsel() {
+        return Optional.of(this.foedsel);
     }
 
     public void setFoedsel(PdlFoedsel foedsel) {

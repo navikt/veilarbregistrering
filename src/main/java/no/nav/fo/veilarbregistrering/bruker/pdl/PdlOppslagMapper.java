@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.Opphold;
-import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.bruker.Person;
-import no.nav.fo.veilarbregistrering.bruker.Statsborgerskap;
+import no.nav.fo.veilarbregistrering.bruker.*;
 
 import java.time.LocalDate;
 
@@ -16,7 +13,18 @@ class PdlOppslagMapper {
                         .orElse(null),
                 pdlPerson.getSisteStatsborgerskap()
                         .map(PdlOppslagMapper::map)
+                        .orElse(null),
+                pdlPerson.getTelefonnummer()
+                        .map(PdlOppslagMapper::map)
+                        .orElse(null),
+                pdlPerson.getFoedsel()
+                        .map(PdlOppslagMapper::map)
                         .orElse(null));
+    }
+
+    private static Foedselsdato map(PdlFoedsel pdlFoedsel) {
+        return Foedselsdato.of(pdlFoedsel.getFoedselsdato());
+
     }
 
     private static Opphold map(PdlPersonOpphold pdlPersonOpphold) {
@@ -39,5 +47,9 @@ class PdlOppslagMapper {
         return Periode.of(
                 gyldigFraOgMed,
                 gyldigTilOgMed);
+    }
+
+    private static Telefonnummer map(PdlTelefonnummer pdlTelefonnummer) {
+        return Telefonnummer.of(pdlTelefonnummer.getNummer(), pdlTelefonnummer.getLandskode());
     }
 }
