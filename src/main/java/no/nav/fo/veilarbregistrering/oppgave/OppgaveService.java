@@ -79,7 +79,7 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            LOG.warn("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.",
+            LOG.info("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.",
                     oppgave.getOpprettet().tidspunkt(),
                     oppgave.getOpprettet().antallTimerSiden());
 
