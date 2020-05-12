@@ -15,7 +15,8 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
     },
     telefonnummer {
         landskode,
-        nummer
+        nummer,
+        prioritet
     }
   }
 }

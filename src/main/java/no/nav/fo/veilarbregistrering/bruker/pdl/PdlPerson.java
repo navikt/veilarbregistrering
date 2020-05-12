@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.Foedselsdato;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -44,11 +42,13 @@ public class PdlPerson {
         return Optional.of(this.opphold.get(this.opphold.size() - 1));
     }
 
-    public Optional<PdlTelefonnummer> getSisteTelefonnummer() {
+    public Optional<PdlTelefonnummer> hoyestPrioriterteTelefonnummer() {
         if (this.telefonnummer.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(this.telefonnummer.get(this.telefonnummer.size() - 1));
+        return telefonnummer.stream()
+                .sorted()
+                .findFirst();
     }
 
     public List<PdlTelefonnummer> getTelefonnummer() {

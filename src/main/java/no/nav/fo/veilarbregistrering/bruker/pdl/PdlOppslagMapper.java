@@ -14,7 +14,7 @@ class PdlOppslagMapper {
                 pdlPerson.getSisteStatsborgerskap()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
-                pdlPerson.getSisteTelefonnummer()
+                pdlPerson.hoyestPrioriterteTelefonnummer()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
                 pdlPerson.getSistePdlFoedsel()
