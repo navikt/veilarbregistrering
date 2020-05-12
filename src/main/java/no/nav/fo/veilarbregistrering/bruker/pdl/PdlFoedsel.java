@@ -1,19 +1,19 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class PdlFoedsel {
 
-    private Date foedselsdato;
+    private LocalDate foedselsdato;
 
     public PdlFoedsel() {
     }
 
-    public Date getFoedselsdato() {
+    public LocalDate getFoedselsdato() {
         return foedselsdato;
     }
 
-    public void setFoedselsdato(Date foedselsdato) {
+    public void setFoedselsdato(LocalDate foedselsdato) {
         this.foedselsdato = foedselsdato;
     }
 }
