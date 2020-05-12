@@ -49,7 +49,8 @@ public class FlereArbeidsforhold {
     }
 
     public Arbeidsforhold siste() {
-        return flereArbeidsforhold.stream().min(sorterArbeidsforholdEtterTilDato()
+        return flereArbeidsforhold.stream()
+                .min(sorterArbeidsforholdEtterTilDato()
                 .thenComparing(Arbeidsforhold::getFom))
                 .orElse(Arbeidsforhold.utenStyrkkode());
     }
