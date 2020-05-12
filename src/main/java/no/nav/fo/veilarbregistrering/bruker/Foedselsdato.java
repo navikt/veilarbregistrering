@@ -1,25 +1,21 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Foedselsdato {
 
-    private Date foedselsdato;
+    private final LocalDate foedselsdato;
 
-    public static Foedselsdato of(Date foedselsdato) {
+    public static Foedselsdato of(LocalDate foedselsdato) {
         return new Foedselsdato(foedselsdato);
     }
 
-    private Foedselsdato(Date foedselsdato) {
+    private Foedselsdato(LocalDate foedselsdato) {
         this.foedselsdato = foedselsdato;
     }
 
-    public Date getFoedselsdato() {
+    public LocalDate getFoedselsdato() {
         return foedselsdato;
-    }
-
-    public void setFoedselsdato(Date foedselsdato) {
-        this.foedselsdato = foedselsdato;
     }
 
     public int getAlder() {
