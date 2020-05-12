@@ -9,7 +9,7 @@ class KontaktinfoMapper {
 
     static KontaktinfoDto map(Kontaktinfo kontaktinfo) {
         KontaktinfoDto kontaktinfoDto = new KontaktinfoDto();
-        kontaktinfoDto.setTelefon(kontaktinfo.getTelefon());
+        kontaktinfoDto.setTelefonnummerHosKrr(kontaktinfo.getTelefon());
 
         return kontaktinfoDto;
     }
