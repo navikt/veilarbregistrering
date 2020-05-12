@@ -5,4 +5,5 @@ import java.util.List;
 public interface HentEnheterGateway {
 
     List<NavEnhet> hentAlleEnheter();
+
 }

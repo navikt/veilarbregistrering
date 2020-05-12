@@ -22,4 +22,8 @@ public class Arbeidsforhold {
         return innevaerendeMnd.isAfter(fom.minusDays(1)) &&
                 (Objects.isNull(tom) || innevaerendeMnd.isBefore(tom.plusDays(1)));
     }
+
+    public Organisasjonsnummer getOrganisasjonsnummer() {
+        return Organisasjonsnummer.of(arbeidsgiverOrgnummer);
+    }
 }

@@ -15,7 +15,6 @@ public class OppgaveRestClient {
     private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String baseUrl;
-
     private SystemUserTokenProvider systemUserTokenProvider;
 
     public OppgaveRestClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
