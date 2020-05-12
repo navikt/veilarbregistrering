@@ -204,16 +204,25 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppholdstillatelseService datakvalitetOppholdstillatelseService(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
+    OppholdstillatelseService datakvalitetOppholdstillatelseService(
+            PdlOppslagGateway pdlOppslagGateway,
+            UnleashService unleashService) {
         return new OppholdstillatelseServiceImpl(pdlOppslagGateway, unleashService);
+    }
+
+    @Bean
+    KontaktinfoService kontaktinfoService(
+            PdlOppslagGateway pdlOppslagGateway,
+            KrrGateway krrGateway) {
+        return new KontaktinfoService(pdlOppslagGateway, krrGateway);
     }
 
     @Bean
     KontaktinfoResource kontaktinfoResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            KrrGateway krrGateway,
+            KontaktinfoService kontaktinfoService,
             UnleashService unleashService) {
-        return new KontaktinfoResource(pepClient, userService, krrGateway, unleashService);
+        return new KontaktinfoResource(pepClient, userService, kontaktinfoService, unleashService);
     }
 }

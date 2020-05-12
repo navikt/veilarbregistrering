@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import java.util.Optional;
+
 public class Person {
 
     private final Opphold opphold;
@@ -34,4 +36,11 @@ public class Person {
                 '}';
     }
 
+    public Optional<Telefonnummer> getTelefonnummer() {
+        return Optional.ofNullable(telefonnummer);
+    }
+
+    public Foedselsdato getFoedselsdato() {
+        return foedselsdato;
+    }
 }
