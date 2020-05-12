@@ -25,12 +25,12 @@ public class PdlOppslagMapperTest {
 
         PdlFoedsel pdlFoedsel = new PdlFoedsel();
         pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
-        pdlPerson.setFoedsel(pdlFoedsel);
+        pdlPerson.setFoedsel(singletonList(pdlFoedsel));
 
         PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
         pdlTelefonnummer.setLandskode("0047");
         pdlTelefonnummer.setNummer("94242425");
-        pdlPerson.setTelefonnummer(pdlTelefonnummer);
+        pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
 
         Person person = PdlOppslagMapper.map(pdlPerson);
 
@@ -51,12 +51,12 @@ public class PdlOppslagMapperTest {
 
         PdlFoedsel pdlFoedsel = new PdlFoedsel();
         pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
-        pdlPerson.setFoedsel(pdlFoedsel);
+        pdlPerson.setFoedsel(singletonList(pdlFoedsel));
         
         PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
         pdlTelefonnummer.setLandskode("0047");
         pdlTelefonnummer.setNummer("94242425");
-        pdlPerson.setTelefonnummer(pdlTelefonnummer);
+        pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
 
         Person person = PdlOppslagMapper.map(pdlPerson);
 

@@ -14,10 +14,10 @@ class PdlOppslagMapper {
                 pdlPerson.getSisteStatsborgerskap()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
-                pdlPerson.getTelefonnummer()
+                pdlPerson.getSisteTelefonnummer()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
-                pdlPerson.getFoedsel()
+                pdlPerson.getSistePdlFoedsel()
                         .map(PdlOppslagMapper::map)
                         .orElse(null));
     }

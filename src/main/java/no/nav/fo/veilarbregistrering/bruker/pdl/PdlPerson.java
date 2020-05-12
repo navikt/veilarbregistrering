@@ -1,13 +1,15 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.Foedselsdato;
+
 import java.util.List;
 import java.util.Optional;
 
 public class PdlPerson {
     private List<PdlPersonOpphold> opphold;
     private List<PdlStatsborgerskap> statsborgerskap;
-    private PdlTelefonnummer telefonnummer;
-    private PdlFoedsel foedsel;
+    private List<PdlTelefonnummer> telefonnummer;
+    private List<PdlFoedsel> foedsel;
 
     public PdlPerson() {
     }
@@ -42,19 +44,33 @@ public class PdlPerson {
         return Optional.of(this.opphold.get(this.opphold.size() - 1));
     }
 
-    public Optional<PdlTelefonnummer> getTelefonnummer() {
-        return Optional.of(this.telefonnummer);
+    public Optional<PdlTelefonnummer> getSisteTelefonnummer() {
+        if (this.telefonnummer.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(this.telefonnummer.get(this.telefonnummer.size() - 1));
     }
 
-    public void setTelefonnummer(PdlTelefonnummer telefonnummer) {
+    public List<PdlTelefonnummer> getTelefonnummer() {
+        return this.telefonnummer;
+    }
+
+    public void setTelefonnummer(List<PdlTelefonnummer> telefonnummer) {
         this.telefonnummer = telefonnummer;
     }
 
-    public Optional<PdlFoedsel> getFoedsel() {
-        return Optional.of(this.foedsel);
+    public Optional<PdlFoedsel> getSistePdlFoedsel() {
+        if (this.foedsel.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(this.foedsel.get(this.foedsel.size() - 1));
     }
 
-    public void setFoedsel(PdlFoedsel foedsel) {
+    public List<PdlFoedsel> getFoedsel() {
+        return this.foedsel;
+    }
+
+    public void setFoedsel(List<PdlFoedsel> foedsel) {
         this.foedsel = foedsel;
     }
 }
