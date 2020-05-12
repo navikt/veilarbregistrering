@@ -7,12 +7,13 @@ public class Kontaktinfo {
     private final String telefonnummerFraKrr;
     private Telefonnummer telefonnummerFraNav;
 
-    public static Kontaktinfo of(String telefon) {
-        return new Kontaktinfo(telefon);
+    public static Kontaktinfo of(String telefonnummerFraKrr, Telefonnummer telefonnummerFraNav) {
+        return new Kontaktinfo(telefonnummerFraKrr, telefonnummerFraNav);
     }
 
-    private Kontaktinfo(String telefonnummerFraKrr) {
+    private Kontaktinfo(String telefonnummerFraKrr, Telefonnummer telefonnummerFraNav) {
         this.telefonnummerFraKrr = telefonnummerFraKrr;
+        this.telefonnummerFraNav = telefonnummerFraNav;
     }
 
     public void oppdaterMedKontaktinfoFraNav(Telefonnummer telefonnummer) {

@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker.krr;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
+import no.nav.fo.veilarbregistrering.bruker.KrrKontaktinfo;
 
 class KrrGatewayImpl implements KrrGateway {
 
@@ -13,12 +13,12 @@ class KrrGatewayImpl implements KrrGateway {
     }
 
     @Override
-    public Kontaktinfo hentKontaktinfo(Bruker bruker) {
+    public KrrKontaktinfo hentKontaktinfo(Bruker bruker) {
         KrrKontaktinfoDto kontaktinfoDto = krrClient.hentKontaktinfo(bruker.getFoedselsnummer());
         return map(kontaktinfoDto);
     }
 
-    private Kontaktinfo map(KrrKontaktinfoDto kontaktinfoDto) {
-        return Kontaktinfo.of(kontaktinfoDto.getMobiltelefonnummer());
+    private KrrKontaktinfo map(KrrKontaktinfoDto kontaktinfoDto) {
+        return KrrKontaktinfo.of(kontaktinfoDto.getMobiltelefonnummer());
     }
 }

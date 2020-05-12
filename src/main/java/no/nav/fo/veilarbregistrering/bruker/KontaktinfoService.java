@@ -13,11 +13,10 @@ public class KontaktinfoService {
     public Kontaktinfo hentKontaktinfo(Bruker bruker) {
         //TODO: Her må vi implementere mer feilhåndtering - hva gjør vi hvis ett av kallene feiler?
         // Eller er det bedre at frontend gjør begge kallene selv?
-        Kontaktinfo kontaktinfo = krrGateway.hentKontaktinfo(bruker);
         Person person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
 
-        kontaktinfo.oppdaterMedKontaktinfoFraNav(person.getTelefonnummer().orElse(null));
-
-        return kontaktinfo;
+        return Kontaktinfo.of(
+                krrGateway.hentKontaktinfo(bruker).getMobiltelefonnummer().orElse(null),
+                person.getTelefonnummer().orElse(null));
     }
 }
