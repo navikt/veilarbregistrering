@@ -14,20 +14,11 @@ public class Telefonnummer {
         this.landskode = landskode;
     }
 
-    public String getNummer() {
-        return nummer;
+    /**
+     * Returnerer telefonnummer på formatet "00xx xxxxxxxxx" hvis landkode er oppgitt.
+     * Hvis ikke returneres bare xxxxxxxxx.
+     */
+    public String asLandkodeOgNummer() {
+        return landskode != null ? landskode + " " + nummer : nummer;
     }
-
-    public void setNummer(String nummer) {
-        this.nummer = nummer;
-    }
-
-    public String getLandskode() {
-        return landskode;
-    }
-
-    public void setLandskode(String landskode) {
-        this.landskode = landskode;
-    }
-
 }
