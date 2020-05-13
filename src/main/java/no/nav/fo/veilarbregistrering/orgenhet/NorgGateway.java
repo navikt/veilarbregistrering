@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.orgenhet;
 
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import no.nav.fo.veilarbregistrering.oppgave.TildeltEnhetsnr;
+
+import java.util.Optional;
 
 public interface NorgGateway {
 
-    TildeltEnhetsnr hentEnhetFor(Kommunenummer kommunenummer);
+    Optional<Enhetsnr> hentEnhetFor(Kommunenummer kommunenummer);
 }

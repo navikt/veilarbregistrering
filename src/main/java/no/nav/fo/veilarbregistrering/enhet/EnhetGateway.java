@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.enhet;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 
+import java.util.Optional;
+
 public interface EnhetGateway {
 
-    Organisasjonsdetaljer hentOrganisasjonsdetaljer(Organisasjonsnummer organisasjonsnummer);
+    Optional<Organisasjonsdetaljer> hentOrganisasjonsdetaljer(Organisasjonsnummer organisasjonsnummer);
 }

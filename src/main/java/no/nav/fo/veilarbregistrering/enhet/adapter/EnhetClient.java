@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter;
 
-import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 
 import javax.ws.rs.core.Response;
+
+import java.util.Optional;
 
 import static javax.ws.rs.client.Entity.json;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
@@ -19,7 +20,7 @@ class EnhetClient {
         this.baseUrl = baseUrl;
     }
 
-    public OrganisasjonDetaljer hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
+    public Optional<OrganisasjonDetaljer> hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
         String url = baseUrl + "/ereg/api/v1/organisasjon/";
 
         Response response = withClient(
@@ -27,12 +28,18 @@ class EnhetClient {
                 client -> client
                         .target(url)
                         .request()
-                        //TODO: Trenger vi header?
-                        .post(json(organisasjonsnummer)));
+                        .post(json(organisasjonsnummer.asString())));
 
-        //TODO: Feilhåndtering og sjekk mot statuskoder
+        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
 
-        return response.readEntity(OrganisasjonDetaljer.class);
+        if (status.equals(Response.Status.CREATED)) {
+            return Optional.of(response.readEntity(OrganisasjonDetaljer.class));
+        }
+
+        if (status.equals(Response.Status.NOT_FOUND)) {
+            return Optional.empty();
+        }
+
+        throw new RuntimeException("Hent organisasjon feilet med statuskode: " + status + " - " + response);
     }
-
 }

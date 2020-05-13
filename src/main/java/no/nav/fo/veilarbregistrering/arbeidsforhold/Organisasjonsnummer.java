@@ -14,4 +14,8 @@ public class Organisasjonsnummer {
     private Organisasjonsnummer(String organisasjonsnummer) {
         this.organisasjonsnummer = organisasjonsnummer;
     }
+
+    public String asString() {
+        return organisasjonsnummer;
+    }
 }

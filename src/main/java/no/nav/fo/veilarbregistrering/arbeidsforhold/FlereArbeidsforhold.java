@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
@@ -48,10 +45,16 @@ public class FlereArbeidsforhold {
         return antallSammenhengendeMandeder >= minAntallMndSammenhengendeJobb;
     }
 
+    public Optional<Arbeidsforhold> sisteUtenNoeEkstra() {
+        return flereArbeidsforhold.stream()
+                .min(sorterArbeidsforholdEtterTilDato()
+                        .thenComparing(Arbeidsforhold::getFom));
+    }
+
     public Arbeidsforhold siste() {
         return flereArbeidsforhold.stream()
                 .min(sorterArbeidsforholdEtterTilDato()
-                .thenComparing(Arbeidsforhold::getFom))
+                        .thenComparing(Arbeidsforhold::getFom))
                 .orElse(Arbeidsforhold.utenStyrkkode());
     }
 

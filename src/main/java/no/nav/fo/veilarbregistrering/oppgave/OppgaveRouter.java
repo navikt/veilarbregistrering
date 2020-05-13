@@ -7,7 +7,10 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
+
+import java.util.Optional;
 
 /**
  * <p>Har som hovedoppgave å route Oppgaver til riktig enhet.</p>
@@ -28,13 +31,28 @@ public class OppgaveRouter {
         this.norgGateway = norgGateway;
     }
 
-    public TildeltEnhetsnr hentEnhetsnummerForSisteArbeidsgiver(Bruker bruker) {
+    public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsgiver(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
-        Organisasjonsnummer organisasjonsnummer = flereArbeidsforhold.siste().getOrganisasjonsnummer();
+        if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
+            return Optional.empty();
+        }
+        Organisasjonsnummer organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
+                .map(sisteArbeidsforhold -> sisteArbeidsforhold.getOrganisasjonsnummer())
+                .orElseThrow(IllegalStateException::new);
 
-        Organisasjonsdetaljer organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer);
-        Kommunenummer kommunenummer = organisasjonsdetaljer.kommunenummer();
+        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer);
+        if (!organisasjonsdetaljer.isPresent()) {
+            return Optional.empty();
+        }
 
-        return norgGateway.hentEnhetFor(kommunenummer);
+        Optional<Kommunenummer> kommunenummer = organisasjonsdetaljer
+                .map(a -> a.kommunenummer())
+                .orElseThrow(IllegalStateException::new);
+        if (!kommunenummer.isPresent()) {
+            return Optional.empty();
+        }
+
+        return norgGateway.hentEnhetFor(kommunenummer
+                .orElseThrow(IllegalStateException::new));
     }
 }
