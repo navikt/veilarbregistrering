@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class EregEnhet {
-    private String organisasjonsnummer;
-    private OrganisasjonDetaljer organisasjonDetaljer;
+public class PostadresseDto {
+
+    private String kommunenummer;
+    private GyldighetsperiodeDto gyldighetsperiode;
 }

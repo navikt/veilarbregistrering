@@ -7,11 +7,11 @@ import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
 import java.util.List;
 import java.util.Optional;
 
-public class NorgGatewayImpl implements NorgGateway {
+class NorgGatewayImpl implements NorgGateway {
 
     private final NorgRestClient norgRestClient;
 
-    public NorgGatewayImpl(NorgRestClient norgRestClient) {
+    NorgGatewayImpl(NorgRestClient norgRestClient) {
         this.norgRestClient = norgRestClient;
     }
 

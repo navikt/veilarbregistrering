@@ -9,15 +9,15 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class EnhetGatewayConfig {
 
-    public static final String ENHET_PROPERTY_NAME = "ENHET_URL";
+    private static final String ENHET_PROPERTY_NAME = "ENHET_URL";
 
     @Bean
-    EnhetClient enhetClient() {
-        return new EnhetClient(getRequiredProperty(ENHET_PROPERTY_NAME));
+    EnhetRestClient enhetClient() {
+        return new EnhetRestClient(getRequiredProperty(ENHET_PROPERTY_NAME));
     }
 
     @Bean
-    EnhetGateway enhetGateway(EnhetClient enhetClient) {
-        return new EnhetGatewayImpl(enhetClient);
+    EnhetGateway enhetGateway(EnhetRestClient enhetRestClient) {
+        return new EnhetGatewayImpl(enhetRestClient);
     }
 }

@@ -2,9 +2,7 @@ package no.nav.fo.veilarbregistrering.enhet;
 
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 
-import java.util.function.Predicate;
-
-public class Forretningsadresse {
+public class Forretningsadresse implements Adresse {
 
     private final Kommunenummer kommunenummer;
     private final Periode periode;
@@ -14,11 +12,13 @@ public class Forretningsadresse {
         this.periode = periode;
     }
 
+    @Override
     public Kommunenummer getKommunenummer() {
         return kommunenummer;
     }
 
-    boolean erGyldig() {
+    @Override
+    public boolean erGyldig() {
         return periode.erApen();
     }
 }

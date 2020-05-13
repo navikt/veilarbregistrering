@@ -6,7 +6,7 @@ import java.util.Optional;
 public class Organisasjonsdetaljer {
 
     private final List<Forretningsadresse> forretningsadresser;
-    private final List<no.nav.fo.veilarbregistrering.enhet.Postadresse> postadresser;
+    private final List<Postadresse> postadresser;
 
     public static Organisasjonsdetaljer of(
             List<Forretningsadresse> forretningsadresser,
@@ -15,7 +15,7 @@ public class Organisasjonsdetaljer {
         return new Organisasjonsdetaljer(forretningsadresser, postadresser);
     }
 
-    public Organisasjonsdetaljer(
+    private Organisasjonsdetaljer(
             List<Forretningsadresse> forretningsadresser,
             List<Postadresse> postadresser) {
 
@@ -24,25 +24,24 @@ public class Organisasjonsdetaljer {
     }
 
     public Optional<Kommunenummer> kommunenummer() {
-        Optional<Forretningsadresse> muligForretningsadresse = forretningsadresser.stream()
-                .filter(Forretningsadresse::erGyldig)
-                .findFirst();
-
-        if (muligForretningsadresse.isPresent()) {
-            return muligForretningsadresse
-                    .map(adresse -> adresse.getKommunenummer());
+        Optional<Kommunenummer> kommunenummerFraForretningsadresse = kommunenummerFraFoersteGyldigeAdresse(forretningsadresser);
+        if (kommunenummerFraForretningsadresse.isPresent()) {
+            return kommunenummerFraForretningsadresse;
         }
 
-        Optional<Postadresse> muligPostadresse = postadresser.stream()
-                .filter(Postadresse::erGyldig)
-                .findFirst();
-
-        if (muligPostadresse.isPresent()) {
-            return muligPostadresse
-                    .map(adresse -> adresse.getKommunenummer());
+        Optional<Kommunenummer> kommunenummerFraPostadresse = kommunenummerFraFoersteGyldigeAdresse(postadresser);
+        if (kommunenummerFraPostadresse.isPresent()) {
+            return kommunenummerFraPostadresse;
         }
 
         return Optional.empty();
+    }
+
+    private Optional<Kommunenummer> kommunenummerFraFoersteGyldigeAdresse(List<? extends Adresse> adresse) {
+        return adresse.stream()
+                .filter(a -> a.erGyldig())
+                .findFirst()
+                .map(a -> a.getKommunenummer());
     }
 
 }

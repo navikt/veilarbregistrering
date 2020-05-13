@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class OrganisasjonDetaljer {
+public class OrganisasjonDetaljerDto {
 
-    private List<ForretningsAdresse> forretningsadresser;
-    private List<Postadresse> postadresser;
+    private List<ForretningsAdresseDto> forretningsadresser;
+    private List<PostadresseDto> postadresser;
 }

@@ -10,19 +10,17 @@ import static javax.ws.rs.client.Entity.json;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-class EnhetClient {
+class EnhetRestClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
-    private final String baseUrl;
+    private final String url;
 
-    EnhetClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+    EnhetRestClient(String baseUrl) {
+        this.url = baseUrl + "/v1/organisasjon/";
     }
 
-    public Optional<OrganisasjonDetaljer> hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
-        String url = baseUrl + "/ereg/api/v1/organisasjon/";
-
+    Optional<OrganisasjonDetaljerDto> hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
         Response response = withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                 client -> client
@@ -33,7 +31,8 @@ class EnhetClient {
         Response.Status status = Response.Status.fromStatusCode(response.getStatus());
 
         if (status.equals(Response.Status.CREATED)) {
-            return Optional.of(response.readEntity(OrganisasjonDetaljer.class));
+            OrganisasjonDto organisasjonDto = response.readEntity(OrganisasjonDto.class);
+            return Optional.of(organisasjonDto.getOrganisasjonDetaljer());
         }
 
         if (status.equals(Response.Status.NOT_FOUND)) {

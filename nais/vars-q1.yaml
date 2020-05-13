@@ -12,8 +12,10 @@ veilarbpersonapi_url: https://veilarbperson-q1.nais.preprod.local/veilarbperson/
 veilarboppfolgingapi_url: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp-q1.adeo.no/asm-pdp/authorize
 norg_url: https://app-q1.adeo.no/norg2/ws/OrganisasjonEnhet/v2
+norg2_url: https://app-q1.adeo.no/norg2/api
 oppgave_url: https://oppgave.nais.preprod.local/api/v1
 pdl_url: http://pdl-api.default.svc.nais.local/graphql
+enhet_url: https://modapp-q1.adeo.no/ereg/api
 isso_isalive_url: https://isso-q.adeo.no/isso/isAlive.jsp
 kafka_url: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
 kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
