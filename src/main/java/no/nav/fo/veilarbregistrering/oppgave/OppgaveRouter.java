@@ -9,6 +9,8 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -19,7 +21,9 @@ import java.util.Optional;
  * ikke ligger inne med Norsk adresse og tilknytning til NAV-kontor må vi gå via tidligere
  * arbeidsgiver.</p>
  */
-public class OppgaveRouter {
+public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRouter.class);
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final EnhetGateway enhetGateway;
@@ -31,9 +35,11 @@ public class OppgaveRouter {
         this.norgGateway = norgGateway;
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsgiver(Bruker bruker) {
+    @Override
+    public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
+            LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
             return Optional.empty();
         }
         Organisasjonsnummer organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
@@ -42,6 +48,7 @@ public class OppgaveRouter {
 
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer);
         if (!organisasjonsdetaljer.isPresent()) {
+            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer");
             return Optional.empty();
         }
 
@@ -49,6 +56,7 @@ public class OppgaveRouter {
                 .map(a -> a.kommunenummer())
                 .orElseThrow(IllegalStateException::new);
         if (!kommunenummer.isPresent()) {
+            LOG.warn("Fant ingen kommunenummer knyttet til organisasjon");
             return Optional.empty();
         }
 

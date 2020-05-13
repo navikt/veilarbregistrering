@@ -5,14 +5,13 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
+import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
@@ -150,12 +149,26 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    OppgaveRouter oppgaveRouter(
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            EnhetGateway enhetGateway,
+            NorgGateway norgGateway) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norgGateway);
+    }
+
+    @Bean
+    OppgaveRouterProxy oppgaveRouterProxy(OppgaveRouter oppgaveRouter) {
+        return new OppgaveRouterProxy(oppgaveRouter);
+    }
+
+    @Bean
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService
+            OppgaveService oppgaveService,
+            OppgaveRouterProxy oppgaveRouterProxy
     ) {
-        return new OppgaveResource(pepClient, userService, oppgaveService);
+        return new OppgaveResource(pepClient, userService, oppgaveService, oppgaveRouterProxy);
     }
 
     @Bean

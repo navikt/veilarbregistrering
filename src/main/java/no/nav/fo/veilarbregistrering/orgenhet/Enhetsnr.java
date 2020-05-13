@@ -14,6 +14,10 @@ public class Enhetsnr {
         this.enhetId = enhetId;
     }
 
+    public int asInt() {
+        return enhetId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
