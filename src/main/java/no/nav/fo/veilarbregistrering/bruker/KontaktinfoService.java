@@ -16,7 +16,7 @@ public class KontaktinfoService {
         Person person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
 
         return Kontaktinfo.of(
-                krrGateway.hentKontaktinfo(bruker).getMobiltelefonnummer().orElse(null),
+                krrGateway.hentKontaktinfo(bruker).getNummer().orElse(null),
                 person.getTelefonnummer().orElse(null));
     }
 }
