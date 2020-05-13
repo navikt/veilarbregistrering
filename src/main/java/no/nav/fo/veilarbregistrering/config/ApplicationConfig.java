@@ -12,9 +12,11 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig;
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.NorgGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
@@ -38,6 +40,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         PepConfig.class,
         OverforTilArenaSchedulerConfig.class,
         OrganisasjonEnhetV2Config.class,
+        NorgGatewayConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
         UnleashConfig.class,
@@ -46,6 +49,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         OppgaveGatewayConfig.class,
         SykemeldingGatewayConfig.class,
         PdlOppslagConfig.class,
+        EnhetGatewayConfig.class,
         KrrConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
