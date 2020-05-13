@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.enhet;
 
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 
-public class Postadresse {
+public class Postadresse implements Adresse {
 
     private final Kommunenummer kommunenummer;
     private final Periode periode;
@@ -12,10 +12,12 @@ public class Postadresse {
         this.periode = periode;
     }
 
+    @Override
     public Kommunenummer getKommunenummer() {
         return kommunenummer;
     }
 
+    @Override
     public boolean erGyldig() {
         return periode.erApen();
     }

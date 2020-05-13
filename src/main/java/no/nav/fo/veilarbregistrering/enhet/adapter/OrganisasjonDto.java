@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ForretningsAdresse {
-    private String kommunenummer;
-    private Gyldighetsperiode gyldighetsperiode;
+public class OrganisasjonDto {
+
+    private String organisasjonsnummer;
+    private OrganisasjonDetaljerDto organisasjonDetaljer;
 }

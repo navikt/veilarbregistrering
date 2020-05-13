@@ -12,19 +12,17 @@ import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingC
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
-public class NorgRestClient {
+class NorgRestClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
-    private final String baseUrl;
+    private final String url;
 
-    public NorgRestClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+    NorgRestClient(String baseUrl) {
+        this.url = baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch";
     }
 
-    public List<RsNavKontorDto> hentEnhetFor(Kommunenummer kommunenummer) {
-        String url = baseUrl + "/norg2/api/v1/arbeidsfordeling/enheter/bestmatch";
-
+    List<RsNavKontorDto> hentEnhetFor(Kommunenummer kommunenummer) {
         RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto = new RsArbeidsfordelingCriteriaDto();
         rsArbeidsfordelingCriteriaDto.setGeografiskOmraade(kommunenummer.asString());
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);

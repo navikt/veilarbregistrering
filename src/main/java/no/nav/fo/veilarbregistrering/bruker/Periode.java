@@ -27,6 +27,9 @@ public class Periode {
                 '}';
     }
 
+    /**
+     * Er periode er Åpen, dersom "til"-dato er null.
+     */
     public boolean erApen() {
         return til == null;
     }
