@@ -11,4 +11,8 @@ public class Kommunenummer {
     private Kommunenummer(String kommunenummer) {
         this.kommunenummer = kommunenummer;
     }
+
+    public String asString() {
+        return kommunenummer;
+    }
 }

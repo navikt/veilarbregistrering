@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse;
+
 import java.time.LocalDate;
+import java.util.function.Predicate;
 
 public class Periode {
 
@@ -22,5 +25,9 @@ public class Periode {
                 "fra=" + fra +
                 ", til=" + til +
                 '}';
+    }
+
+    public boolean erApen() {
+        return til == null;
     }
 }
