@@ -42,13 +42,17 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
             return Optional.empty();
         }
-        Organisasjonsnummer organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
+        Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
                 .map(sisteArbeidsforhold -> sisteArbeidsforhold.getOrganisasjonsnummer())
                 .orElseThrow(IllegalStateException::new);
+        if (!organisasjonsnummer.isPresent()) {
+            LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
+            return Optional.empty();
+        }
 
-        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer);
+        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get());
         if (!organisasjonsdetaljer.isPresent()) {
-            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer:{}", organisasjonsnummer.asString());
+            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer:{}", organisasjonsnummer.get().asString());
             return Optional.empty();
         }
 
