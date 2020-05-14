@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Data
 @Accessors(chain = true)
@@ -23,7 +24,9 @@ public class Arbeidsforhold {
                 (Objects.isNull(tom) || innevaerendeMnd.isBefore(tom.plusDays(1)));
     }
 
-    public Organisasjonsnummer getOrganisasjonsnummer() {
-        return Organisasjonsnummer.of(arbeidsgiverOrgnummer);
+    public Optional<Organisasjonsnummer> getOrganisasjonsnummer() {
+        return arbeidsgiverOrgnummer != null
+                ? Optional.of(Organisasjonsnummer.of(arbeidsgiverOrgnummer))
+                : Optional.empty();
     }
 }
