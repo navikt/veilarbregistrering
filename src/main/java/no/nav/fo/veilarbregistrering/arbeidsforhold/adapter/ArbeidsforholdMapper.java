@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.AnsettelsesPeriode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Periode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Yrker;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
@@ -15,10 +12,23 @@ import static java.util.Optional.ofNullable;
 
 class ArbeidsforholdMapper {
     static Arbeidsforhold map(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
-        return new Arbeidsforhold().setArbeidsgiverOrgnummer(arbeidsforhold.getArbeidsgiver().getAktoerId())
-                .setStyrk(arbeidsforhold.getArbeidsavtale().stream().findFirst().map(Arbeidsavtale::getYrke).map(Yrker::getKodeRef).orElse("utenstyrkkode"))
+        return new Arbeidsforhold()
+                .setArbeidsgiverOrgnummer(map(arbeidsforhold.getArbeidsgiver()))
+                .setStyrk(arbeidsforhold.getArbeidsavtale().stream()
+                        .findFirst()
+                        .map(Arbeidsavtale::getYrke)
+                        .map(Yrker::getKodeRef)
+                        .orElse("utenstyrkkode"))
                 .setFom(getFom(arbeidsforhold.getAnsettelsesPeriode()))
                 .setTom(getTom(arbeidsforhold.getAnsettelsesPeriode()));
+    }
+
+    private static String map(Aktoer arbeidsgiver) {
+        if (arbeidsgiver instanceof Organisasjon) {
+            Organisasjon organisasjon = (Organisasjon) arbeidsgiver;
+            return organisasjon.getOrgnummer();
+        }
+        return null;
     }
 
     private static LocalDate getFom(AnsettelsesPeriode ansettelsesPeriode) {
