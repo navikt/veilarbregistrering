@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import java.util.Optional;
+
 public interface KrrGateway {
 
-    Telefonnummer hentKontaktinfo(Bruker bruker);
+    Optional<Telefonnummer> hentKontaktinfo(Bruker bruker);
 }
