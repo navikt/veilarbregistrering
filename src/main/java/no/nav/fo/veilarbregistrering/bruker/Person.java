@@ -9,7 +9,11 @@ public class Person {
     private final Telefonnummer telefonnummer;
     private final Foedselsdato foedselsdato;
 
-    public static Person of(Opphold opphold, Statsborgerskap statsborgerskap, Telefonnummer telefonnummer, Foedselsdato foedselsdato) {
+    public static Person of(
+            Opphold opphold,
+            Statsborgerskap statsborgerskap,
+            Telefonnummer telefonnummer,
+            Foedselsdato foedselsdato) {
         return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato);
     }
 

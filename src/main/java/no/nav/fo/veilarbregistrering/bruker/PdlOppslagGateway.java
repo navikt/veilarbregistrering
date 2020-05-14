@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import java.util.Optional;
+
 public interface PdlOppslagGateway {
 
-    Person hentPerson(AktorId aktorid);
+    Optional<Person> hentPerson(AktorId aktorid);
 }

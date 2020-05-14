@@ -2,8 +2,6 @@ package no.nav.fo.veilarbregistrering.bruker.krr;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.log.MDCConstants;
@@ -13,9 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
+import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
@@ -33,7 +30,7 @@ class KrrClient {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
-    KrrKontaktinfoDto hentKontaktinfo(Foedselsnummer foedselsnummer) {
+    Optional<KrrKontaktinfoDto> hentKontaktinfo(Foedselsnummer foedselsnummer) {
         KrrKontaktinfoDto kontaktinfoDto;
         try {
             String jsonResponse = RestUtils.withClient(c ->
@@ -48,22 +45,18 @@ class KrrClient {
 
             kontaktinfoDto = map(jsonResponse, foedselsnummer);
 
-        } catch (NotAuthorizedException | ForbiddenException e) {
-            throw new Feil(FeilType.INGEN_TILGANG, e);
         } catch (NotFoundException e) {
-            throw new Feil(FeilType.FINNES_IKKE, e);
-        } catch (Exception e) {
-            throw new Feil(FeilType.UKJENT, e);
+            LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret", e);
+            return Optional.empty();
         }
 
-        return kontaktinfoDto;
+        return Optional.of(kontaktinfoDto);
     }
 
     /**
      * Benytter JSONObject til mapping i parallell med GSON pga. dynamisk json.
      */
     static KrrKontaktinfoDto map(String jsonResponse, Foedselsnummer foedselsnummer) {
-
         JSONObject kontaktinfo = new JSONObject(jsonResponse)
                 .getJSONObject("kontaktinfo")
                 .getJSONObject(foedselsnummer.stringValue());
