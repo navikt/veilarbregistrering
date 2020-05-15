@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbregistrering.config.DatabaseConfig.VEILARBREGISTRERINGDB_URL;
+import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.VEILARBREGISTRERINGDB_URL;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Component

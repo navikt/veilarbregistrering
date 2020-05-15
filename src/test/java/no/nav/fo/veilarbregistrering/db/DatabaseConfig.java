@@ -1,9 +1,8 @@
-package no.nav.fo.veilarbregistrering.config;
+package no.nav.fo.veilarbregistrering.db;
 
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.fo.veilarbregistrering.db.DataSourceHelsesjekk;
 import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +28,9 @@ public class DatabaseConfig {
     @Bean
     public static DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(getRequiredProperty(VEILARBREGISTRERINGDB_URL));
-        config.setUsername(getRequiredProperty(VEILARBREGISTRERINGDB_USERNAME));
-        config.setPassword(getRequiredProperty(VEILARBREGISTRERINGDB_PASSWORD));
+        config.setJdbcUrl("jdbc:h2:mem:veilarbregistrering;DB_CLOSE_DELAY=-1;MODE=Oracle");
+        config.setUsername("sa");
+        config.setPassword("password");
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);
 

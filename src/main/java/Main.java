@@ -4,8 +4,8 @@ import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
 
 import static java.lang.System.setProperty;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
-import static no.nav.fo.veilarbregistrering.config.DatabaseConfig.VEILARBREGISTRERINGDB_PASSWORD;
-import static no.nav.fo.veilarbregistrering.config.DatabaseConfig.VEILARBREGISTRERINGDB_USERNAME;
+import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.VEILARBREGISTRERINGDB_PASSWORD;
+import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.VEILARBREGISTRERINGDB_USERNAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.STS_URL_KEY;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;

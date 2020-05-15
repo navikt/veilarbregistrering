@@ -1,6 +1,6 @@
 package no.nav.veilarbregistrering.db;
 
-import static no.nav.fo.veilarbregistrering.config.DatabaseConfig.*;
+import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.*;
 
 public class DatabaseTestContext {
 

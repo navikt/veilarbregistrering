@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
-import no.nav.fo.veilarbregistrering.config.DatabaseConfig;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
 import org.junit.After;
 import org.junit.AfterClass;

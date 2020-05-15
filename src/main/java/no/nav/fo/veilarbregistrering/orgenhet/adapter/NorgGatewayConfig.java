@@ -12,12 +12,12 @@ public class NorgGatewayConfig {
     private static final String NORG2_PROPERTY_NAME = "NORG2_URL";
 
     @Bean
-    NorgRestClient enhetClient() {
+    public NorgRestClient norgRestClient() {
         return new NorgRestClient(getRequiredProperty(NORG2_PROPERTY_NAME));
     }
 
     @Bean
-    NorgGateway enhetGateway(NorgRestClient norgRestClient) {
+    public NorgGateway norgGateway(NorgRestClient norgRestClient) {
         return new NorgGatewayImpl(norgRestClient);
     }
 }
