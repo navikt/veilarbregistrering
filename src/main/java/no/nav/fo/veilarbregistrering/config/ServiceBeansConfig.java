@@ -5,21 +5,21 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
+import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
-import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
@@ -50,7 +50,6 @@ public class ServiceBeansConfig {
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
-            //FIXME: Overflødig - metodene kan være static
             StartRegistreringUtils startRegistreringUtils,
             UnleashService unleashService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
