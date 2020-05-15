@@ -68,7 +68,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
-        ProfileringRepository profileringRepository = context.getBean(ProfileringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
