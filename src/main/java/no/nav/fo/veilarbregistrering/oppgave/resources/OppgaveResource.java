@@ -56,9 +56,9 @@ public class OppgaveResource {
     }
 
     @GET
-    @Path("/")
+    @Path("/routing")
     @ApiOperation(value = "Henter enhetsId på bakgrunn av siste arbeidsforhold")
-    public Integer hentEnhetsId(OppgaveDto oppgaveDto) {
+    public Integer hentEnhetsId() {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
