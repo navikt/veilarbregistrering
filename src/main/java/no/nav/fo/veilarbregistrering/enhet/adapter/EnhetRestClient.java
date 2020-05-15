@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.enhet.adapter;
 
 import com.google.gson.*;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
@@ -15,6 +17,8 @@ import static no.nav.sbl.rest.RestUtils.withClient;
 class EnhetRestClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
+
+    private static final Logger LOG = LoggerFactory.getLogger(EnhetRestClient.class);
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
@@ -33,8 +37,9 @@ class EnhetRestClient {
                         .post(json(organisasjonsnummer.asString())));
 
         Response.Status status = Response.Status.fromStatusCode(response.getStatus());
+        LOG.info("Statuskode: ", status.getStatusCode());
 
-        if (status.equals(Response.Status.CREATED)) {
+        if (status.equals(Response.Status.OK)) {
             String jsonResponse = response.readEntity(String.class);
             OrganisasjonDto organisasjonDto = parse(jsonResponse);
             return Optional.of(organisasjonDto.getOrganisasjonDetaljer());
