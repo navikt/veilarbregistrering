@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
-
 @Configuration
 @Import(DataSourceHelsesjekk.class)
 @EnableTransactionManagement

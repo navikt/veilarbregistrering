@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
+@Configuration
 public class OrganisasjonEnhetV2Config {
 
     @Bean
