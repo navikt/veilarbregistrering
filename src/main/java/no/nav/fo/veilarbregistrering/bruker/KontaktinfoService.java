@@ -5,6 +5,10 @@ import no.nav.apiapp.feil.FeilType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class KontaktinfoService {
@@ -21,40 +25,57 @@ public class KontaktinfoService {
 
     public Kontaktinfo hentKontaktinfo(Bruker bruker) {
 
-        boolean tekniskFeil = false;
+        List<FeilType> feiltyper = new ArrayList<>(2);
 
         Optional<Person> person;
         try {
             person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
         } catch (RuntimeException e) {
-            LOG.error("Hent kontaktinfo ", e);
+            LOG.error("Hent kontaktinfo fra PDL feilet", e);
             person = Optional.empty();
-            tekniskFeil = true;
+            feiltyper.add(FeilType.UKJENT);
         }
 
         Optional<Telefonnummer> telefonnummer;
         try {
             telefonnummer = krrGateway.hentKontaktinfo(bruker);
-        } catch (RuntimeException e) {
-            LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet", e);
+
+        } catch (NotAuthorizedException | ForbiddenException e) {
+            LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet pga manglende tilgang", e);
             telefonnummer = Optional.empty();
-            tekniskFeil = true;
+            feiltyper.add(FeilType.INGEN_TILGANG);
+
+        } catch (RuntimeException e) {
+            LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet av ukjent grunn", e);
+            telefonnummer = Optional.empty();
+            feiltyper.add(FeilType.UKJENT);
         }
 
-        if (person.isPresent() || telefonnummer.isPresent()) {
-            return Kontaktinfo.of(
-                    person.map(p -> p.getTelefonnummer()
-                            .map(t -> t.asLandkodeOgNummer()).orElse(null))
-                            .orElse(null),
-                    telefonnummer
-                            .orElse(null)
-            );
+        if (fantMinstEttTelefonnummer(person, telefonnummer)) {
+            return opprettKontaktinfo(person, telefonnummer);
         }
 
-        if (tekniskFeil) {
+        if (feiltyper.contains(FeilType.INGEN_TILGANG)) {
+            throw new Feil(FeilType.INGEN_TILGANG);
+        }
+        if (feiltyper.contains(FeilType.UKJENT)) {
             throw new Feil(FeilType.UKJENT);
-        } else {
-            throw new Feil(FeilType.FINNES_IKKE);
         }
+        throw new Feil(FeilType.FINNES_IKKE);
+    }
+
+    private boolean fantMinstEttTelefonnummer(Optional<Person> person, Optional<Telefonnummer> telefonnummer) {
+        return (person.isPresent() && person.get().getTelefonnummer().isPresent())
+                || telefonnummer.isPresent();
+    }
+
+    private Kontaktinfo opprettKontaktinfo(Optional<Person> person, Optional<Telefonnummer> telefonnummer) {
+        return Kontaktinfo.of(
+                person.map(p -> p.getTelefonnummer()
+                        .map(t -> t.asLandkodeOgNummer()).orElse(null))
+                        .orElse(null),
+                telefonnummer
+                        .orElse(null)
+        );
     }
 }
