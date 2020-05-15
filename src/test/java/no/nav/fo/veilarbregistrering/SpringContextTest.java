@@ -19,7 +19,6 @@ public class SpringContextTest {
 
     @Test
     public void spring_context_skal_lastes_uten_feil() {
-
         assertThat(context).isNotNull();
     }
 }
