@@ -17,7 +17,7 @@ public class KrrClientTest {
         String json = toJson(OK_JSON);
         Foedselsnummer foedselsnummer = Foedselsnummer.of("23067844532");
 
-        KrrKontaktinfoDto kontaktinfoDto = KrrClient.map(json, foedselsnummer);
+        KrrKontaktinfoDto kontaktinfoDto = KrrClient.parse(json, foedselsnummer);
 
         assertThat(kontaktinfoDto).isNotNull();
         assertThat(kontaktinfoDto.getMobiltelefonnummer()).isEqualTo("11111111");

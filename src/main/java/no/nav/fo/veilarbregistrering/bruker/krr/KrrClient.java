@@ -43,7 +43,7 @@ class KrrClient {
                             .header("Nav-Personidenter", foedselsnummer.stringValue())
                             .get(String.class));
 
-            kontaktinfoDto = map(jsonResponse, foedselsnummer);
+            kontaktinfoDto = parse(jsonResponse, foedselsnummer);
 
         } catch (NotFoundException e) {
             LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret", e);
@@ -54,9 +54,9 @@ class KrrClient {
     }
 
     /**
-     * Benytter JSONObject til mapping i parallell med GSON pga. dynamisk json.
+     * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
      */
-    static KrrKontaktinfoDto map(String jsonResponse, Foedselsnummer foedselsnummer) {
+    static KrrKontaktinfoDto parse(String jsonResponse, Foedselsnummer foedselsnummer) {
         JSONObject kontaktinfo = new JSONObject(jsonResponse)
                 .getJSONObject("kontaktinfo")
                 .getJSONObject(foedselsnummer.stringValue());

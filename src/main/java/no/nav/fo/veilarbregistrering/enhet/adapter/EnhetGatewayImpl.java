@@ -16,8 +16,8 @@ class EnhetGatewayImpl implements EnhetGateway {
 
     @Override
     public Optional<Organisasjonsdetaljer> hentOrganisasjonsdetaljer(Organisasjonsnummer organisasjonsnummer) {
-        Optional<OrganisasjonDetaljerDto> organisasjonDetaljer = enhetRestClient.hentOrganisasjon(organisasjonsnummer);
-        return organisasjonDetaljer.map(OrganisasjonsdetaljerMapper::map);
+        return enhetRestClient.hentOrganisasjon(organisasjonsnummer)
+                .map(OrganisasjonsdetaljerMapper::map);
     }
 
 }

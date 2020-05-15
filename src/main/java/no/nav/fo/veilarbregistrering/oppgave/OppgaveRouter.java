@@ -52,7 +52,7 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
 
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get());
         if (!organisasjonsdetaljer.isPresent()) {
-            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer:{}", organisasjonsnummer.get().asString());
+            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}", organisasjonsnummer.get().asString());
             return Optional.empty();
         }
 
@@ -67,7 +67,7 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
         Optional<Enhetsnr> enhetsnr = norgGateway.hentEnhetFor(kommunenummer
                 .orElseThrow(IllegalStateException::new));
         if (!enhetsnr.isPresent()) {
-            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer:{}", kommunenummer.get().asString());
+            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.get().asString());
         }
         return enhetsnr;
     }
