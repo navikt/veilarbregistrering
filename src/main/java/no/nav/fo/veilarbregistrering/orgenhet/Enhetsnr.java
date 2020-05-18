@@ -4,17 +4,17 @@ import java.util.Objects;
 
 public class Enhetsnr {
 
-    private final int enhetId;
+    private final String enhetId;
 
-    public static Enhetsnr of(int enhetId) {
+    public static Enhetsnr of(String enhetId) {
         return new Enhetsnr(enhetId);
     }
 
-    private Enhetsnr(int enhetId) {
+    private Enhetsnr(String enhetId) {
         this.enhetId = enhetId;
     }
 
-    public int asInt() {
+    public String asString() {
         return enhetId;
     }
 
@@ -23,11 +23,12 @@ public class Enhetsnr {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Enhetsnr enhetsnr = (Enhetsnr) o;
-        return enhetId == enhetsnr.enhetId;
+        return Objects.equals(enhetId, enhetsnr.enhetId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(enhetId);
     }
+
 }

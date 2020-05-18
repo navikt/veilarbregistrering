@@ -58,14 +58,14 @@ public class OppgaveResource {
     @GET
     @Path("/routing")
     @ApiOperation(value = "Henter enhetsId på bakgrunn av siste arbeidsforhold")
-    public Integer hentEnhetsId() {
+    public String hentEnhetsId() {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         return oppgaveRouterProxy.hentEnhetsnummerForSisteArbeidsforholdTil(bruker)
-                .map(Enhetsnr::asInt)
-                .orElse(Integer.valueOf(0));
+                .map(Enhetsnr::asString)
+                .orElse("0");
     }
 
 }

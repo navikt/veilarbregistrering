@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
-import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +27,12 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final EnhetGateway enhetGateway;
-    private final NorgGateway norgGateway;
+    private final Norg2Gateway norg2Gateway;
 
-    public OppgaveRouter(ArbeidsforholdGateway arbeidsforholdGateway, EnhetGateway enhetGateway, NorgGateway norgGateway) {
+    public OppgaveRouter(ArbeidsforholdGateway arbeidsforholdGateway, EnhetGateway enhetGateway, Norg2Gateway norg2Gateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
-        this.norgGateway = norgGateway;
+        this.norg2Gateway = norg2Gateway;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
             return Optional.empty();
         }
 
-        Optional<Enhetsnr> enhetsnr = norgGateway.hentEnhetFor(kommunenummer
+        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer
                 .orElseThrow(IllegalStateException::new));
         if (!enhetsnr.isPresent()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.get().asString());

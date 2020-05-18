@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 
 import java.util.Optional;
 
-public interface NorgGateway {
+public interface Norg2Gateway {
 
     Optional<Enhetsnr> hentEnhetFor(Kommunenummer kommunenummer);
 }

@@ -27,7 +27,7 @@ public class OppgaveRouterProxy implements HentEnhetsIdForSisteArbeidsforhold {
             return oppgaveRouter.hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
-            return Optional.of(Enhetsnr.of(-1));
+            return Optional.of(Enhetsnr.of("-1"));
         }
     }
 }

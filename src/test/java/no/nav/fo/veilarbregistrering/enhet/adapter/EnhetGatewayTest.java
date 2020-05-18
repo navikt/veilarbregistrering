@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.enhet.adapter;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

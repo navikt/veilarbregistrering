@@ -2,26 +2,26 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
-import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 
 import java.util.List;
 import java.util.Optional;
 
-class NorgGatewayImpl implements NorgGateway {
+class Norg2GatewayImpl implements Norg2Gateway {
 
-    private final NorgRestClient norgRestClient;
+    private final Norg2RestClient norg2RestClient;
 
-    NorgGatewayImpl(NorgRestClient norgRestClient) {
-        this.norgRestClient = norgRestClient;
+    Norg2GatewayImpl(Norg2RestClient norg2RestClient) {
+        this.norg2RestClient = norg2RestClient;
     }
 
     @Override
     public Optional<Enhetsnr> hentEnhetFor(Kommunenummer kommunenummer) {
-        List<RsNavKontorDto> listeMedRsNavKontorDtos = norgRestClient.hentEnhetFor(kommunenummer);
+        List<RsNavKontorDto> listeMedRsNavKontorDtos = norg2RestClient.hentEnhetFor(kommunenummer);
 
         return listeMedRsNavKontorDtos.stream()
                 //TODO: Trenger vi noe mer filter her? Arbeidsgiver sjekker på Status = Aktiv???
                 .findFirst()
-                .map(rsNavKontorDtos -> Enhetsnr.of(rsNavKontorDtos.getEnhetId()));
+                .map(rsNavKontorDtos -> Enhetsnr.of(rsNavKontorDtos.getEnhetNr()));
     }
 }
