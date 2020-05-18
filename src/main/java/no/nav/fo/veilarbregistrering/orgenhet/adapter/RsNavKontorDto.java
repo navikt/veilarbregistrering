@@ -2,16 +2,16 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 public class RsNavKontorDto {
 
-    private int enhetId;
+    private String enhetNr;
 
     public RsNavKontorDto() {
     }
 
-    public int getEnhetId() {
-        return enhetId;
+    public String getEnhetNr() {
+        return enhetNr;
     }
 
-    public void setEnhetId(int enhetId) {
-        this.enhetId = enhetId;
+    public void setEnhetNr(String enhetNr) {
+        this.enhetNr = enhetNr;
     }
 }

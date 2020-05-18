@@ -14,7 +14,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
-import no.nav.fo.veilarbregistrering.orgenhet.NorgGateway;
+import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
@@ -151,8 +151,8 @@ public class ServiceBeansConfig {
     OppgaveRouter oppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
-            NorgGateway norgGateway) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norgGateway);
+            Norg2Gateway norg2Gateway) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway);
     }
 
     @Bean
