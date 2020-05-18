@@ -1,18 +1,15 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 
+import static javax.ws.rs.client.Entity.json;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.OPPFOLGING;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
@@ -23,8 +20,6 @@ class Norg2RestClient {
     private static final Logger LOG = LoggerFactory.getLogger(Norg2RestClient.class);
 
     private static final int HTTP_READ_TIMEOUT = 120000;
-
-    private static final Gson gson = new GsonBuilder().create();
 
     private final String url;
 
@@ -54,16 +49,21 @@ class Norg2RestClient {
         Response response = withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                 client -> client
-                        .property(ClientProperties.SUPPRESS_HTTP_COMPLIANCE_VALIDATION, true)
                         .target(url)
                         .request()
-                        .method("GET", Entity.text(
-                                toJson(rsArbeidsfordelingCriteriaDto))));
+                        .post(json(rsArbeidsfordelingCriteriaDto)));
 
-        return (List<RsNavKontorDto>) response.readEntity(List.class);
+        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
+
+        if (Response.Status.OK.equals(status)) {
+            return (List<RsNavKontorDto>) response.readEntity(List.class);
+        }
+
+        if (Response.Status.NOT_FOUND.equals(status)) {
+            return Collections.emptyList();
+        }
+
+        throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
     }
 
-    static String toJson(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-        return gson.toJson(rsArbeidsfordelingCriteriaDto, RsArbeidsfordelingCriteriaDto.class);
-    }
 }
