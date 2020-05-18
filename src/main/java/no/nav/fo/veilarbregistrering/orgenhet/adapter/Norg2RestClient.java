@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
+import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ class Norg2RestClient {
         Response response = withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                 client -> client
+                        .property(ClientProperties.SUPPRESS_HTTP_COMPLIANCE_VALIDATION, true)
                         .target(url)
                         .request()
                         .method("GET", Entity.text(
