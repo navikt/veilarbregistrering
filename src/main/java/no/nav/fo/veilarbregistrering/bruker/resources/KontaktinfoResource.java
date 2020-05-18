@@ -47,7 +47,7 @@ public class KontaktinfoResource {
             @ApiResponse(code = 404, message = "Ikke funnet"),
             @ApiResponse(code = 500, message = "Ukjent feil")
     })
-    public KontaktinfoDto hentSisteArbeidsforhold() {
+    public KontaktinfoDto hentKontaktinfo() {
         final Bruker bruker = userService.hentBruker();
 
         if (!unleashService.isEnabled("veilarbregistrering.kontaktinfo")) {

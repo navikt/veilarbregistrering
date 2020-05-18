@@ -5,12 +5,11 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
+import javax.ws.rs.NotFoundException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static javax.ws.rs.client.Entity.json;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
@@ -29,27 +28,27 @@ class EnhetRestClient {
     }
 
     Optional<OrganisasjonDetaljerDto> hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
-        Response response = withClient(
+        try {
+            String response = utfoerRequest(organisasjonsnummer);
+            OrganisasjonDto organisasjonDto = parse(response);
+            return Optional.of(organisasjonDto.getOrganisasjonDetaljer());
+
+        } catch (NotFoundException e) {
+            LOG.warn("Fant ikke organisasjon for organisasjonsnummer", e);
+            return Optional.empty();
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Hent organisasjon feilet", e);
+        }
+    }
+
+    String utfoerRequest(Organisasjonsnummer organisasjonsnummer) {
+        return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                 client -> client
-                        .target(url)
+                        .target(url + organisasjonsnummer.asString())
                         .request()
-                        .post(json(organisasjonsnummer.asString())));
-
-        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
-        LOG.info("Statuskode: ", status.getStatusCode());
-
-        if (status.equals(Response.Status.OK)) {
-            String jsonResponse = response.readEntity(String.class);
-            OrganisasjonDto organisasjonDto = parse(jsonResponse);
-            return Optional.of(organisasjonDto.getOrganisasjonDetaljer());
-        }
-
-        if (status.equals(Response.Status.NOT_FOUND)) {
-            return Optional.empty();
-        }
-
-        throw new RuntimeException("Hent organisasjon feilet med statuskode: " + status + " - " + response);
+                        .get(String.class));
     }
 
     static OrganisasjonDto parse(String jsonResponse) {
