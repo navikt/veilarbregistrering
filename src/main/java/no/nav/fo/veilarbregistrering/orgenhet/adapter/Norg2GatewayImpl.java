@@ -20,7 +20,7 @@ class Norg2GatewayImpl implements Norg2Gateway {
         List<RsNavKontorDto> listeMedRsNavKontorDtos = norg2RestClient.hentEnhetFor(kommunenummer);
 
         return listeMedRsNavKontorDtos.stream()
-                //TODO: Trenger vi noe mer filter her? Arbeidsgiver sjekker på Status = Aktiv???
+                .filter(rsNavKontorDtos -> "Aktiv".equals(rsNavKontorDtos.getStatus()))
                 .findFirst()
                 .map(rsNavKontorDtos -> Enhetsnr.of(rsNavKontorDtos.getEnhetNr()));
     }
