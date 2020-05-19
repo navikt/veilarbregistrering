@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
+import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
@@ -38,6 +40,7 @@ class Norg2RestClient {
 
         Response.Status status = Response.Status.fromStatusCode(response.getStatus());
         if (Response.Status.OK.equals(status)) {
+            response.bufferEntity();
             List<RsNavKontorDto> rsNavKontorDtos = response.readEntity(new GenericType<List<RsNavKontorDto>>() {
             });
             return rsNavKontorDtos.stream().collect(Collectors.toList());
