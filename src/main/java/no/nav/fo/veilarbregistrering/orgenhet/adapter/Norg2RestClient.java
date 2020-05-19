@@ -4,10 +4,11 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.client.Entity.json;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER;
@@ -33,37 +34,30 @@ class Norg2RestClient {
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 
-        try {
-            return utfoerRequest(rsArbeidsfordelingCriteriaDto);
+        Response response = utfoerRequest(rsArbeidsfordelingCriteriaDto);
 
-        } catch (NotFoundException e) {
-            LOG.warn("Fant ikke NavKontor for kommunenummer", e);
-            return Collections.emptyList();
-
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Hent NavKontor feilet.", e);
+        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
+        if (Response.Status.OK.equals(status)) {
+            List<RsNavKontorDto> rsNavKontorDtos = response.readEntity(new GenericType<List<RsNavKontorDto>>() {
+            });
+            return rsNavKontorDtos.stream().collect(Collectors.toList());
         }
+
+        if (Response.Status.NOT_FOUND.equals(status)) {
+            LOG.warn("Fant ikke NavKontor for kommunenummer");
+            return Collections.emptyList();
+        }
+
+        throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
     }
 
-    List<RsNavKontorDto> utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-        Response response = withClient(
+    Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
+        return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
                 client -> client
                         .target(url)
                         .request()
                         .post(json(rsArbeidsfordelingCriteriaDto)));
-
-        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
-
-        if (Response.Status.OK.equals(status)) {
-            return (List<RsNavKontorDto>) response.readEntity(List.class);
-        }
-
-        if (Response.Status.NOT_FOUND.equals(status)) {
-            return Collections.emptyList();
-        }
-
-        throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
     }
 
 }

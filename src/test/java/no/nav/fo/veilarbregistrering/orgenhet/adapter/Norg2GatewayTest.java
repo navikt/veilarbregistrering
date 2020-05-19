@@ -2,17 +2,18 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.LinkedTreeMap;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,10 +46,16 @@ public class Norg2GatewayTest {
         }
 
         @Override
-        List<RsNavKontorDto> utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
+        Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
             String json = toJson(OK_JSON);
             RsNavKontorDto rsNavKontorDto = gson.fromJson(json, RsNavKontorDto.class);
-            return Arrays.asList(rsNavKontorDto);
+
+            final Response response = Mockito.mock(Response.class);
+            Mockito.when(response.getStatus()).thenReturn(Response.Status.OK.getStatusCode());
+            Mockito.when(response.readEntity(Mockito.any(Class.class))).thenReturn(Arrays.asList(rsNavKontorDto));
+            Mockito.when(response.readEntity(Mockito.any(GenericType.class))).thenReturn(Arrays.asList(rsNavKontorDto));
+
+            return response;
         }
 
         private String toJson(String json_file) {
