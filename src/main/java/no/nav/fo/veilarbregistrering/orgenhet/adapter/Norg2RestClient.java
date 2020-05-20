@@ -5,8 +5,8 @@ import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +40,6 @@ class Norg2RestClient {
 
         Response.Status status = Response.Status.fromStatusCode(response.getStatus());
         if (Response.Status.OK.equals(status)) {
-            response.bufferEntity();
             List<RsNavKontorDto> rsNavKontorDtos = response.readEntity(new GenericType<List<RsNavKontorDto>>() {
             });
             return rsNavKontorDtos.stream().collect(Collectors.toList());
@@ -54,6 +53,15 @@ class Norg2RestClient {
         throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
     }
 
+
+    Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
+        return RestUtils.createClient()
+                        .target(url)
+                        .request(MediaType.APPLICATION_JSON)
+                        .post(json(rsArbeidsfordelingCriteriaDto));
+    }
+
+    /*
     Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
         return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build(),
@@ -61,6 +69,5 @@ class Norg2RestClient {
                         .target(url)
                         .request()
                         .post(json(rsArbeidsfordelingCriteriaDto)));
-    }
-
+    }*/
 }

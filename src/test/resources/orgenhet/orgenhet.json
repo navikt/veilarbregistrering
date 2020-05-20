@@ -1,19 +1,21 @@
-{
-  "enhetId": 103404136,
-  "navn": "NAV Kontor somewhere",
-  "enhetNr": "0393",
-  "antallRessurser": 0,
-  "status": "Aktiv",
-  "orgNivaa": "EN",
-  "type": "OPPF",
-  "organisasjonsnummer": null,
-  "underEtableringDato": "2018-06-22",
-  "aktiveringsdato": "2018-06-22",
-  "underAvviklingDato": null,
-  "nedleggelsesdato": null,
-  "oppgavebehandler": true,
-  "versjon": 1,
-  "sosialeTjenester": null,
-  "kanalstrategi": null,
-  "orgNrTilKommunaltNavKontor": null
-}
+[
+  {
+    "enhetId": 103404136,
+    "navn": "NAV Kontor somewhere",
+    "enhetNr": "0393",
+    "antallRessurser": 0,
+    "status": "Aktiv",
+    "orgNivaa": "EN",
+    "type": "OPPF",
+    "organisasjonsnummer": null,
+    "underEtableringDato": "2018-06-22",
+    "aktiveringsdato": "2018-06-22",
+    "underAvviklingDato": null,
+    "nedleggelsesdato": null,
+    "oppgavebehandler": true,
+    "versjon": 1,
+    "sosialeTjenester": null,
+    "kanalstrategi": null,
+    "orgNrTilKommunaltNavKontor": null
+  }
+]
