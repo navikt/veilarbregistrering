@@ -57,10 +57,23 @@ class KrrClient {
      * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
      */
     static KrrKontaktinfoDto parse(String jsonResponse, Foedselsnummer foedselsnummer) {
-        JSONObject kontaktinfo = new JSONObject(jsonResponse)
-                .getJSONObject("kontaktinfo")
-                .getJSONObject(foedselsnummer.stringValue());
+        if (new JSONObject(jsonResponse).has("kontaktinfo")) {
+            JSONObject kontaktinfo = new JSONObject(jsonResponse)
+                    .getJSONObject("kontaktinfo")
+                    .getJSONObject(foedselsnummer.stringValue());
 
-        return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
+            return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
+        }
+
+        if (new JSONObject(jsonResponse).has("feil")) {
+            JSONObject response = new JSONObject(jsonResponse)
+                    .getJSONObject("feil")
+                    .getJSONObject(foedselsnummer.stringValue());
+
+            KrrFeilDto feil = gson.fromJson(response.toString(), KrrFeilDto.class);
+
+            throw new RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.getMelding()));
+        }
+        throw new RuntimeException("Ukjent feil");
     }
 }

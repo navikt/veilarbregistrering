@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.nav.fo.veilarbregistrering.FileToJson;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
@@ -11,8 +12,6 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -47,8 +46,8 @@ public class Norg2GatewayTest {
 
         @Override
         Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-            String json = toJson(OK_JSON);
-            RsNavKontorDto rsNavKontorDto = gson.fromJson(json, RsNavKontorDto.class);
+            String json = FileToJson.toJson(OK_JSON, Norg2RestClient.class);
+            RsNavKontorDto[] rsNavKontorDto = gson.fromJson(json, RsNavKontorDto[].class);
 
             final Response response = Mockito.mock(Response.class);
             Mockito.when(response.getStatus()).thenReturn(Response.Status.OK.getStatusCode());
@@ -56,15 +55,6 @@ public class Norg2GatewayTest {
             Mockito.when(response.readEntity(Mockito.any(GenericType.class))).thenReturn(Arrays.asList(rsNavKontorDto));
 
             return response;
-        }
-
-        private String toJson(String json_file) {
-            try {
-                byte[] bytes = Files.readAllBytes(Paths.get(Norg2RestClient.class.getResource(json_file).toURI()));
-                return new String(bytes);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
