@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 
 import java.time.LocalDate;
 
@@ -19,7 +20,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgave(AktorId aktoerId, String beskrivelse) {
+    public Oppgave opprettOppgave(AktorId aktoerId, String beskrivelse, Enhetsnr enhetsnr) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(aktoerId.asString());
         oppgaveDto.setBeskrivelse(beskrivelse);

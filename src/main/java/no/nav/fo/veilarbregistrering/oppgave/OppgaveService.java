@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,16 +26,19 @@ public class OppgaveService {
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
 
     private final OppgaveGateway oppgaveGateway;
+    private final OppgaveRouterProxy oppgaveRouterProxy;
     private final OppgaveRepository oppgaveRepository;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
     private final Map<OppgaveType, String> beskrivelser;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
+            OppgaveRouterProxy oppgaveRouterProxy,
             OppgaveRepository oppgaveRepository,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         this.oppgaveGateway = oppgaveGateway;
+        this.oppgaveRouterProxy = oppgaveRouterProxy;
         this.oppgaveRepository = oppgaveRepository;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
         beskrivelser = new HashMap<>(2);
@@ -57,9 +62,12 @@ public class OppgaveService {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
 
+        Optional<Enhetsnr> enhetsnr = finnEnhetsnummer(bruker, oppgaveType);
+
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
                 bruker.getAktorId(),
-                beskrivelser.get(oppgaveType)
+                beskrivelser.get(oppgaveType),
+                enhetsnr.orElse(null)
         );
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}", oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
@@ -104,5 +112,18 @@ public class OppgaveService {
      */
     protected LocalDate idag() {
         return LocalDate.now();
+    }
+
+    private Optional<Enhetsnr> finnEnhetsnummer(Bruker bruker, OppgaveType oppgaveType) {
+        if (!oppgaveType.equals(OppgaveType.UTVANDRET)) {
+            return Optional.empty();
+        }
+
+        Optional<GeografiskTilknytning> geografiskTilknytning = oppgaveRouterProxy.hentGeografiskTilknytningFor(bruker);
+        if (geografiskTilknytning.isPresent()) {
+            return Optional.empty();
+        }
+
+        return oppgaveRouterProxy.hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
     }
 }

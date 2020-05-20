@@ -138,11 +138,13 @@ public class ServiceBeansConfig {
     @Bean
     OppgaveService oppgaveService(
             OppgaveGateway oppgaveGateway,
+            OppgaveRouterProxy oppgaveRouterProxy,
             OppgaveRepository oppgaveRepository,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         return new OppgaveService(
                 oppgaveGateway,
+                oppgaveRouterProxy,
                 oppgaveRepository,
                 kontaktBrukerHenvendelseProducer);
     }
@@ -156,8 +158,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveRouterProxy oppgaveRouterProxy(OppgaveRouter oppgaveRouter) {
-        return new OppgaveRouterProxy(oppgaveRouter);
+    OppgaveRouterProxy oppgaveRouterProxy(OppgaveRouter oppgaveRouter, PersonGateway personGateway) {
+        return new OppgaveRouterProxy(oppgaveRouter, personGateway);
     }
 
     @Bean

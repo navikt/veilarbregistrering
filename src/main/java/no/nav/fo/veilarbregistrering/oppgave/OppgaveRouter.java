@@ -29,7 +29,10 @@ public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
 
-    public OppgaveRouter(ArbeidsforholdGateway arbeidsforholdGateway, EnhetGateway enhetGateway, Norg2Gateway norg2Gateway) {
+    public OppgaveRouter(
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            EnhetGateway enhetGateway,
+            Norg2Gateway norg2Gateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;

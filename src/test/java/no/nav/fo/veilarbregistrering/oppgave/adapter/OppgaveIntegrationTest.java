@@ -46,9 +46,11 @@ public class OppgaveIntegrationTest {
         OppgaveRepository oppgaveRepository = mock(OppgaveRepository.class);
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+        OppgaveRouterProxy oppgaveRouterProxy = mock(OppgaveRouterProxy.class);
 
         oppgaveService = new OppgaveService(
                 oppgaveGateway,
+                oppgaveRouterProxy,
                 oppgaveRepository,
                 aktorId -> { });
     }
@@ -88,7 +90,8 @@ public class OppgaveIntegrationTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"NORM\"" +
+                                "\"prioritet\":\"NORM\"," +
+                                "\"tildeltEnhetsnr\":null" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
