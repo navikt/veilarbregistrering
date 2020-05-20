@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 public class Foedselsdato {
 
@@ -10,15 +11,18 @@ public class Foedselsdato {
         return new Foedselsdato(foedselsdato);
     }
 
-    private Foedselsdato(LocalDate foedselsdato) {
+    protected Foedselsdato(LocalDate foedselsdato) {
         this.foedselsdato = foedselsdato;
     }
 
-    public LocalDate getFoedselsdato() {
-        return foedselsdato;
+    public int alder() {
+        return Period.between(foedselsdato, dagensDato()).getYears();
     }
 
-    public int getAlder() {
-        return -1;
+    /**
+     * For å kunne overstyre dagens dato i test
+     */
+    protected LocalDate dagensDato() {
+        return LocalDate.now();
     }
 }
