@@ -72,6 +72,10 @@ class KrrClient {
 
             KrrFeilDto feil = gson.fromJson(response.toString(), KrrFeilDto.class);
 
+            if ("Ingen kontaktinformasjon er registrert på personen".equals(feil.getMelding())) {
+                throw new NotFoundException(feil.getMelding());
+            }
+
             throw new RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.getMelding()));
         }
         throw new RuntimeException("Ukjent feil");
