@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppgaveRouterTest {
@@ -32,7 +33,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER);
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
     }
@@ -46,7 +47,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER);
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
     }
@@ -67,7 +68,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER);
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
     }
@@ -88,7 +89,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER);
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
     }
@@ -102,7 +103,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER);
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
     }

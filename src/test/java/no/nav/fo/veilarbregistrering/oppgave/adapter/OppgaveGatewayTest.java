@@ -81,7 +81,8 @@ class OppgaveGatewayTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"NORM\"" +
+                                "\"prioritet\":\"NORM\"," +
+                                "\"tildeltEnhetsnr\":null" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
@@ -91,6 +92,7 @@ class OppgaveGatewayTest {
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveGateway.opprettOppgave(
                         AktorId.valueOf("12e1e3"),
+                        null,
                         "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                                 "og har selv opprettet denne oppgaven. " +
                                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."));

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
@@ -26,43 +27,49 @@ public class OppgaveServiceTest {
     private OppgaveService oppgaveService;
     private OppgaveGateway oppgaveGateway;
     private OppgaveRepository oppgaveRepository;
+    private OppgaveRouter oppgaveRouter;
 
     @Before
     public void setUp() {
         oppgaveGateway = mock(OppgaveGateway.class);
         oppgaveRepository = mock(OppgaveRepository.class);
+        oppgaveRouter = mock(OppgaveRouter.class);
         oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
+                oppgaveRouter,
                 aktorId -> {
                 });
     }
 
     @Test
     public void opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
-        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveGateway.opprettOppgave(any(), any(), any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(),null, "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
     }
 
     @Test
     public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
-        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveGateway.opprettOppgave(any(), any(), any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), null, "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg vanlig rutine for slike tilfeller.");
     }
 
     @Test
     public void skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
-        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveGateway.opprettOppgave(any(), any(), any())).thenReturn(new DummyOppgaveResponse());
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
         verify(oppgaveRepository, times(1))
@@ -83,27 +90,29 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
         OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0));
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetTreDagerFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
-        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprettOppgave(any(), any(), any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), null, "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
     }
 
     @Test
     public void ingen_tidligere_oppgaver() {
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList());
-        when(oppgaveGateway.opprettOppgave(any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprettOppgave(any(), any(), any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+        verify(oppgaveGateway, times(1)).opprettOppgave(BRUKER.getAktorId(), null, "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                 "og har selv opprettet denne oppgaven. " +
                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.");
     }
@@ -123,8 +132,12 @@ public class OppgaveServiceTest {
 
     private static class CustomOppgaveService extends OppgaveService {
 
-        public CustomOppgaveService(OppgaveGateway oppgaveGateway, OppgaveRepository oppgaveRepository, KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-            super(oppgaveGateway, oppgaveRepository, kontaktBrukerHenvendelseProducer);
+        public CustomOppgaveService(
+                OppgaveGateway oppgaveGateway,
+                OppgaveRepository oppgaveRepository,
+                OppgaveRouter oppgaveRouter,
+                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
         }
 
         @Override

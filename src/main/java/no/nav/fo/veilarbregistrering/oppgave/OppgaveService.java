@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +26,19 @@ public class OppgaveService {
 
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
+    private final OppgaveRouter oppgaveRouter;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
     private final Map<OppgaveType, String> beskrivelser;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
+            OppgaveRouter oppgaveRouter,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveRouter = oppgaveRouter;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
         beskrivelser = new HashMap<>(2);
         beskrivelser.put(
@@ -55,14 +59,19 @@ public class OppgaveService {
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
         validerNyOppgaveMotAktive(bruker, oppgaveType);
 
+        //TODO: Utvide event med type oppgave
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
+
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
                 bruker.getAktorId(),
+                enhetsnr.orElse(null),
                 beskrivelser.get(oppgaveType)
         );
 
-        LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}", oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
+        LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}",
+                oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
 

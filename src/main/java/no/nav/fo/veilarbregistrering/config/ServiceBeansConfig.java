@@ -141,11 +141,12 @@ public class ServiceBeansConfig {
     OppgaveService oppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
+            OppgaveRouter oppgaveRouter,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
+                oppgaveRouter,
                 kontaktBrukerHenvendelseProducer);
     }
 
@@ -196,7 +197,6 @@ public class ServiceBeansConfig {
             BrukerRegistreringRepository brukerRegistreringRepository,
             OppfolgingGateway oppfolgingGateway,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
-
         return new ArenaOverforingService(
                 profileringRepository,
                 brukerRegistreringRepository,

@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppgave.*;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,10 +33,12 @@ public class OppgaveIntegrationTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
+    public static final Bruker BRUKER = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3"));
 
     private ClientAndServer mockServer;
 
     private OppgaveService oppgaveService;
+    private OppgaveRouter oppgaveRouter;
 
     @AfterEach
     public void tearDown() {
@@ -46,10 +50,12 @@ public class OppgaveIntegrationTest {
         OppgaveRepository oppgaveRepository = mock(OppgaveRepository.class);
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+        oppgaveRouter = mock(OppgaveRouter.class);
 
         oppgaveService = new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
+                oppgaveRouter,
                 aktorId -> { });
     }
 
@@ -70,6 +76,8 @@ public class OppgaveIntegrationTest {
         String dagensdato = LocalDate.now().toString();
         String to_dager_senere = LocalDate.now().plusDays(2).toString();
 
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetsnr.of("0301")));
+
         mockServer.when(
                 request()
                         .withMethod("POST")
@@ -77,9 +85,9 @@ public class OppgaveIntegrationTest {
                         .withBody("{" +
                                 "\"aktoerId\":\"12e1e3\"," +
                                 "\"beskrivelse\":\"" +
-                                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                                "og har selv opprettet denne oppgaven. " +
-                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.\"," +
+                                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i " +
+                                "Arena, og har selv opprettet denne oppgaven. Ring bruker og følg vanlig rutine for " +
+                                "slike tilfeller.\"," +
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
@@ -88,7 +96,8 @@ public class OppgaveIntegrationTest {
                                 "\"aktivDato\":\"" +
                                 dagensdato +
                                 "\"," +
-                                "\"prioritet\":\"NORM\"" +
+                                "\"prioritet\":\"NORM\"," +
+                                "\"tildeltEnhetsnr\":\"0301\"" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
@@ -97,8 +106,8 @@ public class OppgaveIntegrationTest {
         Oppgave oppgave = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveService.opprettOppgave(
-                        Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3")),
-                        OppgaveType.OPPHOLDSTILLATELSE));
+                        BRUKER,
+                        OppgaveType.UTVANDRET));
 
         assertThat(oppgave.getId()).isEqualTo(5436732);
         assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
