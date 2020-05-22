@@ -14,7 +14,7 @@ spec:
   env:
   - name: APP_ENVIRONMENT_NAME
     value: {{ app_environment_name }}
-  - name: SENSU_BATCHES_PER_SECOND_PROPERTY_NAME
+  - name: metrics.sensu.report.batchesPerSecond
     value: 3
   - name: FEATURE_ENDPOINT_URL
     value: {{ feature_endpoint_url }}
