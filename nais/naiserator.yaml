@@ -14,6 +14,8 @@ spec:
   env:
   - name: APP_ENVIRONMENT_NAME
     value: {{ app_environment_name }}
+  - name: SENSU_BATCHES_PER_SECOND_PROPERTY_NAME
+    value: 3
   - name: FEATURE_ENDPOINT_URL
     value: {{ feature_endpoint_url }}
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
