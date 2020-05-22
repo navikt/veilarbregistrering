@@ -6,6 +6,7 @@ import static java.lang.System.setProperty;
 import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.VEILARBREGISTRERINGDB_PASSWORD;
 import static no.nav.fo.veilarbregistrering.db.DatabaseConfig.VEILARBREGISTRERINGDB_USERNAME;
+import static no.nav.metrics.MetricsConfig.SENSU_BATCHES_PER_SECOND_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.STS_URL_KEY;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
@@ -25,6 +26,8 @@ public class Main {
         setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty("AKTOER_V2_ENDPOINTURL"));
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty("ABAC_PDP_ENDPOINT_URL"));
         setProperty(STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"));
+
+        setProperty(SENSU_BATCHES_PER_SECOND_PROPERTY_NAME, "3");
 
         ApiApp.runApp(ApplicationConfig.class, args);
     }
