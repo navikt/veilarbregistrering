@@ -6,7 +6,7 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveRouterProxy;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveRouter;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 public class OppgaveResource {
 
     private final OppgaveService oppgaveService;
-    private final OppgaveRouterProxy oppgaveRouterProxy;
+    private final OppgaveRouter oppgaveRouter;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
 
@@ -34,12 +34,12 @@ public class OppgaveResource {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             OppgaveService oppgaveService,
-            OppgaveRouterProxy oppgaveRouterProxy
+            OppgaveRouter oppgaveRouter
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.oppgaveService = oppgaveService;
-        this.oppgaveRouterProxy = oppgaveRouterProxy;
+        this.oppgaveRouter = oppgaveRouter;
     }
 
     @POST
@@ -63,9 +63,8 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        return oppgaveRouterProxy.hentEnhetsnummerForSisteArbeidsforholdTil(bruker)
+        return oppgaveRouter.hentEnhetsnummerForSisteArbeidsforholdTil(bruker)
                 .map(Enhetsnr::asString)
                 .orElse("0");
     }
-
 }

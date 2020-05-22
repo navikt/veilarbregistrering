@@ -4,6 +4,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
@@ -21,21 +23,48 @@ import java.util.Optional;
  * ikke ligger inne med Norsk adresse og tilknytning til NAV-kontor må vi gå via tidligere
  * arbeidsgiver.</p>
  */
-public class OppgaveRouter implements HentEnhetsIdForSisteArbeidsforhold {
+public class OppgaveRouter {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRouter.class);
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
+    private final PersonGateway personGateway;
 
-    public OppgaveRouter(ArbeidsforholdGateway arbeidsforholdGateway, EnhetGateway enhetGateway, Norg2Gateway norg2Gateway) {
+    public OppgaveRouter(
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            EnhetGateway enhetGateway,
+            Norg2Gateway norg2Gateway,
+            PersonGateway personGateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
+        this.personGateway = personGateway;
     }
 
-    @Override
+    public Optional<Enhetsnr> hentEnhetsnummerFor(Bruker bruker) {
+        Optional<GeografiskTilknytning> geografiskTilknytning;
+        try {
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getFoedselsnummer());
+        } catch (RuntimeException e) {
+            LOG.warn("Henting av geografisk tilknytning feilet", e);
+            geografiskTilknytning = Optional.empty();
+        }
+
+        if (geografiskTilknytning.isPresent()) {
+            LOG.info("Fant geografisk tilknytning -> overlater til oppgave-api til å route selv");
+            return Optional.empty();
+        }
+
+        try {
+            return hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
+        } catch (RuntimeException e) {
+            LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
+            return Optional.empty();
+        }
+    }
+
     public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {

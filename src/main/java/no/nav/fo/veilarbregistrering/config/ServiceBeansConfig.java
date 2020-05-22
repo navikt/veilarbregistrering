@@ -100,7 +100,9 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringResource internalRegistreringResource(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+    InternalRegistreringResource internalRegistreringResource(
+            BrukerRegistreringService brukerRegistreringService,
+            UnleashService unleashService) {
         return new InternalRegistreringResource(brukerRegistreringService, unleashService);
     }
 
@@ -151,13 +153,9 @@ public class ServiceBeansConfig {
     OppgaveRouter oppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
-            Norg2Gateway norg2Gateway) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway);
-    }
-
-    @Bean
-    OppgaveRouterProxy oppgaveRouterProxy(OppgaveRouter oppgaveRouter) {
-        return new OppgaveRouterProxy(oppgaveRouter);
+            Norg2Gateway norg2Gateway,
+            PersonGateway personGateway) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
     }
 
     @Bean
@@ -165,14 +163,15 @@ public class ServiceBeansConfig {
             VeilarbAbacPepClient pepClient,
             UserService userService,
             OppgaveService oppgaveService,
-            OppgaveRouterProxy oppgaveRouterProxy
+            OppgaveRouter oppgaveRouterProxy
     ) {
         return new OppgaveResource(pepClient, userService, oppgaveService, oppgaveRouterProxy);
     }
 
     @Bean
-    ManuellRegistreringService manuellRegistreringService(ManuellRegistreringRepository manuellRegistreringRepository,
-                                                          HentEnheterGateway hentEnheterGateway) {
+    ManuellRegistreringService manuellRegistreringService(
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            HentEnheterGateway hentEnheterGateway) {
         return new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
     }
 
