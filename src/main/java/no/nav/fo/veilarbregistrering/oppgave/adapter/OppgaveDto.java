@@ -18,5 +18,6 @@ class OppgaveDto {
     private String fristFerdigstillelse;
     private String aktivDato;
     private String prioritet;
+    private String tildeltEnhetsnr;
 
 }

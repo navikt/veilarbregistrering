@@ -10,6 +10,6 @@ public class OppgaveGatewayConfig {
     @Bean
     OppgaveGateway oppgaveGateway() {
 
-        return (aktoerId, beskrivelse) -> null;
+        return (aktoerId, enhetsnr, beskrivelse) -> null;
     }
 }

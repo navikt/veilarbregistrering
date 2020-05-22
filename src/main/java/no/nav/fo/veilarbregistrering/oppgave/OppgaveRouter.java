@@ -43,7 +43,11 @@ public class OppgaveRouter {
         this.personGateway = personGateway;
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerFor(Bruker bruker) {
+    public Optional<Enhetsnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
+        if (!oppgaveType.equals(OppgaveType.UTVANDRET)) {
+            return Optional.empty();
+        }
+
         Optional<GeografiskTilknytning> geografiskTilknytning;
         try {
             geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getFoedselsnummer());
