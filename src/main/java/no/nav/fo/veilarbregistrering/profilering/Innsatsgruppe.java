@@ -5,6 +5,9 @@ import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.util.Arrays;
 
+/**
+ * https://confluence.adeo.no/display/KARTLEGGING/Begrep+og+forkortelser
+ */
 public enum Innsatsgruppe implements Metric {
     STANDARD_INNSATS("IKVAL"),
     SITUASJONSBESTEMT_INNSATS("BFORM"),
