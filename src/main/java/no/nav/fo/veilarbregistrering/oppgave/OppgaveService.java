@@ -59,8 +59,7 @@ public class OppgaveService {
     public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
         validerNyOppgaveMotAktive(bruker, oppgaveType);
 
-        //TODO: Utvide event med type oppgave
-        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId());
+        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId(), oppgaveType);
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
 

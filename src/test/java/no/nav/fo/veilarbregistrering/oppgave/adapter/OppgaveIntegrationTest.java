@@ -56,7 +56,7 @@ public class OppgaveIntegrationTest {
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                aktorId -> { });
+                (aktorId, oppgaveType) -> { });
     }
 
     private OppgaveRestClient buildClient() {

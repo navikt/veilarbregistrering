@@ -96,7 +96,7 @@
         <dependency>
             <groupId>no.nav.arbeid</groupId>
             <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202004301354-b728b07</version>
+            <version>1.202005251110-cb2c669</version>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>

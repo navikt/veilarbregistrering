@@ -4,5 +4,5 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 public interface KontaktBrukerHenvendelseProducer {
 
-    void publiserHenvendelse(AktorId aktorId);
+    void publiserHenvendelse(AktorId aktorId, OppgaveType oppgaveType);
 }

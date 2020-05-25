@@ -38,7 +38,7 @@ public class OppgaveServiceTest {
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                aktorId -> {
+                (aktorId, oppgaveType) -> {
                 });
     }
 
