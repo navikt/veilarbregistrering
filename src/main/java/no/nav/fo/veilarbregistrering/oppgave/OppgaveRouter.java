@@ -16,6 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ROUTING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
+import static no.nav.fo.veilarbregistrering.oppgave.RoutingStep.*;
+
 /**
  * <p>Har som hovedoppgave å route Oppgaver til riktig enhet.</p>
  *
@@ -53,18 +57,25 @@ public class OppgaveRouter {
             geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getFoedselsnummer());
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet", e);
+            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);
             geografiskTilknytning = Optional.empty();
         }
 
         if (geografiskTilknytning.isPresent()) {
             LOG.info("Fant geografisk tilknytning -> overlater til oppgave-api til å route selv");
+            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_IkkeFunnet);
             return Optional.empty();
         }
 
         try {
-            return hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
+            Optional<Enhetsnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
+            if (enhetsnr.isPresent()) {
+                reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
+            }
+            return enhetsnr;
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
+            reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
             return Optional.empty();
         }
     }
@@ -73,6 +84,7 @@ public class OppgaveRouter {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
+            reportTags(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
             return Optional.empty();
         }
         Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
@@ -80,12 +92,14 @@ public class OppgaveRouter {
                 .orElseThrow(IllegalStateException::new);
         if (!organisasjonsnummer.isPresent()) {
             LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
+            reportTags(OPPGAVE_ROUTING_EVENT, OrgNummer_ikkeFunnet);
             return Optional.empty();
         }
 
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get());
         if (!organisasjonsdetaljer.isPresent()) {
             LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}", organisasjonsnummer.get().asString());
+            reportTags(OPPGAVE_ROUTING_EVENT, OrgDetaljer_IkkeFunnet);
             return Optional.empty();
         }
 
@@ -94,6 +108,7 @@ public class OppgaveRouter {
                 .orElseThrow(IllegalStateException::new);
         if (!kommunenummer.isPresent()) {
             LOG.warn("Fant ingen kommunenummer knyttet til organisasjon");
+            reportTags(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
             return Optional.empty();
         }
 
@@ -101,6 +116,7 @@ public class OppgaveRouter {
                 .orElseThrow(IllegalStateException::new));
         if (!enhetsnr.isPresent()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.get().asString());
+            reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }
         return enhetsnr;
     }
