@@ -1,8 +1,10 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
+import no.nav.arbeid.soker.oppgave.Oppgavetype;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -27,9 +29,12 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
     }
 
     @Override
-    public void publiserHenvendelse(AktorId aktorId) {
+    public void publiserHenvendelse(AktorId aktorId, OppgaveType oppgaveType) {
         try {
-            KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder().setAktorid(aktorId.asString()).build();
+            KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = KontaktBrukerOpprettetEvent.newBuilder()
+                    .setAktorid(aktorId.asString())
+                    .setOppgavetype(map(oppgaveType))
+                    .build();
             ProducerRecord<String, KontaktBrukerOpprettetEvent> record = new ProducerRecord<>(topic, aktorId.asString(), kontaktBrukerOpprettetEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
             producer.send(record, (recordMetadata, e) -> {
@@ -42,7 +47,15 @@ class KontaktBrukerOpprettetKafkaProducer implements KontaktBrukerHenvendelsePro
             });
 
         } catch (Exception e) {
-            LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
+            LOG.error("Sending av KontaktBrukerOpprettetEvent til Kafka feilet", e);
+        }
+    }
+
+    private Oppgavetype map(OppgaveType oppgaveType) {
+        switch (oppgaveType) {
+            case OPPHOLDSTILLATELSE: return Oppgavetype.OPPHOLDSTILLATELSE;
+            case UTVANDRET: return Oppgavetype.UTVANDRET;
+            default: throw new IllegalArgumentException(String.format("Oppgavetype %s er ukjent", oppgaveType));
         }
     }
 }
