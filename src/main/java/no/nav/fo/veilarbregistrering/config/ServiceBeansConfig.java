@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResource;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -235,5 +236,10 @@ public class ServiceBeansConfig {
             KontaktinfoService kontaktinfoService,
             UnleashService unleashService) {
         return new KontaktinfoResource(pepClient, userService, kontaktinfoService, unleashService);
+    }
+
+    @Bean
+    InternalRegistreringServlet internalRegistreringServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+        return new InternalRegistreringServlet(brukerRegistreringService, unleashService);
     }
 }

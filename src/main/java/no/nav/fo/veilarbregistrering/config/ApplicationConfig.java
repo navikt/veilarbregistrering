@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.apiapp.ApiApplication;
+import no.nav.apiapp.ServletUtil;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.oidc.Constants;
@@ -19,6 +20,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringServlet;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -111,5 +114,8 @@ public class ApplicationConfig implements ApiApplication {
     @Override
     public void startup(ServletContext servletContext) {
         MigrationUtils.createTables(jdbcTemplate);
+
+        InternalRegistreringServlet internalRegistreringServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringServlet.class);
+        ServletUtil.leggTilServlet(servletContext, internalRegistreringServlet, "/internal/status");
     }
 }
