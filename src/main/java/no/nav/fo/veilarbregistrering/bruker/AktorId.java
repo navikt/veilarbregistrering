@@ -32,4 +32,11 @@ public class AktorId {
     public String asString() {
         return aktorId;
     }
+
+    @Override
+    public String toString() {
+        return "AktorId{" +
+                "aktorId='" + aktorId + '\'' +
+                '}';
+    }
 }
