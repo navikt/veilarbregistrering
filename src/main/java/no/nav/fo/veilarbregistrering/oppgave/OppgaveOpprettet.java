@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -23,25 +24,8 @@ class OppgaveOpprettet implements Metric {
      * oppgaven ble opprettet.
      */
     boolean erMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
-        int antallArbeidsdager = 0;
-
-        for (LocalDate date = oppgaveOpprettet.toLocalDate().plusDays(1); date.isBefore(dagensDato); date = date.plusDays(1)) {
-            if (Ukedag.erHelg(date)) {
-                continue;
-            }
-
-            if (Helligdager.erHelligdag(date)) {
-                continue;
-            }
-
-            antallArbeidsdager++;
-
-            if (antallArbeidsdager == 2) {
-                return false;
-            }
-        }
-
-        return antallArbeidsdager < 2;
+        LocalDate localDate = Virkedager.plussAntallArbeidsdager(oppgaveOpprettet.toLocalDate(), 2);
+        return Period.between(localDate, dagensDato).getDays() < 1;
     }
 
     long antallTimerSiden() {

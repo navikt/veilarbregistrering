@@ -95,7 +95,8 @@ class OppgaveGatewayTest {
                         null,
                         "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                                 "og har selv opprettet denne oppgaven. " +
-                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."));
+                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
+                        LocalDate.now().plusDays(2)));
 
         assertThat(oppgave.getId()).isEqualTo(5436732);
         assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");

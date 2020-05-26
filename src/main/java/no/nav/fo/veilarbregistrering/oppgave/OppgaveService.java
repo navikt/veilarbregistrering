@@ -62,11 +62,13 @@ public class OppgaveService {
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId(), oppgaveType);
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
+        LocalDate fristFerdigstillelse = Virkedager.plussAntallArbeidsdager(idag(), 2);
 
         Oppgave oppgave = oppgaveGateway.opprettOppgave(
                 bruker.getAktorId(),
                 enhetsnr.orElse(null),
-                beskrivelser.get(oppgaveType)
+                beskrivelser.get(oppgaveType),
+                fristFerdigstillelse
         );
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}",
