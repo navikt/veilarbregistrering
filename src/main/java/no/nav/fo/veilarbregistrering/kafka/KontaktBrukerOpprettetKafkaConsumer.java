@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
+import no.nav.arbeid.soker.oppgave.Oppgavetype;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
@@ -64,9 +65,14 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                     String callId = new String(header.value(), StandardCharsets.UTF_8);
                     MDC.put(MDC_CALL_ID, callId);
 
-                    LOG.info("Behandler kontaktBrukerOpprettetEvent");
-
                     KontaktBrukerOpprettetEvent kontaktBrukerOpprettetEvent = record.value();
+                    Oppgavetype oppgavetype = kontaktBrukerOpprettetEvent.getOppgavetype();
+                    LOG.info("Behandler kontaktBrukerOpprettetEvent av typen {}", oppgavetype);
+
+                    if (Oppgavetype.UTVANDRET.equals(oppgavetype)) {
+                        MDC.remove(MDC_CALL_ID);
+                        return;
+                    }
                     bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
 
                     MDC.remove(MDC_CALL_ID);
