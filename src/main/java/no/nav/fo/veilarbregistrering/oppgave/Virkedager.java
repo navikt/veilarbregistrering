@@ -11,7 +11,7 @@ class Virkedager {
         int teller = 0;
         int tellerDager = 0;
 
-        while (teller != antallDager) {
+        while (teller < antallDager) {
             tellerDager++;
             if (Ukedag.erHelg(dato.plusDays(tellerDager))) {
                 continue;
