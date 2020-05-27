@@ -23,10 +23,7 @@ public class InternalIdentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        FnrDto fnrDto = mapper.readValue(req.getInputStream(), FnrDto.class);
-        Foedselsnummer foedselsnummer = Foedselsnummer.of(fnrDto.getFnr());
-        Bruker bruker = userService.hentBruker(foedselsnummer);
+        Bruker bruker = userService.hentBruker();
         String brukerString = new Gson().toJson(bruker);
 
         PrintWriter out = resp.getWriter();

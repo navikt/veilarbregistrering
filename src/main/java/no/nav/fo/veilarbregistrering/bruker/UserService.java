@@ -17,10 +17,8 @@ public class UserService {
     }
 
     public Bruker hentBruker() {
-        return hentBruker(hentFnrFraUrlEllerToken());
-    }
+        Foedselsnummer fnr = hentFnrFraUrlEllerToken();
 
-    public Bruker hentBruker(Foedselsnummer fnr) {
         AktorId aktorId = aktorGateway.hentAktorIdFor(fnr);
 
         return Bruker.of(fnr, aktorId);
