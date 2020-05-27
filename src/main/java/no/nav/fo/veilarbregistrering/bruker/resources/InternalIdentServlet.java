@@ -1,9 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 
 import javax.servlet.ServletException;
