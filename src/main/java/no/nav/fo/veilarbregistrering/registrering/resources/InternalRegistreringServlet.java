@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class InternalRegistreringServlet extends HttpServlet {
-
+    // TODO: Slette InternalRegistreringResource hvis dette oppsettet fungerer
     private final BrukerRegistreringService brukerRegistreringService;
     private final UnleashService unleashService;
 
