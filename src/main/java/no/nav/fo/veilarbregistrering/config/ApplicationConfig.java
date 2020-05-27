@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
+import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig;
@@ -117,5 +118,8 @@ public class ApplicationConfig implements ApiApplication {
 
         InternalRegistreringServlet internalRegistreringServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringServlet.class);
         ServletUtil.leggTilServlet(servletContext, internalRegistreringServlet, "/internal/status");
+
+        InternalIdentServlet internalIdentServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalIdentServlet.class);
+        ServletUtil.leggTilServlet(servletContext, internalIdentServlet, "/internal/bruker");
     }
 }

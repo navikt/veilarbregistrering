@@ -4,6 +4,7 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
@@ -241,5 +242,10 @@ public class ServiceBeansConfig {
     @Bean
     InternalRegistreringServlet internalRegistreringServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
         return new InternalRegistreringServlet(brukerRegistreringService, unleashService);
+    }
+
+    @Bean
+    InternalIdentServlet internalIdentServlet(UserService userService) {
+        return new InternalIdentServlet(userService);
     }
 }
