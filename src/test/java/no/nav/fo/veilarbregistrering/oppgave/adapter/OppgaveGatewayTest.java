@@ -60,8 +60,8 @@ class OppgaveGatewayTest {
 
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
 
-        String dagensdato = LocalDate.now().toString();
-        String to_dager_senere = LocalDate.now().plusDays(2).toString();
+        LocalDate dagensdato = LocalDate.now();
+        LocalDate toDagerSenere = LocalDate.now().plusDays(2);
 
         mockServer.when(
                 request()
@@ -76,10 +76,10 @@ class OppgaveGatewayTest {
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
-                                to_dager_senere +
+                                toDagerSenere.toString() +
                                 "\"," +
                                 "\"aktivDato\":\"" +
-                                dagensdato +
+                                dagensdato.toString() +
                                 "\"," +
                                 "\"prioritet\":\"NORM\"," +
                                 "\"tildeltEnhetsnr\":null" +
@@ -96,7 +96,9 @@ class OppgaveGatewayTest {
                         "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                                 "og har selv opprettet denne oppgaven. " +
                                 "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
-                        LocalDate.now().plusDays(2)));
+                        LocalDate.now().plusDays(2),
+                        dagensdato
+                        ));
 
         assertThat(oppgave.getId()).isEqualTo(5436732);
         assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
