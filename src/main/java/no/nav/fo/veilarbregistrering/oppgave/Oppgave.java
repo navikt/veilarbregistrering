@@ -31,14 +31,14 @@ public class Oppgave {
     private final AktorId aktorId;
     private final Enhetsnr enhetsnr;
     private final OppgaveType oppgaveType;
-    private final LocalDate fristFerdigstilleles;
+    private final LocalDate fristFerdigstillelse;
     private final LocalDate aktivDato;
 
-    private Oppgave(AktorId aktorId, Enhetsnr enhetsnr, OppgaveType oppgaveType, LocalDate fristFerdigstilleles, LocalDate aktivDato) {
+    private Oppgave(AktorId aktorId, Enhetsnr enhetsnr, OppgaveType oppgaveType, LocalDate fristFerdigstillelse, LocalDate aktivDato) {
         this.aktorId = aktorId;
         this.enhetsnr = enhetsnr;
         this.oppgaveType = oppgaveType;
-        this.fristFerdigstilleles = fristFerdigstilleles;
+        this.fristFerdigstillelse = fristFerdigstillelse;
         this.aktivDato = aktivDato;
     }
 
@@ -63,8 +63,8 @@ public class Oppgave {
         return Optional.ofNullable(enhetsnr);
     }
 
-    public LocalDate getFristFerdigstilleles() {
-        return fristFerdigstilleles;
+    public LocalDate getFristFerdigstillelse() {
+        return fristFerdigstillelse;
     }
 
     public LocalDate getAktivDato() {
@@ -83,12 +83,12 @@ public class Oppgave {
         return Objects.equals(aktorId, oppgave.aktorId) &&
                 Objects.equals(enhetsnr, oppgave.enhetsnr) &&
                 oppgaveType == oppgave.oppgaveType &&
-                Objects.equals(fristFerdigstilleles, oppgave.fristFerdigstilleles) &&
+                Objects.equals(fristFerdigstillelse, oppgave.fristFerdigstillelse) &&
                 Objects.equals(aktivDato, oppgave.aktivDato);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktorId, enhetsnr, oppgaveType, fristFerdigstilleles, aktivDato);
+        return Objects.hash(aktorId, enhetsnr, oppgaveType, fristFerdigstillelse, aktivDato);
     }
 }
