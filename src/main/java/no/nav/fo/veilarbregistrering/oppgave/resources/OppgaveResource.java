@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRouter;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
@@ -50,9 +50,9 @@ public class OppgaveResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        Oppgave oppgave = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
+        OppgaveResponse oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 
-        return map(oppgave, oppgaveDto.getOppgaveType());
+        return map(oppgaveResponse, oppgaveDto.getOppgaveType());
     }
 
     @GET

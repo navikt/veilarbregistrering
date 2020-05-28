@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class OppgaveIntegrationTest {
+public class OppgaveResponseIntegrationTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
@@ -103,14 +103,14 @@ public class OppgaveIntegrationTest {
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        Oppgave oppgave = SubjectHandler.withSubject(
+        OppgaveResponse oppgaveResponse = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
                 () -> oppgaveService.opprettOppgave(
                         BRUKER,
                         OppgaveType.UTVANDRET));
 
-        assertThat(oppgave.getId()).isEqualTo(5436732);
-        assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
+        assertThat(oppgaveResponse.getId()).isEqualTo(5436732);
+        assertThat(oppgaveResponse.getTildeltEnhetsnr()).isEqualTo("3012");
     }
 
     private String okRegistreringBody() {

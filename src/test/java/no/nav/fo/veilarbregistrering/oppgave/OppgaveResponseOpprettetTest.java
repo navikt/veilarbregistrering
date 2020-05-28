@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OppgaveOpprettetTest {
+public class OppgaveResponseOpprettetTest {
 
     private static final LocalDate MANDAG_1 = LocalDate.of(2020, 3, 30);
     private static final LocalDate TIRSDAG_1 = LocalDate.of(2020, 3, 31);

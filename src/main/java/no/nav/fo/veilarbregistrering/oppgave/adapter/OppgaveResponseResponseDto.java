@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-class OppgaveResponseDto implements Oppgave {
+class OppgaveResponseResponseDto implements OppgaveResponse {
 
     long id;
     String tildeltEnhetsnr;

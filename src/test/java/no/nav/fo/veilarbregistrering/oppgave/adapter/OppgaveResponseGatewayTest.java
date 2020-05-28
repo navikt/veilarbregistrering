@@ -8,6 +8,7 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.HashMap;
 
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-class OppgaveGatewayTest {
+class OppgaveResponseGatewayTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
@@ -60,8 +62,8 @@ class OppgaveGatewayTest {
 
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
 
-        LocalDate dagensdato = LocalDate.now();
-        LocalDate toDagerSenere = LocalDate.now().plusDays(2);
+        LocalDate dagensdato = LocalDate.of(2020, 5, 26);
+        LocalDate toDagerSenere = LocalDate.of(2020, 5, 28);
 
         mockServer.when(
                 request()
@@ -88,20 +90,18 @@ class OppgaveGatewayTest {
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
-        Oppgave oppgave = SubjectHandler.withSubject(
-                new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
-                () -> oppgaveGateway.opprettOppgave(
-                        AktorId.valueOf("12e1e3"),
-                        null,
-                        "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                                "og har selv opprettet denne oppgaven. " +
-                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
-                        LocalDate.now().plusDays(2),
-                        dagensdato
-                        ));
+        Oppgave oppgave = Oppgave.opprettOppgave(
+                AktorId.valueOf("12e1e3"),
+                null,
+                OPPHOLDSTILLATELSE,
+                dagensdato);
 
-        assertThat(oppgave.getId()).isEqualTo(5436732);
-        assertThat(oppgave.getTildeltEnhetsnr()).isEqualTo("3012");
+        OppgaveResponse oppgaveResponse = SubjectHandler.withSubject(
+                new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
+                () -> oppgaveGateway.opprett(oppgave));
+
+        assertThat(oppgaveResponse.getId()).isEqualTo(5436732);
+        assertThat(oppgaveResponse.getTildeltEnhetsnr()).isEqualTo("3012");
     }
 
     private String okRegistreringBody() {
