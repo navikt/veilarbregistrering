@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-class OppgaveResponseResponseDto implements OppgaveResponse {
+class OppgaveResponseDto implements OppgaveResponse {
 
     long id;
     String tildeltEnhetsnr;

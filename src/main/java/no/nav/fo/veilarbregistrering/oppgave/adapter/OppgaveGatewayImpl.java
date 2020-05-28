@@ -27,7 +27,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
         oppgaveDto.setBeskrivelse(oppgave.getBeskrivelse());
         oppgaveDto.setTema(OPPFOLGING);
         oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
-        oppgaveDto.setFristFerdigstillelse(oppgave.getFristFerdigstilleles().toString());
+        oppgaveDto.setFristFerdigstillelse(oppgave.getFristFerdigstillelse().toString());
         oppgaveDto.setAktivDato(oppgave.getAktivDato().toString());
         oppgaveDto.setPrioritet(NORM);
 

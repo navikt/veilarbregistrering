@@ -22,14 +22,14 @@ public class OppgaveRestClient {
         this.systemUserTokenProvider = systemUserTokenProvider;
     }
 
-    protected OppgaveResponseResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
+    protected OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
         return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postOppgave(oppgaveDto, c)
         );
     }
 
-    private OppgaveResponseResponseDto postOppgave(OppgaveDto oppgaveDto, Client client) {
+    private OppgaveResponseDto postOppgave(OppgaveDto oppgaveDto, Client client) {
         String url = baseUrl + "/oppgaver";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url)
                 .post(json(oppgaveDto));
@@ -37,7 +37,7 @@ public class OppgaveRestClient {
         Response.Status status = Response.Status.fromStatusCode(response.getStatus());
 
         if (status.equals(Response.Status.CREATED)) {
-            return response.readEntity(OppgaveResponseResponseDto.class);
+            return response.readEntity(OppgaveResponseDto.class);
         }
 
         throw new RuntimeException("Opprett oppgave feilet med statuskode: " + status + " - " + response);
