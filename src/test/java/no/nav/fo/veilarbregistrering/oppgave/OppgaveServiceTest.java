@@ -19,7 +19,7 @@ import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class OppgaveResponseServiceTest {
+public class OppgaveServiceTest {
 
     private static final Bruker BRUKER = Bruker.of(
             Foedselsnummer.of("12345678911"),
@@ -46,7 +46,7 @@ public class OppgaveResponseServiceTest {
     @Test
     public void opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
@@ -62,7 +62,7 @@ public class OppgaveResponseServiceTest {
     @Test
     public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
 
@@ -78,7 +78,7 @@ public class OppgaveResponseServiceTest {
     @Test
     public void skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
         verify(oppgaveRepository, times(1))
@@ -104,7 +104,7 @@ public class OppgaveResponseServiceTest {
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetTreDagerFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
-        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
@@ -121,7 +121,7 @@ public class OppgaveResponseServiceTest {
     public void ingen_tidligere_oppgaver() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList());
-        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
@@ -134,7 +134,7 @@ public class OppgaveResponseServiceTest {
         verify(oppgaveGateway, times(1)).opprett(oppgave);
     }
 
-    private static class DummyOppgaveResponseResponse implements OppgaveResponse {
+    private static class DummyOppgaveResponse implements OppgaveResponse {
 
         @Override
         public long getId() {

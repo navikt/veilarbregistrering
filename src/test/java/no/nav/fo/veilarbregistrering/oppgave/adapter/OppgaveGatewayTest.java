@@ -7,10 +7,9 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppgave.*;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,8 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -29,16 +28,12 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class OppgaveResponseIntegrationTest {
+class OppgaveGatewayTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
-    public static final Bruker BRUKER = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3"));
 
     private ClientAndServer mockServer;
-
-    private OppgaveService oppgaveService;
-    private OppgaveRouter oppgaveRouter;
 
     @AfterEach
     public void tearDown() {
@@ -47,16 +42,7 @@ public class OppgaveResponseIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        OppgaveRepository oppgaveRepository = mock(OppgaveRepository.class);
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
-        oppgaveRouter = mock(OppgaveRouter.class);
-
-        oppgaveService = new CustomOppgaveService(
-                oppgaveGateway,
-                oppgaveRepository,
-                oppgaveRouter,
-                (aktorId, oppgaveType) -> { });
     }
 
     private OppgaveRestClient buildClient() {
@@ -73,10 +59,11 @@ public class OppgaveResponseIntegrationTest {
 
     @Test
     public void vellykket_opprettelse_av_oppgave_skal_gi_201() {
-        String dagensdato = LocalDate.of(2020, 5, 27).toString();
-        String toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString();
 
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetsnr.of("0301")));
+        OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
+
+        LocalDate dagensdato = LocalDate.of(2020, 5, 26);
+        LocalDate toDagerSenere = LocalDate.of(2020, 5, 28);
 
         mockServer.when(
                 request()
@@ -85,29 +72,33 @@ public class OppgaveResponseIntegrationTest {
                         .withBody("{" +
                                 "\"aktoerId\":\"12e1e3\"," +
                                 "\"beskrivelse\":\"" +
-                                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i " +
-                                "Arena, og har selv opprettet denne oppgaven. Ring bruker og følg vanlig rutine for " +
-                                "slike tilfeller.\"," +
+                                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
+                                "og har selv opprettet denne oppgaven. " +
+                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.\"," +
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
-                                toArbeidsdagerSenere +
+                                toDagerSenere.toString() +
                                 "\"," +
                                 "\"aktivDato\":\"" +
-                                dagensdato +
+                                dagensdato.toString() +
                                 "\"," +
                                 "\"prioritet\":\"NORM\"," +
-                                "\"tildeltEnhetsnr\":\"0301\"" +
+                                "\"tildeltEnhetsnr\":null" +
                                 "}"))
                 .respond(response()
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
+        Oppgave oppgave = Oppgave.opprettOppgave(
+                AktorId.valueOf("12e1e3"),
+                null,
+                OPPHOLDSTILLATELSE,
+                dagensdato);
+
         OppgaveResponse oppgaveResponse = SubjectHandler.withSubject(
                 new Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", new HashMap<>())),
-                () -> oppgaveService.opprettOppgave(
-                        BRUKER,
-                        OppgaveType.UTVANDRET));
+                () -> oppgaveGateway.opprett(oppgave));
 
         assertThat(oppgaveResponse.getId()).isEqualTo(5436732);
         assertThat(oppgaveResponse.getTildeltEnhetsnr()).isEqualTo("3012");
@@ -121,19 +112,4 @@ public class OppgaveResponseIntegrationTest {
                 "}";
     }
 
-    private static class CustomOppgaveService extends OppgaveService {
-
-        public CustomOppgaveService(
-                OppgaveGateway oppgaveGateway,
-                OppgaveRepository oppgaveRepository,
-                OppgaveRouter oppgaveRouter,
-                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
-        }
-
-        @Override
-        protected LocalDate idag() {
-            return LocalDate.of(2020, 5, 27);
-        }
-    }
 }
