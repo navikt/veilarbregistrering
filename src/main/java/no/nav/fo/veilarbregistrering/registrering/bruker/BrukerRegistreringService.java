@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
@@ -48,7 +48,7 @@ public class BrukerRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final ManuellRegistreringService manuellRegistreringService;
-    private final StartRegistreringUtils startRegistreringUtils;
+    private final ProfileringService profileringService;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
@@ -58,7 +58,7 @@ public class BrukerRegistreringService {
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
-                                     StartRegistreringUtils startRegistreringUtils,
+                                     ProfileringService profileringService,
                                      UnleashService unleashService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
 
@@ -71,7 +71,7 @@ public class BrukerRegistreringService {
         this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.manuellRegistreringService = manuellRegistreringService;
-        this.startRegistreringUtils = startRegistreringUtils;
+        this.profileringService = profileringService;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
     }
@@ -229,9 +229,9 @@ public class BrukerRegistreringService {
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
-        return startRegistreringUtils.profilerBruker(
+        return profileringService.profilerBruker(
                 fnr.alder(now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                fnr,
                 now(), besvarelse);
     }
 
