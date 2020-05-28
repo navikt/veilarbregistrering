@@ -7,6 +7,11 @@ import java.time.LocalDate;
 
 public interface OppgaveGateway {
 
-    Oppgave opprettOppgave(AktorId aktoerId, Enhetsnr enhetsnr, String beskrivelse, LocalDate fristFerdigstillelse);
+    Oppgave opprettOppgave(
+            AktorId aktoerId,
+            Enhetsnr enhetsnr,
+            String beskrivelse,
+            LocalDate fristFerdigstillelse,
+            LocalDate aktivDato);
 
 }

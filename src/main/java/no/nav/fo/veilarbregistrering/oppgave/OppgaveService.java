@@ -68,7 +68,8 @@ public class OppgaveService {
                 bruker.getAktorId(),
                 enhetsnr.orElse(null),
                 beskrivelser.get(oppgaveType),
-                fristFerdigstillelse
+                fristFerdigstillelse,
+                idag()
         );
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}",

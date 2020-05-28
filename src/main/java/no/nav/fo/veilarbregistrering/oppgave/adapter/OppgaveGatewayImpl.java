@@ -20,7 +20,12 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgave(AktorId aktoerId, Enhetsnr enhetsnr, String beskrivelse, LocalDate fristFerdigstillelse) {
+    public Oppgave opprettOppgave(
+            AktorId aktoerId,
+            Enhetsnr enhetsnr,
+            String beskrivelse,
+            LocalDate fristFerdigstillelse,
+            LocalDate aktivDato) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(aktoerId.asString());
         oppgaveDto.setTildeltEnhetsnr(enhetsnr != null ? enhetsnr.asString() : null);
@@ -28,7 +33,7 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
         oppgaveDto.setTema(OPPFOLGING);
         oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
         oppgaveDto.setFristFerdigstillelse(fristFerdigstillelse.toString());
-        oppgaveDto.setAktivDato(LocalDate.now().toString());
+        oppgaveDto.setAktivDato(aktivDato.toString());
         oppgaveDto.setPrioritet(NORM);
 
         return restClient.opprettOppgave(oppgaveDto);

@@ -52,7 +52,7 @@ public class OppgaveIntegrationTest {
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
         oppgaveRouter = mock(OppgaveRouter.class);
 
-        oppgaveService = new OppgaveService(
+        oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
@@ -73,8 +73,8 @@ public class OppgaveIntegrationTest {
 
     @Test
     public void vellykket_opprettelse_av_oppgave_skal_gi_201() {
-        String dagensdato = LocalDate.now().toString();
-        String to_dager_senere = LocalDate.now().plusDays(2).toString();
+        String dagensdato = LocalDate.of(2020, 5, 27).toString();
+        String toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString();
 
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetsnr.of("0301")));
 
@@ -91,7 +91,7 @@ public class OppgaveIntegrationTest {
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
-                                to_dager_senere +
+                                toArbeidsdagerSenere +
                                 "\"," +
                                 "\"aktivDato\":\"" +
                                 dagensdato +
@@ -119,5 +119,21 @@ public class OppgaveIntegrationTest {
                 "\"aktoerId\": \"12e1e3\",\n" +
                 "\"tildeltEnhetsnr\": \"3012\"\n" +
                 "}";
+    }
+
+    private static class CustomOppgaveService extends OppgaveService {
+
+        public CustomOppgaveService(
+                OppgaveGateway oppgaveGateway,
+                OppgaveRepository oppgaveRepository,
+                OppgaveRouter oppgaveRouter,
+                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
+        }
+
+        @Override
+        protected LocalDate idag() {
+            return LocalDate.of(2020, 5, 27);
+        }
     }
 }
