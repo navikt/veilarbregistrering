@@ -19,7 +19,7 @@ import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTe
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OppgaveRouterTest {
+public class OppgaveResponseRouterTest {
 
     private static final Bruker BRUKER = Bruker.of(
             Foedselsnummer.of("12345678911"), AktorId.valueOf("32235352"));

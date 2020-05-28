@@ -2,10 +2,8 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
-
-import java.time.LocalDate;
 
 public class OppgaveGatewayImpl implements OppgaveGateway {
 
@@ -20,20 +18,17 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     }
 
     @Override
-    public Oppgave opprettOppgave(
-            AktorId aktoerId,
-            Enhetsnr enhetsnr,
-            String beskrivelse,
-            LocalDate fristFerdigstillelse,
-            LocalDate aktivDato) {
+    public OppgaveResponse opprett(Oppgave oppgave) {
         OppgaveDto oppgaveDto = new OppgaveDto();
-        oppgaveDto.setAktoerId(aktoerId.asString());
-        oppgaveDto.setTildeltEnhetsnr(enhetsnr != null ? enhetsnr.asString() : null);
-        oppgaveDto.setBeskrivelse(beskrivelse);
+        oppgaveDto.setAktoerId(oppgave.getAktorId().asString());
+        oppgaveDto.setTildeltEnhetsnr(oppgave.getEnhetsnr()
+                .map(Enhetsnr::asString)
+                .orElse(null));
+        oppgaveDto.setBeskrivelse(oppgave.getBeskrivelse());
         oppgaveDto.setTema(OPPFOLGING);
         oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
-        oppgaveDto.setFristFerdigstillelse(fristFerdigstillelse.toString());
-        oppgaveDto.setAktivDato(aktivDato.toString());
+        oppgaveDto.setFristFerdigstillelse(oppgave.getFristFerdigstilleles().toString());
+        oppgaveDto.setAktivDato(oppgave.getAktivDato().toString());
         oppgaveDto.setPrioritet(NORM);
 
         return restClient.opprettOppgave(oppgaveDto);

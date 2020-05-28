@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
@@ -28,7 +26,6 @@ public class OppgaveService {
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
-    private final Map<OppgaveType, String> beskrivelser;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
@@ -40,46 +37,30 @@ public class OppgaveService {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
-        beskrivelser = new HashMap<>(2);
-        beskrivelser.put(
-                OppgaveType.OPPHOLDSTILLATELSE,
-                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                        "og har selv opprettet denne oppgaven. " +
-                        "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
-        );
-        beskrivelser.put(
-                OppgaveType.UTVANDRET,
-                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
-                        "og har selv opprettet denne oppgaven. " +
-                        "Ring bruker og følg vanlig rutine for slike tilfeller."
-
-        );
     }
 
-    public Oppgave opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
+    public OppgaveResponse opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
         validerNyOppgaveMotAktive(bruker, oppgaveType);
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId(), oppgaveType);
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
-        LocalDate fristFerdigstillelse = Virkedager.plussAntallArbeidsdager(idag(), 2);
 
-        Oppgave oppgave = oppgaveGateway.opprettOppgave(
-                bruker.getAktorId(),
+        Oppgave oppgave = Oppgave.opprettOppgave(bruker.getAktorId(),
                 enhetsnr.orElse(null),
-                beskrivelser.get(oppgaveType),
-                fristFerdigstillelse,
-                idag()
-        );
+                oppgaveType,
+                idag());
+
+        OppgaveResponse oppgaveResponse = oppgaveGateway.opprett(oppgave);
 
         LOG.info("Oppgave (type:{}) ble opprettet med id: {} og ble tildelt enhet: {}",
-                oppgaveType, oppgave.getId(), oppgave.getTildeltEnhetsnr());
+                oppgaveType, oppgaveResponse.getId(), oppgaveResponse.getTildeltEnhetsnr());
 
-        oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgave.getId());
+        oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgaveResponse.getId());
 
-        reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgave.getTildeltEnhetsnr()), oppgaveType);
+        reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
 
-        return oppgave;
+        return oppgaveResponse;
     }
 
     private void validerNyOppgaveMotAktive(Bruker bruker, OppgaveType oppgaveType) {

@@ -19,7 +19,7 @@ import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class OppgaveServiceTest {
+public class OppgaveResponseServiceTest {
 
     private static final Bruker BRUKER = Bruker.of(
             Foedselsnummer.of("12345678911"),
@@ -46,41 +46,39 @@ public class OppgaveServiceTest {
     @Test
     public void opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprettOppgave(any(), any(), any(), any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(
+        Oppgave oppgave = Oppgave.opprettOppgave(
                 BRUKER.getAktorId(),
                 null,
-                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                "og har selv opprettet denne oppgaven. " +
-                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
-                LocalDate.of(2020, 4, 15),
+                OPPHOLDSTILLATELSE,
                 LocalDate.of(2020, 4, 10));
+
+        verify(oppgaveGateway, times(1)).opprett(oppgave);
     }
 
     @Test
     public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprettOppgave(any(), any(), any(), any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
 
         oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(
+        Oppgave oppgave = Oppgave.opprettOppgave(
                 BRUKER.getAktorId(),
                 null,
-                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
-                "og har selv opprettet denne oppgaven. " +
-                "Ring bruker og følg vanlig rutine for slike tilfeller.",
-                LocalDate.of(2020, 4, 15),
+                UTVANDRET,
                 LocalDate.of(2020, 4, 10));
+
+        verify(oppgaveGateway, times(1)).opprett(oppgave);
     }
 
     @Test
     public void skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
-        when(oppgaveGateway.opprettOppgave(any(), any(), any(), any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
         verify(oppgaveRepository, times(1))
@@ -106,39 +104,37 @@ public class OppgaveServiceTest {
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetTreDagerFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
-        when(oppgaveGateway.opprettOppgave(any(), any(), any(), any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(
+        Oppgave oppgave = Oppgave.opprettOppgave(
                 BRUKER.getAktorId(),
                 null,
-                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                "og har selv opprettet denne oppgaven. " +
-                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
-                LocalDate.of(2020, 4, 15),
+                OPPHOLDSTILLATELSE,
                 LocalDate.of(2020, 4, 10));
+
+        verify(oppgaveGateway, times(1)).opprett(oppgave);
     }
 
     @Test
     public void ingen_tidligere_oppgaver() {
         when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList());
-        when(oppgaveGateway.opprettOppgave(any(), any(), any(), any(), any())).thenReturn(new DummyOppgaveResponse());
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponseResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
-        verify(oppgaveGateway, times(1)).opprettOppgave(
+        Oppgave oppgave = Oppgave.opprettOppgave(
                 BRUKER.getAktorId(),
                 null,
-                "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                "og har selv opprettet denne oppgaven. " +
-                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.",
-                LocalDate.of(2020, 4, 15),
+                OPPHOLDSTILLATELSE,
                 LocalDate.of(2020, 4, 10));
+
+        verify(oppgaveGateway, times(1)).opprett(oppgave);
     }
 
-    private static class DummyOppgaveResponse implements Oppgave {
+    private static class DummyOppgaveResponseResponse implements OppgaveResponse {
 
         @Override
         public long getId() {
