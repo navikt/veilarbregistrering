@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.db.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveImpl;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
@@ -16,7 +15,7 @@ import java.util.List;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OppgaveResponseRepositoryTest extends DbIntegrasjonsTest {
+public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
 
     @Inject
     private JdbcTemplate jdbcTemplate;

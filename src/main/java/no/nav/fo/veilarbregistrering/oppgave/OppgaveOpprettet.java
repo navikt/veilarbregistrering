@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import static no.nav.fo.veilarbregistrering.oppgave.Virkedager.plussAntallArbeidsdager;
