@@ -42,7 +42,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 class OppfolgingClientTest {
     private static final String MOCKSERVER_URL = "localhost";
-    private static final int MOCKSERVER_PORT = 1080;
+    private static final int MOCKSERVER_PORT = 1084;
 
     private static final Foedselsnummer IDENT = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
     private static final Bruker BRUKER = Bruker.of(IDENT, AktorId.valueOf("AKTØRID"));

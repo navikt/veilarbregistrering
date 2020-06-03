@@ -24,7 +24,7 @@ import static org.mockserver.model.HttpResponse.response;
 public class PersonGatewayTest {
 
     private static final String MOCKSERVER_URL = "localhost";
-    private static final int MOCKSERVER_PORT = 1080;
+    private static final int MOCKSERVER_PORT = 1085;
 
     private ClientAndServer mockServer;
     private VeilArbPersonClient veilArbPersonClient;

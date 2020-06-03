@@ -72,7 +72,7 @@ public class OppgaveService {
 
         muligOppgave.ifPresent(oppgave -> {
             LOG.info("Fant en oppgave av samme type {} som ble opprettet {} - {} timer siden.",
-                    oppgave.getOpprettet(),
+                    oppgave.getOppgavetype(),
                     oppgave.getOpprettet().tidspunkt(),
                     oppgave.getOpprettet().antallTimerSiden());
 

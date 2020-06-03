@@ -31,7 +31,7 @@ import static org.mockserver.model.HttpResponse.response;
 class OppgaveGatewayTest {
 
     private static final String MOCKSERVER_URL = "localhost";
-    private static final int MOCKSERVER_PORT = 1081;
+    private static final int MOCKSERVER_PORT = 1083;
 
     private ClientAndServer mockServer;
 
