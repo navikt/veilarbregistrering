@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.metrics.Metric;
 public enum  RoutingStep implements Metric {
 
     GeografiskTilknytning_Feilet,
-    GeografiskTilknytning_IkkeFunnet,
+    GeografiskTilknytning_Funnet,
     Enhetsnummer_Feilet,
     SisteArbeidsforhold_IkkeFunnet,
     OrgNummer_ikkeFunnet,

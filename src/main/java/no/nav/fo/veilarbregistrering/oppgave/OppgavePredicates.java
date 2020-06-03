@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 
 public class OppgavePredicates {
 
-    public static Predicate<OppgaveImpl> oppgaveAvTypeOppholdstillatelse() {
-        return o -> o.getOppgavetype().equals(OppgaveType.OPPHOLDSTILLATELSE);
+    public static Predicate<OppgaveImpl> oppgaveAvType(OppgaveType oppgaveType) {
+        return o -> o.getOppgavetype().equals(oppgaveType);
     }
 
     public static Predicate<OppgaveImpl> oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {

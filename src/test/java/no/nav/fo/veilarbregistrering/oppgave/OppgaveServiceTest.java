@@ -86,13 +86,25 @@ public class OppgaveServiceTest {
     }
 
     @Test
-    public void skal_kaste_exception_dersom_det_finnes_nyere_oppgave_fra_for() {
+    public void skal_kaste_exception_dersom_det_finnes_nyere_oppholdsoppgave_fra_for() {
         OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetDagenFor);
 
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
 
         assertThrows(Feil.class, () -> oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE));
+
+        verifyZeroInteractions(oppgaveGateway);
+    }
+
+    @Test
+    public void skal_kaste_exception_dersom_det_finnes_nyere_utvandretoppgave_fra_for() {
+        OppgaveImpl oppgaveSomBleOpprettetDagenFor = new OppgaveImpl(23, BRUKER.getAktorId(), UTVANDRET, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
+        List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetDagenFor);
+
+        when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
+
+        assertThrows(Feil.class, () -> oppgaveService.opprettOppgave(BRUKER, UTVANDRET));
 
         verifyZeroInteractions(oppgaveGateway);
     }
@@ -129,6 +141,26 @@ public class OppgaveServiceTest {
                 BRUKER.getAktorId(),
                 null,
                 OPPHOLDSTILLATELSE,
+                LocalDate.of(2020, 4, 10));
+
+        verify(oppgaveGateway, times(1)).opprett(oppgave);
+    }
+
+    @Test
+    public void skal_ikke_kaste_exception_dersom_det_finnes_oppgave_av_annen_type() {
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        OppgaveImpl oppgaveSomBleOpprettetEnDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
+        List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetEnDagerFor);
+
+        when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver);
+        when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
+
+        oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
+
+        Oppgave oppgave = Oppgave.opprettOppgave(
+                BRUKER.getAktorId(),
+                null,
+                UTVANDRET,
                 LocalDate.of(2020, 4, 10));
 
         verify(oppgaveGateway, times(1)).opprett(oppgave);

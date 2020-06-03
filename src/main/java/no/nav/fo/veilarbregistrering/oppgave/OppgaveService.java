@@ -15,7 +15,7 @@ import java.util.Optional;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
-import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvTypeOppholdstillatelse;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvType;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
 
 public class OppgaveService {
@@ -66,12 +66,13 @@ public class OppgaveService {
     private void validerNyOppgaveMotAktive(Bruker bruker, OppgaveType oppgaveType) {
         List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(bruker.getAktorId());
         Optional<OppgaveImpl> muligOppgave = oppgaver.stream()
-                .filter(oppgaveAvTypeOppholdstillatelse())
+                .filter(oppgaveAvType(oppgaveType))
                 .filter(oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(idag()))
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            LOG.info("Fant en oppgave av samme type som ble opprettet {} - {} timer siden.",
+            LOG.info("Fant en oppgave av samme type {} som ble opprettet {} - {} timer siden.",
+                    oppgave.getOpprettet(),
                     oppgave.getOpprettet().tidspunkt(),
                     oppgave.getOpprettet().antallTimerSiden());
 

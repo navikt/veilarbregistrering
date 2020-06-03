@@ -62,8 +62,8 @@ public class OppgaveRouter {
         }
 
         if (geografiskTilknytning.isPresent()) {
-            LOG.info("Fant geografisk tilknytning -> overlater til oppgave-api til å route selv");
-            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_IkkeFunnet);
+            LOG.info("Fant geografisk tilknytning {} -> overlater til oppgave-api å route selv", geografiskTilknytning.get());
+            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
             return Optional.empty();
         }
 
