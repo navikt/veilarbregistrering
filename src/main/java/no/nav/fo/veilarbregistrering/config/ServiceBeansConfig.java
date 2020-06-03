@@ -21,8 +21,7 @@ import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResource;
-import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringServlet;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringTilstandServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -99,13 +98,6 @@ public class ServiceBeansConfig {
                 brukerRegistreringService,
                 unleashService
         );
-    }
-
-    @Bean
-    InternalRegistreringResource internalRegistreringResource(
-            BrukerRegistreringService brukerRegistreringService,
-            UnleashService unleashService) {
-        return new InternalRegistreringResource(brukerRegistreringService, unleashService);
     }
 
     @Bean
@@ -240,8 +232,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringServlet internalRegistreringServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringServlet(brukerRegistreringService, unleashService);
+    InternalRegistreringTilstandServlet internalRegistreringServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+        return new InternalRegistreringTilstandServlet(brukerRegistreringService);
     }
 
     @Bean

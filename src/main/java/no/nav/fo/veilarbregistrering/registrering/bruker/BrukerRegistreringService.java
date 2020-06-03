@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -300,5 +301,9 @@ public class BrukerRegistreringService {
 
     private boolean lagreUtenArenaOverforing() {
         return unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing");
+    }
+
+    public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
+        return brukerRegistreringRepository.finnRegistreringTilstandMed(status);
     }
 }

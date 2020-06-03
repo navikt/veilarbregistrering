@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +17,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandTestdataBuilder.registreringTilstand;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.ARENA_OK;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.MOTTATT;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -251,5 +252,29 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
 
         assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
+    }
+
+    @Test
+    public void finnRegistreringTilstandMed_skal_returnere_alle_tilstander_med_angitt_status() {
+        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+
+        RegistreringTilstand tilstand1 = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering1.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(MOTTATT)
+                .build();
+        brukerRegistreringRepository.lagre(tilstand1);
+
+        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+
+        RegistreringTilstand tilstand2 = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering2.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(ARENA_OK)
+                .build();
+        brukerRegistreringRepository.lagre(tilstand2);
+
+        List<RegistreringTilstand> mottatteRegistreringer = brukerRegistreringRepository.finnRegistreringTilstandMed(MOTTATT);
+        assertThat(mottatteRegistreringer).hasSize(1);
     }
 }

@@ -231,6 +231,12 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
+    public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE STATUS = ?";
+        return db.query(sql, new Object[]{status.name()}, new RegistreringTilstandMapper());
+    }
+
+    @Override
     public Optional<RegistreringTilstand> finnNesteRegistreringForOverforing() {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?" +
@@ -269,4 +275,5 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         return new PageImpl<>(dto, pageable, total);
     }
+
 }
