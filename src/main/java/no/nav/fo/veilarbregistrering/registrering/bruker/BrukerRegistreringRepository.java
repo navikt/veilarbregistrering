@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BrukerRegistreringRepository {
@@ -32,4 +33,6 @@ public interface BrukerRegistreringRepository {
     Bruker hentBrukerTilknyttet(long brukerRegistreringId);
 
     Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable);
+
+    List<RegistreringTilstand> finnRegistreringTilstandMed(Status status);
 }
