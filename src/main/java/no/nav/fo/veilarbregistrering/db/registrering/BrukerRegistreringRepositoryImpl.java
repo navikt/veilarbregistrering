@@ -208,7 +208,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         }
 
         SqlUtils.update(db, "REGISTRERING_TILSTAND")
-                .set("STATUS", registreringTilstand.getStatus())
+                .set("STATUS", registreringTilstand.getStatus().name())
                 .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
                 .whereEquals("ID", registreringTilstand.getId())
                 .execute();
