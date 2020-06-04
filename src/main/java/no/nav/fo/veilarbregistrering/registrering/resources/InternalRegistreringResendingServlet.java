@@ -20,7 +20,7 @@ public class InternalRegistreringResendingServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Status status = Status.parse(req.getParameter("id"));
+        Status status = Status.parse(req.getParameter("status"));
         String id = req.getParameter("id");
 
         brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(id, status));
