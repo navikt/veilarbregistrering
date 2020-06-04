@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResendingServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringTilstandServlet;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
@@ -118,6 +119,9 @@ public class ApplicationConfig implements ApiApplication {
 
         InternalRegistreringTilstandServlet internalRegistreringTilstandServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringTilstandServlet.class);
         ServletUtil.leggTilServlet(servletContext, internalRegistreringTilstandServlet, InternalRegistreringTilstandServlet.PATH);
+
+        InternalRegistreringResendingServlet internalRegistreringResendingServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringResendingServlet.class);
+        ServletUtil.leggTilServlet(servletContext, internalRegistreringResendingServlet, InternalRegistreringResendingServlet.PATH);
 
         InternalIdentServlet internalIdentServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalIdentServlet.class);
         ServletUtil.leggTilServlet(servletContext, internalIdentServlet, "/internal/bruker");
