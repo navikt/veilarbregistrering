@@ -17,6 +17,7 @@ import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
+import no.nav.fo.veilarbregistrering.profilering.PubliseringAvProfileringHistorikk;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
@@ -79,6 +80,22 @@ public class ServiceBeansConfig {
         return new PubliseringAvHistorikkTask(
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
+                unleashService
+        );
+    }
+
+
+    @Bean
+    PubliseringAvProfileringHistorikk publiseringAvProfileringHistorikk(
+            ProfileringRepository profileringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+            UnleashService unleashService
+    ) {
+        return new PubliseringAvProfileringHistorikk(
+                profileringRepository,
+                brukerRegistreringRepository,
+                arbeidssokerProfilertProducer,
                 unleashService
         );
     }
