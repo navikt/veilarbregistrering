@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,15 +29,22 @@ public class OppfolgingClient {
 
     private final String baseUrl;
     private final Provider<HttpServletRequest> httpServletRequestProvider;
+    private final UnleashService unleashService;
 
     private SystemUserTokenProvider systemUserTokenProvider;
     private GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
-    public OppfolgingClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider, SystemUserTokenProvider systemUserTokenProvider, GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
+    public OppfolgingClient(
+            String baseUrl,
+            Provider<HttpServletRequest> httpServletRequestProvider,
+            SystemUserTokenProvider systemUserTokenProvider,
+            GammelSystemUserTokenProvider gammelSystemUserTokenProvider,
+            UnleashService unleashService) {
         this.baseUrl = baseUrl;
         this.httpServletRequestProvider = httpServletRequestProvider;
         this.systemUserTokenProvider = systemUserTokenProvider;
         this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
+        this.unleashService = unleashService;
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
@@ -97,11 +105,22 @@ public class OppfolgingClient {
     }
 
     private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
+        if (asynkArenaOverforing()) {
+            LOG.info("Benytter SystemAuthorizationRequest uten cookie");
+            return client.target(url)
+                    .request()
+                    .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
+        }
+
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         return client.target(url)
                 .request()
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
+    }
+
+    private boolean asynkArenaOverforing() {
+        return unleashService.isEnabled("veilarbregistrering.asynkArenaOverforing");
     }
 
     private int behandleHttpResponse(Response response, String url) {

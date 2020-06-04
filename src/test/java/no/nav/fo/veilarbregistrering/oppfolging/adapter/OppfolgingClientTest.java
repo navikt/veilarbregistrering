@@ -111,7 +111,9 @@ class OppfolgingClientTest {
         when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
         when(gammelSystemUserTokenProvider.getToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider, gammelSystemUserTokenProvider);
+        UnleashService unleashService = mock(UnleashService.class);
+        when(unleashService.isEnabled(any())).thenReturn(false);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider, gammelSystemUserTokenProvider, unleashService);
         return oppfolgingClient;
     }
 
