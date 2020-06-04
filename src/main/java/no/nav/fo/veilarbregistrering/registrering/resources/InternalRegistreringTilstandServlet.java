@@ -28,15 +28,15 @@ public class InternalRegistreringTilstandServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Status status = Status.parse(req.getParameter("status"));
 
-        String registreringIderJson = of(brukerRegistreringService.finnRegistreringTilstandMed(status).stream()
-                .map(RegistreringTilstand::getBrukerRegistreringId).collect(toList()))
-                .map(registreringer -> new Gson().toJson(registreringer)).get();
+        String registreringTilstandIderJson = of(brukerRegistreringService.finnRegistreringTilstandMed(status).stream()
+                .map(RegistreringTilstand::getId).collect(toList()))
+                .map(registreringTilstander -> new Gson().toJson(registreringTilstander)).get();
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(200);
-        out.print(registreringIderJson);
+        out.print(registreringTilstandIderJson);
         out.flush();
         out.close();
     }
