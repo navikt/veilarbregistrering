@@ -1,12 +1,20 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 public class PostadresseDto {
 
-    private String kommunenummer;
-    private GyldighetsperiodeDto gyldighetsperiode;
+    private final String kommunenummer;
+    private final GyldighetsperiodeDto gyldighetsperiode;
+
+    public PostadresseDto(String kommunenummer, GyldighetsperiodeDto gyldighetsperiode) {
+        this.kommunenummer = kommunenummer;
+        this.gyldighetsperiode = gyldighetsperiode;
+    }
+
+    public String getKommunenummer() {
+        return kommunenummer;
+    }
+
+    public GyldighetsperiodeDto getGyldighetsperiode() {
+        return gyldighetsperiode;
+    }
 }

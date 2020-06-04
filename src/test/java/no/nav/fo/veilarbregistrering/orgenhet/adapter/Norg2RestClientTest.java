@@ -50,7 +50,7 @@ public class Norg2RestClientTest {
                         .withPath("/v1/arbeidsfordeling/enheter/bestmatch"))
                 .respond(response()
                         .withStatusCode(200)
-                        .withBody(toJson(OK_JSON, Norg2RestClient.class)));
+                        .withBody(toJson(OK_JSON)));
 
         List<RsNavKontorDto> rsNavKontorDtos = norg2RestClient.hentEnhetFor(Kommunenummer.of("0309"));
         assertThat(rsNavKontorDtos).isNotEmpty();

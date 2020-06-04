@@ -1,14 +1,22 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
 public class GyldighetsperiodeDto {
 
-    private LocalDate fom;
-    private LocalDate tom;
+    private final LocalDate fom;
+    private final LocalDate tom;
+
+    public GyldighetsperiodeDto(LocalDate fom, LocalDate tom) {
+        this.fom = fom;
+        this.tom = tom;
+    }
+
+    public LocalDate getFom() {
+        return fom;
+    }
+
+    public LocalDate getTom() {
+        return tom;
+    }
 }

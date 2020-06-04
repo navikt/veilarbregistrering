@@ -46,7 +46,7 @@ public class Norg2GatewayTest {
 
         @Override
         Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-            String json = FileToJson.toJson(OK_JSON, Norg2RestClient.class);
+            String json = FileToJson.toJson(OK_JSON);
             RsNavKontorDto[] rsNavKontorDto = gson.fromJson(json, RsNavKontorDto[].class);
 
             final Response response = Mockito.mock(Response.class);

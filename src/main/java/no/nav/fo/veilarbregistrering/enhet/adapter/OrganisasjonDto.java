@@ -1,12 +1,20 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 public class OrganisasjonDto {
 
-    private String organisasjonsnummer;
-    private OrganisasjonDetaljerDto organisasjonDetaljer;
+    private final String organisasjonsnummer;
+    private final OrganisasjonDetaljerDto organisasjonDetaljer;
+
+    public OrganisasjonDto(String organisasjonsnummer, OrganisasjonDetaljerDto organisasjonDetaljer) {
+        this.organisasjonsnummer = organisasjonsnummer;
+        this.organisasjonDetaljer = organisasjonDetaljer;
+    }
+
+    public String getOrganisasjonsnummer() {
+        return organisasjonsnummer;
+    }
+
+    public OrganisasjonDetaljerDto getOrganisasjonDetaljer() {
+        return organisasjonDetaljer;
+    }
 }

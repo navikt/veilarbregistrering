@@ -1,0 +1,74 @@
+{
+  "organisasjonsnummer": "995298775",
+  "type": "Virksomhet",
+  "navn": {
+    "redigertnavn": "ARBEIDS- OG VELFERDSDIREKTORATET",
+    "navnelinje1": "ARBEIDS- OG VELFERDSDIREKTORATET",
+    "navnelinje3": "AVD SANNERGATA",
+    "bruksperiode": {
+      "fom": "2015-02-23T08:04:53.2"
+    },
+    "gyldighetsperiode": {
+      "fom": "2010-03-16"
+    }
+  },
+  "organisasjonDetaljer": {
+    "registreringsdato": "2010-03-16T00:00:00",
+    "enhetstyper": [
+      {
+        "enhetstype": "BEDR",
+        "bruksperiode": {
+          "fom": "2014-05-21T15:56:09.371"
+        },
+        "gyldighetsperiode": {
+          "fom": "2010-03-16"
+        }
+      }
+    ],
+    "naeringer": [
+      {
+        "naeringskode": "84.120",
+        "hjelpeenhet": false,
+        "bruksperiode": {
+          "fom": "2014-05-22T01:25:33.267"
+        },
+        "gyldighetsperiode": {
+          "fom": "2014-03-18"
+        }
+      }
+    ],
+    "navn": [
+      {
+        "redigertnavn": "ARBEIDS- OG VELFERDSDIREKTORATET",
+        "navnelinje1": "ARBEIDS- OG VELFERDSDIREKTORATET",
+        "navnelinje3": "AVD SANNERGATA",
+        "bruksperiode": {
+          "fom": "2015-02-23T08:04:53.2"
+        },
+        "gyldighetsperiode": {
+          "fom": "2010-03-16"
+        }
+      }
+    ],
+    "postadresser": [
+      {
+        "type": "Postadresse",
+        "adresselinje1": "Postboks 5 St Olavs plass",
+        "postnummer": "0130",
+        "landkode": "NO",
+        "kommunenummer": "0301",
+        "bruksperiode": {
+          "fom": "2015-02-23T10:38:34.403"
+        },
+        "gyldighetsperiode": {
+          "fom": "2010-03-16"
+        }
+      }
+    ],
+    "sistEndret": "2014-03-18"
+  },
+  "virksomhetDetaljer": {
+    "enhetstype": "BEDR",
+    "oppstartsdato": "2010-04-01"
+  }
+}
