@@ -26,6 +26,9 @@ import static no.nav.fo.veilarbregistrering.oppgave.RoutingStep.*;
  * <p>Oppgave-tjenesten router i utgangspunktet oppgaver selv, men for utvandrede brukere som
  * ikke ligger inne med Norsk adresse og tilknytning til NAV-kontor må vi gå via tidligere
  * arbeidsgiver.</p>
+ *
+ * <p>Geografisk tilknytning kan gi verdier ift. landkode, fylke og bydel. Gitt landkode,
+ * forsøker vi å gå via tidligere arbeidsforhold</p>
  */
 public class OppgaveRouter {
 
@@ -62,9 +65,17 @@ public class OppgaveRouter {
         }
 
         if (geografiskTilknytning.isPresent()) {
-            LOG.info("Fant geografisk tilknytning {} -> overlater til oppgave-api å route selv", geografiskTilknytning.get());
-            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
-            return Optional.empty();
+
+            GeografiskTilknytning gk = geografiskTilknytning.get();
+
+            if (!gk.utland()) {
+                LOG.info("Fant {} -> overlater til oppgave-api å route selv", gk);
+                reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
+                return Optional.empty();
+            }
+
+            LOG.info("Fant {} -> forsøker å finne enhetsnr via arbeidsforhold", gk);
+            reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Utland);
         }
 
         try {

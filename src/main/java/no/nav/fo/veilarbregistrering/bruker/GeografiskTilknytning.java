@@ -74,7 +74,7 @@ public class GeografiskTilknytning implements Metric {
         return fieldName;
     }
 
-    private boolean utland() {
+    public boolean utland() {
         return geografisktilknytning.length() == 3 && geografisktilknytning.matches("^[a-åA-Å]*$");
     }
 

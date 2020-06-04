@@ -6,6 +6,7 @@ public enum  RoutingStep implements Metric {
 
     GeografiskTilknytning_Feilet,
     GeografiskTilknytning_Funnet,
+    GeografiskTilknytning_Utland,
     Enhetsnummer_Feilet,
     SisteArbeidsforhold_IkkeFunnet,
     OrgNummer_ikkeFunnet,
