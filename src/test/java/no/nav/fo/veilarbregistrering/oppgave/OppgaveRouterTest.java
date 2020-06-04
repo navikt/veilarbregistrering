@@ -95,7 +95,7 @@ public class OppgaveRouterTest {
     }
 
     @Test
-    public void geografisk_tilknytning_skal_gi_empty_enhetsnummer() {
+    public void geografisk_tilknytning_med_unntak_av_landkode_skal_gi_empty_enhetsnummer() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
@@ -106,5 +106,26 @@ public class OppgaveRouterTest {
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
+    }
+
+    @Test
+    public void geografisk_tilknytning_med_landkode_skal_bruke_arbeidsforhold_til_routing() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+
+        Forretningsadresse forretningsadresse = new Forretningsadresse(
+                Kommunenummer.of("1241"),
+                Periode.of(LocalDate.of(2020, 1, 1), null));
+
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
+                Arrays.asList(forretningsadresse), Collections.emptyList()));
+
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetsnr.of("232"));
+        PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+
+        assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
     }
 }
