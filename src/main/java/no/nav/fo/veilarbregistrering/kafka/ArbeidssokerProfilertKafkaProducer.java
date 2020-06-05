@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent;
 import no.nav.arbeid.soker.profilering.ProfilertTil;
+import no.nav.common.utils.IdUtils;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerProfilertProducer;
@@ -47,7 +48,7 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
         try {
             ArbeidssokerProfilertEvent arbeidssokerProfilertEvent = map(aktorId, innsatsgruppe, profilertDato);
             ProducerRecord<String, ArbeidssokerProfilertEvent> record = new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerProfilertEvent);
-            record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
+            record.headers().add(new RecordHeader(MDC_CALL_ID, getCorrelationIdAsBytes()));
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {
                     LOG.error(String.format("ArbeidssokerProfilertEvent publisert på topic, %s", topic), e);
@@ -92,5 +93,19 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
             default: throw new EnumConstantNotPresentException(Innsatsgruppe.class, innsatsgruppe.name());
         }
         return profilering;
+    }
+
+    private static byte[] getCorrelationIdAsBytes() {
+        String correlationId = MDC.get(MDC_CALL_ID);
+
+        if (correlationId == null) {
+            correlationId = MDC.get("jobId");
+        }
+
+        if (correlationId == null) {
+            correlationId = IdUtils.generateId();
+        }
+
+        return correlationId.getBytes(StandardCharsets.UTF_8);
     }
 }
