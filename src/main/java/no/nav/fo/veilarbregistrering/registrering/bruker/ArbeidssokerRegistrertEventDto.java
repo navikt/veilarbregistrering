@@ -6,41 +6,37 @@ import java.time.LocalDateTime;
 
 public class ArbeidssokerRegistrertEventDto {
     private final int rowNum;
-    private final long bruker_registrering_id;
-    private final AktorId aktor_id;
-    private final String begrunnelse_for_registrering;
-    private final LocalDateTime opprettet_dato;
+    private final long brukerRegistreringId;
+    private final AktorId aktorId;
+    private final String begrunnelseForRegistrering;
+    private final LocalDateTime opprettetDato;
 
     public ArbeidssokerRegistrertEventDto(
             int rowNum,
-            long bruker_registrering_id,
-            AktorId aktor_id,
-            String begrunnelse_for_registrering,
-            LocalDateTime opprettet_dato) {
+            long brukerRegistreringId,
+            AktorId aktorId,
+            String begrunnelseForRegistrering,
+            LocalDateTime opprettetDato) {
         this.rowNum = rowNum;
-        this.bruker_registrering_id = bruker_registrering_id;
-        this.aktor_id = aktor_id;
-        this.begrunnelse_for_registrering = begrunnelse_for_registrering;
-        this.opprettet_dato = opprettet_dato;
+        this.brukerRegistreringId = brukerRegistreringId;
+        this.aktorId = aktorId;
+        this.begrunnelseForRegistrering = begrunnelseForRegistrering;
+        this.opprettetDato = opprettetDato;
     }
 
-    public int getRowNum() {
-        return rowNum;
-    }
-
-    public Long getBruker_registrering_id() {
-        return bruker_registrering_id;
+    public Long getBrukerRegistreringId() {
+        return brukerRegistreringId;
     }
 
     public AktorId getAktorId() {
-        return aktor_id;
+        return aktorId;
     }
 
     public String getBegrunnelseForRegistrering() {
-        return begrunnelse_for_registrering;
+        return begrunnelseForRegistrering;
     }
 
     public LocalDateTime getOpprettetDato() {
-        return opprettet_dato;
+        return opprettetDato;
     }
 }
