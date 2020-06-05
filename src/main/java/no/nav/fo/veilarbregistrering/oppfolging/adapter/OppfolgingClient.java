@@ -17,6 +17,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.client.Entity.json;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
@@ -110,7 +111,7 @@ public class OppfolgingClient {
             return client.target(url)
                     .request()
                     .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
-                    .header("Authorization", this.gammelSystemUserTokenProvider.getToken());
+                    .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
         }
 
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
