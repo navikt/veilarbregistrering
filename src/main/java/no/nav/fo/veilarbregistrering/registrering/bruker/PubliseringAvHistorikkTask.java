@@ -12,11 +12,11 @@ import org.springframework.data.domain.Pageable;
 public class PubliseringAvHistorikkTask implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvHistorikkTask.class);
+    private static final int PAGESIZE = 100;
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final UnleashService unleashService;
-    private static final int PAGESIZE = 100;
 
     public PubliseringAvHistorikkTask(
             BrukerRegistreringRepository brukerRegistreringRepository,

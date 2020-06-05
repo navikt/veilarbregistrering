@@ -14,16 +14,15 @@ import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-
 public class PubliseringAvProfileringHistorikk implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvProfileringHistorikk.class);
+    private static final int PAGESIZE = 100;
 
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final UnleashService unleashService;
-    private static final int PAGESIZE = 100;
 
     public PubliseringAvProfileringHistorikk (
             ProfileringRepository profileringRepository,
@@ -42,8 +41,10 @@ public class PubliseringAvProfileringHistorikk implements Runnable {
 
     @Override
     public void run() {
+        LOG.info("Running");
 
         if(LeaderElection.isLeader()) {
+            LOG.info("I´am the leader");
 
             Pageable pageable = PageRequest.of(0, PAGESIZE).first();
             while (this.sjekkFeatureErPa()) {
