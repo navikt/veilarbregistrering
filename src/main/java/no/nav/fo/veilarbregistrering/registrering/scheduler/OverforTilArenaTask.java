@@ -21,7 +21,7 @@ public class OverforTilArenaTask {
         this.unleashService = unleashService;
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0/10 * * * * *")
     @SchedulerLock(name = "overforTilArena")
     public void sendRegistreringerTilArenaCronJob() {
         if (!asynkArenaOverforing()) {
