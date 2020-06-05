@@ -109,7 +109,8 @@ public class OppfolgingClient {
             LOG.info("Benytter SystemAuthorizationRequest uten cookie");
             return client.target(url)
                     .request()
-                    .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
+                    .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
+                    .header("Authorization", this.gammelSystemUserTokenProvider.getToken());
         }
 
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
