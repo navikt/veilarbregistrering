@@ -1,10 +1,14 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.apiapp.feil.FeilType;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.ws.rs.WebApplicationException;
 
 import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.STANDARD_INNSATS;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
@@ -52,6 +56,19 @@ public class ArenaOverforingServiceTest {
         Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, STANDARD_INNSATS);
 
         assertThat(status).isEqualTo(Status.TEKNISK_FEIL);
+    }
+
+    @Test
+    public void skal_mappe_feil_korrekt() {
+        /*when(profileringRepository.hentProfileringForId(BRUKER_REGISTRERING_ID)).thenReturn(lagProfilering());
+        doThrow(new WebApplicationException(AktiverBrukerFeil.ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES.name(), FeilType.INGEN_TILGANG.getStatus()))
+                .when(oppfolgingClient).aktiverBruker(FOEDSELSNUMMER, STANDARD_INNSATS);
+        /* doThrow(new Feil(FeilType.INGEN_TILGANG, AktiverBrukerFeil.ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES.name()))
+                .when(oppfolgingClient).aktiverBruker(FOEDSELSNUMMER, STANDARD_INNSATS);
+
+        Status status = arenaOverforingService.overfoerRegistreringTilArena(FOEDSELSNUMMER, STANDARD_INNSATS);
+
+        assertThat(status).isEqualTo(Status.BRUKER_KAN_IKKE_REAKTIVERES);*/
     }
     
 }
