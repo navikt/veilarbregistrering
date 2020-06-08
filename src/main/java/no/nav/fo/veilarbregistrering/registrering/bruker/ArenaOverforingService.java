@@ -81,6 +81,7 @@ public class ArenaOverforingService {
             Response response = e.getResponse();
             response.bufferEntity(); // Hvis vi bare skal lese èn gang, blir denne overflødig
             String json = response.readEntity(String.class);
+            LOG.info("Overføring Arena feilet\nEntity json: {}", json);
 
             AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
             LOG.warn("Aktivering av bruker i Arena feilet med arsak: {}", aktiverBrukerFeil.getType(), e);
