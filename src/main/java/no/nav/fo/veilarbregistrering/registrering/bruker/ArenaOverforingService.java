@@ -77,7 +77,7 @@ public class ArenaOverforingService {
             oppfolgingGateway.aktiverBruker(foedselsnummer, innsatsgruppe);
 
         } catch (WebApplicationException e) {
-            LOG.info("Overføring Arena feilet\nException: {}\nException-response: {}\nException-message: {}", e, e.getResponse(), e.getMessage());
+            LOG.info("Overføring Arena feilet\nException: {}\nException-response: {}\nException-message: {}\nResponse-entity: {}", e, e.getResponse(), e.getMessage(), e.getResponse().getEntity());
             Response response = e.getResponse();
             response.bufferEntity(); // Hvis vi bare skal lese èn gang, blir denne overflødig
             String json = response.readEntity(String.class);
