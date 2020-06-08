@@ -58,12 +58,22 @@ public class ArenaOverforingService {
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
         LOG.info("Overfører registrering med tilstand: {}", registreringTilstand);
-        Status status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+        Status status;
+        try {
+            status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+        } catch (RuntimeException e) {
+            LOG.error("Asynk overføring til Arena feilet av ukjent grunn", e);
+            status = Status.UKJENT_TEKNISK_FEIL;
+        }
 
         RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(status);
         LOG.info("Ny tilstand: {}", oppdatertRegistreringTilstand);
         brukerRegistreringRepository.oppdater(oppdatertRegistreringTilstand);
 
+        if (!Status.ARENA_OK.equals(status)) {
+            LOG.info("Avbryter og publiserer ingen Kafka-event pga. manglende OK fra Arena");
+            return;
+        }
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
@@ -98,7 +108,7 @@ public class ArenaOverforingService {
     private static Status map(AktiverBrukerFeil aktiverBrukerFeil) {
         Status status;
         switch (aktiverBrukerFeil.getType()) {
-            case BRUKER_ER_UKJENT : {
+            case BRUKER_ER_UKJENT: {
                 status = Status.BRUKER_ER_UKJENT;
                 break;
             }
