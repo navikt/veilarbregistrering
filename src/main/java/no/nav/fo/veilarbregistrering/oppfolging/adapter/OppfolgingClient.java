@@ -3,9 +3,11 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.log.MDCConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -111,7 +113,8 @@ public class OppfolgingClient {
             return client.target(url)
                     .request()
                     .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
-                    .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
+                    .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken())
+                    .header("Nav-Call-Id", MDC.get(MDCConstants.MDC_CALL_ID));
         }
 
         String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
