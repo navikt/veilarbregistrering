@@ -1,10 +1,9 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.apiapp.feil.Feil;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
 import no.nav.json.JsonUtils;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
@@ -136,10 +135,7 @@ public class OppfolgingClient {
         } else if (status == 403) {
             if (asynkArenaOverforing()) {
                 LOG.info("Asynk overføring feilet - forsøker å parse entity");
-                String json = response.readEntity(String.class);
-                LOG.info("Json: {}", json);
-                AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
-                LOG.info("AktiverBrukerFeil: {}", aktiverBrukerFeil);
+                parseResponse(response.readEntity(String.class));
             }
 
             LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
@@ -147,5 +143,12 @@ public class OppfolgingClient {
         } else {
             throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
         }
+    }
+
+    static AktiverBrukerFeilDto parseResponse(String json) {
+        LOG.info("Json: {}", json);
+        AktiverBrukerFeilDto aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
+        LOG.info("AktiverBrukerFeil: {}", aktiverBrukerFeil);
+        return aktiverBrukerFeil;
     }
 }

@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -93,7 +93,7 @@ public class ArenaOverforingService {
             String json = response.readEntity(String.class);
             LOG.info("Overføring Arena feilet\nEntity json: {}", json);
 
-            AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
+            AktiverBrukerFeilDto aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
             LOG.warn("Aktivering av bruker i Arena feilet med arsak: {}", aktiverBrukerFeil.getType(), e);
             return map(aktiverBrukerFeil);
 
@@ -105,7 +105,7 @@ public class ArenaOverforingService {
         return Status.ARENA_OK;
     }
 
-    private static Status map(AktiverBrukerFeil aktiverBrukerFeil) {
+    private static Status map(AktiverBrukerFeilDto aktiverBrukerFeil) {
         Status status;
         switch (aktiverBrukerFeil.getType()) {
             case BRUKER_ER_UKJENT: {

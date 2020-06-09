@@ -4,11 +4,10 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
-
-public class AktiverBrukerFeil {
+public class AktiverBrukerFeilDto {
     private String id;
     private ArenaFeilType type;
-    private String detaljer;
+    private DetaljerDto detaljer;
 
     public String getId() {
         return id;
@@ -18,7 +17,7 @@ public class AktiverBrukerFeil {
         return type;
     }
 
-    public Optional<String> getDetaljer() {
+    public Optional<DetaljerDto> getDetaljer() {
         return ofNullable(detaljer);
     }
 

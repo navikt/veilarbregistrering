@@ -1,14 +1,10 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.apiapp.feil.FeilType;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.ws.rs.WebApplicationException;
 
 import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.STANDARD_INNSATS;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
