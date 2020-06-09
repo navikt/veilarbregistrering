@@ -4,6 +4,8 @@ import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
+import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
+import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 import no.nav.json.JsonUtils;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
@@ -134,21 +136,44 @@ public class OppfolgingClient {
             return status;
         } else if (status == 403) {
             if (asynkArenaOverforing()) {
-                LOG.info("Asynk overføring feilet - forsøker å parse entity");
-                parseResponse(response.readEntity(String.class));
+                AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
+                throw new ArenaAktiveringException(map(aktiverBrukerFeilDto));
             }
 
-            LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
+            LOG.warn("Feil ved kall mot: {}, response : {}", url, response);
             throw new WebApplicationException(response);
         } else {
-            throw new RuntimeException("Uventet respons (" + status + ") ved kall mot mot " + url);
+            throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
         }
     }
 
     static AktiverBrukerFeilDto parseResponse(String json) {
-        LOG.info("Json: {}", json);
-        AktiverBrukerFeilDto aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
-        LOG.info("AktiverBrukerFeil: {}", aktiverBrukerFeil);
-        return aktiverBrukerFeil;
+        return JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
+    }
+
+    private static Status map(AktiverBrukerFeilDto aktiverBrukerFeil) {
+        Status status;
+        switch (aktiverBrukerFeil.getType()) {
+            case BRUKER_ER_UKJENT: {
+                status = Status.BRUKER_ER_UKJENT;
+                break;
+            }
+            case BRUKER_KAN_IKKE_REAKTIVERES: {
+                status = Status.BRUKER_KAN_IKKE_REAKTIVERES;
+                break;
+            }
+            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: {
+                status = Status.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
+                break;
+            }
+            case BRUKER_MANGLER_ARBEIDSTILLATELSE: {
+                status = Status.BRUKER_MANGLER_ARBEIDSTILLATELSE;
+                break;
+            }
+            default:
+                LOG.error("Ukjent returverdi fra veilarboppfolging/Arena: " + aktiverBrukerFeil.getType());
+                status = Status.TEKNISK_FEIL;
+        }
+        return status;
     }
 }

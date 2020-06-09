@@ -2,18 +2,15 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
+import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.util.Optional;
 
 public class ArenaOverforingService {
@@ -86,16 +83,9 @@ public class ArenaOverforingService {
         try {
             oppfolgingGateway.aktiverBruker(foedselsnummer, innsatsgruppe);
 
-        } catch (WebApplicationException e) {
-            LOG.info("Overføring Arena feilet\nException: {}\nException-response: {}\nException-message: {}\nResponse-entity: {}", e, e.getResponse(), e.getMessage(), e.getResponse().getEntity());
-            Response response = e.getResponse();
-            response.bufferEntity(); // Hvis vi bare skal lese èn gang, blir denne overflødig
-            String json = response.readEntity(String.class);
-            LOG.info("Overføring Arena feilet\nEntity json: {}", json);
-
-            AktiverBrukerFeilDto aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
-            LOG.warn("Aktivering av bruker i Arena feilet med arsak: {}", aktiverBrukerFeil.getType(), e);
-            return map(aktiverBrukerFeil);
+        } catch (ArenaAktiveringException e) {
+            LOG.error("Aktivering av bruker i Arena feilet", e);
+            return e.getStatus();
 
         } catch (RuntimeException e) {
             LOG.error("Aktivering av bruker i Arena feilet", e);
@@ -103,31 +93,5 @@ public class ArenaOverforingService {
         }
 
         return Status.ARENA_OK;
-    }
-
-    private static Status map(AktiverBrukerFeilDto aktiverBrukerFeil) {
-        Status status;
-        switch (aktiverBrukerFeil.getType()) {
-            case BRUKER_ER_UKJENT: {
-                status = Status.BRUKER_ER_UKJENT;
-                break;
-            }
-            case BRUKER_KAN_IKKE_REAKTIVERES: {
-                status = Status.BRUKER_KAN_IKKE_REAKTIVERES;
-                break;
-            }
-            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: {
-                status = Status.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
-                break;
-            }
-            case BRUKER_MANGLER_ARBEIDSTILLATELSE: {
-                status = Status.BRUKER_MANGLER_ARBEIDSTILLATELSE;
-                break;
-            }
-            default:
-                LOG.error("Ukjent returverdi fra veilarboppfolging/Arena: " + aktiverBrukerFeil.getType());
-                status = Status.TEKNISK_FEIL;
-        }
-        return status;
     }
 }
