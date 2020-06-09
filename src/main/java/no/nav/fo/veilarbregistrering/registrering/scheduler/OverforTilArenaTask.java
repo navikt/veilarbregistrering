@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.ArenaOverforingService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,8 @@ public class OverforTilArenaTask {
 
         LOG.info("Asynk overføring til Arena er togglet på");
         arenaOverforingService.utforOverforing();
+
+        MDC.clear();
     }
 
     private boolean asynkArenaOverforing() {
