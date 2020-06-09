@@ -5,22 +5,36 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 
 
-
 public class AktiverBrukerFeil {
     private String id;
     private ArenaFeilType type;
     private String detaljer;
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public ArenaFeilType getType() {return type;}
+    public ArenaFeilType getType() {
+        return type;
+    }
 
-    public Optional<String> getDetaljer() {return ofNullable(detaljer);}
+    public Optional<String> getDetaljer() {
+        return ofNullable(detaljer);
+    }
 
     public enum ArenaFeilType {
         BRUKER_ER_UKJENT,
         BRUKER_KAN_IKKE_REAKTIVERES,
         BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET,
         BRUKER_MANGLER_ARBEIDSTILLATELSE
+    }
+
+    @Override
+    public String toString() {
+        return "AktiverBrukerFeil{" +
+                "id='" + id + '\'' +
+                ", type=" + type +
+                ", detaljer='" + detaljer + '\'' +
+                '}';
     }
 }

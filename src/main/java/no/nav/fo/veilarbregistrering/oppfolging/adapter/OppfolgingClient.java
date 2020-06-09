@@ -1,8 +1,11 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
+import no.nav.apiapp.feil.Feil;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
+import no.nav.json.JsonUtils;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +134,14 @@ public class OppfolgingClient {
         if (status == 204) {
             return status;
         } else if (status == 403) {
+            if (asynkArenaOverforing()) {
+                LOG.info("Asynk overføring feilet - forsøker å parse entity");
+                String json = response.readEntity(String.class);
+                LOG.info("Json: {}", json);
+                AktiverBrukerFeil aktiverBrukerFeil = JsonUtils.fromJson(json, AktiverBrukerFeil.class);
+                LOG.info("AktiverBrukerFeil: {}", aktiverBrukerFeil);
+            }
+
             LOG.warn("Feil ved kall mot: {}, response : {}.}", url, response);
             throw new WebApplicationException(response);
         } else {
