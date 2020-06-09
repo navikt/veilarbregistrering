@@ -42,19 +42,19 @@ public class ArenaOverforingService {
      */
     @Transactional
     public void utforOverforing() {
-        Optional<RegistreringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteRegistreringForOverforing();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstnadForOverforing();
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring");
             return;
         }
 
-        RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
+        AktiveringTilstand aktiveringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
+        long brukerRegistreringId = aktiveringTilstand.getBrukerRegistreringId();
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
 
-        LOG.info("Overfører registrering med tilstand: {}", registreringTilstand);
+        LOG.info("Overfører registrering med tilstand: {}", aktiveringTilstand);
         Status status;
         try {
             status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
@@ -63,9 +63,9 @@ public class ArenaOverforingService {
             status = Status.UKJENT_TEKNISK_FEIL;
         }
 
-        RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(status);
-        LOG.info("Ny tilstand: {}", oppdatertRegistreringTilstand);
-        brukerRegistreringRepository.oppdater(oppdatertRegistreringTilstand);
+        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(status);
+        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
+        brukerRegistreringRepository.oppdater(oppdatertAktiveringTilstand);
 
         if (!Status.ARENA_OK.equals(status)) {
             LOG.info("Avbryter og publiserer ingen Kafka-event pga. manglende OK fra Arena");

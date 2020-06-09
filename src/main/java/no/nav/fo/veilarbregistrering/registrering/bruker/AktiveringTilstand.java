@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * RegistreringTilstand representerer tilstanden til en BrukerRegistrering.
+ * AktiveringTilstand representerer tilstanden til en BrukerRegistrering på vei mot Arena.
  * Status sier noe om hvor langt registreringen har kommet ift. overføring til Arena og evt. response derfra.
  */
-public class RegistreringTilstand {
+public class AktiveringTilstand {
 
     private long id;
     private UUID uuid;
@@ -16,19 +16,19 @@ public class RegistreringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
-    public static RegistreringTilstand ofArenaOk(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.ARENA_OK);
+    public static AktiveringTilstand ofArenaOk(long brukerRegistreringId) {
+        return new AktiveringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.ARENA_OK);
     }
 
-    public static RegistreringTilstand ofMottattRegistrering(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
+    public static AktiveringTilstand ofMottattRegistrering(long brukerRegistreringId) {
+        return new AktiveringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
     }
 
-    public static RegistreringTilstand of(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
-        return new RegistreringTilstand(id, uuid, brukerRegistreringId, opprettet, sistEndret, status);
+    public static AktiveringTilstand of(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+        return new AktiveringTilstand(id, uuid, brukerRegistreringId, opprettet, sistEndret, status);
     }
 
-    private RegistreringTilstand(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+    private AktiveringTilstand(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
         this.id = id;
         this.uuid = uuid;
         this.brukerRegistreringId = brukerRegistreringId;
@@ -61,14 +61,15 @@ public class RegistreringTilstand {
         return id;
     }
 
-    public RegistreringTilstand oppdaterStatus(Status status) {
-        return new RegistreringTilstand(this.id, this.uuid, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
+    public AktiveringTilstand oppdaterStatus(Status status) {
+        return new AktiveringTilstand(this.id, this.uuid, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
     }
 
     @Override
     public String toString() {
-        return "RegistreringTilstand{" +
+        return "AktiveringTilstand{" +
                 "uuid=" + uuid +
+                ", id=" + id +
                 ", brukerRegistreringId=" + brukerRegistreringId +
                 ", opprettet=" + opprettet +
                 ", sistEndret=" + sistEndret +

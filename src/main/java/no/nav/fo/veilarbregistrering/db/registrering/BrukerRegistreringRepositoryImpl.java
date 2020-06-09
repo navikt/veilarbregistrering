@@ -178,7 +178,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public long lagre(RegistreringTilstand registreringTilstand) {
+    public long lagre(AktiveringTilstand registreringTilstand) {
         long id = nesteFraSekvens(REGISTRERING_TILSTAND_SEQ);
         SqlUtils.insert(db, "REGISTRERING_TILSTAND")
                 .value("ID", id)
@@ -194,23 +194,23 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     /**
-     * Oppdaterer registreringTilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
-     * @param registreringTilstand
+     * Oppdaterer aktiveringTilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
+     * @param aktiveringTilstand
      * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
      */
     @Override
-    public void oppdater(RegistreringTilstand registreringTilstand) {
-        RegistreringTilstand original = hentRegistreringTilstand(registreringTilstand.getId());
+    public void oppdater(AktiveringTilstand aktiveringTilstand) {
+        AktiveringTilstand original = hentAktiveringTilstand(aktiveringTilstand.getId());
 
-        if (original.getSistEndret() != null && original.getSistEndret().isAfter(registreringTilstand.getSistEndret())) {
+        if (original.getSistEndret() != null && original.getSistEndret().isAfter(aktiveringTilstand.getSistEndret())) {
             throw new IllegalStateException("RegistreringTilstand hadde allerede blitt oppdatert " +
-                    original.getSistEndret().toString() + "Detaljer: " + registreringTilstand);
+                    original.getSistEndret().toString() + "Detaljer: " + aktiveringTilstand);
         }
 
         SqlUtils.update(db, "REGISTRERING_TILSTAND")
-                .set("STATUS", registreringTilstand.getStatus().name())
-                .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
-                .whereEquals("ID", registreringTilstand.getId())
+                .set("STATUS", aktiveringTilstand.getStatus().name())
+                .set("SIST_ENDRET", Timestamp.valueOf(aktiveringTilstand.getSistEndret()))
+                .whereEquals("ID", aktiveringTilstand.getId())
                 .execute();
     }
 
@@ -225,25 +225,25 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public RegistreringTilstand hentRegistreringTilstand(long id) {
+    public AktiveringTilstand hentAktiveringTilstand(long id) {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE ID = ?";
-        return db.queryForObject(sql, new Object[]{id}, new RegistreringTilstandMapper());
+        return db.queryForObject(sql, new Object[]{id}, new AktiveringTilstandMapper());
     }
 
     @Override
-    public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
+    public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE STATUS = ?";
-        return db.query(sql, new Object[]{status.name()}, new RegistreringTilstandMapper());
+        return db.query(sql, new Object[]{status.name()}, new AktiveringTilstandMapper());
     }
 
     @Override
-    public Optional<RegistreringTilstand> finnNesteRegistreringForOverforing() {
+    public Optional<AktiveringTilstand> finnNesteAktiveringTilstnadForOverforing() {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?" +
                 " ORDER BY OPPRETTET" +
                 " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        List<RegistreringTilstand> registreringTilstand = db.query(sql, new Object[]{"MOTTATT", 0, 1}, new RegistreringTilstandMapper());
+        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"MOTTATT", 0, 1}, new AktiveringTilstandMapper());
         return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 

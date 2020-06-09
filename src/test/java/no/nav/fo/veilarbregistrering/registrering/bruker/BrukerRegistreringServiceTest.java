@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -254,19 +253,19 @@ public class BrukerRegistreringServiceTest {
     @Test
     public void skal_oppdatere_registreringtilstand_med_status_og_sistendret() {
         LocalDateTime sistEndret = LocalDateTime.now();
-        RegistreringTilstand original = RegistreringTilstandTestdataBuilder
+        AktiveringTilstand original = RegistreringTilstandTestdataBuilder
                 .registreringTilstand()
                 .status(Status.ARENA_OK)
                 .opprettet(sistEndret.minusDays(1))
                 .sistEndret(sistEndret)
                 .build();
-        when(brukerRegistreringRepository.hentRegistreringTilstand(original.getId())).thenReturn(original);
+        when(brukerRegistreringRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
 
         brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.BRUKER_MANGLER_ARBEIDSTILLATELSE));
 
-        ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
+        ArgumentCaptor<AktiveringTilstand> argumentCaptor = ArgumentCaptor.forClass(AktiveringTilstand.class);
         verify(brukerRegistreringRepository).oppdater(argumentCaptor.capture());
-        RegistreringTilstand capturedArgument = argumentCaptor.getValue();
+        AktiveringTilstand capturedArgument = argumentCaptor.getValue();
 
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());
         assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());

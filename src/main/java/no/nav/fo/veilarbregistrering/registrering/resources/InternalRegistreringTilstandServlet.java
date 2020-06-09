@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 
 import javax.servlet.http.HttpServlet;
@@ -28,15 +28,16 @@ public class InternalRegistreringTilstandServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Status status = Status.parse(req.getParameter("status"));
 
-        String registreringTilstandIderJson = of(brukerRegistreringService.finnRegistreringTilstandMed(status).stream()
-                .map(RegistreringTilstand::getId).collect(toList()))
-                .map(registreringTilstander -> new Gson().toJson(registreringTilstander)).get();
+        String aktiveringTilstandIderJson = of(brukerRegistreringService.finnAktiveringTilstandMed(status).stream()
+                .map(AktiveringTilstand::getId)
+                .collect(toList()))
+                .map(aktiveringTilstander -> new Gson().toJson(aktiveringTilstander)).get();
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(200);
-        out.print(registreringTilstandIderJson);
+        out.print(aktiveringTilstandIderJson);
         out.flush();
         out.close();
     }

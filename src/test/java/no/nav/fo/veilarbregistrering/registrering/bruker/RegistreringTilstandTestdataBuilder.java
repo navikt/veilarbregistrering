@@ -16,8 +16,8 @@ public class RegistreringTilstandTestdataBuilder {
         private Status status = Status.MOTTATT;
         private LocalDateTime sistEndret = null;
 
-        public RegistreringTilstand build() {
-            return RegistreringTilstand.of(
+        public AktiveringTilstand build() {
+            return AktiveringTilstand.of(
                     -1L,
                     UUID.randomUUID(),
                     brukerRegistreringId,

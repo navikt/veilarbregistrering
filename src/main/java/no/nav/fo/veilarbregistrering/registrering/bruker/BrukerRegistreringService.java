@@ -190,7 +190,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
         brukerRegistreringRepository.lagre(registreringTilstand);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
@@ -216,7 +216,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId());
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId());
         LOG.info("Lagrer: {}", registreringTilstand);
         brukerRegistreringRepository.lagre(registreringTilstand);
 
@@ -224,8 +224,8 @@ public class BrukerRegistreringService {
     }
 
     public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
-        RegistreringTilstand original = brukerRegistreringRepository.hentRegistreringTilstand(registreringTilstandDto.getId());
-        RegistreringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
+        AktiveringTilstand original = brukerRegistreringRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
+        AktiveringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
         brukerRegistreringRepository.oppdater(oppdatert);
     }
 
@@ -303,7 +303,7 @@ public class BrukerRegistreringService {
         return unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing");
     }
 
-    public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
-        return brukerRegistreringRepository.finnRegistreringTilstandMed(status);
+    public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
+        return brukerRegistreringRepository.finnAktiveringTilstandMed(status);
     }
 }
