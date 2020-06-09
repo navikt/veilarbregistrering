@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import static no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId;
+
 @Component
 public class OverforTilArenaTask {
 
@@ -28,6 +30,8 @@ public class OverforTilArenaTask {
             LOG.info("Asynk overføring til Arena er togglet av");
             return;
         }
+
+        leggTilCallId();
 
         LOG.info("Asynk overføring til Arena er togglet på");
         arenaOverforingService.utforOverforing();

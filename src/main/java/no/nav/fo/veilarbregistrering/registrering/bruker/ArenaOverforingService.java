@@ -98,7 +98,7 @@ public class ArenaOverforingService {
             return map(aktiverBrukerFeil);
 
         } catch (RuntimeException e) {
-            LOG.error("Aktivering av bruker i Arena feilet:", e);
+            LOG.error("Aktivering av bruker i Arena feilet", e);
             return Status.TEKNISK_FEIL;
         }
 
