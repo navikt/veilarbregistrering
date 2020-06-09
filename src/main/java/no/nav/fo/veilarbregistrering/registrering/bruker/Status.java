@@ -9,10 +9,10 @@ public enum Status {
 
     MOTTATT("mottatt"),
     ARENA_OK("ok"),
-    BRUKER_ER_UKJENT("ukjentBruker"),
-    BRUKER_MANGLER_ARBEIDSTILLATELSE("oppholdstillatelse"),
-    BRUKER_KAN_IKKE_REAKTIVERES("ikkeReaktivering"),
-    BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET("utvandret"),
+    UKJENT_BRUKER("ukjentBruker"),
+    MANGLER_ARBEIDSTILLATELSE("oppholdstillatelse"),
+    KAN_IKKE_REAKTIVERES("ikkeReaktivering"),
+    DOD_UTVANDRET_ELLER_FORSVUNNET("utvandret"),
     UKJENT_TEKNISK_FEIL("ukjentTeknisk"),
     TEKNISK_FEIL("teknisk");
 

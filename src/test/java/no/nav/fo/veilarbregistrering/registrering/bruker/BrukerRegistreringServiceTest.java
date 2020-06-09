@@ -261,7 +261,7 @@ public class BrukerRegistreringServiceTest {
                 .build();
         when(brukerRegistreringRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
 
-        brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.BRUKER_MANGLER_ARBEIDSTILLATELSE));
+        brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
 
         ArgumentCaptor<AktiveringTilstand> argumentCaptor = ArgumentCaptor.forClass(AktiveringTilstand.class);
         verify(brukerRegistreringRepository).oppdater(argumentCaptor.capture());
@@ -271,7 +271,7 @@ public class BrukerRegistreringServiceTest {
         assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());
         assertThat(capturedArgument.getBrukerRegistreringId()).isEqualTo(original.getBrukerRegistreringId());
         assertThat(capturedArgument.getOpprettet()).isEqualTo(original.getOpprettet());
-        assertThat(capturedArgument.getStatus()).isEqualTo(Status.BRUKER_MANGLER_ARBEIDSTILLATELSE);
+        assertThat(capturedArgument.getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
 
     }
 

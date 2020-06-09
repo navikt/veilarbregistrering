@@ -155,19 +155,19 @@ public class OppfolgingClient {
         Status status;
         switch (aktiverBrukerFeil.getType()) {
             case BRUKER_ER_UKJENT: {
-                status = Status.BRUKER_ER_UKJENT;
+                status = Status.UKJENT_BRUKER;
                 break;
             }
             case BRUKER_KAN_IKKE_REAKTIVERES: {
-                status = Status.BRUKER_KAN_IKKE_REAKTIVERES;
+                status = Status.KAN_IKKE_REAKTIVERES;
                 break;
             }
             case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: {
-                status = Status.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
+                status = Status.DOD_UTVANDRET_ELLER_FORSVUNNET;
                 break;
             }
             case BRUKER_MANGLER_ARBEIDSTILLATELSE: {
-                status = Status.BRUKER_MANGLER_ARBEIDSTILLATELSE;
+                status = Status.MANGLER_ARBEIDSTILLATELSE;
                 break;
             }
             default:
