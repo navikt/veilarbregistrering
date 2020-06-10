@@ -22,7 +22,7 @@ public class InternalRegistreringTilstandServlet extends HttpServlet {
         this.brukerRegistreringService = brukerRegistreringService;
     }
 
-    public static final String PATH = "/internal/tilstand";
+    public static final String PATH = "/internal/status";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

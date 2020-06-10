@@ -16,7 +16,7 @@ public class InternalRegistreringResendingServlet extends HttpServlet {
         this.brukerRegistreringService = brukerRegistreringService;
     }
 
-    public static final String PATH = "/internal/registrering/status";
+    public static final String PATH = "/internal/status/endre";
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
