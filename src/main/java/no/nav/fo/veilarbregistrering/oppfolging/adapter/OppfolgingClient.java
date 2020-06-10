@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
@@ -93,6 +91,11 @@ public class OppfolgingClient {
     private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
+
+        if (asynkArenaOverforing()) {
+            return behandleHttpResponseAsynk(response, url);
+        }
+
         return behandleHttpResponse(response, url);
     }
 
@@ -135,13 +138,27 @@ public class OppfolgingClient {
         if (status == 204) {
             return status;
         } else if (status == 403) {
-            if (asynkArenaOverforing()) {
-                AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
-                throw new ArenaAktiveringException(map(aktiverBrukerFeilDto));
-            }
-
             LOG.warn("Feil ved kall mot: {}, response : {}", url, response);
             throw new WebApplicationException(response);
+        } else {
+            throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
+        }
+    }
+
+    private int behandleHttpResponseAsynk(Response response, String url) {
+        int status = response.getStatus();
+
+        if (status == 204) {
+            return status;
+        } else if (status == 403) {
+            AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
+            throw new ArenaAktiveringException(map(aktiverBrukerFeilDto));
+        } else if (status == 400) {
+            throw new BadRequestException(response);
+        } else if (status == 401) {
+            throw new NotAuthorizedException(response);
+        } else if (status == 500) {
+            throw new InternalServerErrorException(response);
         } else {
             throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
         }
