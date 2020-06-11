@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +30,9 @@ public class ArenaOverforingServiceTest {
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
             // uten innhold
         };
+        OppgaveService oppgaveService = mock(OppgaveService.class);
         arenaOverforingService = new ArenaOverforingService(
-                profileringRepository, brukerRegistreringRepository, oppfolgingClient, arbeidssokerRegistrertProducer);
+                profileringRepository, brukerRegistreringRepository, oppfolgingClient, arbeidssokerRegistrertProducer, oppgaveService);
     }
 
     @Test
