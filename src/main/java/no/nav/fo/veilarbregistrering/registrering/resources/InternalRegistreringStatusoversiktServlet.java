@@ -14,15 +14,15 @@ import java.io.PrintWriter;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
-public class InternalRegistreringTilstandServlet extends HttpServlet {
+public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
 
     private final BrukerRegistreringService brukerRegistreringService;
 
-    public InternalRegistreringTilstandServlet(BrukerRegistreringService brukerRegistreringService) {
+    public InternalRegistreringStatusoversiktServlet(BrukerRegistreringService brukerRegistreringService) {
         this.brukerRegistreringService = brukerRegistreringService;
     }
 
-    public static final String PATH = "/internal/tilstand";
+    public static final String PATH = "/internal/statusoversikt";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
