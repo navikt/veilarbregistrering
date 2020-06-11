@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static java.util.Optional.of;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ROUTING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.oppgave.RoutingStep.*;
@@ -82,8 +83,9 @@ public class OppgaveRouter {
             Optional<Enhetsnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
             if (enhetsnr.isPresent()) {
                 reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
+                return enhetsnr;
             }
-            return enhetsnr;
+            return of(Enhetsnr.of("2930")); // Intern Brukerstøtte
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
