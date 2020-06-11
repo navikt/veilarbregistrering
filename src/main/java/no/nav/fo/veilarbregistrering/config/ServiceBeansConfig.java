@@ -208,12 +208,13 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             OppfolgingGateway oppfolgingGateway,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            OppgaveService oppgaveService) {
         return new ArenaOverforingService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 oppfolgingGateway,
-                arbeidssokerRegistrertProducer);
+                arbeidssokerRegistrertProducer, oppgaveService);
     }
 
     @Bean
