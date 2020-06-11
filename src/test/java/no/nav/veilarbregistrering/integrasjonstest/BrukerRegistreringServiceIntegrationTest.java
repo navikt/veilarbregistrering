@@ -51,7 +51,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static StartRegistreringUtils startRegistreringUtils;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
-    private static final Bruker BRUKER = Bruker.of(ident, AktorId.valueOf("AKTØRID"));
+    private static final Bruker BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach

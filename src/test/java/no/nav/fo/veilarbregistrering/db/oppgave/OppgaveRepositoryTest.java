@@ -31,7 +31,7 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
     @Test
     public void opprettOppgave() {
         long id = oppgaveRepository.opprettOppgave(
-                AktorId.valueOf("12353"),
+                AktorId.of("12353"),
                 OppgaveType.OPPHOLDSTILLATELSE,
                 3242L);
 
@@ -41,13 +41,13 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
     @Test
     public void hentOppgaveForAktorId() {
         long id = oppgaveRepository.opprettOppgave(
-                AktorId.valueOf("12353"),
+                AktorId.of("12353"),
                 OppgaveType.OPPHOLDSTILLATELSE,
                 3242L);
 
         assertThat(id).isNotEqualTo(0);
 
-        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.valueOf("12353"));
+        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.of("12353"));
         OppgaveImpl oppgave = oppgaver.get(0);
         assertThat(oppgave.getId()).isEqualTo(id);
         assertThat(oppgave.getOppgavetype()).isEqualTo(OppgaveType.OPPHOLDSTILLATELSE);
@@ -56,7 +56,7 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
 
     @Test
     public void hentOppgaveForUkjentAktorId() {
-        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.valueOf("12353"));
+        List<OppgaveImpl> oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.of("12353"));
         assertThat(oppgaver).isEmpty();
     }
 }

@@ -91,7 +91,7 @@ class OppgaveGatewayTest {
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         Oppgave oppgave = Oppgave.opprettOppgave(
-                AktorId.valueOf("12e1e3"),
+                AktorId.of("12e1e3"),
                 null,
                 OPPHOLDSTILLATELSE,
                 dagensdato);

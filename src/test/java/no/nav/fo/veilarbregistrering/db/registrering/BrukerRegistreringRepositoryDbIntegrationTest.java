@@ -32,13 +32,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
-    private static final AktorId AKTOR_ID_11111 = AktorId.valueOf("11111");
+    private static final AktorId AKTOR_ID_11111 = AktorId.of("11111");
     private static final Bruker BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111);
     private static final Foedselsnummer FOEDSELSNUMMER_2 = Foedselsnummer.of("22345678911");
-    private static final AktorId AKTOR_ID_22222 = AktorId.valueOf("22222");
+    private static final AktorId AKTOR_ID_22222 = AktorId.of("22222");
     private static final Bruker BRUKER_2 = Bruker.of(FOEDSELSNUMMER_2, AKTOR_ID_22222);
     private static final Foedselsnummer FOEDSELSNUMMER_3 = Foedselsnummer.of("32345678911");
-    private static final AktorId AKTOR_ID_33333 = AktorId.valueOf("33333");
+    private static final AktorId AKTOR_ID_33333 = AktorId.of("33333");
     private static final Bruker BRUKER_3 = Bruker.of(FOEDSELSNUMMER_3, AKTOR_ID_33333);
 
     @Inject
@@ -105,7 +105,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
 
     @Test
     public void hentOrdinaerBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret(){
-        AktorId uregistrertAktorId = AktorId.valueOf("9876543");
+        AktorId uregistrertAktorId = AktorId.of("9876543");
         OrdinaerBrukerRegistrering profilertBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(uregistrertAktorId);
 

@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OppgaveRouterTest {
 
     private static final Bruker BRUKER = Bruker.of(
-            Foedselsnummer.of("12345678911"), AktorId.valueOf("32235352"));
+            Foedselsnummer.of("12345678911"), AktorId.of("32235352"));
 
     @Test
     public void ingen_arbeidsforhold_skal_gi_empty_enhetsnummer() {

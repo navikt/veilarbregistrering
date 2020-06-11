@@ -7,7 +7,7 @@ public class AktorId {
 
     private final String aktorId;
 
-    public static AktorId valueOf(String aktorId) {
+    public static AktorId of(String aktorId) {
         return new AktorId(aktorId);
     }
 

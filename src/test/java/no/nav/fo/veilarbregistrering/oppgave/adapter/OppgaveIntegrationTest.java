@@ -33,7 +33,7 @@ public class OppgaveIntegrationTest {
 
     private static final String MOCKSERVER_URL = "localhost";
     private static final int MOCKSERVER_PORT = 1081;
-    public static final Bruker BRUKER = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.valueOf("12e1e3"));
+    public static final Bruker BRUKER = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.of("12e1e3"));
 
     private ClientAndServer mockServer;
 

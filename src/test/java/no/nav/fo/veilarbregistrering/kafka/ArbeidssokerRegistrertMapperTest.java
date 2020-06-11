@@ -14,7 +14,7 @@ public class ArbeidssokerRegistrertMapperTest {
     @Test
     public void skal_mappe_opp_alle_verdier() {
         ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertMapper.map(
-                AktorId.valueOf("123"),
+                AktorId.of("123"),
                 DinSituasjonSvar.ER_PERMITTERT,
                 LocalDateTime.now());
 

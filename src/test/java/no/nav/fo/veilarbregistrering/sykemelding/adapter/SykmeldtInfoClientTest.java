@@ -39,7 +39,7 @@ class SykmeldtInfoClientTest {
     private static final int MOCKSERVER_PORT = 1082;
 
     private static final String IDENT = "10108000398"; //Aremark fiktivt fnr.";;
-    private static final Bruker BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("AKTØRID"));
+    private static final Bruker BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("AKTØRID"));
 
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;

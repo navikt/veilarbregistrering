@@ -46,7 +46,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         String sql = "SELECT * FROM OPPGAVE WHERE AKTOR_ID = ?";
         return jdbcTemplate.query(sql, new Object[]{aktorId.asString()}, (rs, row) -> new OppgaveImpl(
                 rs.getLong("ID"),
-                AktorId.valueOf(rs.getString("AKTOR_ID")),
+                AktorId.of(rs.getString("AKTOR_ID")),
                 OppgaveType.valueOf(rs.getString("OPPGAVETYPE")),
                 rs.getLong("EKSTERN_OPPGAVE_ID"),
                 rs.getTimestamp("OPPRETTET").toLocalDateTime()));
