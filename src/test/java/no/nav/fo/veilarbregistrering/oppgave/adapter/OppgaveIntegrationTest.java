@@ -85,9 +85,9 @@ public class OppgaveIntegrationTest {
                         .withBody("{" +
                                 "\"aktoerId\":\"12e1e3\"," +
                                 "\"beskrivelse\":\"" +
-                                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i " +
-                                "Arena, og har selv opprettet denne oppgaven. Ring bruker og følg vanlig rutine for " +
-                                "slike tilfeller.\"," +
+                                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i TPS og ikke er befolket i Arena, " +
+                                "og har selv opprettet denne oppgaven. " +
+                                "Ring bruker og følg vanlig rutine for slike tilfeller.\"," +
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
