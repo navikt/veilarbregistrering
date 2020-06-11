@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
 import com.google.gson.Gson;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 
@@ -8,8 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 public class InternalIdentServlet extends HttpServlet {
 
@@ -21,7 +26,20 @@ public class InternalIdentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Bruker bruker = userService.hentBruker();
+        Optional<String> fnr = ofNullable(req.getParameter("fnr"));
+        Optional<String> aktorid = ofNullable(req.getParameter("aktorid"));
+
+        Bruker bruker;
+
+        if (fnr.isPresent()) {
+            bruker = userService.hentBruker();
+        } else if (aktorid.isPresent()) {
+            bruker = userService.hentBruker(AktorId.valueOf(aktorid.get()));
+        } else {
+            throw new BadRequestException("Fnr eller aktørid må spesifiseres");
+        }
+
+
         String brukerString = new Gson().toJson(bruker);
 
         PrintWriter out = resp.getWriter();

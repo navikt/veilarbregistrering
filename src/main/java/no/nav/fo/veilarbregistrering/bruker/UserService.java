@@ -24,6 +24,12 @@ public class UserService {
         return Bruker.of(fnr, aktorId);
     }
 
+    public Bruker hentBruker(AktorId aktorId) {
+        Foedselsnummer fnr = aktorGateway.hentFnrFor(aktorId);
+
+        return Bruker.of(fnr, aktorId);
+    }
+
     private Foedselsnummer hentFnrFraUrlEllerToken() {
 
         String fnr = getFnrFromUrl();
