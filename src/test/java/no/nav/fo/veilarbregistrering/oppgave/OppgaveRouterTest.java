@@ -25,7 +25,7 @@ public class OppgaveRouterTest {
             Foedselsnummer.of("12345678911"), AktorId.of("32235352"));
 
     @Test
-    public void ingen_arbeidsforhold_skal_gi_empty_enhetsnummer() {
+    public void ingen_arbeidsforhold_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> FlereArbeidsforhold.of(Collections.emptyList());
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
@@ -35,11 +35,11 @@ public class OppgaveRouterTest {
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).isEmpty();
+        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
     }
 
     @Test
-    public void ingen_enhet_for_orgnummer_skal_gi_empty_enhetsnummer() {
+    public void ingen_enhet_for_orgnummer_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
@@ -49,11 +49,11 @@ public class OppgaveRouterTest {
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).isEmpty();
+        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
     }
 
     @Test
-    public void ingen_navenhet_for_organisasjon_skal_gi_empty_enhetsnummer() {
+    public void ingen_navenhet_for_organisasjon_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
 
         Forretningsadresse forretningsadresse = new Forretningsadresse(
@@ -70,7 +70,7 @@ public class OppgaveRouterTest {
 
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).isEmpty();
+        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
     }
 
     @Test

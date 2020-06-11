@@ -18,6 +18,10 @@ public class Enhetsnr {
         return enhetId;
     }
 
+    public static Enhetsnr internBrukerstotte() {
+        return Enhetsnr.of("2930");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
