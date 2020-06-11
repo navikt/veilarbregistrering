@@ -23,7 +23,7 @@ public class OppgaveServiceTest {
 
     private static final Bruker BRUKER = Bruker.of(
             Foedselsnummer.of("12345678911"),
-            AktorId.valueOf("2134"));
+            AktorId.of("2134"));
 
     private OppgaveService oppgaveService;
     private OppgaveGateway oppgaveGateway;

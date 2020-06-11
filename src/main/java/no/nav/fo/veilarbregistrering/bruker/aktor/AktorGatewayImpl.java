@@ -17,7 +17,7 @@ class AktorGatewayImpl implements AktorGateway {
 
     @Override
     public AktorId hentAktorIdFor(Foedselsnummer fnr) {
-        return AktorId.valueOf(aktorService.getAktorId(fnr.stringValue())
+        return AktorId.of(aktorService.getAktorId(fnr.stringValue())
                 .orElseThrow(() -> new Feil(FeilType.FINNES_IKKE)));
     }
 

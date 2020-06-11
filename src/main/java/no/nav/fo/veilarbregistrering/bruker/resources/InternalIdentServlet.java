@@ -34,7 +34,7 @@ public class InternalIdentServlet extends HttpServlet {
         if (fnr.isPresent()) {
             bruker = userService.hentBruker();
         } else if (aktorid.isPresent()) {
-            bruker = userService.hentBruker(AktorId.valueOf(aktorid.get()));
+            bruker = userService.hentBruker(AktorId.of(aktorid.get()));
         } else {
             throw new BadRequestException("Fnr eller aktørid må spesifiseres");
         }

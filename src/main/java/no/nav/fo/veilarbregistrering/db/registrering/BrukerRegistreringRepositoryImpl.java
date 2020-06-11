@@ -220,7 +220,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         return db.queryForObject(sql, new Object[]{brukerRegistreringId}, (rs, i) -> Bruker.of(
                 Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
-                AktorId.valueOf(rs.getString("AKTOR_ID"))
+                AktorId.of(rs.getString("AKTOR_ID"))
         ));
     }
 
@@ -268,7 +268,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(
                         rowNum,
                         rs.getLong("BRUKER_REGISTRERING_ID"),
-                        AktorId.valueOf(rs.getString("AKTOR_ID")),
+                        AktorId.of(rs.getString("AKTOR_ID")),
                         rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
                         rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
                 ));

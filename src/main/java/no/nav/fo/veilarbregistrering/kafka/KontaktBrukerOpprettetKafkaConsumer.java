@@ -73,7 +73,7 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
                         MDC.remove(MDC_CALL_ID);
                         return;
                     }
-                    bruker.hentOgSammenlignOppholdFor(AktorId.valueOf(kontaktBrukerOpprettetEvent.getAktorid()));
+                    bruker.hentOgSammenlignOppholdFor(AktorId.of(kontaktBrukerOpprettetEvent.getAktorid()));
 
                     MDC.remove(MDC_CALL_ID);
                 });

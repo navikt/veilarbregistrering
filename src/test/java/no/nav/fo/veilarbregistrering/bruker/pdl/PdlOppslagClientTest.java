@@ -36,7 +36,7 @@ public class PdlOppslagClientTest {
                 return toJson(OK_JSON);
             }
         };
-        PdlPerson person = client.hentPerson(AktorId.valueOf("444hhh"));
+        PdlPerson person = client.hentPerson(AktorId.of("444hhh"));
 
         Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
     }
@@ -49,7 +49,7 @@ public class PdlOppslagClientTest {
                 return toJson(OK_UTEN_PERIODER_JSON);
             }
         };
-        PdlPerson person = service.hentPerson(AktorId.valueOf("444hhh"));
+        PdlPerson person = service.hentPerson(AktorId.of("444hhh"));
 
         Assert.assertEquals(Oppholdstype.PERMANENT, person.getOpphold().get(0).getType());
     }
@@ -62,7 +62,7 @@ public class PdlOppslagClientTest {
                 return toJson(FEIL_JSON);
             }
         };
-        pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
+        pdlOppslagClient.hentPerson(AktorId.of("111lll"));
     }
 
     @Test(expected = BrukerIkkeFunnetException.class)
@@ -73,7 +73,7 @@ public class PdlOppslagClientTest {
                 return toJson(PERSON_NOT_FOUND_JSON);
             }
         };
-        PdlPerson pdlPerson = pdlOppslagClient.hentPerson(AktorId.valueOf("111lll"));
+        PdlPerson pdlPerson = pdlOppslagClient.hentPerson(AktorId.of("111lll"));
         assertThat(pdlPerson).isNull();
     }
 

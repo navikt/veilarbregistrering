@@ -51,7 +51,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
+        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -69,7 +69,7 @@ public class RegistreringResourceTest {
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
         BrukerRegistreringWrapper response = new BrukerRegistreringWrapper(gyldigBrukerRegistrering());
         when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(response);
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
+        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -80,7 +80,7 @@ public class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse()
                         .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
+        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
@@ -90,7 +90,7 @@ public class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.valueOf("1234")));
+        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
