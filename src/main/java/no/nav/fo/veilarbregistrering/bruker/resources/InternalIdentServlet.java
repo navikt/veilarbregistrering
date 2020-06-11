@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.resources;
 import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 
 import javax.servlet.ServletException;
@@ -32,7 +33,7 @@ public class InternalIdentServlet extends HttpServlet {
         Bruker bruker;
 
         if (fnr.isPresent()) {
-            bruker = userService.hentBruker();
+            bruker = userService.hentBruker(Foedselsnummer.of(fnr.get()));
         } else if (aktorid.isPresent()) {
             bruker = userService.hentBruker(AktorId.of(aktorid.get()));
         } else {

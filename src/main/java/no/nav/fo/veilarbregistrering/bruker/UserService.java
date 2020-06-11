@@ -19,6 +19,10 @@ public class UserService {
     public Bruker hentBruker() {
         Foedselsnummer fnr = hentFnrFraUrlEllerToken();
 
+        return hentBruker(fnr);
+    }
+
+    public Bruker hentBruker(Foedselsnummer fnr) {
         AktorId aktorId = aktorGateway.hentAktorIdFor(fnr);
 
         return Bruker.of(fnr, aktorId);
