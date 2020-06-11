@@ -85,7 +85,7 @@ public class OppgaveRouter {
                 reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
                 return enhetsnr;
             }
-            return of(Enhetsnr.of("2930")); // Intern Brukerstøtte
+            return of(Enhetsnr.internBrukerstotte());
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
