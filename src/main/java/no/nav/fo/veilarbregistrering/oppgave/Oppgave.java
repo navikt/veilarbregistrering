@@ -21,7 +21,7 @@ public class Oppgave {
         );
         beskrivelser.put(
                 OppgaveType.UTVANDRET,
-                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i Arena, " +
+                "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i TPS og ikke er befolket i Arena, " +
                         "og har selv opprettet denne oppgaven. " +
                         "Ring bruker og følg vanlig rutine for slike tilfeller."
 
