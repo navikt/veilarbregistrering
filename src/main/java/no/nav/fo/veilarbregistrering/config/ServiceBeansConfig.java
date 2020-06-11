@@ -22,8 +22,8 @@ import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringResendingServlet;
-import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringTilstandServlet;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
+import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -250,13 +250,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringTilstandServlet internalRegistreringTilstandServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringTilstandServlet(brukerRegistreringService);
+    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+        return new InternalRegistreringStatusoversiktServlet(brukerRegistreringService);
     }
 
     @Bean
-    InternalRegistreringResendingServlet internalRegistreringResendingServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringResendingServlet(brukerRegistreringService);
+    InternalRegistreringStatusServlet internalRegistreringResendingServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
+        return new InternalRegistreringStatusServlet(brukerRegistreringService);
     }
 
     @Bean

@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class InternalRegistreringResendingServlet extends HttpServlet {
+public class InternalRegistreringStatusServlet extends HttpServlet {
 
     private final BrukerRegistreringService brukerRegistreringService;
 
-    public InternalRegistreringResendingServlet(BrukerRegistreringService brukerRegistreringService) {
+    public InternalRegistreringStatusServlet(BrukerRegistreringService brukerRegistreringService) {
         this.brukerRegistreringService = brukerRegistreringService;
     }
 
-    public static final String PATH = "/internal/status/endre";
+    public static final String PATH = "/internal/status";
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
