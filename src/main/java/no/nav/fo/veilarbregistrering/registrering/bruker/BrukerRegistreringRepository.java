@@ -35,4 +35,6 @@ public interface BrukerRegistreringRepository {
     Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable);
 
     List<AktiveringTilstand> finnAktiveringTilstandMed(Status status);
+
+    Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
 }

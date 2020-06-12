@@ -4,8 +4,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -23,14 +21,12 @@ public class ArenaOverforingService {
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
-    private final OppgaveService oppgaveService;
 
-    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer, OppgaveService oppgaveService) {
+    public ArenaOverforingService(ProfileringRepository profileringRepository, BrukerRegistreringRepository brukerRegistreringRepository, OppfolgingGateway oppfolgingGateway, ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
-        this.oppgaveService = oppgaveService;
     }
 
     /**
@@ -42,8 +38,7 @@ public class ArenaOverforingService {
      * - innsatsgruppe (fra profileringen)
      * 3) Kalle Arena og tolke evt. feil i retur
      * 4) Oppdatere status på registreringen
-     * 5) Opprette oppgave
-     * 6) Publiser event på Kafka
+     * 5) Publiser event på Kafka
      */
     @Transactional
     public void utforOverforing() {
@@ -74,9 +69,6 @@ public class ArenaOverforingService {
 
         if (!Status.ARENA_OK.equals(status)) {
             LOG.info("Avbryter og publiserer ingen Kafka-event pga. manglende OK fra Arena");
-
-            oppgaveService.opprettOppgave(bruker, OppgaveType.of(status));
-
             return;
         }
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);

@@ -4,6 +4,7 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,18 +30,21 @@ public class OppgaveServiceTest {
     private OppgaveGateway oppgaveGateway;
     private OppgaveRepository oppgaveRepository;
     private OppgaveRouter oppgaveRouter;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
 
     @BeforeEach
     public void setUp() {
         oppgaveGateway = mock(OppgaveGateway.class);
         oppgaveRepository = mock(OppgaveRepository.class);
         oppgaveRouter = mock(OppgaveRouter.class);
+        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
+
         oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                (aktorId, oppgaveType) -> {
-                });
+                (aktorId, oppgaveType) -> { },
+                brukerRegistreringRepository);
     }
 
     @Test
@@ -185,8 +189,9 @@ public class OppgaveServiceTest {
                 OppgaveGateway oppgaveGateway,
                 OppgaveRepository oppgaveRepository,
                 OppgaveRouter oppgaveRouter,
-                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
+                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
+                BrukerRegistreringRepository brukerRegistreringRepository) {
+            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, brukerRegistreringRepository);
         }
 
         @Override

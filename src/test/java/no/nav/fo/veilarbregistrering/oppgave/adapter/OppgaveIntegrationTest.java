@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ public class OppgaveIntegrationTest {
 
     private OppgaveService oppgaveService;
     private OppgaveRouter oppgaveRouter;
+    private BrukerRegistreringRepository brukerRegistreringRepository;
 
     @AfterEach
     public void tearDown() {
@@ -51,12 +53,14 @@ public class OppgaveIntegrationTest {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         OppgaveGateway oppgaveGateway = new OppgaveGatewayImpl(buildClient());
         oppgaveRouter = mock(OppgaveRouter.class);
+        brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
 
         oppgaveService = new CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                (aktorId, oppgaveType) -> { });
+                (aktorId, oppgaveType) -> { },
+                brukerRegistreringRepository);
     }
 
     private OppgaveRestClient buildClient() {
@@ -127,8 +131,9 @@ public class OppgaveIntegrationTest {
                 OppgaveGateway oppgaveGateway,
                 OppgaveRepository oppgaveRepository,
                 OppgaveRouter oppgaveRouter,
-                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
-            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
+                KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
+                BrukerRegistreringRepository brukerRegistreringRepository) {
+            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, brukerRegistreringRepository);
         }
 
         @Override
