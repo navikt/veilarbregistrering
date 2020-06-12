@@ -179,7 +179,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
                 .build();
         brukerRegistreringRepository.lagre(midtersteRegistering);
 
-        Optional<AktiveringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstnadForOverforing();
+        Optional<AktiveringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstandForOverforing();
 
         assertThat(lagretTilstand.get().getId()).isEqualTo(id1);
         assertThat(lagretTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
@@ -216,7 +216,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
                 .build();
         brukerRegistreringRepository.lagre(midtersteRegistering);
 
-        Optional<AktiveringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstnadForOverforing();
+        Optional<AktiveringTilstand> lagretTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstandForOverforing();
 
         assertThat(lagretTilstand.isPresent()).isFalse();
     }

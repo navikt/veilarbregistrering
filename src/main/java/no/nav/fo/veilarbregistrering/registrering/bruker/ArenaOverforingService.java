@@ -42,7 +42,7 @@ public class ArenaOverforingService {
      */
     @Transactional
     public void utforOverforing() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstnadForOverforing();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstandForOverforing();
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring");
             return;

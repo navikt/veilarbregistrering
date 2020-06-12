@@ -237,7 +237,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public Optional<AktiveringTilstand> finnNesteAktiveringTilstnadForOverforing() {
+    public Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing() {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?" +
                 " ORDER BY OPPRETTET" +

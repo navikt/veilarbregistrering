@@ -26,7 +26,7 @@ public interface BrukerRegistreringRepository {
 
     AktiveringTilstand hentAktiveringTilstand(long id);
 
-    Optional<AktiveringTilstand> finnNesteAktiveringTilstnadForOverforing();
+    Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
 
     void oppdater(AktiveringTilstand aktiveringTilstand);
 
