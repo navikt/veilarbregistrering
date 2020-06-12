@@ -247,6 +247,18 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 
+    @Override
+    public Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet() {
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
+                " WHERE STATUS IN (?, ?)" +
+                " ORDER BY OPPRETTET" +
+                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"oppholdstillatelse", "utvandret", 0, 1}, new AktiveringTilstandMapper());
+        return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
+    }
+
+
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }
