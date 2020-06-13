@@ -46,10 +46,18 @@ public class OppgaveForAvvistRegistreringService {
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
 
-        oppgaveService.opprettOppgave(bruker, map(aktiveringTilstand.getStatus()));
+        Status status;
+        try {
+            oppgaveService.opprettOppgave(bruker, map(aktiveringTilstand.getStatus()));
+            status = Status.OPPGAVE_OPPRETTET;
+
+        } catch (RuntimeException e) {
+            LOG.error("Opprettelse av oppgave feilet", e);
+            status = Status.OPPGAVE_FEILET;
+        }
 
         // TODO Trenger vi en kobling mellom oppgave og registrering i db?
-
+        brukerRegistreringRepository.oppdater(aktiveringTilstand.oppdaterStatus(status));
     }
 
     private static OppgaveType map(Status status) {
