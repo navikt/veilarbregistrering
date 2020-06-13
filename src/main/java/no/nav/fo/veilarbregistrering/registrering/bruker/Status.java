@@ -14,7 +14,9 @@ public enum Status {
     KAN_IKKE_REAKTIVERES("ikkeReaktivering"),
     DOD_UTVANDRET_ELLER_FORSVUNNET("utvandret"),
     UKJENT_TEKNISK_FEIL("ukjentTeknisk"),
-    TEKNISK_FEIL("teknisk");
+    TEKNISK_FEIL("teknisk"),
+    OPPGAVE_OPPRETTET("oppgaveOpprettet"),
+    OPPGAVE_FEILET("oppgaveFeilet");
 
     private final String status;
 
