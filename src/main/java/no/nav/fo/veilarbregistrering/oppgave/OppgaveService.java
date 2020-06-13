@@ -4,11 +4,8 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
@@ -29,20 +26,17 @@ public class OppgaveService {
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
     private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
 
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
         this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
     }
 
     public OppgaveResponse opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
@@ -105,33 +99,4 @@ public class OppgaveService {
         return LocalDate.now();
     }
 
-    /**
-     * Stegene som skal gjøres:
-     * 1) Hente en registrering som har feilet
-     * - avbryt hvis ingen funnet
-     * 2) Hent grunnlaget for oppgaven;
-     * - fødselsnummer (fra registreringen)
-     * 3) Opprette oppgave
-     * 4) Oppdatere status på registreringen
-     */
-    @Transactional
-    public void opprettOppgaveAsynk() {
-        // TODO Flytte til egen klasse?
-        Optional<AktiveringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstandSomHarFeilet();
-
-        if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Fant ingen feilede registreringer (status = UTVANDRET, OPPHOLDSTILLATELSE) å opprette oppgave for");
-            return;
-        }
-
-        AktiveringTilstand aktiveringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-        long brukerRegistreringId = aktiveringTilstand.getBrukerRegistreringId();
-
-        Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
-
-        opprettOppgave(bruker, OppgaveType.of(aktiveringTilstand.getStatus()));
-
-        // TODO Trenger vi en kobling mellom oppgave og registrering i db?
-
-    }
 }

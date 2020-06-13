@@ -191,7 +191,7 @@ public class OppgaveServiceTest {
                 OppgaveRouter oppgaveRouter,
                 KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
                 BrukerRegistreringRepository brukerRegistreringRepository) {
-            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, brukerRegistreringRepository);
+            super(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer);
         }
 
         @Override

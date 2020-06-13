@@ -1,10 +1,10 @@
-package no.nav.fo.veilarbregistrering.oppgave.scheduler;
+package no.nav.fo.veilarbregistrering.registrering.scheduler;
 
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfiguration;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfigurationBuilder;
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OppgaveForAvvistRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import java.time.Duration;
 
 @Configuration
 @EnableScheduling
-public class OpprettOppgaveSchedulerConfig {
+public class OppgaveForAvvistRegistreringSchedulerConfig {
 
     @Bean
     public ScheduledLockConfiguration taskScheduler(LockProvider lockProvider) {
@@ -32,9 +32,9 @@ public class OpprettOppgaveSchedulerConfig {
     }
 
     @Bean
-    public OpprettOppgaveScheduler opprettOppgaveScheduler(
-            OppgaveService oppgaveService,
+    public OppgaveForAvvistRegistreringScheduler opprettOppgaveScheduler(
+            OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService,
             UnleashService unleashService) {
-        return new OpprettOppgaveScheduler(oppgaveService, unleashService);
+        return new OppgaveForAvvistRegistreringScheduler(oppgaveForAvvistRegistreringService, unleashService);
     }
 }

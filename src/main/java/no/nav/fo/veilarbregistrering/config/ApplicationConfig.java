@@ -8,10 +8,10 @@ import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
-import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
+import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
@@ -19,11 +19,11 @@ import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig;
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
-import no.nav.fo.veilarbregistrering.oppgave.scheduler.OpprettOppgaveSchedulerConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.OppgaveForAvvistRegistreringSchedulerConfig;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         AktorConfig.class,
         PepConfig.class,
         OverforTilArenaSchedulerConfig.class,
-        OpprettOppgaveSchedulerConfig.class,
+        OppgaveForAvvistRegistreringSchedulerConfig.class,
         OrganisasjonEnhetV2Config.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
