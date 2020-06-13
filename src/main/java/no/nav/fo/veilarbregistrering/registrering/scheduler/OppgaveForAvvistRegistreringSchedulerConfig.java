@@ -32,9 +32,10 @@ public class OppgaveForAvvistRegistreringSchedulerConfig {
     }
 
     @Bean
-    public OppgaveForAvvistRegistreringScheduler opprettOppgaveScheduler(
+    public OppgaveForAvvistRegistreringScheduler oppgaveForAvvistRegistreringScheduler(
             OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService,
             UnleashService unleashService) {
-        return new OppgaveForAvvistRegistreringScheduler(oppgaveForAvvistRegistreringService, unleashService);
+        return new OppgaveForAvvistRegistreringScheduler(
+                oppgaveForAvvistRegistreringService, unleashService);
     }
 }
