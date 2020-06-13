@@ -160,8 +160,8 @@ public class ServiceBeansConfig {
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                kontaktBrukerHenvendelseProducer,
-                brukerRegistreringRepository);
+                kontaktBrukerHenvendelseProducer
+        );
     }
 
     @Bean
@@ -216,6 +216,13 @@ public class ServiceBeansConfig {
                 brukerRegistreringRepository,
                 oppfolgingGateway,
                 arbeidssokerRegistrertProducer);
+    }
+
+    @Bean
+    OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService(
+            OppgaveService oppgaveService,
+            BrukerRegistreringRepository brukerRegistreringRepository) {
+        return new OppgaveForAvvistRegistreringService(oppgaveService, brukerRegistreringRepository);
     }
 
     @Bean
