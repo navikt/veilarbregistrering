@@ -187,7 +187,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
                 .value("SIST_ENDRET", ofNullable(registreringTilstand.getSistEndret())
                         .map(Timestamp::valueOf).orElse(null))
-                .value("STATUS", registreringTilstand.getStatus().toString())
+                .value("STATUS", registreringTilstand.getStatus().name())
                 .execute();
 
         return id;
@@ -254,7 +254,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 " ORDER BY OPPRETTET" +
                 " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"oppholdstillatelse", "utvandret", 0, 1}, new AktiveringTilstandMapper());
+        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"MANGLER_ARBEIDSTILLATELSE", "DOD_UTVANDRET_ELLER_FORSVUNNET", 0, 1}, new AktiveringTilstandMapper());
         return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 
