@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
@@ -56,7 +57,8 @@ public class ServiceBeansConfig {
             StartRegistreringUtils startRegistreringUtils,
             UnleashService unleashService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+            AktiveringTilstandRepository aktiveringTilstandRepository
     ) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -69,7 +71,8 @@ public class ServiceBeansConfig {
                 startRegistreringUtils,
                 unleashService,
                 arbeidssokerRegistrertProducer,
-                arbeidssokerProfilertProducer);
+                arbeidssokerProfilertProducer,
+                aktiveringTilstandRepository);
     }
 
     @Bean
@@ -196,6 +199,11 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    AktiveringTilstandRepository aktiveringTilstandRepository(JdbcTemplate db) {
+        return new AktiveringTilstandRepositoryImpl(db);
+    }
+
+    @Bean
     ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
         return new ManuellRegistreringRepositoryImpl(db);
     }
@@ -210,19 +218,25 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             OppfolgingGateway oppfolgingGateway,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer) {
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            AktiveringTilstandRepository aktiveringTilstandRepository) {
         return new ArenaOverforingService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 oppfolgingGateway,
-                arbeidssokerRegistrertProducer);
+                arbeidssokerRegistrertProducer, aktiveringTilstandRepository);
     }
 
     @Bean
     OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService(
             OppgaveService oppgaveService,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
-        return new OppgaveForAvvistRegistreringService(oppgaveService, brukerRegistreringRepository);
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            AktiveringTilstandRepository aktiveringTilstandRepository) {
+        return new OppgaveForAvvistRegistreringService(
+                oppgaveService,
+                brukerRegistreringRepository,
+                aktiveringTilstandRepository
+        );
     }
 
     @Bean

@@ -22,19 +22,7 @@ public interface BrukerRegistreringRepository {
 
     void lagreReaktiveringForBruker(AktorId aktorId);
 
-    long lagre(AktiveringTilstand registreringTilstand);
-
-    AktiveringTilstand hentAktiveringTilstand(long id);
-
-    Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
-
-    void oppdater(AktiveringTilstand aktiveringTilstand);
-
     Bruker hentBrukerTilknyttet(long brukerRegistreringId);
 
     Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable);
-
-    List<AktiveringTilstand> finnAktiveringTilstandMed(Status status);
-
-    Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
 }

@@ -29,8 +29,10 @@ public class ArenaOverforingServiceTest {
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
             // uten innhold
         };
+        AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
+
         arenaOverforingService = new ArenaOverforingService(
-                profileringRepository, brukerRegistreringRepository, oppfolgingClient, arbeidssokerRegistrertProducer);
+                profileringRepository, brukerRegistreringRepository, oppfolgingClient, arbeidssokerRegistrertProducer, aktiveringTilstandRepository);
     }
 
     @Test

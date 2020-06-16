@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -124,6 +125,11 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        AktiveringTilstandRepository aktiveringTilstandRepository(JdbcTemplate db) {
+            return new AktiveringTilstandRepositoryImpl(db);
+        }
+
+        @Bean
         public ProfileringRepository profileringRepository(JdbcTemplate db) {
             return new ProfileringRepositoryImpl(db);
         }
@@ -168,7 +174,8 @@ class BrukerRegistreringServiceIntegrationTest {
                 StartRegistreringUtils startRegistreringUtils,
                 UnleashService unleashServicee,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-                ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+                ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+                AktiveringTilstandRepository aktiveringTilstandRepository) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -181,7 +188,8 @@ class BrukerRegistreringServiceIntegrationTest {
                     startRegistreringUtils,
                     unleashServicee,
                     arbeidssokerRegistrertProducer,
-                    arbeidssokerProfilertProducer);
+                    arbeidssokerProfilertProducer,
+                    aktiveringTilstandRepository);
         }
 
         @Bean

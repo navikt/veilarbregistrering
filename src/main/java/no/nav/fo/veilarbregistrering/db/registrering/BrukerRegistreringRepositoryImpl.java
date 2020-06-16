@@ -18,11 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -35,8 +33,6 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     private final static String SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING";
     final static String FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON";
     final static String TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER";
-
-    private final static String REGISTRERING_TILSTAND_SEQ = "REGISTRERING_TILSTAND_SEQ";
 
     private final static String BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ";
     private final static String BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ";
@@ -178,43 +174,6 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public long lagre(AktiveringTilstand registreringTilstand) {
-        long id = nesteFraSekvens(REGISTRERING_TILSTAND_SEQ);
-        SqlUtils.insert(db, "REGISTRERING_TILSTAND")
-                .value("ID", id)
-                .value("UUID", registreringTilstand.getUuid().toString())
-                .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
-                .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
-                .value("SIST_ENDRET", ofNullable(registreringTilstand.getSistEndret())
-                        .map(Timestamp::valueOf).orElse(null))
-                .value("STATUS", registreringTilstand.getStatus().name())
-                .execute();
-
-        return id;
-    }
-
-    /**
-     * Oppdaterer aktiveringTilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
-     * @param aktiveringTilstand
-     * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
-     */
-    @Override
-    public void oppdater(AktiveringTilstand aktiveringTilstand) {
-        AktiveringTilstand original = hentAktiveringTilstand(aktiveringTilstand.getId());
-
-        if (original.getSistEndret() != null && original.getSistEndret().isAfter(aktiveringTilstand.getSistEndret())) {
-            throw new IllegalStateException("RegistreringTilstand hadde allerede blitt oppdatert " +
-                    original.getSistEndret().toString() + "Detaljer: " + aktiveringTilstand);
-        }
-
-        SqlUtils.update(db, "REGISTRERING_TILSTAND")
-                .set("STATUS", aktiveringTilstand.getStatus().name())
-                .set("SIST_ENDRET", Timestamp.valueOf(aktiveringTilstand.getSistEndret()))
-                .whereEquals("ID", aktiveringTilstand.getId())
-                .execute();
-    }
-
-    @Override
     public Bruker hentBrukerTilknyttet(long brukerRegistreringId) {
         String sql = "SELECT FOEDSELSNUMMER, AKTOR_ID FROM BRUKER_REGISTRERING WHERE BRUKER_REGISTRERING_ID = ?";
 
@@ -223,41 +182,6 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 AktorId.of(rs.getString("AKTOR_ID"))
         ));
     }
-
-    @Override
-    public AktiveringTilstand hentAktiveringTilstand(long id) {
-        String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE ID = ?";
-        return db.queryForObject(sql, new Object[]{id}, new AktiveringTilstandMapper());
-    }
-
-    @Override
-    public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
-        String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE STATUS = ?";
-        return db.query(sql, new Object[]{status.name()}, new AktiveringTilstandMapper());
-    }
-
-    @Override
-    public Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing() {
-        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
-                " WHERE STATUS = ?" +
-                " ORDER BY OPPRETTET" +
-                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"MOTTATT", 0, 1}, new AktiveringTilstandMapper());
-        return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
-    }
-
-    @Override
-    public Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet() {
-        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
-                " WHERE STATUS IN (?, ?)" +
-                " ORDER BY OPPRETTET" +
-                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"MANGLER_ARBEIDSTILLATELSE", "DOD_UTVANDRET_ELLER_FORSVUNNET", 0, 1}, new AktiveringTilstandMapper());
-        return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
-    }
-
 
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
@@ -287,5 +211,4 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         return new PageImpl<>(dto, pageable, total);
     }
-
 }
