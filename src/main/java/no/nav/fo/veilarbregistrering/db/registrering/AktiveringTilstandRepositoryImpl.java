@@ -87,7 +87,7 @@ public class AktiveringTilstandRepositoryImpl implements AktiveringTilstandRepos
                 " ORDER BY OPPRETTET" +
                 " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"oppholdstillatelse", "utvandret", 0, 1}, new AktiveringTilstandMapper());
+        List<AktiveringTilstand> registreringTilstand = db.query(sql, new Object[]{"MANGLER_ARBEIDSTILLATELSE", "DOD_UTVANDRET_ELLER_FORSVUNNET", 0, 1}, new AktiveringTilstandMapper());
         return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 

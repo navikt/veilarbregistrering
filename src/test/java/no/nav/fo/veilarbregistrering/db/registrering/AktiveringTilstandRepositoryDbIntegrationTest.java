@@ -18,8 +18,7 @@ import java.util.Optional;
 import static java.time.LocalDateTime.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandTestdataBuilder.registreringTilstand;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.ARENA_OK;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.MOTTATT;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.*;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -163,5 +162,69 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
 
         List<AktiveringTilstand> mottatteRegistreringer = aktiveringTilstandRepository.finnAktiveringTilstandMed(MOTTATT);
         assertThat(mottatteRegistreringer).hasSize(1);
+    }
+
+    @Test
+    public void skal_finne_siste_aktivering_som_har_feilet() {
+        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
+
+
+        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering1.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(DOD_UTVANDRET_ELLER_FORSVUNNET)
+                .build();
+        long id1 = aktiveringTilstandRepository.lagre(eldsteRegistrering);
+
+        AktiveringTilstand nyesteRegistering = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering2.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(1))
+                .status(MANGLER_ARBEIDSTILLATELSE)
+                .build();
+        aktiveringTilstandRepository.lagre(nyesteRegistering);
+
+        Optional<AktiveringTilstand> nesteTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
+
+        assertThat(nesteTilstand.get().getId()).isEqualTo(id1);
+        assertThat(nesteTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
+        assertThat(nesteTilstand.get().getStatus()).isEqualTo(DOD_UTVANDRET_ELLER_FORSVUNNET);
+    }
+
+    @Test
+    public void skal_returnere_empty_naar_ingen_flere_som_har_feilet() {
+        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
+
+        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering1.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(ARENA_OK)
+                .build();
+        aktiveringTilstandRepository.lagre(eldsteRegistrering);
+
+        AktiveringTilstand nyesteRegistering = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering2.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(1))
+                .status(UKJENT_BRUKER)
+                .build();
+        aktiveringTilstandRepository.lagre(nyesteRegistering);
+
+        AktiveringTilstand midtersteRegistering = registreringTilstand()
+                .brukerRegistreringId(lagretRegistrering3.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(3))
+                .status(UKJENT_TEKNISK_FEIL)
+                .build();
+        aktiveringTilstandRepository.lagre(midtersteRegistering);
+
+        Optional<AktiveringTilstand> lagretTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
+
+        assertThat(lagretTilstand.isPresent()).isFalse();
     }
 }
