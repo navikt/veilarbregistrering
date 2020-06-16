@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -67,8 +66,8 @@ public class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
-        BrukerRegistreringWrapper response = new BrukerRegistreringWrapper(gyldigBrukerRegistrering());
-        when(brukerRegistreringService.hentBrukerRegistrering(any(Bruker.class))).thenReturn(response);
+        when(brukerRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
+        when(brukerRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
         when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());

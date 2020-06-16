@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistrering;
 
 @Data
 @Accessors(chain = true)

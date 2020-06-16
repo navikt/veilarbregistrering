@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -270,28 +269,6 @@ public class BrukerRegistreringService {
         sykmeldtBrukerRegistrering.setManueltRegistrertAv(veileder);
 
         return sykmeldtBrukerRegistrering;
-    }
-
-    public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker);
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = hentSykmeldtRegistrering(bruker);
-
-        if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
-            return null;
-        } else if (ordinaerBrukerRegistrering == null) {
-            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        } else if (sykmeldtBrukerRegistrering == null) {
-            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
-        }
-
-        LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
-        LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
-
-        if (profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)) {
-            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
-        } else {
-            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        }
     }
 
     @Transactional

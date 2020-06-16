@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringWrapper;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -114,7 +113,10 @@ public class RegistreringResource {
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
-        BrukerRegistreringWrapper brukerRegistreringWrapper = brukerRegistreringService.hentBrukerRegistrering(bruker);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringService.hentSykmeldtRegistrering(bruker);
+
+        BrukerRegistreringWrapper brukerRegistreringWrapper = BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
         if (brukerRegistreringWrapper == null) {
             LOG.info("Bruker ble ikke funnet i databasen.");
         }
