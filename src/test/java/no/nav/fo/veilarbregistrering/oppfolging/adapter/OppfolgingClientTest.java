@@ -66,7 +66,6 @@ class OppfolgingClientTest {
         UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildClient();
         PersonGateway personGateway = mock(PersonGateway.class);
-
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -77,6 +76,7 @@ class OppfolgingClientTest {
         };
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         };
+        AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -90,7 +90,8 @@ class OppfolgingClientTest {
                         startRegistreringUtils,
                         unleashService,
                         arbeidssokerRegistrertProducer,
-                        arbeidssokerProfilertProducer);
+                        arbeidssokerProfilertProducer,
+                        aktiveringTilstandRepository);
 
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any()))
                 .thenReturn(new Profilering()

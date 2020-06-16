@@ -15,12 +15,15 @@ public class OppgaveForAvvistRegistreringService {
 
     private final OppgaveService oppgaveService;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final AktiveringTilstandRepository aktiveringTilstandRepository;
 
     public OppgaveForAvvistRegistreringService(
             OppgaveService oppgaveService,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            AktiveringTilstandRepository aktiveringTilstandRepository) {
         this.oppgaveService = oppgaveService;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.aktiveringTilstandRepository = aktiveringTilstandRepository;
     }
 
     /**
@@ -34,7 +37,7 @@ public class OppgaveForAvvistRegistreringService {
      */
     @Transactional
     public void opprettOppgaveAsynk() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = brukerRegistreringRepository.finnNesteAktiveringTilstandSomHarFeilet();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
 
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Fant ingen feilede registreringer (status = UTVANDRET, OPPHOLDSTILLATELSE) å opprette oppgave for");
@@ -57,7 +60,7 @@ public class OppgaveForAvvistRegistreringService {
         }
 
         // TODO Trenger vi en kobling mellom oppgave og registrering i db?
-        brukerRegistreringRepository.oppdater(aktiveringTilstand.oppdaterStatus(status));
+        aktiveringTilstandRepository.oppdater(aktiveringTilstand.oppdaterStatus(status));
     }
 
     private static OppgaveType map(Status status) {

@@ -51,6 +51,7 @@ public class BrukerRegistreringService {
     private final ManuellRegistreringService manuellRegistreringService;
     private final StartRegistreringUtils startRegistreringUtils;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
+    private final AktiveringTilstandRepository aktiveringTilstandRepository;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -62,8 +63,8 @@ public class BrukerRegistreringService {
                                      StartRegistreringUtils startRegistreringUtils,
                                      UnleashService unleashService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-
-                                     ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+                                     ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+                                     AktiveringTilstandRepository aktiveringTilstandRepository) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
@@ -75,6 +76,7 @@ public class BrukerRegistreringService {
         this.startRegistreringUtils = startRegistreringUtils;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
+        this.aktiveringTilstandRepository = aktiveringTilstandRepository;
     }
 
     @Transactional
@@ -191,7 +193,7 @@ public class BrukerRegistreringService {
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering, profilering);
 
         AktiveringTilstand registreringTilstand = AktiveringTilstand.ofArenaOk(ordinaerBrukerRegistrering.getId());
-        brukerRegistreringRepository.lagre(registreringTilstand);
+        aktiveringTilstandRepository.lagre(registreringTilstand);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 bruker.getAktorId(),
@@ -218,15 +220,15 @@ public class BrukerRegistreringService {
 
         AktiveringTilstand registreringTilstand = AktiveringTilstand.ofMottattRegistrering(ordinaerBrukerRegistrering.getId());
         LOG.info("Lagrer: {}", registreringTilstand);
-        brukerRegistreringRepository.lagre(registreringTilstand);
+        aktiveringTilstandRepository.lagre(registreringTilstand);
 
         return ordinaerBrukerRegistrering;
     }
 
     public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
-        AktiveringTilstand original = brukerRegistreringRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
+        AktiveringTilstand original = aktiveringTilstandRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
         AktiveringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
-        brukerRegistreringRepository.oppdater(oppdatert);
+        aktiveringTilstandRepository.oppdater(oppdatert);
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
@@ -304,6 +306,6 @@ public class BrukerRegistreringService {
     }
 
     public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
-        return brukerRegistreringRepository.finnAktiveringTilstandMed(status);
+        return aktiveringTilstandRepository.finnAktiveringTilstandMed(status);
     }
 }

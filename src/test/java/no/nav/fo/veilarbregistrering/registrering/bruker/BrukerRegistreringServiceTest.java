@@ -41,6 +41,7 @@ public class BrukerRegistreringServiceTest {
     private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
+    private AktiveringTilstandRepository aktiveringTilstandRepository;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
@@ -62,7 +63,7 @@ public class BrukerRegistreringServiceTest {
         }; //NoOp siden vi ikke ønsker å teste Kafka her
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         };
-
+        aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
         brukerRegistreringService =
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
@@ -75,7 +76,8 @@ public class BrukerRegistreringServiceTest {
                         startRegistreringUtils,
                         unleashService,
                         arbeidssokerRegistrertProducer,
-                        arbeidssokerProfilertProducer);
+                        arbeidssokerProfilertProducer,
+                        aktiveringTilstandRepository);
 
         when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
         when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
@@ -259,12 +261,12 @@ public class BrukerRegistreringServiceTest {
                 .opprettet(sistEndret.minusDays(1))
                 .sistEndret(sistEndret)
                 .build();
-        when(brukerRegistreringRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
+        when(aktiveringTilstandRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
 
         brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
 
         ArgumentCaptor<AktiveringTilstand> argumentCaptor = ArgumentCaptor.forClass(AktiveringTilstand.class);
-        verify(brukerRegistreringRepository).oppdater(argumentCaptor.capture());
+        verify(aktiveringTilstandRepository).oppdater(argumentCaptor.capture());
         AktiveringTilstand capturedArgument = argumentCaptor.getValue();
 
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());

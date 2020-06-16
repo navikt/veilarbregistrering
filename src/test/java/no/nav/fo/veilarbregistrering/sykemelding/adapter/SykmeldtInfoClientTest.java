@@ -67,6 +67,7 @@ class SykmeldtInfoClientTest {
         }; //Noop, vi trenger ikke kafka
         ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         }; //Noop, vi trenger ikke kafka
+        AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
 
         brukerRegistreringService =
                 new BrukerRegistreringService(
@@ -80,7 +81,8 @@ class SykmeldtInfoClientTest {
                         startRegistreringUtils,
                         unleashService,
                         arbeidssokerRegistrertProducer,
-                        arbeidssokerProfileringProducer);
+                        arbeidssokerProfileringProducer,
+                        aktiveringTilstandRepository);
 
 
         when(unleashService.isEnabled(any())).thenReturn(true);
