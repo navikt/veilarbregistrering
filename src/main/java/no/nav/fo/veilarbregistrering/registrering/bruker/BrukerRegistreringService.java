@@ -3,13 +3,17 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.fo.veilarbregistrering.amplitude.AmplitudeLogger;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -19,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
@@ -31,7 +32,8 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EV
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
@@ -238,45 +240,37 @@ public class BrukerRegistreringService {
                 now(), besvarelse);
     }
 
-    public BrukerRegistreringWrapper hentBrukerRegistrering(Bruker bruker) {
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(bruker.getAktorId());
 
-        if (ordinaerBrukerRegistrering != null) {
-            Profilering profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.getId());
-            ordinaerBrukerRegistrering.setProfilering(profilering);
+        if (ordinaerBrukerRegistrering == null) {
+            return null;
         }
 
+        Profilering profilering = profileringRepository.hentProfileringForId(
+                ordinaerBrukerRegistrering.getId());
+        ordinaerBrukerRegistrering.setProfilering(profilering);
+
+        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(
+                ordinaerBrukerRegistrering.getId(), ordinaerBrukerRegistrering.hentType());
+        ordinaerBrukerRegistrering.setManueltRegistrertAv(veileder);
+
+        return ordinaerBrukerRegistrering;
+    }
+
+    public SykmeldtRegistrering hentSykmeldtRegistrering(Bruker bruker) {
         SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
                 .hentSykmeldtregistreringForAktorId(bruker.getAktorId());
 
-        setManueltRegistrertAv(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
-
-        if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
+        if (sykmeldtBrukerRegistrering == null) {
             return null;
-        } else if (ordinaerBrukerRegistrering == null) {
-            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        } else if (sykmeldtBrukerRegistrering == null) {
-            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
         }
+        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(
+                sykmeldtBrukerRegistrering.getId(), sykmeldtBrukerRegistrering.hentType());
+        sykmeldtBrukerRegistrering.setManueltRegistrertAv(veileder);
 
-        LocalDateTime profilertBrukerRegistreringDato = ordinaerBrukerRegistrering.getOpprettetDato();
-        LocalDateTime sykmeldtRegistreringDato = sykmeldtBrukerRegistrering.getOpprettetDato();
-
-        if (profilertBrukerRegistreringDato.isAfter(sykmeldtRegistreringDato)) {
-            return new BrukerRegistreringWrapper(ordinaerBrukerRegistrering);
-        } else {
-            return new BrukerRegistreringWrapper(sykmeldtBrukerRegistrering);
-        }
-    }
-
-    private void setManueltRegistrertAv(BrukerRegistrering... registreringer) {
-        Arrays.stream(registreringer)
-                .filter(Objects::nonNull)
-                .forEach((registrering) -> {
-                    registrering.setManueltRegistrertAv(manuellRegistreringService
-                            .hentManuellRegistreringVeileder(registrering.getId(), registrering.hentType()));
-                });
+        return sykmeldtBrukerRegistrering;
     }
 
     @Transactional
