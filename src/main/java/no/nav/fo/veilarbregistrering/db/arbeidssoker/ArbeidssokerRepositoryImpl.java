@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -14,13 +13,13 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     }
 
     @Override
-    public long lagre(FormidlingsgruppeEvent formidlingsgruppeEvent) {
+    public long lagre(ArenaFormidlingsgruppeEvent arenaFormidlingsgruppeEvent) {
         long id = nesteFraSekvens("FORMIDLINGSGRUPPE_SEQ");
-        // TODO Legge til "endret" når det er klart
         SqlUtils.insert(db, "FORMIDLINGSGRUPPE")
                 .value("ID", id)
-                .value("FOEDSELSNUMMER", formidlingsgruppeEvent.getFoedselsnummer().stringValue())
-                .value("FORMIDLINGSGRUPPE", formidlingsgruppeEvent.getFormidlingsgruppe().stringValue())
+                .value("FOEDSELSNUMMER", arenaFormidlingsgruppeEvent.getFoedselsnummer().stringValue())
+                .value("FORMIDLINGSGRUPPE", arenaFormidlingsgruppeEvent.getFormidlingsgruppe().stringValue())
+                .value("FORMIDLINGSGRUPPE_ENDRET", arenaFormidlingsgruppeEvent.getFormidlingsgruppeEndret())
                 .execute();
 
         return id;

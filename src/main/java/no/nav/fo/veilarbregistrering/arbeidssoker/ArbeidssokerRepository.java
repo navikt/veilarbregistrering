@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArenaFormidlingsgruppeEvent;
 
 public interface ArbeidssokerRepository {
-    long lagre(FormidlingsgruppeEvent arenaFormidlingsgruppe);
+    long lagre(ArenaFormidlingsgruppeEvent arenaFormidlingsgruppeEvent);
 }
