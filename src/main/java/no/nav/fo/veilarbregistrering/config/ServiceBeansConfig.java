@@ -4,6 +4,7 @@ import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
@@ -208,6 +209,11 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidssokerRepository arbeidssokerRepository(JdbcTemplate db) {
         return new ArbeidssokerRepositoryImpl(db);
+    }
+
+    @Bean
+    ArbeidssokerService arbeidssokerService(ArbeidssokerRepository arbeidssokerRepository) {
+        return new ArbeidssokerService(arbeidssokerRepository);
     }
 
     @Bean
