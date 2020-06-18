@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2020.04.21_14.22-e57f0275ba64</version>
+        <version>1.2020.06.15_15.55-ecdbeb12b893</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -46,6 +46,10 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>nais</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -128,10 +132,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>util</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
