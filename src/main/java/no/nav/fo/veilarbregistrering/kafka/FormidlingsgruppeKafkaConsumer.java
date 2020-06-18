@@ -1,23 +1,18 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
-import com.google.gson.Gson;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.header.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 /**
  * 1. Den skal konsumere TOPIC for "Formidlingsgruppe"

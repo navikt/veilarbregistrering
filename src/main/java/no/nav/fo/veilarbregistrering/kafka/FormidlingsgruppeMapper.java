@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
+import java.time.LocalDateTime;
+
 class FormidlingsgruppeMapper {
 
     static FormidlingsgruppeEvent map(String record) {
@@ -17,7 +19,8 @@ class FormidlingsgruppeMapper {
         return new FormidlingsgruppeEvent(
                 Foedselsnummer.of(after.getFODSELSNR()),
                 after.getPERSON_ID(),
-                Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()));
+                Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
+                LocalDateTime.parse(after.getMOD_DATO()));
     }
 
     /**
@@ -32,7 +35,8 @@ class FormidlingsgruppeMapper {
      *   "after": {
      *     "PERSON_ID": 13919,
      *     "FODSELSNR": "***********",
-     *     "FORMIDLINGSGRUPPEKODE": "ISERV"
+     *     "FORMIDLINGSGRUPPEKODE": "ISERV",
+     *     "MOD_DATO":
      *   }
      * }
      */
@@ -58,11 +62,13 @@ class FormidlingsgruppeMapper {
         private String PERSON_ID;
         private String FODSELSNR;
         private String FORMIDLINGSGRUPPEKODE;
+        private String MOD_DATO;
 
-        AfterDto(String person_id, String fodselsnr, String formidlingsgruppekode) {
+        AfterDto(String person_id, String fodselsnr, String formidlingsgruppekode, String mod_dato) {
             this.PERSON_ID = person_id;
             this.FODSELSNR = fodselsnr;
             this.FORMIDLINGSGRUPPEKODE = formidlingsgruppekode;
+            this.MOD_DATO = mod_dato;
         }
 
         String getPERSON_ID() {
@@ -87,6 +93,14 @@ class FormidlingsgruppeMapper {
 
         void setFORMIDLINGSGRUPPEKODE(String FORMIDLINGSGRUPPEKODE) {
             this.FORMIDLINGSGRUPPEKODE = FORMIDLINGSGRUPPEKODE;
+        }
+
+        String getMOD_DATO() {
+            return MOD_DATO;
+        }
+
+        void setMOD_DATO(String MOD_DATO) {
+            this.MOD_DATO = MOD_DATO;
         }
     }
 }
