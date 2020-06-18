@@ -19,15 +19,19 @@ class FormidlingsgruppeMapper {
     private static FormidlingsgruppeEvent map(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
         AfterDto after = ggArenaFormidlinggruppeDto.getAfter();
 
-        LocalDateTime localDateTime = ofNullable(after.getMOD_DATO())
+        LocalDateTime formidlingsgruppeEndret = ofNullable(after.getMOD_DATO())
                 .map(LocalDateTime::parse)
                 .orElse(LocalDateTime.MIN);
 
+        Foedselsnummer foedselsnummer = ofNullable(after.getFODSELSNR())
+                .map(Foedselsnummer::of)
+                .orElse(Foedselsnummer.of("12345678910"));
+
         return new FormidlingsgruppeEvent(
-                Foedselsnummer.of(after.getFODSELSNR()),
+                foedselsnummer,
                 after.getPERSON_ID(),
                 Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
-                localDateTime);
+                formidlingsgruppeEndret);
     }
 
     /**
