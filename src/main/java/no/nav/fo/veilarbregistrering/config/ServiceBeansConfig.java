@@ -218,7 +218,7 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidssokerResource arbeidssokerResource() {
+    ArbeidssokerResource arbeidssokerResource(ArbeidssokerService arbeidssokerService) {
         return new ArbeidssokerResource(arbeidssokerService);
     }
 
