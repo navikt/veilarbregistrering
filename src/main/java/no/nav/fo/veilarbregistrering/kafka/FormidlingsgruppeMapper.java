@@ -6,6 +6,8 @@ import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
 import java.time.LocalDateTime;
 
+import static java.util.Optional.ofNullable;
+
 class FormidlingsgruppeMapper {
 
     static FormidlingsgruppeEvent map(String record) {
@@ -16,11 +18,16 @@ class FormidlingsgruppeMapper {
 
     private static FormidlingsgruppeEvent map(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
         AfterDto after = ggArenaFormidlinggruppeDto.getAfter();
+
+        LocalDateTime localDateTime = ofNullable(after.getMOD_DATO())
+                .map(LocalDateTime::parse)
+                .orElse(LocalDateTime.MIN);
+
         return new FormidlingsgruppeEvent(
                 Foedselsnummer.of(after.getFODSELSNR()),
                 after.getPERSON_ID(),
                 Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
-                LocalDateTime.parse(after.getMOD_DATO()));
+                localDateTime);
     }
 
     /**
