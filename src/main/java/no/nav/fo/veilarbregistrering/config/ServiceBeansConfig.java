@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
+import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
@@ -214,6 +215,11 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidssokerService arbeidssokerService(ArbeidssokerRepository arbeidssokerRepository) {
         return new ArbeidssokerService(arbeidssokerRepository);
+    }
+
+    @Bean
+    ArbeidssokerResource arbeidssokerResource() {
+        return new ArbeidssokerResource(arbeidssokerService);
     }
 
     @Bean
