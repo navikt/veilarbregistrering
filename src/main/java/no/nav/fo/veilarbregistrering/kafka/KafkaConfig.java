@@ -110,7 +110,7 @@ public class KafkaConfig {
     Properties dummyKafkaConsumerProperties() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "dummy-veilarbregistrering" + getEnvSuffix());
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "dummy-veilarbregistrering2" + getEnvSuffix());
         properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
