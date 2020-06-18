@@ -218,8 +218,11 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArbeidssokerResource arbeidssokerResource(ArbeidssokerService arbeidssokerService) {
-        return new ArbeidssokerResource(arbeidssokerService);
+    ArbeidssokerResource arbeidssokerResource(
+            ArbeidssokerService arbeidssokerService,
+            UserService userService,
+            VeilarbAbacPepClient pepClient) {
+        return new ArbeidssokerResource(arbeidssokerService, userService, pepClient);
     }
 
     @Bean
