@@ -10,9 +10,10 @@ import static java.util.Optional.ofNullable;
 
 class FormidlingsgruppeMapper {
 
+    private static final Gson GSON = new Gson();
+
     static FormidlingsgruppeEvent map(String record) {
-        Gson gson = new Gson();
-        GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = gson.fromJson(record, GgArenaFormidlinggruppeDto.class);
+        GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = GSON.fromJson(record, GgArenaFormidlinggruppeDto.class);
         return map(ggArenaFormidlinggruppeDto);
     }
 
@@ -21,11 +22,11 @@ class FormidlingsgruppeMapper {
 
         LocalDateTime formidlingsgruppeEndret = ofNullable(after.getMOD_DATO())
                 .map(LocalDateTime::parse)
-                .orElse(LocalDateTime.MIN);
+                .orElse(null);
 
         Foedselsnummer foedselsnummer = ofNullable(after.getFODSELSNR())
                 .map(Foedselsnummer::of)
-                .orElse(Foedselsnummer.of("12345678910"));
+                .orElse(null);
 
         return new FormidlingsgruppeEvent(
                 foedselsnummer,

@@ -1,8 +1,11 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.time.LocalDateTime;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
 
@@ -13,13 +16,16 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     }
 
     @Override
-    public long lagre(ArenaFormidlingsgruppeEvent arenaFormidlingsgruppeEvent) {
+    public long lagre(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
         long id = nesteFraSekvens("FORMIDLINGSGRUPPE_SEQ");
         SqlUtils.insert(db, "FORMIDLINGSGRUPPE")
                 .value("ID", id)
-                .value("FOEDSELSNUMMER", arenaFormidlingsgruppeEvent.getFoedselsnummer().stringValue())
-                .value("FORMIDLINGSGRUPPE", arenaFormidlingsgruppeEvent.getFormidlingsgruppe().stringValue())
-                .value("FORMIDLINGSGRUPPE_ENDRET", arenaFormidlingsgruppeEvent.getFormidlingsgruppeEndret())
+                .value("FOEDSELSNUMMER", endretFormidlingsgruppeCommand.getFoedselsnummer()
+                        .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt!"))
+                        .stringValue())
+                .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
+                .value("FORMIDLINGSGRUPPE_ENDRET", endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()
+                .orElse(LocalDateTime.MIN))
                 .execute();
 
         return id;

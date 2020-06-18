@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -83,11 +84,14 @@ public class KafkaConfig {
     }
 
     @Bean
-    FormidlingsgruppeKafkaConsumer formidlingsgruppeKafkaConsumer(UnleashService unleashService) {
+    FormidlingsgruppeKafkaConsumer formidlingsgruppeKafkaConsumer(
+            UnleashService unleashService,
+            ArbeidssokerService arbeidssokerService) {
         return new FormidlingsgruppeKafkaConsumer(
                 dummyKafkaConsumerProperties(),
                 unleashService,
-                "gg-arena-formidlinggruppe-v1" + (getEnvSuffix().equals("-p") ? "-p" : "-q"));
+                "gg-arena-formidlinggruppe-v1" + (getEnvSuffix().equals("-p") ? "-p" : "-q"),
+                arbeidssokerService);
     }
 
     @Bean

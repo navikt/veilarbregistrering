@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -26,14 +27,16 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private final Properties kafkaConsumerProperties;
     private final UnleashService unleashService;
     private final String topic;
+    private final ArbeidssokerService arbeidssokerService;
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
             UnleashService unleashService,
-            String topic) {
+            String topic, ArbeidssokerService arbeidssokerService) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.unleashService = unleashService;
         this.topic = topic;
+        this.arbeidssokerService = arbeidssokerService;
 
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
@@ -60,12 +63,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         }
     }
 
-    FormidlingsgruppeEvent behandleRecord(ConsumerRecord<String, String> record) {
+    void behandleRecord(ConsumerRecord<String, String> record) {
         LOG.info("Behandler rådata fra {}: {}", topic, record);
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
-        LOG.info("Behandler FormidlingsgruppeEvent: {}", formidlingsgruppeEvent);
 
-        return formidlingsgruppeEvent;
+        arbeidssokerService.lagreFormidlingsgruppe(formidlingsgruppeEvent);
     }
 
     private boolean konsumeringAvFormidlingsgruppe() {
