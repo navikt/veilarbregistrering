@@ -1,5 +1,5 @@
 import no.nav.apiapp.ApiApp;
-import no.nav.common.utils.NaisUtils;
+import no.nav.common.nais.utils.NaisUtils;
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig;
 
 import static java.lang.System.setProperty;
