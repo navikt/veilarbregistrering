@@ -42,6 +42,13 @@ public class Formidlingsgruppe implements Metric {
     }
 
     @Override
+    public String toString() {
+        return "Formidlingsgruppe{" +
+                "formidlingsgruppe='" + formidlingsgruppe + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
