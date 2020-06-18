@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 /**
- * 1. Den skal konsumere TOPIC for "Formidlingsgruppe"
+ * 1. Den skal konsumere TOPIC for "Formidlingsgruppe" fra Arena
  * 2. Den skal kjøre i evig løkka
  * 3. Den skal kalle på et internt API for å lagre formidlingsgruppe knyttet til person
  */
