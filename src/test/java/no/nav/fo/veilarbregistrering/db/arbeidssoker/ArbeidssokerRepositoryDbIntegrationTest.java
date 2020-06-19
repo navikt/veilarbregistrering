@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker;
+package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

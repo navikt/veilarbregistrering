@@ -1,0 +1,30 @@
+{
+  "personId"  : 123456,
+  "fodselsnr" : "12345612345",
+  "formidlingshistorikk" : [
+    {
+      "formidlingsgruppeKode" : "ISERV",
+      "modDato"               : "2020-01-12 12:03:24",
+      "fraDato"               : "2020-01-12",
+      "tilDato"               : "2020-01-11"
+    },
+    {
+      "formidlingsgruppeKode" : "ARBS",
+      "modDato"               : "2020-01-12 12:03:25",
+      "fraDato"               : "2020-01-12",
+      "tilDato"               : "2020-02-20"
+    },
+    {
+      "formidlingsgruppeKode" : "ISERV",
+      "modDato"               : "2020-02-21 10:34:08",
+      "fraDato"               : "2020-02-21",
+      "tilDato"               : "2020-03-11"
+    },
+    {
+      "formidlingsgruppeKode" : "ARBS",
+      "modDato"               : "2020-03-12 14:23:42",
+      "fraDato"               : "2020-03-12",
+      "tilDato"               : null
+    }
+  ]
+}
