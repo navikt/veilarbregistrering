@@ -67,7 +67,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         LOG.info("Behandler rådata fra {}: {}", topic, record);
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
 
-        arbeidssokerService.lagreFormidlingsgruppe(formidlingsgruppeEvent);
+        arbeidssokerService.behandle(formidlingsgruppeEvent);
     }
 
     private boolean konsumeringAvFormidlingsgruppe() {

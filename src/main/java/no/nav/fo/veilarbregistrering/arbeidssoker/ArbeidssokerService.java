@@ -17,7 +17,7 @@ public class ArbeidssokerService {
     }
 
     @Transactional
-    public void lagreFormidlingsgruppe(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
+    public void behandle(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
 
         if (!endretFormidlingsgruppeCommand.getFoedselsnummer().isPresent()) {
             LOG.warn(format("Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s"),
@@ -29,4 +29,5 @@ public class ArbeidssokerService {
         //TODO: Kommentere inn denne...
         // return arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand);
     }
+
 }
