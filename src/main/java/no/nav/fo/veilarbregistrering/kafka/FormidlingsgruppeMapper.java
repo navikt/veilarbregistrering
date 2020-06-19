@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.util.Optional.ofNullable;
 
@@ -21,7 +22,7 @@ class FormidlingsgruppeMapper {
         AfterDto after = ggArenaFormidlinggruppeDto.getAfter();
 
         LocalDateTime formidlingsgruppeEndret = ofNullable(after.getMOD_DATO())
-                .map(LocalDateTime::parse)
+                .map(d -> LocalDateTime.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .orElse(null);
 
         Foedselsnummer foedselsnummer = ofNullable(after.getFODSELSNR())
