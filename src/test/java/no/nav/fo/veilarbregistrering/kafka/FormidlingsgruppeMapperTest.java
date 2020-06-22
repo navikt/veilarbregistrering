@@ -29,7 +29,7 @@ public class FormidlingsgruppeMapperTest {
         assertThat(formidlingsgruppeEvent.getPerson_id()).isEqualTo("3226568");
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
-                .hasValue(LocalDateTime.of(2020, 6, 19,9,31,50));
+                .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
     }
 
 }

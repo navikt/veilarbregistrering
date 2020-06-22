@@ -48,8 +48,8 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
             }
 
             @Override
-            public Optional<LocalDateTime> getFormidlingsgruppeEndret() {
-                return Optional.of(LocalDateTime.now().minusSeconds(20));
+            public LocalDateTime getFormidlingsgruppeEndret() {
+                return LocalDateTime.now().minusSeconds(20);
             }
         };
 

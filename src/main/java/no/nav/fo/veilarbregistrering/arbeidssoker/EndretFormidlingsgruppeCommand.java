@@ -14,5 +14,5 @@ public interface EndretFormidlingsgruppeCommand {
 
     Formidlingsgruppe getFormidlingsgruppe();
 
-    Optional<LocalDateTime> getFormidlingsgruppeEndret();
+    LocalDateTime getFormidlingsgruppeEndret();
 }

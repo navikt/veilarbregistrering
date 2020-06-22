@@ -37,8 +37,8 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     }
 
     @Override
-    public Optional<LocalDateTime> getFormidlingsgruppeEndret() {
-        return Optional.ofNullable(formidlingsgruppeEndret);
+    public LocalDateTime getFormidlingsgruppeEndret() {
+        return formidlingsgruppeEndret;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
                 "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : null +
                 ", person_id='" + person_id + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
-                ", formidlingsgruppeEndret=" + formidlingsgruppeEndret != null ? formidlingsgruppeEndret.toString() : null +
+                ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
                 "'}'";
     }
 }

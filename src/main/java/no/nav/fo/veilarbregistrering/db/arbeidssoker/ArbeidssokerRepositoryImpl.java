@@ -6,7 +6,6 @@ import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
 
@@ -25,9 +24,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                         .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!"))
                         .stringValue())
                 .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
-                .value("FORMIDLINGSGRUPPE_ENDRET", endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()
-                        .map(Timestamp::valueOf)
-                        .orElse(Timestamp.valueOf(LocalDateTime.MIN)))
+                .value("FORMIDLINGSGRUPPE_ENDRET", Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()))
                 .execute();
 
         return id;
