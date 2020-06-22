@@ -21,11 +21,11 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         SqlUtils.insert(db, "FORMIDLINGSGRUPPE")
                 .value("ID", id)
                 .value("FOEDSELSNUMMER", endretFormidlingsgruppeCommand.getFoedselsnummer()
-                        .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt!"))
+                        .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!"))
                         .stringValue())
                 .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
                 .value("FORMIDLINGSGRUPPE_ENDRET", endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()
-                .orElse(LocalDateTime.MIN))
+                        .orElse(LocalDateTime.MIN))
                 .execute();
 
         return id;

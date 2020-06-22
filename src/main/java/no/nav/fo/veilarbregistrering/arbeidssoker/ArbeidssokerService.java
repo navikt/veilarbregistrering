@@ -25,9 +25,7 @@ public class ArbeidssokerService {
             return;
         }
 
-        LOG.info("Behandler EndretFormidlingsgruppeCommand: {}", endretFormidlingsgruppeCommand);
-        //TODO: Kommentere inn denne...
-        // return arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand);
+        arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand);
     }
 
 }

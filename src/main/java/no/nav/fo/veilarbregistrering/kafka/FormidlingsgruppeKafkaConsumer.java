@@ -1,12 +1,14 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
+import no.nav.fo.veilarbregistrering.log.CallId;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 /**
  * 1. Den skal konsumere TOPIC for "Formidlingsgruppe" fra Arena
@@ -54,12 +57,17 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
+                    CallId.leggTilCallId();
+
                     behandleRecord(record);
+
+                    MDC.remove(MDC_CALL_ID);
                 });
                 consumer.commitSync();
             }
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
+            MDC.remove(MDC_CALL_ID);
         }
     }
 
