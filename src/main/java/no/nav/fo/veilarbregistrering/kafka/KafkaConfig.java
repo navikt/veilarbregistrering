@@ -74,8 +74,7 @@ public class KafkaConfig {
     @Bean
     KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
             UnleashService unleashService,
-            OppholdstillatelseService oppholdstillatelseService
-    ) {
+            OppholdstillatelseService oppholdstillatelseService) {
         return new KontaktBrukerOpprettetKafkaConsumer(
                 kafkaConsumerProperties(),
                 unleashService,
@@ -88,10 +87,26 @@ public class KafkaConfig {
             UnleashService unleashService,
             ArbeidssokerService arbeidssokerService) {
         return new FormidlingsgruppeKafkaConsumer(
-                kafkaConsumerProperties(),
+                formidlingsgruppeKafkaConsumerProperties(),
                 unleashService,
                 "gg-arena-formidlinggruppe-v1" + (getEnvSuffix().equals("-p") ? "-p" : "-q"),
                 arbeidssokerService);
+    }
+
+    @Bean
+    Properties formidlingsgruppeKafkaConsumerProperties() {
+        Properties properties = new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());
+        properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+            properties.putAll(getSecurityConfig());
+        }
+        return properties;
     }
 
     @Bean
