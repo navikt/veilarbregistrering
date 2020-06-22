@@ -10,7 +10,9 @@ import javax.ws.rs.NotFoundException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
 import static no.nav.sbl.rest.RestUtils.withClient;
 
@@ -23,9 +25,11 @@ class FormidlingsgruppeRestClient {
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
     private final String url;
+    private final Supplier<String> arenaOrdsTokenProvider;
 
-    FormidlingsgruppeRestClient(String baseUrl) {
+    FormidlingsgruppeRestClient(String baseUrl, Supplier<String> arenaOrdsTokenProvider) {
         this.url = baseUrl + "/v1/person/arbeidssoeker/formidlingshistorikk";
+        this.arenaOrdsTokenProvider = arenaOrdsTokenProvider;
     }
 
     Optional<FormidlingsgruppeResponseDto> hentFormidlingshistorikk(Foedselsnummer foedselsnummer, Periode periode) {
@@ -53,6 +57,7 @@ class FormidlingsgruppeRestClient {
                         //TODO: null-sjekk på tilDato - skal ikke alltid med
                         .queryParam("tilDato", periode.tilDatoAs_yyyyMMdd())
                         .request()
+                        .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
                         .get(String.class));
     }
 
