@@ -10,6 +10,7 @@ for beskrivelse av APIet til `veilarbregistrering`.
 
 ## Avhengigheter
 - veilarboppfolging (og Arena) : REST
+- ORDS : REST
 - veilarbperson : REST
 - Aktør-service (fnr/dnr -> aktørId) : SOAP
 - ABAC (tilgangskontroll)
