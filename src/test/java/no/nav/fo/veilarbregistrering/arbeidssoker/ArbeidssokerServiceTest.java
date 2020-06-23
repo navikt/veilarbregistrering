@@ -15,7 +15,8 @@ public class ArbeidssokerServiceTest {
 
     public static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("123445678911");
 
-    private final ArbeidssokerService arbeidssokerService = new ArbeidssokerService(new CustomArbeidssokerRepository());
+    private final ArbeidssokerService arbeidssokerService = new ArbeidssokerService(
+            new CustomArbeidssokerRepository());
 
     @Test
     public void hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {
@@ -55,8 +56,11 @@ public class ArbeidssokerServiceTest {
 
         @Override
         public List<Arbeidssokerperiode> finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
-
-            return Arrays.asList(ARBEIDSSOKERPERIODE_3, ARBEIDSSOKERPERIODE_1, ARBEIDSSOKERPERIODE_4, ARBEIDSSOKERPERIODE_2);
+            return Arrays.asList(
+                    ARBEIDSSOKERPERIODE_3,
+                    ARBEIDSSOKERPERIODE_1,
+                    ARBEIDSSOKERPERIODE_4,
+                    ARBEIDSSOKERPERIODE_2);
         }
     }
 }

@@ -37,6 +37,9 @@ public class ArbeidssokerService {
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
+        //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
+        //List<Arbeidssokerperiode> historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+
         return arbeidssokerperiodes.stream()
                 .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
                 .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())

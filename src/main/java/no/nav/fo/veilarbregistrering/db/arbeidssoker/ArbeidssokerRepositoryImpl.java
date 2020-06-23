@@ -10,7 +10,6 @@ import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
