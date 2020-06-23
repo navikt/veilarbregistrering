@@ -1,14 +1,13 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
+import java.util.List;
+
 public class ArbeidssokerperioderDto {
 
-    private ArbeidssokerperiodeDto arbeidssokerperiode;
+    private final List<ArbeidssokerperiodeDto> list;
 
-    public ArbeidssokerperioderDto(ArbeidssokerperiodeDto arbeidssokerperiode) {
-        this.arbeidssokerperiode = arbeidssokerperiode;
+    public ArbeidssokerperioderDto(List<ArbeidssokerperiodeDto> list) {
+        this.list = list;
     }
 
-    public ArbeidssokerperiodeDto getArbeidssokerperiode() {
-        return arbeidssokerperiode;
-    }
 }

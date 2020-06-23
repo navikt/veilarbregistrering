@@ -4,7 +4,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
+import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +16,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
-
-import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Path("/arbeidssoker")
@@ -41,9 +44,20 @@ public class ArbeidssokerResource {
     ) {
         Bruker bruker = userService.hentBruker();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
-        throw new UnsupportedOperationException("GET /arbeidssoker/periode er ikke klar til bruk");
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
+                bruker.getFoedselsnummer(), Periode.of(fraOgMed, tilOgMed));
+
+        return map(arbeidssokerperiodes);
+    }
+
+    private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperiodes) {
+        List<ArbeidssokerperiodeDto> list = arbeidssokerperiodes.stream()
+                .map(periode -> new ArbeidssokerperiodeDto(periode.getPeriode().getFra(), null))
+                .collect(Collectors.toList());
+
+        return new ArbeidssokerperioderDto(list);
     }
 
 }

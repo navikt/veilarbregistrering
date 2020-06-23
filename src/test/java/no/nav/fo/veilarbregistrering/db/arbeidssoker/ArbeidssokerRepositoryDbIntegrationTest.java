@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
@@ -11,12 +12,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+
+    private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("01234567890");
 
     @Inject
     private JdbcTemplate jdbcTemplate;
@@ -34,7 +38,7 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
         EndretFormidlingsgruppeCommand command = new EndretFormidlingsgruppeCommand() {
             @Override
             public Optional<Foedselsnummer> getFoedselsnummer() {
-                return Optional.of(Foedselsnummer.of("01234567890"));
+                return Optional.of(FOEDSELSNUMMER);
             }
 
             @Override
@@ -54,8 +58,10 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
         };
 
         long id = arbeidssokerRepository.lagre(command);
-
         assertThat(id).isNotNull();
+
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(FOEDSELSNUMMER);
+        assertThat(arbeidssokerperiodes).hasSize(1);
     }
 
 }

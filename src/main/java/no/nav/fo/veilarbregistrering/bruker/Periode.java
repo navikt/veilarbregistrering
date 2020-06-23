@@ -38,4 +38,24 @@ public class Periode {
     public String tilDatoAs_yyyyMMdd() {
         return til != null ? til.toString() : null;
     }
+
+    public LocalDate getFra() {
+        return fra;
+    }
+
+    public LocalDate getTil() {
+        return til;
+    }
+
+    public boolean erInnenfor(Periode forespurtPeriode) {
+        if (til.isBefore(forespurtPeriode.getFra())) {
+            return false;
+        }
+
+        if (fra.isAfter(forespurtPeriode.getTil())) {
+            return false;
+        }
+
+        return true;
+    }
 }
