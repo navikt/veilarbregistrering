@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Periode {
 
@@ -67,4 +68,17 @@ public class Periode {
         return forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Periode periode = (Periode) o;
+        return Objects.equals(fra, periode.fra) &&
+                Objects.equals(til, periode.til);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fra, til);
+    }
 }
