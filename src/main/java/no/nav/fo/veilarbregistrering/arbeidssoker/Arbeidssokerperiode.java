@@ -18,4 +18,8 @@ public class Arbeidssokerperiode {
     public Periode getPeriode() {
         return periode;
     }
+
+    public Formidlingsgruppe getFormidlingsgruppe() {
+        return formidlingsgruppe;
+    }
 }

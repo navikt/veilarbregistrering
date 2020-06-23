@@ -37,7 +37,8 @@ public class ArbeidssokerService {
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
         return arbeidssokerperiodes.stream()
-                .filter(p -> p.getPeriode().erInnenfor(forespurtPeriode))
+                .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
+                .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
                 .collect(Collectors.toList());
     }
 }

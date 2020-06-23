@@ -65,6 +65,10 @@ public class Formidlingsgruppe implements Metric {
         return Objects.hash(formidlingsgruppe);
     }
 
+    public boolean erArbeidssoker() {
+        return "ARBS".equals(formidlingsgruppe);
+    }
+
     /**
      * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
      */

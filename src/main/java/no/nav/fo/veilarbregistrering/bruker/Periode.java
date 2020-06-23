@@ -47,8 +47,8 @@ public class Periode {
         return til;
     }
 
-    public boolean erInnenfor(Periode forespurtPeriode) {
-        if (til.isBefore(forespurtPeriode.getFra())) {
+    public boolean overlapperMed(Periode forespurtPeriode) {
+        if (forespurtPeriode.getFra().isAfter(til)) {
             return false;
         }
 

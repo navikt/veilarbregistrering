@@ -27,7 +27,7 @@ public class PeriodeTest {
         Periode periodeMedTildato = Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 4, 1));
         Periode forespurtPeriode = Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 5, 1));
 
-        assertThat(periodeMedTildato.erInnenfor(forespurtPeriode)).isTrue();
+        assertThat(periodeMedTildato.overlapperMed(forespurtPeriode)).isTrue();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class PeriodeTest {
         Periode periodeMedTildato = Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31));
         Periode forespurtPeriode = Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 5, 1));
 
-        assertThat(periodeMedTildato.erInnenfor(forespurtPeriode)).isFalse();
+        assertThat(periodeMedTildato.overlapperMed(forespurtPeriode)).isFalse();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class PeriodeTest {
         Periode periodeMedTildato = Periode.of(LocalDate.of(2020, 6, 1), LocalDate.of(2020, 8, 31));
         Periode forespurtPeriode = Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 5, 1));
 
-        assertThat(periodeMedTildato.erInnenfor(forespurtPeriode)).isFalse();
+        assertThat(periodeMedTildato.overlapperMed(forespurtPeriode)).isFalse();
     }
 
     //@Test
@@ -51,6 +51,6 @@ public class PeriodeTest {
         Periode periodeMedTildato = Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 4, 1));
         Periode forespurtPeriode = Periode.of(LocalDate.of(2020, 2, 1), null);
 
-        assertThat(periodeMedTildato.erInnenfor(forespurtPeriode)).isTrue();
+        assertThat(periodeMedTildato.overlapperMed(forespurtPeriode)).isTrue();
     }
 }
