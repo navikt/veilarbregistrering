@@ -48,14 +48,23 @@ public class Periode {
     }
 
     public boolean overlapperMed(Periode forespurtPeriode) {
-        if (til != null && forespurtPeriode.getFra().isAfter(til)) {
+        if (forespurtPeriodeAvsluttesFørPeriodeStarter(forespurtPeriode)) {
             return false;
         }
 
-        if (forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil())) {
+        if (forespurtPeriodeStarterEtterPeriodeErAvsluttet(forespurtPeriode)) {
             return false;
         }
 
         return true;
     }
+
+    private boolean forespurtPeriodeStarterEtterPeriodeErAvsluttet(Periode forespurtPeriode) {
+        return til != null && forespurtPeriode.getFra().isAfter(til);
+    }
+
+    private boolean forespurtPeriodeAvsluttesFørPeriodeStarter(Periode forespurtPeriode) {
+        return forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil());
+    }
+
 }

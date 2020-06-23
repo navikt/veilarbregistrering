@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class ArbeidssokerService {
         return arbeidssokerperiodes.stream()
                 .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
                 .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
+                .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
                 .collect(Collectors.toList());
     }
 }

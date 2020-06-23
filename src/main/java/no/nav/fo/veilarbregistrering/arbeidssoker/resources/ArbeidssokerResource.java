@@ -52,12 +52,12 @@ public class ArbeidssokerResource {
         return map(arbeidssokerperiodes);
     }
 
-    private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperiodes) {
-        List<ArbeidssokerperiodeDto> list = arbeidssokerperiodes.stream()
+    private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperioder) {
+        List<ArbeidssokerperiodeDto> arbeidssokerperiodeDtoer = arbeidssokerperioder.stream()
                 .map(periode -> new ArbeidssokerperiodeDto(periode.getPeriode().getFra(), null))
                 .collect(Collectors.toList());
 
-        return new ArbeidssokerperioderDto(list);
+        return new ArbeidssokerperioderDto(arbeidssokerperiodeDtoer);
     }
 
 }
