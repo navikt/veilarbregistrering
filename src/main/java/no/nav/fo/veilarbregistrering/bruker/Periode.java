@@ -48,11 +48,11 @@ public class Periode {
     }
 
     public boolean overlapperMed(Periode forespurtPeriode) {
-        if (forespurtPeriode.getFra().isAfter(til)) {
+        if (til != null && forespurtPeriode.getFra().isAfter(til)) {
             return false;
         }
 
-        if (fra.isAfter(forespurtPeriode.getTil())) {
+        if (forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil())) {
             return false;
         }
 
