@@ -42,6 +42,11 @@ public class ArbeidssokerResource {
         @QueryParam("fraOgMed") LocalDate fraOgMed,
         @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
+        /*
+        VALIDERING:
+        Hvis fraOgMed == null return BadRequest/IllegalArgument
+        Hvis tilOgMed != null og fraOgMed > tilOgMed return BadRequest/IllegalArgument
+         */
         Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
