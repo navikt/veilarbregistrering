@@ -40,6 +40,8 @@ public class ArbeidssokerService {
         //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
         //List<Arbeidssokerperiode> historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
 
+        // if forespørt periode starter før første registrerte arbeidssokerperiode, så må vi ut å hente mer ...
+
         return arbeidssokerperiodes.stream()
                 .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
                 .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
