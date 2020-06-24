@@ -19,6 +19,7 @@ enhet_url: https://modapp.adeo.no/ereg/api
 isso_isalive_url: https://isso.adeo.no/isso/isAlive.jsp
 kafka_url: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
 kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
+arena_ords_api: https://arena-ords.nais.adeo.no/arena/api
 ingresses:
   - https://veilarbregistrering.nais.adeo.no
   - https://app.adeo.no/veilarbregistrering
