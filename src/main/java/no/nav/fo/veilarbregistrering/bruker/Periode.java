@@ -12,6 +12,16 @@ public class Periode {
         return new Periode(fra, til);
     }
 
+    public static Periode gyldigPeriode(LocalDate fraOgMed, LocalDate tilOgMed) {
+        if (fraOgMed == null) {
+            throw new IllegalArgumentException("FraOgMed-dato er null");
+        }
+        if (tilOgMed != null && fraOgMed.isAfter(tilOgMed)) {
+            throw new IllegalArgumentException("FraOgMed-dato er etter TilOgMed-dato");
+        }
+        return new Periode(fraOgMed, tilOgMed);
+    }
+
     private Periode(LocalDate fra, LocalDate til) {
         this.fra = fra;
         this.til = til;

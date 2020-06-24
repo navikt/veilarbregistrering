@@ -42,20 +42,12 @@ public class ArbeidssokerResource {
         @QueryParam("fraOgMed") LocalDate fraOgMed,
         @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
-
-        if (fraOgMed == null) {
-            throw new IllegalArgumentException("FraOgMed-dato er null");
-        }
-        if (tilOgMed != null && fraOgMed.isAfter(tilOgMed)) {
-            throw new IllegalArgumentException("FraOgMed-dato er etter TilOgMed-dato");
-        }
-
         Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
-                bruker.getFoedselsnummer(), Periode.of(fraOgMed, tilOgMed));
+                bruker.getFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
         return map(arbeidssokerperiodes);
     }
