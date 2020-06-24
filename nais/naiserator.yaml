@@ -58,6 +58,8 @@ spec:
     value: {{ kafka_schema_url }}
   - name: ARENA_ORDS_API
     value: {{ arena_ords_api }}
+  - name: ARENA_ORDS_TOKEN_PROVIDER
+    value: {{ arena_ords_token_provider }}
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
