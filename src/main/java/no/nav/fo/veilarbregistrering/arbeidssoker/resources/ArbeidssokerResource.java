@@ -54,7 +54,9 @@ public class ArbeidssokerResource {
 
     private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperioder) {
         List<ArbeidssokerperiodeDto> arbeidssokerperiodeDtoer = arbeidssokerperioder.stream()
-                .map(periode -> new ArbeidssokerperiodeDto(periode.getPeriode().getFra(), null))
+                .map(periode -> new ArbeidssokerperiodeDto(
+                        periode.getPeriode().getFra(),
+                        periode.getPeriode().getTil()))
                 .collect(Collectors.toList());
 
         return new ArbeidssokerperioderDto(arbeidssokerperiodeDtoer);

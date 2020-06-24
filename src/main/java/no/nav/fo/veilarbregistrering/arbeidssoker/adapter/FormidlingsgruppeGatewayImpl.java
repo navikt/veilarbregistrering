@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
@@ -17,9 +18,11 @@ public class FormidlingsgruppeGatewayImpl implements FormidlingsgruppeGateway {
     }
 
     @Override
-    public List<Arbeidssokerperiode> finnArbeissokerperioder(Foedselsnummer foedselsnummer, Periode periode) {
-        return formidlingsgruppeRestClient.hentFormidlingshistorikk(foedselsnummer, periode)
+    public Arbeidssokerperioder finnArbeissokerperioder(Foedselsnummer foedselsnummer, Periode periode) {
+        List<Arbeidssokerperiode> arbeidssokerperioder = formidlingsgruppeRestClient.hentFormidlingshistorikk(foedselsnummer, periode)
                 .map(FormidlingshistorikkMapper::map)
                 .orElse(Collections.emptyList());
+
+        return new Arbeidssokerperioder(arbeidssokerperioder);
     }
 }

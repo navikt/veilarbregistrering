@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -39,17 +37,14 @@ public class ArbeidssokerService {
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
-
-        //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
-        List<Arbeidssokerperiode> historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
         // if forespørt periode starter før første registrerte arbeidssokerperiode, så må vi ut å hente mer ...
+        if (!arbeidssokerperioder.dekkerHele(forespurtPeriode)) {
+            Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+            //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
+        }
 
-        return arbeidssokerperiodes.stream()
-                .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
-                .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
-                .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
-                .collect(Collectors.toList());
+        return arbeidssokerperioder.overlapperMed(forespurtPeriode);
     }
 }

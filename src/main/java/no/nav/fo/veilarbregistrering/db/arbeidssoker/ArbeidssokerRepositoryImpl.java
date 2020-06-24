@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
@@ -40,9 +41,9 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     }
 
     @Override
-    public List<Arbeidssokerperiode> finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
+    public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER = ?";
-        return jdbcTemplate.query(
+        List<Arbeidssokerperiode> arbeidssokerperioder = jdbcTemplate.query(
                 sql,
                 new Object[]{foedselsnummer.stringValue()},
                 (rs, row) -> new Arbeidssokerperiode(
@@ -50,5 +51,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                         Periode.of(
                                 rs.getTimestamp("FORMIDLINGSGRUPPE_ENDRET").toLocalDateTime().toLocalDate(),
                                 null)));
+
+        return new Arbeidssokerperioder(arbeidssokerperioder);
     }
 }

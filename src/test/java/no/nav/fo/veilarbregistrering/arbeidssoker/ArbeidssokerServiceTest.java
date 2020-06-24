@@ -56,12 +56,12 @@ public class ArbeidssokerServiceTest {
         }
 
         @Override
-        public List<Arbeidssokerperiode> finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
-            return Arrays.asList(
+        public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
+            return new Arbeidssokerperioder(Arrays.asList(
                     ARBEIDSSOKERPERIODE_3,
                     ARBEIDSSOKERPERIODE_1,
                     ARBEIDSSOKERPERIODE_4,
-                    ARBEIDSSOKERPERIODE_2);
+                    ARBEIDSSOKERPERIODE_2));
         }
     }
 }

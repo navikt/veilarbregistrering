@@ -78,6 +78,10 @@ public class Periode {
         return forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil());
     }
 
+    public boolean isAfter(Periode periode) {
+        return fra.isAfter(periode.getFra());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
@@ -60,8 +59,8 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
         long id = arbeidssokerRepository.lagre(command);
         assertThat(id).isNotNull();
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(FOEDSELSNUMMER);
-        assertThat(arbeidssokerperiodes).hasSize(1);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(FOEDSELSNUMMER);
+        assertThat(arbeidssokerperiodes.asList()).hasSize(1);
     }
 
 }
