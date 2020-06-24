@@ -16,7 +16,8 @@ public class ArbeidssokerServiceTest {
     public static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("123445678911");
 
     private final ArbeidssokerService arbeidssokerService = new ArbeidssokerService(
-            new CustomArbeidssokerRepository());
+            new CustomArbeidssokerRepository(),
+            (foedselsnummer, periode) -> null);
 
     @Test
     public void hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {

@@ -8,8 +8,9 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class FormidlingsgruppeGatewayConfig {
-    public static final String ARENA_ORDS_TOKEN_PROVIDER = "ARENA_ORDS_TOKEN_PROVIDER";
-    public static final String ARENA_ORDS_API = "ARENA_ORDS_API";
+
+    private static final String ARENA_ORDS_TOKEN_PROVIDER = "ARENA_ORDS_TOKEN_PROVIDER";
+    private static final String ARENA_ORDS_API = "ARENA_ORDS_API";
 
     @Bean
     ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient() {

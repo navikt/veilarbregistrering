@@ -17,9 +17,13 @@ public class ArbeidssokerService {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerService.class);
 
     private final ArbeidssokerRepository arbeidssokerRepository;
+    private final FormidlingsgruppeGateway formidlingsgruppeGateway;
 
-    public ArbeidssokerService(ArbeidssokerRepository arbeidssokerRepository) {
+    public ArbeidssokerService(
+            ArbeidssokerRepository arbeidssokerRepository,
+            FormidlingsgruppeGateway formidlingsgruppeGateway) {
         this.arbeidssokerRepository = arbeidssokerRepository;
+        this.formidlingsgruppeGateway = formidlingsgruppeGateway;
     }
 
     @Transactional
@@ -38,7 +42,7 @@ public class ArbeidssokerService {
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
         //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
-        //List<Arbeidssokerperiode> historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+        List<Arbeidssokerperiode> historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
 
         // if forespørt periode starter før første registrerte arbeidssokerperiode, så må vi ut å hente mer ...
 
