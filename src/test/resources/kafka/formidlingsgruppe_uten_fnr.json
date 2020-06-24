@@ -1,0 +1,13 @@
+{
+  "table": "SIAMO.PERSON",
+  "op_type": "I",
+  "op_ts": "2020-06-24 11:20:08.984191",
+  "current_ts": "2020-06-24T11:23:53.380002",
+  "pos": "00000000000000021440",
+  "after": {
+    "PERSON_ID": 1652,
+    "FODSELSNR": null,
+    "FORMIDLINGSGRUPPEKODE": "ISERV",
+    "MOD_DATO": "2007-12-03 03:05:54"
+  }
+}

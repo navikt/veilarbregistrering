@@ -26,8 +26,8 @@ public class ArbeidssokerService {
     public void behandle(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
 
         if (!endretFormidlingsgruppeCommand.getFoedselsnummer().isPresent()) {
-            LOG.warn(format("Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s"),
-                    endretFormidlingsgruppeCommand.getPerson_id());
+            LOG.warn(format("Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
+                    endretFormidlingsgruppeCommand.getPerson_id()));
             return;
         }
 
