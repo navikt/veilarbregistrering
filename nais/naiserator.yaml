@@ -56,6 +56,8 @@ spec:
     value: {{ kafka_url }}
   - name: KAFKA_SCHEMA
     value: {{ kafka_schema_url }}
+  - name: ARENA_ORDS_API
+    value: {{ arena_ords_api }}
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080

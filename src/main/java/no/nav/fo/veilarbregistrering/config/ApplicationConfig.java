@@ -8,6 +8,7 @@ import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
+import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
@@ -58,7 +59,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         SykemeldingGatewayConfig.class,
         PdlOppslagConfig.class,
         EnhetGatewayConfig.class,
-        KrrConfig.class
+        KrrConfig.class,
+        FormidlingsgruppeGatewayConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 
