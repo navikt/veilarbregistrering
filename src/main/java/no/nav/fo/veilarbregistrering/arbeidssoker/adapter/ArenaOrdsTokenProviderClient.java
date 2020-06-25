@@ -101,6 +101,10 @@ public class ArenaOrdsTokenProviderClient {
         @JsonAlias("expires_in")
         int expiresIn;
 
+        public OrdsToken() {
+            //default constructor
+        }
+
         public OrdsToken(String accessToken, String tokenType, int expiresIn) {
             this.accessToken = accessToken;
             this.tokenType = tokenType;
