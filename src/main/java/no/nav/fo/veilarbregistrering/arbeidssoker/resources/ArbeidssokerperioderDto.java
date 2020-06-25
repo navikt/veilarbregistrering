@@ -4,10 +4,9 @@ import java.util.List;
 
 public class ArbeidssokerperioderDto {
 
-    private final List<ArbeidssokerperiodeDto> list;
+    private final List<ArbeidssokerperiodeDto> arbeidssokerperioder;
 
-    public ArbeidssokerperioderDto(List<ArbeidssokerperiodeDto> list) {
-        this.list = list;
+    public ArbeidssokerperioderDto(List<ArbeidssokerperiodeDto> arbeidssokerperioder) {
+        this.arbeidssokerperioder = arbeidssokerperioder;
     }
-
 }

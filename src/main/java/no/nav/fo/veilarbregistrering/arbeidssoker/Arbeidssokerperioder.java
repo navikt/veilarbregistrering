@@ -11,14 +11,14 @@ import static java.util.Collections.emptyList;
 
 public class Arbeidssokerperioder {
 
-    private final List<Arbeidssokerperiode> arbeidssokerperiodes;
+    private final List<Arbeidssokerperiode> arbeidssokerperioder;
 
-    public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperiodes) {
-        this.arbeidssokerperiodes = arbeidssokerperiodes != null ? arbeidssokerperiodes : emptyList();
+    public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperioder) {
+        this.arbeidssokerperioder = arbeidssokerperioder != null ? arbeidssokerperioder : emptyList();
     }
 
     public List<Arbeidssokerperiode> overlapperMed(Periode forespurtPeriode) {
-        return arbeidssokerperiodes.stream()
+        return arbeidssokerperioder.stream()
                 .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
                 .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
                 .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
@@ -26,7 +26,7 @@ public class Arbeidssokerperioder {
     }
 
     public boolean dekkerHele(Periode forespurtPeriode) {
-        Optional<Arbeidssokerperiode> eldsteArbeidssokerperiode = arbeidssokerperiodes.stream()
+        Optional<Arbeidssokerperiode> eldsteArbeidssokerperiode = arbeidssokerperioder.stream()
                 .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
                 .findFirst();
 
@@ -36,6 +36,13 @@ public class Arbeidssokerperioder {
     }
 
     public List<Arbeidssokerperiode> asList() {
-        return arbeidssokerperiodes;
+        return arbeidssokerperioder;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "arbeidssokerperioder=" + arbeidssokerperioder +
+                '}';
     }
 }

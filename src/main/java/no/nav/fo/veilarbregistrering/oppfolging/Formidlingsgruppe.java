@@ -43,8 +43,8 @@ public class Formidlingsgruppe implements Metric {
 
     @Override
     public String toString() {
-        return "Formidlingsgruppe{" +
-                "formidlingsgruppe='" + formidlingsgruppe + '\'' +
+        return "{" +
+                "kode='" + formidlingsgruppe + '\'' +
                 '}';
     }
 

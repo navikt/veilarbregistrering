@@ -39,7 +39,7 @@ public class Arbeidssokerperiode {
 
     @Override
     public String toString() {
-        return "Arbeidssokerperiode{" +
+        return "{" +
                 "formidlingsgruppe=" + formidlingsgruppe +
                 ", periode=" + periode +
                 '}';

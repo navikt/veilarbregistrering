@@ -27,14 +27,6 @@ public class Periode {
         this.til = til;
     }
 
-    @Override
-    public String toString() {
-        return "Periode{" +
-                "fra=" + fra +
-                ", til=" + til +
-                '}';
-    }
-
     /**
      * Er periode er Åpen, dersom "til"-dato er null.
      */
@@ -80,6 +72,14 @@ public class Periode {
 
     public boolean fraOgMed(Periode periode) {
         return fra.equals(periode.getFra()) || fra.isAfter(periode.getFra());
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "fra=" + fra +
+                ", til=" + til +
+                '}';
     }
 
     @Override

@@ -23,6 +23,9 @@ public class ArbeidssokerperioderTest {
     private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 4, 1), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_5 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ISERV"),
+            Periode.of(LocalDate.of(2016, 9, 24), null));
 
     @Test
     public void gitt_at_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
@@ -64,16 +67,13 @@ public class ArbeidssokerperioderTest {
     @Test
     public void gitt_at_() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                ARBEIDSSOKERPERIODE_2,
-                ARBEIDSSOKERPERIODE_4,
-                ARBEIDSSOKERPERIODE_1,
-                ARBEIDSSOKERPERIODE_3));
+                ARBEIDSSOKERPERIODE_5));
 
         Periode forespurtPeriode = Periode.of(
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2020, 5, 1));
+                LocalDate.of(2016, 10, 1),
+                LocalDate.of(2020, 6, 25));
 
         assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isTrue();
     }
-
+    
 }
