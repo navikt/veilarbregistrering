@@ -9,6 +9,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @Produces("application/json")
 @Api(value = "ArbeidssokerResource")
 public class ArbeidssokerResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerResource.class);
 
     private final ArbeidssokerService arbeidssokerService;
     private final UserService userService;
@@ -42,12 +46,20 @@ public class ArbeidssokerResource {
         @QueryParam("fraOgMed") LocalDate fraOgMed,
         @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
+        LOG.info(String.format("hentArbeidssokerperioder med fraOgMed %s og tilOgMed %s", fraOgMed, tilOgMed));
+
         Bruker bruker = userService.hentBruker();
+
+        LOG.info("Fant aktørId for bruker");
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
+        LOG.info("Tilgang ok");
+
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker.getFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
+
+        LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.size()));
 
         return map(arbeidssokerperiodes);
     }

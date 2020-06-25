@@ -39,11 +39,19 @@ public class ArbeidssokerService {
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
         Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
+        LOG.info(String.format("Fant %s arbeidssokerperioder i egen database", arbeidssokerperioder.asList().size()));
+
         if (arbeidssokerperioder.dekkerHele(forespurtPeriode)) {
+            LOG.info("Arbeidssokerperiodene dekker hele perioden, og returneres");
             return arbeidssokerperioder.overlapperMed(forespurtPeriode);
         }
 
+        LOG.info("Arbeidssokerperioden dekkes IKKE av perioden - vi forsøker ORDS-tjenesten");
+
         Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+
+        LOG.info(String.format("Fant %s arbeidssokerperioder fra ORDS-tjenesten", historiskePerioder.asList().size()));
+
         return historiskePerioder.overlapperMed(forespurtPeriode);
     }
 }
