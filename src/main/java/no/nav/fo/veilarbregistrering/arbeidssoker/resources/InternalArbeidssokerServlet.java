@@ -33,7 +33,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LocalDate fraOgMed = LocalDate.parse(req.getParameter("fraOgMed"));
-        LocalDate tilOgMed = LocalDate.parse(req.getParameter("tilOgMed"));
+        LocalDate tilOgMed = ofNullable(req.getParameter("tilOgMed")).map(LocalDate::parse).orElse(null);
 
         Bruker bruker = ofNullable(req.getParameter("fnr"))
                 .map(Foedselsnummer::of)
