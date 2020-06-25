@@ -19,6 +19,8 @@ import static java.util.Optional.ofNullable;
 
 public class InternalIdentServlet extends HttpServlet {
 
+    public static final String PATH = "/internal/bruker";
+
     private UserService userService;
 
     public InternalIdentServlet(UserService userService) {

@@ -128,6 +128,6 @@ public class ApplicationConfig implements ApiApplication {
         ServletUtil.leggTilServlet(servletContext, internalRegistreringStatusServlet, InternalRegistreringStatusServlet.PATH);
 
         InternalIdentServlet internalIdentServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalIdentServlet.class);
-        ServletUtil.leggTilServlet(servletContext, internalIdentServlet, "/internal/bruker");
+        ServletUtil.leggTilServlet(servletContext, internalIdentServlet, InternalIdentServlet.PATH);
     }
 }
