@@ -9,6 +9,7 @@ import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig;
+import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
@@ -129,5 +130,8 @@ public class ApplicationConfig implements ApiApplication {
 
         InternalIdentServlet internalIdentServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalIdentServlet.class);
         ServletUtil.leggTilServlet(servletContext, internalIdentServlet, InternalIdentServlet.PATH);
+
+        InternalArbeidssokerServlet internalArbeidssokerServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalArbeidssokerServlet.class);
+        ServletUtil.leggTilServlet(servletContext, internalArbeidssokerServlet, InternalArbeidssokerServlet.PATH);
     }
 }

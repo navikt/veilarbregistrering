@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource;
+import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
@@ -309,5 +310,10 @@ public class ServiceBeansConfig {
     @Bean
     InternalIdentServlet internalIdentServlet(UserService userService) {
         return new InternalIdentServlet(userService);
+    }
+
+    @Bean
+    InternalArbeidssokerServlet internalArbeidssokerServlet(UserService userService, ArbeidssokerService arbeidssokerService) {
+        return new InternalArbeidssokerServlet(userService, arbeidssokerService);
     }
 }
