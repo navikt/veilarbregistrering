@@ -23,7 +23,7 @@ public class ArbeidssokerServiceTest {
     public void hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {
 
         Periode forespurtPeriode = Periode.of(
-                LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER, forespurtPeriode);

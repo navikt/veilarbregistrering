@@ -39,12 +39,11 @@ public class ArbeidssokerService {
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
         Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
 
-        // if forespørt periode starter før første registrerte arbeidssokerperiode, så må vi ut å hente mer ...
-        if (!arbeidssokerperioder.dekkerHele(forespurtPeriode)) {
-            Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
-            //TODO: Flett inn disse, hvis "forespurt periode" er før arbeidssøkerperioder
+        if (arbeidssokerperioder.dekkerHele(forespurtPeriode)) {
+            return arbeidssokerperioder.overlapperMed(forespurtPeriode);
         }
 
-        return arbeidssokerperioder.overlapperMed(forespurtPeriode);
+        Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
+        return historiskePerioder.overlapperMed(forespurtPeriode);
     }
 }
