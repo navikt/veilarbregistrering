@@ -11,51 +11,69 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidssokerperioderTest {
 
-    public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 1, 1), null));
-    public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 2, 1), null));
-    public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 3, 1), null));
-    public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 4, 1), null));
 
     @Test
-    public void dersom_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
+    public void gitt_at_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
 
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
                 ARBEIDSSOKERPERIODE_1));
 
-        assertThat(arbeidssokerperioder.dekkerHele(
-                Periode.of(
-                        LocalDate.of(2020, 2, 1),
-                        null))).isTrue();
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2020, 2, 1),
+                null);
+
+        assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isTrue();
     }
 
     @Test
-    public void dersom_forespurt_periode_starter_før_eldste_periode_dekkes_ikke_hele() {
+    public void gitt_at_forespurt_periode_starter_før_eldste_periode_dekkes_ikke_hele() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
                 ARBEIDSSOKERPERIODE_1));
 
-        assertThat(arbeidssokerperioder.dekkerHele(
-                Periode.of(
-                        LocalDate.of(2019, 2, 1),
-                        null))).isFalse();
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2019, 2, 1),
+                null);
+
+        assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isFalse();
     }
 
     @Test
-    public void dersom_forespurt_periode_starter_samme_dag_som_eldste_periode_dekkes_hele_perioden() {
+    public void gitt_at_forespurt_periode_starter_samme_dag_som_eldste_periode_dekkes_hele_perioden() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
                 ARBEIDSSOKERPERIODE_1));
 
-        assertThat(arbeidssokerperioder.dekkerHele(
-                Periode.of(
-                        LocalDate.of(2020, 1, 1),
-                        null))).isTrue();
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2020, 1, 1),
+                null);
+
+        assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isTrue();
+    }
+
+    @Test
+    public void gitt_at_() {
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_2,
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_1,
+                ARBEIDSSOKERPERIODE_3));
+
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 5, 1));
+
+        assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isTrue();
     }
 
 }

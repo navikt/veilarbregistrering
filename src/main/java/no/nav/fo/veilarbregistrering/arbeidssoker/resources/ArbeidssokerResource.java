@@ -43,8 +43,9 @@ public class ArbeidssokerResource {
     @Path("/perioder")
     @ApiOperation(value = "Henter alle perioder hvor bruker er registrert som arbeidssøker.")
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
-        @QueryParam("fraOgMed") LocalDate fraOgMed,
-        @QueryParam("tilOgMed") LocalDate tilOgMed
+            @QueryParam("fnr") String fnr,
+            @QueryParam("fraOgMed") LocalDate fraOgMed,
+            @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
         LOG.info(String.format("hentArbeidssokerperioder med fraOgMed %s og tilOgMed %s", fraOgMed, tilOgMed));
 
