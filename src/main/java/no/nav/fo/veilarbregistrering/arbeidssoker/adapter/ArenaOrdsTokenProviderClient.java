@@ -57,7 +57,7 @@ public class ArenaOrdsTokenProviderClient {
                 getRequiredProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY));
 
         Request request = new Request.Builder()
-                .url(joinPaths(arenaOrdsUrl, "arena/api/oauth/token"))
+                .url(arenaOrdsUrl)
                 .header(CACHE_CONTROL, "no-cache")
                 .header(AUTHORIZATION, basicAuth)
                 .post(RequestBody.create(MediaType.get("application/x-www-form-urlencoded"), "grant_type=client_credentials"))
