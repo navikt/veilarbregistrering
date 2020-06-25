@@ -90,8 +90,8 @@ public class ArenaOrdsTokenProviderClient {
         }
     }
 
-    @Value
     static class OrdsToken {
+
         @JsonAlias("access_token")
         String accessToken;
 
@@ -100,5 +100,23 @@ public class ArenaOrdsTokenProviderClient {
 
         @JsonAlias("expires_in")
         int expiresIn;
+
+        public OrdsToken(String accessToken, String tokenType, int expiresIn) {
+            this.accessToken = accessToken;
+            this.tokenType = tokenType;
+            this.expiresIn = expiresIn;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public String getTokenType() {
+            return tokenType;
+        }
+
+        public int getExpiresIn() {
+            return expiresIn;
+        }
     }
 }
