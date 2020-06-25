@@ -78,8 +78,8 @@ public class Periode {
         return forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil());
     }
 
-    public boolean isAfter(Periode periode) {
-        return fra.isAfter(periode.getFra());
+    public boolean fraOgMed(Periode periode) {
+        return fra.equals(periode.getFra()) || fra.isAfter(periode.getFra());
     }
 
     @Override

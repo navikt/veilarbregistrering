@@ -31,7 +31,7 @@ public class Arbeidssokerperioder {
                 .findFirst();
 
         return eldsteArbeidssokerperiode
-                .map(arbeidssokerperiode -> forespurtPeriode.isAfter(arbeidssokerperiode.getPeriode()))
+                .map(arbeidssokerperiode -> forespurtPeriode.fraOgMed(arbeidssokerperiode.getPeriode()))
                 .orElse(false);
     }
 
