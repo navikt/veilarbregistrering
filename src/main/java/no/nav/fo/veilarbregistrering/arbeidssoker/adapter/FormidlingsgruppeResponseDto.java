@@ -7,9 +7,9 @@ import static java.util.Collections.emptyList;
 
 public class FormidlingsgruppeResponseDto {
 
-    private String personId;
-    private String fodselsnr;
-    private List<FormidlingshistorikkDto> formidlingshistorikk;
+    private final String personId;
+    private final String fodselsnr;
+    private final List<FormidlingshistorikkDto> formidlingshistorikk;
 
     public FormidlingsgruppeResponseDto(
             String personId,
@@ -29,6 +29,6 @@ public class FormidlingsgruppeResponseDto {
     }
 
     public List<FormidlingshistorikkDto> getFormidlingshistorikk() {
-        return formidlingshistorikk;
+        return formidlingshistorikk != null ? formidlingshistorikk : emptyList();
     }
 }
