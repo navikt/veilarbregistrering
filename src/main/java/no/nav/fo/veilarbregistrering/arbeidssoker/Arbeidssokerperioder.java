@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 public class Arbeidssokerperioder {
 
     private final List<Arbeidssokerperiode> arbeidssokerperiodes;
 
     public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperiodes) {
-        this.arbeidssokerperiodes = arbeidssokerperiodes;
+        this.arbeidssokerperiodes = arbeidssokerperiodes != null ? arbeidssokerperiodes : emptyList();
     }
 
     public List<Arbeidssokerperiode> overlapperMed(Periode forespurtPeriode) {
