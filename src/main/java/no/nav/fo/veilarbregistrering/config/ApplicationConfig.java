@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.ServletUtil;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import no.nav.apiapp.config.StsConfig;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
@@ -111,9 +112,17 @@ public class ApplicationConfig implements ApiApplication {
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
+
+        StsConfig stsConfig = StsConfig.builder()
+                .url(getRequiredProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"))
+                .username(getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"))
+                .password(getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"))
+                .build();
+
         apiAppConfigurator
                 .addOidcAuthenticator(createOpenAmAuthenticatorConfig())
                 .addOidcAuthenticator(createAzureAdB2CConfig())
+                .sts(stsConfig)
                 .sts();
     }
 
