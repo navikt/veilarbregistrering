@@ -21,7 +21,7 @@ isso_isalive_url: https://isso.adeo.no/isso/isAlive.jsp
 kafka_url: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
 kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
 arena_ords_api: https://arena-ords.nais.adeo.no/arena/api
-arena_ords_token_provider: http://arena-ords.default/arena/api/oauth/token
+arena_ords_token_provider: https://arena-ords.nais.adeo.no/arena/api/oauth/token
 ingresses:
   - https://veilarbregistrering.nais.adeo.no
   - https://app.adeo.no/veilarbregistrering
