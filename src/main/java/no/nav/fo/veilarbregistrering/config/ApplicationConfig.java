@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.ServletUtil;
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.apiapp.config.StsConfig;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.oidc.Constants;
 import no.nav.common.oidc.SystemUserTokenProvider;
@@ -71,7 +70,7 @@ public class ApplicationConfig implements ApiApplication {
     @Bean
     SystemUserTokenProvider systemUserTokenProvider() {
         return new SystemUserTokenProvider(
-                getRequiredProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"),
+                getRequiredProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL"),
                 getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"),
                 getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD")
         );
@@ -84,6 +83,15 @@ public class ApplicationConfig implements ApiApplication {
 
     @Inject
     private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public void configure(ApiAppConfigurator apiAppConfigurator) {
+        apiAppConfigurator
+                .addOidcAuthenticator(createOpenAmAuthenticatorConfig())
+                .addOidcAuthenticator(createAzureAdB2CConfig())
+                .addOidcAuthenticator(createSystemUserAuthenticatorConfig())
+                .sts();
+    }
 
     private OidcAuthenticatorConfig createOpenAmAuthenticatorConfig() {
         String discoveryUrl = getRequiredProperty("OPENAM_DISCOVERY_URL");
@@ -110,20 +118,14 @@ public class ApplicationConfig implements ApiApplication {
                 .withIdentType(IdentType.EksternBruker);
     }
 
-    @Override
-    public void configure(ApiAppConfigurator apiAppConfigurator) {
+    private OidcAuthenticatorConfig createSystemUserAuthenticatorConfig() {
+        String discoveryUrl = getRequiredProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL");
+        String clientId = getRequiredProperty("SECURITY_TOKEN_SERVICE_CLIENT_ID");
 
-        StsConfig stsConfig = StsConfig.builder()
-                .url(getRequiredProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"))
-                .username(getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"))
-                .password(getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD"))
-                .build();
-
-        apiAppConfigurator
-                .addOidcAuthenticator(createOpenAmAuthenticatorConfig())
-                .addOidcAuthenticator(createAzureAdB2CConfig())
-                .sts(stsConfig)
-                .sts();
+        return new OidcAuthenticatorConfig()
+                .withDiscoveryUrl(discoveryUrl)
+                .withClientId(clientId)
+                .withIdentType(IdentType.Systemressurs);
     }
 
     @Transactional

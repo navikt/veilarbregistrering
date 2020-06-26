@@ -28,8 +28,10 @@ spec:
     value: {{ veilarblogin_openam_refresh_url }}
   - name: SECURITYTOKENSERVICE_URL
     value: {{ securitytokenservice_url }}
-  - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
-    value: {{ securitytokenservice_openid_configuration_url }}
+  - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
+    value: {{ securitytokenservice_discovery_url }}
+  - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
+    value: {{ securitytokenservice_clientid }}
   - name: VEILARBPERSONAPI_URL
     value: {{ veilarbpersonapi_url }}
   - name: VEILARBOPPFOLGINGAPI_URL
