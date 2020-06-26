@@ -8,7 +8,7 @@ veilarblogin_openam_clientid: veilarblogin-p
 veilarblogin_openam_refresh_url: https://app.adeo.no/veilarblogin/api/openam-refresh
 securitytokenservice_url: https://sts.adeo.no/SecurityTokenServiceProvider/
 securitytokenservice_discovery_url: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
-securitytokenservice_clientid: adeo.no
+securitytokenservice_clientid: srvdp-arbeidssoker-o
 veilarbpersonapi_url: https://veilarbperson.nais.adeo.no/veilarbperson/api
 veilarboppfolgingapi_url: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp.adeo.no/asm-pdp/authorize

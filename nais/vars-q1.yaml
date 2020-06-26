@@ -8,7 +8,7 @@ veilarblogin_openam_clientid: veilarblogin-q1
 veilarblogin_openam_refresh_url: https://app-q1.adeo.no/veilarblogin/api/openam-refresh
 securitytokenservice_url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
 securitytokenservice_discovery_url: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
-securitytokenservice_clientid: preprod.local
+securitytokenservice_clientid: srvdp-arbeidssoker-o
 veilarbpersonapi_url: https://veilarbperson-q1.nais.preprod.local/veilarbperson/api
 veilarboppfolgingapi_url: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp-q1.adeo.no/asm-pdp/authorize
