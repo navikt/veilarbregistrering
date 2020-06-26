@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 public class ArbeidssokerperiodeDto {
 
-    private LocalDate fraOgMedDato;
-    private LocalDate tilOgMedDato;
+    private String fraOgMedDato;
+    private String tilOgMedDato;
 
-    public ArbeidssokerperiodeDto(LocalDate fraOgMedDato, LocalDate tilOgMedDato) {
+    public ArbeidssokerperiodeDto(String fraOgMedDato, String tilOgMedDato) {
         this.fraOgMedDato = fraOgMedDato;
         this.tilOgMedDato = tilOgMedDato;
     }
 
-    public LocalDate getFraOgMedDato() {
+    public String getFraOgMedDato() {
         return fraOgMedDato;
     }
 
-    public LocalDate getTilOgMedDato() {
+    public String getTilOgMedDato() {
         return tilOgMedDato;
     }
 }

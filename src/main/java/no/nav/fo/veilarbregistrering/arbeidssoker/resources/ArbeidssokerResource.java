@@ -19,7 +19,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 @Component
 @Path("/arbeidssoker")
@@ -62,8 +65,10 @@ public class ArbeidssokerResource {
     private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperioder) {
         List<ArbeidssokerperiodeDto> arbeidssokerperiodeDtoer = arbeidssokerperioder.stream()
                 .map(periode -> new ArbeidssokerperiodeDto(
-                        periode.getPeriode().getFra(),
-                        periode.getPeriode().getTil()))
+                        periode.getPeriode().getFra().toString(),
+                        ofNullable(periode.getPeriode().getTil())
+                                .map(LocalDate::toString)
+                                .orElse(null)))
                 .collect(Collectors.toList());
 
         return new ArbeidssokerperioderDto(arbeidssokerperiodeDtoer);

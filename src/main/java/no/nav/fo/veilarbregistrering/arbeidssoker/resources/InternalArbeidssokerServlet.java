@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
@@ -59,8 +60,10 @@ public class InternalArbeidssokerServlet extends HttpServlet {
     private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperioder) {
         List<ArbeidssokerperiodeDto> arbeidssokerperiodeDtoer = arbeidssokerperioder.stream()
                 .map(periode -> new ArbeidssokerperiodeDto(
-                        periode.getPeriode().getFra(),
-                        periode.getPeriode().getTil()))
+                        periode.getPeriode().getFra().toString(),
+                        ofNullable(periode.getPeriode().getTil())
+                                .map(LocalDate::toString)
+                                .orElse(null)))
                 .collect(Collectors.toList());
 
         return new ArbeidssokerperioderDto(arbeidssokerperiodeDtoer);
