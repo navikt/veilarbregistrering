@@ -8,10 +8,6 @@ public class Periode {
     private final LocalDate fra;
     private final LocalDate til;
 
-    public static Periode of(LocalDate fra, LocalDate til) {
-        return new Periode(fra, til);
-    }
-
     public static Periode gyldigPeriode(LocalDate fraOgMed, LocalDate tilOgMed) {
         if (fraOgMed == null) {
             throw new IllegalArgumentException("FraOgMed-dato er null");
@@ -19,7 +15,11 @@ public class Periode {
         if (tilOgMed != null && fraOgMed.isAfter(tilOgMed)) {
             throw new IllegalArgumentException("FraOgMed-dato er etter TilOgMed-dato");
         }
-        return new Periode(fraOgMed, tilOgMed);
+        return of(fraOgMed, tilOgMed);
+    }
+
+    public static Periode of(LocalDate fra, LocalDate til) {
+        return new Periode(fra, til);
     }
 
     private Periode(LocalDate fra, LocalDate til) {
