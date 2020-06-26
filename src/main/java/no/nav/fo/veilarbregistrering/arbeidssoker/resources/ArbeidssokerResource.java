@@ -47,15 +47,9 @@ public class ArbeidssokerResource {
             @QueryParam("fraOgMed") LocalDate fraOgMed,
             @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
-        LOG.info(String.format("hentArbeidssokerperioder med fraOgMed %s og tilOgMed %s", fraOgMed, tilOgMed));
-
         Bruker bruker = userService.hentBruker();
 
-        LOG.info("Fant aktørId for bruker");
-
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
-
-        LOG.info("Tilgang ok");
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker.getFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
