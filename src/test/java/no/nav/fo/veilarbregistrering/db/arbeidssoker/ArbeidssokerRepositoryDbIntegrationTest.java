@@ -42,7 +42,7 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
 
             @Override
             public String getPersonId() {
-                return null;
+                return "123456";
             }
 
             @Override
