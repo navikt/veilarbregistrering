@@ -39,7 +39,7 @@ class FormidlingsgruppeRestClient {
             return Optional.of(formidlingsgruppeResponseDto);
 
         } catch (NotFoundException e) {
-            LOG.warn("Søk på foedselsnummer gav ingen treff i Arena", e);
+            LOG.warn("Søk på fødselsnummer gav ingen treff i Arena", e);
             return Optional.empty();
 
         } catch (RuntimeException e) {
