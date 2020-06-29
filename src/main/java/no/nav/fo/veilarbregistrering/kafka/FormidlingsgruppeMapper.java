@@ -21,19 +21,25 @@ class FormidlingsgruppeMapper {
     private static FormidlingsgruppeEvent map(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
         AfterDto after = ggArenaFormidlinggruppeDto.getAfter();
 
-        LocalDateTime formidlingsgruppeEndret = ofNullable(after.getMOD_DATO())
-                .map(d -> LocalDateTime.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .orElse(null);
-
         Foedselsnummer foedselsnummer = ofNullable(after.getFODSELSNR())
                 .map(Foedselsnummer::of)
                 .orElse(null);
+
+        BeforeDto before = ggArenaFormidlinggruppeDto.getBefore();
 
         return new FormidlingsgruppeEvent(
                 foedselsnummer,
                 after.getPERSON_ID(),
                 Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
-                formidlingsgruppeEndret);
+                modDato(after.getMOD_DATO()),
+                before != null ? Formidlingsgruppe.of(before.getFORMIDLINGSGRUPPEKODE()) : null,
+                before != null ? modDato(before.getMOD_DATO()) : null);
+    }
+
+    private static LocalDateTime modDato(String mod_dato) {
+        return ofNullable(mod_dato)
+                .map(d -> LocalDateTime.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .orElse(null);
     }
 
     /**
@@ -56,17 +62,27 @@ class FormidlingsgruppeMapper {
     class GgArenaFormidlinggruppeDto {
 
         private AfterDto after;
+        private BeforeDto before;
 
-        GgArenaFormidlinggruppeDto(AfterDto after) {
+        GgArenaFormidlinggruppeDto(AfterDto after, BeforeDto before) {
             this.after = after;
+            this.before = before;
         }
 
         AfterDto getAfter() {
             return after;
         }
 
+        BeforeDto getBefore() {
+            return before;
+        }
+
         void setAfter(AfterDto after) {
             this.after = after;
+        }
+
+        void setBefore(BeforeDto before) {
+            this.before = before;
         }
     }
 
@@ -78,6 +94,53 @@ class FormidlingsgruppeMapper {
         private String MOD_DATO;
 
         AfterDto(String person_id, String fodselsnr, String formidlingsgruppekode, String mod_dato) {
+            this.PERSON_ID = person_id;
+            this.FODSELSNR = fodselsnr;
+            this.FORMIDLINGSGRUPPEKODE = formidlingsgruppekode;
+            this.MOD_DATO = mod_dato;
+        }
+
+        String getPERSON_ID() {
+            return PERSON_ID;
+        }
+
+        void setPERSON_ID(String PERSON_ID) {
+            this.PERSON_ID = PERSON_ID;
+        }
+
+        String getFODSELSNR() {
+            return FODSELSNR;
+        }
+
+        void setFODSELSNR(String FODSELSNR) {
+            this.FODSELSNR = FODSELSNR;
+        }
+
+        String getFORMIDLINGSGRUPPEKODE() {
+            return FORMIDLINGSGRUPPEKODE;
+        }
+
+        void setFORMIDLINGSGRUPPEKODE(String FORMIDLINGSGRUPPEKODE) {
+            this.FORMIDLINGSGRUPPEKODE = FORMIDLINGSGRUPPEKODE;
+        }
+
+        String getMOD_DATO() {
+            return MOD_DATO;
+        }
+
+        void setMOD_DATO(String MOD_DATO) {
+            this.MOD_DATO = MOD_DATO;
+        }
+    }
+
+    class BeforeDto {
+
+        private String PERSON_ID;
+        private String FODSELSNR;
+        private String FORMIDLINGSGRUPPEKODE;
+        private String MOD_DATO;
+
+        BeforeDto(String person_id, String fodselsnr, String formidlingsgruppekode, String mod_dato) {
             this.PERSON_ID = person_id;
             this.FODSELSNR = fodselsnr;
             this.FORMIDLINGSGRUPPEKODE = formidlingsgruppekode;

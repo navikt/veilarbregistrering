@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import java.time.LocalDate;
-
 public class ArbeidssokerperiodeDto {
 
     private String fraOgMedDato;

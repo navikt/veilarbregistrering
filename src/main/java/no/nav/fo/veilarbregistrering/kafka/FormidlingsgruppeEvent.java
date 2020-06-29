@@ -10,15 +10,25 @@ import java.util.Optional;
 public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
 
     private final Foedselsnummer foedselsnummer;
-    private final String person_id;
+    private final String personId;
     private final Formidlingsgruppe formidlingsgruppe;
     private final LocalDateTime formidlingsgruppeEndret;
+    private final Formidlingsgruppe forrigeformidlingsgruppe;
+    private final LocalDateTime forrigeformidlingsgruppeEndret;
 
-    public FormidlingsgruppeEvent(Foedselsnummer foedselsnummer, String person_id, Formidlingsgruppe formidlingsgruppe, LocalDateTime formidlingsgruppeEndret) {
+    public FormidlingsgruppeEvent(
+            Foedselsnummer foedselsnummer,
+            String personId,
+            Formidlingsgruppe formidlingsgruppe,
+            LocalDateTime formidlingsgruppeEndret,
+            Formidlingsgruppe forrigeformidlingsgruppe,
+            LocalDateTime forrigeformidlingsgruppeEndret) {
         this.foedselsnummer = foedselsnummer;
-        this.person_id = person_id;
+        this.personId = personId;
         this.formidlingsgruppe = formidlingsgruppe;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
+        this.forrigeformidlingsgruppe = forrigeformidlingsgruppe;
+        this.forrigeformidlingsgruppeEndret = forrigeformidlingsgruppeEndret;
     }
 
     @Override
@@ -27,8 +37,8 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     }
 
     @Override
-    public String getPerson_id() {
-        return person_id;
+    public String getPersonId() {
+        return personId;
     }
 
     @Override
@@ -42,12 +52,24 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     }
 
     @Override
+    public Optional<Formidlingsgruppe> getForrigeFormidlingsgruppe() {
+        return Optional.ofNullable(formidlingsgruppe);
+    }
+
+    @Override
+    public Optional<LocalDateTime> getForrigeFormidlingsgruppeEndret() {
+        return Optional.ofNullable(forrigeformidlingsgruppeEndret);
+    }
+
+    @Override
     public String toString() {
         return "FormidlingsgruppeEvent{" +
                 "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : null +
-                ", person_id='" + person_id + '\'' +
+                ", person_id='" + personId + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
+                ", forrigeFormidlingsgruppe=" + forrigeformidlingsgruppe != null ? forrigeformidlingsgruppe.toString() : null +
+                ", forrigeFormidlingsgruppeEndret=" + forrigeformidlingsgruppeEndret != null ? forrigeformidlingsgruppeEndret.toString() : null +
                 "'}'";
     }
 }

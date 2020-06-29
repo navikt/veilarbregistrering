@@ -16,7 +16,7 @@ public class FormidlingsgruppeMapperTest {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
-        assertThat(formidlingsgruppeEvent.getPerson_id()).isEqualTo("13919");
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("13919");
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ISERV"));
     }
 
@@ -26,7 +26,7 @@ public class FormidlingsgruppeMapperTest {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
-        assertThat(formidlingsgruppeEvent.getPerson_id()).isEqualTo("3226568");
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
                 .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
@@ -38,7 +38,7 @@ public class FormidlingsgruppeMapperTest {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer()).isEmpty();
-        assertThat(formidlingsgruppeEvent.getPerson_id()).isEqualTo("1652");
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("1652");
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ISERV"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
                 .isEqualTo(LocalDateTime.of(2007, 12, 3,3,5,54));
