@@ -41,8 +41,8 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
             }
 
             @Override
-            public String getPerson_id() {
-                return null;
+            public String getPersonId() {
+                return "123456";
             }
 
             @Override
@@ -53,6 +53,16 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
             @Override
             public LocalDateTime getFormidlingsgruppeEndret() {
                 return LocalDateTime.now().minusSeconds(20);
+            }
+
+            @Override
+            public Optional<Formidlingsgruppe> getForrigeFormidlingsgruppe() {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<LocalDateTime> getForrigeFormidlingsgruppeEndret() {
+                return Optional.empty();
             }
         };
 

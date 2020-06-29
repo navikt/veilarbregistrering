@@ -10,9 +10,13 @@ public interface EndretFormidlingsgruppeCommand {
 
     Optional<Foedselsnummer> getFoedselsnummer();
 
-    String getPerson_id();
+    String getPersonId();
 
     Formidlingsgruppe getFormidlingsgruppe();
 
     LocalDateTime getFormidlingsgruppeEndret();
+
+    Optional<Formidlingsgruppe> getForrigeFormidlingsgruppe();
+
+    Optional<LocalDateTime> getForrigeFormidlingsgruppeEndret();
 }

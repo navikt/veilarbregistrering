@@ -29,7 +29,7 @@ public class ArbeidssokerService {
 
         if (!endretFormidlingsgruppeCommand.getFoedselsnummer().isPresent()) {
             LOG.warn(format("Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
-                    endretFormidlingsgruppeCommand.getPerson_id()));
+                    endretFormidlingsgruppeCommand.getPersonId()));
             return;
         }
 
