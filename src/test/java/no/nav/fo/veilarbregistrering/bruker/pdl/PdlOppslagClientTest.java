@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.Oppholdstype;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +35,7 @@ public class PdlOppslagClientTest {
     public void skalHenteOppholdTilPerson() {
         PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
-            String pdlJson(String fnr, PdlRequest request) {
+            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
                 return toJson(OK_JSON);
             }
         };
@@ -45,7 +48,7 @@ public class PdlOppslagClientTest {
     public void skalHenteOppholdUtenPeriodeTilPerson() {
         PdlOppslagClient service = new PdlOppslagClient("", null) {
             @Override
-            String pdlJson(String fnr, PdlRequest request) {
+            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
                 return toJson(OK_UTEN_PERIODER_JSON);
             }
         };
@@ -58,7 +61,7 @@ public class PdlOppslagClientTest {
     public void skalFeileVedError() {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
-            String pdlJson(String fnr, PdlRequest request) {
+            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
                 return toJson(FEIL_JSON);
             }
         };
@@ -69,7 +72,7 @@ public class PdlOppslagClientTest {
     public void skalFeileVedNotFound() {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
-            String pdlJson(String fnr, PdlRequest request) {
+            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
                 return toJson(PERSON_NOT_FOUND_JSON);
             }
         };

@@ -1,12 +1,14 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl;
+package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
+
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError;
 
 import java.util.List;
 
-public class PdlResponse {
+public class PdlHentPersonResponse {
     private PdlHentPerson data;
     private List<PdlError> errors;
 
-    public PdlResponse() {
+    public PdlHentPersonResponse() {
     }
 
     public PdlHentPerson getData() {

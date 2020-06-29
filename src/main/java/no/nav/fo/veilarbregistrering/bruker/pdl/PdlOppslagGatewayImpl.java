@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.bruker.Person;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.Opphold;
 import no.nav.fo.veilarbregistrering.bruker.Person;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 import org.junit.Test;
 
 import java.time.LocalDate;

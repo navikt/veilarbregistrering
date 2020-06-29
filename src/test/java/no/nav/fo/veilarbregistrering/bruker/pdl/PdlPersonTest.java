@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

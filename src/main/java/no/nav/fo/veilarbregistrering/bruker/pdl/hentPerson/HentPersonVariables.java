@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl;
+package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
 
-public class Variables {
+public class HentPersonVariables {
 
     private String ident;
 
@@ -22,7 +22,7 @@ public class Variables {
         this.oppholdHistorikk = oppholdHistorikk;
     }
 
-    public Variables(String ident, boolean oppholdHistorikk) {
+    public HentPersonVariables(String ident, boolean oppholdHistorikk) {
         this.ident = ident;
         this.oppholdHistorikk = oppholdHistorikk;
     }

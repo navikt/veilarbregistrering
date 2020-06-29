@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl;
+package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
 
 public class PdlHentPerson  {
     private PdlPerson hentPerson;
