@@ -4,7 +4,6 @@ import no.nav.arbeid.soker.oppgave.KontaktBrukerOpprettetEvent;
 import no.nav.arbeid.soker.oppgave.Oppgavetype;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.header.Header;
@@ -31,17 +30,14 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(KontaktBrukerOpprettetKafkaConsumer.class);
 
     private final Properties kafkaConsumerProperties;
-    private final UnleashService unleashService;
     private final String topic;
     private final OppholdstillatelseService bruker;
 
     KontaktBrukerOpprettetKafkaConsumer(
             Properties kafkaConsumerProperties,
-            UnleashService unleashService,
             String topic,
             OppholdstillatelseService bruker) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
-        this.unleashService = unleashService;
         this.topic = topic;
         this.bruker = bruker;
 
@@ -56,7 +52,7 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
         try(KafkaConsumer<String, KontaktBrukerOpprettetEvent> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
             consumer.subscribe(Collections.singletonList(topic));
 
-            while (konsumeringAvKontaktBruker()) {
+            while (true) {
                 ConsumerRecords<String, KontaktBrukerOpprettetEvent> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}}", consumerRecords.count(), topic);
 
@@ -82,9 +78,5 @@ class KontaktBrukerOpprettetKafkaConsumer implements Runnable {
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
         }
-    }
-
-    private boolean konsumeringAvKontaktBruker() {
-        return unleashService.isEnabled("veilarbregistrering.konsumeringAvKontaktBruker");
     }
 }

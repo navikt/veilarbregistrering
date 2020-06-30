@@ -70,11 +70,9 @@ public class KafkaConfig {
 
     @Bean
     KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
-            UnleashService unleashService,
             OppholdstillatelseService oppholdstillatelseService) {
         return new KontaktBrukerOpprettetKafkaConsumer(
                 kafkaConsumerProperties(),
-                unleashService,
                 "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(),
                 oppholdstillatelseService);
     }
