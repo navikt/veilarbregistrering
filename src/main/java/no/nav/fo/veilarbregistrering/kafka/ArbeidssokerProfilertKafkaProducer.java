@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.log.CallId;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerProfilertProducer;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -26,23 +25,15 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerProfilertKafkaProducer.class);
 
     private final KafkaProducer producer;
-    private final UnleashService unleashService;
     private final String topic;
 
-    ArbeidssokerProfilertKafkaProducer(
-            KafkaProducer kafkaProducer, UnleashService unleashService, String topic) {
+    ArbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer, String topic) {
         this.producer = kafkaProducer;
-        this.unleashService = unleashService;
         this.topic = topic;
     }
 
     @Override
     public void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
-        if (publiseringErAvskrudd()) {
-            LOG.info("Publisering av profilering er togglet av");
-            return;
-        }
-
         try {
             ArbeidssokerProfilertEvent arbeidssokerProfilertEvent = map(aktorId, innsatsgruppe, profilertDato);
             ProducerRecord<String, ArbeidssokerProfilertEvent> record = new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerProfilertEvent);
@@ -59,10 +50,6 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
         } catch (Exception e) {
             LOG.error("Sending av ArbeidssokerProfilertEvent til Kafka feilet", e);
         }
-    }
-
-    private boolean publiseringErAvskrudd() {
-        return !unleashService.isEnabled("veilarbregistrering.publiseringAvArbeidssokerProfilert");
     }
 
     private static ArbeidssokerProfilertEvent map(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
