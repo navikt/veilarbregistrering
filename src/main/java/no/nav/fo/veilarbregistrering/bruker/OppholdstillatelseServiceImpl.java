@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,19 +13,13 @@ public class OppholdstillatelseServiceImpl implements OppholdstillatelseService 
     private static final Logger LOG = LoggerFactory.getLogger(OppholdstillatelseServiceImpl.class);
 
     private final PdlOppslagGateway pdlOppslagGateway;
-    private final UnleashService unleashService;
 
-    public OppholdstillatelseServiceImpl(PdlOppslagGateway pdlOppslagGateway, UnleashService unleashService) {
+    public OppholdstillatelseServiceImpl(PdlOppslagGateway pdlOppslagGateway) {
         this.pdlOppslagGateway = pdlOppslagGateway;
-        this.unleashService = unleashService;
     }
 
     @Override
     public void hentOgSammenlignOppholdFor(AktorId aktorid) {
-        if (!pdlIsEnabled()) {
-            return;
-        }
-
         try {
             Optional<Person> person = pdlOppslagGateway.hentPerson(aktorid);
             person.ifPresent(p -> {
@@ -38,9 +31,4 @@ public class OppholdstillatelseServiceImpl implements OppholdstillatelseService 
             LOG.error("Feil ved henting av data fra PDL", e);
         }
     }
-
-    private boolean pdlIsEnabled() {
-        return unleashService.isEnabled("veilarbregistrering.pdlEnabled");
-    }
-
 }

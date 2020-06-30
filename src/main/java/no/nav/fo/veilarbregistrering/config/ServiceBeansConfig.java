@@ -275,9 +275,8 @@ public class ServiceBeansConfig {
 
     @Bean
     OppholdstillatelseService datakvalitetOppholdstillatelseService(
-            PdlOppslagGateway pdlOppslagGateway,
-            UnleashService unleashService) {
-        return new OppholdstillatelseServiceImpl(pdlOppslagGateway, unleashService);
+            PdlOppslagGateway pdlOppslagGateway) {
+        return new OppholdstillatelseServiceImpl(pdlOppslagGateway);
     }
 
     @Bean
