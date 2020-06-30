@@ -4,11 +4,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.fo.veilarbregistrering.bruker.*;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
+import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -26,17 +26,14 @@ public class KontaktinfoResource {
     private final KontaktinfoService kontaktinfoService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
-    private final UnleashService unleashService;
 
     public KontaktinfoResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            KontaktinfoService kontaktinfoService,
-            UnleashService unleashService) {
+            KontaktinfoService kontaktinfoService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.kontaktinfoService = kontaktinfoService;
-        this.unleashService = unleashService;
     }
 
     @GET
@@ -49,10 +46,6 @@ public class KontaktinfoResource {
     })
     public KontaktinfoDto hentKontaktinfo() {
         final Bruker bruker = userService.hentBruker();
-
-        if (!unleashService.isEnabled("veilarbregistrering.kontaktinfo")) {
-            throw new Feil(FeilType.SERVICE_UNAVAILABLE, "Tjenesten er ikke skrudd på");
-        }
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
