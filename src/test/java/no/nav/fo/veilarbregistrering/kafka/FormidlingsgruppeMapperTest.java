@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,7 @@ public class FormidlingsgruppeMapperTest {
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer()).isEmpty();
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("1652");
+        assertThat(formidlingsgruppeEvent.getOperation()).isEqualTo(Operation.INSERT);
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ISERV"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
                 .isEqualTo(LocalDateTime.of(2007, 12, 3,3,5,54));
@@ -51,6 +53,7 @@ public class FormidlingsgruppeMapperTest {
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
+        assertThat(formidlingsgruppeEvent.getOperation()).isEqualTo(Operation.UPDATE);
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
                 .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
