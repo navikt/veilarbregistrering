@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.*;
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidssokerperioderTest {
@@ -30,7 +32,6 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_at_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
-
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
                 ARBEIDSSOKERPERIODE_1));
 
@@ -79,29 +80,23 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_flere_perioder_skal_de_periodene_hvor_en_er_arbs_returneres() {
-        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                new Arbeidssokerperiode(
-                        Formidlingsgruppe.of("ARBS"),
-                        Periode.of(
-                                LocalDate.of(2020, 3, 19),
-                                LocalDate.of(2020, 4, 20))),
-                new Arbeidssokerperiode(
-                        Formidlingsgruppe.of("ISERV"),
-                        Periode.of(
-                                LocalDate.of(2020, 4, 21),
-                                LocalDate.of(2020, 4, 29)
-                        )),
-                new Arbeidssokerperiode(
-                        Formidlingsgruppe.of("ARBS"),
-                        Periode.of(
-                                LocalDate.of(2020, 4, 30),
-                                null))));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(Periode.of(
-                LocalDate.of(2020, 4, 13),
-                LocalDate.of(2020, 6, 28)));
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 3, 19))
+                        .til(LocalDate.of(2020, 4, 20)))
+                .periode(medIserv()
+                        .fra(LocalDate.of(2020, 4, 21))
+                        .til(LocalDate.of(2020, 4, 29)))
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 4, 30)))
+                .build();
+
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(
+                Periode.of(
+                        LocalDate.of(2020, 4, 13),
+                        LocalDate.of(2020, 6, 28)));
 
         assertThat(arbeidssokerperiodes).hasSize(2);
     }
-
 }
