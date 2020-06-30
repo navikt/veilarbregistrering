@@ -53,7 +53,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
 
     @Override
     public Optional<Formidlingsgruppe> getForrigeFormidlingsgruppe() {
-        return Optional.ofNullable(formidlingsgruppe);
+        return Optional.ofNullable(forrigeformidlingsgruppe);
     }
 
     @Override

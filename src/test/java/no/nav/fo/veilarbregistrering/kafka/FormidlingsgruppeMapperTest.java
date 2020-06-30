@@ -44,4 +44,19 @@ public class FormidlingsgruppeMapperTest {
                 .isEqualTo(LocalDateTime.of(2007, 12, 3,3,5,54));
     }
 
+    @Test
+    public void skal_mappe_bade_after_og_before() {
+        String json = FileToJson.toJson("/kafka/formidlingsgruppe_med_mod_dato.json");
+        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+
+        assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
+                .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
+        assertThat(formidlingsgruppeEvent.getForrigeFormidlingsgruppe()).hasValue(Formidlingsgruppe.of("ISERV"));
+        assertThat(formidlingsgruppeEvent.getForrigeFormidlingsgruppeEndret())
+                .hasValue(LocalDateTime.of(2020, 6, 18,11,13,1));
+    }
+
 }
