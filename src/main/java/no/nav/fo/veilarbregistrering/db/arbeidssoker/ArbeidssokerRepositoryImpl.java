@@ -31,6 +31,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                         .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!"))
                         .stringValue())
                 .value("PERSON_ID", endretFormidlingsgruppeCommand.getPersonId())
+                .value("OPERASJON", endretFormidlingsgruppeCommand.getOperation().name())
                 .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
                 .value("FORMIDLINGSGRUPPE_ENDRET", Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()))
                 .value("FORR_FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppe()

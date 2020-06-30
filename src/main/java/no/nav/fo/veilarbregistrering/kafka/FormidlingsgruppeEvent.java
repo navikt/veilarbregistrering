@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
@@ -11,6 +12,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
 
     private final Foedselsnummer foedselsnummer;
     private final String personId;
+    private final Operation operation;
     private final Formidlingsgruppe formidlingsgruppe;
     private final LocalDateTime formidlingsgruppeEndret;
     private final Formidlingsgruppe forrigeformidlingsgruppe;
@@ -19,12 +21,14 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     public FormidlingsgruppeEvent(
             Foedselsnummer foedselsnummer,
             String personId,
+            Operation operation,
             Formidlingsgruppe formidlingsgruppe,
             LocalDateTime formidlingsgruppeEndret,
             Formidlingsgruppe forrigeformidlingsgruppe,
             LocalDateTime forrigeformidlingsgruppeEndret) {
         this.foedselsnummer = foedselsnummer;
         this.personId = personId;
+        this.operation = operation;
         this.formidlingsgruppe = formidlingsgruppe;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
         this.forrigeformidlingsgruppe = forrigeformidlingsgruppe;
@@ -39,6 +43,11 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     @Override
     public String getPersonId() {
         return personId;
+    }
+
+    @Override
+    public Operation getOperation() {
+        return operation;
     }
 
     @Override
@@ -65,7 +74,8 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     public String toString() {
         return "FormidlingsgruppeEvent{" +
                 "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : null +
-                ", person_id='" + personId + '\'' +
+                ", personId='" + personId + '\'' +
+                ", operation='" + operation + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
                 ", forrigeFormidlingsgruppe=" + forrigeformidlingsgruppe != null ? forrigeformidlingsgruppe.toString() : null +

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import com.google.gson.Gson;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
@@ -30,10 +31,20 @@ class FormidlingsgruppeMapper {
         return new FormidlingsgruppeEvent(
                 foedselsnummer,
                 after.getPERSON_ID(),
+                mapOperation(ggArenaFormidlinggruppeDto.getOp_type()),
                 Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
                 modDato(after.getMOD_DATO()),
                 before != null ? Formidlingsgruppe.of(before.getFORMIDLINGSGRUPPEKODE()) : null,
                 before != null ? modDato(before.getMOD_DATO()) : null);
+    }
+
+    private static Operation mapOperation(String operation) {
+        switch (operation) {
+            case "I" : return Operation.INSERT;
+            case "U" : return Operation.UPDATE;
+            case "D" : return Operation.DELETE;
+            default: throw new IllegalArgumentException("Ukjent op_type-verdi på Kafka: " + operation);
+        }
     }
 
     private static LocalDateTime modDato(String mod_dato) {
@@ -61,12 +72,18 @@ class FormidlingsgruppeMapper {
      */
     class GgArenaFormidlinggruppeDto {
 
+        private String op_type;
         private AfterDto after;
         private BeforeDto before;
 
-        GgArenaFormidlinggruppeDto(AfterDto after, BeforeDto before) {
+        GgArenaFormidlinggruppeDto(String op_type, AfterDto after, BeforeDto before) {
+            this.op_type = op_type;
             this.after = after;
             this.before = before;
+        }
+
+        String getOp_type() {
+            return op_type;
         }
 
         AfterDto getAfter() {
@@ -83,6 +100,10 @@ class FormidlingsgruppeMapper {
 
         void setBefore(BeforeDto before) {
             this.before = before;
+        }
+
+        void setOp_type(String op_type) {
+            this.op_type = op_type;
         }
     }
 

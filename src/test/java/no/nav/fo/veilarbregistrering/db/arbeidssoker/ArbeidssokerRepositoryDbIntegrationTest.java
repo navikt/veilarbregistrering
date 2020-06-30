@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
@@ -43,6 +44,11 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
             @Override
             public String getPersonId() {
                 return "123456";
+            }
+
+            @Override
+            public Operation getOperation() {
+                return Operation.UPDATE;
             }
 
             @Override
