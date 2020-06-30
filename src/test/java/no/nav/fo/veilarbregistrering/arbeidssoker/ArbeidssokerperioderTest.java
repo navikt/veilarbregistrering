@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,7 +66,7 @@ public class ArbeidssokerperioderTest {
     }
 
     @Test
-    public void gitt_at_() {
+    public void gitt_at_forespurt_periode_slutter_dagen_etter_siste_periode() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
                 ARBEIDSSOKERPERIODE_5));
 
@@ -75,5 +76,32 @@ public class ArbeidssokerperioderTest {
 
         assertThat(arbeidssokerperioder.dekkerHele(forespurtPeriode)).isTrue();
     }
-    
+
+    @Test
+    public void gitt_flere_perioder_skal_de_periodene_hvor_en_er_arbs_returneres() {
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                new Arbeidssokerperiode(
+                        Formidlingsgruppe.of("ARBS"),
+                        Periode.of(
+                                LocalDate.of(2020, 3, 19),
+                                LocalDate.of(2020, 4, 20))),
+                new Arbeidssokerperiode(
+                        Formidlingsgruppe.of("ISERV"),
+                        Periode.of(
+                                LocalDate.of(2020, 4, 21),
+                                LocalDate.of(2020, 4, 29)
+                        )),
+                new Arbeidssokerperiode(
+                        Formidlingsgruppe.of("ARBS"),
+                        Periode.of(
+                                LocalDate.of(2020, 4, 30),
+                                null))));
+
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(Periode.of(
+                LocalDate.of(2020, 4, 13),
+                LocalDate.of(2020, 6, 28)));
+
+        assertThat(arbeidssokerperiodes).hasSize(2);
+    }
+
 }
