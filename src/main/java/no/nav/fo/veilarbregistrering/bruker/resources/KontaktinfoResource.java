@@ -1,9 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
@@ -20,8 +16,7 @@ import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 @Component
 @Path("/person")
 @Produces("application/json")
-@Api(value = "KontaktinfoResource", description = "Tjeneste for henting av kontaktinfo fra Kontakt og reservasjonsregisteret.")
-public class KontaktinfoResource {
+public class KontaktinfoResource implements KontaktinfoApi {
 
     private final KontaktinfoService kontaktinfoService;
     private final UserService userService;
@@ -38,12 +33,7 @@ public class KontaktinfoResource {
 
     @GET
     @Path("/kontaktinfo")
-    @ApiOperation(value = "Henter kontaktinformasjon (telefonnummer) til bruker.")
-    @ApiResponses({
-            @ApiResponse(code = 403, message = "Ingen tilgang"),
-            @ApiResponse(code = 404, message = "Ikke funnet"),
-            @ApiResponse(code = 500, message = "Ukjent feil")
-    })
+    @Override
     public KontaktinfoDto hentKontaktinfo() {
         final Bruker bruker = userService.hentBruker();
 
