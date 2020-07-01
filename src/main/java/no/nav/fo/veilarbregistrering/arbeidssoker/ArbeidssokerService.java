@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.Metrics;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +19,14 @@ public class ArbeidssokerService {
 
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
+    private final UnleashService unleashService;
 
     public ArbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
-            FormidlingsgruppeGateway formidlingsgruppeGateway) {
+            FormidlingsgruppeGateway formidlingsgruppeGateway, UnleashService unleashService) {
         this.arbeidssokerRepository = arbeidssokerRepository;
         this.formidlingsgruppeGateway = formidlingsgruppeGateway;
+        this.unleashService = unleashService;
     }
 
     @Transactional
@@ -41,7 +46,12 @@ public class ArbeidssokerService {
 
         LOG.info(String.format("Fant arbeidssokerperioder i egen database: %s", arbeidssokerperioder));
 
-        if (arbeidssokerperioder.dekkerHele(forespurtPeriode)) {
+        boolean dekkerHele = arbeidssokerperioder.dekkerHele(forespurtPeriode);
+
+        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_POTENSIELLKILDE, dekkerHele ? Kilde.LOKAL : Kilde.ORDS);
+
+        if (dekkerHele && brukLokalCache()) {
+            Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info("Arbeidssokerperiodene dekker hele perioden, og returneres");
             return arbeidssokerperioder.overlapperMed(forespurtPeriode);
         }
@@ -50,8 +60,28 @@ public class ArbeidssokerService {
 
         Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
 
+        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
+
         LOG.info(String.format("Fant arbeidssokerperioder fra ORDS-tjenesten: %s", historiskePerioder));
 
         return historiskePerioder.overlapperMed(forespurtPeriode);
+    }
+
+    private boolean brukLokalCache() {
+        return unleashService.isEnabled("veilarbregistrering.formidlingsgruppe.localcache");
+    }
+
+    private enum Kilde implements Metric {
+        ORDS, LOKAL;
+
+        @Override
+        public String fieldName() {
+            return "kilde";
+        }
+
+        @Override
+        public Object value() {
+            return this.name();
+        }
     }
 }

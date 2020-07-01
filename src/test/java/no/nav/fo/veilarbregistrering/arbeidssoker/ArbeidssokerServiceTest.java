@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -10,14 +12,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class ArbeidssokerServiceTest {
 
     public static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("123445678911");
 
-    private final ArbeidssokerService arbeidssokerService = new ArbeidssokerService(
-            new CustomArbeidssokerRepository(),
-            (foedselsnummer, periode) -> null);
+    ArbeidssokerService arbeidssokerService;
+
+    @BeforeEach
+    public void setup() {
+        UnleashService unleashService = mock(UnleashService.class);
+        unleashService.isEnabled("veilarbregistrering.formidlingsgruppe.localcache");
+        this.arbeidssokerService = new ArbeidssokerService(
+                new CustomArbeidssokerRepository(),
+                (foedselsnummer, periode) -> null,
+                unleashService);
+    }
 
     @Test
     public void hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {

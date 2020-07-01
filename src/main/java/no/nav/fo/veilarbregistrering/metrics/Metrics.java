@@ -14,6 +14,11 @@ public class Metrics {
         metricsEvent.report();
     }
 
+    public static void reportWithoutData(Event event) {
+        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
+        metricsEvent.report();
+    }
+
     public static void reportTags(Event event, Metric... metric) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         Arrays.stream(metric)
@@ -61,10 +66,11 @@ public class Metrics {
         MANUELL_REAKTIVERING_EVENT("registrering.manuell-reaktivering"),
         SYKMELDT_BESVARELSE_EVENT("registrering.sykmeldt.besvarelse"),
         PROFILERING_EVENT("registrering.bruker.profilering"),
-        BRUKER_ALDER_EVENT("registrering.bruker.alder"),
         INVALID_REGISTRERING_EVENT("registrering.invalid.registrering"),
         MAKSDATO_EVENT("registrering.maksdato"),
-        OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse");
+        OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse"),
+        HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde"),
+        HENT_ARBEIDSSOKERPERIODER_POTENSIELLKILDE("arbeid.arbeidssoker.potensiellkilde");
 
         private final String name;
 

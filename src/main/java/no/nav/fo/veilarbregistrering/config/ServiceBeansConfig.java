@@ -215,8 +215,9 @@ public class ServiceBeansConfig {
     @Bean
     ArbeidssokerService arbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
-            FormidlingsgruppeGateway formidlingsgruppeGateway) {
-        return new ArbeidssokerService(arbeidssokerRepository, formidlingsgruppeGateway);
+            FormidlingsgruppeGateway formidlingsgruppeGateway,
+            UnleashService unleashService) {
+        return new ArbeidssokerService(arbeidssokerRepository, formidlingsgruppeGateway, unleashService);
     }
 
     @Bean
