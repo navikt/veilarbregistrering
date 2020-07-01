@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.*;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse;
@@ -18,9 +19,6 @@ import java.util.Optional;
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class OppgaveRouterTest {
 
@@ -131,5 +129,4 @@ public class OppgaveRouterTest {
 
         assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
     }
-
 }
