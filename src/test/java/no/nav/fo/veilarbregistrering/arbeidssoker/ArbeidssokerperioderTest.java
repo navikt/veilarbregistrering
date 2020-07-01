@@ -99,4 +99,70 @@ public class ArbeidssokerperioderTest {
 
         assertThat(arbeidssokerperiodes).hasSize(2);
     }
+
+    @Test
+    public void kun_siste_periode_kan_ha_blank_tildato() {
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 3, 19)))
+                .periode(medIserv()
+                        .fra(LocalDate.of(2020, 4, 21)))
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 5, 30)))
+                .build()
+                .sorterOgPopulerTilDato();
+
+        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isNotNull();
+        assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isNotNull();
+        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
+    }
+
+    @Test
+    public void foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_periode_sin_fradato() {
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 3, 19)))
+                .periode(medIserv()
+                        .fra(LocalDate.of(2020, 4, 21)))
+                .build()
+                .sorterOgPopulerTilDato();
+
+        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20));
+        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
+    }
+
+    @Test
+    public void skal_populere_tildato_korrekt_selv_om_listen_kommer_usortert() {
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 5, 30)))
+                .periode(medArbs()
+                        .fra(LocalDate.of(2020, 3, 19)))
+                .periode(medIserv()
+                        .fra(LocalDate.of(2020, 4, 21)))
+                .build()
+                .sorterOgPopulerTilDato();
+
+        assertThat(funnetFraDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 3, 19));
+        assertThat(funnetFraDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 21));
+        assertThat(funnetFraDatoForIndeks(2, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 30));
+
+        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20));
+        assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 29));
+        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
+
+    }
+
+    private LocalDate funnetFraDatoForIndeks(int indeks, Arbeidssokerperioder arbeidssokerperioder) {
+        return arbeidssokerperioder.asList().get(indeks).getPeriode().getFra();
+    }
+
+    private LocalDate funnetTilDatoForSistePeriode(Arbeidssokerperioder arbeidssokerperioder) {
+        return arbeidssokerperioder.asList().get(arbeidssokerperioder.asList().size()-1).getPeriode().getTil();
+    }
+
+    private LocalDate funnetTilDatoForIndeks(int indeks, Arbeidssokerperioder arbeidssokerperioder) {
+        return arbeidssokerperioder.asList().get(indeks).getPeriode().getTil();
+    }
+
 }

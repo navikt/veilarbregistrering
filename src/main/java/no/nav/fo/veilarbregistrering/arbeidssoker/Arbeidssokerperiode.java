@@ -3,12 +3,17 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Arbeidssokerperiode {
 
     private final Formidlingsgruppe formidlingsgruppe;
     private final Periode periode;
+
+    public static Arbeidssokerperiode of(Formidlingsgruppe formidlingsgruppe, Periode periode) {
+        return new Arbeidssokerperiode(formidlingsgruppe, periode);
+    }
 
     public Arbeidssokerperiode(Formidlingsgruppe formidlingsgruppe, Periode periode) {
         this.formidlingsgruppe = formidlingsgruppe;
@@ -43,5 +48,12 @@ public class Arbeidssokerperiode {
                 "formidlingsgruppe=" + formidlingsgruppe +
                 ", periode=" + periode +
                 '}';
+    }
+
+    public static Arbeidssokerperiode kopiMedNyTilDato(Arbeidssokerperiode arbeidssokerperiode, LocalDate tilDato) {
+        return Arbeidssokerperiode.of(
+                arbeidssokerperiode.getFormidlingsgruppe(),
+                Periode.of(arbeidssokerperiode.getPeriode().getFra(), tilDato)
+        );
     }
 }

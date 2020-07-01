@@ -5,9 +5,11 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.*;
 
 public class Arbeidssokerperioder {
 
@@ -34,6 +36,20 @@ public class Arbeidssokerperioder {
                 .map(arbeidssokerperiode -> forespurtPeriode.fraOgMed(arbeidssokerperiode.getPeriode()))
                 .orElse(false);
     }
+
+    public Arbeidssokerperioder sorterOgPopulerTilDato() {
+        return new Arbeidssokerperioder(of(this.arbeidssokerperioder.stream()
+                .sorted(Comparator.comparing(e -> e.getPeriode().getFra())).collect(Collectors.toList()))
+                .map(populerTilDato).get());
+    }
+
+    public static Function<List<Arbeidssokerperiode>, List<Arbeidssokerperiode>> populerTilDato =
+        (arbeidssokerperioder) -> {
+            for (int i = 0; i < arbeidssokerperioder.size() - 1; i++) {
+                arbeidssokerperioder.set(i, Arbeidssokerperiode.kopiMedNyTilDato(arbeidssokerperioder.get(i), arbeidssokerperioder.get(i + 1).getPeriode().getFra().minusDays(1)));
+            }
+            return arbeidssokerperioder;
+        };
 
     public List<Arbeidssokerperiode> asList() {
         return arbeidssokerperioder;

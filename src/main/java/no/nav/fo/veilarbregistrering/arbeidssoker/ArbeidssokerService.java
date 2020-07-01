@@ -44,7 +44,9 @@ public class ArbeidssokerService {
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository.finnFormidlingsgrupper(foedselsnummer);
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository
+                .finnFormidlingsgrupper(foedselsnummer)
+                .sorterOgPopulerTilDato();
 
         LOG.info(String.format("Fant arbeidssokerperioder i egen database: %s", arbeidssokerperioder));
 
