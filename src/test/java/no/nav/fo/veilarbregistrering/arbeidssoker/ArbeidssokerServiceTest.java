@@ -11,8 +11,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ArbeidssokerServiceTest {
 
@@ -23,7 +25,7 @@ public class ArbeidssokerServiceTest {
     @BeforeEach
     public void setup() {
         UnleashService unleashService = mock(UnleashService.class);
-        unleashService.isEnabled("veilarbregistrering.formidlingsgruppe.localcache");
+        when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
         this.arbeidssokerService = new ArbeidssokerService(
                 new CustomArbeidssokerRepository(),
                 (foedselsnummer, periode) -> null,

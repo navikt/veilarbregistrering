@@ -17,6 +17,8 @@ public class ArbeidssokerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerService.class);
 
+    static final String VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE = "veilarbregistrering.formidlingsgruppe.localcache";
+
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
     private final UnleashService unleashService;
@@ -68,7 +70,7 @@ public class ArbeidssokerService {
     }
 
     private boolean brukLokalCache() {
-        return unleashService.isEnabled("veilarbregistrering.formidlingsgruppe.localcache");
+        return unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE);
     }
 
     private enum Kilde implements Metric {
