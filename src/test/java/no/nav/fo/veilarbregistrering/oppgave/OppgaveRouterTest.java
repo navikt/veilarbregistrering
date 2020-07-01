@@ -18,6 +18,9 @@ import java.util.Optional;
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OppgaveRouterTest {
 
@@ -127,5 +130,21 @@ public class OppgaveRouterTest {
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
+    }
+
+    @Test
+    public void test() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        PersonGateway personGateway = mock(PersonGateway.class);
+
+        when(personGateway.hentGeografiskTilknytning(any())).thenReturn(Optional.of(GeografiskTilknytning.of(null)));
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+
+
     }
 }
