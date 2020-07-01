@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
@@ -19,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
@@ -27,8 +24,7 @@ import static java.util.Optional.ofNullable;
 @Component
 @Path("/arbeidssoker")
 @Produces("application/json")
-@Api(value = "ArbeidssokerResource")
-public class ArbeidssokerResource {
+public class ArbeidssokerResource implements ArbeidssokerApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerResource.class);
 
@@ -44,7 +40,7 @@ public class ArbeidssokerResource {
 
     @GET
     @Path("/perioder")
-    @ApiOperation(value = "Henter alle perioder hvor bruker er registrert som arbeidssøker.")
+    @Override
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
             @QueryParam("fnr") String fnr,
             @QueryParam("fraOgMed") LocalDate fraOgMed,
