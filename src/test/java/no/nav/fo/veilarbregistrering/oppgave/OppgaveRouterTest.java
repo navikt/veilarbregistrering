@@ -132,19 +132,4 @@ public class OppgaveRouterTest {
         assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
     }
 
-    @Test
-    public void test() {
-        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
-        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
-        PersonGateway personGateway = mock(PersonGateway.class);
-
-        when(personGateway.hentGeografiskTilknytning(any())).thenReturn(Optional.of(GeografiskTilknytning.of(null)));
-
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
-
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
-
-
-    }
 }
