@@ -35,4 +35,10 @@ public class Enhetsnr {
         return Objects.hash(enhetId);
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "enhetId='" + enhetId + '\'' +
+                '}';
+    }
 }

@@ -116,19 +116,24 @@ public class OppgaveRouter {
             return Optional.empty();
         }
 
-        Optional<Kommunenummer> kommunenummer = organisasjonsdetaljer
+        Optional<Kommunenummer> muligKommunenummer = organisasjonsdetaljer
                 .map(a -> a.kommunenummer())
                 .orElseThrow(IllegalStateException::new);
-        if (!kommunenummer.isPresent()) {
-            LOG.warn("Fant ingen kommunenummer knyttet til organisasjon");
+        if (!muligKommunenummer.isPresent()) {
+            LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");
             reportTags(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
             return Optional.empty();
         }
 
-        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer
-                .orElseThrow(IllegalStateException::new));
+        Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
+        if (kommunenummer.kommuneMedBydeler()) {
+            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.asString());
+            return of(Enhetsnr.internBrukerstotte());
+        }
+
+        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
         if (!enhetsnr.isPresent()) {
-            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.get().asString());
+            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }
         return enhetsnr;
