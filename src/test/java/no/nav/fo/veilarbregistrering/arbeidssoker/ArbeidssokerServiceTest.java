@@ -45,9 +45,9 @@ public class ArbeidssokerServiceTest {
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER, forespurtPeriode);
         assertThat(arbeidssokerperiodes).hasSize(4);
         assertThat(arbeidssokerperiodes).containsSequence(
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1.tilOgMed(LocalDate.of(2020, 1,31)),
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2.tilOgMed(LocalDate.of(2020, 2, 29)),
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3.tilOgMed(LocalDate.of(2020, 3, 31)),
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4);
     }
 
