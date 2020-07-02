@@ -52,7 +52,7 @@ public class ArbeidssokerServiceTest {
     }
 
     @Test
-    public void hentArbeidssokerperioder_skal_hente_fra_ords_toggle_ikke_er_skrudd_paa() {
+    public void hentArbeidssokerperioder_skal_hente_fra_ords_toggle_ikke_er_skrudd_av() {
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
