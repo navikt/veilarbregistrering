@@ -45,14 +45,14 @@ public class ArbeidssokerServiceTest {
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER, forespurtPeriode);
         assertThat(arbeidssokerperiodes).hasSize(4);
         assertThat(arbeidssokerperiodes).containsSequence(
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1.tilOgMed(LocalDate.of(2020, 1,31)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2.tilOgMed(LocalDate.of(2020, 2, 29)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3.tilOgMed(LocalDate.of(2020, 3, 31)),
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4);
     }
 
     @Test
-    public void hentArbeidssokerperioder_skal_hente_fra_ords_toggle_ikke_er_skrudd_paa() {
+    public void hentArbeidssokerperioder_skal_hente_fra_ords_toggle_ikke_er_skrudd_av() {
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
@@ -70,13 +70,13 @@ public class ArbeidssokerServiceTest {
 
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 1, 1), null));
+                Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 2, 1), null));
+                Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 3, 1), null));
+                Periode.of(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
                 Periode.of(LocalDate.of(2020, 4, 1), null));

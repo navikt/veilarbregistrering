@@ -21,8 +21,11 @@ public class Arbeidssokerperiode {
         this.periode = periode;
     }
 
-    public Arbeidssokerperiode tilOgMed(LocalDate nyTildato) {
-        return new Arbeidssokerperiode(formidlingsgruppe, periode.tilOgMed(nyTildato));
+    public Arbeidssokerperiode kopiMedNyTilDato(LocalDate tilDato) {
+        return Arbeidssokerperiode.of(
+                this.formidlingsgruppe,
+                this.periode.tilOgMed(tilDato)
+        );
     }
 
     public Periode getPeriode() {
