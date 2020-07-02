@@ -52,6 +52,8 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         try(KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
             consumer.subscribe(Collections.singletonList(topic));
 
+            LOG.info("Subscribing to {}", topic);
+
             while (konsumeringAvFormidlingsgruppe()) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
