@@ -70,13 +70,13 @@ public class ArbeidssokerServiceTest {
 
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 1, 1), null));
+                Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 2, 1), null));
+                Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 3, 1), null));
+                Periode.of(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
                 Periode.of(LocalDate.of(2020, 4, 1), null));
