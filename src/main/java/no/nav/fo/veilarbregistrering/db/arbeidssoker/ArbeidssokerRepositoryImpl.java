@@ -1,11 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
-import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
+import no.nav.fo.veilarbregistrering.arbeidssoker.*;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -53,15 +49,16 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     @Override
     public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER = ?";
-        List<Arbeidssokerperiode> arbeidssokerperioder = jdbcTemplate.query(
+
+        List<ArbeidssokerperiodeDAO> arbeidssokerperioder = jdbcTemplate.query(
                 sql,
                 new Object[]{foedselsnummer.stringValue()},
-                (rs, row) -> new Arbeidssokerperiode(
-                        Formidlingsgruppe.of(rs.getString("FORMIDLINGSGRUPPE")),
-                        Periode.of(
-                                rs.getTimestamp("FORMIDLINGSGRUPPE_ENDRET").toLocalDateTime().toLocalDate(),
-                                null)));
+                (rs, row) -> new ArbeidssokerperiodeDAO(
+                        rs.getString("FORMIDLINGSGRUPPE"),
+                        rs.getTimestamp("FORMIDLINGSGRUPPE_ENDRET")
+                )
+        );
 
-        return new Arbeidssokerperioder(arbeidssokerperioder);
+        return Arbeidssokerperioder.of(arbeidssokerperioder);
     }
 }

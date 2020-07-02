@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.bruker.Periode;
+import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,13 +11,41 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode.EldsteFoerst.eldsteFoerst;
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeDAO.NyesteFoerst.nyesteFoerst;
 
 public class Arbeidssokerperioder {
 
     private final List<Arbeidssokerperiode> arbeidssokerperioder;
+
+    public static Arbeidssokerperioder of(List<ArbeidssokerperiodeDAO> arbeidssokerperiodeDAOer) {
+        List<ArbeidssokerperiodeDAO> perioderSortert = arbeidssokerperiodeDAOer.stream().sorted(nyesteFoerst()).collect(toList());
+
+        List<Arbeidssokerperiode> arbeidssokerperioder = new ArrayList<>(arbeidssokerperiodeDAOer.size());
+
+        LocalDate forrigeEndretDato = null;
+
+        for(ArbeidssokerperiodeDAO arbeidssokerperiodeDAO : perioderSortert) {
+            LocalDate endretDato = arbeidssokerperiodeDAO.getFormidlingsgruppeEndret().toLocalDateTime().toLocalDate();
+
+            if(forrigeEndretDato != null && endretDato.isEqual(forrigeEndretDato)) {
+                continue;
+            }
+
+            arbeidssokerperioder.add(new Arbeidssokerperiode(
+                    Formidlingsgruppe.of(arbeidssokerperiodeDAO.getFormidlingsgruppe()),
+                    Periode.of(
+                            endretDato,
+                            null
+                    )
+            ));
+
+            forrigeEndretDato = endretDato;
+        }
+
+        return new Arbeidssokerperioder(arbeidssokerperioder);
+    }
 
     public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperioder) {
         this.arbeidssokerperioder = arbeidssokerperioder != null ? arbeidssokerperioder : emptyList();
@@ -42,7 +71,7 @@ public class Arbeidssokerperioder {
 
     public Arbeidssokerperioder sorterOgPopulerTilDato() {
         return new Arbeidssokerperioder(
-                of(arbeidssokerperioder.stream()
+                Optional.of(arbeidssokerperioder.stream()
                         .sorted(eldsteFoerst().reversed())
                         .collect(toList())
                 ).map(populerTilDato)
