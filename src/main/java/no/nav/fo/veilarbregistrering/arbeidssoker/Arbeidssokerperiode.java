@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Arbeidssokerperiode {
@@ -10,9 +12,20 @@ public class Arbeidssokerperiode {
     private final Formidlingsgruppe formidlingsgruppe;
     private final Periode periode;
 
+    public static Arbeidssokerperiode of(Formidlingsgruppe formidlingsgruppe, Periode periode) {
+        return new Arbeidssokerperiode(formidlingsgruppe, periode);
+    }
+
     public Arbeidssokerperiode(Formidlingsgruppe formidlingsgruppe, Periode periode) {
         this.formidlingsgruppe = formidlingsgruppe;
         this.periode = periode;
+    }
+
+    public Arbeidssokerperiode tilOgMed(LocalDate tilDato) {
+        return Arbeidssokerperiode.of(
+                this.formidlingsgruppe,
+                this.periode.tilOgMed(tilDato)
+        );
     }
 
     public Periode getPeriode() {
@@ -43,5 +56,18 @@ public class Arbeidssokerperiode {
                 "formidlingsgruppe=" + formidlingsgruppe +
                 ", periode=" + periode +
                 '}';
+    }
+
+    static class EldsteFoerst implements Comparator<Arbeidssokerperiode> {
+
+        static EldsteFoerst eldsteFoerst() {
+            return new EldsteFoerst();
+        }
+
+        @Override
+        public int compare(Arbeidssokerperiode t0, Arbeidssokerperiode t1) {
+            return t0.getPeriode().compareTo(t1.getPeriode());
+        }
+
     }
 }

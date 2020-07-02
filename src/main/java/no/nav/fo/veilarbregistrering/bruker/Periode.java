@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Periode {
+public class Periode implements Comparable<Periode> {
 
     private final LocalDate fra;
     private final LocalDate til;
@@ -25,6 +25,10 @@ public class Periode {
     private Periode(LocalDate fra, LocalDate til) {
         this.fra = fra;
         this.til = til;
+    }
+
+    public Periode tilOgMed(LocalDate tilDato) {
+        return new Periode(fra, tilDato);
     }
 
     /**
@@ -94,5 +98,10 @@ public class Periode {
     @Override
     public int hashCode() {
         return Objects.hash(fra, til);
+    }
+
+    @Override
+    public int compareTo(Periode periode) {
+        return fra.compareTo(periode.getFra());
     }
 }
