@@ -21,7 +21,7 @@ public class Arbeidssokerperiode {
         this.periode = periode;
     }
 
-    public Arbeidssokerperiode kopiMedNyTilDato(LocalDate tilDato) {
+    public Arbeidssokerperiode tilOgMed(LocalDate tilDato) {
         return Arbeidssokerperiode.of(
                 this.formidlingsgruppe,
                 this.periode.tilOgMed(tilDato)

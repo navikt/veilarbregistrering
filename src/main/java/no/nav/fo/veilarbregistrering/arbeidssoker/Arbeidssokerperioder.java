@@ -57,7 +57,7 @@ public class Arbeidssokerperioder {
 
                 LocalDate nyTildato = null;
                 for (Arbeidssokerperiode arbeidssokerperiode : arbeidssokerperioder) {
-                    nyListe.add(arbeidssokerperiode.kopiMedNyTilDato(nyTildato));
+                    nyListe.add(arbeidssokerperiode.tilOgMed(nyTildato));
                     nyTildato = arbeidssokerperiode.getPeriode().getFra().minusDays(1);
                 }
                 return nyListe;
