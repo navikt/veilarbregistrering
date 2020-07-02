@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
+import static no.nav.fo.veilarbregistrering.enhet.Kommunenummer.KommuneMedBydel.STAVANGER;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -128,5 +129,26 @@ public class OppgaveRouterTest {
         Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
+    }
+
+    @Test
+    public void kommunenummer_tilhorende_kommune_med_bydeler_skal_tildeles_intern_brukerstotte() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+
+        Forretningsadresse forretningsadresse = new Forretningsadresse(
+                Kommunenummer.of(STAVANGER),
+                Periode.of(LocalDate.of(2020, 1, 1), null));
+
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
+                Arrays.asList(forretningsadresse), Collections.emptyList()));
+
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetsnr.of("1103"));
+        PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+
+        assertThat(enhetsnr).hasValue(Enhetsnr.internBrukerstotte());
     }
 }
