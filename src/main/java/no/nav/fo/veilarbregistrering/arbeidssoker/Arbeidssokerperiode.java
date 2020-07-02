@@ -50,10 +50,10 @@ public class Arbeidssokerperiode {
                 '}';
     }
 
-    public static Arbeidssokerperiode kopiMedNyTilDato(Arbeidssokerperiode arbeidssokerperiode, LocalDate tilDato) {
+    public Arbeidssokerperiode kopiMedNyTilDato(LocalDate tilDato) {
         return Arbeidssokerperiode.of(
-                arbeidssokerperiode.getFormidlingsgruppe(),
-                Periode.of(arbeidssokerperiode.getPeriode().getFra(), tilDato)
+                this.getFormidlingsgruppe(),
+                Periode.of(this.getPeriode().getFra(), tilDato)
         );
     }
 }

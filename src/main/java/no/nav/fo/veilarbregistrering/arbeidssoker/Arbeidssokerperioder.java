@@ -46,7 +46,7 @@ public class Arbeidssokerperioder {
     private static Function<List<Arbeidssokerperiode>, List<Arbeidssokerperiode>> populerTilDato =
         (arbeidssokerperioder) -> {
             for (int i = 0; i < arbeidssokerperioder.size() - 1; i++) {
-                arbeidssokerperioder.set(i, Arbeidssokerperiode.kopiMedNyTilDato(arbeidssokerperioder.get(i), arbeidssokerperioder.get(i + 1).getPeriode().getFra().minusDays(1)));
+                arbeidssokerperioder.set(i, arbeidssokerperioder.get(i).kopiMedNyTilDato(arbeidssokerperioder.get(i + 1).getPeriode().getFra().minusDays(1)));
             }
             return arbeidssokerperioder;
         };
