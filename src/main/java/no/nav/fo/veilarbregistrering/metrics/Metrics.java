@@ -17,7 +17,7 @@ public class Metrics {
     public static void reportTags(Event event, Metric... metric) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         Arrays.stream(metric)
-                .filter(Objects::isNull)
+                .filter(Objects::nonNull)
                 .forEach(m -> metricsEvent.addTagToReport(m.fieldName(), m.value().toString()));
         metricsEvent.report();
     }
