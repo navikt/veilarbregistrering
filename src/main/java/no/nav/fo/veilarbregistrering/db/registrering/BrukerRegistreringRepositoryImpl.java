@@ -7,14 +7,14 @@ import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
@@ -185,30 +185,5 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
-    }
-
-    @Override
-    public Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable) {
-        String rowCountSql = "SELECT count(1) AS row_count " +
-                "FROM BRUKER_REGISTRERING";
-
-        int total = db.queryForObject(rowCountSql, Integer.class);
-
-        String querySql = "SELECT BRUKER_REGISTRERING_ID, AKTOR_ID, BEGRUNNELSE_FOR_REGISTRERING, OPPRETTET_DATO " +
-                "FROM BRUKER_REGISTRERING " +
-                "ORDER BY BRUKER_REGISTRERING_ID ASC " +
-                "OFFSET " + pageable.getOffset() + " ROWS " +
-                "FETCH NEXT " + pageable.getPageSize() + " ROWS ONLY";
-
-        List<ArbeidssokerRegistrertEventDto> dto = db.query(
-                querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(
-                        rowNum,
-                        rs.getLong("BRUKER_REGISTRERING_ID"),
-                        AktorId.of(rs.getString("AKTOR_ID")),
-                        rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
-                        rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
-                ));
-
-        return new PageImpl<>(dto, pageable, total);
     }
 }
