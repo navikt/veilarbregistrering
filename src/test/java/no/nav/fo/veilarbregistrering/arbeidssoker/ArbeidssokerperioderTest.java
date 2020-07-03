@@ -4,7 +4,10 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -151,6 +154,47 @@ public class ArbeidssokerperioderTest {
         assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 29));
         assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
 
+    }
+
+    @Test
+    public void skal_kun_beholde_siste_formidlingsgruppeendring_fra_samme_dag() {
+        LocalDateTime now = LocalDateTime.now();
+        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now)));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusSeconds(2))));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("IARBS", Timestamp.valueOf(now.plusSeconds(4))));
+
+        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.of(arbeidssokerperiodeRaaData);
+
+        assertThat(arbeidssokerperioder.asList().size()).isEqualTo(1);
+        assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
+        assertThat(arbeidssokerperioder.asList().get(0).getPeriode().getFra()).isEqualTo(now.toLocalDate());
+    }
+
+    @Test
+    public void skal_kun_beholde_siste_formidlingsgruppeendring_fra_samme_dag_flere_dager() {
+        LocalDateTime now = LocalDateTime.now();
+        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now)));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusSeconds(2))));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("IARBS", Timestamp.valueOf(now.plusSeconds(4))));
+
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now.plusDays(7))));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusDays(7).plusSeconds(3))));
+
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now.plusDays(50))));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusDays(50).plusSeconds(2))));
+        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now.plusDays(50).plusSeconds(5))));
+
+        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.of(arbeidssokerperiodeRaaData);
+
+        assertThat(arbeidssokerperioder.asList().size()).isEqualTo(3);
+        assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
+        assertThat(arbeidssokerperioder.asList().get(1).getFormidlingsgruppe().stringValue()).isEqualTo("ARBS");
+        assertThat(arbeidssokerperioder.asList().get(2).getFormidlingsgruppe().stringValue()).isEqualTo("ISERV");
+        assertThat(arbeidssokerperioder.asList().get(0).getPeriode().getFra()).isEqualTo(now.toLocalDate());
+        assertThat(arbeidssokerperioder.asList().get(1).getPeriode().getFra()).isEqualTo(now.plusDays(7).toLocalDate());
+        assertThat(arbeidssokerperioder.asList().get(2).getPeriode().getFra()).isEqualTo(now.plusDays(50).toLocalDate());
     }
 
     private LocalDate funnetFraDatoForIndeks(int indeks, Arbeidssokerperioder arbeidssokerperioder) {
