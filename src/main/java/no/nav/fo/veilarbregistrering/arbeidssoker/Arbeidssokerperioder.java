@@ -13,14 +13,14 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode.EldsteFoerst.eldsteFoerst;
-import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeDAO.NyesteFoerst.nyesteFoerst;
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRaaData.NyesteFoerst.nyesteFoerst;
 
 public class Arbeidssokerperioder {
 
     private final List<Arbeidssokerperiode> arbeidssokerperioder;
 
-    public static Arbeidssokerperioder of(List<ArbeidssokerperiodeDAO> arbeidssokerperiodeDAOer) {
-        return new Arbeidssokerperioder(Optional.of(arbeidssokerperiodeDAOer.stream()
+    public static Arbeidssokerperioder of(List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData) {
+        return new Arbeidssokerperioder(Optional.of(arbeidssokerperiodeRaaData.stream()
                 .sorted(nyesteFoerst()).collect(toList()))
                 .map(beholdKunSisteEndringPerDagIListen).get().stream()
                 .sorted(eldsteFoerst()).collect(toList()));
@@ -71,21 +71,21 @@ public class Arbeidssokerperioder {
                 return nyListe;
             };
 
-    public static Function<List<ArbeidssokerperiodeDAO>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
-            (arbeidssokerperiodeDAOer) -> {
-                List<Arbeidssokerperiode> arbeidssokerperioder = new ArrayList<>(arbeidssokerperiodeDAOer.size());
+    public static Function<List<ArbeidssokerperiodeRaaData>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
+            (arbeidssokerperiodeRaaData) -> {
+                List<Arbeidssokerperiode> arbeidssokerperioder = new ArrayList<>(arbeidssokerperiodeRaaData.size());
 
                 LocalDate forrigeEndretDato = null;
 
-                for(ArbeidssokerperiodeDAO arbeidssokerperiodeDAO : arbeidssokerperiodeDAOer) {
-                    LocalDate endretDato = arbeidssokerperiodeDAO.getFormidlingsgruppeEndret().toLocalDateTime().toLocalDate();
+                for(ArbeidssokerperiodeRaaData raaDataPeriode : arbeidssokerperiodeRaaData) {
+                    LocalDate endretDato = raaDataPeriode.getFormidlingsgruppeEndret().toLocalDateTime().toLocalDate();
 
                     if(forrigeEndretDato != null && endretDato.isEqual(forrigeEndretDato)) {
                         continue;
                     }
 
                     arbeidssokerperioder.add(new Arbeidssokerperiode(
-                            Formidlingsgruppe.of(arbeidssokerperiodeDAO.getFormidlingsgruppe()),
+                            Formidlingsgruppe.of(raaDataPeriode.getFormidlingsgruppe()),
                             Periode.of(
                                     endretDato,
                                     null

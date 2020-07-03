@@ -50,10 +50,10 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER = ?";
 
-        List<ArbeidssokerperiodeDAO> arbeidssokerperioder = jdbcTemplate.query(
+        List<ArbeidssokerperiodeRaaData> arbeidssokerperioder = jdbcTemplate.query(
                 sql,
                 new Object[]{foedselsnummer.stringValue()},
-                (rs, row) -> new ArbeidssokerperiodeDAO(
+                (rs, row) -> new ArbeidssokerperiodeRaaData(
                         rs.getString("FORMIDLINGSGRUPPE"),
                         rs.getTimestamp("FORMIDLINGSGRUPPE_ENDRET")
                 )

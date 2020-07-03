@@ -3,12 +3,12 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 import java.sql.Timestamp;
 import java.util.Comparator;
 
-public class ArbeidssokerperiodeDAO {
+public class ArbeidssokerperiodeRaaData {
 
     private final String formidlingsgruppe;
     private final Timestamp formidlingsgruppeEndret;
 
-    public ArbeidssokerperiodeDAO(String formidlingsgruppe, Timestamp formidlingsgruppeEndret) {
+    public ArbeidssokerperiodeRaaData(String formidlingsgruppe, Timestamp formidlingsgruppeEndret) {
         this.formidlingsgruppe = formidlingsgruppe;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
     }
@@ -21,14 +21,14 @@ public class ArbeidssokerperiodeDAO {
         return this.formidlingsgruppe;
     }
 
-    static class NyesteFoerst implements Comparator<ArbeidssokerperiodeDAO> {
+    static class NyesteFoerst implements Comparator<ArbeidssokerperiodeRaaData> {
 
-        static ArbeidssokerperiodeDAO.NyesteFoerst nyesteFoerst() {
-            return new ArbeidssokerperiodeDAO.NyesteFoerst();
+        static ArbeidssokerperiodeRaaData.NyesteFoerst nyesteFoerst() {
+            return new ArbeidssokerperiodeRaaData.NyesteFoerst();
         }
 
         @Override
-        public int compare(ArbeidssokerperiodeDAO t0, ArbeidssokerperiodeDAO t1) {
+        public int compare(ArbeidssokerperiodeRaaData t0, ArbeidssokerperiodeRaaData t1) {
             return t1.getFormidlingsgruppeEndret().compareTo(t0.getFormidlingsgruppeEndret());
         }
 
