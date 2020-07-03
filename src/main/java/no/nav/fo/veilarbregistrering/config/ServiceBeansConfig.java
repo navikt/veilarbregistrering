@@ -81,35 +81,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    PubliseringAvHistorikkTask publiseringAvHistorikkTask(
-            BrukerRegistreringRepository brukerRegistreringRepository,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            UnleashService unleashService
-    ) {
-        return new PubliseringAvHistorikkTask(
-                brukerRegistreringRepository,
-                arbeidssokerRegistrertProducer,
-                unleashService
-        );
-    }
-
-
-    @Bean
-    PubliseringAvProfileringHistorikk publiseringAvProfileringHistorikk(
-            ProfileringRepository profileringRepository,
-            BrukerRegistreringRepository brukerRegistreringRepository,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-            UnleashService unleashService
-    ) {
-        return new PubliseringAvProfileringHistorikk(
-                profileringRepository,
-                brukerRegistreringRepository,
-                arbeidssokerProfilertProducer,
-                unleashService
-        );
-    }
-
-    @Bean
     RegistreringResource registreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
