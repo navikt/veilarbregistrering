@@ -14,11 +14,6 @@ public class Metrics {
         metricsEvent.report();
     }
 
-    public static void reportWithoutData(Event event) {
-        no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
-        metricsEvent.report();
-    }
-
     public static void reportTags(Event event, Metric... metric) {
         no.nav.metrics.Event metricsEvent = MetricsFactory.createEvent(event.name);
         Arrays.stream(metric)
