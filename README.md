@@ -10,12 +10,13 @@ for beskrivelse av APIet til `veilarbregistrering`.
 
 ## Avhengigheter
 - veilarboppfolging (og Arena) : REST
-- ORDS : REST
+- [Arena ORDS : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidssoker/adapter/README.md)
 - veilarbperson : REST
 - Aktør-service (fnr/dnr -> aktørId) : SOAP
 - ABAC (tilgangskontroll)
 - Aareg (siste arbeidsforhold)
-- [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/Readme.md)
+- [Enhetsregisteret](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
+- [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
 - Oppgave : REST
