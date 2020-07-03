@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.log.CallId;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -28,16 +27,14 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer.class);
 
     private final Properties kafkaConsumerProperties;
-    private final UnleashService unleashService;
     private final String topic;
     private final ArbeidssokerService arbeidssokerService;
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
-            UnleashService unleashService,
-            String topic, ArbeidssokerService arbeidssokerService) {
+            String topic,
+            ArbeidssokerService arbeidssokerService) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
-        this.unleashService = unleashService;
         this.topic = topic;
         this.arbeidssokerService = arbeidssokerService;
 
@@ -54,7 +51,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             LOG.info("Subscribing to {}", topic);
 
-            while (konsumeringAvFormidlingsgruppe()) {
+            while (true) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
@@ -76,9 +73,5 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     void behandleRecord(ConsumerRecord<String, String> record) {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
         arbeidssokerService.behandle(formidlingsgruppeEvent);
-    }
-
-    private boolean konsumeringAvFormidlingsgruppe() {
-        return unleashService.isEnabled("veilarbregistrering.konsumeringAvFormidlingsgruppe");
     }
 }
