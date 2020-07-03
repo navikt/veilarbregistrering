@@ -44,7 +44,7 @@ public class Arbeidssokerperioder {
             forrigeEndretDato = endretDato;
         }
 
-        return new Arbeidssokerperioder(arbeidssokerperioder);
+        return new Arbeidssokerperioder(arbeidssokerperioder.stream().sorted(eldsteFoerst()).collect(toList()));
     }
 
     public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperioder) {

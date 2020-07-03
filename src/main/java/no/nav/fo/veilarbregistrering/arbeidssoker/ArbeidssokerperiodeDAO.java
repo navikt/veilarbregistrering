@@ -29,7 +29,7 @@ public class ArbeidssokerperiodeDAO {
 
         @Override
         public int compare(ArbeidssokerperiodeDAO t0, ArbeidssokerperiodeDAO t1) {
-            return t0.getFormidlingsgruppeEndret().compareTo(t1.getFormidlingsgruppeEndret());
+            return t1.getFormidlingsgruppeEndret().compareTo(t0.getFormidlingsgruppeEndret());
         }
 
     }
