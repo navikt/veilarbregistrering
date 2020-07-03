@@ -58,6 +58,8 @@ public class ArbeidssokerService {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info("Arbeidssokerperiodene dekker hele perioden, og returneres");
             return arbeidssokerperioder.overlapperMed(forespurtPeriode);
+        } else if (dekkerHele) {
+            LOG.info("Arbeidssokerperiodene dekker hele perioden");
         }
 
         LOG.info("Arbeidssokerperioden dekkes IKKE av perioden - vi forsøker ORDS-tjenesten");
