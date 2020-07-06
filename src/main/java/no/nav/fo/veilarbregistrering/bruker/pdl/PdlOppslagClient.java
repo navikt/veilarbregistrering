@@ -4,6 +4,10 @@ import com.google.gson.*;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.HentPersonVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import no.nav.log.MDCConstants;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
@@ -43,15 +47,15 @@ class PdlOppslagClient {
     }
 
     PdlPerson hentPerson(AktorId aktorId) {
-        PdlRequest request = new PdlRequest(hentQuery(), new Variables(aktorId.asString(), false));
-        String json = pdlJson(aktorId.asString(), request);
+        PdlHentPersonRequest request = new PdlHentPersonRequest(hentPersonQuery(), new HentPersonVariables(aktorId.asString(), false));
+        String json = hentPersonRequest(aktorId.asString(), request);
         LOG.debug("json-response fra PDL: {}", json);
-        PdlResponse resp = gson.fromJson(json, PdlResponse.class);
+        PdlHentPersonResponse resp = gson.fromJson(json, PdlHentPersonResponse.class);
         validateResponse(resp);
         return resp.getData().getHentPerson();
     }
 
-    String pdlJson(String fnr, PdlRequest request) {
+    String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
         String token = this.systemUserTokenProvider.getSystemUserAccessToken();
 
         return RestUtils.withClient(client ->
@@ -65,7 +69,7 @@ class PdlOppslagClient {
                         .post(Entity.json(request), String.class));
     }
 
-    private void validateResponse(PdlResponse response) {
+    private void validateResponse(PdlHentPersonResponse response) {
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             if (response.getErrors().stream().anyMatch(PdlOppslagClient::not_found)) {
                 throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
@@ -82,7 +86,7 @@ class PdlOppslagClient {
         return "not_found".equals(pdlError.getExtensions().getCode());
     }
 
-    private String hentQuery() {
+    private String hentPersonQuery() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
             return new String(bytes).replaceAll("[\n\r]]", "");

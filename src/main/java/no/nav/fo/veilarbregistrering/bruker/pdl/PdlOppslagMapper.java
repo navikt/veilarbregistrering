@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 
 import java.time.LocalDate;
 

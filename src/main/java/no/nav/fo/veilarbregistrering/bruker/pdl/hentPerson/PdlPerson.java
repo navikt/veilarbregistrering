@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl;
+package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
 
 import java.util.List;
 import java.util.Optional;
