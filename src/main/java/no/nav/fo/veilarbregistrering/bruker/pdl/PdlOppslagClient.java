@@ -4,6 +4,8 @@ import com.google.gson.*;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.HentPersonVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse;
@@ -37,13 +39,54 @@ class PdlOppslagClient {
 
     private final String baseUrl;
 
-    private SystemUserTokenProvider systemUserTokenProvider;
+    private final SystemUserTokenProvider systemUserTokenProvider;
 
     PdlOppslagClient(
             String baseUrl,
             SystemUserTokenProvider systemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
+    }
+
+    PdlIdenter hentIdenter(Foedselsnummer fnr) {
+        PdlHentIdenterRequest request = new PdlHentIdenterRequest(hentIdenterQuery(), new HentIdenterVariables(fnr.stringValue()));
+        String json = hentIdenterRequest(fnr.stringValue(), request);
+        LOG.debug("json-response fra PDL: {}", json);
+        PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
+        validateResponse(response);
+        return response.getData().getPdlIdenter();
+    }
+
+    String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
+
+        return RestUtils.withClient(client ->
+                client.target(baseUrl)
+                        .request()
+                        .header(NAV_PERSONIDENT_HEADER, fnr)
+                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+                        .header("Authorization", "Bearer " + token)
+                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                        .post(Entity.json(request), String.class));
+    }
+
+    private void validateResponse(PdlHentIdenterResponse response) {
+        if (response.getErrors() != null && response.getErrors().size() > 0) {
+            if (response.getErrors().stream().anyMatch(PdlOppslagClient::not_found)) {
+                throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
+            }
+
+            throw new RuntimeException("Integrasjon mot PDL feilet: " + gson.toJson(response.getErrors()));
+        }
+    }
+
+    private String hentIdenterQuery() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentIdenter.graphql").toURI()));
+            return new String(bytes).replaceAll("[\n\r]]", "");
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
+        }
     }
 
     PdlPerson hentPerson(AktorId aktorId) {
