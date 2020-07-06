@@ -21,4 +21,9 @@ public class PdlOppslagConfig {
     PdlOppslagGateway pdlOppslagGateway(PdlOppslagClient pdlOppslagClient) {
         return new PdlOppslagGatewayImpl(pdlOppslagClient);
     }
+
+    @Bean
+    PdlOppslagClientHelsesjekk pdlOppslagClientHelsesjekk() {
+        return new PdlOppslagClientHelsesjekk(getRequiredProperty(PDL_PROPERTY_NAME));
+    }
 }
