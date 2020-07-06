@@ -70,16 +70,6 @@ class PdlOppslagClient {
                         .post(Entity.json(request), String.class));
     }
 
-    private void validateResponse(PdlHentIdenterResponse response) {
-        if (response.getErrors() != null && response.getErrors().size() > 0) {
-            if (response.getErrors().stream().anyMatch(PdlOppslagClient::not_found)) {
-                throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
-            }
-
-            throw new RuntimeException("Integrasjon mot PDL feilet: " + gson.toJson(response.getErrors()));
-        }
-    }
-
     private String hentIdenterQuery() {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentIdenter.graphql").toURI()));
@@ -112,7 +102,16 @@ class PdlOppslagClient {
                         .post(Entity.json(request), String.class));
     }
 
-    private void validateResponse(PdlHentPersonResponse response) {
+    private String hentPersonQuery() {
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
+            return new String(bytes).replaceAll("[\n\r]]", "");
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
+        }
+    }
+
+    private void validateResponse(PdlResponse response) {
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             if (response.getErrors().stream().anyMatch(PdlOppslagClient::not_found)) {
                 throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
@@ -127,15 +126,6 @@ class PdlOppslagClient {
             return false;
         }
         return "not_found".equals(pdlError.getExtensions().getCode());
-    }
-
-    private String hentPersonQuery() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
-            return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException | URISyntaxException e) {
-           throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
-        }
     }
 
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {

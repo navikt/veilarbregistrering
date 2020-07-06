@@ -1,10 +1,11 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter;
 
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError;
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse;
 
 import java.util.List;
 
-public class PdlHentIdenterResponse {
+public class PdlHentIdenterResponse implements PdlResponse {
     private PdlHentIdenter data;
     private List<PdlError> errors;
 
