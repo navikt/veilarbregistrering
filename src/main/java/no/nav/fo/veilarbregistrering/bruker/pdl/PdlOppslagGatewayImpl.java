@@ -1,9 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
-import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
-import no.nav.fo.veilarbregistrering.bruker.Person;
+import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +25,17 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         try {
             PdlPerson pdlPerson = pdlOppslagClient.hentPerson(aktorid);
             return Optional.of(map(pdlPerson));
+        } catch (BrukerIkkeFunnetException e) {
+            LOG.warn("Hent person gav ikke treff", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Identer> hentIdenter(Foedselsnummer fnr) {
+        try {
+            PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(fnr);
+            return Optional.of(PdlOppslagMapper.map(pdlIdenter));
         } catch (BrukerIkkeFunnetException e) {
             LOG.warn("Hent person gav ikke treff", e);
             return Optional.empty();

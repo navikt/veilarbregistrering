@@ -1,9 +1,12 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 
 import java.time.LocalDate;
+
+import static java.util.stream.Collectors.*;
 
 class PdlOppslagMapper {
 
@@ -52,5 +55,16 @@ class PdlOppslagMapper {
 
     private static Telefonnummer map(PdlTelefonnummer pdlTelefonnummer) {
         return Telefonnummer.of(pdlTelefonnummer.getNummer(), pdlTelefonnummer.getLandskode());
+    }
+
+    public static Identer map(PdlIdenter pdlIdenter) {
+        return Identer.of(pdlIdenter.getIdenter().stream()
+                .map(pdlIdent -> new Ident(
+                        pdlIdent.getIdent(),
+                        pdlIdent.isHistorisk(),
+                        Gruppe.valueOf(pdlIdent.getGruppe().name())
+                ))
+                .collect(toList())
+        );
     }
 }

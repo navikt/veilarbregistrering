@@ -1,5 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter;
 
-public enum Gruppe {
+public enum PdlGruppe {
     FOLKEREGISTERIDENT, AKTORID, NPID;
 }

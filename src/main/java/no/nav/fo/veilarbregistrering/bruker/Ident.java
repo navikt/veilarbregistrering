@@ -1,11 +1,15 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter;
+package no.nav.fo.veilarbregistrering.bruker;
 
-public class PdlIdent {
+public class Ident {
+
     private String ident;
     private boolean historisk;
-    private PdlGruppe gruppe;
+    private Gruppe gruppe;
 
-    public PdlIdent() {
+    public Ident(String ident, boolean historisk, Gruppe gruppe) {
+        this.ident = ident;
+        this.historisk = historisk;
+        this.gruppe = gruppe;
     }
 
     public String getIdent() {
@@ -24,11 +28,11 @@ public class PdlIdent {
         this.historisk = historisk;
     }
 
-    public PdlGruppe getGruppe() {
+    public Gruppe getGruppe() {
         return gruppe;
     }
 
-    public void setGruppe(PdlGruppe gruppe) {
+    public void setGruppe(Gruppe gruppe) {
         this.gruppe = gruppe;
     }
 }
