@@ -27,12 +27,13 @@ public class OverforTilArenaTask {
     @Scheduled(cron = "0/10 * * * * *")
     @SchedulerLock(name = "overforTilArena")
     public void sendRegistreringerTilArenaCronJob() {
+
+        leggTilCallId();
+
         if (!asynkArenaOverforing()) {
             LOG.info("Asynk overføring til Arena er togglet av");
             return;
         }
-
-        leggTilCallId();
 
         LOG.info("Asynk overføring til Arena er togglet på");
         arenaOverforingService.utforOverforing();
