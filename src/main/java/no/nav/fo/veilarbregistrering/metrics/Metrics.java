@@ -65,12 +65,27 @@ public class Metrics {
         MAKSDATO_EVENT("registrering.maksdato"),
         OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse"),
         HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde"),
-        HENT_ARBEIDSSOKERPERIODER_POTENSIELLKILDE("arbeid.arbeidssoker.potensiellkilde");
+        HENT_ARBEIDSSOKERPERIODER_POTENSIELLKILDE("arbeid.arbeidssoker.potensiellkilde"),
+        HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar");
 
         private final String name;
 
         Event(String name) {
             this.name = name;
+        }
+    }
+
+    public enum JaNei implements Metric {
+        JA, NEI;
+
+        @Override
+        public String fieldName() {
+            return "svar";
+        }
+
+        @Override
+        public Object value() {
+            return this.toString();
         }
     }
 }
