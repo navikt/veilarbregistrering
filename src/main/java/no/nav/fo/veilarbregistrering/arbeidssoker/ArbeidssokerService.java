@@ -87,7 +87,7 @@ public class ArbeidssokerService {
 
         @Override
         public Object value() {
-            return this.name();
+            return this.toString();
         }
     }
 }
