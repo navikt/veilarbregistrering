@@ -37,7 +37,7 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
             PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(fnr);
             return Optional.of(PdlOppslagMapper.map(pdlIdenter));
         } catch (BrukerIkkeFunnetException e) {
-            LOG.warn("Hent person gav ikke treff", e);
+            LOG.warn("Hent identer gav ikke treff", e);
             return Optional.empty();
         }
     }
