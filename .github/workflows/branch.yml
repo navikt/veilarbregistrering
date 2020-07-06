@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - master
+      - helsesjekk_pdl
 
 jobs:
 
