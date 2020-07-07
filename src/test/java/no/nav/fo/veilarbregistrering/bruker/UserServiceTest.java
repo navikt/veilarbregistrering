@@ -7,6 +7,10 @@ import org.junit.Test;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,11 +18,13 @@ public class UserServiceTest {
 
     private UserService userService;
     private Provider<HttpServletRequest> requestProvider;
+    private PdlOppslagGateway pdlOppslagGateway;
 
     @Before
     public void setUp() {
         requestProvider = mock(Provider.class);
-        userService = new UserService(requestProvider, null);
+        pdlOppslagGateway = mock(PdlOppslagGateway.class);
+        userService = new UserService(requestProvider, null, pdlOppslagGateway);
     }
 
     @Test
@@ -39,5 +45,19 @@ public class UserServiceTest {
         when(requestProvider.get()).thenReturn(request);
 
         userService.getEnhetIdFromUrlOrThrow();
+    }
+
+    @Test()
+    public void skalFinneBrukerGjennomPdl() {
+        when(pdlOppslagGateway.hentIdenter(Foedselsnummer.of("11111111111"))).thenReturn(Optional.of(new Identer(Arrays.asList(
+                new Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
+                new Ident("22222222222", false, Gruppe.AKTORID),
+                new Ident("33333333333", false, Gruppe.NPID)
+        ))));
+
+        Bruker bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of("11111111111"));
+
+        assertThat(bruker.getFoedselsnummer().stringValue()).isEqualTo("11111111111");
+        assertThat(bruker.getAktorId().asString()).isEqualTo("22222222222");
     }
 }

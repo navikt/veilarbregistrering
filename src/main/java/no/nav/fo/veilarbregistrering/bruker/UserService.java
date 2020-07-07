@@ -1,19 +1,30 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.nav.apiapp.feil.Feil;
+import no.nav.apiapp.feil.FeilType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Optional;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.common.auth.SubjectHandler.getIdent;
 
 public class UserService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     private final Provider<HttpServletRequest> requestProvider;
     private final AktorGateway aktorGateway;
+    private final PdlOppslagGateway pdlOppslagGateway;
 
-    public UserService(Provider<HttpServletRequest> requestProvider, AktorGateway aktorGateway) {
+    public UserService(Provider<HttpServletRequest> requestProvider, AktorGateway aktorGateway, PdlOppslagGateway pdlOppslagGateway) {
         this.requestProvider = requestProvider;
         this.aktorGateway = aktorGateway;
+        this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
     public Bruker hentBruker() {
@@ -34,7 +45,7 @@ public class UserService {
         return Bruker.of(fnr, aktorId);
     }
 
-    private Foedselsnummer hentFnrFraUrlEllerToken() {
+    public Foedselsnummer hentFnrFraUrlEllerToken() {
 
         String fnr = getFnrFromUrl();
 
@@ -65,5 +76,17 @@ public class UserService {
         }
 
         return enhetId;
+    }
+
+    public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
+        try {
+            return pdlOppslagGateway.hentIdenter(fnr)
+                    .map(identer -> Bruker.of(identer.finnGjeldeneFnr(), identer.finnGjeldendeAktorId()))
+                    .orElse(null);
+        } catch (RuntimeException e) {
+            LOG.error("Hent identer fra PDL feilet", e);
+            throw new Feil(FeilType.UKJENT);
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 query($ident: ID!) {
-    hentIdenter(ident: $ident, grupper: [FOLKEREGISTERIDENT], historikk: false) {
+    hentIdenter(ident: $ident, grupper: [FOLKEREGISTERIDENT, AKTORID], historikk: false) {
         identer {
             ident,
             historisk,
