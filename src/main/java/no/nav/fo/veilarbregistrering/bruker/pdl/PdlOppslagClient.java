@@ -50,8 +50,9 @@ class PdlOppslagClient {
 
     PdlIdenter hentIdenter(Foedselsnummer fnr) {
         PdlHentIdenterRequest request = new PdlHentIdenterRequest(hentIdenterQuery(), new HentIdenterVariables(fnr.stringValue()));
+        LOG.info(request.toString());
         String json = hentIdenterRequest(fnr.stringValue(), request);
-        LOG.debug("json-response fra PDL: {}", json);
+        LOG.info("json-response fra PDL: {}", json);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
         return response.getData().getPdlIdenter();

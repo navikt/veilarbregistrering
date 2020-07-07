@@ -25,4 +25,13 @@ public class PdlHentIdenterRequest {
     public void setVariables(HentIdenterVariables variables) {
         this.variables = variables;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "query=" + query +
+                ", variables=" + variables.toString() +
+                '}';
+
+    }
 }
