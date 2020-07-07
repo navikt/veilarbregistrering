@@ -195,8 +195,9 @@ public class ServiceBeansConfig {
     ArbeidssokerResource arbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            VeilarbAbacPepClient pepClient) {
-        return new ArbeidssokerResource(arbeidssokerService, userService, pepClient);
+            VeilarbAbacPepClient pepClient,
+            UnleashService unleashService) {
+        return new ArbeidssokerResource(arbeidssokerService, userService, pepClient, unleashService);
     }
 
     @Bean
@@ -241,8 +242,12 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    UserService userService(Provider<HttpServletRequest> provider, AktorGateway aktorGateway) {
-        return new UserService(provider, aktorGateway);
+    UserService userService(
+            Provider<HttpServletRequest> provider,
+            AktorGateway aktorGateway,
+            PdlOppslagGateway pdlOppslagGateway
+    ) {
+        return new UserService(provider, aktorGateway, pdlOppslagGateway);
     }
 
     @Bean
