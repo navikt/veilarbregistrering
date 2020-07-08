@@ -61,7 +61,7 @@ class KrrClient {
             JSONObject kontaktinfo = new JSONObject(jsonResponse)
                     .getJSONObject("kontaktinfo")
                     .getJSONObject(foedselsnummer.stringValue());
-            LOG.info("Fikk kontaktinfo fra krr");
+
             return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
         }
 
