@@ -40,7 +40,7 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
             record.headers().add(new RecordHeader(MDC_CALL_ID, CallId.getCorrelationIdAsBytes()));
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {
-                    LOG.error(String.format("ArbeidssokerProfilertEvent publisert på topic, %s", topic), e);
+                    LOG.error(String.format("En feil oppsto ved publisering av ArbeidssokerProfilertEvent på topic, %s", topic), e);
 
                 } else {
                     LOG.info("ArbeidssokerProfilertEvent publisert: {}", recordMetadata);
