@@ -21,6 +21,7 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - Unleash (feature toggle)
 - Oppgave : REST
 - PDL : Graphql
+- [KRR : REST](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md)
 
 # Komme i gang
 
