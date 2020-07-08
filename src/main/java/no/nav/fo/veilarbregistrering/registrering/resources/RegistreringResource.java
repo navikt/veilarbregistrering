@@ -59,7 +59,14 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final Bruker bruker = userService.hentBruker();
+
+        Bruker bruker;
+
+        if (hentIdenterFraPdl()) {
+            bruker = userService.finnBrukerGjennomPdl(userService.hentFnrFraUrlEllerToken());
+        } else {
+            bruker = userService.hentBruker();
+        }
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
@@ -188,4 +195,9 @@ public class RegistreringResource {
     private boolean tjenesteErNede() {
         return unleashService.isEnabled("arbeidssokerregistrering.nedetid");
     }
+
+    private boolean hentIdenterFraPdl() {
+        return unleashService.isEnabled("veilarbregistrering.arbeidssoker.identerfrapdl");
+    }
+
 }
