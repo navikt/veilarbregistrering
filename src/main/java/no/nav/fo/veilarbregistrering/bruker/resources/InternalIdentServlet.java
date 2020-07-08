@@ -62,7 +62,7 @@ public class InternalIdentServlet extends HttpServlet {
     }
 
     private boolean hentIdenterFraPdl() {
-        return unleashService.isEnabled("veilarbregistrering.arbeidssoker.identerfrapdl");
+        return unleashService.isEnabled("veilarbregistrering.arbeidssoker.internal.identerfrapdl");
     }
 
 }
