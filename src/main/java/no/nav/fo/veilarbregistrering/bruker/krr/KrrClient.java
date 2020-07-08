@@ -42,7 +42,7 @@ class KrrClient {
                             .header("Nav-Consumer-Id", "srvveilarbregistrering")
                             .header("Nav-Personidenter", foedselsnummer.stringValue())
                             .get(String.class));
-            LOG.info(String.format("Response fra KRR: %s", jsonResponse));
+
             kontaktinfoDto = parse(jsonResponse, foedselsnummer);
 
         } catch (NotFoundException e) {
@@ -61,7 +61,7 @@ class KrrClient {
             JSONObject kontaktinfo = new JSONObject(jsonResponse)
                     .getJSONObject("kontaktinfo")
                     .getJSONObject(foedselsnummer.stringValue());
-
+            LOG.info("Fikk kontaktinfo fra krr");
             return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
         }
 
