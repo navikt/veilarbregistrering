@@ -42,7 +42,7 @@ class KrrClient {
                             .header("Nav-Consumer-Id", "srvveilarbregistrering")
                             .header("Nav-Personidenter", foedselsnummer.stringValue())
                             .get(String.class));
-
+            LOG.info(String.format("Response fra KRR: %s", jsonResponse));
             kontaktinfoDto = parse(jsonResponse, foedselsnummer);
 
         } catch (NotFoundException e) {
