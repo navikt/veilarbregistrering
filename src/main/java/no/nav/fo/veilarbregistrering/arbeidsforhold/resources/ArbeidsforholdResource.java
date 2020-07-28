@@ -41,7 +41,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
-        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
+        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         return map(flereArbeidsforhold.siste());
     }
 

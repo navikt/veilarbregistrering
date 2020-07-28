@@ -57,7 +57,7 @@ public class UserServiceTest {
 
         Bruker bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of("11111111111"));
 
-        assertThat(bruker.getFoedselsnummer().stringValue()).isEqualTo("11111111111");
+        assertThat(bruker.getGjeldendeFoedselsnummer().stringValue()).isEqualTo("11111111111");
         assertThat(bruker.getAktorId().asString()).isEqualTo("22222222222");
     }
 }

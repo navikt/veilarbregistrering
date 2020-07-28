@@ -122,7 +122,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.getId());
-        assertThat(bruker.getFoedselsnummer()).isEqualTo(BRUKER_1.getFoedselsnummer());
+        assertThat(bruker.getGjeldendeFoedselsnummer()).isEqualTo(BRUKER_1.getGjeldendeFoedselsnummer());
         assertThat(bruker.getAktorId()).isEqualTo(BRUKER_1.getAktorId());
     }
 

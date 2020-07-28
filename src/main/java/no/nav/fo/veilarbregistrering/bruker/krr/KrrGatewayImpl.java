@@ -16,7 +16,7 @@ class KrrGatewayImpl implements KrrGateway {
 
     @Override
     public Optional<Telefonnummer> hentKontaktinfo(Bruker bruker) {
-        return krrClient.hentKontaktinfo(bruker.getFoedselsnummer())
+        return krrClient.hentKontaktinfo(bruker.getGjeldendeFoedselsnummer())
                 .map(kontakt -> Telefonnummer.of(kontakt.getMobiltelefonnummer()));
     }
 }

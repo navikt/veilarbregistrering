@@ -58,7 +58,7 @@ public class OppgaveRouter {
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
         try {
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getFoedselsnummer());
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);
@@ -94,7 +94,7 @@ public class OppgaveRouter {
     }
 
     public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
-        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getFoedselsnummer());
+        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
             reportTags(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);

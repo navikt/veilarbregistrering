@@ -72,7 +72,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         SqlUtils.insert(db, BRUKER_REGISTRERING)
                 .value(BRUKER_REGISTRERING_ID, id)
                 .value(AKTOR_ID, bruker.getAktorId().asString())
-                .value("FOEDSELSNUMMER", bruker.getFoedselsnummer().stringValue())
+                .value("FOEDSELSNUMMER", bruker.getGjeldendeFoedselsnummer().stringValue())
                 .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling

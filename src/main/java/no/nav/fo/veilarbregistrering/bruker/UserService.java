@@ -79,7 +79,7 @@ public class UserService {
     public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
         try {
             return pdlOppslagGateway.hentIdenter(fnr)
-                    .map(identer -> Bruker.of(identer.finnGjeldendeFnr(), identer.finnGjeldendeAktorId()))
+                    .map(identer -> Bruker.of(identer.finnGjeldendeFnr(), identer.finnGjeldendeAktorId(), identer.finnHistoriskeFoedselsnummer()))
                     .orElse(null);
         } catch (RuntimeException e) {
             LOG.error("Hent identer fra PDL feilet", e);

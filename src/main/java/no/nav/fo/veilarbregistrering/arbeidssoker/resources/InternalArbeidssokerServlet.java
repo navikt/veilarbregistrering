@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
@@ -42,7 +41,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
                 .orElseThrow(() -> new BadRequestException("Fnr eller aktørid må spesifiseres"));
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
-                bruker.getFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
+                bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
         ArbeidssokerperioderDto dto = map(arbeidssokerperiodes);
 

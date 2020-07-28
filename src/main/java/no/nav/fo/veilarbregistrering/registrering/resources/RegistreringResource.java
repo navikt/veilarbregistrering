@@ -62,7 +62,7 @@ public class RegistreringResource {
         final Bruker bruker = userService.hentBruker();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
-        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getFoedselsnummer());
+        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getGjeldendeFoedselsnummer());
         rapporterRegistreringsstatus(status);
         return status;
     }
@@ -100,7 +100,7 @@ public class RegistreringResource {
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
         }
 
-        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
 
         return registrering;
     }
@@ -142,7 +142,7 @@ public class RegistreringResource {
             reportFields(MANUELL_REAKTIVERING_EVENT);
         }
 
-        AlderMetrikker.rapporterAlder(bruker.getFoedselsnummer());
+        AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
     }
 
     @POST
