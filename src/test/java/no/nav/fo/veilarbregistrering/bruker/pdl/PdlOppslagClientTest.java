@@ -24,11 +24,11 @@ import static org.mockito.Mockito.mock;
 
 public class PdlOppslagClientTest {
 
-    private static final String OK_JSON = "/pdl/hentPersonOk.json";
-    private static final String OK_UTEN_PERIODER_JSON = "/pdl/hentPersonOkUtenPerioder.json";
-    private static final String FEIL_JSON = "/pdl/hentPersonError.json";
-    private static final String PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
-    private static final String HENT_IDENTER_OK = "/pdl/hentIdenterOk.json";
+    private static final String HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json";
+    private static final String HENT_PERSON_OK_UTEN_PERIODER_JSON = "/pdl/hentPersonOkUtenPerioder.json";
+    private static final String HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json";
+    private static final String HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
+    private static final String HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json";
 
     private Provider<HttpServletRequest> requestProvider;
 
@@ -42,7 +42,7 @@ public class PdlOppslagClientTest {
         PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
             String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(OK_JSON);
+                return toJson(HENT_PERSON_OK_JSON);
             }
         };
         PdlPerson person = client.hentPerson(AktorId.of("444hhh"));
@@ -55,7 +55,7 @@ public class PdlOppslagClientTest {
         PdlOppslagClient service = new PdlOppslagClient("", null) {
             @Override
             String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(OK_UTEN_PERIODER_JSON);
+                return toJson(HENT_PERSON_OK_UTEN_PERIODER_JSON);
             }
         };
         PdlPerson person = service.hentPerson(AktorId.of("444hhh"));
@@ -68,7 +68,7 @@ public class PdlOppslagClientTest {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
             String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(FEIL_JSON);
+                return toJson(HENT_PERSON_FEIL_JSON);
             }
         };
         pdlOppslagClient.hentPerson(AktorId.of("111lll"));
@@ -79,7 +79,7 @@ public class PdlOppslagClientTest {
         PdlOppslagClient pdlOppslagClient = new PdlOppslagClient("", null) {
             @Override
             String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(PERSON_NOT_FOUND_JSON);
+                return toJson(HENT_PERSON_NOT_FOUND_JSON);
             }
         };
         PdlPerson pdlPerson = pdlOppslagClient.hentPerson(AktorId.of("111lll"));
@@ -91,7 +91,7 @@ public class PdlOppslagClientTest {
         PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
             String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
-                return toJson(HENT_IDENTER_OK);
+                return toJson(HENT_IDENTER_OK_JSON);
             }
         };
 
