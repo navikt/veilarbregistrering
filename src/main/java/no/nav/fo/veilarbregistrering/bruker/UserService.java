@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Optional;
-
 import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.common.auth.SubjectHandler.getIdent;
 
@@ -81,7 +79,7 @@ public class UserService {
     public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
         try {
             return pdlOppslagGateway.hentIdenter(fnr)
-                    .map(identer -> Bruker.of(identer.finnGjeldeneFnr(), identer.finnGjeldendeAktorId()))
+                    .map(identer -> Bruker.of(identer.finnGjeldendeFnr(), identer.finnGjeldendeAktorId()))
                     .orElse(null);
         } catch (RuntimeException e) {
             LOG.error("Hent identer fra PDL feilet", e);

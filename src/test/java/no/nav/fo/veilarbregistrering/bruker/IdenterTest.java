@@ -21,7 +21,7 @@ public class IdenterTest {
                 new Ident("33333333333", false, Gruppe.NPID)
         ));
 
-        Foedselsnummer fnr = identer.finnGjeldeneFnr();
+        Foedselsnummer fnr = identer.finnGjeldendeFnr();
 
         assertThat(fnr.stringValue()).isEqualTo("11111111111");
     }
@@ -42,7 +42,7 @@ public class IdenterTest {
 
     @Test
     public void tom_liste_skal_gi_notFound() {
-        assertThrows(NotFoundException.class, () -> Identer.of(new ArrayList<>()).finnGjeldeneFnr());
+        assertThrows(NotFoundException.class, () -> Identer.of(new ArrayList<>()).finnGjeldendeFnr());
         assertThrows(NotFoundException.class, () -> Identer.of(new ArrayList<>()).finnGjeldendeAktorId());
     }
 
@@ -54,7 +54,7 @@ public class IdenterTest {
                 new Ident("33333333333", false, Gruppe.NPID)
         ));
 
-        assertThrows(NotFoundException.class, identer::finnGjeldeneFnr);
+        assertThrows(NotFoundException.class, identer::finnGjeldendeFnr);
     }
 
     @Test

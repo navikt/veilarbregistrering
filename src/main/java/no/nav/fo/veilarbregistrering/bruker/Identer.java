@@ -18,7 +18,7 @@ public class Identer {
         return identer;
     }
 
-    public Foedselsnummer finnGjeldeneFnr() {
+    public Foedselsnummer finnGjeldendeFnr() {
         Ident gjeldendeFnr = identer.stream()
                 .filter(ident -> ident.getGruppe() == Gruppe.FOLKEREGISTERIDENT)
                 .filter(ident -> !ident.isHistorisk())
