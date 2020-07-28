@@ -16,6 +16,7 @@ public class IdenterTest {
     public void skal_finne_gjeldende_fnr() {
         Identer identer = Identer.of(Arrays.asList(
                 new Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
+                new Ident("44444444444", true, Gruppe.FOLKEREGISTERIDENT),
                 new Ident("22222222222", false, Gruppe.AKTORID),
                 new Ident("33333333333", false, Gruppe.NPID)
         ));
@@ -30,6 +31,7 @@ public class IdenterTest {
         Identer identer = Identer.of(Arrays.asList(
                 new Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 new Ident("22222222222", false, Gruppe.AKTORID),
+                new Ident("44444444444", true, Gruppe.AKTORID),
                 new Ident("33333333333", false, Gruppe.NPID)
         ));
 
