@@ -59,7 +59,7 @@ public class ArenaOverforingService {
         LOG.info("Overfører registrering med tilstand: {}", aktiveringTilstand);
         Status status;
         try {
-            status = overfoerRegistreringTilArena(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+            status = overfoerRegistreringTilArena(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         } catch (RuntimeException e) {
             LOG.error("Asynk overføring til Arena feilet av ukjent grunn", e);
             status = Status.UKJENT_TEKNISK_FEIL;

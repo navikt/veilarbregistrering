@@ -1,0 +1,23 @@
+{
+  "data": {
+    "hentIdenter": {
+      "identer": [
+        {
+          "ident": "1000009372625",
+          "historisk": false,
+          "gruppe": "AKTORID"
+        },
+        {
+          "ident": "***********",
+          "historisk": false,
+          "gruppe": "FOLKEREGISTERIDENT"
+        },
+        {
+          "ident": "***********",
+          "historisk": true,
+          "gruppe": "FOLKEREGISTERIDENT"
+        }
+      ]
+    }
+  }
+}

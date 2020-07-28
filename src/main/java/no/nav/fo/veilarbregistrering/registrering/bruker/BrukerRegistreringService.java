@@ -83,20 +83,20 @@ public class BrukerRegistreringService {
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
-        oppfolgingGateway.reaktiverBruker(bruker.getFoedselsnummer());
+        oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
 
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());
     }
 
     @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
@@ -185,10 +185,10 @@ public class BrukerRegistreringService {
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
 
-        oppfolgingGateway.aktiverBruker(bruker.getFoedselsnummer(), profilering.getInnsatsgruppe());
+        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(brukerRegistrering, profilering);
@@ -213,7 +213,7 @@ public class BrukerRegistreringService {
     private OrdinaerBrukerRegistrering mottattBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(brukerRegistrering, bruker);
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), ordinaerBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.getId(), profilering);
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
@@ -278,13 +278,13 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
 
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
+        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getGjeldendeFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 

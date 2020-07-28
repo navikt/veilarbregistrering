@@ -39,6 +39,6 @@ public class SykemeldingResource implements SykemeldingApi {
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
-        return sykemeldingService.hentSykmeldtInfoData(bruker.getFoedselsnummer());
+        return sykemeldingService.hentSykmeldtInfoData(bruker.getGjeldendeFoedselsnummer());
     }
 }

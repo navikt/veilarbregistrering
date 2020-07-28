@@ -29,6 +29,7 @@ public class PdlOppslagClientTest {
     private static final String HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json";
     private static final String HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
     private static final String HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json";
+    private static final String HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json";
 
     private Provider<HttpServletRequest> requestProvider;
 
@@ -102,6 +103,27 @@ public class PdlOppslagClientTest {
                 .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk()));
         assertTrue(pdlIdenter.getIdenter().stream()
                 .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.AKTORID && !pdlIdent.isHistorisk()));
+
+    }
+
+    @Test
+    public void skalHenteIdenterMedHistorikkTilPerson() {
+        PdlOppslagClient client = new PdlOppslagClient("", null) {
+            @Override
+            String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+                return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON);
+            }
+        };
+
+        PdlIdenter pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"));
+
+        assertThat(pdlIdenter.getIdenter()).hasSize(3);
+        assertTrue(pdlIdenter.getIdenter().stream()
+                .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk()));
+        assertTrue(pdlIdenter.getIdenter().stream()
+                .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.AKTORID && !pdlIdent.isHistorisk()));
+        assertTrue(pdlIdenter.getIdenter().stream()
+                .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk()));
 
     }
 
