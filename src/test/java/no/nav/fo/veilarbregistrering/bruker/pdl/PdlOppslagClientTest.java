@@ -2,6 +2,10 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.Oppholdstype;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
@@ -15,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class PdlOppslagClientTest {
@@ -23,6 +28,7 @@ public class PdlOppslagClientTest {
     private static final String OK_UTEN_PERIODER_JSON = "/pdl/hentPersonOkUtenPerioder.json";
     private static final String FEIL_JSON = "/pdl/hentPersonError.json";
     private static final String PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
+    private static final String HENT_IDENTER_OK = "/pdl/hentIdenterOk.json";
 
     private Provider<HttpServletRequest> requestProvider;
 
@@ -78,6 +84,25 @@ public class PdlOppslagClientTest {
         };
         PdlPerson pdlPerson = pdlOppslagClient.hentPerson(AktorId.of("111lll"));
         assertThat(pdlPerson).isNull();
+    }
+
+    @Test
+    public void skalHenteIdenterTilPerson() {
+        PdlOppslagClient client = new PdlOppslagClient("", null) {
+            @Override
+            String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+                return toJson(HENT_IDENTER_OK);
+            }
+        };
+
+        PdlIdenter pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"));
+
+        assertThat(pdlIdenter.getIdenter()).hasSize(2);
+        assertTrue(pdlIdenter.getIdenter().stream()
+                .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk()));
+        assertTrue(pdlIdenter.getIdenter().stream()
+                .anyMatch(pdlIdent -> pdlIdent.getGruppe() == PdlGruppe.AKTORID && !pdlIdent.isHistorisk()));
+
     }
 
     private String toJson(String json_file) {
