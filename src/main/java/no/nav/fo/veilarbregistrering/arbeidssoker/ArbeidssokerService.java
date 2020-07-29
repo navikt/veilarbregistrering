@@ -54,6 +54,15 @@ public class ArbeidssokerService {
 
         List<Arbeidssokerperiode> overlappendeArbeidssokerperioder = arbeidssokerperioder.overlapperMed(forespurtPeriode);
 
+        List<Arbeidssokerperiode> overlappendeHistoriskePerioder = historiskePerioder.overlapperMed(forespurtPeriode);
+
+        boolean lokalErLikOrds = overlappendeArbeidssokerperioder.equals(overlappendeHistoriskePerioder);
+        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
+        if (!lokalErLikOrds) {
+            LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nLokalt: %s\nArena-ORDS: %s",
+                    overlappendeArbeidssokerperioder, overlappendeHistoriskePerioder));
+        }
+
         if (dekkerHele) {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioder));
@@ -61,12 +70,7 @@ public class ArbeidssokerService {
         }
 
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
-
-        List<Arbeidssokerperiode> overlappendeHistoriskePerioder = historiskePerioder.overlapperMed(forespurtPeriode);
         LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioder));
-
-        boolean lokalErLikOrds = overlappendeArbeidssokerperioder.equals(overlappendeHistoriskePerioder);
-        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
 
         return overlappendeHistoriskePerioder;
     }
