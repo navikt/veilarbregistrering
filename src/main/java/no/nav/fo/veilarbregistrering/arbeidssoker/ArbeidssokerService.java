@@ -17,8 +17,6 @@ public class ArbeidssokerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerService.class);
 
-    static final String VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE = "veilarbregistrering.formidlingsgruppe.localcache";
-
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
     private final UnleashService unleashService;
@@ -53,16 +51,13 @@ public class ArbeidssokerService {
         LOG.info(String.format("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", historiskePerioder));
 
         boolean dekkerHele = arbeidssokerperioder.dekkerHele(forespurtPeriode);
-        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_POTENSIELLKILDE, dekkerHele ? Kilde.LOKAL : Kilde.ORDS);
 
         List<Arbeidssokerperiode> overlappendeArbeidssokerperioder = arbeidssokerperioder.overlapperMed(forespurtPeriode);
 
-        if (dekkerHele && brukLokalCache()) {
+        if (dekkerHele) {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioder));
             return overlappendeArbeidssokerperioder;
-        } else if (dekkerHele) {
-            LOG.info("Arbeidssokerperiodene fra egen database dekker hele perioden, men returneres IKKE");
         }
 
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
@@ -74,10 +69,6 @@ public class ArbeidssokerService {
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
 
         return overlappendeHistoriskePerioder;
-    }
-
-    private boolean brukLokalCache() {
-        return unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE);
     }
 
     private enum Kilde implements Metric {
