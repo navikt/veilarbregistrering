@@ -11,8 +11,10 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ArbeidssokerServiceTest {
 
@@ -33,6 +35,7 @@ public class ArbeidssokerServiceTest {
 
     @Test
     public void hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {
+        when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
 
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2020, 1, 2),
