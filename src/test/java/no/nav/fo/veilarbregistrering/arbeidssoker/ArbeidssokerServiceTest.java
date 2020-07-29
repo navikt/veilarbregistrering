@@ -11,10 +11,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ArbeidssokerServiceTest {
 
@@ -40,8 +38,6 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
 
-        when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
-
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER, forespurtPeriode);
         assertThat(arbeidssokerperiodes).hasSize(4);
         assertThat(arbeidssokerperiodes).containsSequence(
@@ -52,22 +48,27 @@ public class ArbeidssokerServiceTest {
     }
 
     @Test
-    public void hentArbeidssokerperioder_skal_hente_fra_ords_toggle_ikke_er_skrudd_av() {
+    public void hentArbeidssokerperioder_skal_hente_fra_ords() {
         Periode forespurtPeriode = Periode.of(
-                LocalDate.of(2020, 1, 2),
+                LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 1));
-
-        when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(false);
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).hasSize(1);
+        assertThat(arbeidssokerperiodes).hasSize(5);
+        assertThat(arbeidssokerperiodes).contains(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_0);
         assertThat(arbeidssokerperiodes).contains(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1);
+        assertThat(arbeidssokerperiodes).contains(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2);
+        assertThat(arbeidssokerperiodes).contains(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3);
+        assertThat(arbeidssokerperiodes).contains(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4);
 
     }
 
     private static class StubArbeidssokerRepository implements ArbeidssokerRepository {
 
+        public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_0 = new Arbeidssokerperiode(
+                Formidlingsgruppe.of("ARBS"),
+                Periode.of(LocalDate.of(2019, 12, 1), LocalDate.of(2020, 12, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
                 Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)));
@@ -107,7 +108,13 @@ public class ArbeidssokerServiceTest {
         @Override
         public Arbeidssokerperioder finnArbeissokerperioder(Foedselsnummer foedselsnummer, Periode periode) {
             Map<Foedselsnummer, Arbeidssokerperioder> map = new HashMap<>();
-            map.put(FOEDSELSNUMMER, new Arbeidssokerperioder(asList(StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1)));
+            map.put(FOEDSELSNUMMER, new Arbeidssokerperioder(asList(
+                    StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_0,
+                    StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
+                    StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
+                    StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
+                    StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4
+            )));
             return map.get(foedselsnummer);
         }
     }
