@@ -17,6 +17,8 @@ public class ArbeidssokerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerService.class);
 
+    static final String VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE = "veilarbregistrering.formidlingsgruppe.localcache";
+
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
     private final UnleashService unleashService;
@@ -59,11 +61,11 @@ public class ArbeidssokerService {
         boolean lokalErLikOrds = overlappendeArbeidssokerperioder.equals(overlappendeHistoriskePerioder);
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
         if (!lokalErLikOrds) {
-            LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nLokalt: %s\nArena-ORDS: %s",
-                    overlappendeArbeidssokerperioder, overlappendeHistoriskePerioder));
+            LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
+                    forespurtPeriode, overlappendeArbeidssokerperioder, overlappendeHistoriskePerioder));
         }
 
-        if (dekkerHele) {
+        if (dekkerHele && brukLokalCache()) {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioder));
             return overlappendeArbeidssokerperioder;
@@ -73,6 +75,10 @@ public class ArbeidssokerService {
         LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioder));
 
         return overlappendeHistoriskePerioder;
+    }
+
+    private boolean brukLokalCache() {
+        return unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE);
     }
 
     private enum Kilde implements Metric {
