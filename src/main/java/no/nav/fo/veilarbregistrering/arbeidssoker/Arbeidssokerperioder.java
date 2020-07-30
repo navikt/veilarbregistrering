@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -19,11 +21,15 @@ public class Arbeidssokerperioder {
 
     private final List<Arbeidssokerperiode> arbeidssokerperioder;
 
-    public static Arbeidssokerperioder of(List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData) {
+    public static Arbeidssokerperioder ofRaaData(List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData) {
         return new Arbeidssokerperioder(Optional.of(arbeidssokerperiodeRaaData.stream()
                 .sorted(nyesteFoerst()).collect(toList()))
                 .map(beholdKunSisteEndringPerDagIListen).get().stream()
                 .sorted(eldsteFoerst()).collect(toList()));
+    }
+
+    public static Arbeidssokerperioder of(List<Arbeidssokerperiode> arbeidssokerperioder) {
+        return new Arbeidssokerperioder(arbeidssokerperioder);
     }
 
     public Arbeidssokerperioder(List<Arbeidssokerperiode> arbeidssokerperioder) {
@@ -57,6 +63,26 @@ public class Arbeidssokerperioder {
                         .map(a -> a.stream()
                                 .sorted(eldsteFoerst())
                                 .collect(toList())).get());
+    }
+
+    public Arbeidssokerperioder slaaSammenMed(List<Arbeidssokerperioder> arbeidssokerperioder) {
+        Arbeidssokerperioder arbeidssokerperioderRedusert = arbeidssokerperioder.stream().reduce(
+                new Arbeidssokerperioder(null),
+                (akkumulertArbeidssokerperioder, gjeldendeArbeidssokerperioder) -> {
+                    List<Arbeidssokerperiode> sammensattListe = Stream
+                            .concat(
+                                    akkumulertArbeidssokerperioder.asList().stream(),
+                                    gjeldendeArbeidssokerperioder.asList().stream())
+                            .collect(Collectors.toList());
+                    return Arbeidssokerperioder.of(sammensattListe);
+                });
+
+        List<Arbeidssokerperiode> alleArbeidssokerperioder = Stream
+                .concat(this.asList().stream(), arbeidssokerperioderRedusert.asList().stream())
+                .sorted(eldsteFoerst())
+                .collect(Collectors.toList());
+
+        return Arbeidssokerperioder.of(alleArbeidssokerperioder);
     }
 
     public static Function<List<Arbeidssokerperiode>, List<Arbeidssokerperiode>> populerTilDato =

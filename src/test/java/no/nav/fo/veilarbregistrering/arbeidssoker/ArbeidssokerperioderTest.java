@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.*;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,25 +19,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ArbeidssokerperioderTest {
 
     private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 1, 1), null));
-    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 2, 1), null));
-    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 3, 1), null));
-    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 4, 1), null));
-    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_5 = new Arbeidssokerperiode(
             Formidlingsgruppe.of("ISERV"),
             Periode.of(LocalDate.of(2016, 9, 24), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ARBS"),
+            Periode.of(LocalDate.of(2020, 1, 1), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ARBS"),
+            Periode.of(LocalDate.of(2020, 2, 1), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ISERV"),
+            Periode.of(LocalDate.of(2020, 3, 1), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_5 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ARBS"),
+            Periode.of(LocalDate.of(2020, 4, 1), null));
+    private static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_6 = new Arbeidssokerperiode(
+            Formidlingsgruppe.of("ARBS"),
+            Periode.of(LocalDate.of(2020, 6, 9), null));
 
     @Test
     public void gitt_at_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                ARBEIDSSOKERPERIODE_1));
+                ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2020, 2, 1),
@@ -48,7 +52,7 @@ public class ArbeidssokerperioderTest {
     @Test
     public void gitt_at_forespurt_periode_starter_før_eldste_periode_dekkes_ikke_hele() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                ARBEIDSSOKERPERIODE_1));
+                ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2019, 2, 1),
@@ -60,7 +64,7 @@ public class ArbeidssokerperioderTest {
     @Test
     public void gitt_at_forespurt_periode_starter_samme_dag_som_eldste_periode_dekkes_hele_perioden() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                ARBEIDSSOKERPERIODE_1));
+                ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2020, 1, 1),
@@ -72,7 +76,7 @@ public class ArbeidssokerperioderTest {
     @Test
     public void gitt_at_forespurt_periode_slutter_dagen_etter_siste_periode() {
         Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
-                ARBEIDSSOKERPERIODE_5));
+                ARBEIDSSOKERPERIODE_1));
 
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2016, 10, 1),
@@ -104,56 +108,24 @@ public class ArbeidssokerperioderTest {
     }
 
     @Test
-    public void kun_siste_periode_kan_ha_blank_tildato() {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
-                .periode(medArbs()
-                        .fra(LocalDate.of(2020, 3, 19)))
-                .periode(medIserv()
-                        .fra(LocalDate.of(2020, 4, 21)))
-                .periode(medArbs()
-                        .fra(LocalDate.of(2020, 5, 30)))
-                .build()
-                .sorterOgPopulerTilDato();
+    public void skal_sette_tilDato_korrekt() {
+        // Listen skal sorteres
+        // Tildato for en periode er dagen før neste periode
+        // Tildato for siste periode er null
 
-        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isNotNull();
-        assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isNotNull();
-        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
-    }
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_1,
+                ARBEIDSSOKERPERIODE_3
+        )).sorterOgPopulerTilDato();
 
-    @Test
-    public void foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_periode_sin_fradato() {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
-                .periode(medArbs()
-                        .fra(LocalDate.of(2020, 3, 19)))
-                .periode(medIserv()
-                        .fra(LocalDate.of(2020, 4, 21)))
-                .build()
-                .sorterOgPopulerTilDato();
-
-        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20));
-        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
-    }
-
-    @Test
-    public void skal_populere_tildato_korrekt_selv_om_listen_kommer_usortert() {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerperioder()
-                .periode(medArbs()
-                        .fra(LocalDate.of(2020, 5, 30)))
-                .periode(medArbs()
-                        .fra(LocalDate.of(2020, 3, 19)))
-                .periode(medIserv()
-                        .fra(LocalDate.of(2020, 4, 21)))
-                .build()
-                .sorterOgPopulerTilDato();
-
-        assertThat(funnetFraDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 3, 19));
-        assertThat(funnetFraDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 21));
-        assertThat(funnetFraDatoForIndeks(2, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 30));
-
-        assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20));
-        assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 29));
-        assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
-
+        assertThat(arbeidssokerperioder.asList()).containsSequence(
+                ARBEIDSSOKERPERIODE_1.tilOgMed(LocalDate.of(2020,1,31)),
+                ARBEIDSSOKERPERIODE_3.tilOgMed(LocalDate.of(2020,2,29)),
+                ARBEIDSSOKERPERIODE_4.tilOgMed(LocalDate.of(2020,3,31)),
+                ARBEIDSSOKERPERIODE_5
+        );
     }
 
     @Test
@@ -164,7 +136,7 @@ public class ArbeidssokerperioderTest {
         arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusSeconds(2))));
         arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("IARBS", Timestamp.valueOf(now.plusSeconds(4))));
 
-        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.of(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.ofRaaData(arbeidssokerperiodeRaaData);
 
         assertThat(arbeidssokerperioder.asList().size()).isEqualTo(1);
         assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
@@ -186,7 +158,7 @@ public class ArbeidssokerperioderTest {
         arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", Timestamp.valueOf(now.plusDays(50).plusSeconds(2))));
         arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", Timestamp.valueOf(now.plusDays(50).plusSeconds(5))));
 
-        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.of(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = Arbeidssokerperioder.ofRaaData(arbeidssokerperiodeRaaData);
 
         assertThat(arbeidssokerperioder.asList().size()).isEqualTo(3);
         assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
@@ -197,16 +169,50 @@ public class ArbeidssokerperioderTest {
         assertThat(arbeidssokerperioder.asList().get(2).getPeriode().getFra()).isEqualTo(now.plusDays(50).toLocalDate());
     }
 
-    private LocalDate funnetFraDatoForIndeks(int indeks, Arbeidssokerperioder arbeidssokerperioder) {
-        return arbeidssokerperioder.asList().get(indeks).getPeriode().getFra();
+    @Test
+    public void skal_slaa_sammen_Arbeidssokerperioder_korrekt() {
+
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_6,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_4
+                ));
+
+        List<Arbeidssokerperioder> andreArbeidssokerperioder = asList(
+                new Arbeidssokerperioder(asList(ARBEIDSSOKERPERIODE_1)),
+                new Arbeidssokerperioder(asList(ARBEIDSSOKERPERIODE_2, ARBEIDSSOKERPERIODE_3))
+        );
+
+        Arbeidssokerperioder alleArbeidssokerperioder = arbeidssokerperioder.slaaSammenMed(andreArbeidssokerperioder);
+
+        assertThat(alleArbeidssokerperioder.asList()).containsExactly(
+                ARBEIDSSOKERPERIODE_1,
+                ARBEIDSSOKERPERIODE_2,
+                ARBEIDSSOKERPERIODE_3,
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_6
+        );
     }
 
-    private LocalDate funnetTilDatoForSistePeriode(Arbeidssokerperioder arbeidssokerperioder) {
-        return arbeidssokerperioder.asList().get(arbeidssokerperioder.asList().size()-1).getPeriode().getTil();
-    }
+    @Test
+    public void skal_forsoke_aa_slaa_sammen_Arbeidssokerperioder_selv_om_argument_er_tomt() {
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_6,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_4
+        ));
 
-    private LocalDate funnetTilDatoForIndeks(int indeks, Arbeidssokerperioder arbeidssokerperioder) {
-        return arbeidssokerperioder.asList().get(indeks).getPeriode().getTil();
-    }
+        List<Arbeidssokerperioder> andreArbeidssokerperioder = asList(
+                new Arbeidssokerperioder(null)
+        );
 
+        Arbeidssokerperioder alleArbeidssokerperioder = arbeidssokerperioder.slaaSammenMed(andreArbeidssokerperioder);
+
+        assertThat(alleArbeidssokerperioder.asList()).containsExactly(
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_6
+        );
+    }
 }

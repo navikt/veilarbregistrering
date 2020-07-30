@@ -59,6 +59,6 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                 )
         );
 
-        return Arbeidssokerperioder.of(arbeidssokerperioder);
+        return Arbeidssokerperioder.ofRaaData(arbeidssokerperioder);
     }
 }
