@@ -1,23 +1,23 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker;
+package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
 
-public class ArbeidssokerperiodeRaaData {
+class ArbeidssokerperiodeRaaData {
 
     private final String formidlingsgruppe;
     private final Timestamp formidlingsgruppeEndret;
 
-    public ArbeidssokerperiodeRaaData(String formidlingsgruppe, Timestamp formidlingsgruppeEndret) {
+    ArbeidssokerperiodeRaaData(String formidlingsgruppe, Timestamp formidlingsgruppeEndret) {
         this.formidlingsgruppe = formidlingsgruppe;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
     }
 
-    public Timestamp getFormidlingsgruppeEndret() {
+    Timestamp getFormidlingsgruppeEndret() {
         return this.formidlingsgruppeEndret;
     }
 
-    public String getFormidlingsgruppe() {
+    String getFormidlingsgruppe() {
         return this.formidlingsgruppe;
     }
 
@@ -33,5 +33,4 @@ public class ArbeidssokerperiodeRaaData {
         }
 
     }
-
 }

@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.*;
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import no.nav.sbl.sql.SqlUtils;
@@ -9,6 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
 
@@ -59,6 +63,6 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                 )
         );
 
-        return Arbeidssokerperioder.of(arbeidssokerperioder);
+        return map(arbeidssokerperioder);
     }
 }

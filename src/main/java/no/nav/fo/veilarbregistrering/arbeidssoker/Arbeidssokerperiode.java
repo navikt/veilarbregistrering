@@ -58,9 +58,9 @@ public class Arbeidssokerperiode {
                 '}';
     }
 
-    static class EldsteFoerst implements Comparator<Arbeidssokerperiode> {
+    public static class EldsteFoerst implements Comparator<Arbeidssokerperiode> {
 
-        static EldsteFoerst eldsteFoerst() {
+        public static EldsteFoerst eldsteFoerst() {
             return new EldsteFoerst();
         }
 
@@ -68,6 +68,5 @@ public class Arbeidssokerperiode {
         public int compare(Arbeidssokerperiode t0, Arbeidssokerperiode t1) {
             return t0.getPeriode().compareTo(t1.getPeriode());
         }
-
     }
 }
