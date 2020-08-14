@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
+
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;

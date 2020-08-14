@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 

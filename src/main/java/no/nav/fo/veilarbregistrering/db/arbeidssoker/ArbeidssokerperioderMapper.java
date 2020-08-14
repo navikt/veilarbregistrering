@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

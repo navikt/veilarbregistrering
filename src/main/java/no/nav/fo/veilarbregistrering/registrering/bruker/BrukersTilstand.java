@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.metrics.HasMetrics;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
