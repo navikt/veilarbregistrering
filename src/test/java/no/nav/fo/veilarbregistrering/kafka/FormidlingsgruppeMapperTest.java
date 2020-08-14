@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
