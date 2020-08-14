@@ -113,7 +113,7 @@ public class OppfolgingClient {
     }
 
     private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        if (asynkArenaOverforing()) {
+        if (overforingUtenCookie()) {
             LOG.info("Benytter SystemAuthorizationRequest uten cookie");
             return client.target(url)
                     .request()
@@ -126,6 +126,10 @@ public class OppfolgingClient {
                 .request()
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
+    }
+
+    private boolean overforingUtenCookie() {
+        return unleashService.isEnabled("veilarbregistrering.overforUtenCookie");
     }
 
     private boolean asynkArenaOverforing() {
