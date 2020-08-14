@@ -113,23 +113,10 @@ public class OppfolgingClient {
     }
 
     private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        if (overforingUtenCookie()) {
-            LOG.info("Benytter SystemAuthorizationRequest uten cookie");
-            return client.target(url)
-                    .request()
-                    .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
-                    .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
-        }
-
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         return client.target(url)
                 .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
-    }
-
-    private boolean overforingUtenCookie() {
-        return unleashService.isEnabled("veilarbregistrering.overforUtenCookie");
+                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
+                .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
     }
 
     private boolean asynkArenaOverforing() {
