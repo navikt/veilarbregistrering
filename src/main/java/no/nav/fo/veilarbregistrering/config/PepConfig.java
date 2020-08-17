@@ -25,9 +25,6 @@ public class PepConfig {
                 .medPep(pep)
                 .medResourceTypePerson()
                 .medSystemUserTokenProvider(()->systemUserTokenProvider.getSystemUserAccessToken())
-                .brukAktoerId(()->false)
-                .sammenlikneTilgang(()->false)
-                .foretrekkVeilarbAbacResultat(()->false)
                 .bygg();
     }
 
