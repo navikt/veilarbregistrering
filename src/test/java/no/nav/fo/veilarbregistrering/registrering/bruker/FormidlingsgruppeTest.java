@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

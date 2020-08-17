@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;

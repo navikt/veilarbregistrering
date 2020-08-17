@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 
 import java.util.List;
 

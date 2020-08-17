@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

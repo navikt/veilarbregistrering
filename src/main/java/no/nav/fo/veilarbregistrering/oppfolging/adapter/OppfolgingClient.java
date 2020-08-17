@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
 import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 import no.nav.json.JsonUtils;
@@ -113,19 +112,10 @@ public class OppfolgingClient {
     }
 
     private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        if (asynkArenaOverforing()) {
-            LOG.info("Benytter SystemAuthorizationRequest uten cookie");
-            return client.target(url)
-                    .request()
-                    .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
-                    .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
-        }
-
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
         return client.target(url)
                 .request()
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken());
+                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
+                .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
     }
 
     private boolean asynkArenaOverforing() {

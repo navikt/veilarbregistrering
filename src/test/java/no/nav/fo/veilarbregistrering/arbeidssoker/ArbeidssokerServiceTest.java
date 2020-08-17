@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.oppfolging.Formidlingsgruppe;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,25 +125,25 @@ public class ArbeidssokerServiceTest {
 
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_1 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 1, 1), null));
+                Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_2 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 2, 1), null));
+                Periode.of(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_3 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 3, 1), null));
+                Periode.of(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_4 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 4, 1), null));
+                Periode.of(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_5 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 5, 3), null));
+                Periode.of(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_6 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 5, 10), null));
+                Periode.of(LocalDate.of(2020, 5, 10), LocalDate.of(2020, 5, 29)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_7 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
-                Periode.of(LocalDate.of(2020, 5, 30), null));
+                Periode.of(LocalDate.of(2020, 5, 30), LocalDate.of(2020, 6, 30)));
         public static final Arbeidssokerperiode ARBEIDSSOKERPERIODE_8 = new Arbeidssokerperiode(
                 Formidlingsgruppe.of("ARBS"),
                 Periode.of(LocalDate.of(2020, 7, 1), null));
