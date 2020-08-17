@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medArbs;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medIserv;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder;
@@ -101,5 +102,52 @@ public class ArbeidssokerperioderTest {
                         LocalDate.of(2020, 6, 28)));
 
         assertThat(arbeidssokerperiodes).hasSize(2);
+    }
+
+    @Test
+    public void skal_slaa_sammen_Arbeidssokerperioder_korrekt() {
+
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_6,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_4
+        ));
+
+        List<Arbeidssokerperioder> andreArbeidssokerperioder = asList(
+                new Arbeidssokerperioder(asList(ARBEIDSSOKERPERIODE_1)),
+                new Arbeidssokerperioder(asList(ARBEIDSSOKERPERIODE_2, ARBEIDSSOKERPERIODE_3))
+        );
+
+        Arbeidssokerperioder alleArbeidssokerperioder = arbeidssokerperioder.slaaSammenMed(andreArbeidssokerperioder);
+
+        assertThat(alleArbeidssokerperioder.asList()).containsExactly(
+                ARBEIDSSOKERPERIODE_1,
+                ARBEIDSSOKERPERIODE_2,
+                ARBEIDSSOKERPERIODE_3,
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_6
+        );
+    }
+
+    @Test
+    public void skal_forsoke_aa_slaa_sammen_Arbeidssokerperioder_selv_om_argument_er_tomt() {
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+                ARBEIDSSOKERPERIODE_6,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_4
+        ));
+
+        List<Arbeidssokerperioder> andreArbeidssokerperioder = asList(
+                new Arbeidssokerperioder(null)
+        );
+
+        Arbeidssokerperioder alleArbeidssokerperioder = arbeidssokerperioder.slaaSammenMed(andreArbeidssokerperioder);
+
+        assertThat(alleArbeidssokerperioder.asList()).containsExactly(
+                ARBEIDSSOKERPERIODE_4,
+                ARBEIDSSOKERPERIODE_5,
+                ARBEIDSSOKERPERIODE_6
+        );
     }
 }
