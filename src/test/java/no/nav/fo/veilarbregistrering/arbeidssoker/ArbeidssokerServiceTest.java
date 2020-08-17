@@ -45,11 +45,11 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 5, 1));
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_1, forespurtPeriode);
-        assertThat(arbeidssokerperiodes).hasSize(4);
-        assertThat(arbeidssokerperiodes).containsSequence(
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1.tilOgMed(LocalDate.of(2020,1,31)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2.tilOgMed(LocalDate.of(2020,2,29)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3.tilOgMed(LocalDate.of(2020,3,31)),
+
+        assertThat(arbeidssokerperiodes).containsExactly(
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4);
     }
 
@@ -61,8 +61,7 @@ public class ArbeidssokerServiceTest {
 
         List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_1, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).hasSize(5);
-        assertThat(arbeidssokerperiodes).containsSequence(
+        assertThat(arbeidssokerperiodes).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
@@ -86,11 +85,12 @@ public class ArbeidssokerServiceTest {
 
         List<Arbeidssokerperiode> arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode);
 
-        assertThat(arbeidssokerperioder).containsSequence(
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4.tilOgMed(LocalDate.of(2020,5,2)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5.tilOgMed(LocalDate.of(2020,5,9)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_6.tilOgMed(LocalDate.of(2020,5,29)),
-                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_7.tilOgMed(LocalDate.of(2020,6,30))
+        assertThat(arbeidssokerperioder).containsExactly(
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_6,
+                StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_7
         );
 
     }
