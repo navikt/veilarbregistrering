@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.oppfolging;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 public class DetaljerDto {
 

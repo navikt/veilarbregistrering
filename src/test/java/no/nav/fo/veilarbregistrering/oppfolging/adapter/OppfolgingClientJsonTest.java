@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

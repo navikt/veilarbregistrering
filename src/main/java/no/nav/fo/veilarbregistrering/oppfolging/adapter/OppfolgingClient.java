@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeilDto;
 import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 import no.nav.json.JsonUtils;
