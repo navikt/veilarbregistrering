@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
@@ -64,5 +66,16 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         );
 
         return map(arbeidssokerperioder);
+    }
+
+    @Override
+    public Arbeidssokerperioder finnFormidlingsgrupper(Bruker bruker) {
+        Arbeidssokerperioder arbeidssokerperioder = finnFormidlingsgrupper(bruker.getGjeldendeFoedselsnummer());
+
+        List<Arbeidssokerperioder> historiskeArbeidssokerperioder = bruker.getHistoriskeFoedselsnummer().stream()
+                .map(this::finnFormidlingsgrupper)
+                .collect(Collectors.toList());
+
+        return arbeidssokerperioder.slaaSammenMed(historiskeArbeidssokerperioder);
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Bruker {
 
@@ -43,5 +44,20 @@ public class Bruker {
 
     public List<Foedselsnummer> getHistoriskeFoedselsnummer() {
         return historiskeFoedselsnummer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bruker)) return false;
+        Bruker bruker = (Bruker) o;
+        return getGjeldendeFoedselsnummer().equals(bruker.getGjeldendeFoedselsnummer()) &&
+                getAktorId().equals(bruker.getAktorId()) &&
+                getHistoriskeFoedselsnummer().equals(bruker.getHistoriskeFoedselsnummer());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getGjeldendeFoedselsnummer(), getAktorId(), getHistoriskeFoedselsnummer());
     }
 }

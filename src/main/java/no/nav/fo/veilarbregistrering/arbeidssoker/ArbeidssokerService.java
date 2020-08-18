@@ -47,7 +47,7 @@ public class ArbeidssokerService {
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Bruker bruker, Periode forespurtPeriode) {
         // Hent arbeidssøkerperioder lokalt for alle fnr fordi det er billig
-        Arbeidssokerperioder arbeidssokerperioderLokalt = hentAlleArbeidssokerperioderLokalt(bruker);
+        Arbeidssokerperioder arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker);
 
         if (arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode) && brukLokalCache()) {
             List<Arbeidssokerperiode> overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode);
@@ -73,17 +73,6 @@ public class ArbeidssokerService {
                 .collect(Collectors.toList());
 
         return arbeidssokerperioderORDS.slaaSammenMed(historiskeArbeidssokerperioderORDS).overlapperMed(forespurtPeriode);
-    }
-
-    Arbeidssokerperioder hentAlleArbeidssokerperioderLokalt(Bruker bruker) {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository
-                .finnFormidlingsgrupper(bruker.getGjeldendeFoedselsnummer());
-
-        List<Arbeidssokerperioder> historiskeArbeidssokerperioder = bruker.getHistoriskeFoedselsnummer().stream()
-                .map(arbeidssokerRepository::finnFormidlingsgrupper)
-                .collect(Collectors.toList());
-
-        return arbeidssokerperioder.slaaSammenMed(historiskeArbeidssokerperioder);
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {

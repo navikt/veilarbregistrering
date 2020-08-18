@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -23,6 +24,12 @@ public class ArbeidssokerServiceTest {
     public static final Foedselsnummer FOEDSELSNUMMER_2 = Foedselsnummer.of("11234567890");
     private static final Foedselsnummer FOEDSELSNUMMER_3 = Foedselsnummer.of("22334455661");
     private static final Foedselsnummer FOEDSELSNUMMER_4 = Foedselsnummer.of("99887766554");
+
+    private static final Bruker BRUKER_1 = Bruker.of(
+            FOEDSELSNUMMER_3,
+            AktorId.of("100002345678"),
+            asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
+    );
 
     private ArbeidssokerService arbeidssokerService;
     private UnleashService unleashService;
@@ -59,7 +66,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 1));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_1, forespurtPeriode);
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_2, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
@@ -99,17 +106,11 @@ public class ArbeidssokerServiceTest {
     public void hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_ORDS() {
         when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
 
-        Bruker bruker = Bruker.of(
-                FOEDSELSNUMMER_2,
-                AktorId.of("100002345678"),
-                asList(FOEDSELSNUMMER_1)
-        );
-
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 9));
 
-        List<Arbeidssokerperiode> arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode);
+        List<Arbeidssokerperiode> arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
 
         assertThat(arbeidssokerperioder).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
@@ -177,6 +178,24 @@ public class ArbeidssokerServiceTest {
 
             return map.get(foedselsnummer);
         }
+
+        @Override
+        public Arbeidssokerperioder finnFormidlingsgrupper(Bruker bruker) {
+            Map<Bruker, Arbeidssokerperioder> map = new HashMap<>();
+
+            map.put(BRUKER_1, new Arbeidssokerperioder(asList(
+                    ARBEIDSSOKERPERIODE_3,
+                    ARBEIDSSOKERPERIODE_1,
+                    ARBEIDSSOKERPERIODE_4,
+                    ARBEIDSSOKERPERIODE_2,
+                    ARBEIDSSOKERPERIODE_6,
+                    ARBEIDSSOKERPERIODE_5,
+                    ARBEIDSSOKERPERIODE_7,
+                    ARBEIDSSOKERPERIODE_8
+            )));
+
+            return map.get(bruker);
+        }
     }
 
     private static class StubFormidlingsgruppeGateway implements FormidlingsgruppeGateway {
@@ -206,17 +225,18 @@ public class ArbeidssokerServiceTest {
         @Override
         public Arbeidssokerperioder finnArbeissokerperioder(Foedselsnummer foedselsnummer, Periode periode) {
             Map<Foedselsnummer, Arbeidssokerperioder> map = new HashMap<>();
-            map.put(FOEDSELSNUMMER_1, new Arbeidssokerperioder(asList(
+            map.put(FOEDSELSNUMMER_2, new Arbeidssokerperioder(asList(
                     ARBEIDSSOKERPERIODE_2,
                     ARBEIDSSOKERPERIODE_4,
                     ARBEIDSSOKERPERIODE_3,
                     ARBEIDSSOKERPERIODE_0,
                     ARBEIDSSOKERPERIODE_1
             )));
-            map.put(FOEDSELSNUMMER_2, new Arbeidssokerperioder(asList(
+            map.put(FOEDSELSNUMMER_3, new Arbeidssokerperioder(asList(
                     ARBEIDSSOKERPERIODE_5,
                     ARBEIDSSOKERPERIODE_6
             )));
+            map.put(FOEDSELSNUMMER_1, new Arbeidssokerperioder(emptyList()));
             return map.get(foedselsnummer);
         }
     }
