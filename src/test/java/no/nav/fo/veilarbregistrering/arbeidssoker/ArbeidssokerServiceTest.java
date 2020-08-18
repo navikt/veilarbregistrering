@@ -24,6 +24,12 @@ public class ArbeidssokerServiceTest {
     private static final Foedselsnummer FOEDSELSNUMMER_3 = Foedselsnummer.of("22334455661");
     private static final Foedselsnummer FOEDSELSNUMMER_4 = Foedselsnummer.of("99887766554");
 
+    private static final Bruker BRUKER_1 = Bruker.of(
+            FOEDSELSNUMMER_3,
+            AktorId.of("100002345678"),
+            asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
+    );
+
     private ArbeidssokerService arbeidssokerService;
     private UnleashService unleashService;
 
@@ -176,6 +182,24 @@ public class ArbeidssokerServiceTest {
             map.put(FOEDSELSNUMMER_4, new Arbeidssokerperioder(null));
 
             return map.get(foedselsnummer);
+        }
+
+        @Override
+        public Arbeidssokerperioder finnFormidlingsgrupper(Bruker bruker) {
+            Map<Bruker, Arbeidssokerperioder> map = new HashMap<>();
+
+            map.put(BRUKER_1, new Arbeidssokerperioder(asList(
+                    ARBEIDSSOKERPERIODE_3,
+                    ARBEIDSSOKERPERIODE_1,
+                    ARBEIDSSOKERPERIODE_4,
+                    ARBEIDSSOKERPERIODE_2,
+                    ARBEIDSSOKERPERIODE_6,
+                    ARBEIDSSOKERPERIODE_5,
+                    ARBEIDSSOKERPERIODE_7,
+                    ARBEIDSSOKERPERIODE_8
+            )));
+
+            return map.get(bruker);
         }
     }
 
