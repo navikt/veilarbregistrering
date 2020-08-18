@@ -1,0 +1,85 @@
+package no.nav.fo.veilarbregistrering.bruker.pdl;
+
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
+import no.nav.fo.veilarbregistrering.config.CacheConfig;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.time.LocalDate;
+
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.*;
+
+class HentPersonPdlOppslagGatewayTest {
+
+    private static PdlOppslagClient pdlOppslagClient;
+    private static AnnotationConfigApplicationContext context;
+
+    @BeforeAll
+    public static void setup() {
+        pdlOppslagClient = mock(PdlOppslagClient.class);
+
+        BeanDefinition beanDefinition = BeanDefinitionBuilder
+                .rootBeanDefinition(PdlOppslagGatewayImpl.class)
+                .addConstructorArgValue(pdlOppslagClient)
+                .getBeanDefinition();
+
+        context = new AnnotationConfigApplicationContext();
+        context.register(CacheConfig.class);
+        context.getDefaultListableBeanFactory().registerBeanDefinition("pdlOppslagClient", beanDefinition);
+        context.refresh();
+        context.start();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        context.stop();
+    }
+
+    @Test
+    public void skalCacheVedKallPaaSammeAktorId() throws Exception {
+        PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
+        when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
+        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
+        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
+        verify(pdlOppslagClient, times(1)).hentPerson(any());
+    }
+
+    @Test
+    public void skalIkkeCacheVedKallPaaForskjelligAktorId() throws Exception {
+        PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
+        when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
+        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
+        pdlOppslagGateway.hentPerson(AktorId.of("109987654321"));
+        verify(pdlOppslagClient, times(2)).hentPerson(any());
+    }
+
+    private PdlPerson dummyPdlPerson() {
+        PdlPersonOpphold pdlPersonOpphold = new PdlPersonOpphold();
+        pdlPersonOpphold.setType(Oppholdstype.PERMANENT);
+
+        PdlStatsborgerskap statsborgerskap = new PdlStatsborgerskap();
+        statsborgerskap.setLand("NOR");
+
+        PdlPerson pdlPerson = new PdlPerson();
+        pdlPerson.setOpphold(singletonList(pdlPersonOpphold));
+        pdlPerson.setStatsborgerskap(singletonList(statsborgerskap));
+
+        PdlFoedsel pdlFoedsel = new PdlFoedsel();
+        pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
+        pdlPerson.setFoedsel(singletonList(pdlFoedsel));
+
+        PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
+        pdlTelefonnummer.setLandskode("0047");
+        pdlTelefonnummer.setNummer("94242425");
+        pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
+
+        return pdlPerson;
+    }
+}
