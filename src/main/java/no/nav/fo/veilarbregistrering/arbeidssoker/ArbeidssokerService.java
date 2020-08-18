@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -41,6 +43,47 @@ public class ArbeidssokerService {
         }
 
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand);
+    }
+
+    public List<Arbeidssokerperiode> hentArbeidssokerperioder(Bruker bruker, Periode forespurtPeriode) {
+        // Hent arbeidssøkerperioder lokalt for alle fnr fordi det er billig
+        Arbeidssokerperioder arbeidssokerperioderLokalt = hentAlleArbeidssokerperioderLokalt(bruker);
+
+        if (arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode) && brukLokalCache()) {
+            List<Arbeidssokerperiode> overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode);
+            Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
+            LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt));
+            return overlappendeArbeidssokerperioderLokalt;
+        }
+
+
+        // Hvis ikke dekkende, sjekk ORDS for gjeldende fnr
+        Arbeidssokerperioder arbeidssokerperioderORDS = formidlingsgruppeGateway.finnArbeissokerperioder(bruker.getGjeldendeFoedselsnummer(), forespurtPeriode);
+
+        if (arbeidssokerperioderORDS.dekkerHele(forespurtPeriode)) {
+            List<Arbeidssokerperiode> overlappendeArbeidssokerperioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
+            Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
+            LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", overlappendeArbeidssokerperioderORDS));
+            return overlappendeArbeidssokerperioderORDS;
+        }
+
+        // Hvis ikke dekkende, sjekk ORDS for alle fnr
+        List<Arbeidssokerperioder> historiskeArbeidssokerperioderORDS = bruker.getHistoriskeFoedselsnummer().stream()
+                .map(foedselsnummer -> formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode))
+                .collect(Collectors.toList());
+
+        return arbeidssokerperioderORDS.slaaSammenMed(historiskeArbeidssokerperioderORDS).overlapperMed(forespurtPeriode);
+    }
+
+    Arbeidssokerperioder hentAlleArbeidssokerperioderLokalt(Bruker bruker) {
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository
+                .finnFormidlingsgrupper(bruker.getGjeldendeFoedselsnummer());
+
+        List<Arbeidssokerperioder> historiskeArbeidssokerperioder = bruker.getHistoriskeFoedselsnummer().stream()
+                .map(arbeidssokerRepository::finnFormidlingsgrupper)
+                .collect(Collectors.toList());
+
+        return arbeidssokerperioder.slaaSammenMed(historiskeArbeidssokerperioder);
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
