@@ -106,12 +106,6 @@ public class ArbeidssokerServiceTest {
     public void hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_ORDS() {
         when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
 
-        /*Bruker bruker = Bruker.of(
-                FOEDSELSNUMMER_2,
-                AktorId.of("100002345678"),
-                asList(FOEDSELSNUMMER_1)
-        );*/
-
         Periode forespurtPeriode = Periode.of(
                 LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 9));
