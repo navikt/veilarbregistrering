@@ -47,8 +47,7 @@ class HentIdenterPdlOppslagGatewayTest {
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentIdenter(any())).thenReturn(dummyPdlIdent());
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222" +
-                ""));
+        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"));
         pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"));
         verify(pdlOppslagClient, times(1)).hentIdenter(any());
     }
