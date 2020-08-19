@@ -6,8 +6,8 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -22,8 +22,8 @@ class HentIdenterPdlOppslagGatewayTest {
     private static PdlOppslagClient pdlOppslagClient;
     private static AnnotationConfigApplicationContext context;
 
-    @BeforeAll
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         pdlOppslagClient = mock(PdlOppslagClient.class);
 
         BeanDefinition beanDefinition = BeanDefinitionBuilder
@@ -38,8 +38,8 @@ class HentIdenterPdlOppslagGatewayTest {
         context.start();
     }
 
-    @AfterAll
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         context.stop();
     }
 
@@ -47,8 +47,9 @@ class HentIdenterPdlOppslagGatewayTest {
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentIdenter(any())).thenReturn(dummyPdlIdent());
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("12345678910"));
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("12345678910"));
+        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222" +
+                ""));
+        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"));
         verify(pdlOppslagClient, times(1)).hentIdenter(any());
     }
 
