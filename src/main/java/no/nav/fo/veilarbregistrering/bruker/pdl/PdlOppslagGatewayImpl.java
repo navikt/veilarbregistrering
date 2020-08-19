@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
+import no.nav.apiapp.feil.Feil;
+import no.nav.apiapp.feil.FeilType;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
@@ -32,13 +34,12 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
     }
 
     @Override
-    public Optional<Identer> hentIdenter(Foedselsnummer fnr) {
+    public Identer hentIdenter(Foedselsnummer fnr) {
         try {
             PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(fnr);
-            return Optional.of(PdlOppslagMapper.map(pdlIdenter));
-        } catch (BrukerIkkeFunnetException e) {
-            LOG.warn("Hent identer gav ikke treff", e);
-            return Optional.empty();
+            return PdlOppslagMapper.map(pdlIdenter);
+        } catch (RuntimeException e) {
+            throw new Feil(FeilType.UKJENT, e);
         }
     }
 }

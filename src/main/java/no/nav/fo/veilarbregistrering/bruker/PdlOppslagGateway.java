@@ -6,5 +6,5 @@ public interface PdlOppslagGateway {
 
     Optional<Person> hentPerson(AktorId aktorid);
 
-    Optional<Identer> hentIdenter(Foedselsnummer fnr);
+    Identer hentIdenter(Foedselsnummer fnr);
 }

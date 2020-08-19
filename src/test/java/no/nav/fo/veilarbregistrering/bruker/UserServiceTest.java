@@ -6,9 +6,7 @@ import org.junit.Test;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -49,11 +47,11 @@ public class UserServiceTest {
 
     @Test()
     public void skalFinneBrukerGjennomPdl() {
-        when(pdlOppslagGateway.hentIdenter(Foedselsnummer.of("11111111111"))).thenReturn(Optional.of(new Identer(Arrays.asList(
+        when(pdlOppslagGateway.hentIdenter(Foedselsnummer.of("11111111111"))).thenReturn(new Identer(Arrays.asList(
                 new Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 new Ident("22222222222", false, Gruppe.AKTORID),
                 new Ident("33333333333", false, Gruppe.NPID)
-        ))));
+        )));
 
         Bruker bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of("11111111111"));
 
