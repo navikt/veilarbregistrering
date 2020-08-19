@@ -1,7 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-public class BrukerIkkeFunnetException extends RuntimeException {
+import no.nav.apiapp.feil.Feil;
+import no.nav.apiapp.feil.FeilType;
+
+public class BrukerIkkeFunnetException extends Feil {
     public BrukerIkkeFunnetException(String melding) {
-        super(melding);
+        super(FeilType.FINNES_IKKE, melding);
     }
 }

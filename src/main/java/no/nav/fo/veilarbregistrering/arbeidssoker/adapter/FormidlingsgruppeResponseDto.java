@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
