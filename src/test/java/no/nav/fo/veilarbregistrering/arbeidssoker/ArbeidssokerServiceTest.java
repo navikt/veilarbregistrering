@@ -76,6 +76,34 @@ public class ArbeidssokerServiceTest {
     }
 
     @Test
+    public void hentArbeidssokerperioder_ingen_treff_paa_fnr_skal_returnere_tom_liste() {
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2019, 5, 1),
+                LocalDate.of(2019, 11, 30)
+        );
+
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+
+        assertThat(arbeidssokerperiodes).isInstanceOf(List.class);
+        assertThat(arbeidssokerperiodes).isNotNull();
+        assertThat(arbeidssokerperiodes).isEmpty();
+    }
+
+    @Test
+    public void hentArbeidssokerperioder_ingen_treff_paa_bruker_skal_returnere_tom_liste() {
+        Periode forespurtPeriode = Periode.of(
+                LocalDate.of(2019, 5, 1),
+                LocalDate.of(2019, 11, 30)
+        );
+
+        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
+
+        assertThat(arbeidssokerperiodes).isInstanceOf(List.class);
+        assertThat(arbeidssokerperiodes).isNotNull();
+        assertThat(arbeidssokerperiodes).isEmpty();
+    }
+
+    @Test
     public void hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_lokalt() {
         when(unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)).thenReturn(true);
 
