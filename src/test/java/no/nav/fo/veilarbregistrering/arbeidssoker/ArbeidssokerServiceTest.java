@@ -196,6 +196,11 @@ public class ArbeidssokerServiceTest {
 
             return map.get(bruker);
         }
+
+        @Override
+        public Arbeidssokerperioder finnFormidlingsgrupper(List<Foedselsnummer> foedselsnummer) {
+            return null;
+        }
     }
 
     private static class StubFormidlingsgruppeGateway implements FormidlingsgruppeGateway {
