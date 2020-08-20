@@ -97,6 +97,20 @@ public class OppgaveRouterTest {
     }
 
     @Test
+    public void geografisk_tilknytning_med_by_med_bydel_skal_gi_intern_brukerstotte() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("0301"));
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+
+        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+
+        assertThat(enhetsnr).hasValue(Enhetsnr.internBrukerstotte());
+    }
+
+    @Test
     public void geografisk_tilknytning_med_unntak_av_landkode_skal_gi_empty_enhetsnummer() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();

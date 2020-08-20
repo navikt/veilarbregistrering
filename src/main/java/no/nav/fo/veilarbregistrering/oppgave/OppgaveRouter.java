@@ -69,6 +69,12 @@ public class OppgaveRouter {
 
             GeografiskTilknytning gk = geografiskTilknytning.get();
 
+            if (gk.byMedBydeler()) {
+                LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
+                reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
+                return Optional.of(Enhetsnr.internBrukerstotte());
+            }
+
             if (!gk.utland()) {
                 LOG.info("Fant {} -> overlater til oppgave-api å route selv", gk);
                 reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);

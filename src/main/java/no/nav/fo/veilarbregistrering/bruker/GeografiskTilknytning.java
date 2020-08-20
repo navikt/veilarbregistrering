@@ -3,7 +3,11 @@ package no.nav.fo.veilarbregistrering.bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning.ByMedBydeler.byMedBydelerAsKode;
 
 /**
  * Geografisk tilknytning kan være 1 av 3:
@@ -67,7 +71,6 @@ public class GeografiskTilknytning implements Metric {
         } else if (bydelOslo()) {
             fieldName = "bydelOslo" + BydelOslo.of(geografisktilknytning).name();
         } else {
-            fieldName = "ukjentVerdi";
             throw new IllegalArgumentException("Geografisk tilknytning har ukjent format: " + geografisktilknytning);
         }
 
@@ -90,7 +93,34 @@ public class GeografiskTilknytning implements Metric {
         return geografisktilknytning.length() == 6 && !BydelOslo.contains(geografisktilknytning);
     }
 
-    private enum BydelOslo {
+    public boolean byMedBydeler() {
+        return byMedBydelerAsKode().contains(geografisktilknytning);
+    }
+
+    enum ByMedBydeler {
+        Oslo("0301"),
+        Stavanger("1103"),
+        Bergen("4601"),
+        Trondheim("5001");
+
+        private final String kode;
+
+        ByMedBydeler(String kode) {
+            this.kode = kode;
+        }
+
+        static List<String> byMedBydelerAsKode() {
+            return Arrays.stream(values())
+                    .map(by -> by.kode)
+                    .collect(Collectors.toList());
+        }
+
+        String kode() {
+            return kode;
+        }
+    }
+
+    enum BydelOslo {
 
         GamleOslo("030101", "Gamle Oslo"),
         Grunerlokka("030102", "Grünerløkka"),
@@ -111,22 +141,26 @@ public class GeografiskTilknytning implements Metric {
         Marka("030117", "Marka");
 
         private final String kode;
-        private final String verdi;
+        private final String navn;
 
-        BydelOslo(String kode, String verdi) {
+        BydelOslo(String kode, String navn) {
             this.kode = kode;
-            this.verdi = verdi;
+            this.navn = navn;
         }
 
-        String verdi() {
-            return verdi;
+        String kode() {
+            return kode;
+        }
+
+        String navn() {
+            return navn;
         }
 
         private static BydelOslo of(String geografisktilknytning) {
             return Arrays.stream(BydelOslo.values())
                     .filter(bydelOslo -> bydelOslo.kode.equals(geografisktilknytning))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException(geografisktilknytning + " er ikke en kjent verdi for noen bydel i Oslo."));
+                    .orElseThrow(() -> new IllegalStateException(geografisktilknytning + " er ikke en kjent kode for noen bydel i Oslo."));
         }
 
         private static boolean contains(String geografisktilknytning) {
