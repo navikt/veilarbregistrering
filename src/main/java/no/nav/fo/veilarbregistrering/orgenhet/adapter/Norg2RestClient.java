@@ -15,14 +15,10 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.client.Entity.json;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.OPPFOLGING;
-import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
-import static no.nav.sbl.rest.RestUtils.withClient;
 
 class Norg2RestClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(Norg2RestClient.class);
-
-    private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String url;
 
@@ -53,21 +49,10 @@ class Norg2RestClient {
         throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
     }
 
-
     Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
         return RestUtils.createClient()
                         .target(url)
                         .request(MediaType.APPLICATION_JSON)
                         .post(json(rsArbeidsfordelingCriteriaDto));
     }
-
-    /*
-    Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                client -> client
-                        .target(url)
-                        .request()
-                        .post(json(rsArbeidsfordelingCriteriaDto)));
-    }*/
 }
