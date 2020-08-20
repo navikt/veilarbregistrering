@@ -1,18 +1,16 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GeografiskTilknytningTest {
 
     @Test
     public void geografiskTilknytning_kan_ikke_vaere_null() {
-        try {
-            GeografiskTilknytning.of(null);
-        } catch (NullPointerException e) {
-            assertThat(e.getMessage()).isEqualTo("Geografisk tilknytning kan ikke være null. Bruk <code>ofNullable</code> hvis du er usikker.");
-        }
+        NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> GeografiskTilknytning.of(null));
+        assertThat(nullPointerException.getMessage()).isEqualTo("Geografisk tilknytning kan ikke være null. Bruk <code>ofNullable</code> hvis du er usikker.");
     }
 
     @Test
@@ -37,10 +35,38 @@ public class GeografiskTilknytningTest {
 
     @Test
     public void exception_skal_kastes_hvis_geografiskTilknytning_er_ukjent() {
-        try {
-            GeografiskTilknytning.of("12").value();
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).isEqualTo("Geografisk tilknytning har ukjent format: 12");
-        }
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> GeografiskTilknytning.of("12").value());
+        assertThat(illegalArgumentException.getMessage()).isEqualTo("Geografisk tilknytning har ukjent format: 12");
     }
+
+    @Test
+    public void bydel_bjerke_i_oslo_er_ikke_by_med_bydel() {
+        GeografiskTilknytning bjerke = GeografiskTilknytning.of(GeografiskTilknytning.BydelOslo.Bjerke.kode());
+        assertThat(bjerke.byMedBydeler()).isFalse();
+    }
+
+    @Test
+    public void oslo_er_by_med_bydeler() {
+        GeografiskTilknytning oslo = GeografiskTilknytning.of(GeografiskTilknytning.ByMedBydeler.Oslo.kode());
+        assertThat(oslo.byMedBydeler()).isTrue();
+    }
+
+    @Test
+    public void stavanger_er_by_med_bydeler() {
+        GeografiskTilknytning oslo = GeografiskTilknytning.of(GeografiskTilknytning.ByMedBydeler.Stavanger.kode());
+        assertThat(oslo.byMedBydeler()).isTrue();
+    }
+
+    @Test
+    public void bergen_er_by_med_bydeler() {
+        GeografiskTilknytning oslo = GeografiskTilknytning.of(GeografiskTilknytning.ByMedBydeler.Bergen.kode());
+        assertThat(oslo.byMedBydeler()).isTrue();
+    }
+
+    @Test
+    public void trondheim_er_by_med_bydeler() {
+        GeografiskTilknytning oslo = GeografiskTilknytning.of(GeografiskTilknytning.ByMedBydeler.Trondheim.kode());
+        assertThat(oslo.byMedBydeler()).isTrue();
+    }
+
 }
