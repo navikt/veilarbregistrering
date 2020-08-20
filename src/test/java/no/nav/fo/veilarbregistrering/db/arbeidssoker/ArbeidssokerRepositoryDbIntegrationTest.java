@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.*;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,8 +55,9 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
         EndretFormidlingsgruppeCommand command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20));
         arbeidssokerRepository.lagre(command3);
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(
-                asList(FOEDSELSNUMMER, FOEDSELSNUMMER_2, FOEDSELSNUMMER_3));
+        Bruker bruker = Bruker.of(FOEDSELSNUMMER, null, asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3));
+
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer());
         assertThat(arbeidssokerperiodes.asList()).hasSize(3);
     }
 

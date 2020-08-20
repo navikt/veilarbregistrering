@@ -42,26 +42,6 @@ public class Arbeidssokerperioder {
                 .orElse(false);
     }
 
-    public Arbeidssokerperioder slaaSammenMed(List<Arbeidssokerperioder> arbeidssokerperioder) {
-        Arbeidssokerperioder arbeidssokerperioderRedusert = arbeidssokerperioder.stream().reduce(
-                new Arbeidssokerperioder(null),
-                (akkumulertArbeidssokerperioder, gjeldendeArbeidssokerperioder) -> {
-                    List<Arbeidssokerperiode> sammensattListe = Stream
-                            .concat(
-                                    akkumulertArbeidssokerperioder.asList().stream(),
-                                    gjeldendeArbeidssokerperioder.asList().stream())
-                            .collect(Collectors.toList());
-                    return Arbeidssokerperioder.of(sammensattListe);
-                });
-
-        List<Arbeidssokerperiode> alleArbeidssokerperioder = Stream
-                .concat(this.asList().stream(), arbeidssokerperioderRedusert.asList().stream())
-                .sorted(eldsteFoerst())
-                .collect(Collectors.toList());
-
-        return Arbeidssokerperioder.of(alleArbeidssokerperioder);
-    }
-
     public List<Arbeidssokerperiode> asList() {
         return arbeidssokerperioder;
     }

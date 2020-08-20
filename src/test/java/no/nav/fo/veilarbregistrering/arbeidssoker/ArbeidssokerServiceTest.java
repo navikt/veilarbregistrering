@@ -206,10 +206,8 @@ public class ArbeidssokerServiceTest {
         }
 
         @Override
-        public Arbeidssokerperioder finnFormidlingsgrupper(Bruker bruker) {
-            Map<Bruker, Arbeidssokerperioder> map = new HashMap<>();
-
-            map.put(BRUKER_1, new Arbeidssokerperioder(asList(
+        public Arbeidssokerperioder finnFormidlingsgrupper(List<Foedselsnummer> foedselsnummerList) {
+            return new Arbeidssokerperioder(asList(
                     ARBEIDSSOKERPERIODE_3,
                     ARBEIDSSOKERPERIODE_1,
                     ARBEIDSSOKERPERIODE_4,
@@ -217,15 +215,7 @@ public class ArbeidssokerServiceTest {
                     ARBEIDSSOKERPERIODE_6,
                     ARBEIDSSOKERPERIODE_5,
                     ARBEIDSSOKERPERIODE_7,
-                    ARBEIDSSOKERPERIODE_8
-            )));
-
-            return map.get(bruker);
-        }
-
-        @Override
-        public Arbeidssokerperioder finnFormidlingsgrupper(List<Foedselsnummer> foedselsnummer) {
-            return null;
+                    ARBEIDSSOKERPERIODE_8));
         }
     }
 

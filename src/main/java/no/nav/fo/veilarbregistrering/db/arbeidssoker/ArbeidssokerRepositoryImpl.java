@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,8 +16,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
@@ -60,17 +59,6 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     }
 
     @Override
-    public Arbeidssokerperioder finnFormidlingsgrupper(Bruker bruker) {
-        Arbeidssokerperioder arbeidssokerperioder = finnFormidlingsgrupper(bruker.getGjeldendeFoedselsnummer());
-
-        List<Arbeidssokerperioder> historiskeArbeidssokerperioder = bruker.getHistoriskeFoedselsnummer().stream()
-                .map(this::finnFormidlingsgrupper)
-                .collect(toList());
-
-        return arbeidssokerperioder.slaaSammenMed(historiskeArbeidssokerperioder);
-    }
-
-    @Override
     public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER = ?";
 
@@ -83,11 +71,11 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     }
 
     @Override
-    public Arbeidssokerperioder finnFormidlingsgrupper(List<Foedselsnummer> foedselsnummer) {
+    public Arbeidssokerperioder finnFormidlingsgrupper(List<Foedselsnummer> listeMedFoedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER IN (:foedselsnummer)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("foedselsnummer", foedselsnummer.stream().map(f -> f.stringValue()).collect(toList()));
+        parameters.addValue("foedselsnummer", listeMedFoedselsnummer.stream().map(f -> f.stringValue()).collect(Collectors.toList()));
 
         List<ArbeidssokerperiodeRaaData> raaData = namedParameterJdbcTemplate.query(sql, parameters, new ArbeidssokerperiodeRaaDataRowMapper());
         return map(raaData);

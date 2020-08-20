@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -46,8 +45,7 @@ public class ArbeidssokerService {
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Bruker bruker, Periode forespurtPeriode) {
-        // Hent arbeidssøkerperioder lokalt for alle fnr fordi det er billig
-        Arbeidssokerperioder arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker);
+        Arbeidssokerperioder arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer());
 
         if (arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode) && brukLokalCache()) {
             List<Arbeidssokerperiode> overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode);
@@ -55,7 +53,6 @@ public class ArbeidssokerService {
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt));
             return overlappendeArbeidssokerperioderLokalt;
         }
-
 
         // Hvis ikke dekkende, sjekk ORDS for gjeldende fnr
         Arbeidssokerperioder arbeidssokerperioderORDS = formidlingsgruppeGateway.finnArbeissokerperioder(bruker.getGjeldendeFoedselsnummer(), forespurtPeriode);
