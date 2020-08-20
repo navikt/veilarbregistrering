@@ -1,16 +1,20 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class Bruker {
 
     private final Foedselsnummer gjeldendeFoedselsnummer;
     private final AktorId aktorId;
-    private List<Foedselsnummer> historiskeFoedselsnummer;
+    private final List<Foedselsnummer> historiskeFoedselsnummer;
 
     public static Bruker of(Foedselsnummer foedselsnummer, AktorId aktorId) {
-        return new Bruker(foedselsnummer, aktorId);
+        return new Bruker(foedselsnummer, aktorId, null);
     }
 
     public static Bruker of(
@@ -20,18 +24,13 @@ public class Bruker {
         return new Bruker(gjeldendeFoedselsnummer, gjeldendeAktorId, historiskeFoedselsnummer);
     }
 
-    private Bruker(Foedselsnummer gjeldendeFoedselsnummer, AktorId aktorId) {
-        this.gjeldendeFoedselsnummer = gjeldendeFoedselsnummer;
-        this.aktorId = aktorId;
-    }
-
     private Bruker(
             Foedselsnummer gjeldendeFoedselsnummer,
             AktorId aktorId,
             List<Foedselsnummer> historiskeFoedselsnummer) {
         this.gjeldendeFoedselsnummer = gjeldendeFoedselsnummer;
         this.aktorId = aktorId;
-        this.historiskeFoedselsnummer = historiskeFoedselsnummer;
+        this.historiskeFoedselsnummer = historiskeFoedselsnummer != null ? historiskeFoedselsnummer : Collections.emptyList();
     }
 
     public Foedselsnummer getGjeldendeFoedselsnummer() {
@@ -44,6 +43,14 @@ public class Bruker {
 
     public List<Foedselsnummer> getHistoriskeFoedselsnummer() {
         return historiskeFoedselsnummer;
+    }
+
+    public List<Foedselsnummer> alleFoedselsnummer() {
+        return Stream
+                .concat(
+                        Stream.of(gjeldendeFoedselsnummer),
+                        historiskeFoedselsnummer.stream())
+                .collect(toList());
     }
 
     @Override
