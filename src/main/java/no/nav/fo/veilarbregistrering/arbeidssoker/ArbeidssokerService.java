@@ -60,19 +60,10 @@ public class ArbeidssokerService {
         // Hvis ikke dekkende, sjekk ORDS for gjeldende fnr
         Arbeidssokerperioder arbeidssokerperioderORDS = formidlingsgruppeGateway.finnArbeissokerperioder(bruker.getGjeldendeFoedselsnummer(), forespurtPeriode);
 
-        if (arbeidssokerperioderORDS.dekkerHele(forespurtPeriode)) {
-            List<Arbeidssokerperiode> overlappendeArbeidssokerperioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
-            Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
-            LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", overlappendeArbeidssokerperioderORDS));
-            return overlappendeArbeidssokerperioderORDS;
-        }
-
-        // Hvis ikke dekkende, sjekk ORDS for alle fnr
-        List<Arbeidssokerperioder> historiskeArbeidssokerperioderORDS = bruker.getHistoriskeFoedselsnummer().stream()
-                .map(foedselsnummer -> formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode))
-                .collect(Collectors.toList());
-
-        return arbeidssokerperioderORDS.slaaSammenMed(historiskeArbeidssokerperioderORDS).overlapperMed(forespurtPeriode);
+        List<Arbeidssokerperiode> overlappendeArbeidssokerperioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
+        Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
+        LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", overlappendeArbeidssokerperioderORDS));
+        return overlappendeArbeidssokerperioderORDS;
     }
 
     public List<Arbeidssokerperiode> hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
