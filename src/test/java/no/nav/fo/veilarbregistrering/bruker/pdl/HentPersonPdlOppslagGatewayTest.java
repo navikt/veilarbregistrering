@@ -4,9 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -21,8 +19,8 @@ class HentPersonPdlOppslagGatewayTest {
     private static PdlOppslagClient pdlOppslagClient;
     private static AnnotationConfigApplicationContext context;
 
-    @BeforeAll
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         pdlOppslagClient = mock(PdlOppslagClient.class);
 
         BeanDefinition beanDefinition = BeanDefinitionBuilder
@@ -37,8 +35,8 @@ class HentPersonPdlOppslagGatewayTest {
         context.start();
     }
 
-    @AfterAll
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         context.stop();
     }
 
@@ -46,8 +44,8 @@ class HentPersonPdlOppslagGatewayTest {
     public void skalCacheVedKallPaaSammeAktorId() throws Exception {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
-        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
-        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
+        pdlOppslagGateway.hentPerson(AktorId.of("22222222222"));
+        pdlOppslagGateway.hentPerson(AktorId.of("22222222222"));
         verify(pdlOppslagClient, times(1)).hentPerson(any());
     }
 
