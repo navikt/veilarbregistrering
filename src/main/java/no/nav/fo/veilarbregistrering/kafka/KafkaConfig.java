@@ -105,7 +105,7 @@ public class KafkaConfig {
     }
 
     private String getGroupIdForFormidlingsgruppeConsumer() {
-        return "veilarbregistrering-FormidlingsgruppeKafkaConsumer";
+        return "veilarbregistrering-FormidlingsgruppeKafkaConsumer-01";
     }
 
     @Bean
