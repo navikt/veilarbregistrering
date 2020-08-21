@@ -50,9 +50,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).containsExactly(
+        assertThat(arbeidssokerperiodes.asList()).containsExactly(
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
@@ -65,9 +65,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 1));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).containsExactly(
+        assertThat(arbeidssokerperiodes.asList()).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
@@ -82,11 +82,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 11, 30)
         );
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).isInstanceOf(List.class);
-        assertThat(arbeidssokerperiodes).isNotNull();
-        assertThat(arbeidssokerperiodes).isEmpty();
+        assertThat(arbeidssokerperiodes.asList()).isEmpty();
     }
 
     @Test
@@ -96,11 +94,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 11, 30)
         );
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes).isInstanceOf(List.class);
-        assertThat(arbeidssokerperiodes).isNotNull();
-        assertThat(arbeidssokerperiodes).isEmpty();
+        assertThat(arbeidssokerperiodes.asList()).isEmpty();
     }
 
     @Test
@@ -117,9 +113,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 3, 20),
                 LocalDate.of(2020, 6, 10));
 
-        List<Arbeidssokerperiode> arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode);
 
-        assertThat(arbeidssokerperioder).containsExactly(
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
@@ -137,9 +133,9 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 1, 1),
                 LocalDate.of(2020, 5, 9));
 
-        List<Arbeidssokerperiode> arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
 
-        assertThat(arbeidssokerperioder).containsExactly(
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,

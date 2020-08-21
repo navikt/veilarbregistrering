@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
@@ -60,12 +61,12 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
-        LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.size()));
+        LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.asList().size()));
 
-        return map(arbeidssokerperiodes);
+        return map(arbeidssokerperiodes.asList());
     }
 
     private boolean hentIdenterFraPdl() {
