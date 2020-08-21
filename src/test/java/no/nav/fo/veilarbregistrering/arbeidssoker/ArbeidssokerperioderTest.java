@@ -96,12 +96,12 @@ public class ArbeidssokerperioderTest {
                         .fra(LocalDate.of(2020, 4, 30)))
                 .build();
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(
                 Periode.of(
                         LocalDate.of(2020, 4, 13),
                         LocalDate.of(2020, 6, 28)));
 
-        assertThat(arbeidssokerperiodes).hasSize(2);
+        assertThat(arbeidssokerperiodes.asList()).hasSize(2);
     }
 
 }
