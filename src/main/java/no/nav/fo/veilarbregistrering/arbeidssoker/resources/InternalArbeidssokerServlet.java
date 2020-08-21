@@ -44,7 +44,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
-        ArbeidssokerperioderDto dto = map(arbeidssokerperiodes.asList());
+        ArbeidssokerperioderDto dto = map(arbeidssokerperiodes.eldsteFoerst());
 
         String json = new Gson().toJson(dto);
 

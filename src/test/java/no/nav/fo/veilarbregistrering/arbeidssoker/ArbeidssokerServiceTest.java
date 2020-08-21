@@ -52,7 +52,7 @@ public class ArbeidssokerServiceTest {
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes.asList()).containsExactly(
+        assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
@@ -67,7 +67,7 @@ public class ArbeidssokerServiceTest {
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
 
-        assertThat(arbeidssokerperiodes.asList()).containsExactly(
+        assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
@@ -115,7 +115,7 @@ public class ArbeidssokerServiceTest {
 
         Arbeidssokerperioder arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode);
 
-        assertThat(arbeidssokerperioder.asList()).containsExactly(
+        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
@@ -135,7 +135,7 @@ public class ArbeidssokerServiceTest {
 
         Arbeidssokerperioder arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
 
-        assertThat(arbeidssokerperioder.asList()).containsExactly(
+        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,

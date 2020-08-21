@@ -26,7 +26,6 @@ public class Arbeidssokerperioder {
         return new Arbeidssokerperioder(arbeidssokerperioder.stream()
                 .filter(p -> p.getPeriode().overlapperMed(forespurtPeriode))
                 .filter(p -> p.getFormidlingsgruppe().erArbeidssoker())
-                .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
                 .collect(toList()));
     }
 
@@ -42,6 +41,12 @@ public class Arbeidssokerperioder {
 
     public List<Arbeidssokerperiode> asList() {
         return arbeidssokerperioder;
+    }
+
+    public List<Arbeidssokerperiode> eldsteFoerst() {
+        return arbeidssokerperioder.stream()
+                .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
+                .collect(toList());
     }
 
     @Override

@@ -66,7 +66,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
 
         LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.asList().size()));
 
-        return map(arbeidssokerperiodes.asList());
+        return map(arbeidssokerperiodes.eldsteFoerst());
     }
 
     private boolean hentIdenterFraPdl() {
