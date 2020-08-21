@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.bruker.*;
 
 import javax.servlet.ServletException;
@@ -40,10 +41,10 @@ public class InternalArbeidssokerServlet extends HttpServlet {
                 .map(userService::hentBruker)
                 .orElseThrow(() -> new BadRequestException("Fnr eller aktørid må spesifiseres"));
 
-        List<Arbeidssokerperiode> arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
-        ArbeidssokerperioderDto dto = map(arbeidssokerperiodes);
+        ArbeidssokerperioderDto dto = map(arbeidssokerperiodes.asList());
 
         String json = new Gson().toJson(dto);
 
