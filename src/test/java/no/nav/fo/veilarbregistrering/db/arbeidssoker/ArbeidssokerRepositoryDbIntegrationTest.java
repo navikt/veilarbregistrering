@@ -3,12 +3,14 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 import no.nav.fo.veilarbregistrering.arbeidssoker.*;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -41,7 +43,9 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
         assertThat(id).isNotNull();
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(FOEDSELSNUMMER);
-        assertThat(arbeidssokerperiodes.asList()).hasSize(1);
+
+        Arbeidssokerperiode arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.now(), null));
+        assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode);
     }
 
     @Test
@@ -73,6 +77,9 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
             public String getPersonId() {
                 return "123456";
             }
+
+            @Override
+            public String getPersonIdStatus() { return "AKTIV"; }
 
             @Override
             public Operation getOperation() {
