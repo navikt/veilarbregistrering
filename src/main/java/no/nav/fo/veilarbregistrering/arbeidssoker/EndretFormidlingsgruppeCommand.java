@@ -11,6 +11,8 @@ public interface EndretFormidlingsgruppeCommand {
 
     String getPersonId();
 
+    String getPersonIdStatus();
+
     Operation getOperation();
 
     Formidlingsgruppe getFormidlingsgruppe();
@@ -20,4 +22,5 @@ public interface EndretFormidlingsgruppeCommand {
     Optional<Formidlingsgruppe> getForrigeFormidlingsgruppe();
 
     Optional<LocalDateTime> getForrigeFormidlingsgruppeEndret();
+
 }

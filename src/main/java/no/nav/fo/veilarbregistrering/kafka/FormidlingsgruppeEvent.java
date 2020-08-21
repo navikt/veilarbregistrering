@@ -17,10 +17,12 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     private final LocalDateTime formidlingsgruppeEndret;
     private final Formidlingsgruppe forrigeformidlingsgruppe;
     private final LocalDateTime forrigeformidlingsgruppeEndret;
+    private final String personIdStatus;
 
     public FormidlingsgruppeEvent(
             Foedselsnummer foedselsnummer,
             String personId,
+            String personIdStatus,
             Operation operation,
             Formidlingsgruppe formidlingsgruppe,
             LocalDateTime formidlingsgruppeEndret,
@@ -28,6 +30,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
             LocalDateTime forrigeformidlingsgruppeEndret) {
         this.foedselsnummer = foedselsnummer;
         this.personId = personId;
+        this.personIdStatus = personIdStatus;
         this.operation = operation;
         this.formidlingsgruppe = formidlingsgruppe;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
@@ -43,6 +46,11 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     @Override
     public String getPersonId() {
         return personId;
+    }
+
+    @Override
+    public String getPersonIdStatus() {
+        return personIdStatus;
     }
 
     @Override
@@ -75,6 +83,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
         return "FormidlingsgruppeEvent{" +
                 "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : null +
                 ", personId='" + personId + '\'' +
+                ", personIdStatus='" + personIdStatus + '\'' +
                 ", operation='" + operation + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
