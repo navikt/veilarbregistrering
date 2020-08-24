@@ -44,7 +44,7 @@ public class ArbeidssokerService {
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand);
     }
 
-    public Arbeidssokerperioder hentArbeidssokerperioder(Bruker bruker, Periode forespurtPeriode) {
+    public Arbeidssokerperioder hentArbeidssokerperioderLocalCache(Bruker bruker, Periode forespurtPeriode) {
         Arbeidssokerperioder arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer());
 
         if (arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode) && brukLokalCache()) {
@@ -63,37 +63,37 @@ public class ArbeidssokerService {
         return overlappendeArbeidssokerperioderORDS;
     }
 
-    public Arbeidssokerperioder hentArbeidssokerperioder(Foedselsnummer foedselsnummer, Periode forespurtPeriode) {
-        Arbeidssokerperioder arbeidssokerperioder = arbeidssokerRepository
-                .finnFormidlingsgrupper(foedselsnummer);
-        LOG.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioder));
+    public Arbeidssokerperioder hentArbeidssokerperioder(Bruker bruker, Periode forespurtPeriode) {
+        Arbeidssokerperioder arbeidssokerperioderLokalt = arbeidssokerRepository
+                .finnFormidlingsgrupper(bruker.alleFoedselsnummer());
+        LOG.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt));
 
-        Arbeidssokerperioder historiskePerioder = formidlingsgruppeGateway.finnArbeissokerperioder(foedselsnummer, forespurtPeriode);
-        LOG.info(String.format("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", historiskePerioder));
+        Arbeidssokerperioder arbeidssokerperioderORDS = formidlingsgruppeGateway.finnArbeissokerperioder(bruker.getGjeldendeFoedselsnummer(), forespurtPeriode);
+        LOG.info(String.format("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s", arbeidssokerperioderORDS));
 
-        boolean dekkerHele = arbeidssokerperioder.dekkerHele(forespurtPeriode);
+        boolean dekkerHele = arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode);
 
-        Arbeidssokerperioder overlappendeArbeidssokerperioder = arbeidssokerperioder.overlapperMed(forespurtPeriode);
+        Arbeidssokerperioder overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode);
 
-        Arbeidssokerperioder overlappendeHistoriskePerioder = historiskePerioder.overlapperMed(forespurtPeriode);
+        Arbeidssokerperioder overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
 
-        boolean lokalErLikOrds = overlappendeArbeidssokerperioder.equals(overlappendeHistoriskePerioder);
+        boolean lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS);
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
         if (!lokalErLikOrds) {
             LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
-                    forespurtPeriode, overlappendeArbeidssokerperioder.asList(), overlappendeHistoriskePerioder.asList()));
+                    forespurtPeriode, overlappendeArbeidssokerperioderLokalt.asList(), overlappendeHistoriskePerioderORDS.asList()));
         }
 
         if (dekkerHele && brukLokalCache()) {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
-            LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioder.asList()));
-            return overlappendeArbeidssokerperioder;
+            LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt.asList()));
+            return overlappendeArbeidssokerperioderLokalt;
         }
 
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
-        LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioder.asList()));
+        LOG.info(String.format("Returnerer arbeidssokerperioderLokalt fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioderORDS.asList()));
 
-        return overlappendeHistoriskePerioder;
+        return overlappendeHistoriskePerioderORDS;
     }
 
     private boolean brukLokalCache() {

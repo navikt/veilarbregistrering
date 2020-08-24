@@ -42,7 +42,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
                 .orElseThrow(() -> new BadRequestException("Fnr eller aktørid må spesifiseres"));
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
-                bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
+                bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
         ArbeidssokerperioderDto dto = map(arbeidssokerperiodes.eldsteFoerst());
 

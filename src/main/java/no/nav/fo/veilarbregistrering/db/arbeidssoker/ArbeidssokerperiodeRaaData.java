@@ -6,10 +6,14 @@ import java.util.Comparator;
 class ArbeidssokerperiodeRaaData {
 
     private final String formidlingsgruppe;
+    private final int personId;
+    private final String personIdStatus;
     private final Timestamp formidlingsgruppeEndret;
 
-    ArbeidssokerperiodeRaaData(String formidlingsgruppe, Timestamp formidlingsgruppeEndret) {
+    public ArbeidssokerperiodeRaaData(String formidlingsgruppe, int personId, String personIdStatus, Timestamp formidlingsgruppeEndret) {
         this.formidlingsgruppe = formidlingsgruppe;
+        this.personId = personId;
+        this.personIdStatus = personIdStatus;
         this.formidlingsgruppeEndret = formidlingsgruppeEndret;
     }
 
@@ -19,6 +23,14 @@ class ArbeidssokerperiodeRaaData {
 
     String getFormidlingsgruppe() {
         return this.formidlingsgruppe;
+    }
+
+    int getPersonId() {
+        return personId;
+    }
+
+    String getPersonIdStatus() {
+        return personIdStatus;
     }
 
     static class NyesteFoerst implements Comparator<ArbeidssokerperiodeRaaData> {

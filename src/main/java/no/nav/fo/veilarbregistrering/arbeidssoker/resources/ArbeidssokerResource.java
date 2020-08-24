@@ -62,7 +62,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
-                bruker.getGjeldendeFoedselsnummer(), Periode.gyldigPeriode(fraOgMed, tilOgMed));
+                bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed));
 
         LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.asList().size()));
 

@@ -30,6 +30,12 @@ public class ArbeidssokerServiceTest {
             asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
     );
 
+    private static final Bruker BRUKER_3 = Bruker.of(
+            FOEDSELSNUMMER_3,
+            AktorId.of("100002345678"),
+            Collections.emptyList()
+    );
+
     private ArbeidssokerService arbeidssokerService;
     private UnleashService unleashService;
 
@@ -50,7 +56,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2020, 1, 2),
                 LocalDate.of(2020, 5, 1));
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
                 StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
@@ -65,7 +71,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 12, 1),
                 LocalDate.of(2020, 5, 1));
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
                 StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
@@ -82,7 +88,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 11, 30)
         );
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(FOEDSELSNUMMER_3, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes.asList()).isEmpty();
     }
@@ -94,7 +100,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 11, 30)
         );
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioderLocalCache(BRUKER_1, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes.asList()).isEmpty();
     }
