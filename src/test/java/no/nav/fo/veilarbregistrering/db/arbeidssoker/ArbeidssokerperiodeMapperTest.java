@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.bruker.Periode;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
@@ -126,6 +129,8 @@ public class ArbeidssokerperiodeMapperTest {
 
         Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
 
+        Arbeidssokerperiode iserv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ISERV"), Periode.of(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8)));
+        Arbeidssokerperiode arbs = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2019, 12, 8), null));
 
     }
 }
