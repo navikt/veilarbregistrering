@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -23,6 +24,7 @@ class ArbeidssokerperioderMapper {
                         arbeidssokerperioder.stream()
                                 .sorted(nyesteFoerst())
                                 .collect(toList()))
+                        .map(beholdKunEndringerForAktiveIdenter)
                         .map(beholdKunSisteEndringPerDagIListen)
                         .map(populerTilDato)
                         .get()
@@ -30,6 +32,11 @@ class ArbeidssokerperioderMapper {
                         .sorted(eldsteFoerst())
                         .collect(toList()));
     }
+
+    private static Function<List<ArbeidssokerperiodeRaaData>, List<ArbeidssokerperiodeRaaData>> beholdKunEndringerForAktiveIdenter =
+            (arbeidssokerperiodeRaaDataListe) -> arbeidssokerperiodeRaaDataListe.stream()
+                    .filter(arbeidssokerperiodeRaaData -> Objects.equals(arbeidssokerperiodeRaaData.getPersonIdStatus(), "AKTIV"))
+                    .collect(toList());
 
     private static Function<List<ArbeidssokerperiodeRaaData>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
             (arbeidssokerperiodeRaaData) -> {

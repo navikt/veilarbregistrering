@@ -129,8 +129,12 @@ public class ArbeidssokerperiodeMapperTest {
 
         Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
 
-        Arbeidssokerperiode iserv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ISERV"), Periode.of(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8)));
-        Arbeidssokerperiode arbs = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2019, 12, 8), null));
+        Arbeidssokerperiode iservAktiv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ISERV"), Periode.of(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8)));
+        Arbeidssokerperiode arbsAktiv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2019, 12, 9), null));
 
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
+                iservAktiv,
+                arbsAktiv
+        );
     }
 }
