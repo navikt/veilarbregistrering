@@ -88,6 +88,8 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         public ArbeidssokerperiodeRaaData mapRow(ResultSet rs, int i) throws SQLException {
             return new ArbeidssokerperiodeRaaData(
                     rs.getString("FORMIDLINGSGRUPPE"),
+                    rs.getInt("PERSON_ID"),
+                    rs.getString("PERSON_ID_STATUS"),
                     rs.getTimestamp("FORMIDLINGSGRUPPE_ENDRET"));
         }
     }
