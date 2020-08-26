@@ -81,14 +81,14 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     @Override
     public String toString() {
         return "FormidlingsgruppeEvent{" +
-                "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : "" +
+                "foedselsnummer=" + (foedselsnummer != null ? foedselsnummer.maskert() : null) +
                 ", personId='" + personId + '\'' +
                 ", personIdStatus='" + personIdStatus + '\'' +
                 ", operation='" + operation + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
-                ", forrigeFormidlingsgruppe=" + forrigeformidlingsgruppe != null ? forrigeformidlingsgruppe.toString() : null +
-                ", forrigeFormidlingsgruppeEndret=" + forrigeformidlingsgruppeEndret != null ? forrigeformidlingsgruppeEndret.toString() : null +
+                ", forrigeFormidlingsgruppe=" + (forrigeformidlingsgruppe != null ? forrigeformidlingsgruppe.toString() : null) +
+                ", forrigeFormidlingsgruppeEndret=" + (forrigeformidlingsgruppeEndret != null ? forrigeformidlingsgruppeEndret.toString() : null) +
                 "'}'";
     }
 }
