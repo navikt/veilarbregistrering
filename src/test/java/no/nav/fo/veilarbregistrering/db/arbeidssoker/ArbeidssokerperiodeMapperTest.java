@@ -118,7 +118,7 @@ public class ArbeidssokerperiodeMapperTest {
     }
 
     @Test
-    public void skal_flette_to_personer() {
+    public void skal_filtrere_bort_endringer_for_duplikate_identer() {
 
         List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
         arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2019, 3, 6, 10, 10))));
