@@ -81,7 +81,7 @@ public class FormidlingsgruppeEvent implements EndretFormidlingsgruppeCommand {
     @Override
     public String toString() {
         return "FormidlingsgruppeEvent{" +
-                "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : null +
+                "foedselsnummer=" + foedselsnummer != null ? foedselsnummer.maskert() : "" +
                 ", personId='" + personId + '\'' +
                 ", personIdStatus='" + personIdStatus + '\'' +
                 ", operation='" + operation + '\'' +
