@@ -67,6 +67,9 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 });
                 consumer.commitSync();
             }
+
+            LOG.info("Avslutter konsumering av topic {}", topic);
+
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
             MDC.remove(MDC_CALL_ID);
