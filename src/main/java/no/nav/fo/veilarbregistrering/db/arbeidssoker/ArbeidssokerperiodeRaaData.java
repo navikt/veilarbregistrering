@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
+import java.util.Objects;
 
 class ArbeidssokerperiodeRaaData {
 
@@ -31,6 +32,10 @@ class ArbeidssokerperiodeRaaData {
 
     String getPersonIdStatus() {
         return personIdStatus;
+    }
+
+    boolean erAktiv() {
+        return Objects.equals(personIdStatus, "AKTIV");
     }
 
     static class NyesteFoerst implements Comparator<ArbeidssokerperiodeRaaData> {

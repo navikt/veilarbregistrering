@@ -35,7 +35,7 @@ class ArbeidssokerperioderMapper {
 
     private static Function<List<ArbeidssokerperiodeRaaData>, List<ArbeidssokerperiodeRaaData>> beholdKunEndringerForAktiveIdenter =
             (arbeidssokerperiodeRaaDataListe) -> arbeidssokerperiodeRaaDataListe.stream()
-                    .filter(arbeidssokerperiodeRaaData -> Objects.equals(arbeidssokerperiodeRaaData.getPersonIdStatus(), "AKTIV"))
+                    .filter(ArbeidssokerperiodeRaaData::erAktiv)
                     .collect(toList());
 
     private static Function<List<ArbeidssokerperiodeRaaData>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
