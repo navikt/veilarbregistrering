@@ -19,7 +19,7 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
-- Oppgave : REST
+- Oppgave : REST -> "kontakt bruker"-oppgaver
 - PDL : Graphql
 - [KRR : REST](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md)
 
