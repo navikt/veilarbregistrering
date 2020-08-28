@@ -7,16 +7,12 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 public class InternalIdentServlet extends HttpServlet {
 

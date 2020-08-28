@@ -1,21 +1,13 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Optional;
-
+import static java.lang.String.format;
 import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.common.auth.SubjectHandler.getIdent;
 
 public class UserService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     private final Provider<HttpServletRequest> requestProvider;
     private final AktorGateway aktorGateway;
@@ -25,6 +17,31 @@ public class UserService {
         this.requestProvider = requestProvider;
         this.aktorGateway = aktorGateway;
         this.pdlOppslagGateway = pdlOppslagGateway;
+    }
+
+    public Bruker hentBruker(Kilde kilde) {
+        if (kilde.equals(Kilde.PDL)) {
+            return finnBrukerGjennomPdl();
+
+        } else if (kilde.equals(Kilde.AKTOR)) {
+            return hentBruker();
+
+        } else {
+            throw new IllegalArgumentException(format("hentBruker ble kalt med ukjent kilde, %s", kilde));
+        }
+    }
+
+    public Bruker finnBrukerGjennomPdl() {
+        Foedselsnummer fnr = hentFnrFraUrlEllerToken();
+        return finnBrukerGjennomPdl(fnr);
+    }
+
+    public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
+        Identer identer = pdlOppslagGateway.hentIdenter(fnr);
+        return Bruker.of(
+                identer.finnGjeldendeFnr(),
+                identer.finnGjeldendeAktorId(),
+                identer.finnHistoriskeFoedselsnummer());
     }
 
     public Bruker hentBruker() {
@@ -78,11 +95,8 @@ public class UserService {
         return enhetId;
     }
 
-    public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
-        Identer identer = pdlOppslagGateway.hentIdenter(fnr);
-        return Bruker.of(
-                identer.finnGjeldendeFnr(),
-                identer.finnGjeldendeAktorId(),
-                identer.finnHistoriskeFoedselsnummer());
+    public enum Kilde {
+        PDL,
+        AKTOR
     }
 }
