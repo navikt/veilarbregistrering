@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
@@ -9,8 +8,6 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static java.lang.String.format;
 
@@ -62,17 +59,17 @@ public class ArbeidssokerService {
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? Metrics.JaNei.JA : Metrics.JaNei.NEI);
         if (!lokalErLikOrds) {
             LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
-                    forespurtPeriode, overlappendeArbeidssokerperioderLokalt.asList(), overlappendeHistoriskePerioderORDS.asList()));
+                    forespurtPeriode, overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS));
         }
 
         if (dekkerHele && brukLokalCache()) {
             Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
-            LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt.asList()));
+            LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt));
             return overlappendeArbeidssokerperioderLokalt;
         }
 
         Metrics.reportTags(Metrics.Event.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
-        LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioderORDS.asList()));
+        LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioderORDS));
 
         return overlappendeHistoriskePerioderORDS;
     }
