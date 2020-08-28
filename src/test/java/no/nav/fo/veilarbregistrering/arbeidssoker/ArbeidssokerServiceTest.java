@@ -100,7 +100,7 @@ public class ArbeidssokerServiceTest {
                 LocalDate.of(2019, 11, 30)
         );
 
-        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioderLocalCache(BRUKER_1, forespurtPeriode);
+        Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode);
 
         assertThat(arbeidssokerperiodes.asList()).isEmpty();
     }
