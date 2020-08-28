@@ -31,24 +31,25 @@ public class InternalIdentServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Optional<String> fnr = ofNullable(req.getParameter("fnr"));
-        Optional<String> aktorid = ofNullable(req.getParameter("aktorid"));
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String fnr = req.getParameter("fnr");
+        String aktorid = req.getParameter("aktorid");
 
-        Bruker bruker;
-
-        if (fnr.isPresent()) {
-            if (hentIdenterFraPdl()) {
-                bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr.get()));
-            } else {
-                bruker = userService.hentBruker(Foedselsnummer.of(fnr.get()));
-            }
-        } else if (aktorid.isPresent()) {
-            bruker = userService.hentBruker(AktorId.of(aktorid.get()));
-        } else {
+        if (fnr == null && aktorid == null) {
             throw new BadRequestException("Fnr eller aktørid må spesifiseres");
         }
 
+        Bruker bruker;
+        if (fnr != null) {
+            if (hentIdenterFraPdl()) {
+                bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr));
+            } else {
+                bruker = userService.hentBruker(Foedselsnummer.of(fnr));
+            }
+
+        } else {
+            bruker = userService.hentBruker(AktorId.of(aktorid));
+        }
 
         String brukerString = new Gson().toJson(bruker);
 
