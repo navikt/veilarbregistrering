@@ -101,13 +101,13 @@ public class ServiceBeansConfig {
     ArbeidsforholdResource arbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ArbeidsforholdGateway arbeidsforholdGateway
-    ) {
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            UnleashService unleashService) {
         return new ArbeidsforholdResource(
                 pepClient,
                 userService,
-                arbeidsforholdGateway
-        );
+                arbeidsforholdGateway,
+                unleashService);
     }
 
     @Bean
