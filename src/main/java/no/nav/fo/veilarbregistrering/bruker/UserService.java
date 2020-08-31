@@ -19,7 +19,7 @@ public class UserService {
         this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
-    public Bruker hentBruker(Kilde kilde) {
+    public Bruker hentBrukerFra(Kilde kilde) {
         if (kilde.equals(Kilde.PDL)) {
             return finnBrukerGjennomPdl();
 
