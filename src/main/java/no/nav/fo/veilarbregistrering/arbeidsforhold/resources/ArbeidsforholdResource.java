@@ -40,7 +40,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     @Path("/sistearbeidsforhold")
     @Override
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
-        final Bruker bruker = userService.hentBruker(velgKilde());
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
