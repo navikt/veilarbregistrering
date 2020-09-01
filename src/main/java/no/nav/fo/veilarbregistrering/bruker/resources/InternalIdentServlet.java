@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +18,9 @@ public class InternalIdentServlet extends HttpServlet {
     public static final String PATH = "/internal/bruker";
 
     private UserService userService;
-    private UnleashService unleashService;
 
-    public InternalIdentServlet(UserService userService, UnleashService unleashService) {
+    public InternalIdentServlet(UserService userService) {
         this.userService = userService;
-        this.unleashService = unleashService;
     }
 
     @Override
@@ -37,12 +34,7 @@ public class InternalIdentServlet extends HttpServlet {
 
         Bruker bruker;
         if (fnr != null) {
-            if (hentIdenterFraPdl()) {
-                bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr));
-            } else {
-                bruker = userService.hentBruker(Foedselsnummer.of(fnr));
-            }
-
+            bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr));
         } else {
             bruker = userService.hentBruker(AktorId.of(aktorid));
         }
@@ -57,9 +49,4 @@ public class InternalIdentServlet extends HttpServlet {
         out.flush();
         out.close();
     }
-
-    private boolean hentIdenterFraPdl() {
-        return unleashService.isEnabled("veilarbregistrering.arbeidssoker.internal.identerfrapdl");
-    }
-
 }

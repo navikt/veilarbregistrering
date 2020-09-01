@@ -281,8 +281,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalIdentServlet internalIdentServlet(UserService userService, UnleashService unleashService) {
-        return new InternalIdentServlet(userService, unleashService);
+    InternalIdentServlet internalIdentServlet(UserService userService) {
+        return new InternalIdentServlet(userService);
     }
 
     @Bean
