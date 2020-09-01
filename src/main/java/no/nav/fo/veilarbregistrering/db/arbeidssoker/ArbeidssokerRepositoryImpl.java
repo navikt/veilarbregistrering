@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
-import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.*;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.sql.SqlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
 import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerRepositoryImpl.class);
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -86,6 +87,9 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         parameters.addValue("foedselsnummer", listeMedFoedselsnummer.stream().map(f -> f.stringValue()).collect(Collectors.toList()));
 
         List<ArbeidssokerperiodeRaaData> raaData = namedParameterJdbcTemplate.query(sql, parameters, new ArbeidssokerperiodeRaaDataRowMapper());
+
+        LOG.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", raaData));
+
         return map(raaData);
     }
 
