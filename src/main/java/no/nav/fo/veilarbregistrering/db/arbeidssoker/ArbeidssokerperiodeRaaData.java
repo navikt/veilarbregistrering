@@ -38,6 +38,16 @@ class ArbeidssokerperiodeRaaData {
         return Objects.equals(personIdStatus, "AKTIV");
     }
 
+    @Override
+    public String toString() {
+        return "ArbeidssokerperiodeRaaData{" +
+                "formidlingsgruppe='" + formidlingsgruppe + '\'' +
+                ", personId=" + personId +
+                ", personIdStatus='" + personIdStatus + '\'' +
+                ", formidlingsgruppeEndret=" + formidlingsgruppeEndret +
+                '}';
+    }
+
     static class NyesteFoerst implements Comparator<ArbeidssokerperiodeRaaData> {
 
         static ArbeidssokerperiodeRaaData.NyesteFoerst nyesteFoerst() {

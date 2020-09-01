@@ -88,7 +88,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
 
         List<ArbeidssokerperiodeRaaData> raaData = namedParameterJdbcTemplate.query(sql, parameters, new ArbeidssokerperiodeRaaDataRowMapper());
 
-        LOG.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", raaData));
+        LOG.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", raaData.toString()));
 
         return map(raaData);
     }
