@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,13 +32,14 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
     private final ArbeidssokerService arbeidssokerService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
-    private final UnleashService unleashService;
 
-    public ArbeidssokerResource(ArbeidssokerService arbeidssokerService, UserService userService, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
+    public ArbeidssokerResource(
+            ArbeidssokerService arbeidssokerService,
+            UserService userService,
+            VeilarbAbacPepClient pepClient) {
         this.arbeidssokerService = arbeidssokerService;
         this.userService = userService;
         this.pepClient = pepClient;
-        this.unleashService = unleashService;
     }
 
     @GET
@@ -50,14 +50,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
             @QueryParam("fraOgMed") LocalDate fraOgMed,
             @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
-
-        Bruker bruker;
-
-        if (hentIdenterFraPdl()) {
-            bruker = userService.finnBrukerGjennomPdl(userService.hentFnrFraUrlEllerToken());
-        } else {
-            bruker = userService.hentBruker();
-        }
+        Bruker bruker = userService.hentBrukerFra(UserService.Kilde.PDL);
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
@@ -67,10 +60,6 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
         LOG.info(String.format("Ferdig med henting av arbeidssokerperioder - fant %s perioder", arbeidssokerperiodes.asList().size()));
 
         return map(arbeidssokerperiodes.eldsteFoerst());
-    }
-
-    private boolean hentIdenterFraPdl() {
-        return unleashService.isEnabled("veilarbregistrering.arbeidssoker.identerfrapdl");
     }
 
     private ArbeidssokerperioderDto map(List<Arbeidssokerperiode> arbeidssokerperioder) {
