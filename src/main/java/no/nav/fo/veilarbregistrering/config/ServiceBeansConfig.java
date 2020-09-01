@@ -114,13 +114,13 @@ public class ServiceBeansConfig {
     SykemeldingResource sykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            SykemeldingService sykemeldingService
-    ) {
+            SykemeldingService sykemeldingService,
+            UnleashService unleashService) {
         return new SykemeldingResource(
                 pepClient,
                 userService,
-                sykemeldingService
-        );
+                sykemeldingService,
+                unleashService);
     }
 
     @Bean
@@ -133,8 +133,7 @@ public class ServiceBeansConfig {
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
