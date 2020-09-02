@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -21,21 +22,24 @@ public class KontaktinfoResource implements KontaktinfoApi {
     private final KontaktinfoService kontaktinfoService;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
+    private final UnleashService unleashService;
 
     public KontaktinfoResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            KontaktinfoService kontaktinfoService) {
+            KontaktinfoService kontaktinfoService,
+            UnleashService unleashService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.kontaktinfoService = kontaktinfoService;
+        this.unleashService = unleashService;
     }
 
     @GET
     @Path("/kontaktinfo")
     @Override
     public KontaktinfoDto hentKontaktinfo() {
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
@@ -43,4 +47,7 @@ public class KontaktinfoResource implements KontaktinfoApi {
         return KontaktinfoMapper.map(kontaktinfo);
     }
 
+    private UserService.Kilde velgKilde() {
+        return unleashService.isEnabled("veilarbregistrering.bruker.kildePdl") ? UserService.Kilde.PDL : UserService.Kilde.AKTOR;
+    }
 }
