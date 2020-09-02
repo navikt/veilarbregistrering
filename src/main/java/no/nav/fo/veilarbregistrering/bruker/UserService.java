@@ -51,8 +51,11 @@ public class UserService {
     }
 
     public Bruker hentBruker(AktorId aktorId) {
-        Foedselsnummer fnr = aktorGateway.hentFnrFor(aktorId);
-        return Bruker.of(fnr, aktorId);
+        Identer identer = pdlOppslagGateway.hentIdenter(aktorId);
+        return Bruker.of(
+                identer.finnGjeldendeFnr(),
+                identer.finnGjeldendeAktorId(),
+                identer.finnHistoriskeFoedselsnummer());
     }
 
     private Foedselsnummer hentFnrFraUrlEllerToken() {
