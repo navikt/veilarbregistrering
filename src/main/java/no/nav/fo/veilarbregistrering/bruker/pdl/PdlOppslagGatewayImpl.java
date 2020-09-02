@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map;
@@ -46,4 +47,15 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
             throw new Feil(FeilType.UKJENT, e);
         }
     }
+
+    @Override
+    public Identer hentIdenter(AktorId aktorId) {
+        try {
+            PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(aktorId);
+            return PdlOppslagMapper.map(pdlIdenter);
+        } catch (RuntimeException e) {
+            throw new Feil(FeilType.UKJENT, e);
+        }
+    }
+
 }

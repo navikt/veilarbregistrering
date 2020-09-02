@@ -46,19 +46,19 @@ class HentIdenterPdlOppslagGatewayTest {
     @Test
     public void skalCacheVedKallPaaSammeFnr() throws Exception {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
-        when(pdlOppslagClient.hentIdenter(any())).thenReturn(dummyPdlIdent());
+        when(pdlOppslagClient.hentIdenter(any(Foedselsnummer.class))).thenReturn(dummyPdlIdent());
         pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"));
         pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"));
-        verify(pdlOppslagClient, times(1)).hentIdenter(any());
+        verify(pdlOppslagClient, times(1)).hentIdenter(any(Foedselsnummer.class));
     }
 
     @Test
     public void skalIkkeCacheVedKallPaaForskjelligFnr() throws Exception {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
-        when(pdlOppslagClient.hentIdenter(any())).thenReturn(dummyPdlIdent());
+        when(pdlOppslagClient.hentIdenter(any(Foedselsnummer.class))).thenReturn(dummyPdlIdent());
         pdlOppslagGateway.hentIdenter(Foedselsnummer.of("12345678910"));
         pdlOppslagGateway.hentIdenter(Foedselsnummer.of("109987654321"));
-        verify(pdlOppslagClient, times(2)).hentIdenter(any());
+        verify(pdlOppslagClient, times(2)).hentIdenter(any(Foedselsnummer.class));
     }
 
     private PdlIdenter dummyPdlIdent() {

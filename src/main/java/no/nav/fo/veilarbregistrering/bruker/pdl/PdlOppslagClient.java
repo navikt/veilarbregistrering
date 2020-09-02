@@ -57,13 +57,22 @@ class PdlOppslagClient {
         return response.getData().getPdlIdenter();
     }
 
-    String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+    PdlIdenter hentIdenter(AktorId aktorId) {
+        PdlHentIdenterRequest request = new PdlHentIdenterRequest(hentIdenterQuery(), new HentIdenterVariables(aktorId.asString()));
+        String json = hentIdenterRequest(aktorId.asString(), request);
+        LOG.info("json-response fra PDL: {}", json);
+        PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
+        validateResponse(response);
+        return response.getData().getPdlIdenter();
+    }
+
+    String hentIdenterRequest(String personident, PdlHentIdenterRequest request) {
         String token = this.systemUserTokenProvider.getSystemUserAccessToken();
 
         return RestUtils.withClient(client ->
                 client.target(baseUrl)
                         .request()
-                        .header(NAV_PERSONIDENT_HEADER, fnr)
+                        .header(NAV_PERSONIDENT_HEADER, personident)
                         .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                         .header("Authorization", "Bearer " + token)
                         .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)

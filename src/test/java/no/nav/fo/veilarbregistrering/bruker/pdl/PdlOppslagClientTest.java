@@ -91,7 +91,7 @@ public class PdlOppslagClientTest {
     public void skalHenteIdenterTilPerson() {
         PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
-            String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+            String hentIdenterRequest(String personident, PdlHentIdenterRequest request) {
                 return toJson(HENT_IDENTER_OK_JSON);
             }
         };
@@ -110,7 +110,7 @@ public class PdlOppslagClientTest {
     public void skalHenteIdenterMedHistorikkTilPerson() {
         PdlOppslagClient client = new PdlOppslagClient("", null) {
             @Override
-            String hentIdenterRequest(String fnr, PdlHentIdenterRequest request) {
+            String hentIdenterRequest(String personident, PdlHentIdenterRequest request) {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON);
             }
         };
