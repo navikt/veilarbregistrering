@@ -264,8 +264,9 @@ public class ServiceBeansConfig {
     KontaktinfoResource kontaktinfoResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            KontaktinfoService kontaktinfoService) {
-        return new KontaktinfoResource(pepClient, userService, kontaktinfoService);
+            KontaktinfoService kontaktinfoService,
+            UnleashService unleashService) {
+        return new KontaktinfoResource(pepClient, userService, kontaktinfoService, unleashService);
     }
 
     @Bean
