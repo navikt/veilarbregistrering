@@ -113,13 +113,12 @@ public class ServiceBeansConfig {
     SykemeldingResource sykemeldingResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            SykemeldingService sykemeldingService,
-            UnleashService unleashService) {
+            SykemeldingService sykemeldingService) {
         return new SykemeldingResource(
                 pepClient,
                 userService,
-                sykemeldingService,
-                unleashService);
+                sykemeldingService
+        );
     }
 
     @Bean
