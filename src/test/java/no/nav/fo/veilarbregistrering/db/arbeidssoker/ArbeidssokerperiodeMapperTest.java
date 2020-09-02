@@ -19,12 +19,12 @@ public class ArbeidssokerperiodeMapperTest {
 
     @Test
     public void kun_siste_periode_kan_ha_blank_tildato() {
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isNotNull();
         assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isNotNull();
@@ -33,11 +33,11 @@ public class ArbeidssokerperiodeMapperTest {
 
     @Test
     public void foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_periode_sin_fradato() {
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20));
         assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull();
@@ -46,12 +46,12 @@ public class ArbeidssokerperiodeMapperTest {
 
     @Test
     public void skal_populere_tildato_korrekt_selv_om_listen_kommer_usortert() {
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         assertThat(funnetFraDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 3, 19));
         assertThat(funnetFraDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 21));
@@ -79,12 +79,12 @@ public class ArbeidssokerperiodeMapperTest {
     @Test
     public void skal_kun_beholde_siste_formidlingsgruppeendring_fra_samme_dag() {
         LocalDateTime now = LocalDateTime.now();
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(2))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("IARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(4))));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(2))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("IARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(4))));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         assertThat(arbeidssokerperioder.asList().size()).isEqualTo(1);
         assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
@@ -94,19 +94,19 @@ public class ArbeidssokerperiodeMapperTest {
     @Test
     public void skal_kun_beholde_siste_formidlingsgruppeendring_fra_samme_dag_flere_dager() {
         LocalDateTime now = LocalDateTime.now();
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(2))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("IARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(4))));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(2))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("IARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusSeconds(4))));
 
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(7))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(7).plusSeconds(3))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(7))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(7).plusSeconds(3))));
 
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50).plusSeconds(2))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50).plusSeconds(5))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50).plusSeconds(2))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now.plusDays(50).plusSeconds(5))));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         assertThat(arbeidssokerperioder.asList().size()).isEqualTo(3);
         assertThat(arbeidssokerperioder.asList().get(0).getFormidlingsgruppe().stringValue()).isEqualTo("IARBS");
@@ -120,14 +120,14 @@ public class ArbeidssokerperiodeMapperTest {
     @Test
     public void skal_filtrere_bort_endringer_for_duplikate_identer() {
 
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperiodeRaaData = new ArrayList<>();
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2019, 3, 6, 10, 10))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 9, 11, 10, 10))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 9, 11, 10, 10))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2019, 12, 9, 10, 10))));
-        arbeidssokerperiodeRaaData.add(new ArbeidssokerperiodeRaaData("ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 12, 18, 10, 10))));
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2019, 3, 6, 10, 10))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 9, 11, 10, 10))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 9, 11, 10, 10))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2019, 12, 9, 10, 10))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(LocalDateTime.of(2019, 12, 18, 10, 10))));
 
-        Arbeidssokerperioder arbeidssokerperioder = map(arbeidssokerperiodeRaaData);
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
 
         Arbeidssokerperiode iservAktiv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ISERV"), Periode.of(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8)));
         Arbeidssokerperiode arbsAktiv = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2019, 12, 9), null));

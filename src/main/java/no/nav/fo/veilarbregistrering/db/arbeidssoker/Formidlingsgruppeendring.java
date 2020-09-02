@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.Objects;
 
-class ArbeidssokerperiodeRaaData {
+class Formidlingsgruppeendring {
 
     private final String formidlingsgruppe;
     private final int personId;
     private final String personIdStatus;
     private final Timestamp formidlingsgruppeEndret;
 
-    public ArbeidssokerperiodeRaaData(String formidlingsgruppe, int personId, String personIdStatus, Timestamp formidlingsgruppeEndret) {
+    public Formidlingsgruppeendring(String formidlingsgruppe, int personId, String personIdStatus, Timestamp formidlingsgruppeEndret) {
         this.formidlingsgruppe = formidlingsgruppe;
         this.personId = personId;
         this.personIdStatus = personIdStatus;
@@ -40,7 +40,7 @@ class ArbeidssokerperiodeRaaData {
 
     @Override
     public String toString() {
-        return "ArbeidssokerperiodeRaaData{" +
+        return "Formidlingsgruppeendring{" +
                 "formidlingsgruppe='" + formidlingsgruppe + '\'' +
                 ", personId=" + personId +
                 ", personIdStatus='" + personIdStatus + '\'' +
@@ -48,14 +48,14 @@ class ArbeidssokerperiodeRaaData {
                 '}';
     }
 
-    static class NyesteFoerst implements Comparator<ArbeidssokerperiodeRaaData> {
+    static class NyesteFoerst implements Comparator<Formidlingsgruppeendring> {
 
-        static ArbeidssokerperiodeRaaData.NyesteFoerst nyesteFoerst() {
-            return new ArbeidssokerperiodeRaaData.NyesteFoerst();
+        static Formidlingsgruppeendring.NyesteFoerst nyesteFoerst() {
+            return new Formidlingsgruppeendring.NyesteFoerst();
         }
 
         @Override
-        public int compare(ArbeidssokerperiodeRaaData t0, ArbeidssokerperiodeRaaData t1) {
+        public int compare(Formidlingsgruppeendring t0, Formidlingsgruppeendring t1) {
             return t1.getFormidlingsgruppeEndret().compareTo(t0.getFormidlingsgruppeEndret());
         }
 
