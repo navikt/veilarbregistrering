@@ -44,7 +44,7 @@ public class UserService {
                 identer.finnHistoriskeFoedselsnummer());
     }
 
-    public Bruker hentBruker() {
+    private Bruker hentBruker() {
         Foedselsnummer fnr = hentFnrFraUrlEllerToken();
 
         return hentBruker(fnr);
