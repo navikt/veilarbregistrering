@@ -17,6 +17,7 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
 import org.junit.Test;
 
+import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.AKTOR;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -50,7 +51,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.hentBrukerFra(AKTOR)).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -58,7 +59,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
         when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.hentBruker()).thenCallRealMethod();
+        when(userService.hentBrukerFra(AKTOR)).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
         verify(pepClient, times(0)).sjekkLesetilgangTilBruker(any());
@@ -68,7 +69,7 @@ public class RegistreringResourceTest {
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
         when(brukerRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
         when(brukerRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.hentBrukerFra(AKTOR)).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -79,7 +80,7 @@ public class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse()
                         .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.hentBrukerFra(AKTOR)).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
@@ -89,7 +90,7 @@ public class RegistreringResourceTest {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
                 .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
 
-        when(userService.hentBruker()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.hentBrukerFra(AKTOR)).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }

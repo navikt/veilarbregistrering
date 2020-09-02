@@ -59,7 +59,7 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getGjeldendeFoedselsnummer());
@@ -76,7 +76,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
@@ -109,7 +109,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
@@ -133,7 +133,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         brukerRegistreringService.reaktiverBruker(bruker);
@@ -154,7 +154,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBruker();
+        final Bruker bruker = userService.hentBrukerFra(velgKilde());
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (AutentiseringUtils.erVeileder()) {
@@ -187,5 +187,9 @@ public class RegistreringResource {
 
     private boolean tjenesteErNede() {
         return unleashService.isEnabled("arbeidssokerregistrering.nedetid");
+    }
+
+    private UserService.Kilde velgKilde() {
+        return unleashService.isEnabled("veilarbregistrering.registrering.kildePdl") ? UserService.Kilde.PDL : UserService.Kilde.AKTOR;
     }
 }
