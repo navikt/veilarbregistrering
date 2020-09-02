@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -14,6 +13,7 @@ import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdMapper.map;
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
+import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
 
 @Component
 @Path("/")
@@ -23,32 +23,25 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final UserService userService;
     private final VeilarbAbacPepClient pepClient;
-    private final UnleashService unleashService;
 
     public ArbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
-            UnleashService unleashService) {
+            ArbeidsforholdGateway arbeidsforholdGateway) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
-        this.unleashService = unleashService;
     }
 
     @GET
     @Path("/sistearbeidsforhold")
     @Override
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
-        final Bruker bruker = userService.hentBrukerFra(velgKilde());
+        final Bruker bruker = userService.hentBrukerFra(PDL);
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         return map(flereArbeidsforhold.siste());
-    }
-
-    private UserService.Kilde velgKilde() {
-        return unleashService.isEnabled("veilarbregistrering.arbeidsforhold.kildePdl") ? UserService.Kilde.PDL : UserService.Kilde.AKTOR;
     }
 }
