@@ -38,7 +38,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
 
         Bruker bruker = ofNullable(req.getParameter("fnr"))
                 .map(Foedselsnummer::of)
-                .map(userService::hentBruker)
+                .map(userService::finnBrukerGjennomPdl)
                 .orElseThrow(() -> new BadRequestException("Fnr eller aktørid må spesifiseres"));
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
