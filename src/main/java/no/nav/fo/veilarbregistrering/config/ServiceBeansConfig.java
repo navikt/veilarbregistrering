@@ -106,8 +106,8 @@ public class ServiceBeansConfig {
         return new ArbeidsforholdResource(
                 pepClient,
                 userService,
-                arbeidsforholdGateway,
-                unleashService);
+                arbeidsforholdGateway
+        );
     }
 
     @Bean
