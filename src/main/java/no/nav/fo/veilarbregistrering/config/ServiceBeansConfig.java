@@ -101,8 +101,7 @@ public class ServiceBeansConfig {
     ArbeidsforholdResource arbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
-            UnleashService unleashService) {
+            ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ArbeidsforholdResource(
                 pepClient,
                 userService,
@@ -155,9 +154,9 @@ public class ServiceBeansConfig {
     OppgaveResource oppgaveResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService
-    ) {
-        return new OppgaveResource(pepClient, userService, oppgaveService);
+            OppgaveService oppgaveService,
+            UnleashService unleashService) {
+        return new OppgaveResource(pepClient, userService, oppgaveService, unleashService);
     }
 
     @Bean
