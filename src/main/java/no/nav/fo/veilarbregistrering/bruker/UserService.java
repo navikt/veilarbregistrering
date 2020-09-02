@@ -46,23 +46,16 @@ public class UserService {
 
     private Bruker hentBruker() {
         Foedselsnummer fnr = hentFnrFraUrlEllerToken();
-
-        return hentBruker(fnr);
-    }
-
-    public Bruker hentBruker(Foedselsnummer fnr) {
         AktorId aktorId = aktorGateway.hentAktorIdFor(fnr);
-
         return Bruker.of(fnr, aktorId);
     }
 
     public Bruker hentBruker(AktorId aktorId) {
         Foedselsnummer fnr = aktorGateway.hentFnrFor(aktorId);
-
         return Bruker.of(fnr, aktorId);
     }
 
-    public Foedselsnummer hentFnrFraUrlEllerToken() {
+    private Foedselsnummer hentFnrFraUrlEllerToken() {
 
         String fnr = getFnrFromUrl();
 
@@ -81,7 +74,7 @@ public class UserService {
         return requestProvider.get().getParameter("fnr");
     }
 
-    public String getFnr() {
+    private String getFnr() {
         return getIdent().orElseThrow(IllegalArgumentException::new);
     }
 
