@@ -21,9 +21,4 @@ class AktorGatewayImpl implements AktorGateway {
                 .orElseThrow(() -> new Feil(FeilType.FINNES_IKKE)));
     }
 
-    @Override
-    public Foedselsnummer hentFnrFor(AktorId aktorId) {
-        return Foedselsnummer.of(aktorService.getFnr(aktorId.asString())
-                .orElseThrow(() -> new Feil(FeilType.FINNES_IKKE)));
-    }
 }

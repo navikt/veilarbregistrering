@@ -57,14 +57,13 @@ class PdlOppslagMapper {
         return Telefonnummer.of(pdlTelefonnummer.getNummer(), pdlTelefonnummer.getLandskode());
     }
 
-    public static Identer map(PdlIdenter pdlIdenter) {
+    static Identer map(PdlIdenter pdlIdenter) {
         return Identer.of(pdlIdenter.getIdenter().stream()
                 .map(pdlIdent -> new Ident(
                         pdlIdent.getIdent(),
                         pdlIdent.isHistorisk(),
                         Gruppe.valueOf(pdlIdent.getGruppe().name())
                 ))
-                .collect(toList())
-        );
+                .collect(toList()));
     }
 }

@@ -37,11 +37,7 @@ public class UserService {
     }
 
     public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
-        Identer identer = pdlOppslagGateway.hentIdenter(fnr);
-        return Bruker.of(
-                identer.finnGjeldendeFnr(),
-                identer.finnGjeldendeAktorId(),
-                identer.finnHistoriskeFoedselsnummer());
+        return map(pdlOppslagGateway.hentIdenter(fnr));
     }
 
     private Bruker hentBruker() {
@@ -51,7 +47,10 @@ public class UserService {
     }
 
     public Bruker hentBruker(AktorId aktorId) {
-        Identer identer = pdlOppslagGateway.hentIdenter(aktorId);
+        return map(pdlOppslagGateway.hentIdenter(aktorId));
+    }
+
+    private static Bruker map(Identer identer) {
         return Bruker.of(
                 identer.finnGjeldendeFnr(),
                 identer.finnGjeldendeAktorId(),

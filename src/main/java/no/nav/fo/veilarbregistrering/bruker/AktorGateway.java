@@ -4,6 +4,4 @@ public interface AktorGateway {
 
     AktorId hentAktorIdFor(Foedselsnummer fnr);
 
-    Foedselsnummer hentFnrFor(AktorId aktorId);
-
 }
