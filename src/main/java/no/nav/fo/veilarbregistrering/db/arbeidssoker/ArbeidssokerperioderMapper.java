@@ -13,14 +13,14 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode.EldsteFoerst.eldsteFoerst;
-import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperiodeRaaData.NyesteFoerst.nyesteFoerst;
+import static no.nav.fo.veilarbregistrering.db.arbeidssoker.Formidlingsgruppeendring.NyesteFoerst.nyesteFoerst;
 
 class ArbeidssokerperioderMapper {
 
-    static Arbeidssokerperioder map(List<ArbeidssokerperiodeRaaData> arbeidssokerperioder) {
+    static Arbeidssokerperioder map(List<Formidlingsgruppeendring> formidlingsgruppeendringer) {
         return new Arbeidssokerperioder(
                 Optional.of(
-                        arbeidssokerperioder.stream()
+                        formidlingsgruppeendringer.stream()
                                 .sorted(nyesteFoerst())
                                 .collect(toList()))
                         .map(beholdKunEndringerForAktiveIdenter)
@@ -32,26 +32,26 @@ class ArbeidssokerperioderMapper {
                         .collect(toList()));
     }
 
-    private static Function<List<ArbeidssokerperiodeRaaData>, List<ArbeidssokerperiodeRaaData>> beholdKunEndringerForAktiveIdenter =
-            (arbeidssokerperiodeRaaDataListe) -> arbeidssokerperiodeRaaDataListe.stream()
-                    .filter(ArbeidssokerperiodeRaaData::erAktiv)
+    private static Function<List<Formidlingsgruppeendring>, List<Formidlingsgruppeendring>> beholdKunEndringerForAktiveIdenter =
+            (formidlingsgruppeendringer) -> formidlingsgruppeendringer.stream()
+                    .filter(Formidlingsgruppeendring::erAktiv)
                     .collect(toList());
 
-    private static Function<List<ArbeidssokerperiodeRaaData>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
-            (arbeidssokerperiodeRaaData) -> {
-                List<Arbeidssokerperiode> arbeidssokerperioder = new ArrayList<>(arbeidssokerperiodeRaaData.size());
+    private static Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
+            (formidlingsgruppeendringer) -> {
+                List<Arbeidssokerperiode> arbeidssokerperioder = new ArrayList<>(formidlingsgruppeendringer.size());
 
                 LocalDate forrigeEndretDato = null;
 
-                for (ArbeidssokerperiodeRaaData raaDataPeriode : arbeidssokerperiodeRaaData) {
-                    LocalDate endretDato = raaDataPeriode.getFormidlingsgruppeEndret().toLocalDateTime().toLocalDate();
+                for (Formidlingsgruppeendring formidlingsgruppeendring : formidlingsgruppeendringer) {
+                    LocalDate endretDato = formidlingsgruppeendring.getFormidlingsgruppeEndret().toLocalDateTime().toLocalDate();
 
                     if (forrigeEndretDato != null && endretDato.isEqual(forrigeEndretDato)) {
                         continue;
                     }
 
                     arbeidssokerperioder.add(new Arbeidssokerperiode(
-                            Formidlingsgruppe.of(raaDataPeriode.getFormidlingsgruppe()),
+                            Formidlingsgruppe.of(formidlingsgruppeendring.getFormidlingsgruppe()),
                             Periode.of(
                                     endretDato,
                                     null

@@ -71,12 +71,12 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     public Arbeidssokerperioder finnFormidlingsgrupper(Foedselsnummer foedselsnummer) {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER = ?";
 
-        List<ArbeidssokerperiodeRaaData> arbeidssokerperioder = jdbcTemplate.query(
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = jdbcTemplate.query(
                 sql,
-                new Object[]{foedselsnummer.stringValue()}, new ArbeidssokerperiodeRaaDataRowMapper()
+                new Object[]{foedselsnummer.stringValue()}, new FormidlingsgruppeendringRowMapper()
         );
 
-        return map(arbeidssokerperioder);
+        return map(formidlingsgruppeendringer);
     }
 
     @Override
@@ -86,18 +86,18 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("foedselsnummer", listeMedFoedselsnummer.stream().map(f -> f.stringValue()).collect(Collectors.toList()));
 
-        List<ArbeidssokerperiodeRaaData> raaData = namedParameterJdbcTemplate.query(sql, parameters, new ArbeidssokerperiodeRaaDataRowMapper());
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = namedParameterJdbcTemplate.query(sql, parameters, new FormidlingsgruppeendringRowMapper());
 
-        LOG.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", raaData.toString()));
+        LOG.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", formidlingsgruppeendringer.toString()));
 
-        return map(raaData);
+        return map(formidlingsgruppeendringer);
     }
 
-    private class ArbeidssokerperiodeRaaDataRowMapper implements RowMapper<ArbeidssokerperiodeRaaData> {
+    private class FormidlingsgruppeendringRowMapper implements RowMapper<Formidlingsgruppeendring> {
 
         @Override
-        public ArbeidssokerperiodeRaaData mapRow(ResultSet rs, int i) throws SQLException {
-            return new ArbeidssokerperiodeRaaData(
+        public Formidlingsgruppeendring mapRow(ResultSet rs, int i) throws SQLException {
+            return new Formidlingsgruppeendring(
                     rs.getString("FORMIDLINGSGRUPPE"),
                     rs.getInt("PERSON_ID"),
                     rs.getString("PERSON_ID_STATUS"),
