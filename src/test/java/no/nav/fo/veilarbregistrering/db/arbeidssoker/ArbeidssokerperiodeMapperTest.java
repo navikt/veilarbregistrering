@@ -137,4 +137,46 @@ public class ArbeidssokerperiodeMapperTest {
                 arbsAktiv
         );
     }
+
+    @Test
+    public void skal_filtrere_bort_tekniske_ISERVendringer() {
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 9, 9, 9, 9, 9))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 9, 9, 9, 9, 9))));
+
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
+
+        Arbeidssokerperiode arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8)));
+        Arbeidssokerperiode arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2020, 9, 9), null));
+
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
+                arbs1,
+                arbs2
+        );
+
+        formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+
+        arbeidssokerperioder = map(formidlingsgruppeendringer);
+
+        arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2020, 8, 14), null));
+
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
+                arbs1
+        );
+
+        formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+
+        arbeidssokerperioder = map(formidlingsgruppeendringer);
+
+        arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.of(2020, 8, 14), null));
+
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
+                arbs1
+        );
+    }
 }

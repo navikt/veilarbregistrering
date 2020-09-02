@@ -6,9 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -24,6 +22,7 @@ class ArbeidssokerperioderMapper {
                                 .sorted(nyesteFoerst())
                                 .collect(toList()))
                         .map(beholdKunEndringerForAktiveIdenter)
+                        .map(slettTekniskeISERVEndringer)
                         .map(beholdKunSisteEndringPerDagIListen)
                         .map(populerTilDato)
                         .get()
@@ -36,6 +35,26 @@ class ArbeidssokerperioderMapper {
             (formidlingsgruppeendringer) -> formidlingsgruppeendringer.stream()
                     .filter(Formidlingsgruppeendring::erAktiv)
                     .collect(toList());
+
+    private static Function<List<Formidlingsgruppeendring>, List<Formidlingsgruppeendring>> slettTekniskeISERVEndringer =
+            (formidlingsgruppeendringer -> {
+
+                int j = 0;
+
+                while (j < formidlingsgruppeendringer.size() - 1) {
+                    if (formidlingsgruppeendringer.get(j).getFormidlingsgruppeEndret().equals(formidlingsgruppeendringer.get(j+1).getFormidlingsgruppeEndret())) {
+                        if (formidlingsgruppeendringer.get(j).erISERV() && formidlingsgruppeendringer.get(j+1).erARBS()) {
+                            formidlingsgruppeendringer.remove(j);
+                        } else if (formidlingsgruppeendringer.get(j).erARBS() && formidlingsgruppeendringer.get(j+1).erISERV()) {
+                            formidlingsgruppeendringer.remove(j+1);
+                        }
+                    } else {
+                        j++;
+                    }
+                }
+
+                return formidlingsgruppeendringer;
+            });
 
     private static Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
             (formidlingsgruppeendringer) -> {

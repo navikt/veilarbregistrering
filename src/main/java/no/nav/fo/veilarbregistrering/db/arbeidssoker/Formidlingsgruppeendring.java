@@ -26,6 +26,14 @@ class Formidlingsgruppeendring {
         return this.formidlingsgruppe;
     }
 
+    boolean erARBS() {
+        return Objects.equals(formidlingsgruppe, "ARBS");
+    }
+
+    boolean erISERV() {
+        return Objects.equals(formidlingsgruppe, "ISERV");
+    }
+
     int getPersonId() {
         return personId;
     }
