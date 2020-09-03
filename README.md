@@ -14,7 +14,7 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - veilarbperson : REST
 - Aktør-service (fnr/dnr -> aktørId) : SOAP
 - ABAC (tilgangskontroll)
-- Aareg (siste arbeidsforhold)
+- Aareg (siste arbeidsforhold) : SOAP
 - [Enhetsregisteret](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
 - [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST
