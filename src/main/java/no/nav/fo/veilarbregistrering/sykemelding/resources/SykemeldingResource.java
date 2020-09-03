@@ -12,8 +12,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
-
 @Component
 @Path("/")
 @Produces("application/json")
@@ -36,7 +34,7 @@ public class SykemeldingResource implements SykemeldingApi {
     @Path("/sykmeldtinfodata")
     @Override
     public SykmeldtInfoData hentSykmeldtInfoData() {
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 

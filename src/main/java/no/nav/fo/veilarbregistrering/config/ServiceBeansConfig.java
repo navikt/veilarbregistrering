@@ -239,10 +239,8 @@ public class ServiceBeansConfig {
     @Bean
     UserService userService(
             Provider<HttpServletRequest> provider,
-            AktorGateway aktorGateway,
-            PdlOppslagGateway pdlOppslagGateway
-    ) {
-        return new UserService(provider, aktorGateway, pdlOppslagGateway);
+            PdlOppslagGateway pdlOppslagGateway) {
+        return new UserService(provider, pdlOppslagGateway);
     }
 
     @Bean

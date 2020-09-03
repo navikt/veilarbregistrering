@@ -22,7 +22,7 @@ public class UserServiceTest {
     public void setUp() {
         requestProvider = mock(Provider.class);
         pdlOppslagGateway = mock(PdlOppslagGateway.class);
-        userService = new UserService(requestProvider, null, pdlOppslagGateway);
+        userService = new UserService(requestProvider, pdlOppslagGateway);
     }
 
     @Test

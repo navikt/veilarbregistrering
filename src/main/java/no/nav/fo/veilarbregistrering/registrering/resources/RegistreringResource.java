@@ -21,7 +21,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;
@@ -60,7 +59,7 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
         StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getGjeldendeFoedselsnummer());
@@ -77,7 +76,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
@@ -110,7 +109,7 @@ public class RegistreringResource {
     @Path("/registrering")
     @ApiOperation(value = "Henter siste registrering av bruker.")
     public BrukerRegistreringWrapper hentRegistrering() {
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
@@ -134,7 +133,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         brukerRegistreringService.reaktiverBruker(bruker);
@@ -155,7 +154,7 @@ public class RegistreringResource {
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
 
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         if (AutentiseringUtils.erVeileder()) {
