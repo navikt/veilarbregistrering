@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
 
 @Component
 @Path("/person")
@@ -36,7 +35,7 @@ public class KontaktinfoResource implements KontaktinfoApi {
     @Path("/kontaktinfo")
     @Override
     public KontaktinfoDto hentKontaktinfo() {
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 

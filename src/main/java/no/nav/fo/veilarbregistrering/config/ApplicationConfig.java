@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
-import no.nav.fo.veilarbregistrering.bruker.aktor.AktorConfig;
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
@@ -45,7 +44,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         ServiceBeansConfig.class,
         DatabaseConfig.class,
         KafkaConfig.class,
-        AktorConfig.class,
         PepConfig.class,
         OverforTilArenaSchedulerConfig.class,
         OppgaveForAvvistRegistreringSchedulerConfig.class,
