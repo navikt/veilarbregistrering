@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.amplitude.AmplitudeLogger;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
@@ -287,10 +286,6 @@ public class BrukerRegistreringService {
         oppfolgingGateway.settOppfolgingSykmeldt(bruker.getGjeldendeFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
         long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
-
-        if (unleashService.isEnabled("veilarbregistrering.amplitude.test")) {
-            AmplitudeLogger.log(bruker.getAktorId());
-        }
 
         return id;
     }
