@@ -31,7 +31,7 @@ public class UserService {
         }
     }
 
-    public Bruker finnBrukerGjennomPdl() {
+    private Bruker finnBrukerGjennomPdl() {
         Foedselsnummer fnr = hentFnrFraUrlEllerToken();
         return finnBrukerGjennomPdl(fnr);
     }
