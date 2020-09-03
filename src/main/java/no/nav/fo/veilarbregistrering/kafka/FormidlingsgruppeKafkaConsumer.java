@@ -28,16 +28,14 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer.class);
 
     private final Properties kafkaConsumerProperties;
-    private final UnleashService unleashService;
     private final String topic;
     private final ArbeidssokerService arbeidssokerService;
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
-            UnleashService unleashService,
-            String topic, ArbeidssokerService arbeidssokerService) {
+            String topic,
+            ArbeidssokerService arbeidssokerService) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
-        this.unleashService = unleashService;
         this.topic = topic;
         this.arbeidssokerService = arbeidssokerService;
 
@@ -54,7 +52,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             LOG.info("Subscribing to {}", topic);
 
-            while (konsumeringAvFormidlingsgruppe()) {
+            while (true) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
@@ -68,8 +66,6 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 consumer.commitSync();
             }
 
-            LOG.info("Avslutter konsumering av topic {}", topic);
-
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
             MDC.remove(MDC_CALL_ID);
@@ -79,9 +75,5 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     void behandleRecord(ConsumerRecord<String, String> record) {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
         arbeidssokerService.behandle(formidlingsgruppeEvent);
-    }
-
-    private boolean konsumeringAvFormidlingsgruppe() {
-        return unleashService.isEnabled("veilarbregistrering.konsumeringAvFormidlingsgruppe");
     }
 }
