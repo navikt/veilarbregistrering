@@ -1,0 +1,32 @@
+name: Reset 💪
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
+
+jobs:
+
+  deploy-prod:
+    name: Deploy to Prod FSS
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Lag tag for image
+      run: echo "::set-env name=TAG::20200903151800_597d9054"
+
+    - name: Lag full image referanse
+      run: echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
+
+    - name: Deploy to production
+      uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: prod-fss
+        DRY_RUN: false
+        RESOURCE: nais/naiserator.yaml
+        VARS: nais/vars-p.yaml
