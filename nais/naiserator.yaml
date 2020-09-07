@@ -18,8 +18,6 @@ spec:
     value: {{ feature_endpoint_url }}
   - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
     value: {{ aareg_url }}
-  - name: AKTOER_V2_ENDPOINTURL
-    value: {{ aktoer_url }}
   - name: OPENAM_DISCOVERY_URL
     value: {{ openam_discovery_url }}
   - name: VEILARBLOGIN_OPENAM_CLIENT_ID
