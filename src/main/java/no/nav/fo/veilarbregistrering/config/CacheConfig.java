@@ -32,11 +32,18 @@ public class CacheConfig {
             .timeToIdleSeconds(3600)
             .timeToLiveSeconds(3600);
 
-    public static final String HENT_PERSONIDENTER = "hentIdenter";
-    private static final CacheConfiguration HENT_PERSONIDENTER_CACHE = new CacheConfiguration(HENT_PERSONIDENTER, 100000)
+    public static final String HENT_IDENTER_FOR_FNR = "hentIdenterForFnr";
+    private static final CacheConfiguration HENT_IDENTER_FOR_FNR_CACHE = new CacheConfiguration(HENT_IDENTER_FOR_FNR, 100000)
             .memoryStoreEvictionPolicy(LRU)
             .timeToIdleSeconds(3600)
             .timeToLiveSeconds(3600);
+
+    public static final String HENT_IDENTER_FOR_AKTOR = "hentIdenterForAktor";
+    private static final CacheConfiguration HENT_IDENTER_FOR_AKTOR_CACHE = new CacheConfiguration(HENT_IDENTER_FOR_AKTOR, 100000)
+            .memoryStoreEvictionPolicy(LRU)
+            .timeToIdleSeconds(3600)
+            .timeToLiveSeconds(3600);
+
 
     @Bean
     public CacheManager cacheManager() {
@@ -45,7 +52,8 @@ public class CacheConfig {
         config.addCache(HENT_ARBEIDSFORHOLD_CACHE);
         config.addCache(HENT_ALLE_ENHETER_CACHE);
         config.addCache(HENT_PERSON_FOR_AKTORID_CACHE);
-        config.addCache(HENT_PERSONIDENTER_CACHE);
+        config.addCache(HENT_IDENTER_FOR_FNR_CACHE);
+        config.addCache(HENT_IDENTER_FOR_AKTOR_CACHE);
         return new EhCacheCacheManager(net.sf.ehcache.CacheManager.newInstance(config));
     }
 
