@@ -2,7 +2,7 @@ name: Build, push, deploy 💪
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
 
 env:
