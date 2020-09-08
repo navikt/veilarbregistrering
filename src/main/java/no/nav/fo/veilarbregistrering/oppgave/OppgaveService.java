@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.Metrics;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class OppgaveService {
 
         kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId(), oppgaveType);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker, oppgaveType);
 
         Oppgave oppgave = Oppgave.opprettOppgave(bruker.getAktorId(),
                 enhetsnr.orElse(null),

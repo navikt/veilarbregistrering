@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class OppgaveRouter {
         this.personGateway = personGateway;
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
+    public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
         if (!oppgaveType.equals(OppgaveType.UTVANDRET)) {
             return Optional.empty();
         }
@@ -72,7 +72,7 @@ public class OppgaveRouter {
             if (gk.byMedBydeler()) {
                 LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
                 reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
-                return Optional.of(Enhetsnr.internBrukerstotte());
+                return Optional.of(Enhetnr.internBrukerstotte());
             }
 
             if (!gk.utland()) {
@@ -86,12 +86,12 @@ public class OppgaveRouter {
         }
 
         try {
-            Optional<Enhetsnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
+            Optional<Enhetnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
             if (enhetsnr.isPresent()) {
                 reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
                 return enhetsnr;
             }
-            return of(Enhetsnr.internBrukerstotte());
+            return of(Enhetnr.internBrukerstotte());
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
@@ -99,7 +99,7 @@ public class OppgaveRouter {
         }
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
+    public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
@@ -134,10 +134,10 @@ public class OppgaveRouter {
         Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
         if (kommunenummer.kommuneMedBydeler()) {
             LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.asString());
-            return of(Enhetsnr.internBrukerstotte());
+            return of(Enhetnr.internBrukerstotte());
         }
 
-        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
+        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
         if (!enhetsnr.isPresent()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);

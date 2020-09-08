@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppgave.*;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +77,7 @@ public class OppgaveIntegrationTest {
         String dagensdato = LocalDate.of(2020, 5, 27).toString();
         String toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString();
 
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetsnr.of("0301")));
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetnr.of("0301")));
 
         mockServer.when(
                 request()

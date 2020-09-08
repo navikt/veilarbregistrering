@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface Norg2Gateway {
 
-    Optional<Enhetsnr> hentEnhetFor(Kommunenummer kommunenummer);
+    Optional<Enhetnr> hentEnhetFor(Kommunenummer kommunenummer);
 }
