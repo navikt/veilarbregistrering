@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -30,14 +30,14 @@ public class Oppgave {
     }
 
     private final AktorId aktorId;
-    private final Enhetsnr enhetsnr;
+    private final Enhetnr enhetnr;
     private final OppgaveType oppgaveType;
     private final LocalDate fristFerdigstillelse;
     private final LocalDate aktivDato;
 
-    private Oppgave(AktorId aktorId, Enhetsnr enhetsnr, OppgaveType oppgaveType, LocalDate fristFerdigstillelse, LocalDate aktivDato) {
+    private Oppgave(AktorId aktorId, Enhetnr enhetnr, OppgaveType oppgaveType, LocalDate fristFerdigstillelse, LocalDate aktivDato) {
         this.aktorId = aktorId;
-        this.enhetsnr = enhetsnr;
+        this.enhetnr = enhetnr;
         this.oppgaveType = oppgaveType;
         this.fristFerdigstillelse = fristFerdigstillelse;
         this.aktivDato = aktivDato;
@@ -45,11 +45,11 @@ public class Oppgave {
 
     public static Oppgave opprettOppgave(
             AktorId aktorId,
-            Enhetsnr enhetsnr,
+            Enhetnr enhetnr,
             OppgaveType oppgaveType,
             LocalDate dagensDato) {
 
-        return new Oppgave(aktorId, enhetsnr, oppgaveType, fristFerdigstilleles(dagensDato), dagensDato);
+        return new Oppgave(aktorId, enhetnr, oppgaveType, fristFerdigstilleles(dagensDato), dagensDato);
     }
 
     private static LocalDate fristFerdigstilleles(LocalDate dagensDato) {
@@ -60,8 +60,8 @@ public class Oppgave {
         return aktorId;
     }
 
-    public Optional<Enhetsnr> getEnhetsnr() {
-        return Optional.ofNullable(enhetsnr);
+    public Optional<Enhetnr> getEnhetnr() {
+        return Optional.ofNullable(enhetnr);
     }
 
     public LocalDate getFristFerdigstillelse() {
@@ -82,7 +82,7 @@ public class Oppgave {
         if (o == null || getClass() != o.getClass()) return false;
         Oppgave oppgave = (Oppgave) o;
         return Objects.equals(aktorId, oppgave.aktorId) &&
-                Objects.equals(enhetsnr, oppgave.enhetsnr) &&
+                Objects.equals(enhetnr, oppgave.enhetnr) &&
                 oppgaveType == oppgave.oppgaveType &&
                 Objects.equals(fristFerdigstillelse, oppgave.fristFerdigstillelse) &&
                 Objects.equals(aktivDato, oppgave.aktivDato);
@@ -90,6 +90,6 @@ public class Oppgave {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktorId, enhetsnr, oppgaveType, fristFerdigstillelse, aktivDato);
+        return Objects.hash(aktorId, enhetnr, oppgaveType, fristFerdigstillelse, aktivDato);
     }
 }

@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +35,9 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"));
     }
 
     @Test
@@ -49,9 +49,9 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"));
     }
 
     @Test
@@ -70,9 +70,9 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("2930"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"));
     }
 
     @Test
@@ -86,14 +86,14 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetsnr.of("232"));
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("232"));
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("232"));
     }
 
     @Test
@@ -105,9 +105,9 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.internBrukerstotte());
+        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class OppgaveRouterTest {
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).isEmpty();
     }
@@ -135,14 +135,14 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetsnr.of("232"));
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("232"));
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("232"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("232"));
     }
 
     @Test
@@ -156,13 +156,13 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetsnr.of("1103"));
+        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("1103"));
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
 
-        Optional<Enhetsnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetsnr.internBrukerstotte());
+        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
     }
 }
