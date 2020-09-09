@@ -13,7 +13,6 @@ import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdMapper.map;
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
 
 @Component
 @Path("/")
@@ -37,7 +36,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     @Path("/sistearbeidsforhold")
     @Override
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
-        final Bruker bruker = userService.hentBrukerFra(PDL);
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 

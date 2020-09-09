@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.bruker.UserService.Kilde.PDL;
 
 @Component
 @Path("/arbeidssoker")
@@ -51,7 +50,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
             @QueryParam("fraOgMed") LocalDate fraOgMed,
             @QueryParam("tilOgMed") LocalDate tilOgMed
     ) {
-        Bruker bruker = userService.hentBrukerFra(PDL);
+        Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 

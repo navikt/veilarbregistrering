@@ -3,47 +3,26 @@ package no.nav.fo.veilarbregistrering.bruker;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import static java.lang.String.format;
 import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
 import static no.nav.common.auth.SubjectHandler.getIdent;
 
 public class UserService {
 
     private final Provider<HttpServletRequest> requestProvider;
-    private final AktorGateway aktorGateway;
     private final PdlOppslagGateway pdlOppslagGateway;
 
-    public UserService(Provider<HttpServletRequest> requestProvider, AktorGateway aktorGateway, PdlOppslagGateway pdlOppslagGateway) {
+    public UserService(Provider<HttpServletRequest> requestProvider, PdlOppslagGateway pdlOppslagGateway) {
         this.requestProvider = requestProvider;
-        this.aktorGateway = aktorGateway;
         this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
-    public Bruker hentBrukerFra(Kilde kilde) {
-        if (kilde.equals(Kilde.PDL)) {
-            return finnBrukerGjennomPdl();
-
-        } else if (kilde.equals(Kilde.AKTOR)) {
-            return hentBruker();
-
-        } else {
-            throw new IllegalArgumentException(format("hentBruker ble kalt med ukjent kilde, %s", kilde));
-        }
-    }
-
-    private Bruker finnBrukerGjennomPdl() {
+    public Bruker finnBrukerGjennomPdl() {
         Foedselsnummer fnr = hentFnrFraUrlEllerToken();
         return finnBrukerGjennomPdl(fnr);
     }
 
     public Bruker finnBrukerGjennomPdl(Foedselsnummer fnr) {
         return map(pdlOppslagGateway.hentIdenter(fnr));
-    }
-
-    private Bruker hentBruker() {
-        Foedselsnummer fnr = hentFnrFraUrlEllerToken();
-        AktorId aktorId = aktorGateway.hentAktorIdFor(fnr);
-        return Bruker.of(fnr, aktorId);
     }
 
     public Bruker hentBruker(AktorId aktorId) {
@@ -88,10 +67,5 @@ public class UserService {
         }
 
         return enhetId;
-    }
-
-    public enum Kilde {
-        PDL,
-        AKTOR
     }
 }
