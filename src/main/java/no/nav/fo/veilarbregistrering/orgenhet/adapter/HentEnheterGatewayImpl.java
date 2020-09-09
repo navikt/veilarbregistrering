@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.tjeneste.virksomhet.organisasjonenhet.v2.OrganisasjonEnhetV2;
@@ -41,7 +42,7 @@ public class HentEnheterGatewayImpl implements HentEnheterGateway {
     }
 
     private static NavEnhet orgEnhetTilPortefoljeEnhet(WSOrganisasjonsenhet orgEnhet) {
-        return new NavEnhet(orgEnhet.getEnhetId(), orgEnhet.getEnhetNavn());
+        return new NavEnhet(Enhetnr.of(orgEnhet.getEnhetId()), orgEnhet.getEnhetNavn());
     }
 
 }
