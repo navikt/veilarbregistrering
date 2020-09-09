@@ -29,11 +29,11 @@ class Norg2GatewayImpl implements Norg2Gateway {
                 .map(rsNavKontorDtos -> Enhetnr.of(rsNavKontorDtos.getEnhetNr()));
     }
 
-    public Map<String, NavEnhet> hentAlleEnheter() {
+    public Map<Enhetnr, NavEnhet> hentAlleEnheter() {
         List<RsEnhet> rsEnhets = norg2RestClient.hentAlleEnheter();
 
         return rsEnhets.stream()
-                .map(rs -> new NavEnhet(rs.getEnhetNr(), rs.getNavn()))
+                .map(rs -> new NavEnhet(Enhetnr.of(rs.getEnhetNr()), rs.getNavn()))
                 .collect(toMap(NavEnhet::getId, navEnhet -> navEnhet));
     }
 }

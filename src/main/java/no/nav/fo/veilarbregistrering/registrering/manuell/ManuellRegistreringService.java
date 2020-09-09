@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
@@ -43,14 +44,14 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        Optional<NavEnhet> enhet = finnEnhet(registrering.getVeilederEnhetId());
+        Optional<NavEnhet> enhet = finnEnhet(Enhetnr.of(registrering.getVeilederEnhetId()));
 
         return new Veileder()
                 .setEnhet(enhet.orElse(null))
                 .setIdent(registrering.getVeilederIdent());
     }
 
-    Optional<NavEnhet> finnEnhet(String enhetId) {
+    Optional<NavEnhet> finnEnhet(Enhetnr enhetId) {
         try {
             return hentEnheterGateway.hentAlleEnheter()
                     .stream()
