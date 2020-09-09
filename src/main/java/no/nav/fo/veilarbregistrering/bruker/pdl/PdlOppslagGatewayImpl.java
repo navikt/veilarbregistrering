@@ -43,6 +43,8 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         try {
             PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(fnr);
             return PdlOppslagMapper.map(pdlIdenter);
+        } catch (BrukerIkkeFunnetException e) {
+            throw e;
         } catch (RuntimeException e) {
             throw new Feil(FeilType.UKJENT, e);
         }
