@@ -139,7 +139,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     public void skalReturnereUnderOppfolgingNaarUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
-        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isTrue();
     }
 
@@ -147,7 +147,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereAtBrukerOppfyllerBetingelseOmArbeidserfaring() {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getJobbetSeksAvTolvSisteManeder()).isTrue();
     }
 
@@ -155,7 +155,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereFalseOmIkkeUnderOppfolging() {
         mockOppfolgingMedRespons(inaktivBruker());
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isFalse();
     }
 
@@ -177,7 +177,7 @@ public class BrukerRegistreringServiceTest {
     @Test
     public void skalReturnereAlleredeUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging();
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT).isTrue();
     }
 
@@ -185,7 +185,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereReaktivering() {
         mockOppfolgingMedRespons(inaktivBruker());
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING).isTrue();
     }
 
@@ -193,7 +193,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereSykmeldtRegistrering() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerOver39uker();
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == SYKMELDT_REGISTRERING).isTrue();
     }
 
@@ -201,7 +201,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereSperret() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.SPERRET).isTrue();
     }
 
@@ -209,7 +209,7 @@ public class BrukerRegistreringServiceTest {
     public void gitt_at_geografiskTilknytning_ikke_ble_funnet_skal_null_returneres() {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus).isNotNull();
         assertThat(startRegistreringStatus.getGeografiskTilknytning()).isNull();
 
@@ -220,7 +220,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         when(personGateway.hentGeografiskTilknytning(any())).thenReturn(Optional.of(GeografiskTilknytning.of("1234")));
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus).isNotNull();
         assertThat(startRegistreringStatus.getGeografiskTilknytning()).isEqualTo("1234");
     }
@@ -230,7 +230,7 @@ public class BrukerRegistreringServiceTest {
         mockInaktivBrukerUtenReaktivering();
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         when(personGateway.hentGeografiskTilknytning(any())).thenThrow(new RuntimeException("Ikke tilgang"));
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus).isNotNull();
         assertThat(startRegistreringStatus.getGeografiskTilknytning()).isNull();
     }
@@ -239,7 +239,7 @@ public class BrukerRegistreringServiceTest {
     public void skalReturnereOrdinarRegistrering() {
         mockIkkeSykmeldtBruker();
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav());
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         assertThat(startRegistreringStatus.getRegistreringType() == RegistreringType.ORDINAER_REGISTRERING).isTrue();
     }
 
@@ -247,7 +247,7 @@ public class BrukerRegistreringServiceTest {
     public void mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
         mockSykmeldtBruker();
         mockSykmeldtBrukerUnder39uker();
-        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(FNR_OPPFYLLER_KRAV);
+        StartRegistreringStatusDto startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN);
         verify(sykeforloepMetadataClient, times(1)).hentSykmeldtInfoData(any());
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
@@ -293,8 +293,8 @@ public class BrukerRegistreringServiceTest {
     }
 
     @SneakyThrows
-    private StartRegistreringStatusDto getStartRegistreringStatus(Foedselsnummer fnr) {
-        return brukerRegistreringService.hentStartRegistreringStatus(fnr);
+    private StartRegistreringStatusDto getStartRegistreringStatus(Bruker bruker) {
+        return brukerRegistreringService.hentStartRegistreringStatus(bruker);
     }
 
     @SneakyThrows

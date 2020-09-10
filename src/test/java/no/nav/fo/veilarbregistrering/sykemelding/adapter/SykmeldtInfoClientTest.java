@@ -115,7 +115,7 @@ class SykmeldtInfoClientTest {
     public void testAtHentingAvSykeforloepMetadataGirOk() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
-        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(Foedselsnummer.of(IDENT));
+        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER);
         assertSame(startRegistreringStatus.getRegistreringType(), SYKMELDT_REGISTRERING);
     }
 

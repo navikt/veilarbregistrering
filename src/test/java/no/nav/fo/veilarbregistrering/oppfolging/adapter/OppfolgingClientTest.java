@@ -177,19 +177,19 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirInternalServerErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
     }
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
     }
 
     @Test
     public void testAtGirWebApplicationExceptionExceptionDersomIngenTilgang() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(403));
-        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(IDENT));
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
     }
 
     @Test
@@ -205,7 +205,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
-        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(IDENT));
+        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
     }
 
     @Test
@@ -215,7 +215,7 @@ class OppfolgingClientTest {
 
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(flereArbeidsforholdTilfeldigSortert());
 
-        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(IDENT));
+        assertNotNull(brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
     }
 
     private void mockUnderOppfolgingApi() {

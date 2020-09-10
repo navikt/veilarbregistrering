@@ -62,7 +62,7 @@ public class RegistreringResource {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
-        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker.getGjeldendeFoedselsnummer());
+        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker);
         rapporterRegistreringsstatus(status);
         return status;
     }

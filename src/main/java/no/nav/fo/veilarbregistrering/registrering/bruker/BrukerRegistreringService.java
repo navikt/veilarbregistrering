@@ -125,24 +125,10 @@ public class BrukerRegistreringService {
         return oppettetBrukerRegistrering;
     }
 
-    BrukersTilstand hentBrukersTilstand(Foedselsnummer fnr) {
-        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
+    public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
+        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
-        SykmeldtInfoData sykeforloepMetaData = null;
-        boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
-        if (erSykmeldtMedArbeidsgiver) {
-            sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
-        }
-
-        RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
-
-        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, registreringType);
-    }
-
-    public StartRegistreringStatusDto hentStartRegistreringStatus(Foedselsnummer fnr) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(fnr);
-
-        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(fnr);
+        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
             reportFields(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
@@ -153,7 +139,7 @@ public class BrukerRegistreringService {
         Boolean oppfyllerBetingelseOmArbeidserfaring = null;
         if (ORDINAER_REGISTRERING.equals(registreringType)) {
             oppfyllerBetingelseOmArbeidserfaring =
-                    arbeidsforholdGateway.hentArbeidsforhold(fnr)
+                    arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer())
                             .harJobbetSammenhengendeSeksAvTolvSisteManeder(now());
         }
 
@@ -161,7 +147,7 @@ public class BrukerRegistreringService {
                 brukersTilstand,
                 muligGeografiskTilknytning,
                 oppfyllerBetingelseOmArbeidserfaring,
-                fnr.alder(now()));
+                bruker.getGjeldendeFoedselsnummer().alder(now()));
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
         return startRegistreringStatus;
@@ -288,6 +274,20 @@ public class BrukerRegistreringService {
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
+    }
+
+    BrukersTilstand hentBrukersTilstand(Foedselsnummer fnr) {
+        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
+
+        SykmeldtInfoData sykeforloepMetaData = null;
+        boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
+        if (erSykmeldtMedArbeidsgiver) {
+            sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
+        }
+
+        RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
+
+        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, registreringType);
     }
 
     private boolean lagreUtenArenaOverforing() {
