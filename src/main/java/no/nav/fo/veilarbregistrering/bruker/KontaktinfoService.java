@@ -30,7 +30,6 @@ public class KontaktinfoService {
         Optional<Person> person;
         try {
             person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
-            person.ifPresent(p -> LOG.info(String.format("Fant person fra PDL: %s", p)));
         } catch (RuntimeException e) {
             LOG.error("Hent kontaktinfo fra PDL feilet", e);
             person = Optional.empty();
