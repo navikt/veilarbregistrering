@@ -17,6 +17,12 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
         landskode,
         nummer,
         prioritet
+    },
+    geografiskTilknytning {
+        gtType,
+        gtKommune,
+        gtBydel,
+        gtLand
     }
   }
 }
