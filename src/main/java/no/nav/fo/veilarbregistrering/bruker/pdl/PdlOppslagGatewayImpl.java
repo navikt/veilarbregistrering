@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map;
-import static no.nav.fo.veilarbregistrering.config.CacheConfig.*;
+import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_PERSONIDENTER;
+import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_PERSON_FOR_AKTORID;
 
 class PdlOppslagGatewayImpl implements PdlOppslagGateway {
 
@@ -61,5 +61,4 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
             throw new Feil(FeilType.UKJENT, e);
         }
     }
-
 }

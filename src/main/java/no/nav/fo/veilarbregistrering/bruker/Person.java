@@ -8,20 +8,27 @@ public class Person {
     private final Statsborgerskap statsborgerskap;
     private final Telefonnummer telefonnummer;
     private final Foedselsdato foedselsdato;
+    private final GeografiskTilknytning geografiskTilknytning;
 
     public static Person of(
             Opphold opphold,
             Statsborgerskap statsborgerskap,
             Telefonnummer telefonnummer,
-            Foedselsdato foedselsdato) {
-        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato);
+            Foedselsdato foedselsdato,
+            GeografiskTilknytning geografiskTilknytning) {
+        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato, geografiskTilknytning);
     }
 
-    private Person(Opphold opphold, Statsborgerskap statsborgerskap, Telefonnummer telefonnummer, Foedselsdato foedselsdato) {
+    private Person(Opphold opphold,
+                   Statsborgerskap statsborgerskap,
+                   Telefonnummer telefonnummer,
+                   Foedselsdato foedselsdato,
+                   GeografiskTilknytning geografiskTilknytning) {
         this.opphold = opphold;
         this.statsborgerskap = statsborgerskap;
         this.telefonnummer = telefonnummer;
         this.foedselsdato = foedselsdato;
+        this.geografiskTilknytning = geografiskTilknytning;
     }
 
     public Opphold getOpphold() {
@@ -37,6 +44,7 @@ public class Person {
         return "Person{" +
                 "opphold='" + opphold + '\'' +
                 ", statsborgerskap='" + statsborgerskap + '\'' +
+                ", geografiskTilknytning='" + geografiskTilknytning + '\'' +
                 '}';
     }
 

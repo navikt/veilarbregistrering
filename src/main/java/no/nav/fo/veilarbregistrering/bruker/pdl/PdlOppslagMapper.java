@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.*;
 
 class PdlOppslagMapper {
 
-     static Person map(PdlPerson pdlPerson) {
+    static Person map(PdlPerson pdlPerson) {
         return Person.of(
                 pdlPerson.getSisteOpphold()
                         .map(PdlOppslagMapper::map)
@@ -23,12 +23,12 @@ class PdlOppslagMapper {
                         .orElse(null),
                 pdlPerson.getSistePdlFoedsel()
                         .map(PdlOppslagMapper::map)
-                        .orElse(null));
+                        .orElse(null),
+                map(pdlPerson.getGeografiskTilknytning()));
     }
 
     private static Foedselsdato map(PdlFoedsel pdlFoedsel) {
         return Foedselsdato.of(pdlFoedsel.getFoedselsdato());
-
     }
 
     private static Opphold map(PdlPersonOpphold pdlPersonOpphold) {
@@ -65,5 +65,22 @@ class PdlOppslagMapper {
                         Gruppe.valueOf(pdlIdent.getGruppe().name())
                 ))
                 .collect(toList()));
+    }
+
+    private static GeografiskTilknytning map(PdlGeografiskTilknytning geografiskTilknytning) {
+        if (geografiskTilknytning == null) {
+            return null;
+        }
+
+        GtType gtType = geografiskTilknytning.getGtType();
+        switch (gtType) {
+            case BYDEL:
+                return GeografiskTilknytning.of(geografiskTilknytning.getGtBydel());
+            case KOMMUNE:
+                return GeografiskTilknytning.of(geografiskTilknytning.getGtKommune());
+            case UTLAND:
+                return GeografiskTilknytning.of(geografiskTilknytning.getGtLand());
+        }
+        return null;
     }
 }
