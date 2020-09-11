@@ -3,12 +3,16 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
 import static java.util.stream.Collectors.*;
 
 class PdlOppslagMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagMapper.class);
 
     static Person map(PdlPerson pdlPerson) {
         return Person.of(
@@ -72,14 +76,19 @@ class PdlOppslagMapper {
             return null;
         }
 
-        GtType gtType = geografiskTilknytning.getGtType();
-        switch (gtType) {
-            case BYDEL:
-                return GeografiskTilknytning.of(geografiskTilknytning.getGtBydel());
-            case KOMMUNE:
-                return GeografiskTilknytning.of(geografiskTilknytning.getGtKommune());
-            case UTLAND:
-                return GeografiskTilknytning.of(geografiskTilknytning.getGtLand());
+        try {
+            GtType gtType = geografiskTilknytning.getGtType();
+            switch (gtType) {
+                case BYDEL:
+                    return GeografiskTilknytning.of(geografiskTilknytning.getGtBydel());
+                case KOMMUNE:
+                    return GeografiskTilknytning.of(geografiskTilknytning.getGtKommune());
+                case UTLAND:
+                    return GeografiskTilknytning.of(geografiskTilknytning.getGtLand());
+            }
+            return null;
+        } catch (RuntimeException e) {
+            LOG.warn(String.format("Mapping av geografisk tilknytning %s fra PDL feilet", geografiskTilknytning), e);
         }
         return null;
     }
