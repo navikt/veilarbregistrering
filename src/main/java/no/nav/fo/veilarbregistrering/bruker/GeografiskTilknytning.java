@@ -13,7 +13,7 @@ import static no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning.ByMedBy
  * Geografisk tilknytning kan være 1 av 3:
  * <ul>
  *     <li>Landkode (3 bokstaver)</li>
- *     <li>Fylke (4 siffer)</li>
+ *     <li>Kommune (4 siffer)</li>
  *     <li>Bydel (6 siffer)</li>
  * </ul>
  */
@@ -64,8 +64,8 @@ public class GeografiskTilknytning implements Metric {
 
         if (utland()) {
             fieldName = "utland";
-        } else if (fylke()) {
-            fieldName = "fylke";
+        } else if (kommune()) {
+            fieldName = "kommune";
         } else if (bydelIkkeOslo()) {
             fieldName = "bydelIkkeOslo";
         } else if (bydelOslo()) {
@@ -81,7 +81,7 @@ public class GeografiskTilknytning implements Metric {
         return geografisktilknytning.length() == 3 && geografisktilknytning.matches("^[a-åA-Å]*$");
     }
 
-    private boolean fylke() {
+    private boolean kommune() {
         return geografisktilknytning.length() == 4 && geografisktilknytning.matches("^[0-9]*$");
     }
 
@@ -169,4 +169,9 @@ public class GeografiskTilknytning implements Metric {
         }
     }
 
+    enum Type {
+        BYDEL,
+        KOMMUNE,
+        UTLAND
+    }
 }
