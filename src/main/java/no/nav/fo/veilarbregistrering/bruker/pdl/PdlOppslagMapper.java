@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 import static java.util.stream.Collectors.*;
+import static no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning.ukjentBostedsadresse;
 
 class PdlOppslagMapper {
 
@@ -84,7 +85,8 @@ class PdlOppslagMapper {
                 case KOMMUNE:
                     return GeografiskTilknytning.of(geografiskTilknytning.getGtKommune());
                 case UTLAND:
-                    return GeografiskTilknytning.of(geografiskTilknytning.getGtLand());
+                    String gtLand = geografiskTilknytning.getGtLand();
+                    return gtLand != null ? GeografiskTilknytning.of(gtLand) : ukjentBostedsadresse();
             }
             return null;
         } catch (RuntimeException e) {
