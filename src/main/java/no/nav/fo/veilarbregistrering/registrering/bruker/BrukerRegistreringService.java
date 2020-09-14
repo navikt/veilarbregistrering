@@ -128,7 +128,7 @@ public class BrukerRegistreringService {
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
-        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
+        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
             reportFields(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
@@ -153,18 +153,41 @@ public class BrukerRegistreringService {
         return startRegistreringStatus;
     }
 
-    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(Foedselsnummer fnr) {
+    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(Bruker bruker) {
         Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
         try {
             long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(fnr);
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {
-            LOG.warn("Hent geografisk tilknytning feilet. Skal ikke påvirke annen bruk.", e);
+            LOG.warn("Hent geografisk tilknytning fra TPS feilet. Skal ikke påvirke annen bruk.", e);
+        }
+
+        if (hentingGtFraPdl()) {
+            try {
+                Optional<GeografiskTilknytning> finalGeografiskTilknytning = geografiskTilknytning;
+
+                Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
+                person.ifPresent(p -> {
+                    Optional<GeografiskTilknytning> geografiskTilknytningPdl = person.get().getGeografiskTilknytning();
+                    if (finalGeografiskTilknytning.equals(geografiskTilknytningPdl)) {
+                        LOG.info("Geografisk tilknytning er lik på tvers av PDL og TPS");
+                    } else {
+                        LOG.info("{} fra PDL er ulik {} fra TPS", geografiskTilknytningPdl, finalGeografiskTilknytning);
+                    }
+                });
+
+            } catch (RuntimeException e) {
+                LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e);
+            }
         }
 
         return geografiskTilknytning;
+    }
+
+    private boolean hentingGtFraPdl() {
+        return unleashService.isEnabled("veilarbregistrering.registrering.bruker.gtFraPdl");
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {
