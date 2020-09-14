@@ -2,10 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -46,6 +43,7 @@ public class BrukerRegistreringService {
     private final UnleashService unleashService;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
+    private final PdlOppslagGateway pdlOppslagGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidsforholdGateway arbeidsforholdGateway;
@@ -58,6 +56,7 @@ public class BrukerRegistreringService {
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      PersonGateway personGateway,
+                                     PdlOppslagGateway pdlOppslagGateway,
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
@@ -69,6 +68,7 @@ public class BrukerRegistreringService {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
+        this.pdlOppslagGateway = pdlOppslagGateway;
         this.unleashService = unleashService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
