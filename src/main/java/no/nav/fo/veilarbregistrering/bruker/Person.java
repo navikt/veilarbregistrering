@@ -39,6 +39,18 @@ public class Person {
         return statsborgerskap;
     }
 
+    public Optional<Telefonnummer> getTelefonnummer() {
+        return Optional.ofNullable(telefonnummer);
+    }
+
+    public Foedselsdato getFoedselsdato() {
+        return foedselsdato;
+    }
+
+    public Optional<GeografiskTilknytning> getGeografiskTilknytning() {
+        return Optional.ofNullable(geografiskTilknytning);
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -48,11 +60,4 @@ public class Person {
                 '}';
     }
 
-    public Optional<Telefonnummer> getTelefonnummer() {
-        return Optional.ofNullable(telefonnummer);
-    }
-
-    public Foedselsdato getFoedselsdato() {
-        return foedselsdato;
-    }
 }
