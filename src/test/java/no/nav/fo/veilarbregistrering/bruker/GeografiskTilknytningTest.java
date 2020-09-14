@@ -25,7 +25,7 @@ public class GeografiskTilknytningTest {
 
     @Test
     public void fieldName_skal_bruke_fylke_hvis_geografiskTilknytning_består_av_fire_siffer() {
-        assertThat(GeografiskTilknytning.of("1234").value()).isEqualTo("fylke");
+        assertThat(GeografiskTilknytning.of("1234").value()).isEqualTo("kommune");
     }
 
     @Test
