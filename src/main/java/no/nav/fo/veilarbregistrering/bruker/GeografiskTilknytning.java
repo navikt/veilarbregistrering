@@ -168,10 +168,4 @@ public class GeografiskTilknytning implements Metric {
                     .anyMatch(bydelOslo -> bydelOslo.kode.equals(geografisktilknytning));
         }
     }
-
-    enum Type {
-        BYDEL,
-        KOMMUNE,
-        UTLAND
-    }
 }
