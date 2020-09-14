@@ -3,10 +3,7 @@ package no.nav.veilarbregistrering.integrasjonstest;
 import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
@@ -143,6 +140,9 @@ class BrukerRegistreringServiceIntegrationTest {
         public PersonGateway personGateway() { return mock(PersonGateway.class); }
 
         @Bean
+        public PdlOppslagGateway pdlOppslagGateway() { return mock(PdlOppslagGateway.class); }
+
+        @Bean
         public SykmeldtInfoClient sykeforloepMetadataClient() {
             return mock(SykmeldtInfoClient.class);
         }
@@ -168,6 +168,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ProfileringRepository profileringRepository,
                 OppfolgingClient oppfolgingClient,
                 PersonGateway personGateway,
+                PdlOppslagGateway pdlOppslagGateway,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
@@ -182,6 +183,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     profileringRepository,
                     new OppfolgingGatewayImpl(oppfolgingClient),
                     personGateway,
+                    pdlOppslagGateway,
                     new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
                     manuellRegistreringService,

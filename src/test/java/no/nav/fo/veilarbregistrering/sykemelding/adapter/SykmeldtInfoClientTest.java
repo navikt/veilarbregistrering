@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 import com.google.common.net.MediaType;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -57,6 +54,7 @@ class SykmeldtInfoClientTest {
         UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildOppfolgingClient();
         PersonGateway personGateway = mock(PersonGateway.class);
+        PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -75,6 +73,7 @@ class SykmeldtInfoClientTest {
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
                         personGateway,
+                        pdlOppslagGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

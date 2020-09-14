@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import com.google.common.net.MediaType;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -66,6 +63,7 @@ class OppfolgingClientTest {
         UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildClient();
         PersonGateway personGateway = mock(PersonGateway.class);
+        PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -84,6 +82,7 @@ class OppfolgingClientTest {
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
                         personGateway,
+                        pdlOppslagGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,
