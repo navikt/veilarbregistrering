@@ -2,7 +2,6 @@ namespace: q1
 app_environment_name: q1
 feature_endpoint_url: https://feature-fss-q1.nais.preprod.local/feature
 aareg_url: https://modapp-q1.adeo.no/aareg-services/ArbeidsforholdService/v3
-aktoer_url: https://app-q1.adeo.no/aktoerregister/ws/Aktoer/v2
 openam_discovery_url: https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration
 veilarblogin_openam_clientid: veilarblogin-q1
 veilarblogin_openam_refresh_url: https://app-q1.adeo.no/veilarblogin/api/openam-refresh
