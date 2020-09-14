@@ -25,6 +25,10 @@ public class GeografiskTilknytning implements Metric {
         return new GeografiskTilknytning(geografisktilknytning);
     }
 
+    public static GeografiskTilknytning ukjentBostedsadresse() {
+        return new GeografiskTilknytning("NOR");
+    }
+
     private GeografiskTilknytning(String geografisktilknytning) {
         Objects.requireNonNull(geografisktilknytning,
                 "Geografisk tilknytning kan ikke være null. Bruk <code>ofNullable</code> hvis du er usikker.");
