@@ -24,6 +24,10 @@ spec:
     value: {{ veilarblogin_openam_clientid }}
   - name: VEILARBLOGIN_OPENAM_REFRESH_URL
     value: {{ veilarblogin_openam_refresh_url }}
+  - name: AAD_DISCOVERY_URL
+    value: {{ aad_discovery_url }}
+  - name: VEILARBLOGIN_AAD_CLIENT_ID
+    value: {{ veilarblogin_aad_client_id }}
   - name: SECURITYTOKENSERVICE_URL
     value: {{ securitytokenservice_url }}
   - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
