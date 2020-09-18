@@ -88,6 +88,7 @@ public class ApplicationConfig implements ApiApplication {
                 .addOidcAuthenticator(createOpenAmAuthenticatorConfig())
                 .addOidcAuthenticator(createAzureAdB2CConfig())
                 .addOidcAuthenticator(createSystemUserAuthenticatorConfig())
+                .addOidcAuthenticator(createVeilarbloginAADConfig())
                 .sts();
     }
 
@@ -102,6 +103,17 @@ public class ApplicationConfig implements ApiApplication {
                 .withRefreshUrl(refreshUrl)
                 .withRefreshTokenCookieName(Constants.REFRESH_TOKEN_COOKIE_NAME)
                 .withIdTokenCookieName(Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME) //FIXME: Verifiser riktig bruk
+                .withIdentType(IdentType.InternBruker);
+    }
+
+    private OidcAuthenticatorConfig createVeilarbloginAADConfig() {
+        String discoveryUrl = getRequiredProperty("AAD_DISCOVERY_URL");
+        String clientId = getRequiredProperty("VEILARBLOGIN_AAD_CLIENT_ID");
+
+        return new OidcAuthenticatorConfig()
+                .withDiscoveryUrl(discoveryUrl)
+                .withClientId(clientId)
+                .withIdTokenCookieName(Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME)
                 .withIdentType(IdentType.InternBruker);
     }
 

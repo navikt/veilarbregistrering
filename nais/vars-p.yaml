@@ -5,6 +5,8 @@ aareg_url: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
 openam_discovery_url: https://isso.adeo.no/isso/oauth2/.well-known/openid-configuration
 veilarblogin_openam_clientid: veilarblogin-p
 veilarblogin_openam_refresh_url: https://app.adeo.no/veilarblogin/api/openam-refresh
+aad_discovery_url: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
+veilarblogin_aad_client_id: 109c7064-47c9-4e34-b735-8cdc0d383cc1
 securitytokenservice_url: https://sts.adeo.no/SecurityTokenServiceProvider/
 securitytokenservice_discovery_url: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
 securitytokenservice_clientid: srvdp-arbeidssoker-o
