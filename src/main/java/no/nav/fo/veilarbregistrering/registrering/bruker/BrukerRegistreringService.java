@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.metrics.Metrics;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -28,6 +29,8 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EV
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.GeografikTilknytningAvstemning.LIK;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.GeografikTilknytningAvstemning.ULIK;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
@@ -171,11 +174,9 @@ public class BrukerRegistreringService {
                 Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
                 person.ifPresent(p -> {
                     Optional<GeografiskTilknytning> geografiskTilknytningPdl = person.get().getGeografiskTilknytning();
-                    if (finalGeografiskTilknytning.equals(geografiskTilknytningPdl)) {
-                        LOG.info("Geografisk tilknytning er lik på tvers av PDL og TPS");
-                    } else {
-                        LOG.info("{} fra PDL er ulik {} fra TPS", geografiskTilknytningPdl, finalGeografiskTilknytning);
-                    }
+                    reportTags(
+                            Metrics.Event.GEOGRAFISK_TILKNYTNING_AVSTEMNING,
+                            finalGeografiskTilknytning.equals(geografiskTilknytningPdl) ? LIK : ULIK);
                 });
 
             } catch (RuntimeException e) {

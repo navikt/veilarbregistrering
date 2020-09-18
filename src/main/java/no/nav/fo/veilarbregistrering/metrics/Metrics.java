@@ -65,7 +65,8 @@ public class Metrics {
         MAKSDATO_EVENT("registrering.maksdato"),
         OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse"),
         HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde"),
-        HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar");
+        HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar"),
+        GEOGRAFISK_TILKNYTNING_AVSTEMNING("arbeid.registrering.gt.avstemming");
 
         private final String name;
 
