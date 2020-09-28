@@ -163,11 +163,13 @@ public class ServiceBeansConfig {
     ManuellRegistreringService manuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
             HentEnheterGateway hentEnheterGateway,
-            Norg2Gateway norg2Gateway) {
+            Norg2Gateway norg2Gateway,
+            UnleashService unleashService) {
         return new ManuellRegistreringService(
                 manuellRegistreringRepository,
                 hentEnheterGateway,
-                norg2Gateway);
+                norg2Gateway,
+                unleashService);
     }
 
     @Bean

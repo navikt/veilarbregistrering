@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.HentEnheterGatewayImpl;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +25,9 @@ class ManuellRegistreringServiceTest {
     public void setup(){
         ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
         HentEnheterGateway hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
-        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway, null);
+        UnleashService unleashService = mock(UnleashService.class);
+        when(unleashService.isEnabled(any())).thenReturn(true);
+        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway, null, unleashService);
 
         List<NavEnhet> enheter = Arrays.asList(
                 new NavEnhet(Enhetnr.of("1234"), "TEST1"),
