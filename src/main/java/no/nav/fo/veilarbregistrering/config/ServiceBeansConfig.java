@@ -162,8 +162,12 @@ public class ServiceBeansConfig {
     @Bean
     ManuellRegistreringService manuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
-            HentEnheterGateway hentEnheterGateway) {
-        return new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
+            HentEnheterGateway hentEnheterGateway,
+            Norg2Gateway norg2Gateway) {
+        return new ManuellRegistreringService(
+                manuellRegistreringRepository,
+                hentEnheterGateway,
+                norg2Gateway);
     }
 
     @Bean

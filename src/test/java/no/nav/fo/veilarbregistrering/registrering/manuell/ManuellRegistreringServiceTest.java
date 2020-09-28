@@ -23,7 +23,7 @@ class ManuellRegistreringServiceTest {
     public void setup(){
         ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
         HentEnheterGateway hentEnheterGateway = mock(HentEnheterGatewayImpl.class);
-        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
+        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway, null);
 
         List<NavEnhet> enheter = Arrays.asList(
                 new NavEnhet(Enhetnr.of("1234"), "TEST1"),

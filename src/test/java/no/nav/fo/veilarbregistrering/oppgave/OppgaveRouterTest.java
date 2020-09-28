@@ -8,12 +8,14 @@ import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
+import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
@@ -30,7 +32,7 @@ public class OppgaveRouterTest {
     public void ingen_arbeidsforhold_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> FlereArbeidsforhold.of(Collections.emptyList());
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -44,7 +46,7 @@ public class OppgaveRouterTest {
     public void ingen_enhet_for_orgnummer_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -59,13 +61,13 @@ public class OppgaveRouterTest {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
 
         Forretningsadresse forretningsadresse = new Forretningsadresse(
-                Kommunenummer.of("1241"),
+                Kommunenummer.of("1240"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
 
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -86,7 +88,7 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("232"));
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -100,7 +102,7 @@ public class OppgaveRouterTest {
     public void geografisk_tilknytning_med_by_med_bydel_skal_gi_intern_brukerstotte() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("0301"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -114,7 +116,7 @@ public class OppgaveRouterTest {
     public void geografisk_tilknytning_med_unntak_av_landkode_skal_gi_empty_enhetsnummer() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.empty();
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("030106"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -135,7 +137,7 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("232"));
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -156,7 +158,7 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
                 Arrays.asList(forretningsadresse), Collections.emptyList()));
 
-        Norg2Gateway norg2Gateway = kommunenummer -> Optional.of(Enhetnr.of("1103"));
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
@@ -164,5 +166,25 @@ public class OppgaveRouterTest {
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
+    }
+
+    class StubNorg2Gateway implements Norg2Gateway {
+        @Override
+        public Optional<Enhetnr> hentEnhetFor(Kommunenummer kommunenummer) {
+            if (Kommunenummer.of("1241").equals(kommunenummer)) {
+                return Optional.of(Enhetnr.of("232"));
+            }
+
+
+            if (Kommunenummer.of(STAVANGER).equals(kommunenummer)) {
+                return Optional.of(Enhetnr.of("1103"));
+            }
+            return Optional.empty();
+        }
+
+        @Override
+        public Map<Enhetnr, NavEnhet> hentAlleEnheter() {
+            return null;
+        }
     }
 }
