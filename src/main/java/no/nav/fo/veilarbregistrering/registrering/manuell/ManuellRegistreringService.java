@@ -61,7 +61,7 @@ public class ManuellRegistreringService {
         if (norg2ViaRest()) {
             try {
                 Optional<NavEnhet> navEnhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
-                LOG.info(String.format("Lik nav-enhet: %s, SOAP: %s, Rest: %s", enhet.equals(navEnhet) ? "Ja" : "Nei", enhet, navEnhet));
+                LOG.info(String.format("Lik NAV-enhet: %s", enhet.equals(navEnhet) ? "Ja" : "Nei"));
             } catch (RuntimeException e) {
                 LOG.error("Sammenligning av NavEnhet feilet. Har ingen betydning", e);
             }
