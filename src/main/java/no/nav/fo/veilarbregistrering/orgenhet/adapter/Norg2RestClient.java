@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +56,7 @@ class Norg2RestClient {
                         .post(json(rsArbeidsfordelingCriteriaDto));
     }
 
-    public List<RsEnhet> hentAlleEnheter() {
+    List<RsEnhet> hentAlleEnheter() {
         return RestUtils.createClient()
                 .target(baseUrl + "/v1/enhet").queryParam("oppgavebehandlerFilter=UFILTRERT")
                 .request(MediaType.APPLICATION_JSON)
