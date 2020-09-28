@@ -1,9 +1,0 @@
-  [
-    {formidlingsgruppe={kode='ARBS'},periode={fra=2020-03-26,til=2020-06-29}},
-    {formidlingsgruppe={kode='ARBS'},periode={fra=2020-07-27, til=null}}
-  ]
-  [
-    {formidlingsgruppe={kode='ARBS'},periode={fra=2020-03-26,til=2020-06-29}},
-    {formidlingsgruppe={kode='ARBS'},periode={fra=2020-07-15,til=2020-07-14}},
-    {formidlingsgruppe={kode='ARBS'},periode={fra=2020-07-27,til=null}}
-  ]
