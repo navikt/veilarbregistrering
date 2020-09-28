@@ -29,6 +29,8 @@ class Norg2GatewayImpl implements Norg2Gateway {
                 .map(rsNavKontorDtos -> Enhetnr.of(rsNavKontorDtos.getEnhetNr()));
     }
 
+    @Override
+    //TODO: Caching
     public Map<Enhetnr, NavEnhet> hentAlleEnheter() {
         List<RsEnhet> rsEnhets = norg2RestClient.hentAlleEnheter();
 
