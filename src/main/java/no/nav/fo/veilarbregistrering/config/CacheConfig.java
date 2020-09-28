@@ -50,6 +50,7 @@ public class CacheConfig {
         config.addCache(ABAC_CACHE);
         config.addCache(HENT_ARBEIDSFORHOLD_CACHE);
         config.addCache(HENT_ALLE_ENHETER_CACHE);
+        config.addCache(HENT_ALLE_ENHETER_V2_CACHE);
         config.addCache(HENT_PERSON_FOR_AKTORID_CACHE);
         config.addCache(HENT_PERSONIDENTER_CACHE);
         return new EhCacheCacheManager(net.sf.ehcache.CacheManager.newInstance(config));
