@@ -4,12 +4,14 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
+import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ALLE_ENHETER_V2;
 
 class Norg2GatewayImpl implements Norg2Gateway {
 
@@ -30,7 +32,7 @@ class Norg2GatewayImpl implements Norg2Gateway {
     }
 
     @Override
-    //TODO: Caching
+    @Cacheable(HENT_ALLE_ENHETER_V2)
     public Map<Enhetnr, NavEnhet> hentAlleEnheter() {
         List<RsEnhet> rsEnhets = norg2RestClient.hentAlleEnheter();
 
