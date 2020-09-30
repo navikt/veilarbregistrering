@@ -24,6 +24,7 @@ kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
 arena_ords_api: https://arena-ords-q1.nais.preprod.local/arena/api
 arena_ords_token_provider: https://arena-ords-q1.nais.preprod.local/arena/api/oauth/token
 ingresses:
+  - https://veilarbregistrering-q1.dev.adeo.no
   - https://veilarbregistrering-q1.nais.preprod.local
   - https://app-q1.adeo.no/veilarbregistrering
 oracleuser_path: /oracle/data/dev/creds/veilarbregistrering_q1-user
