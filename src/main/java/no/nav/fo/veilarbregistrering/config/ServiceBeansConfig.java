@@ -21,7 +21,6 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
-import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
@@ -162,14 +161,10 @@ public class ServiceBeansConfig {
     @Bean
     ManuellRegistreringService manuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
-            HentEnheterGateway hentEnheterGateway,
-            Norg2Gateway norg2Gateway,
-            UnleashService unleashService) {
+            Norg2Gateway norg2Gateway) {
         return new ManuellRegistreringService(
                 manuellRegistreringRepository,
-                hentEnheterGateway,
-                norg2Gateway,
-                unleashService);
+                norg2Gateway);
     }
 
     @Bean

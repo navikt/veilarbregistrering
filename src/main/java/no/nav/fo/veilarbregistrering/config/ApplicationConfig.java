@@ -21,7 +21,6 @@ import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OppgaveForAvvistRegistreringSchedulerConfig;
@@ -47,7 +46,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         PepConfig.class,
         OverforTilArenaSchedulerConfig.class,
         OppgaveForAvvistRegistreringSchedulerConfig.class,
-        OrganisasjonEnhetV2Config.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
