@@ -74,7 +74,7 @@ class AaregRestClient {
         }
     }
 
-    private String utforRequest(Foedselsnummer fnr) {
+    protected String utforRequest(Foedselsnummer fnr) {
         String token = this.systemUserTokenProvider.getSystemUserAccessToken();
         return RestUtils.createClient()
                 .target(baseUrl + "/v1/arbeidstaker/arbeidsforhold")
@@ -87,7 +87,7 @@ class AaregRestClient {
                 .get(String.class);
     }
 
-    protected static List<ArbeidsforholdDto> parse(String json) {
+    private static List<ArbeidsforholdDto> parse(String json) {
         return GSON.fromJson(json, new TypeToken<List<ArbeidsforholdDto>>(){}.getType());
     }
 }
