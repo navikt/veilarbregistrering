@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -10,10 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AaregRestClientTest {
 
+    private AaregRestClient aaregRestClient = new StubAaregRestClient();
+
     @Test
     public void skal_parse_formidlingshistorikkResponse() {
-        String json = FileToJson.toJson("/arbeidsforhold/arbeidsforhold.json");
-        List<ArbeidsforholdDto> arbeidsforholdDtos = AaregRestClient.parse(json);
+        List<ArbeidsforholdDto> arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(Foedselsnummer.of("12345678910"));
 
         assertThat(arbeidsforholdDtos).hasSize(1);
 
@@ -36,5 +38,17 @@ public class AaregRestClientTest {
         arbeidsforholdDto.setArbeidsavtaler(Arrays.asList(arbeidsavtaleDto));
 
         assertThat(arbeidsforholdDtos).containsOnly(arbeidsforholdDto);
+    }
+
+    class StubAaregRestClient extends AaregRestClient {
+
+        StubAaregRestClient() {
+            super(null, null);
+        }
+
+        @Override
+        protected String utforRequest(Foedselsnummer fnr) {
+            return FileToJson.toJson("/arbeidsforhold/arbeidsforhold.json");
+        }
     }
 }
