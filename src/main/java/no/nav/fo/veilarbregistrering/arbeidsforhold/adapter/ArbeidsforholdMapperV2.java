@@ -29,7 +29,7 @@ class ArbeidsforholdMapperV2 {
         return ofNullable(ansettelsesPeriode)
                 .map(AnsettelsesperiodeDto::getPeriode)
                 .map(PeriodeDto::getFom)
-                .map(ArbeidsforholdMapperV2::xmlGregorianCalendarToLocalDate)
+                .map(ArbeidsforholdMapperV2::stringToLocalDate)
                 .orElse(null);
     }
 
@@ -37,10 +37,10 @@ class ArbeidsforholdMapperV2 {
         return ofNullable(periode)
                 .map(AnsettelsesperiodeDto::getPeriode)
                 .map(PeriodeDto::getTom)
-                .map(ArbeidsforholdMapperV2::xmlGregorianCalendarToLocalDate).orElse(null);
+                .map(ArbeidsforholdMapperV2::stringToLocalDate).orElse(null);
     }
 
-    private static LocalDate xmlGregorianCalendarToLocalDate(String dato) {
+    private static LocalDate stringToLocalDate(String dato) {
         return ofNullable(dato)
                 .map(d -> LocalDate.parse(dato))
                 .orElse(null);
