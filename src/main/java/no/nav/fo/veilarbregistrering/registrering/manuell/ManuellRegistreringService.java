@@ -56,15 +56,13 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        Optional<NavEnhet> enhet = finnEnhet(Enhetnr.of(registrering.getVeilederEnhetId()));
-
+        Optional<NavEnhet> enhet;
         if (norg2ViaRest()) {
-            try {
-                Optional<NavEnhet> navEnhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
-                LOG.info(String.format("Lik NAV-enhet: %s", enhet.equals(navEnhet) ? "Ja" : "Nei"));
-            } catch (RuntimeException e) {
-                LOG.error("Sammenligning av NavEnhet feilet. Har ingen betydning", e);
-            }
+            LOG.info("Henter NavEnhet via Rest");
+            enhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
+        } else {
+            LOG.info("Henter NavEnhet via SOAP");
+            enhet = finnEnhet(Enhetnr.of(registrering.getVeilederEnhetId()));
         }
 
         return new Veileder()
