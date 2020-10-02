@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.manuell;
 
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
-import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,19 +15,13 @@ public class ManuellRegistreringService {
     private static final Logger LOG = LoggerFactory.getLogger(ManuellRegistreringService.class);
 
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final HentEnheterGateway hentEnheterGateway;
     private final Norg2Gateway norg2Gateway;
-    private final UnleashService unleashService;
 
     public ManuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
-            HentEnheterGateway hentEnheterGateway,
-            Norg2Gateway norg2Gateway,
-            UnleashService unleashService) {
+            Norg2Gateway norg2Gateway) {
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.hentEnheterGateway = hentEnheterGateway;
         this.norg2Gateway = norg2Gateway;
-        this.unleashService = unleashService;
     }
 
     public void lagreManuellRegistrering(
@@ -47,8 +39,7 @@ public class ManuellRegistreringService {
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
     }
 
-    public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType){
-
+    public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType) {
         ManuellRegistrering registrering = manuellRegistreringRepository
                 .hentManuellRegistrering(registreringId, brukerRegistreringType);
 
@@ -56,35 +47,11 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        Optional<NavEnhet> enhet;
-        if (norg2ViaRest()) {
-            LOG.info("Henter NavEnhet via Rest");
-            enhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
-        } else {
-            LOG.info("Henter NavEnhet via SOAP");
-            enhet = finnEnhet(Enhetnr.of(registrering.getVeilederEnhetId()));
-        }
+        Optional<NavEnhet> enhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
 
         return new Veileder()
                 .setEnhet(enhet.orElse(null))
                 .setIdent(registrering.getVeilederIdent());
-    }
-
-    private boolean norg2ViaRest() {
-        return unleashService.isEnabled("veilarbregistrering.registrering.norg2viaRest");
-    }
-
-    Optional<NavEnhet> finnEnhet(Enhetnr enhetId) {
-        try {
-            return hentEnheterGateway.hentAlleEnheter()
-                    .stream()
-                    .filter((enhet) -> enhet.getId().equals(enhetId))
-                    .findFirst();
-
-        } catch (Exception e) {
-            LOG.error("Feil ved henting av NAV-enheter fra Organisasjonsenhet-tjenesten.", e);
-            return Optional.empty();
-        }
     }
 
     Optional<NavEnhet> finnEnhetViaRest(Enhetnr enhetId) {
