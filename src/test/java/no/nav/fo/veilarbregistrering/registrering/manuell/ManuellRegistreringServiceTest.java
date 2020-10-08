@@ -34,13 +34,13 @@ class ManuellRegistreringServiceTest {
     }
     @Test
     public void skalFinneRiktigEnhet(){
-        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhetViaRest(Enhetnr.of("1234"));
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet(Enhetnr.of("1234"));
         assertThat(enhet).hasValue(new NavEnhet(Enhetnr.of("1234"), "TEST1"));
     }
 
     @Test
     public void skalReturnereEmptyHvisIngenEnhetErFunnet(){
-        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhetViaRest(Enhetnr.of("2345"));
+        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet(Enhetnr.of("2345"));
         assertThat(enhet).isEmpty();
     }
 }
