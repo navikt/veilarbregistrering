@@ -47,14 +47,14 @@ public class ManuellRegistreringService {
             return null;
         }
 
-        Optional<NavEnhet> enhet = finnEnhetViaRest(Enhetnr.of(registrering.getVeilederEnhetId()));
+        Optional<NavEnhet> enhet = finnEnhet(Enhetnr.of(registrering.getVeilederEnhetId()));
 
         return new Veileder()
                 .setEnhet(enhet.orElse(null))
                 .setIdent(registrering.getVeilederIdent());
     }
 
-    Optional<NavEnhet> finnEnhetViaRest(Enhetnr enhetId) {
+    Optional<NavEnhet> finnEnhet(Enhetnr enhetId) {
         try {
             Map<Enhetnr, NavEnhet> enhetnrNavEnhetMap = norg2Gateway.hentAlleEnheter();
 
