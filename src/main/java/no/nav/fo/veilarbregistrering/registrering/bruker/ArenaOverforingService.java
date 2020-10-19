@@ -76,9 +76,7 @@ public class ArenaOverforingService {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                bruker.getAktorId(),
-                ordinaerBrukerRegistrering.getBrukersSituasjon(),
-                ordinaerBrukerRegistrering.getOpprettetDato());
+                new ArbeidssokerRegistrertInternalEvent(bruker.getAktorId(), ordinaerBrukerRegistrering));
     }
 
     Status overfoerRegistreringTilArena(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {

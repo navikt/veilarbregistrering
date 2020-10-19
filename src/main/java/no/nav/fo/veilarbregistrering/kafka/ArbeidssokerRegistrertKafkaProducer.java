@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 import static no.nav.log.MDCConstants.MDC_CALL_ID;
@@ -31,13 +29,11 @@ class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProdu
 
     @Override
     public void publiserArbeidssokerRegistrert(
-            AktorId aktorId,
-            DinSituasjonSvar brukersSituasjon,
-            LocalDateTime opprettetDato) {
+            ArbeidssokerRegistrertInternalEvent arbeidssokerRegistrertInternalEvent) {
 
         try {
-            ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(aktorId, brukersSituasjon, opprettetDato);
-            ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerRegistrertEvent);
+            ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(arbeidssokerRegistrertInternalEvent);
+            ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, arbeidssokerRegistrertInternalEvent.getAktorId().asString(), arbeidssokerRegistrertEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {

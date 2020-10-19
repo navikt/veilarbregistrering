@@ -201,7 +201,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         ArbeidssokerRegistrertProducer meldingsSender() {
-            return (aktorId, brukersSituasjon, opprettetDato) -> {
+            return (event) -> {
                 //noop
             };
         }
