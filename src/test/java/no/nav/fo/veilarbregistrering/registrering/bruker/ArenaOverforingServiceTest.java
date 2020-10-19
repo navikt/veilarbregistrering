@@ -26,7 +26,7 @@ public class ArenaOverforingServiceTest {
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         oppfolgingClient = mock(OppfolgingGateway.class);
         // uten innhold
-        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
             // uten innhold
         };
         AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);

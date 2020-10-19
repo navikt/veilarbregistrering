@@ -70,7 +70,7 @@ class OppfolgingClientTest {
         SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         startRegistreringUtils = mock(StartRegistreringUtils.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
-        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         };
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         };

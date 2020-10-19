@@ -61,7 +61,7 @@ class SykmeldtInfoClientTest {
         sykeforloepMetadataClient = buildSykeForloepClient();
         StartRegistreringUtils startRegistreringUtils = mock(StartRegistreringUtils.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
-        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (aktorId, brukersSituasjon, opprettetDato) -> {
+        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         }; //Noop, vi trenger ikke kafka
         ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
         }; //Noop, vi trenger ikke kafka
