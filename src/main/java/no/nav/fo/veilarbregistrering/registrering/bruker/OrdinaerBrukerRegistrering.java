@@ -49,6 +49,4 @@ public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
     public UtdanningGodkjentSvar getUtdanningGodkjentSvar() {
         return besvarelse != null ? besvarelse.getUtdanningGodkjent() : null;
     }
-
-
 }
