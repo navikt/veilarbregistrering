@@ -7,12 +7,11 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
@@ -126,4 +125,27 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         assertThat(bruker.getAktorId()).isEqualTo(BRUKER_1.getAktorId());
     }
 
+    @Test
+    public void findRegistreringByPage_skal_returnere_eldste_registrering_pa_bakgrunn_av_id() {
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
+
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+
+        assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
+    }
+
+    @Test
+    public void findRegistreringByPage_skal_paging_for_a_levere_batcher_med_rader() {
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2);
+        brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+
+        assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
+    }
 }
