@@ -82,6 +82,19 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    PubliseringAvHistorikkTask publiseringAvHistorikkTask(
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            UnleashService unleashService
+    ) {
+        return new PubliseringAvHistorikkTask(
+                brukerRegistreringRepository,
+                arbeidssokerRegistrertProducer,
+                unleashService
+        );
+    }
+
+    @Bean
     RegistreringResource registreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
