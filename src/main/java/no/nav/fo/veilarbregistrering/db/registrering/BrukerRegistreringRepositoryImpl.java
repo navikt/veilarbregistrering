@@ -202,8 +202,6 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         List<ArbeidssokerRegistrertEventDto> dto = db.query(
                 querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(
-                        rowNum,
-                        rs.getLong("BRUKER_REGISTRERING_ID"),
                         AktorId.of(rs.getString("AKTOR_ID")),
                         rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
                         rs.getString(UTDANNING_GODKJENT_NORGE),

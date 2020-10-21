@@ -9,8 +9,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import java.time.LocalDateTime;
 
 public class ArbeidssokerRegistrertEventDto {
-    private final int rowNum;
-    private final long brukerRegistreringId;
     private final AktorId aktorId;
     private final String begrunnelseForRegistrering;
     private final String utdanningGodkjent;
@@ -18,15 +16,11 @@ public class ArbeidssokerRegistrertEventDto {
     private final LocalDateTime opprettetDato;
 
     public ArbeidssokerRegistrertEventDto(
-            int rowNum,
-            long brukerRegistreringId,
             AktorId aktorId,
             String begrunnelseForRegistrering,
             String utdanningGodkjent,
             String utdanningBestatt,
             LocalDateTime opprettetDato) {
-        this.rowNum = rowNum;
-        this.brukerRegistreringId = brukerRegistreringId;
         this.aktorId = aktorId;
         this.begrunnelseForRegistrering = begrunnelseForRegistrering;
         this.utdanningGodkjent = utdanningGodkjent;
