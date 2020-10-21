@@ -93,7 +93,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to Prod FSS
-    needs: deploy-q0
+    needs: deploy-q1
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
