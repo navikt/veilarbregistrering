@@ -21,5 +21,5 @@ public interface BrukerRegistreringRepository {
 
     Bruker hentBrukerTilknyttet(long brukerRegistreringId);
 
-    Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable);
+    Page<ArbeidssokerRegistrertInternalEvent> findRegistreringByPage(Pageable pageable);
 }

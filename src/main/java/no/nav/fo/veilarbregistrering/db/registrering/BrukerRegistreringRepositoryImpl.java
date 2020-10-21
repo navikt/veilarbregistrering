@@ -2,8 +2,7 @@ package no.nav.fo.veilarbregistrering.db.registrering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -188,7 +187,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
     }
 
     @Override
-    public Page<ArbeidssokerRegistrertEventDto> findRegistreringByPage(Pageable pageable) {
+    public Page<ArbeidssokerRegistrertInternalEvent> findRegistreringByPage(Pageable pageable) {
         String rowCountSql = "SELECT count(1) AS row_count " +
                 "FROM BRUKER_REGISTRERING";
 
@@ -200,12 +199,20 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 "OFFSET " + pageable.getOffset() + " ROWS " +
                 "FETCH NEXT " + pageable.getPageSize() + " ROWS ONLY";
 
-        List<ArbeidssokerRegistrertEventDto> dto = db.query(
-                querySql, (rs, rowNum) -> new ArbeidssokerRegistrertEventDto(
+        List<ArbeidssokerRegistrertInternalEvent> dto = db.query(
+                querySql, (rs, rowNum) -> new ArbeidssokerRegistrertInternalEvent(
                         AktorId.of(rs.getString("AKTOR_ID")),
-                        rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
-                        rs.getString(UTDANNING_GODKJENT_NORGE),
-                        rs.getString(UTDANNING_BESTATT),
+                        new Besvarelse()
+                                .setDinSituasjon(ofNullable(rs.getString("BEGRUNNELSE_FOR_REGISTRERING"))
+                                        .map(t -> DinSituasjonSvar.valueOf(t))
+                                        .orElse(null))
+                                .setUtdanning(null) //TODO: Finner ikke denne i databasen
+                                .setUtdanningGodkjent(ofNullable(rs.getString(UTDANNING_GODKJENT_NORGE))
+                                        .map(t -> UtdanningGodkjentSvar.valueOf(t))
+                                        .orElse(null))
+                                .setUtdanningBestatt(ofNullable(rs.getString(UTDANNING_BESTATT))
+                                        .map(t -> UtdanningBestattSvar.valueOf(t))
+                                        .orElse(null)),
                         rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
                 ));
 

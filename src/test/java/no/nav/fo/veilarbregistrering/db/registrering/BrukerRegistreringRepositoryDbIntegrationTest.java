@@ -132,7 +132,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
 
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+        Page<ArbeidssokerRegistrertInternalEvent> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
 
         assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
     }
@@ -144,7 +144,7 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
         brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_3);
 
         PageRequest pageRequest = PageRequest.of(1, 2);
-        Page<ArbeidssokerRegistrertEventDto> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
+        Page<ArbeidssokerRegistrertInternalEvent> registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest);
 
         assertThat(registreringByPage.getTotalPages()).isEqualTo(2);
     }
