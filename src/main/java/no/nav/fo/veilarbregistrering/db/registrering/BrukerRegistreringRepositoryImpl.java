@@ -194,7 +194,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
         int total = db.queryForObject(rowCountSql, Integer.class);
 
-        String querySql = "SELECT BRUKER_REGISTRERING_ID, AKTOR_ID, BEGRUNNELSE_FOR_REGISTRERING, OPPRETTET_DATO " +
+        String querySql = "SELECT * " +
                 "FROM BRUKER_REGISTRERING " +
                 "ORDER BY BRUKER_REGISTRERING_ID ASC " +
                 "OFFSET " + pageable.getOffset() + " ROWS " +
@@ -206,6 +206,8 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                         rs.getLong("BRUKER_REGISTRERING_ID"),
                         AktorId.of(rs.getString("AKTOR_ID")),
                         rs.getString("BEGRUNNELSE_FOR_REGISTRERING"),
+                        rs.getString(UTDANNING_GODKJENT_NORGE),
+                        rs.getString(UTDANNING_BESTATT),
                         rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
                 ));
 

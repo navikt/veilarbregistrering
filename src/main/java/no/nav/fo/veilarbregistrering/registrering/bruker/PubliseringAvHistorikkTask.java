@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.common.leaderelection.LeaderElection;
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +68,10 @@ public class PubliseringAvHistorikkTask implements Runnable {
 
     private void publiserPaKafka(ArbeidssokerRegistrertEventDto dto) {
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                dto.getAktorId(),
-                DinSituasjonSvar.valueOf(dto.getBegrunnelseForRegistrering()),
-                dto.getOpprettetDato());
+                new ArbeidssokerRegistrertInternalEvent(
+                        dto.getAktorId(),
+                        dto.getBesvarelse(),
+                        dto.getOpprettetDato()));
     }
 
     private boolean sjekkFeatureErPa () {
