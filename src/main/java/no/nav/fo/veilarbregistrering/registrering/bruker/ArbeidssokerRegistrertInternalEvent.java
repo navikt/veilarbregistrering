@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.besvarelse.UtdanningBestattSvar;
-import no.nav.fo.veilarbregistrering.besvarelse.UtdanningGodkjentSvar;
-import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 
 import java.time.LocalDateTime;
@@ -14,11 +11,13 @@ import static java.util.Optional.ofNullable;
 public class ArbeidssokerRegistrertInternalEvent {
 
     private final AktorId aktorId;
-    private final OrdinaerBrukerRegistrering brukerRegistrering;
+    private final Besvarelse besvarelse;
+    private final LocalDateTime opprettetDato;
 
-    public ArbeidssokerRegistrertInternalEvent(AktorId aktorId, OrdinaerBrukerRegistrering brukerRegistrering) {
+    public ArbeidssokerRegistrertInternalEvent(AktorId aktorId, Besvarelse besvarelse, LocalDateTime opprettetDato) {
         this.aktorId = aktorId;
-        this.brukerRegistrering = brukerRegistrering;
+        this.besvarelse = besvarelse;
+        this.opprettetDato = opprettetDato;
     }
 
     public AktorId getAktorId() {
@@ -26,22 +25,22 @@ public class ArbeidssokerRegistrertInternalEvent {
     }
 
     public Optional<DinSituasjonSvar> getBrukersSituasjon() {
-        return ofNullable(brukerRegistrering.getBrukersSituasjon());
+        return ofNullable(besvarelse.getDinSituasjon());
     }
 
     public Optional<UtdanningSvar> getUtdanningSvar() {
-        return ofNullable(brukerRegistrering.getUtdanningSvar());
+        return ofNullable(besvarelse.getUtdanning());
     }
 
     public Optional<UtdanningBestattSvar> getUtdanningBestattSvar() {
-        return ofNullable(brukerRegistrering.getUtdanningBestattSvar());
+        return ofNullable(besvarelse.getUtdanningBestatt());
     }
 
     public Optional<UtdanningGodkjentSvar> getUtdanningGodkjentSvar() {
-        return ofNullable(brukerRegistrering.getUtdanningGodkjentSvar());
+        return ofNullable(besvarelse.getUtdanningGodkjent());
     }
 
     public LocalDateTime getOpprettetDato() {
-        return brukerRegistrering.getOpprettetDato();
+        return opprettetDato;
     }
 }
