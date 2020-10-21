@@ -207,7 +207,10 @@ public class BrukerRegistreringService {
         aktiveringTilstandRepository.lagre(registreringTilstand);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                new ArbeidssokerRegistrertInternalEvent(bruker.getAktorId(), ordinaerBrukerRegistrering));
+                new ArbeidssokerRegistrertInternalEvent(
+                        bruker.getAktorId(),
+                        ordinaerBrukerRegistrering.getBesvarelse(),
+                        ordinaerBrukerRegistrering.getOpprettetDato()));
 
         arbeidssokerProfilertProducer.publiserProfilering(
                 bruker.getAktorId(),

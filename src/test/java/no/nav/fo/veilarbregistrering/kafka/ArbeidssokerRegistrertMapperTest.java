@@ -8,9 +8,10 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+
 import static no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder.gyldigBesvarelse;
 import static no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar.ER_PERMITTERT;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ArbeidssokerRegistrertMapperTest {
@@ -20,8 +21,8 @@ public class ArbeidssokerRegistrertMapperTest {
         ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = ArbeidssokerRegistrertMapper.map(
                 new ArbeidssokerRegistrertInternalEvent(
                         AktorId.of("123"),
-                        gyldigBrukerRegistrering().setBesvarelse(
-                                gyldigBesvarelse().setDinSituasjon(ER_PERMITTERT))));
+                        gyldigBesvarelse().setDinSituasjon(ER_PERMITTERT),
+                        LocalDateTime.now()));
 
         assertThat(arbeidssokerRegistrertEvent.getAktorid()).isEqualTo("123");
         assertThat(arbeidssokerRegistrertEvent.getUtdanning()).isEqualTo(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER);
