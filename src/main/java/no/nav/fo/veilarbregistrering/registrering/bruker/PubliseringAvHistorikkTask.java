@@ -42,7 +42,7 @@ public class PubliseringAvHistorikkTask implements Runnable {
 
             Pageable pageable = PageRequest.of(0, PAGESIZE).first();
             while (this.sjekkFeatureErPa()) {
-                Page<ArbeidssokerRegistrertEventDto> registreringer = hentRegistreringer(pageable);
+                Page<ArbeidssokerRegistrertInternalEvent> registreringer = hentRegistreringer(pageable);
                 registreringer.forEach(this::publiserPaKafka);
 
                 if (!registreringer.hasNext()) {
@@ -54,8 +54,8 @@ public class PubliseringAvHistorikkTask implements Runnable {
         }
     }
 
-    private Page<ArbeidssokerRegistrertEventDto> hentRegistreringer(Pageable pageable) {
-        Page<ArbeidssokerRegistrertEventDto> registreringer =
+    private Page<ArbeidssokerRegistrertInternalEvent> hentRegistreringer(Pageable pageable) {
+        Page<ArbeidssokerRegistrertInternalEvent> registreringer =
                 brukerRegistreringRepository.findRegistreringByPage(pageable);
 
         int pageNumber = pageable.getPageNumber();
@@ -66,12 +66,8 @@ public class PubliseringAvHistorikkTask implements Runnable {
         return registreringer;
     }
 
-    private void publiserPaKafka(ArbeidssokerRegistrertEventDto dto) {
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                new ArbeidssokerRegistrertInternalEvent(
-                        dto.getAktorId(),
-                        dto.getBesvarelse(),
-                        dto.getOpprettetDato()));
+    private void publiserPaKafka(ArbeidssokerRegistrertInternalEvent event) {
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(event);
     }
 
     private boolean sjekkFeatureErPa () {
