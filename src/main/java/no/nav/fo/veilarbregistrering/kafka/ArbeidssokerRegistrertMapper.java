@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
+import no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
 
@@ -41,6 +42,8 @@ class ArbeidssokerRegistrertMapper {
                 return no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar.NEI;
             case INGEN_SVAR:
                 return no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar.INGEN_SVAR;
+            case VET_IKKE:
+                return no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar.VET_IKKE;
         }
         throw new IllegalArgumentException(String.format("Ukjent svar valgt %s", utdanningGodkjentSvar));
     }
