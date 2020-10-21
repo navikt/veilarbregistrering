@@ -15,11 +15,11 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - ABAC (tilgangskontroll)
 - Aareg (siste arbeidsforhold) : SOAP
 - [Enhetsregisteret : REST](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
-- [NAV Organisasjon (for veileder pr ident) : SOAP og REST](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
+- [NAV Organisasjon (for veileder pr ident) : REST](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
 - [Oppgave : REST -> "kontakt bruker"-oppgaver](src/main/java/no/nav/fo/veilarbregistrering/oppgave/adapter/README.md)
-- PDL : Graphql
+- [PDL : Graphql](src/main/java/no/nav/fo/veilarbregistrering/bruker/pdl/README.md)
 - [KRR : REST](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md)
 
 # Komme i gang
