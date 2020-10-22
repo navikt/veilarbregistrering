@@ -206,7 +206,9 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                                 .setDinSituasjon(ofNullable(rs.getString("BEGRUNNELSE_FOR_REGISTRERING"))
                                         .map(t -> DinSituasjonSvar.valueOf(t))
                                         .orElse(null))
-                                .setUtdanning(null) //TODO: Finner ikke denne i databasen
+                                .setUtdanning(ofNullable(rs.getString(NUS_KODE))
+                                        .map(t -> UtdanningUtils.mapTilUtdanning(t))
+                                        .orElse(null))
                                 .setUtdanningGodkjent(ofNullable(rs.getString(UTDANNING_GODKJENT_NORGE))
                                         .map(t -> UtdanningGodkjentSvar.valueOf(t))
                                         .orElse(null))
