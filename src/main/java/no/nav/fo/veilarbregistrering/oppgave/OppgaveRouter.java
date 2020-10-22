@@ -52,7 +52,7 @@ public class OppgaveRouter {
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
-        if (!oppgaveType.equals(OppgaveType.UTVANDRET)) {
+        if (!kanHenteEnhetsnummerForOppgavetype(oppgaveType)) {
             return Optional.empty();
         }
 
@@ -97,6 +97,10 @@ public class OppgaveRouter {
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
             return Optional.empty();
         }
+    }
+
+    private boolean kanHenteEnhetsnummerForOppgavetype(OppgaveType oppgaveType) {
+        return oppgaveType == OppgaveType.UTVANDRET;
     }
 
     public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
