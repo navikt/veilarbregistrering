@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UtdanningUtils {
+class UtdanningUtils {
     private static Map<UtdanningSvar, String> nuskodeMap;
 
     static {
@@ -22,11 +22,11 @@ public class UtdanningUtils {
         nuskodeMap = Collections.unmodifiableMap(nuskodeMapTmp);
     }
 
-    public static String mapTilNuskode(UtdanningSvar utdanning) {
+    static String mapTilNuskode(UtdanningSvar utdanning) {
         return nuskodeMap.get(utdanning);
     }
 
-    public static UtdanningSvar mapTilUtdanning(String nuskode) {
+    static UtdanningSvar mapTilUtdanning(String nuskode) {
         return nuskodeMap.entrySet().stream()
                 .filter(e -> e.getValue().equals(nuskode))
                 .map(Map.Entry::getKey)
