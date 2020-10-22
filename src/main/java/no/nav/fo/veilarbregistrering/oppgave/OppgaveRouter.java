@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,16 +40,19 @@ public class OppgaveRouter {
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
     private final PersonGateway personGateway;
+    private final UnleashService unleashService;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway) {
+            PersonGateway personGateway,
+            UnleashService unleashService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.personGateway = personGateway;
+        this.unleashService = unleashService;
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
@@ -100,6 +104,9 @@ public class OppgaveRouter {
     }
 
     private boolean kanHenteEnhetsnummerForOppgavetype(OppgaveType oppgaveType) {
+        if (unleashService.isEnabled("veilarbregistrering.utvidetEnhetsoppslagForAlleOppgavetyper")) {
+            return true;
+        }
         return oppgaveType == OppgaveType.UTVANDRET;
     }
 
