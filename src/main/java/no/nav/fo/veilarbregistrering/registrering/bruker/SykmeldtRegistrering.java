@@ -25,23 +25,4 @@ public class SykmeldtRegistrering extends BrukerRegistrering {
         return BrukerRegistreringType.SYKMELDT;
     }
 
-    @Override
-    public DinSituasjonSvar getBrukersSituasjon() {
-        return besvarelse != null ? besvarelse.getDinSituasjon() : null;
-    }
-
-    @Override
-    public UtdanningSvar getUtdanningSvar() {
-        return besvarelse != null ? besvarelse.getUtdanning() : null;
-    }
-
-    @Override
-    public UtdanningBestattSvar getUtdanningBestattSvar() {
-        return besvarelse != null ? besvarelse.getUtdanningBestatt() : null;
-    }
-
-    @Override
-    public UtdanningGodkjentSvar getUtdanningGodkjentSvar() {
-        return besvarelse != null ? besvarelse.getUtdanningGodkjent() : null;
-    }
 }
