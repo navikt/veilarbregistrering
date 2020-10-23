@@ -77,11 +77,6 @@
             <version>1.2019.09.25-00.21-49b69f0625e0</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>organisasjonenhet-v2-tjenestespesifikasjon</artifactId>
-            <version>1.2019.09.25-00.21-49b69f0625e0</version>
-        </dependency>
-        <dependency>
             <groupId>no.bekk.bekkopen</groupId>
             <artifactId>nocommons</artifactId>
         </dependency>
