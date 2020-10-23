@@ -44,8 +44,6 @@ spec:
     value: {{ abac_pdp_endpoint_url }}
   - name: UNLEASH_API_URL
     value: https://unleash.nais.adeo.no/api/
-  - name: VIRKSOMHET_ORGANISASJONENHET_V2_ENDPOINTURL
-    value: {{ norg_url }}
   - name: NORG2_URL
     value: {{ norg2_url }}
   - name: OPPGAVE_URL
