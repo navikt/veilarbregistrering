@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,8 +21,11 @@ import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert;
 import static no.nav.fo.veilarbregistrering.enhet.Kommunenummer.KommuneMedBydel.STAVANGER;
+import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgaveType.UTVANDRET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OppgaveRouterTest {
 
@@ -34,8 +38,9 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -48,8 +53,9 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -69,8 +75,9 @@ public class OppgaveRouterTest {
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -90,8 +97,9 @@ public class OppgaveRouterTest {
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -104,8 +112,9 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("0301"));
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -118,8 +127,9 @@ public class OppgaveRouterTest {
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("030106"));
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -139,8 +149,9 @@ public class OppgaveRouterTest {
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
@@ -160,12 +171,54 @@ public class OppgaveRouterTest {
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
+        UnleashService unleashService = mock(UnleashService.class);
 
-        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
+    }
+
+
+    @Test
+    public void routing_for_oppgave_type_oppholdstilatelse_uten_feature_toggle() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+        Forretningsadresse forretningsadresse = new Forretningsadresse(
+                Kommunenummer.of("1241"),
+                Periode.of(LocalDate.of(2020, 1, 1), null));
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
+                Arrays.asList(forretningsadresse), Collections.emptyList()));
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
+        PersonGateway personGateway = foedselsnummer -> Optional.empty();
+
+        UnleashService unleashService = mock(UnleashService.class);
+        when(unleashService.isEnabled("veilarbregistrering.utvidetEnhetsoppslagForAlleOppgavetyper")).thenReturn(false);
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
+
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE);
+        assertThat(enhetsnr).isEmpty();
+    }
+
+    @Test
+    public void routing_for_oppgave_type_oppholdstilatelse_med_feature_toggle() {
+        ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
+        Forretningsadresse forretningsadresse = new Forretningsadresse(
+                Kommunenummer.of("1241"),
+                Periode.of(LocalDate.of(2020, 1, 1), null));
+        EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
+                Arrays.asList(forretningsadresse), Collections.emptyList()));
+        Norg2Gateway norg2Gateway = new StubNorg2Gateway();
+        PersonGateway personGateway = foedselsnummer -> Optional.empty();
+
+        UnleashService unleashService = mock(UnleashService.class);
+        when(unleashService.isEnabled("veilarbregistrering.utvidetEnhetsoppslagForAlleOppgavetyper")).thenReturn(true);
+
+        OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
+
+        Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE);
+        assertThat(enhetsnr).hasValue(Enhetnr.of("232"));
     }
 
     class StubNorg2Gateway implements Norg2Gateway {

@@ -159,8 +159,9 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+            PersonGateway personGateway,
+            UnleashService unleashService) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
     }
 
     @Bean
