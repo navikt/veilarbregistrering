@@ -11,13 +11,13 @@ spec:
   image: {{image}}
   ingresses:
   {{#each ingresses as |url|}}
-    - {{url}}
+     - {{url}}
   {{/each}}
   env:
     - name: APP_ENVIRONMENT_NAME
-      value: { { app_environment_name } }
+      value: {{ app_environment_name }}
     - name: FEATURE_ENDPOINT_URL
-      value: { { feature_endpoint_url } }
+      value: {{ feature_endpoint_url }}
     - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
       value: {{ aareg_url }}
     - name: OPENAM_DISCOVERY_URL
