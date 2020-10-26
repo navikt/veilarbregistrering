@@ -61,7 +61,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                     try {
                         behandleRecord(record);
                     } catch (RuntimeException e) {
-                        LOG.error(String.format("Behandling av formidlingsgruppeEvent feilet: ", record.value()), e);
+                        LOG.error(String.format("Behandling av formidlingsgruppeEvent feilet: %s", record.value()), e);
                         throw e;
                     }
 
