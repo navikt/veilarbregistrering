@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;

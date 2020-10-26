@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 class BeforeDto {
 

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
@@ -8,11 +8,11 @@ import java.time.format.DateTimeFormatter;
 
 import static java.util.Optional.ofNullable;
 
-abstract class FormidlingsgruppeMapper {
+public abstract class FormidlingsgruppeMapper {
 
     private static final Gson GSON = new Gson();
 
-    static FormidlingsgruppeEvent map(String record) {
+    public static FormidlingsgruppeEvent map(String record) {
         GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = GSON.fromJson(record, GgArenaFormidlinggruppeDto.class);
         return getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto);
     }
