@@ -62,4 +62,15 @@ public class FormidlingsgruppeMapperTest {
                 .hasValue(LocalDateTime.of(2020, 6, 18,11,13,1));
     }
 
+    //@Test
+    public void skal_mappe_json_med_opt_type_d_fra_gg_arena_formidlingsgruppe_v1_til_formidlingsgruppeEvent() {
+        String json = FileToJson.toJson("/kafka/formidlingsgruppe_med_slett.json");
+        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+
+        assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
+                .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
+    }
 }
