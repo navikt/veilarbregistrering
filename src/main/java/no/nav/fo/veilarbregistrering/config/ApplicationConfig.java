@@ -116,8 +116,8 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     private OidcAuthenticatorConfig createAzureAdB2CConfig() {
-        String discoveryUrl = getRequiredProperty("LOGINSERVICE_IDPORTEN_DISCOVERY_URL");
-        String clientId = getRequiredProperty("LOGINSERVICE_IDPORTEN_AUDIENCE");
+        String discoveryUrl = getRequiredProperty("AAD_B2C_DISCOVERY_URL");
+        String clientId = getRequiredProperty("AAD_B2C_CLIENTID_USERNAME");
 
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(discoveryUrl)
