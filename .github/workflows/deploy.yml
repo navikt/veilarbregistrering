@@ -66,7 +66,7 @@ jobs:
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
-        RESOURCE: nais/naiserator.yaml
+        RESOURCE: nais/nais.yaml
         VARS: nais/vars-q0.yaml
 
   deploy-q1:
@@ -88,7 +88,7 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-fss
         DRY_RUN: false
-        RESOURCE: nais/naiserator.yaml
+        RESOURCE: nais/nais.yaml
         VARS: nais/vars-q1.yaml
 
   deploy-prod:
@@ -110,7 +110,7 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
         DRY_RUN: false
-        RESOURCE: nais/naiserator.yaml
+        RESOURCE: nais/nais.yaml
         VARS: nais/vars-p.yaml
 
   release:
