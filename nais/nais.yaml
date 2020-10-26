@@ -18,52 +18,52 @@ spec:
       value: { { app_environment_name } }
     - name: FEATURE_ENDPOINT_URL
       value: { { feature_endpoint_url } }
-  - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
-    value: {{ aareg_url }}
-  - name: OPENAM_DISCOVERY_URL
-    value: {{ openam_discovery_url }}
-  - name: VEILARBLOGIN_OPENAM_CLIENT_ID
-    value: {{ veilarblogin_openam_clientid }}
-  - name: VEILARBLOGIN_OPENAM_REFRESH_URL
-    value: {{ veilarblogin_openam_refresh_url }}
-  - name: AAD_DISCOVERY_URL
-    value: {{ aad_discovery_url }}
-  - name: VEILARBLOGIN_AAD_CLIENT_ID
-    value: {{ veilarblogin_aad_client_id }}
-  - name: SECURITYTOKENSERVICE_URL
-    value: {{ securitytokenservice_url }}
-  - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
-    value: {{ securitytokenservice_discovery_url }}
-  - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
-    value: {{ securitytokenservice_clientid }}
-  - name: VEILARBPERSONAPI_URL
-    value: {{ veilarbpersonapi_url }}
-  - name: VEILARBOPPFOLGINGAPI_URL
-    value: {{ veilarboppfolgingapi_url }}
-  - name: ABAC_PDP_ENDPOINT_URL
-    value: {{ abac_pdp_endpoint_url }}
-  - name: UNLEASH_API_URL
-    value: https://unleash.nais.adeo.no/api/
-  - name: NORG2_URL
-    value: {{ norg2_url }}
-  - name: OPPGAVE_URL
-    value: {{ oppgave_url }}
-  - name: KRR_BASE_URL
-    value: http://dkif.default.svc.nais.local/api/
-  - name: PDL_URL
-    value: {{ pdl_url }}
-  - name: ENHET_URL
-    value: {{ enhet_url }}
-  - name: ISSO_ISALIVE_URL
-    value: {{ isso_isalive_url }}
-  - name: KAFKA_SERVERS
-    value: {{ kafka_url }}
-  - name: KAFKA_SCHEMA
-    value: {{ kafka_schema_url }}
-  - name: ARENA_ORDS_API
-    value: {{ arena_ords_api }}
-  - name: ARENA_ORDS_TOKEN_PROVIDER
-    value: {{ arena_ords_token_provider }}
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
+      value: {{ aareg_url }}
+    - name: OPENAM_DISCOVERY_URL
+      value: {{ openam_discovery_url }}
+    - name: VEILARBLOGIN_OPENAM_CLIENT_ID
+      value: {{ veilarblogin_openam_clientid }}
+    - name: VEILARBLOGIN_OPENAM_REFRESH_URL
+      value: {{ veilarblogin_openam_refresh_url }}
+    - name: AAD_DISCOVERY_URL
+      value: {{ aad_discovery_url }}
+    - name: VEILARBLOGIN_AAD_CLIENT_ID
+      value: {{ veilarblogin_aad_client_id }}
+    - name: SECURITYTOKENSERVICE_URL
+      value: {{ securitytokenservice_url }}
+    - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
+      value: {{ securitytokenservice_discovery_url }}
+    - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
+      value: {{ securitytokenservice_clientid }}
+    - name: VEILARBPERSONAPI_URL
+      value: {{ veilarbpersonapi_url }}
+    - name: VEILARBOPPFOLGINGAPI_URL
+      value: {{ veilarboppfolgingapi_url }}
+    - name: ABAC_PDP_ENDPOINT_URL
+      value: {{ abac_pdp_endpoint_url }}
+    - name: UNLEASH_API_URL
+      value: https://unleash.nais.adeo.no/api/
+    - name: NORG2_URL
+      value: {{ norg2_url }}
+    - name: OPPGAVE_URL
+      value: {{ oppgave_url }}
+    - name: KRR_BASE_URL
+      value: http://dkif.default.svc.nais.local/api/
+    - name: PDL_URL
+      value: {{ pdl_url }}
+    - name: ENHET_URL
+      value: {{ enhet_url }}
+    - name: ISSO_ISALIVE_URL
+      value: {{ isso_isalive_url }}
+    - name: KAFKA_SERVERS
+      value: {{ kafka_url }}
+    - name: KAFKA_SCHEMA
+      value: {{ kafka_schema_url }}
+    - name: ARENA_ORDS_API
+      value: {{ arena_ords_api }}
+    - name: ARENA_ORDS_TOKEN_PROVIDER
+      value: {{ arena_ords_token_provider }}
   liveness:
     path: veilarbregistrering/internal/isAlive
     port: 8080
