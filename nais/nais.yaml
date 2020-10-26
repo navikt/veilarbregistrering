@@ -10,8 +10,8 @@ spec:
     - configmap: loginservice-idporten
   image: {{image}}
   ingresses:
-  { { #each ingresses as |url|}}
-      - {{url } }
+  {{#each ingresses as |url|}}
+    - {{url}}
   {{/each}}
   env:
     - name: APP_ENVIRONMENT_NAME
