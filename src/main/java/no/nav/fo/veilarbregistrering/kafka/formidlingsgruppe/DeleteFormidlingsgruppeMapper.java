@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
-
-import static java.util.Optional.ofNullable;
 
 class DeleteFormidlingsgruppeMapper extends FormidlingsgruppeMapper {
 
@@ -12,12 +9,8 @@ class DeleteFormidlingsgruppeMapper extends FormidlingsgruppeMapper {
     protected FormidlingsgruppeEvent map(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
         BeforeDto before = ggArenaFormidlinggruppeDto.getBefore();
 
-        Foedselsnummer foedselsnummer = ofNullable(before.getFODSELSNR())
-                .map(Foedselsnummer::of)
-                .orElse(null);
-
         return new FormidlingsgruppeEvent(
-                foedselsnummer,
+                mapFoedselsnummer(before.getFODSELSNR()),
                 before.getPERSON_ID(),
                 before.getPERSON_ID_STATUS(),
                 mapOperation(ggArenaFormidlinggruppeDto.getOp_type()),
