@@ -14,7 +14,7 @@ public class FormidlingsgruppeMapperTest {
     @Test
     public void skal_mappe_json_fra_gg_arena_formidlingsgruppe_v1_til_formidlingsgruppeEvent() {
         String json = FileToJson.toJson("/kafka/formidlingsgruppe_uten_mod_dato.json");
-        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+        FormidlingsgruppeEvent formidlingsgruppeEvent = InsertAndUpdateFormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("13919");
@@ -24,7 +24,7 @@ public class FormidlingsgruppeMapperTest {
     @Test
     public void skal_mappe_json_med_mod_dato_fra_gg_arena_formidlingsgruppe_v1_til_formidlingsgruppeEvent() {
         String json = FileToJson.toJson("/kafka/formidlingsgruppe_med_mod_dato.json");
-        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+        FormidlingsgruppeEvent formidlingsgruppeEvent = InsertAndUpdateFormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
@@ -36,7 +36,7 @@ public class FormidlingsgruppeMapperTest {
     @Test
     public void skal_mappe_json_uten_fnr_fra_gg_arena_formidlingsgruppe_v1_til_formidlingsgruppeEvent() {
         String json = FileToJson.toJson("/kafka/formidlingsgruppe_uten_fnr.json");
-        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+        FormidlingsgruppeEvent formidlingsgruppeEvent = InsertAndUpdateFormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer()).isEmpty();
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("1652");
@@ -49,7 +49,7 @@ public class FormidlingsgruppeMapperTest {
     @Test
     public void skal_mappe_bade_after_og_before() {
         String json = FileToJson.toJson("/kafka/formidlingsgruppe_med_mod_dato.json");
-        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+        FormidlingsgruppeEvent formidlingsgruppeEvent = InsertAndUpdateFormidlingsgruppeMapper.map(json);
 
         assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
         assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
@@ -62,15 +62,15 @@ public class FormidlingsgruppeMapperTest {
                 .hasValue(LocalDateTime.of(2020, 6, 18,11,13,1));
     }
 
-    //@Test
+    @Test
     public void skal_mappe_json_med_opt_type_d_fra_gg_arena_formidlingsgruppe_v1_til_formidlingsgruppeEvent() {
         String json = FileToJson.toJson("/kafka/formidlingsgruppe_med_slett.json");
-        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+        FormidlingsgruppeEvent formidlingsgruppeEvent = InsertAndUpdateFormidlingsgruppeMapper.map(json);
 
-        assertThat(formidlingsgruppeEvent.getFoedselsnummer().get().stringValue()).isEqualTo("***********");
-        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("3226568");
-        assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("ARBS"));
+        assertThat(formidlingsgruppeEvent.getFoedselsnummer()).isEmpty();
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("1365747");
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("IJOBS"));
         assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
-                .isEqualTo(LocalDateTime.of(2020, 6, 19,9,31,50));
+                .isEqualTo(LocalDateTime.of(2016, 3, 12,0,47,50));
     }
 }
