@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 import com.google.gson.Gson;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
@@ -17,16 +16,16 @@ public abstract class FormidlingsgruppeMapper {
 
     public static FormidlingsgruppeEvent map(String record) {
         GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = GSON.fromJson(record, GgArenaFormidlinggruppeDto.class);
-        return getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto);
-    }
-
-    private static FormidlingsgruppeMapper getInstance(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
-        return "D".equals(ggArenaFormidlinggruppeDto.getOp_type())
-                ? new DeleteFormidlingsgruppeMapper()
-                : new InsertOgUpdateFormidlingsgruppeMapper();
+        return Factory.getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto);
     }
 
     protected abstract FormidlingsgruppeEvent map(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto);
+
+    protected Foedselsnummer mapFoedselsnummer(String fodselsnr) {
+        return ofNullable(fodselsnr)
+                .map(Foedselsnummer::of)
+                .orElse(null);
+    }
 
     protected Operation mapOperation(String operation) {
         switch (operation) {
@@ -41,5 +40,23 @@ public abstract class FormidlingsgruppeMapper {
         return ofNullable(mod_dato)
                 .map(d -> LocalDateTime.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .orElse(null);
+    }
+
+    static class Factory {
+
+        private final static DeleteFormidlingsgruppeMapper deleteFormidlingsgruppeMapper = new DeleteFormidlingsgruppeMapper();
+        private final static UpdateFormidlingsgruppeMapper updateFormidlingsgruppeMapper = new UpdateFormidlingsgruppeMapper();
+        private final static InsertFormidlingsgruppeMapper insertFormidlingsgruppeMapper = new InsertFormidlingsgruppeMapper();
+
+        private static FormidlingsgruppeMapper getInstance(GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto) {
+            if ("D".equals(ggArenaFormidlinggruppeDto.getOp_type())) {
+                return deleteFormidlingsgruppeMapper;
+            } else if ("U".equals(ggArenaFormidlinggruppeDto.getOp_type())) {
+                return updateFormidlingsgruppeMapper;
+            } else if ("I".equals(ggArenaFormidlinggruppeDto.getOp_type())) {
+                return insertFormidlingsgruppeMapper;
+            }
+            throw new IllegalArgumentException(String.format("Ukjent op_type fra Arena: ", ggArenaFormidlinggruppeDto.getOp_type()));
+        }
     }
 }
