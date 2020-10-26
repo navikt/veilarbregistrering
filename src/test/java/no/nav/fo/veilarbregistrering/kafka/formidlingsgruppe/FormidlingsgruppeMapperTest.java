@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
+import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -62,4 +63,16 @@ public class FormidlingsgruppeMapperTest {
                 .hasValue(LocalDateTime.of(2020, 6, 18,11,13,1));
     }
 
+    @Test
+    public void mapping_av_op_t_D_for_delerte() {
+        String json = FileToJson.toJson("/kafka/formidlingsgruppe_op_type_D.json");
+        FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json);
+
+        assertThat(formidlingsgruppeEvent.getFoedselsnummer()).isEmpty();
+        assertThat(formidlingsgruppeEvent.getPersonId()).isEqualTo("1365747");
+        assertThat(formidlingsgruppeEvent.getOperation()).isEqualTo(Operation.DELETE);
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppe()).isEqualTo(Formidlingsgruppe.of("IJOBS"));
+        assertThat(formidlingsgruppeEvent.getFormidlingsgruppeEndret())
+                .isEqualTo(LocalDateTime.of(2016, 3, 12,0,47,50));
+    }
 }
