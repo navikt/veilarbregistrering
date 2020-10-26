@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.log.CallId;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -59,7 +58,12 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 consumerRecords.forEach(record -> {
                     CallId.leggTilCallId();
 
-                    behandleRecord(record);
+                    try {
+                        behandleRecord(record);
+                    } catch (RuntimeException e) {
+                        LOG.error(String.format("Behandling av formidlingsgruppeEvent feilet: ", record.value()), e);
+                        throw e;
+                    }
 
                     MDC.remove(MDC_CALL_ID);
                 });
