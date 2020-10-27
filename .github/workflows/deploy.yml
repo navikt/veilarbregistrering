@@ -3,7 +3,7 @@ name: Build, push, deploy 💪
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
