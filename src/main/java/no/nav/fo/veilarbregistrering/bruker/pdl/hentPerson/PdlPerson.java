@@ -68,6 +68,13 @@ public class PdlPerson {
         return Optional.of(this.foedsel.get(this.foedsel.size() - 1));
     }
 
+    public boolean harAdressebeskyttelse() {
+        if (this.adressebeskyttelse == null || this.adressebeskyttelse.isEmpty()) {
+            return false;
+        }
+        return this.adressebeskyttelse.stream().anyMatch(PdlAdressebeskyttelse::erGradert);
+    }
+
     public List<PdlFoedsel> getFoedsel() {
         return this.foedsel;
     }
