@@ -29,7 +29,10 @@ class PdlOppslagMapper {
                 pdlPerson.getSistePdlFoedsel()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
-                map(pdlPerson.getGeografiskTilknytning()));
+                map(pdlPerson.getGeografiskTilknytning()),
+                pdlPerson.strengesteAdressebeskyttelse()
+                        .map(PdlOppslagMapper::map)
+                        .orElse(AdressebeskyttelseGradering.UKJENT));
     }
 
     private static Foedselsdato map(PdlFoedsel pdlFoedsel) {
@@ -93,5 +96,12 @@ class PdlOppslagMapper {
             LOG.warn(String.format("Mapping av geografisk tilknytning %s fra PDL feilet", geografiskTilknytning), e);
         }
         return null;
+    }
+
+    protected static AdressebeskyttelseGradering map(PdlAdressebeskyttelse adressebeskyttelse) {
+        if (adressebeskyttelse == null || adressebeskyttelse.getGradering() == null) {
+            return AdressebeskyttelseGradering.UKJENT;
+        }
+        return AdressebeskyttelseGradering.valueOf(adressebeskyttelse.getGradering().name());
     }
 }

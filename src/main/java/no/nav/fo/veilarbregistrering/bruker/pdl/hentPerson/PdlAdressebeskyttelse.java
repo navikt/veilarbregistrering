@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
 
-public class PdlAdressebeskyttelse {
+public class PdlAdressebeskyttelse implements Comparable<PdlAdressebeskyttelse> {
 
     private PdlGradering gradering;
 
@@ -19,7 +19,8 @@ public class PdlAdressebeskyttelse {
         this.gradering = gradering;
     }
 
-    public boolean erGradert() {
-        return gradering != null && gradering != PdlGradering.UGRADERT;
+    @Override
+    public int compareTo(PdlAdressebeskyttelse other) {
+        return other.gradering.getNiva() - this.gradering.getNiva();
     }
 }

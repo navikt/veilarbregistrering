@@ -36,15 +36,38 @@ public class PdlPersonTest {
     }
 
     @Test
-    public void harAdressebeskyttelse() {
-        assertFalse(personMedAdressebeskyttelse().harAdressebeskyttelse());
-        assertFalse(personMedAdressebeskyttelse(PdlGradering.UGRADERT).harAdressebeskyttelse());
+    public void strengesteAdressebeskyttelse_uten_eksplisitt_graderingsniva() {
+        assertThat(personMedAdressebeskyttelse().strengesteAdressebeskyttelse()).isEmpty();
+    }
 
-        assertTrue(personMedAdressebeskyttelse(PdlGradering.FORTROLIG).harAdressebeskyttelse());
-        assertTrue(personMedAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG).harAdressebeskyttelse());
-        assertTrue(personMedAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG_UTLAND).harAdressebeskyttelse());
+    @Test
+    public void strengesteAdressebeskyttelse_med_en_gradering() {
+        for (PdlGradering gradering: PdlGradering.values()) {
+            PdlPerson enkeltgradertPerson = personMedAdressebeskyttelse(gradering);
+            PdlGradering strengesteGradering = strengesteGraderingForPerson(enkeltgradertPerson);
 
-        assertTrue(personMedAdressebeskyttelse(PdlGradering.UGRADERT, PdlGradering.FORTROLIG).harAdressebeskyttelse());
+            assertThat(strengesteGradering).isEqualTo(gradering);
+        }
+    }
+
+    @Test
+    public void strengesteAdressebeskyttelse_med_flere_graderinger() {
+        assertThat(strengesteGraderingForPerson(
+                personMedAdressebeskyttelse(PdlGradering.UGRADERT, PdlGradering.FORTROLIG)
+        )).isEqualTo(PdlGradering.FORTROLIG);
+
+        assertThat(strengesteGraderingForPerson(
+                personMedAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG, PdlGradering.FORTROLIG)
+        )).isEqualTo(PdlGradering.STRENGT_FORTROLIG);
+
+        assertThat(strengesteGraderingForPerson(
+                personMedAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG, PdlGradering.STRENGT_FORTROLIG_UTLAND, PdlGradering.FORTROLIG)
+        )).isEqualTo(PdlGradering.STRENGT_FORTROLIG_UTLAND);
+    }
+
+    private PdlGradering strengesteGraderingForPerson(PdlPerson person) {
+        return person.strengesteAdressebeskyttelse()
+                .map(PdlAdressebeskyttelse::getGradering).orElse(null);
     }
 
     private PdlPerson personMedAdressebeskyttelse(PdlGradering... graderinger) {

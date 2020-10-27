@@ -68,13 +68,6 @@ public class PdlPerson {
         return Optional.of(this.foedsel.get(this.foedsel.size() - 1));
     }
 
-    public boolean harAdressebeskyttelse() {
-        if (this.adressebeskyttelse == null || this.adressebeskyttelse.isEmpty()) {
-            return false;
-        }
-        return this.adressebeskyttelse.stream().anyMatch(PdlAdressebeskyttelse::erGradert);
-    }
-
     public List<PdlFoedsel> getFoedsel() {
         return this.foedsel;
     }
@@ -89,6 +82,16 @@ public class PdlPerson {
 
     public void setGeografiskTilknytning(PdlGeografiskTilknytning geografiskTilknytning) {
         this.geografiskTilknytning = geografiskTilknytning;
+    }
+
+    public Optional<PdlAdressebeskyttelse> strengesteAdressebeskyttelse() {
+        if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return adressebeskyttelse.stream()
+                .sorted()
+                .findFirst();
     }
 
     public List<PdlAdressebeskyttelse> getAdressebeskyttelse() {
