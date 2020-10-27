@@ -3,9 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
@@ -41,23 +39,31 @@ public class OppgaveRouter {
     private final Norg2Gateway norg2Gateway;
     private final PersonGateway personGateway;
     private final UnleashService unleashService;
+    private final PdlOppslagGateway pdlOppslagGateway;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
-            UnleashService unleashService) {
+            UnleashService unleashService,
+            PdlOppslagGateway pdlOppslagGateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.personGateway = personGateway;
         this.unleashService = unleashService;
+        this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
         if (!kanHenteEnhetsnummerForOppgavetype(oppgaveType)) {
             return Optional.empty();
+        }
+
+        if (harBrukerAdressebeskyttelse(bruker)) {
+            LOG.info("Fant bruker med adressebeskyttelse -> sender oppgave til intern brukerstøtte");
+            return Optional.of(Enhetnr.internBrukerstotte());
         }
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
@@ -101,6 +107,15 @@ public class OppgaveRouter {
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
             return Optional.empty();
         }
+    }
+
+    private boolean harBrukerAdressebeskyttelse(Bruker bruker) {
+        if (!unleashService.isEnabled("veilarbregistrering.adressebeskyttelse")) {
+            return false;
+        }
+
+        Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
+        return person.map(Person::harAdressebeskyttelse).orElse(false);
     }
 
     private boolean kanHenteEnhetsnummerForOppgavetype(OppgaveType oppgaveType) {

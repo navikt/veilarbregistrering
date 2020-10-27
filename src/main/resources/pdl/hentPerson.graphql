@@ -23,6 +23,9 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
         gtKommune,
         gtBydel,
         gtLand
+    },
+    adressebeskyttelse {
+        gradering
     }
   }
 }

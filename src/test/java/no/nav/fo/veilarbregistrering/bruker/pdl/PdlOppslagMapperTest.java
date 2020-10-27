@@ -4,9 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.GtType;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.Oppholdstype;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -79,6 +77,17 @@ public class PdlOppslagMapperTest {
         assertThat(identer.getIdenter().get(0).getIdent()).isEqualTo("12345678910");
         assertThat(identer.getIdenter().get(0).isHistorisk()).isEqualTo(false);
         assertThat(identer.getIdenter().get(0).getGruppe()).isEqualTo(Gruppe.FOLKEREGISTERIDENT);
+    }
+
+    @Test
+    public void skal_mappe_adressebeskyttelse() {
+        for (PdlGradering gradering : PdlGradering.values()) {
+            PdlAdressebeskyttelse pdlAdressebeskyttelse = new PdlAdressebeskyttelse(gradering);
+            AdressebeskyttelseGradering mappedGradering = PdlOppslagMapper.map(pdlAdressebeskyttelse);
+            assertThat(gradering.name()).isEqualTo(mappedGradering.name());
+        }
+
+        assertThat(PdlOppslagMapper.map((PdlAdressebeskyttelse) null)).isEqualTo(AdressebeskyttelseGradering.UKJENT);
     }
 
 }

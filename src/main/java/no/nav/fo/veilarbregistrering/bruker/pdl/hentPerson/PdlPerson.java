@@ -9,6 +9,7 @@ public class PdlPerson {
     private List<PdlTelefonnummer> telefonnummer;
     private List<PdlFoedsel> foedsel;
     private PdlGeografiskTilknytning geografiskTilknytning;
+    private List<PdlAdressebeskyttelse> adressebeskyttelse;
 
     public PdlPerson() {
     }
@@ -81,5 +82,23 @@ public class PdlPerson {
 
     public void setGeografiskTilknytning(PdlGeografiskTilknytning geografiskTilknytning) {
         this.geografiskTilknytning = geografiskTilknytning;
+    }
+
+    public Optional<PdlAdressebeskyttelse> strengesteAdressebeskyttelse() {
+        if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return adressebeskyttelse.stream()
+                .sorted()
+                .findFirst();
+    }
+
+    public List<PdlAdressebeskyttelse> getAdressebeskyttelse() {
+        return adressebeskyttelse;
+    }
+
+    public void setAdressebeskyttelse(List<PdlAdressebeskyttelse> adressebeskyttelse) {
+        this.adressebeskyttelse = adressebeskyttelse;
     }
 }

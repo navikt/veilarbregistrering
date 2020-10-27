@@ -160,8 +160,9 @@ public class ServiceBeansConfig {
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
-            UnleashService unleashService) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService);
+            UnleashService unleashService,
+            PdlOppslagGateway pdlOppslagGateway) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway);
     }
 
     @Bean
