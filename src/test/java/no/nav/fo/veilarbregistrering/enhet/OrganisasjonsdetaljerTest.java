@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,11 +28,11 @@ public class OrganisasjonsdetaljerTest {
         Forretningsadresse forretningsadresse = new Forretningsadresse(
                 Kommunenummer.of("1234"),
                 Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28)));
-        List<Forretningsadresse> forretningsadresser = Arrays.asList(forretningsadresse);
+        List<Forretningsadresse> forretningsadresser = Collections.singletonList(forretningsadresse);
         Postadresse postadresse = new Postadresse(
                 Kommunenummer.of("1235"),
                 Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28)));
-        List<Postadresse> postadresser = Arrays.asList(postadresse);
+        List<Postadresse> postadresser = Collections.singletonList(postadresse);
 
         Organisasjonsdetaljer organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser);
 
@@ -44,11 +44,11 @@ public class OrganisasjonsdetaljerTest {
         Forretningsadresse forretningsadresse = new Forretningsadresse(
                 Kommunenummer.of("1234"),
                 Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28)));
-        List<Forretningsadresse> forretningsadresser = Arrays.asList(forretningsadresse);
+        List<Forretningsadresse> forretningsadresser = Collections.singletonList(forretningsadresse);
         Postadresse postadresse = new Postadresse(
                 Kommunenummer.of("1235"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
-        List<Postadresse> postadresser = Arrays.asList(postadresse);
+        List<Postadresse> postadresser = Collections.singletonList(postadresse);
 
         Organisasjonsdetaljer organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser);
 
@@ -60,11 +60,11 @@ public class OrganisasjonsdetaljerTest {
         Forretningsadresse forretningsadresse = new Forretningsadresse(
                 Kommunenummer.of("1234"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
-        List<Forretningsadresse> forretningsadresser = Arrays.asList(forretningsadresse);
+        List<Forretningsadresse> forretningsadresser = Collections.singletonList(forretningsadresse);
         Postadresse postadresse = new Postadresse(
                 Kommunenummer.of("1235"),
                 Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28)));
-        List<Postadresse> postadresser = Arrays.asList(postadresse);
+        List<Postadresse> postadresser = Collections.singletonList(postadresse);
 
         Organisasjonsdetaljer organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser);
 
@@ -76,11 +76,11 @@ public class OrganisasjonsdetaljerTest {
         Forretningsadresse forretningsadresse = new Forretningsadresse(
                 Kommunenummer.of("1234"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
-        List<Forretningsadresse> forretningsadresser = Arrays.asList(forretningsadresse);
+        List<Forretningsadresse> forretningsadresser = Collections.singletonList(forretningsadresse);
         Postadresse postadresse = new Postadresse(
                 Kommunenummer.of("1235"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
-        List<Postadresse> postadresser = Arrays.asList(postadresse);
+        List<Postadresse> postadresser = Collections.singletonList(postadresse);
 
         Organisasjonsdetaljer organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser);
 

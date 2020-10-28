@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medArbs;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medIserv;
@@ -34,7 +34,7 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_at_forespurt_periode_starter_etter_eldste_periode_dekkes_hele() {
-        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Collections.singletonList(
                 ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
@@ -46,7 +46,7 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_at_forespurt_periode_starter_før_eldste_periode_dekkes_ikke_hele() {
-        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Collections.singletonList(
                 ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
@@ -58,7 +58,7 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_at_forespurt_periode_starter_samme_dag_som_eldste_periode_dekkes_hele_perioden() {
-        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Collections.singletonList(
                 ARBEIDSSOKERPERIODE_2));
 
         Periode forespurtPeriode = Periode.of(
@@ -70,7 +70,7 @@ public class ArbeidssokerperioderTest {
 
     @Test
     public void gitt_at_forespurt_periode_slutter_dagen_etter_siste_periode() {
-        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Arrays.asList(
+        Arbeidssokerperioder arbeidssokerperioder = new Arbeidssokerperioder(Collections.singletonList(
                 ARBEIDSSOKERPERIODE_1));
 
         Periode forespurtPeriode = Periode.of(

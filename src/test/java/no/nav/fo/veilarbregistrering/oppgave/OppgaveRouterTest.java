@@ -14,7 +14,6 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -73,7 +72,7 @@ public class OppgaveRouterTest {
                 Periode.of(LocalDate.of(2020, 1, 1), null));
 
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
@@ -96,7 +95,7 @@ public class OppgaveRouterTest {
                 Periode.of(LocalDate.of(2020, 1, 1), null));
 
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
@@ -151,7 +150,7 @@ public class OppgaveRouterTest {
                 Periode.of(LocalDate.of(2020, 1, 1), null));
 
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
@@ -174,7 +173,7 @@ public class OppgaveRouterTest {
                 Periode.of(LocalDate.of(2020, 1, 1), null));
 
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
 
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.of(GeografiskTilknytning.of("DNK"));
@@ -196,7 +195,7 @@ public class OppgaveRouterTest {
                 Kommunenummer.of("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
         PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
@@ -215,7 +214,7 @@ public class OppgaveRouterTest {
                 Kommunenummer.of("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null));
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.of(Organisasjonsdetaljer.of(
-                Arrays.asList(forretningsadresse), Collections.emptyList()));
+                Collections.singletonList(forretningsadresse), Collections.emptyList()));
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
         PersonGateway personGateway = foedselsnummer -> Optional.empty();
         PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
@@ -247,7 +246,7 @@ public class OppgaveRouterTest {
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
     }
 
-    class StubNorg2Gateway implements Norg2Gateway {
+    static class StubNorg2Gateway implements Norg2Gateway {
         @Override
         public Optional<Enhetnr> hentEnhetFor(Kommunenummer kommunenummer) {
             if (Kommunenummer.of("1241").equals(kommunenummer)) {
