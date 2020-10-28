@@ -227,7 +227,7 @@ public class OppgaveRouterTest {
     }
 
     @Test
-    public void brukere_med_adressebeskyttelse_sendes_til_intern_brukerstotte() {
+    public void brukere_med_adressebeskyttelse_overlates_til_oppgave_api() {
         ArbeidsforholdGateway arbeidsforholdGateway = fnr -> flereArbeidsforholdTilfeldigSortert();
         EnhetGateway enhetGateway = organisasjonsnummer -> Optional.empty();
         Norg2Gateway norg2Gateway = new StubNorg2Gateway();
@@ -243,7 +243,7 @@ public class OppgaveRouterTest {
 
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER, UTVANDRET);
 
-        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte());
+        assertThat(enhetsnr).isEmpty();
     }
 
     static class StubNorg2Gateway implements Norg2Gateway {
