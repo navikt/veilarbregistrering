@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
-import no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
 
