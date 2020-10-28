@@ -19,14 +19,6 @@ class PdlPersonTestdataBuilder {
         private Oppholdstype oppholdstype = Oppholdstype.PERMANENT;
         private String landkode = "NOR";
         private LocalDate foedselsdato = LocalDate.of(1970, 3, 23);
-        private GtType gtType = GtType.UTLAND;
-        private String gtVerdi = null;
-
-        Builder geografiskTilknytning(GtType gtType, String gtVerdi) {
-            this.gtType = gtType;
-            this.gtVerdi = gtVerdi;
-            return this;
-        }
 
         Builder statsborgerskap(String landkode) {
             this.landkode = landkode;
@@ -57,11 +49,6 @@ class PdlPersonTestdataBuilder {
             pdlTelefonnummer.setLandskode(landkode_telefonnummer);
             pdlTelefonnummer.setNummer(telefonnummer);
             pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
-
-            PdlGeografiskTilknytning geografiskTilknytning = new PdlGeografiskTilknytning();
-            geografiskTilknytning.setGtType(gtType);
-            geografiskTilknytning.setGtLand(gtVerdi);
-            pdlPerson.setGeografiskTilknytning(geografiskTilknytning);
 
             return pdlPerson;
         }

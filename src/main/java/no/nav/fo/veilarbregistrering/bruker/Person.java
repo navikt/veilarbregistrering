@@ -8,7 +8,6 @@ public class Person {
     private final Statsborgerskap statsborgerskap;
     private final Telefonnummer telefonnummer;
     private final Foedselsdato foedselsdato;
-    private final GeografiskTilknytning geografiskTilknytning;
     private final AdressebeskyttelseGradering adressebeskyttelseGradering;
 
     public static Person of(
@@ -16,22 +15,19 @@ public class Person {
             Statsborgerskap statsborgerskap,
             Telefonnummer telefonnummer,
             Foedselsdato foedselsdato,
-            GeografiskTilknytning geografiskTilknytning,
             AdressebeskyttelseGradering adressebeskyttelseGradering) {
-        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato, geografiskTilknytning, adressebeskyttelseGradering);
+        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato, adressebeskyttelseGradering);
     }
 
     private Person(Opphold opphold,
                    Statsborgerskap statsborgerskap,
                    Telefonnummer telefonnummer,
                    Foedselsdato foedselsdato,
-                   GeografiskTilknytning geografiskTilknytning,
                    AdressebeskyttelseGradering adressebeskyttelseGradering) {
         this.opphold = opphold;
         this.statsborgerskap = statsborgerskap;
         this.telefonnummer = telefonnummer;
         this.foedselsdato = foedselsdato;
-        this.geografiskTilknytning = geografiskTilknytning;
         this.adressebeskyttelseGradering = adressebeskyttelseGradering;
     }
 
@@ -51,10 +47,6 @@ public class Person {
         return foedselsdato;
     }
 
-    public Optional<GeografiskTilknytning> getGeografiskTilknytning() {
-        return Optional.ofNullable(geografiskTilknytning);
-    }
-
     public AdressebeskyttelseGradering getAdressebeskyttelseGradering() {
         return adressebeskyttelseGradering;
     }
@@ -68,7 +60,6 @@ public class Person {
         return "Person{" +
                 "opphold='" + opphold + '\'' +
                 ", statsborgerskap='" + statsborgerskap + '\'' +
-                ", geografiskTilknytning='" + geografiskTilknytning + '\'' +
                 '}';
     }
 

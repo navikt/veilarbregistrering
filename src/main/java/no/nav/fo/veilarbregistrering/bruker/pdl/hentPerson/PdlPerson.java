@@ -8,7 +8,6 @@ public class PdlPerson {
     private List<PdlStatsborgerskap> statsborgerskap;
     private List<PdlTelefonnummer> telefonnummer;
     private List<PdlFoedsel> foedsel;
-    private PdlGeografiskTilknytning geografiskTilknytning;
     private List<PdlAdressebeskyttelse> adressebeskyttelse;
 
     public PdlPerson() {
@@ -74,14 +73,6 @@ public class PdlPerson {
 
     public void setFoedsel(List<PdlFoedsel> foedsel) {
         this.foedsel = foedsel;
-    }
-
-    public PdlGeografiskTilknytning getGeografiskTilknytning() {
-        return geografiskTilknytning;
-    }
-
-    public void setGeografiskTilknytning(PdlGeografiskTilknytning geografiskTilknytning) {
-        this.geografiskTilknytning = geografiskTilknytning;
     }
 
     public Optional<PdlAdressebeskyttelse> strengesteAdressebeskyttelse() {
