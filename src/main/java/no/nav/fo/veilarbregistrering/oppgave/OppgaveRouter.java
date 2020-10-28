@@ -62,8 +62,8 @@ public class OppgaveRouter {
         }
 
         if (harBrukerAdressebeskyttelse(bruker)) {
-            LOG.info("Fant bruker med adressebeskyttelse -> sender oppgave til intern brukerstøtte");
-            return Optional.of(Enhetnr.internBrukerstotte());
+            LOG.info("Fant bruker med adressebeskyttelse -> overlater til oppgave-api å route selv");
+            return Optional.empty();
         }
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
