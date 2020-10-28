@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.Value;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils;
 import okhttp3.*;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static no.nav.apiapp.util.UrlUtils.joinPaths;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;

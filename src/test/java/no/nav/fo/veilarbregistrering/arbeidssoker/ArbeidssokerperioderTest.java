@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 
-import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medArbs;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medIserv;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder;

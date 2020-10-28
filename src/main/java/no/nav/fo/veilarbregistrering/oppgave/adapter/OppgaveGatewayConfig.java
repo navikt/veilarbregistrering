@@ -5,9 +5,6 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
-
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
