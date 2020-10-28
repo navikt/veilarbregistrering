@@ -236,7 +236,7 @@ public class OppgaveRouterTest {
 
         PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
 
-        Person person = Person.of(null, null, null, null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG);
+        Person person = Person.of(null, null, null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG);
         when(pdlOppslagGateway.hentPerson(BRUKER.getAktorId())).thenReturn(Optional.of(person));
 
         OppgaveRouter oppgaveRouter = new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway);

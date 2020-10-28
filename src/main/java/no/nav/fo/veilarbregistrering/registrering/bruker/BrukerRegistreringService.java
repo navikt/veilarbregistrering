@@ -2,8 +2,10 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.*;
-import no.nav.fo.veilarbregistrering.metrics.Metrics;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
@@ -29,8 +31,6 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EV
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.GeografikTilknytningAvstemning.LIK;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.GeografikTilknytningAvstemning.ULIK;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
@@ -46,7 +46,6 @@ public class BrukerRegistreringService {
     private final UnleashService unleashService;
     private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
-    private final PdlOppslagGateway pdlOppslagGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidsforholdGateway arbeidsforholdGateway;
@@ -59,7 +58,6 @@ public class BrukerRegistreringService {
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      PersonGateway personGateway,
-                                     PdlOppslagGateway pdlOppslagGateway,
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ManuellRegistreringService manuellRegistreringService,
@@ -71,7 +69,6 @@ public class BrukerRegistreringService {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
-        this.pdlOppslagGateway = pdlOppslagGateway;
         this.unleashService = unleashService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
@@ -167,28 +164,7 @@ public class BrukerRegistreringService {
             LOG.warn("Hent geografisk tilknytning fra TPS feilet. Skal ikke påvirke annen bruk.", e);
         }
 
-        if (hentingGtFraPdl()) {
-            try {
-                Optional<GeografiskTilknytning> finalGeografiskTilknytning = geografiskTilknytning;
-
-                Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
-                person.ifPresent(p -> {
-                    Optional<GeografiskTilknytning> geografiskTilknytningPdl = person.get().getGeografiskTilknytning();
-                    reportTags(
-                            Metrics.Event.GEOGRAFISK_TILKNYTNING_AVSTEMNING,
-                            finalGeografiskTilknytning.equals(geografiskTilknytningPdl) ? LIK : ULIK);
-                });
-
-            } catch (RuntimeException e) {
-                LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e);
-            }
-        }
-
         return geografiskTilknytning;
-    }
-
-    private boolean hentingGtFraPdl() {
-        return unleashService.isEnabled("veilarbregistrering.registrering.bruker.gtFraPdl");
     }
 
     private OrdinaerBrukerRegistrering opprettBruker(Bruker bruker, OrdinaerBrukerRegistrering brukerRegistrering) {

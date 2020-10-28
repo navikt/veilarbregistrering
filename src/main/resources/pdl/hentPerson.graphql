@@ -18,12 +18,6 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
         nummer,
         prioritet
     },
-    geografiskTilknytning {
-        gtType,
-        gtKommune,
-        gtBydel,
-        gtLand
-    },
     adressebeskyttelse {
         gradering
     }

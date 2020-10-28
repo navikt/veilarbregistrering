@@ -54,7 +54,6 @@ class SykmeldtInfoClientTest {
         UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildOppfolgingClient();
         PersonGateway personGateway = mock(PersonGateway.class);
-        PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
@@ -73,7 +72,6 @@ class SykmeldtInfoClientTest {
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
                         personGateway,
-                        pdlOppslagGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

@@ -140,9 +140,6 @@ class BrukerRegistreringServiceIntegrationTest {
         public PersonGateway personGateway() { return mock(PersonGateway.class); }
 
         @Bean
-        public PdlOppslagGateway pdlOppslagGateway() { return mock(PdlOppslagGateway.class); }
-
-        @Bean
         public SykmeldtInfoClient sykeforloepMetadataClient() {
             return mock(SykmeldtInfoClient.class);
         }
@@ -168,7 +165,6 @@ class BrukerRegistreringServiceIntegrationTest {
                 ProfileringRepository profileringRepository,
                 OppfolgingClient oppfolgingClient,
                 PersonGateway personGateway,
-                PdlOppslagGateway pdlOppslagGateway,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
@@ -183,7 +179,6 @@ class BrukerRegistreringServiceIntegrationTest {
                     profileringRepository,
                     new OppfolgingGatewayImpl(oppfolgingClient),
                     personGateway,
-                    pdlOppslagGateway,
                     new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
                     manuellRegistreringService,

@@ -56,7 +56,6 @@ public class BrukerRegistreringServiceTest {
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
         personGateway = mock(PersonGateway.class);
-        PdlOppslagGateway pdlOppslagGateway = mock(PdlOppslagGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
@@ -72,7 +71,6 @@ public class BrukerRegistreringServiceTest {
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
                         personGateway,
-                        pdlOppslagGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         manuellRegistreringService,

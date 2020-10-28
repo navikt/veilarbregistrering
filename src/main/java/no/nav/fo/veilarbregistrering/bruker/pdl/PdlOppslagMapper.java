@@ -29,7 +29,6 @@ class PdlOppslagMapper {
                 pdlPerson.getSistePdlFoedsel()
                         .map(PdlOppslagMapper::map)
                         .orElse(null),
-                map(pdlPerson.getGeografiskTilknytning()),
                 pdlPerson.strengesteAdressebeskyttelse()
                         .map(PdlOppslagMapper::map)
                         .orElse(AdressebeskyttelseGradering.UKJENT));
@@ -73,29 +72,6 @@ class PdlOppslagMapper {
                         Gruppe.valueOf(pdlIdent.getGruppe().name())
                 ))
                 .collect(toList()));
-    }
-
-    private static GeografiskTilknytning map(PdlGeografiskTilknytning geografiskTilknytning) {
-        if (geografiskTilknytning == null) {
-            return null;
-        }
-
-        try {
-            GtType gtType = geografiskTilknytning.getGtType();
-            switch (gtType) {
-                case BYDEL:
-                    return GeografiskTilknytning.of(geografiskTilknytning.getGtBydel());
-                case KOMMUNE:
-                    return GeografiskTilknytning.of(geografiskTilknytning.getGtKommune());
-                case UTLAND:
-                    String gtLand = geografiskTilknytning.getGtLand();
-                    return gtLand != null ? GeografiskTilknytning.of(gtLand) : ukjentBostedsadresse();
-            }
-            return null;
-        } catch (RuntimeException e) {
-            LOG.warn(String.format("Mapping av geografisk tilknytning %s fra PDL feilet", geografiskTilknytning), e);
-        }
-        return null;
     }
 
     protected static AdressebeskyttelseGradering map(PdlAdressebeskyttelse adressebeskyttelse) {

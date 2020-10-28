@@ -18,7 +18,7 @@ public class PersonTest {
     }
 
     private Person personMedAdressebeskyttelseGradering(AdressebeskyttelseGradering gradering) {
-        return Person.of(null, null, null, null, null, gradering);
+        return Person.of(null, null, null,null, gradering);
     }
 
 }

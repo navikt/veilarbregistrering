@@ -38,30 +38,6 @@ public class PdlOppslagMapperTest {
     }
 
     @Test
-    public void skal_mappe_utland_uten_gtLand_til_NOR() {
-        PdlPerson pdlPerson = PdlPersonTestdataBuilder
-                .basic()
-                .geografiskTilknytning(GtType.UTLAND, null)
-                .build();
-
-        Person person = PdlOppslagMapper.map(pdlPerson);
-
-        assertThat(person.getGeografiskTilknytning()).hasValue(GeografiskTilknytning.of("NOR"));
-    }
-
-    @Test
-    public void skal_mappe_utland_med_gtLand_til_landkode() {
-        PdlPerson pdlPerson = PdlPersonTestdataBuilder
-                .basic()
-                .geografiskTilknytning(GtType.UTLAND, "POL")
-                .build();
-
-        Person person = PdlOppslagMapper.map(pdlPerson);
-
-        assertThat(person.getGeografiskTilknytning()).hasValue(GeografiskTilknytning.of("POL"));
-    }
-
-    @Test
     public void skal_mappe_identer() {
         PdlIdent pdlIdent = new PdlIdent();
         pdlIdent.setIdent("12345678910");
