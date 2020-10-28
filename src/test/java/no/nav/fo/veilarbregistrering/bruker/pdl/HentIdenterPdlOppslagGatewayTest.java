@@ -13,7 +13,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
@@ -68,7 +68,7 @@ class HentIdenterPdlOppslagGatewayTest {
         pdlIdent.setGruppe(PdlGruppe.FOLKEREGISTERIDENT);
 
         PdlIdenter pdlIdenter = new PdlIdenter();
-        pdlIdenter.setIdenter(Arrays.asList(pdlIdent));
+        pdlIdenter.setIdenter(Collections.singletonList(pdlIdent));
 
         return pdlIdenter;
     }

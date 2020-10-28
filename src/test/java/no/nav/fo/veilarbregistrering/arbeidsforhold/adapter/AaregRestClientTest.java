@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class AaregRestClientTest {
 
         ArbeidsavtaleDto arbeidsavtaleDto = new ArbeidsavtaleDto();
         arbeidsavtaleDto.setYrke("2130123");
-        arbeidsforholdDto.setArbeidsavtaler(Arrays.asList(arbeidsavtaleDto));
+        arbeidsforholdDto.setArbeidsavtaler(Collections.singletonList(arbeidsavtaleDto));
 
         assertThat(arbeidsforholdDtos).containsOnly(arbeidsforholdDto);
     }

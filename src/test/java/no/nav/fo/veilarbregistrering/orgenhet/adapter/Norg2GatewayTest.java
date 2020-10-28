@@ -34,7 +34,7 @@ public class Norg2GatewayTest {
         assertThat(enhetsnr).hasValue(Enhetnr.of("0393"));
     }
 
-    private class Norg2StubClient extends Norg2RestClient {
+    private static class Norg2StubClient extends Norg2RestClient {
 
         private final Gson gson = new GsonBuilder().create();
 

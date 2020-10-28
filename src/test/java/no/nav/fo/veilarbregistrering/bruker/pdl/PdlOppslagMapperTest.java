@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +69,7 @@ public class PdlOppslagMapperTest {
         pdlIdent.setGruppe(PdlGruppe.FOLKEREGISTERIDENT);
 
         PdlIdenter pdlIdenter = new PdlIdenter();
-        pdlIdenter.setIdenter(Arrays.asList(pdlIdent));
+        pdlIdenter.setIdenter(Collections.singletonList(pdlIdent));
 
         Identer identer = PdlOppslagMapper.map(pdlIdenter);
 
