@@ -77,7 +77,7 @@ public class OppgaveIntegrationTest {
         String dagensdato = LocalDate.of(2020, 5, 27).toString();
         String toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString();
 
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OppgaveType.UTVANDRET)).thenReturn(Optional.of(Enhetnr.of("0301")));
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.of(Enhetnr.of("0301")));
 
         mockServer.when(
                 request()

@@ -56,7 +56,7 @@ public class OppgaveRouter {
         this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
-    public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
+    public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {
         if (harBrukerAdressebeskyttelse(bruker)) {
             return Optional.empty();
         }
