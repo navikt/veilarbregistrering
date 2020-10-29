@@ -113,8 +113,13 @@ public class OppgaveRouter {
             return false;
         }
 
-        Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
-        return person.map(Person::harAdressebeskyttelse).orElse(false);
+        try {
+            Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
+            return person.map(Person::harAdressebeskyttelse).orElse(false);
+        } catch (Exception e) {
+            LOG.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e);
+            return false;
+        }
     }
 
     private boolean kanHenteEnhetsnummerForOppgavetype(OppgaveType oppgaveType) {
