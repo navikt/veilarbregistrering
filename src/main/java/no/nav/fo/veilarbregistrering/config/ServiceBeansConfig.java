@@ -261,12 +261,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppholdstillatelseService datakvalitetOppholdstillatelseService(
-            PdlOppslagGateway pdlOppslagGateway) {
-        return new OppholdstillatelseServiceImpl(pdlOppslagGateway);
-    }
-
-    @Bean
     KontaktinfoService kontaktinfoService(
             PdlOppslagGateway pdlOppslagGateway,
             KrrGateway krrGateway) {
