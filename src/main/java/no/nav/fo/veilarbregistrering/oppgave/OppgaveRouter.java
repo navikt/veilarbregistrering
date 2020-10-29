@@ -57,10 +57,6 @@ public class OppgaveRouter {
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
-        if (!kanHenteEnhetsnummerForOppgavetype(oppgaveType)) {
-            return Optional.empty();
-        }
-
         if (harBrukerAdressebeskyttelse(bruker)) {
             return Optional.empty();
         }
@@ -120,13 +116,6 @@ public class OppgaveRouter {
             LOG.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e);
             return false;
         }
-    }
-
-    private boolean kanHenteEnhetsnummerForOppgavetype(OppgaveType oppgaveType) {
-        if (unleashService.isEnabled("veilarbregistrering.utvidetEnhetsoppslagForAlleOppgavetyper")) {
-            return true;
-        }
-        return oppgaveType == OppgaveType.UTVANDRET;
     }
 
     public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
