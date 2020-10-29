@@ -5,7 +5,6 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
-import no.nav.fo.veilarbregistrering.bruker.OppholdstillatelseService;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -65,15 +64,6 @@ public class KafkaConfig {
             properties.putAll(getSecurityConfig());
         }
         return properties;
-    }
-
-    @Bean
-    KontaktBrukerOpprettetKafkaConsumer kontaktBrukerOpprettetKafkaConsumer(
-            OppholdstillatelseService oppholdstillatelseService) {
-        return new KontaktBrukerOpprettetKafkaConsumer(
-                kafkaConsumerProperties(),
-                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix(),
-                oppholdstillatelseService);
     }
 
     @Bean
