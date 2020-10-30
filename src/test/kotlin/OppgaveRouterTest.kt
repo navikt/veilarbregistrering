@@ -23,8 +23,9 @@ import java.time.LocalDate
 import java.util.*
 
 class OppgaveRouterTest {
+    
     @Test
-    fun ingen_arbeidsforhold_skal_gi_intern_brukerstotte() {
+    fun `ingen arbeidsforhold skal gi intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforhold.of(emptyList()) }
         val enhetGateway = EnhetGateway { organisasjonsnummer: Organisasjonsnummer? -> Optional.empty() }
         val norg2Gateway: Norg2Gateway = StubNorg2Gateway()
@@ -37,7 +38,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun ingen_enhet_for_orgnummer_skal_gi_intern_brukerstotte() {
+    fun `ingen enhet for orgnummer skal gi intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val enhetGateway = EnhetGateway { organisasjonsnummer: Organisasjonsnummer? -> Optional.empty() }
         val norg2Gateway: Norg2Gateway = StubNorg2Gateway()
@@ -50,7 +51,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun ingen_navenhet_for_organisasjon_skal_gi_intern_brukerstotte() {
+    fun `ingen navenhet for organisasjon skal gi intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1240"),
@@ -66,7 +67,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun enhetsnummer_skal_returneres_nar_alle_koblingen_til_arbeidsforhold_er_komplett() {
+    fun `enhetsnummer skal returneres nar alle koblingen til arbeidsforhold er komplett`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1241"),
@@ -82,7 +83,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun geografisk_tilknytning_med_by_med_bydel_skal_gi_intern_brukerstotte() {
+    fun `geografisk tilknytning med by med bydel skal gi intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val enhetGateway = EnhetGateway { organisasjonsnummer: Organisasjonsnummer? -> Optional.empty() }
         val norg2Gateway: Norg2Gateway = StubNorg2Gateway()
@@ -95,7 +96,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun geografisk_tilknytning_med_unntak_av_landkode_skal_gi_empty_enhetsnummer() {
+    fun `geografisk tilknytning med unntak av landkode skal gi empty enhetsnummer`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val enhetGateway = EnhetGateway { organisasjonsnummer: Organisasjonsnummer? -> Optional.empty() }
         val norg2Gateway: Norg2Gateway = StubNorg2Gateway()
@@ -108,7 +109,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun geografisk_tilknytning_med_landkode_skal_bruke_arbeidsforhold_til_routing() {
+    fun `geografisk tilknytning med landkode skal bruke arbeidsforhold til routing`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1241"),
@@ -124,7 +125,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun kommunenummer_tilhorende_kommune_med_bydeler_skal_tildeles_intern_brukerstotte() {
+    fun `kommunenummer tilhorende kommune med bydeler skal tildeles intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of(KommuneMedBydel.STAVANGER),
@@ -140,7 +141,7 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun brukere_med_adressebeskyttelse_overlates_til_oppgave_api() {
+    fun `brukere med adressebeskyttelse overlates til oppgave api`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert() }
         val enhetGateway = EnhetGateway { organisasjonsnummer: Organisasjonsnummer? -> Optional.empty() }
         val norg2Gateway: Norg2Gateway = StubNorg2Gateway()
