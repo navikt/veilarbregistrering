@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder
@@ -14,7 +16,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.sbl.featuretoggle.unleash.UnleashService
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.time.LocalDate
@@ -31,7 +33,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
 
     @Test
@@ -44,7 +46,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
 
     @Test
@@ -60,7 +62,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
 
     @Test
@@ -76,7 +78,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
+        assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
     }
 
     @Test
@@ -89,7 +91,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
+        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
 
     @Test
@@ -102,7 +104,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).isEmpty
+        assertThat(enhetsnr).isEmpty
     }
 
     @Test
@@ -118,7 +120,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
+        assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
     }
 
     @Test
@@ -134,7 +136,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
+        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
 
     @Test
@@ -146,10 +148,10 @@ class OppgaveRouterTest {
         val unleashService = unleashServiceMedFeatures("veilarbregistrering.adressebeskyttelse")
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val person = Person.of(null, null, null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG)
-        Mockito.`when`(pdlOppslagGateway.hentPerson(BRUKER.aktorId)).thenReturn(Optional.of(person))
+        whenever(pdlOppslagGateway.hentPerson(BRUKER.aktorId)).thenReturn(Optional.of(person))
         val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        Assertions.assertThat(enhetsnr).isEmpty
+        assertThat(enhetsnr).isEmpty
     }
 
     internal class StubNorg2Gateway : Norg2Gateway {
@@ -162,18 +164,15 @@ class OppgaveRouterTest {
             } else Optional.empty()
         }
 
-        override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> {
-            return emptyMap()
-        }
+        override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = emptyMap()
     }
 
-    private fun unleashServiceMedFeatures(vararg aktiverteFeatures: String): UnleashService {
-        val unleashService = Mockito.mock(UnleashService::class.java)
-        for (aktivertFeature in aktiverteFeatures) {
-            Mockito.`when`(unleashService.isEnabled(aktivertFeature)).thenReturn(true)
-        }
-        return unleashService
-    }
+    private fun unleashServiceMedFeatures(vararg aktiverteFeatures: String) =
+            mock<UnleashService>().also { unleashService ->
+                aktiverteFeatures.forEach { aktivertFeature ->
+                    whenever(unleashService.isEnabled(aktivertFeature)).thenReturn(true)
+                }
+            }
 
     companion object {
         private val BRUKER = Bruker.of(
