@@ -10,6 +10,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NavEnhet {
-    Enhetnr id;
+    String id;
     String navn;
 }

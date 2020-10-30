@@ -37,7 +37,7 @@ class Norg2GatewayImpl implements Norg2Gateway {
         List<RsEnhet> rsEnhets = norg2RestClient.hentAlleEnheter();
 
         return rsEnhets.stream()
-                .map(rs -> new NavEnhet(Enhetnr.of(rs.getEnhetNr()), rs.getNavn()))
-                .collect(toMap(NavEnhet::getId, navEnhet -> navEnhet));
+                .map(rs -> new NavEnhet(rs.getEnhetNr(), rs.getNavn()))
+                .collect(toMap(navEnhet -> Enhetnr.of(navEnhet.getId()), navEnhet -> navEnhet));
     }
 }

@@ -27,15 +27,15 @@ class ManuellRegistreringServiceTest {
         manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, norg2Gateway);
 
         Map<Enhetnr, NavEnhet> enheter = new HashMap();
-        enheter.put(Enhetnr.of("1234"), new NavEnhet(Enhetnr.of("1234"), "TEST1"));
-        enheter.put(Enhetnr.of("5678"), new NavEnhet(Enhetnr.of("5678"), "TEST2"));
+        enheter.put(Enhetnr.of("1234"), new NavEnhet("1234", "TEST1"));
+        enheter.put(Enhetnr.of("5678"), new NavEnhet("5678", "TEST2"));
 
         when(norg2Gateway.hentAlleEnheter()).thenReturn(enheter);
     }
     @Test
     public void skalFinneRiktigEnhet(){
         Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet(Enhetnr.of("1234"));
-        assertThat(enhet).hasValue(new NavEnhet(Enhetnr.of("1234"), "TEST1"));
+        assertThat(enhet).hasValue(new NavEnhet("1234", "TEST1"));
     }
 
     @Test
