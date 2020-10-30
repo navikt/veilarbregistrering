@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.util.*
 
 class OppgaveRouterTest {
-    
+
     @Test
     fun `ingen arbeidsforhold skal gi intern brukerstotte`() {
         val arbeidsforholdGateway = ArbeidsforholdGateway { fnr: Foedselsnummer? -> FlereArbeidsforhold.of(emptyList()) }
@@ -32,7 +32,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.empty() }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
@@ -45,7 +45,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.empty() }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
@@ -61,7 +61,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.empty() }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
     }
@@ -77,7 +77,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.empty() }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
     }
@@ -90,7 +90,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.of(GeografiskTilknytning.of("0301")) }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
@@ -103,7 +103,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.of(GeografiskTilknytning.of("030106")) }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).isEmpty
     }
@@ -119,7 +119,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.of(GeografiskTilknytning.of("DNK")) }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
     }
@@ -135,7 +135,7 @@ class OppgaveRouterTest {
         val personGateway = PersonGateway { foedselsnummer: Foedselsnummer? -> Optional.of(GeografiskTilknytning.of("DNK")) }
         val unleashService = Mockito.mock(UnleashService::class.java)
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
@@ -150,10 +150,20 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = Mockito.mock(PdlOppslagGateway::class.java)
         val person = Person.of(null, null, null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG)
         whenever(pdlOppslagGateway.hentPerson(BRUKER.aktorId)).thenReturn(Optional.of(person))
-        val oppgaveRouter = OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).isEmpty
     }
+
+    private fun oppgaveRouter(
+            arbeidsforholdGateway: ArbeidsforholdGateway,
+            enhetGateway: EnhetGateway,
+            norg2Gateway: Norg2Gateway,
+            personGateway: PersonGateway,
+            unleashService: UnleashService,
+            pdlOppslagGateway: PdlOppslagGateway
+    ) =
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
 
     internal class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
