@@ -74,7 +74,8 @@ class OppgaveGatewayTest {
                                 "\"beskrivelse\":\"" +
                                 "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
                                 "og har selv opprettet denne oppgaven. " +
-                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse.\"," +
+                                "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse. " +
+                                "\\n\\nHar oppgaven havnet i feil oppgaveliste? Da ønsker vi som har utviklet løsningen tilbakemelding på dette. Meld sak her: https://jira.adeo.no/plugins/servlet/desk/portal/541/create/3384. Takk!\"," +
                                 "\"tema\":\"OPP\"," +
                                 "\"oppgavetype\":\"KONT_BRUK\"," +
                                 "\"fristFerdigstillelse\":\"" +
