@@ -106,11 +106,10 @@ class OppgaveRouterTest {
 
     @Test
     fun `brukere med adressebeskyttelse overlates til oppgave api`() {
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("030106")) }
-        val unleashService = unleashServiceMedFeatures("veilarbregistrering.adressebeskyttelse")
+        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
         val person = Person.of(null, null, null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG)
         val pdlOppslagGateway = StubPdlOppslagGateway(users = mapOf(BRUKER.aktorId to person))
-        val oppgaveRouter = oppgaveRouter(personGateway = personGateway, unleashService = unleashService, pdlOppslagGateway = pdlOppslagGateway)
+        val oppgaveRouter = oppgaveRouter(personGateway = personGateway, pdlOppslagGateway = pdlOppslagGateway)
 
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).isEmpty
