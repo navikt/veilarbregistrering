@@ -14,30 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PdlOppslagMapperTest {
 
     @Test
-    public void skal_mappe_opphold_uten_periode() {
-        PdlPerson pdlPerson = PdlPersonTestdataBuilder
-                .basic()
-                .opphold(Oppholdstype.PERMANENT)
-                .build();
-
-        Person person = PdlOppslagMapper.map(pdlPerson);
-
-        assertThat(person.getStatsborgerskap().getStatsborgerskap()).isEqualTo("NOR");
-    }
-
-    @Test
-    public void skal_mappe_statsborgerskap_uten_periode() {
-        PdlPerson pdlPerson = PdlPersonTestdataBuilder
-                .basic()
-                .statsborgerskap("NOR")
-                .build();
-
-        Person person = PdlOppslagMapper.map(pdlPerson);
-
-        assertThat(person.getOpphold().getType()).isEqualTo(Opphold.Oppholdstype.PERMANENT);
-    }
-
-    @Test
     public void skal_mappe_identer() {
         PdlIdent pdlIdent = new PdlIdent();
         pdlIdent.setIdent("12345678910");
