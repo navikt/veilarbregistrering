@@ -22,8 +22,6 @@ import static org.mockito.Mockito.mock;
 
 public class PdlOppslagClientTest {
 
-    private static final String HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json";
-    private static final String HENT_PERSON_OK_UTEN_PERIODER_JSON = "/pdl/hentPersonOkUtenPerioder.json";
     private static final String HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json";
     private static final String HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
     private static final String HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json";
