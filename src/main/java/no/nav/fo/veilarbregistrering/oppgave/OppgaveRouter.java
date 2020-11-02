@@ -105,10 +105,6 @@ public class OppgaveRouter {
     }
 
     private boolean harBrukerAdressebeskyttelse(Bruker bruker) {
-        if (!unleashService.isEnabled("veilarbregistrering.adressebeskyttelse")) {
-            return false;
-        }
-
         try {
             Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
             return person.map(Person::harAdressebeskyttelse).orElse(false);
