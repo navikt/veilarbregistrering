@@ -43,7 +43,7 @@ spec:
     - name: ABAC_PDP_ENDPOINT_URL
       value: {{ abac_pdp_endpoint_url }}
     - name: UNLEASH_API_URL
-      value: https://unleash.nais.adeo.no/api/
+      value: https://unleash.nais.io/api/
     - name: NORG2_URL
       value: {{ norg2_url }}
     - name: OPPGAVE_URL
