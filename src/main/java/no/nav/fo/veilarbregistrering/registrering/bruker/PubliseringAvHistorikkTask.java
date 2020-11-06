@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.concurrent.Executors;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 public class PubliseringAvHistorikkTask implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvHistorikkTask.class);
@@ -28,9 +32,10 @@ public class PubliseringAvHistorikkTask implements Runnable {
 
         /*
         Kan taes inn ved behov for å kjøre ny batch
+         */
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
-         */
+
     }
 
     @Override
