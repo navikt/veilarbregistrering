@@ -13,6 +13,7 @@ import org.slf4j.MDC;
 import java.nio.charset.StandardCharsets;
 
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
+import static no.nav.fo.veilarbregistrering.log.CallId.getCorrelationIdAsBytes;
 import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
@@ -34,7 +35,7 @@ class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProdu
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(arbeidssokerRegistrertInternalEvent);
             ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, arbeidssokerRegistrertInternalEvent.getAktorId().asString(), arbeidssokerRegistrertEvent);
-            record.headers().add(new RecordHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID).getBytes(StandardCharsets.UTF_8)));
+            record.headers().add(new RecordHeader(MDC_CALL_ID, getCorrelationIdAsBytes()));
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {
                     LOG.error(String.format("ArbeidssokerRegistrertEvent publisert på topic, %s", topic), e);
