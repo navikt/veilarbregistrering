@@ -38,7 +38,7 @@ public class ArbeidssokerServiceBehandleTest {
     }
 
     @Test
-    public void endringer_for_2010_skal_ikke_persisteres() {
+    public void endringer_foer_2010_skal_ikke_persisteres() {
 
         FormidlingsgruppeEvent formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23,59,59));
 
