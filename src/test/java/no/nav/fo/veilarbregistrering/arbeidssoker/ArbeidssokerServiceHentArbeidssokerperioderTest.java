@@ -9,7 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE;
@@ -17,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ArbeidssokerServiceTest {
+public class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
     public static final Foedselsnummer FOEDSELSNUMMER_1 = Foedselsnummer.of("12345678911");
     public static final Foedselsnummer FOEDSELSNUMMER_2 = Foedselsnummer.of("11234567890");
