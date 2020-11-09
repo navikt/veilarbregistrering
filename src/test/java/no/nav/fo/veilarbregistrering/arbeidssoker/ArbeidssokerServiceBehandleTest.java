@@ -28,23 +28,23 @@ public class ArbeidssokerServiceBehandleTest {
     }
 
     @Test
-    public void behandle_skal_forkaste_endringer_for_2010() {
-
-        FormidlingsgruppeEvent formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23,59,59));
-
-        arbeidssokerService.behandle(formidlingsgruppeEvent);
-
-        verify(arbeidssokerRepository, never()).lagre(formidlingsgruppeEvent);
-    }
-
-    @Test
-    public void behandle_skal_ikke_forkaste_endringer_fra_2010_eller_senere() {
+    public void endringer_fra_2010_skal_persisteres() {
 
         FormidlingsgruppeEvent formidlingsgruppeEvent = testEvent(LocalDateTime.of(2010, Month.JANUARY, 01, 00,00,00));
 
         arbeidssokerService.behandle(formidlingsgruppeEvent);
 
         verify(arbeidssokerRepository, times(1)).lagre(formidlingsgruppeEvent);
+    }
+
+    @Test
+    public void endringer_for_2010_skal_ikke_persisteres() {
+
+        FormidlingsgruppeEvent formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23,59,59));
+
+        arbeidssokerService.behandle(formidlingsgruppeEvent);
+
+        verify(arbeidssokerRepository, never()).lagre(formidlingsgruppeEvent);
     }
 
     private FormidlingsgruppeEvent testEvent(LocalDateTime test) {
