@@ -1,6 +1,10 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.*;
+import lombok.SneakyThrows;
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.sql.SqlUtils;
 import org.slf4j.Logger;
@@ -11,6 +15,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,8 +38,30 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
+    @SneakyThrows
     @Override
     public long lagre(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
+        // Lag en hash av tidspunkt, person_id og (ny) formidlingsgruppe
+        String personId = endretFormidlingsgruppeCommand.getPersonId();
+        String formidlingsgruppe = endretFormidlingsgruppeCommand
+                .getForrigeFormidlingsgruppe()
+                .map(Formidlingsgruppe::stringValue)
+                .orElse(null);
+        Timestamp formidlingsgruppeEndret = Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret());
+
+        String hashInput = new StringBuilder()
+                .append(personId)
+                .append(formidlingsgruppe)
+                .append(formidlingsgruppeEndret.toString())
+                .toString();
+
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(hashInput.getBytes());
+        byte[] digest = md.digest();
+
+        String output = DatatypeConverter.printHexBinary(digest).toUpperCase();
+
+
         long id = nesteFraSekvens("FORMIDLINGSGRUPPE_SEQ");
         try {
             SqlUtils.insert(jdbcTemplate, "FORMIDLINGSGRUPPE")
@@ -41,18 +69,17 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                     .value("FOEDSELSNUMMER", endretFormidlingsgruppeCommand.getFoedselsnummer()
                             .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!"))
                             .stringValue())
-                    .value("PERSON_ID", endretFormidlingsgruppeCommand.getPersonId())
+                    .value("PERSON_ID", personId)
                     .value("PERSON_ID_STATUS", endretFormidlingsgruppeCommand.getPersonIdStatus())
                     .value("OPERASJON", endretFormidlingsgruppeCommand.getOperation().name())
                     .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
-                    .value("FORMIDLINGSGRUPPE_ENDRET", Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()))
-                    .value("FORR_FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppe()
-                            .map(Formidlingsgruppe::stringValue)
-                            .orElse(null))
+                    .value("FORMIDLINGSGRUPPE_ENDRET", formidlingsgruppeEndret)
+                    .value("FORR_FORMIDLINGSGRUPPE", formidlingsgruppe)
                     .value("FORR_FORMIDLINGSGRUPPE_ENDRET", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppeEndret()
                             .map(Timestamp::valueOf)
                             .orElse(null))
                     .value("FORMIDLINGSGRUPPE_LEST", Timestamp.valueOf(LocalDateTime.now()))
+                    .value("FUNKSJONELL_ID", output)
                     .execute();
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException(
