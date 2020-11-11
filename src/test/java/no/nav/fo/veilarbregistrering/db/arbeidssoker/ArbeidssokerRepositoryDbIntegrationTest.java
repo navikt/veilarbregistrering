@@ -36,6 +36,18 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
     }
 
     @Test
+    public void skal_kun_lagre_melding_en_gang() {
+        EndretFormidlingsgruppeCommand command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20));
+
+        long id = arbeidssokerRepository.lagre(command);
+        assertThat(id).isNotNull();
+
+        id = arbeidssokerRepository.lagre(command);
+
+        assertThat(id).isEqualTo(-1);
+    }
+
+    @Test
     public void skal_lagre_formidlingsgruppeEvent() {
         EndretFormidlingsgruppeCommand command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20));
 

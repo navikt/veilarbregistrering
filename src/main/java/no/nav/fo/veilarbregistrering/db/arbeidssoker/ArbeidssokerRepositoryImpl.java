@@ -38,10 +38,8 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    @SneakyThrows
     @Override
     public long lagre(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
-        // Lag en hash av tidspunkt, person_id og (ny) formidlingsgruppe
         String personId = endretFormidlingsgruppeCommand.getPersonId();
         String formidlingsgruppe = endretFormidlingsgruppeCommand
                 .getForrigeFormidlingsgruppe()
@@ -49,18 +47,13 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                 .orElse(null);
         Timestamp formidlingsgruppeEndret = Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret());
 
-        String hashInput = new StringBuilder()
-                .append(personId)
-                .append(formidlingsgruppe)
-                .append(formidlingsgruppeEndret.toString())
-                .toString();
+        // Lag en en funksjonell ID (hash) av tidspunkt, person_id og (ny) formidlingsgruppe
+        String funksjonellID = opprettFunksjonellId(personId, formidlingsgruppe, formidlingsgruppeEndret.toString());
 
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(hashInput.getBytes());
-        byte[] digest = md.digest();
-
-        String output = DatatypeConverter.printHexBinary(digest).toUpperCase();
-
+        // Sjekk om vi allerede har lagret meldingen
+        if (erAlleredePersistentLagret(funksjonellID)) {
+            return -1;
+        }
 
         long id = nesteFraSekvens("FORMIDLINGSGRUPPE_SEQ");
         try {
@@ -79,7 +72,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                             .map(Timestamp::valueOf)
                             .orElse(null))
                     .value("FORMIDLINGSGRUPPE_LEST", Timestamp.valueOf(LocalDateTime.now()))
-                    .value("FUNKSJONELL_ID", output)
+                    .value("FUNKSJONELL_ID", funksjonellID)
                     .execute();
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException(
@@ -88,6 +81,33 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
             );
         }
         return id;
+    }
+
+    @SneakyThrows
+    private String opprettFunksjonellId(String id, String gruppe, String endret) {
+        String hashInput = new StringBuilder()
+                .append(id)
+                .append(gruppe)
+                .append(endret)
+                .toString();
+
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(hashInput.getBytes());
+        byte[] digest = md.digest();
+
+      return DatatypeConverter.printHexBinary(digest).toUpperCase();
+
+    }
+
+    private boolean erAlleredePersistentLagret(String funksjonellID) {
+        String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FUNKSJONELL_ID = ?";
+
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = jdbcTemplate.query(
+                sql,
+                new Object[]{funksjonellID}, new FormidlingsgruppeendringRowMapper()
+        );
+
+        return !formidlingsgruppeendringer.isEmpty();
     }
 
     private long nesteFraSekvens(String sekvensNavn) {
