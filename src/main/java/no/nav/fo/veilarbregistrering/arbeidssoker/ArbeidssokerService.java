@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static java.lang.String.format;
 
 public class ArbeidssokerService {
@@ -36,6 +38,12 @@ public class ArbeidssokerService {
         if (!endretFormidlingsgruppeCommand.getFoedselsnummer().isPresent()) {
             LOG.warn(format("Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
                     endretFormidlingsgruppeCommand.getPersonId()));
+            return;
+        }
+
+        if (endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret().isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))) {
+            LOG.warn(format("Foreldet formidlingsgruppe-endring (%s) lest fra topic: 'gg-arena-formidlinggruppe-v1'  - denne forkastes.",
+                    endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()));
             return;
         }
 
