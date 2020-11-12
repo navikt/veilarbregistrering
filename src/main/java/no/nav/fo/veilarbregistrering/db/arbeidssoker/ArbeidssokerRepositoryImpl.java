@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
@@ -15,8 +14,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -41,17 +38,10 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
     @Override
     public long lagre(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
         String personId = endretFormidlingsgruppeCommand.getPersonId();
-        String formidlingsgruppe = endretFormidlingsgruppeCommand
-                .getForrigeFormidlingsgruppe()
-                .map(Formidlingsgruppe::stringValue)
-                .orElse(null);
+        String formidlingsgruppe = endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue();
         Timestamp formidlingsgruppeEndret = Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret());
 
-        // Lag en en funksjonell ID (hash) av tidspunkt, person_id og (ny) formidlingsgruppe
-        String funksjonellID = opprettFunksjonellId(personId, formidlingsgruppe, formidlingsgruppeEndret.toString());
-
-        // Sjekk om vi allerede har lagret meldingen
-        if (erAlleredePersistentLagret(funksjonellID)) {
+        if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
             return -1;
         }
 
@@ -67,12 +57,13 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                     .value("OPERASJON", endretFormidlingsgruppeCommand.getOperation().name())
                     .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
                     .value("FORMIDLINGSGRUPPE_ENDRET", formidlingsgruppeEndret)
-                    .value("FORR_FORMIDLINGSGRUPPE", formidlingsgruppe)
+                    .value("FORR_FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppe()
+                            .map(Formidlingsgruppe::stringValue)
+                            .orElse(null))
                     .value("FORR_FORMIDLINGSGRUPPE_ENDRET", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppeEndret()
                             .map(Timestamp::valueOf)
                             .orElse(null))
                     .value("FORMIDLINGSGRUPPE_LEST", Timestamp.valueOf(LocalDateTime.now()))
-                    .value("FUNKSJONELL_ID", funksjonellID)
                     .execute();
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException(
@@ -83,28 +74,12 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         return id;
     }
 
-    @SneakyThrows
-    private String opprettFunksjonellId(String id, String gruppe, String endret) {
-        String hashInput = new StringBuilder()
-                .append(id)
-                .append(gruppe)
-                .append(endret)
-                .toString();
-
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(hashInput.getBytes());
-        byte[] digest = md.digest();
-
-      return DatatypeConverter.printHexBinary(digest).toUpperCase();
-
-    }
-
-    private boolean erAlleredePersistentLagret(String funksjonellID) {
-        String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FUNKSJONELL_ID = ?";
+    private boolean erAlleredePersistentLagret(String personID, String formidlingsgruppe, Timestamp endret) {
+        String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE PERSON_ID = ? AND FORMIDLINGSGRUPPE = ? AND FORMIDLINGSGRUPPE_ENDRET = ?";
 
         List<Formidlingsgruppeendring> formidlingsgruppeendringer = jdbcTemplate.query(
                 sql,
-                new Object[]{funksjonellID}, new FormidlingsgruppeendringRowMapper()
+                new Object[]{personID, formidlingsgruppe, endret}, new FormidlingsgruppeendringRowMapper()
         );
 
         return !formidlingsgruppeendringer.isEmpty();
