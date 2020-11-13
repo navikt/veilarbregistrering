@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper;
 import no.nav.fo.veilarbregistrering.log.CallId;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -30,14 +31,18 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private final Properties kafkaConsumerProperties;
     private final String topic;
     private final ArbeidssokerService arbeidssokerService;
+    private final UnleashService unleashService;
+
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
             String topic,
-            ArbeidssokerService arbeidssokerService) {
+            ArbeidssokerService arbeidssokerService,
+            UnleashService unleashService) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.topic = topic;
         this.arbeidssokerService = arbeidssokerService;
+        this.unleashService = unleashService;
 
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
@@ -45,6 +50,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
     @Override
     public void run() {
+
         LOG.info("Running");
 
         try(KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
@@ -52,7 +58,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             LOG.info("Subscribing to {}", topic);
 
-            while (true) {
+            while (konsumeringAvFormidlingsgruppe()) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
@@ -80,5 +86,9 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     void behandleRecord(ConsumerRecord<String, String> record) {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
         arbeidssokerService.behandle(formidlingsgruppeEvent);
+    }
+
+    private boolean konsumeringAvFormidlingsgruppe() {
+        return unleashService.isEnabled("veilarbregistrering.konsumeringAvFormidlingsgruppe");
     }
 }
