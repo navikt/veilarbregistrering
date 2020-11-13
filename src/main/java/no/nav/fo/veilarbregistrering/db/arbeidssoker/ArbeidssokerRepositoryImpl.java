@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
@@ -42,6 +43,8 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         Timestamp formidlingsgruppeEndret = Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret());
 
         if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
+            LOG.info(format("Endringen er allerede lagret, denne forkastes. PersonID: %s, Formidlingsgruppe: %s, Endret: %s"
+                    , personId, formidlingsgruppe, formidlingsgruppeEndret.toString()));
             return -1;
         }
 
