@@ -86,7 +86,7 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
             properties.putAll(getSecurityConfig());
         }
