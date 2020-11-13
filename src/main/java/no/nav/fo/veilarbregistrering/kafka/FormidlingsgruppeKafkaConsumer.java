@@ -58,7 +58,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             LOG.info("Subscribing to {}", topic);
 
-            while (konsumeringAvFormidlingsgruppe()) {
+            while (!stopKonsumeringAvFormidlingsgruppe()) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
@@ -88,7 +88,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         arbeidssokerService.behandle(formidlingsgruppeEvent);
     }
 
-    private boolean konsumeringAvFormidlingsgruppe() {
-        return unleashService.isEnabled("veilarbregistrering.konsumeringAvFormidlingsgruppe");
+    private boolean stopKonsumeringAvFormidlingsgruppe() {
+        return unleashService.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
     }
 }
