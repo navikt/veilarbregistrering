@@ -60,7 +60,6 @@ class OppfolgingClientTest {
     public void setup() {
 
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildClient();
         PersonGateway personGateway = mock(PersonGateway.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
@@ -85,7 +84,6 @@ class OppfolgingClientTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        unleashService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository);
@@ -95,8 +93,6 @@ class OppfolgingClientTest {
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
                         .setAlder(50)
                         .setJobbetSammenhengendeSeksAvTolvSisteManeder(true));
-        when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
-        when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
     }
 
     private OppfolgingClient buildClient() {

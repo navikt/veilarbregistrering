@@ -3,7 +3,10 @@ package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 import com.google.common.net.MediaType;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -12,7 +15,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -24,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,7 +54,6 @@ class SykmeldtInfoClientTest {
     @BeforeEach
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
-        UnleashService unleashService = mock(UnleashService.class);
         oppfolgingClient = buildOppfolgingClient();
         PersonGateway personGateway = mock(PersonGateway.class);
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
@@ -76,13 +78,9 @@ class SykmeldtInfoClientTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        unleashService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfileringProducer,
                         aktiveringTilstandRepository);
-
-
-        when(unleashService.isEnabled(any())).thenReturn(true);
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {

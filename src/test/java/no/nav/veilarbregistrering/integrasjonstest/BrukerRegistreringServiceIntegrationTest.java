@@ -3,23 +3,25 @@ package no.nav.veilarbregistrering.integrasjonstest;
 import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,6 @@ import static org.mockito.Mockito.*;
 
 class BrukerRegistreringServiceIntegrationTest {
 
-    private static UnleashService unleashService;
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
@@ -69,7 +70,6 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
         startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
-        unleashService = context.getBean(UnleashService.class);
     }
 
     @AfterEach
@@ -101,8 +101,6 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
-        when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
-        when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
     }
@@ -110,11 +108,6 @@ class BrukerRegistreringServiceIntegrationTest {
     @Configuration
     @ComponentScan
     public static class BrukerregistreringConfigTest {
-
-        @Bean
-        public UnleashService unleashService() {
-            return mock(UnleashService.class);
-        }
 
         @Bean
         public BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
@@ -169,7 +162,6 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
-                UnleashService unleashServicee,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                 AktiveringTilstandRepository aktiveringTilstandRepository) {
@@ -183,7 +175,6 @@ class BrukerRegistreringServiceIntegrationTest {
                     arbeidsforholdGateway,
                     manuellRegistreringService,
                     startRegistreringUtils,
-                    unleashServicee,
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,
                     aktiveringTilstandRepository);
