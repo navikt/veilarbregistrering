@@ -26,5 +26,6 @@ ingresses:
   - https://veilarbregistrering.nais.adeo.no
   - https://app.adeo.no/veilarbregistrering
 oracleuser_path: /oracle/data/prod/creds/veilarbregistrering-user
+oracle_config_path: /oracle/data/prod/config/veilarbregistrering
 serviceuser_path: /serviceuser/data/prod/srvveilarbregistrering
 secrets_path: /kv/prod/fss/veilarbregistrering/default

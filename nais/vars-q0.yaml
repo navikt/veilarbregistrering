@@ -26,5 +26,6 @@ ingresses:
   - https://veilarbregistrering-q0.nais.preprod.local
   - https://app-q0.adeo.no/veilarbregistrering
 oracleuser_path: /oracle/data/dev/creds/veilarbregistrering_q0-user
+oracle_config_path: /oracle/data/dev/config/veilarbregistrering_q0
 serviceuser_path: /serviceuser/data/dev/srvveilarbregistrering
 secrets_path: /kv/preprod/fss/veilarbregistrering/q0
