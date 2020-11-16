@@ -32,7 +32,6 @@ import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.beregnRegistreringType;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
 
@@ -91,6 +90,37 @@ public class BrukerRegistreringService {
 
     @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
+
+        OrdinaerBrukerRegistrering oppettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), oppettetBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(oppettetBrukerRegistrering.getId(), profilering);
+
+        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
+
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofArenaOk(oppettetBrukerRegistrering.getId());
+        aktiveringTilstandRepository.lagre(registreringTilstand);
+
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+                new ArbeidssokerRegistrertInternalEvent(
+                        bruker.getAktorId(),
+                        oppettetBrukerRegistrering.getBesvarelse(),
+                        oppettetBrukerRegistrering.getOpprettetDato()));
+
+        arbeidssokerProfilertProducer.publiserProfilering(
+                bruker.getAktorId(),
+                profilering.getInnsatsgruppe(),
+                oppettetBrukerRegistrering.getOpprettetDato());
+
+        return oppettetBrukerRegistrering;
+    }
+
+    private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
@@ -102,41 +132,12 @@ public class BrukerRegistreringService {
         }
 
         try {
-            validerBrukerRegistrering(ordinaerBrukerRegistrering);
+            ValideringUtils.validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
             LOG.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
             OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(ordinaerBrukerRegistrering);
             throw e;
         }
-
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering1 = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
-
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), ordinaerBrukerRegistrering1.getBesvarelse());
-        profileringRepository.lagreProfilering(ordinaerBrukerRegistrering1.getId(), profilering);
-
-        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
-        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
-
-        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
-        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", ordinaerBrukerRegistrering1, profilering);
-
-        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofArenaOk(ordinaerBrukerRegistrering1.getId());
-        aktiveringTilstandRepository.lagre(registreringTilstand);
-
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                new ArbeidssokerRegistrertInternalEvent(
-                        bruker.getAktorId(),
-                        ordinaerBrukerRegistrering1.getBesvarelse(),
-                        ordinaerBrukerRegistrering1.getOpprettetDato()));
-
-        arbeidssokerProfilertProducer.publiserProfilering(
-                bruker.getAktorId(),
-                profilering.getInnsatsgruppe(),
-                ordinaerBrukerRegistrering1.getOpprettetDato());
-
-        OrdinaerBrukerRegistrering oppettetBrukerRegistrering = ordinaerBrukerRegistrering1;
-
-        return oppettetBrukerRegistrering;
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
