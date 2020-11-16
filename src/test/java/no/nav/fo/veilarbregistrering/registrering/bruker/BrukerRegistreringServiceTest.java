@@ -17,7 +17,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -50,7 +49,6 @@ public class BrukerRegistreringServiceTest {
 
     @BeforeEach
     public void setup() {
-        UnleashService unleashService = mock(UnleashService.class);
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
@@ -75,13 +73,9 @@ public class BrukerRegistreringServiceTest {
                         arbeidsforholdGateway,
                         manuellRegistreringService,
                         startRegistreringUtils,
-                        unleashService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository);
-
-        when(unleashService.isEnabled("veilarbregistrering.lagreTilstandErAktiv")).thenReturn(true);
-        when(unleashService.isEnabled("veilarbregistrering.lagreUtenArenaOverforing")).thenReturn(false);
     }
 
     /*

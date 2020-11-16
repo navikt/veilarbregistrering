@@ -59,7 +59,6 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
-            UnleashService unleashService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             AktiveringTilstandRepository aktiveringTilstandRepository
@@ -73,7 +72,6 @@ public class ServiceBeansConfig {
                 arbeidsforholdGateway,
                 manuellRegistreringService,
                 startRegistreringUtils,
-                unleashService,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
                 aktiveringTilstandRepository);

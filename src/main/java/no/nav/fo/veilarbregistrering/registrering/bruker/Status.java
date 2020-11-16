@@ -4,11 +4,19 @@ import java.util.Arrays;
 
 /**
  * Status representerer tilstanden til den aktuelle registreringen, og hvor de er i flyten.
+ *
+ * MOTTATT -> ARENA_OK
+ * MOTTATT -> MANGLER_ARBEIDSTILLATELSE -> OPPGAVE_OPPRETTET
+ * MOTTATT -> DOD_UTVANDRET_ELLER_FORSVUNNET -> OPPGAVE_OPPRETTET
+ * MOTTATT ->
+ *
+ * Ved å sette status
  */
 public enum Status {
 
     MOTTATT("mottatt"),
     ARENA_OK("ok"),
+    EVENT_PUBLISERT("eventPublisert"),
     UKJENT_BRUKER("ukjentBruker"),
     MANGLER_ARBEIDSTILLATELSE("oppholdstillatelse"),
     KAN_IKKE_REAKTIVERES("ikkeReaktivering"),
