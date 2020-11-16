@@ -85,11 +85,17 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, getAutoOffsetResetStrategy());
         if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
             properties.putAll(getSecurityConfig());
         }
         return properties;
+    }
+
+    private String getAutoOffsetResetStrategy() {
+        // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
+        // vil dette gi oss «eventual consistency».
+        return "earliest";
     }
 
     private String getGroupIdForFormidlingsgruppeConsumer() {
