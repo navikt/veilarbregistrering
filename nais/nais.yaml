@@ -92,6 +92,8 @@ spec:
     paths:
     - kvPath: {{ oracleuser_path }}
       mountPath: /var/run/secrets/nais.io/oracle_creds
+    - kvPath: {{ oracle_config_path }}
+      mountPath: /var/run/secrets/nais.io/oracle_config
     - kvPath: {{ serviceuser_path }}
       mountPath: /var/run/secrets/nais.io/serviceuser_creds
     - kvPath: {{ secrets_path }}
