@@ -11,8 +11,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -45,7 +43,6 @@ public class BrukerRegistreringService {
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidsforholdGateway arbeidsforholdGateway;
-    private final ManuellRegistreringService manuellRegistreringService;
     private final StartRegistreringUtils startRegistreringUtils;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final AktiveringTilstandRepository aktiveringTilstandRepository;
@@ -56,7 +53,6 @@ public class BrukerRegistreringService {
                                      PersonGateway personGateway,
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
-                                     ManuellRegistreringService manuellRegistreringService,
                                      StartRegistreringUtils startRegistreringUtils,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                                      ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -67,7 +63,6 @@ public class BrukerRegistreringService {
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
-        this.manuellRegistreringService = manuellRegistreringService;
         this.startRegistreringUtils = startRegistreringUtils;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
@@ -192,39 +187,6 @@ public class BrukerRegistreringService {
                 fnr.alder(now()),
                 () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now(), besvarelse);
-    }
-
-    public OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringForAktorId(bruker.getAktorId());
-
-        if (ordinaerBrukerRegistrering == null) {
-            return null;
-        }
-
-        Profilering profilering = profileringRepository.hentProfileringForId(
-                ordinaerBrukerRegistrering.getId());
-        ordinaerBrukerRegistrering.setProfilering(profilering);
-
-        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(
-                ordinaerBrukerRegistrering.getId(), ordinaerBrukerRegistrering.hentType());
-        ordinaerBrukerRegistrering.setManueltRegistrertAv(veileder);
-
-        return ordinaerBrukerRegistrering;
-    }
-
-    public SykmeldtRegistrering hentSykmeldtRegistrering(Bruker bruker) {
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
-                .hentSykmeldtregistreringForAktorId(bruker.getAktorId());
-
-        if (sykmeldtBrukerRegistrering == null) {
-            return null;
-        }
-        Veileder veileder = manuellRegistreringService.hentManuellRegistreringVeileder(
-                sykmeldtBrukerRegistrering.getId(), sykmeldtBrukerRegistrering.hentType());
-        sykmeldtBrukerRegistrering.setManueltRegistrertAv(veileder);
-
-        return sykmeldtBrukerRegistrering;
     }
 
     @Transactional

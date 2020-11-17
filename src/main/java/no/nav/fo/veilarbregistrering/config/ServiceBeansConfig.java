@@ -30,6 +30,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringSer
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvHistorikkTask;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
@@ -50,6 +51,17 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    HentRegistreringService hentRegistreringService(
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ProfileringRepository profileringRepository,
+            ManuellRegistreringService manuellRegistreringService) {
+        return new HentRegistreringService(
+                brukerRegistreringRepository,
+                profileringRepository,
+                manuellRegistreringService);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
@@ -57,7 +69,6 @@ public class ServiceBeansConfig {
             PersonGateway personGateway,
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
-            ManuellRegistreringService manuellRegistreringService,
             StartRegistreringUtils startRegistreringUtils,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -70,7 +81,6 @@ public class ServiceBeansConfig {
                 personGateway,
                 sykemeldingService,
                 arbeidsforholdGateway,
-                manuellRegistreringService,
                 startRegistreringUtils,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
@@ -96,6 +106,7 @@ public class ServiceBeansConfig {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
+            HentRegistreringService hentRegistreringService,
             UnleashService unleashService
     ) {
         return new RegistreringResource(
@@ -103,6 +114,7 @@ public class ServiceBeansConfig {
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
+                hentRegistreringService,
                 unleashService
         );
     }

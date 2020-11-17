@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.AfterEach;
@@ -61,7 +60,6 @@ class SykmeldtInfoClientTest {
         ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
         StartRegistreringUtils startRegistreringUtils = mock(StartRegistreringUtils.class);
-        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         }; //Noop, vi trenger ikke kafka
         ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
@@ -76,7 +74,6 @@ class SykmeldtInfoClientTest {
                         personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
-                        manuellRegistreringService,
                         startRegistreringUtils,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfileringProducer,

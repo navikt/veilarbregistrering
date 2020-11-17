@@ -40,6 +40,7 @@ public class RegistreringResource {
 
     private final UnleashService unleashService;
     private final BrukerRegistreringService brukerRegistreringService;
+    private final HentRegistreringService hentRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
@@ -49,12 +50,13 @@ public class RegistreringResource {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            UnleashService unleashService
+            HentRegistreringService hentRegistreringService, UnleashService unleashService
     ) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
+        this.hentRegistreringService = hentRegistreringService;
         this.unleashService = unleashService;
     }
 
@@ -116,8 +118,8 @@ public class RegistreringResource {
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringService.hentSykmeldtRegistrering(bruker);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker);
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
         if (brukerRegistreringWrapper == null) {
