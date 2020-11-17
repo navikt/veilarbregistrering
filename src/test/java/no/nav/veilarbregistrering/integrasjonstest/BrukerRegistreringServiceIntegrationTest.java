@@ -18,7 +18,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
@@ -143,11 +142,6 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public ManuellRegistreringService manuellRegistreringService() {
-            return mock(ManuellRegistreringService.class);
-        }
-
-        @Bean
         public StartRegistreringUtils startRegistreringUtils() {
             return mock(StartRegistreringUtils.class);
         }
@@ -160,7 +154,6 @@ class BrukerRegistreringServiceIntegrationTest {
                 PersonGateway personGateway,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
-                ManuellRegistreringService manuellRegistreringService,
                 StartRegistreringUtils startRegistreringUtils,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -173,7 +166,6 @@ class BrukerRegistreringServiceIntegrationTest {
                     personGateway,
                     new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
-                    manuellRegistreringService,
                     startRegistreringUtils,
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,

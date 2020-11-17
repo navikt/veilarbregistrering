@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -27,6 +28,7 @@ public class RegistreringResourceTest {
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
+    private HentRegistreringService hentRegistreringService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -36,6 +38,7 @@ public class RegistreringResourceTest {
         userService = mock(UserService.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+        hentRegistreringService = mock(HentRegistreringService.class);
         UnleashService unleashService = mock(UnleashService.class);
 
         registreringResource = new RegistreringResource(
@@ -43,6 +46,7 @@ public class RegistreringResourceTest {
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
+                hentRegistreringService,
                 unleashService
         );
     }
@@ -66,8 +70,8 @@ public class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
-        when(brukerRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
-        when(brukerRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
+        when(hentRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
+        when(hentRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());

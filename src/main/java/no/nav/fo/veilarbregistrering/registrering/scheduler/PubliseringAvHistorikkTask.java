@@ -1,6 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.scheduler;
 
 import no.nav.common.leaderelection.LeaderElection;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
+import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

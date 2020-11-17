@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -51,7 +50,6 @@ public class BrukerRegistreringServiceTest {
     public void setup() {
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
-        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         oppfolgingClient = mock(OppfolgingClient.class);
         personGateway = mock(PersonGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
@@ -71,7 +69,6 @@ public class BrukerRegistreringServiceTest {
                         personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
-                        manuellRegistreringService,
                         startRegistreringUtils,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,

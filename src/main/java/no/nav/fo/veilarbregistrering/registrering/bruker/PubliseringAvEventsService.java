@@ -33,10 +33,10 @@ public class PubliseringAvEventsService {
     }
 
     @Transactional
-    public void utforPublisering() {
+    public void publiserEvents() {
         Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandForOverforing();
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Ingen registreringer klare (status = MOTTATT) for overføring");
+            LOG.info("Ingen registreringer klare (status = OVERFOERT_ARENA_OK) for publisering av events");
             return;
         }
 
