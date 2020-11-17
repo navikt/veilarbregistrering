@@ -255,9 +255,7 @@ public class BrukerRegistreringService {
             sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
         }
 
-        RegistreringType registreringType = beregnRegistreringType(oppfolgingsstatus, sykeforloepMetaData);
-
-        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, registreringType);
+        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData);
     }
 
     public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
