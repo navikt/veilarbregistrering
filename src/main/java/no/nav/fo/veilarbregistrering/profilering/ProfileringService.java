@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
 import java.time.LocalDate;
-import java.util.function.Supplier;
 
 public class ProfileringService {
 
@@ -19,13 +18,17 @@ public class ProfileringService {
     public Profilering profilerBruker(
             int alder,
             Foedselsnummer fnr,
-            LocalDate dagensDato, Besvarelse besvarelse
+            Besvarelse besvarelse
     ) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(fnr);
 
         return Profilering.of(
                 besvarelse,
                 alder,
-                flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato));
+                flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato()));
+    }
+
+    protected LocalDate dagensDato() {
+        return LocalDate.now();
     }
 }
