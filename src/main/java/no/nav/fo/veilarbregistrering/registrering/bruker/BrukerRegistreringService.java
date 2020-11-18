@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -43,7 +43,7 @@ public class BrukerRegistreringService {
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final OppfolgingGateway oppfolgingGateway;
     private final ArbeidsforholdGateway arbeidsforholdGateway;
-    private final StartRegistreringUtils startRegistreringUtils;
+    private final ProfileringService profileringService;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final AktiveringTilstandRepository aktiveringTilstandRepository;
 
@@ -53,7 +53,7 @@ public class BrukerRegistreringService {
                                      PersonGateway personGateway,
                                      SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
-                                     StartRegistreringUtils startRegistreringUtils,
+                                     ProfileringService profileringService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                                      ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                                      AktiveringTilstandRepository aktiveringTilstandRepository) {
@@ -63,7 +63,7 @@ public class BrukerRegistreringService {
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
-        this.startRegistreringUtils = startRegistreringUtils;
+        this.profileringService = profileringService;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
         this.aktiveringTilstandRepository = aktiveringTilstandRepository;
@@ -183,7 +183,7 @@ public class BrukerRegistreringService {
     }
 
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
-        return startRegistreringUtils.profilerBruker(
+        return profileringService.profilerBruker(
                 fnr.alder(now()),
                 () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
                 now(), besvarelse);

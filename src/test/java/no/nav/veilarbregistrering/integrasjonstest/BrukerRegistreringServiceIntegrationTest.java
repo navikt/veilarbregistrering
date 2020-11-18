@@ -16,7 +16,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -46,7 +46,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static BrukerRegistreringService brukerRegistreringService;
     private static OppfolgingClient oppfolgingClient;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
-    private static StartRegistreringUtils startRegistreringUtils;
+    private static ProfileringService profileringService;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
     private static final Bruker BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"));
@@ -68,7 +68,7 @@ class BrukerRegistreringServiceIntegrationTest {
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingClient = context.getBean(OppfolgingClient.class);
-        startRegistreringUtils = context.getBean(StartRegistreringUtils.class);
+        profileringService = context.getBean(ProfileringService.class);
     }
 
     @AfterEach
@@ -101,7 +101,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
-        when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
+        when(profileringService.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
     }
 
     @Configuration
@@ -142,8 +142,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public StartRegistreringUtils startRegistreringUtils() {
-            return mock(StartRegistreringUtils.class);
+        public ProfileringService startRegistreringUtils() {
+            return mock(ProfileringService.class);
         }
 
         @Bean
@@ -154,7 +154,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 PersonGateway personGateway,
                 SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
-                StartRegistreringUtils startRegistreringUtils,
+                ProfileringService profileringService,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                 AktiveringTilstandRepository aktiveringTilstandRepository) {
@@ -166,7 +166,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     personGateway,
                     new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
-                    startRegistreringUtils,
+                    profileringService,
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,
                     aktiveringTilstandRepository);

@@ -23,7 +23,7 @@ import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
@@ -69,7 +69,7 @@ public class ServiceBeansConfig {
             PersonGateway personGateway,
             SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
-            StartRegistreringUtils startRegistreringUtils,
+            ProfileringService profileringService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             AktiveringTilstandRepository aktiveringTilstandRepository
@@ -81,7 +81,7 @@ public class ServiceBeansConfig {
                 personGateway,
                 sykemeldingService,
                 arbeidsforholdGateway,
-                startRegistreringUtils,
+                profileringService,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
                 aktiveringTilstandRepository);
@@ -258,8 +258,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    StartRegistreringUtils startRegistreringUtils() {
-        return new StartRegistreringUtils();
+    ProfileringService profileringService() {
+        return new ProfileringService();
     }
 
     @Bean
