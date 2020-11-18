@@ -7,14 +7,11 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +35,6 @@ public class BrukerRegistreringService {
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ProfileringRepository profileringRepository;
-    private final SykemeldingService sykemeldingService;
     private final PersonGateway personGateway;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final OppfolgingGateway oppfolgingGateway;
@@ -46,32 +42,33 @@ public class BrukerRegistreringService {
     private final ProfileringService profileringService;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final AktiveringTilstandRepository aktiveringTilstandRepository;
+    private final HentBrukerTilstandService hentBrukerTilstandService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      PersonGateway personGateway,
-                                     SykemeldingService sykemeldingService,
                                      ArbeidsforholdGateway arbeidsforholdGateway,
                                      ProfileringService profileringService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                                      ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-                                     AktiveringTilstandRepository aktiveringTilstandRepository) {
+                                     AktiveringTilstandRepository aktiveringTilstandRepository,
+                                     HentBrukerTilstandService hentBrukerTilstandService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
         this.oppfolgingGateway = oppfolgingGateway;
-        this.sykemeldingService = sykemeldingService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.profileringService = profileringService;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
         this.aktiveringTilstandRepository = aktiveringTilstandRepository;
+        this.hentBrukerTilstandService = hentBrukerTilstandService;
     }
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
@@ -115,7 +112,7 @@ public class BrukerRegistreringService {
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
@@ -135,7 +132,7 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
@@ -194,7 +191,7 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
@@ -205,18 +202,6 @@ public class BrukerRegistreringService {
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
-    }
-
-    BrukersTilstand hentBrukersTilstand(Foedselsnummer fnr) {
-        Oppfolgingsstatus oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(fnr);
-
-        SykmeldtInfoData sykeforloepMetaData = null;
-        boolean erSykmeldtMedArbeidsgiver = oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false);
-        if (erSykmeldtMedArbeidsgiver) {
-            sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
-        }
-
-        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData);
     }
 
     public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {

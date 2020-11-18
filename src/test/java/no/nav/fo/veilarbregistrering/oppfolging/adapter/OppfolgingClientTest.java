@@ -81,12 +81,14 @@ class OppfolgingClientTest {
                         profileringRepository,
                         new OppfolgingGatewayImpl(oppfolgingClient),
                         personGateway,
-                        new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
-                        aktiveringTilstandRepository);
+                        aktiveringTilstandRepository,
+                        new HentBrukerTilstandService(
+                                new OppfolgingGatewayImpl(oppfolgingClient),
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
 
         when(profileringService.profilerBruker(anyInt(), any(), any()))
                 .thenReturn(new Profilering()

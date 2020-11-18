@@ -66,18 +66,22 @@ class SykmeldtInfoClientTest {
         }; //Noop, vi trenger ikke kafka
         AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
 
+        OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
+
         brukerRegistreringService =
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        new OppfolgingGatewayImpl(oppfolgingClient),
+                        oppfolgingGateway,
                         personGateway,
-                        new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
                         profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfileringProducer,
-                        aktiveringTilstandRepository);
+                        aktiveringTilstandRepository,
+                        new HentBrukerTilstandService(
+                                oppfolgingGateway,
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {
