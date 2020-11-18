@@ -62,29 +62,35 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    HentBrukerTilstandService hentBrukerTilstandService(
+            OppfolgingGateway oppfolgingGateway,
+            SykemeldingService sykemeldingService) {
+        return new HentBrukerTilstandService(oppfolgingGateway, sykemeldingService);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
             PersonGateway personGateway,
-            SykemeldingService sykemeldingService,
             ArbeidsforholdGateway arbeidsforholdGateway,
             ProfileringService profileringService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository
-    ) {
+            AktiveringTilstandRepository aktiveringTilstandRepository,
+            HentBrukerTilstandService hentBrukerTilstandService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 personGateway,
-                sykemeldingService,
                 arbeidsforholdGateway,
                 profileringService,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
-                aktiveringTilstandRepository);
+                aktiveringTilstandRepository,
+                hentBrukerTilstandService);
     }
 
     @Bean

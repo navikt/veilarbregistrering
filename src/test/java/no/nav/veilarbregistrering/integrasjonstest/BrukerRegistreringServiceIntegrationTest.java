@@ -12,12 +12,14 @@ import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
@@ -129,11 +131,26 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public OppfolgingGateway oppfolgingGateway(OppfolgingClient oppfolgingClient) {
+            return new OppfolgingGatewayImpl(oppfolgingClient);
+        }
+
+        @Bean
         public PersonGateway personGateway() { return mock(PersonGateway.class); }
 
         @Bean
-        public SykmeldtInfoClient sykeforloepMetadataClient() {
+        public SykmeldtInfoClient sykmeldtInfoClient() {
             return mock(SykmeldtInfoClient.class);
+        }
+
+        @Bean
+        public SykemeldingGateway sykemeldingGateway(SykmeldtInfoClient sykmeldtInfoClient){
+            return new SykemeldingGatewayImpl(sykmeldtInfoClient);
+        }
+
+        @Bean
+        public SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
+            return new SykemeldingService(sykemeldingGateway);
         }
 
         @Bean
@@ -142,34 +159,39 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public ProfileringService startRegistreringUtils() {
+        public ProfileringService profileringService() {
             return mock(ProfileringService.class);
+        }
+
+        @Bean
+        public HentBrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
+            return new HentBrukerTilstandService(oppfolgingGateway, sykemeldingService);
         }
 
         @Bean
         BrukerRegistreringService brukerRegistreringService(
                 BrukerRegistreringRepository brukerRegistreringRepository,
                 ProfileringRepository profileringRepository,
-                OppfolgingClient oppfolgingClient,
+                OppfolgingGateway oppfolgingGateway,
                 PersonGateway personGateway,
-                SykmeldtInfoClient sykeforloepMetadataClient,
                 ArbeidsforholdGateway arbeidsforholdGateway,
                 ProfileringService profileringService,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-                AktiveringTilstandRepository aktiveringTilstandRepository) {
+                AktiveringTilstandRepository aktiveringTilstandRepository,
+                HentBrukerTilstandService hentBrukerTilstandService) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
                     profileringRepository,
-                    new OppfolgingGatewayImpl(oppfolgingClient),
+                    oppfolgingGateway,
                     personGateway,
-                    new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                     arbeidsforholdGateway,
                     profileringService,
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,
-                    aktiveringTilstandRepository);
+                    aktiveringTilstandRepository,
+                    hentBrukerTilstandService);
         }
 
         @Bean
