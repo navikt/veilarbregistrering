@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.profilering;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
 import java.time.LocalDate;
 import java.util.function.Supplier;
@@ -17,9 +18,14 @@ public class ProfileringService {
 
     public Profilering profilerBruker(
             int alder,
-            Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,
+            Foedselsnummer fnr,
             LocalDate dagensDato, Besvarelse besvarelse
     ) {
-        return Profilering.of(besvarelse, alder, arbeidsforholdSupplier.get().harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato));
+        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(fnr);
+
+        return Profilering.of(
+                besvarelse,
+                alder,
+                flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato));
     }
 }

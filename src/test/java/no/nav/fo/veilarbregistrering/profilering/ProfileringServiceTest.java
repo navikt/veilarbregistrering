@@ -3,17 +3,14 @@ package no.nav.fo.veilarbregistrering.profilering;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.besvarelse.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.*;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.*;
@@ -21,15 +18,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProfileringServiceTest {
 
-    private ProfileringService profileringService = new ProfileringService(
-            new StubArbeidsforholdGateway());
+    private static final Foedselsnummer FOEDSELSNUMMER_MINUS_10_MND = Foedselsnummer.of("12345678911");
+    private static final Foedselsnummer FOEDSELSNUMMER_MINUS_2_MND = Foedselsnummer.of("11987654321");
+
+    private ProfileringService profileringService;
+    private ArbeidsforholdGateway arbeidsforholdGateway;
+
+    @BeforeEach
+    public void setUp() {
+        arbeidsforholdGateway = new StubArbeidsforholdGateway();
+        profileringService = new ProfileringService(arbeidsforholdGateway);
+    }
 
     @Test
     void testProfilering() {
         LocalDate dagensDato = now();
 
         List<Integer> aldre = Arrays.asList(25, 40, 65);
-        List<Boolean> tilfredsstillerKravTilArbeidList = Arrays.asList(true, false);
+        List<Foedselsnummer> tilfredsstillerKravTilArbeidList = Arrays.asList(
+                FOEDSELSNUMMER_MINUS_10_MND,
+                FOEDSELSNUMMER_MINUS_2_MND);
         List<Besvarelse> alleMuligeBesvarelser = genererAlleMuligeBesvarelser();
 
         alleMuligeBesvarelser.forEach(besvarelse -> {
@@ -43,7 +51,7 @@ class ProfileringServiceTest {
                     validerProfilering(
                             bruker,
                             alder,
-                            () -> getArbeidsforholdList(tilfredsstillerKrav),
+                            tilfredsstillerKrav,
                             dagensDato, besvarelse
                     );
                 });
@@ -82,13 +90,13 @@ class ProfileringServiceTest {
     private void validerProfilering(
             OrdinaerBrukerRegistrering bruker,
             int alder,
-            Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,
+            Foedselsnummer foedselsnummer,
             LocalDate dagensDato, Besvarelse besvarelse
     ) {
 
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 alder,
-                arbeidsforholdSupplier,
+                foedselsnummer,
                 dagensDato, besvarelse
         ).getInnsatsgruppe();
 
@@ -96,7 +104,7 @@ class ProfileringServiceTest {
         if (besvarelse.getHelseHinder().equals(HelseHinderSvar.JA) || besvarelse.getAndreForhold().equals(AndreForholdSvar.JA)) {
             onsketInnsatsgruppe = Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING;
         } else if ((18 <= alder && alder <= 59)
-                    && arbeidsforholdSupplier.get().harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)
+                    && arbeidsforholdGateway.hentArbeidsforhold(foedselsnummer).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)
                     && !besvarelse.getUtdanning().equals(UtdanningSvar.INGEN_UTDANNING)
                     && besvarelse.getUtdanningBestatt().equals(UtdanningBestattSvar.JA)
                     && besvarelse.getUtdanningGodkjent().equals(UtdanningGodkjentSvar.JA)
@@ -115,7 +123,7 @@ class ProfileringServiceTest {
     void testIKVALBesvarelseMellom30Og59Aar() {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 35,
-                () -> getArbeidsforholdList(true),
+                FOEDSELSNUMMER_MINUS_10_MND,
                 now(),
                 hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
@@ -126,7 +134,7 @@ class ProfileringServiceTest {
     void testBFORMBesvarelseOver59Aar() {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 60,
-                () -> getArbeidsforholdList(true),
+                FOEDSELSNUMMER_MINUS_10_MND,
                 now(),
                 hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
@@ -137,7 +145,7 @@ class ProfileringServiceTest {
     void testBKARTBesvarelse() {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 40,
-                () -> getArbeidsforholdList(true),
+                FOEDSELSNUMMER_MINUS_10_MND,
                 now(),
                 hentArbeidsEvneVurderingBesvarelse()
         ).getInnsatsgruppe();
@@ -173,14 +181,22 @@ class ProfileringServiceTest {
 
     private class StubArbeidsforholdGateway implements ArbeidsforholdGateway {
 
+        private Map<Foedselsnummer, FlereArbeidsforhold> arbeidsforholdMap = new HashMap<>(2);
+
+        private StubArbeidsforholdGateway() {
+            arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_10_MND, FlereArbeidsforhold.of(Collections.singletonList(
+                    new Arbeidsforhold()
+                            .setFom(now().minusMonths(10))
+                            .setTom(now()))));
+            arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_2_MND, FlereArbeidsforhold.of(Collections.singletonList(
+                    new Arbeidsforhold()
+                            .setFom(now().minusMonths(2))
+                            .setTom(now()))));
+        }
+
         @Override
         public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
-            return FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
-                    .setFom(LocalDate.of(2000, 1, 1))
-                    .setTom(null)
-                    .setStyrk("232")
-                    .setArbeidsgiverOrgnummer("32421533")
-            ));
+            return arbeidsforholdMap.get(fnr);
         }
     }
 }

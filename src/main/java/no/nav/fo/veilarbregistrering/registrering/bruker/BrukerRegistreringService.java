@@ -185,7 +185,7 @@ public class BrukerRegistreringService {
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
         return profileringService.profilerBruker(
                 fnr.alder(now()),
-                () -> arbeidsforholdGateway.hentArbeidsforhold(fnr),
+                fnr,
                 now(), besvarelse);
     }
 
