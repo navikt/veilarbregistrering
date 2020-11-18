@@ -258,8 +258,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ProfileringService profileringService() {
-        return new ProfileringService();
+    ProfileringService profileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
+        return new ProfileringService(arbeidsforholdGateway);
     }
 
     @Bean

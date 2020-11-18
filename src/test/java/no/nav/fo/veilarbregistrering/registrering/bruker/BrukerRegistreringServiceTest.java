@@ -54,7 +54,7 @@ public class BrukerRegistreringServiceTest {
         personGateway = mock(PersonGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
-        ProfileringService profileringService = new ProfileringService();
+        ProfileringService profileringService = new ProfileringService(arbeidsforholdGateway);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         }; //NoOp siden vi ikke ønsker å teste Kafka her
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
