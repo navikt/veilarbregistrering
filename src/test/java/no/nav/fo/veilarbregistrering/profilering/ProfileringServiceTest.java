@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProfileringServiceTest {
 
-    private ProfileringService profileringService = new ProfileringService();
+    private ProfileringService profileringService = new ProfileringService(
+            new StubArbeidsforholdGateway());
 
     @Test
     void testProfilering() {
@@ -110,7 +113,7 @@ class ProfileringServiceTest {
 
     @Test
     void testIKVALBesvarelseMellom30Og59Aar() {
-        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 35,
                 () -> getArbeidsforholdList(true),
                 now(),
@@ -121,7 +124,7 @@ class ProfileringServiceTest {
 
     @Test
     void testBFORMBesvarelseOver59Aar() {
-        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 60,
                 () -> getArbeidsforholdList(true),
                 now(),
@@ -132,7 +135,7 @@ class ProfileringServiceTest {
 
     @Test
     void testBKARTBesvarelse() {
-        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
+        Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 40,
                 () -> getArbeidsforholdList(true),
                 now(),
@@ -166,5 +169,18 @@ class ProfileringServiceTest {
                         .setTom(now()))
         );
 
+    }
+
+    private class StubArbeidsforholdGateway implements ArbeidsforholdGateway {
+
+        @Override
+        public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
+            return FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
+                    .setFom(LocalDate.of(2000, 1, 1))
+                    .setTom(null)
+                    .setStyrk("232")
+                    .setArbeidsgiverOrgnummer("32421533")
+            ));
+        }
     }
 }
