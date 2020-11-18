@@ -6,9 +6,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import java.time.LocalDate;
 import java.util.function.Supplier;
 
-public class StartRegistreringUtils {
+public class ProfileringService {
 
-    //FIXME: Burde kunne være static
     public Profilering profilerBruker(
             int alder,
             Supplier<FlereArbeidsforhold> arbeidsforholdSupplier,

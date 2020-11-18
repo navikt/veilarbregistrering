@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -59,7 +59,7 @@ class SykmeldtInfoClientTest {
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
-        StartRegistreringUtils startRegistreringUtils = mock(StartRegistreringUtils.class);
+        ProfileringService profileringService = mock(ProfileringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         }; //Noop, vi trenger ikke kafka
         ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
@@ -74,7 +74,7 @@ class SykmeldtInfoClientTest {
                         personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
-                        startRegistreringUtils,
+                        profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfileringProducer,
                         aktiveringTilstandRepository);

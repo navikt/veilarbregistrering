@@ -17,9 +17,9 @@ import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StartRegistreringUtilsTest {
+class ProfileringServiceTest {
 
-    private StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
+    private ProfileringService profileringService = new ProfileringService();
 
     @Test
     void testProfilering() {
@@ -83,7 +83,7 @@ class StartRegistreringUtilsTest {
             LocalDate dagensDato, Besvarelse besvarelse
     ) {
 
-        Innsatsgruppe innsatsgruppe = startRegistreringUtils.profilerBruker(
+        Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 alder,
                 arbeidsforholdSupplier,
                 dagensDato, besvarelse
@@ -110,7 +110,7 @@ class StartRegistreringUtilsTest {
 
     @Test
     void testIKVALBesvarelseMellom30Og59Aar() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
                 35,
                 () -> getArbeidsforholdList(true),
                 now(),
@@ -121,7 +121,7 @@ class StartRegistreringUtilsTest {
 
     @Test
     void testBFORMBesvarelseOver59Aar() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
                 60,
                 () -> getArbeidsforholdList(true),
                 now(),
@@ -132,7 +132,7 @@ class StartRegistreringUtilsTest {
 
     @Test
     void testBKARTBesvarelse() {
-        Innsatsgruppe innsatsgruppe = new StartRegistreringUtils().profilerBruker(
+        Innsatsgruppe innsatsgruppe = new ProfileringService().profilerBruker(
                 40,
                 () -> getArbeidsforholdList(true),
                 now(),

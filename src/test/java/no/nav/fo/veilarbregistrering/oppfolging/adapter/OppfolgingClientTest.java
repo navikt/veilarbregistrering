@@ -11,7 +11,7 @@ import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -50,7 +50,7 @@ class OppfolgingClientTest {
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private ArbeidsforholdGateway arbeidsforholdGateway;
-    private StartRegistreringUtils startRegistreringUtils;
+    private ProfileringService profileringService;
     private ClientAndServer mockServer;
 
     @AfterEach
@@ -68,7 +68,7 @@ class OppfolgingClientTest {
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
-        startRegistreringUtils = mock(StartRegistreringUtils.class);
+        profileringService = mock(ProfileringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         };
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
@@ -83,12 +83,12 @@ class OppfolgingClientTest {
                         personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
-                        startRegistreringUtils,
+                        profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository);
 
-        when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any()))
+        when(profileringService.profilerBruker(anyInt(), any(), any(), any()))
                 .thenReturn(new Profilering()
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
                         .setAlder(50)
@@ -133,7 +133,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
         when(brukerRegistreringRepository.lagre(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
-        when(startRegistreringUtils.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
+        when(profileringService.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));

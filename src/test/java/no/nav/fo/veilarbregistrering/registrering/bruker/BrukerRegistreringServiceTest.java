@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -54,7 +54,7 @@ public class BrukerRegistreringServiceTest {
         personGateway = mock(PersonGateway.class);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
-        StartRegistreringUtils startRegistreringUtils = new StartRegistreringUtils();
+        ProfileringService profileringService = new ProfileringService();
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
         }; //NoOp siden vi ikke ønsker å teste Kafka her
         ArbeidssokerProfilertProducer arbeidssokerProfilertProducer = (aktorId, innsatsgruppe, profilertDato) -> {
@@ -69,7 +69,7 @@ public class BrukerRegistreringServiceTest {
                         personGateway,
                         new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)),
                         arbeidsforholdGateway,
-                        startRegistreringUtils,
+                        profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository);
