@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
@@ -86,33 +85,24 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, getAutoOffsetResetStrategy());
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
             properties.putAll(getSecurityConfig());
         }
         return properties;
+    }
+
+    private String getAutoOffsetResetStrategy() {
+        // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
+        // vil dette gi oss «eventual consistency».
+        return "earliest";
     }
 
     private String getGroupIdForFormidlingsgruppeConsumer() {
         return "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02";
     }
-
-    @Bean
-    Properties kafkaConsumerProperties() {
-        Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_SERVERS"));
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());
-        properties.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA"));
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        properties.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
-            properties.putAll(getSecurityConfig());
-        }
-        return properties;
-    }
-
+    
     private String getGroupId() {
         return "veilarbregistrering";
     }
