@@ -88,7 +88,7 @@ class OppfolgingClientTest {
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository);
 
-        when(profileringService.profilerBruker(anyInt(), any(), any(), any()))
+        when(profileringService.profilerBruker(anyInt(), any(), any()))
                 .thenReturn(new Profilering()
                         .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
                         .setAlder(50)
@@ -133,7 +133,7 @@ class OppfolgingClientTest {
     @Test
     public void testAtRegistreringGirOKDersomBrukerIkkeHarOppfolgingsflaggOgIkkeSkalReaktiveres() {
         when(brukerRegistreringRepository.lagre(any(), any())).thenReturn(new OrdinaerBrukerRegistrering());
-        when(profileringService.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
+        when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, false), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));

@@ -101,7 +101,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     private void cofigureMocks() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
-        when(profileringService.profilerBruker(anyInt(), any(), any(), any())).thenReturn(lagProfilering());
+        when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
     }
 
     @Configuration

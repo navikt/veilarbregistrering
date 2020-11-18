@@ -97,7 +97,7 @@ class ProfileringServiceTest {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 alder,
                 foedselsnummer,
-                dagensDato, besvarelse
+                besvarelse
         ).getInnsatsgruppe();
 
         Innsatsgruppe onsketInnsatsgruppe;
@@ -124,7 +124,6 @@ class ProfileringServiceTest {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 35,
                 FOEDSELSNUMMER_MINUS_10_MND,
-                now(),
                 hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(STANDARD_INNSATS, innsatsgruppe);
@@ -135,7 +134,6 @@ class ProfileringServiceTest {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 60,
                 FOEDSELSNUMMER_MINUS_10_MND,
-                now(),
                 hentStandardInnsatsBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(SITUASJONSBESTEMT_INNSATS, innsatsgruppe);
@@ -146,7 +144,6 @@ class ProfileringServiceTest {
         Innsatsgruppe innsatsgruppe = profileringService.profilerBruker(
                 40,
                 FOEDSELSNUMMER_MINUS_10_MND,
-                now(),
                 hentArbeidsEvneVurderingBesvarelse()
         ).getInnsatsgruppe();
         assertEquals(BEHOV_FOR_ARBEIDSEVNEVURDERING, innsatsgruppe);
@@ -167,16 +164,6 @@ class ProfileringServiceTest {
         Besvarelse besvarelse = hentStandardInnsatsBesvarelse();
         besvarelse.setHelseHinder(HelseHinderSvar.JA);
         return besvarelse;
-    }
-
-    private FlereArbeidsforhold getArbeidsforholdList(boolean tilfredsstillerKrav) {
-        int antallManeder = tilfredsstillerKrav ? 10 : 2;
-        return FlereArbeidsforhold.of(Collections.singletonList(
-                new Arbeidsforhold()
-                        .setFom(now().minusMonths(antallManeder))
-                        .setTom(now()))
-        );
-
     }
 
     private class StubArbeidsforholdGateway implements ArbeidsforholdGateway {

@@ -186,7 +186,7 @@ public class BrukerRegistreringService {
         return profileringService.profilerBruker(
                 fnr.alder(now()),
                 fnr,
-                now(), besvarelse);
+                besvarelse);
     }
 
     @Transactional
