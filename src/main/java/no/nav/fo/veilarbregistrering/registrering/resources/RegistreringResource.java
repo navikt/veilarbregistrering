@@ -88,10 +88,6 @@ public class RegistreringResource {
         OrdinaerBrukerRegistrering registrering;
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!brukereSkalBliManueltRegistrert()){
-                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
-            }
-
             final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
@@ -188,10 +184,6 @@ public class RegistreringResource {
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!brukereSkalBliManueltRegistrert()){
-                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
-            }
-
             final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
@@ -208,10 +200,6 @@ public class RegistreringResource {
         reportFields(SYKMELDT_BESVARELSE_EVENT,
                 sykmeldtRegistrering.getBesvarelse().getUtdanning(),
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
-    }
-
-    private boolean brukereSkalBliManueltRegistrert() {
-        return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
     }
 
     private boolean tjenesteErNede() {
