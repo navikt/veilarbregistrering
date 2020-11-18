@@ -51,6 +51,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     @Override
     public void run() {
 
+        final String mdcTopicKey = "topic";
+        final String mdcOffsetKey = "offset";
+        final String mdcPartitionKey = "partition";
+
+        MDC.put(mdcTopicKey, topic);
         LOG.info("Running");
 
         try(KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
@@ -64,22 +69,30 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
                 consumerRecords.forEach(record -> {
                     CallId.leggTilCallId();
+                    MDC.put(mdcOffsetKey, String.valueOf(record.offset()));
+                    MDC.put(mdcPartitionKey, String.valueOf(record.partition()));
 
                     try {
                         behandleRecord(record);
                     } catch (RuntimeException e) {
-                        LOG.error(String.format("Behandling av formidlingsgruppeEvent feilet: %s", record.value()), e);
+                        LOG.error(String.format("Behandling av record feilet: %s", record.value()), e);
                         throw e;
+
+                    } finally {
+                        MDC.remove(MDC_CALL_ID);
+                        MDC.remove(mdcOffsetKey);
+                        MDC.remove(mdcPartitionKey);
                     }
 
-                    MDC.remove(MDC_CALL_ID);
                 });
                 consumer.commitSync();
             }
 
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
+        } finally {
             MDC.remove(MDC_CALL_ID);
+            MDC.remove(mdcTopicKey);
         }
     }
 
