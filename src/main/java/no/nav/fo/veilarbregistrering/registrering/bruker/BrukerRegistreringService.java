@@ -42,7 +42,7 @@ public class BrukerRegistreringService {
     private final ProfileringService profileringService;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final AktiveringTilstandRepository aktiveringTilstandRepository;
-    private final HentBrukerTilstandService hentBrukerTilstandService;
+    private final BrukerTilstandService brukerTilstandService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -53,7 +53,7 @@ public class BrukerRegistreringService {
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                                      ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                                      AktiveringTilstandRepository aktiveringTilstandRepository,
-                                     HentBrukerTilstandService hentBrukerTilstandService) {
+                                     BrukerTilstandService brukerTilstandService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.personGateway = personGateway;
@@ -63,12 +63,12 @@ public class BrukerRegistreringService {
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
         this.aktiveringTilstandRepository = aktiveringTilstandRepository;
-        this.hentBrukerTilstandService = hentBrukerTilstandService;
+        this.brukerTilstandService = brukerTilstandService;
     }
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
             throw new RuntimeException("Bruker kan ikke reaktiveres.");
         }
@@ -112,7 +112,7 @@ public class BrukerRegistreringService {
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");
@@ -132,7 +132,7 @@ public class BrukerRegistreringService {
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
-        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
@@ -191,7 +191,7 @@ public class BrukerRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = hentBrukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");

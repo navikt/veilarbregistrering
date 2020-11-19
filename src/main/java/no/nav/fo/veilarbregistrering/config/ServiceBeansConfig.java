@@ -62,10 +62,10 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    HentBrukerTilstandService hentBrukerTilstandService(
+    BrukerTilstandService brukerTilstandService(
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService) {
-        return new HentBrukerTilstandService(oppfolgingGateway, sykemeldingService);
+        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService);
     }
 
     @Bean
@@ -79,7 +79,7 @@ public class ServiceBeansConfig {
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             AktiveringTilstandRepository aktiveringTilstandRepository,
-            HentBrukerTilstandService hentBrukerTilstandService) {
+            BrukerTilstandService brukerTilstandService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
@@ -90,7 +90,7 @@ public class ServiceBeansConfig {
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
                 aktiveringTilstandRepository,
-                hentBrukerTilstandService);
+                brukerTilstandService);
     }
 
     @Bean

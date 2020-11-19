@@ -164,8 +164,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public HentBrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
-            return new HentBrukerTilstandService(oppfolgingGateway, sykemeldingService);
+        public BrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
+            return new BrukerTilstandService(oppfolgingGateway, sykemeldingService);
         }
 
         @Bean
@@ -179,7 +179,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                 AktiveringTilstandRepository aktiveringTilstandRepository,
-                HentBrukerTilstandService hentBrukerTilstandService) {
+                BrukerTilstandService brukerTilstandService) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -191,7 +191,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,
                     aktiveringTilstandRepository,
-                    hentBrukerTilstandService);
+                    brukerTilstandService);
         }
 
         @Bean
