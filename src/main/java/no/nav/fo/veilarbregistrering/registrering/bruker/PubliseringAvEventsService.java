@@ -34,9 +34,9 @@ public class PubliseringAvEventsService {
 
     @Transactional
     public void publiserEvents() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandForOverforing();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Ingen registreringer klare (status = OVERFOERT_ARENA_OK) for publisering av events");
+            LOG.info("Ingen registreringer klare (status = OVERFOERT_ARENA) for publisering");
             return;
         }
 
@@ -45,14 +45,9 @@ public class PubliseringAvEventsService {
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
-
-        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
-        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
-        aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
-
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+        /*arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 new ArbeidssokerRegistrertInternalEvent(
                         bruker.getAktorId(),
                         ordinaerBrukerRegistrering.getBesvarelse(),
@@ -61,6 +56,10 @@ public class PubliseringAvEventsService {
         arbeidssokerProfilertProducer.publiserProfilering(
                 bruker.getAktorId(),
                 profilering.getInnsatsgruppe(),
-                ordinaerBrukerRegistrering.getOpprettetDato());
+                ordinaerBrukerRegistrering.getOpprettetDato());*/
+
+        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
+        aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
+        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
     }
 }

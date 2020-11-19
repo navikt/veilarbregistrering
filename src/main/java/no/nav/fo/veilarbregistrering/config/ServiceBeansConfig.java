@@ -259,6 +259,22 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    PubliseringAvEventsService publiseringAvEventsService(
+            ProfileringRepository profileringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            AktiveringTilstandRepository aktiveringTilstandRepository,
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+        return new PubliseringAvEventsService(
+                profileringRepository,
+                brukerRegistreringRepository,
+                arbeidssokerRegistrertProducer,
+                aktiveringTilstandRepository,
+                arbeidssokerProfilertProducer
+        );
+    }
+
+    @Bean
     OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService(
             OppgaveService oppgaveService,
             BrukerRegistreringRepository brukerRegistreringRepository,
