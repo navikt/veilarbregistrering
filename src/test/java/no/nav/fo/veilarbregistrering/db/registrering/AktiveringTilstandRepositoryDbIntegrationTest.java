@@ -227,4 +227,56 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
 
         assertThat(lagretTilstand.isPresent()).isFalse();
     }
+
+    @Test
+    public void skal_returnere_neste_registrering_klar_for_publisering() {
+        OrdinaerBrukerRegistrering nyesteRegistrering = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering eldsteRegistrering = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1);
+
+        AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+                .brukerRegistreringId(lagretNyesteRegistrering.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(OVERFORT_ARENA)
+                .build();
+        aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+
+        AktiveringTilstand eldsteRegistreringTilstand = registreringTilstand()
+                .brukerRegistreringId(lagretEldsteRegistrering.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(10))
+                .status(OVERFORT_ARENA)
+                .build();
+        long eldsteRegistreringTilstandId = aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
+
+        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
+
+        assertThat(nesteRegistreringKlarForPublisering.get().getId()).isEqualTo(eldsteRegistreringTilstandId);
+    }
+
+    @Test
+    public void skal_returnere_empty_naar_ingen_klare_for_publisering() {
+        OrdinaerBrukerRegistrering nyesteRegistrering = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering eldsteRegistrering = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1);
+        OrdinaerBrukerRegistrering lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1);
+
+        AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+                .brukerRegistreringId(lagretNyesteRegistrering.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(EVENT_PUBLISERT)
+                .build();
+        aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+
+        AktiveringTilstand eldsteRegistreringTilstand = registreringTilstand()
+                .brukerRegistreringId(lagretEldsteRegistrering.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(10))
+                .status(EVENT_PUBLISERT)
+                .build();
+        aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
+
+        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
+
+        assertThat(nesteRegistreringKlarForPublisering.isPresent()).isFalse();
+    }
 }
