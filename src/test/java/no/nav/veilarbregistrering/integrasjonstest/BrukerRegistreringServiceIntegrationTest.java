@@ -2,11 +2,9 @@ package no.nav.veilarbregistrering.integrasjonstest;
 
 import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
@@ -136,9 +134,6 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public PersonGateway personGateway() { return mock(PersonGateway.class); }
-
-        @Bean
         public SykmeldtInfoClient sykmeldtInfoClient() {
             return mock(SykmeldtInfoClient.class);
         }
@@ -151,11 +146,6 @@ class BrukerRegistreringServiceIntegrationTest {
         @Bean
         public SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
             return new SykemeldingService(sykemeldingGateway);
-        }
-
-        @Bean
-        public ArbeidsforholdGateway arbeidsforholdService() {
-            return mock(ArbeidsforholdGateway.class);
         }
 
         @Bean
@@ -173,8 +163,6 @@ class BrukerRegistreringServiceIntegrationTest {
                 BrukerRegistreringRepository brukerRegistreringRepository,
                 ProfileringRepository profileringRepository,
                 OppfolgingGateway oppfolgingGateway,
-                PersonGateway personGateway,
-                ArbeidsforholdGateway arbeidsforholdGateway,
                 ProfileringService profileringService,
                 ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                 ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -185,8 +173,6 @@ class BrukerRegistreringServiceIntegrationTest {
                     brukerRegistreringRepository,
                     profileringRepository,
                     oppfolgingGateway,
-                    personGateway,
-                    arbeidsforholdGateway,
                     profileringService,
                     arbeidssokerRegistrertProducer,
                     arbeidssokerProfilertProducer,

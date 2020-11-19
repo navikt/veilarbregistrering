@@ -69,12 +69,21 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    StartRegistreringStatusService startRegistreringStatusService(
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            BrukerTilstandService brukerTilstandService,
+            PersonGateway personGateway) {
+        return new StartRegistreringStatusService(
+                arbeidsforholdGateway,
+                brukerTilstandService,
+                personGateway);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
-            PersonGateway personGateway,
-            ArbeidsforholdGateway arbeidsforholdGateway,
             ProfileringService profileringService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -84,8 +93,6 @@ public class ServiceBeansConfig {
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
-                personGateway,
-                arbeidsforholdGateway,
                 profileringService,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
@@ -113,16 +120,16 @@ public class ServiceBeansConfig {
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
-            UnleashService unleashService
-    ) {
+            UnleashService unleashService,
+            StartRegistreringStatusService startRegistreringStatusService) {
         return new RegistreringResource(
                 pepClient,
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
                 hentRegistreringService,
-                unleashService
-        );
+                unleashService,
+                startRegistreringStatusService);
     }
 
     @Bean
