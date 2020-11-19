@@ -44,20 +44,23 @@ public class RegistreringResource {
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
+    private final StartRegistreringStatusService startRegistreringStatusService;
 
     public RegistreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            HentRegistreringService hentRegistreringService, UnleashService unleashService
-    ) {
+            HentRegistreringService hentRegistreringService,
+            UnleashService unleashService,
+            StartRegistreringStatusService startRegistreringStatusService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.hentRegistreringService = hentRegistreringService;
         this.unleashService = unleashService;
+        this.startRegistreringStatusService = startRegistreringStatusService;
     }
 
     @GET
@@ -66,8 +69,8 @@ public class RegistreringResource {
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
-        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker);
+        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
         rapporterRegistreringsstatus(status);
         return status;
     }

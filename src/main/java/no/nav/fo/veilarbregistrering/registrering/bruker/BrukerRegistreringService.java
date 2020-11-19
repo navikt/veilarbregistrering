@@ -1,32 +1,23 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
-import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.START_REGISTRERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
-import static no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDtoMapper.map;
 
 
 public class BrukerRegistreringService {
@@ -34,21 +25,17 @@ public class BrukerRegistreringService {
     private static final Logger LOG = LoggerFactory.getLogger(BrukerRegistreringService.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final ProfileringRepository profileringRepository;
-    private final PersonGateway personGateway;
-    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
-    private final OppfolgingGateway oppfolgingGateway;
-    private final ArbeidsforholdGateway arbeidsforholdGateway;
-    private final ProfileringService profileringService;
-    private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final AktiveringTilstandRepository aktiveringTilstandRepository;
+    private final ProfileringService profileringService;
+    private final ProfileringRepository profileringRepository;
+    private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
+    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
+    private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
-                                     PersonGateway personGateway,
-                                     ArbeidsforholdGateway arbeidsforholdGateway,
                                      ProfileringService profileringService,
                                      ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
                                      ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
@@ -56,9 +43,7 @@ public class BrukerRegistreringService {
                                      BrukerTilstandService brukerTilstandService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
-        this.personGateway = personGateway;
         this.oppfolgingGateway = oppfolgingGateway;
-        this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.profileringService = profileringService;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
@@ -131,54 +116,6 @@ public class BrukerRegistreringService {
         }
     }
 
-    public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
-
-        Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
-
-        muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            reportFields(START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
-        });
-
-        RegistreringType registreringType = brukersTilstand.getRegistreringstype();
-
-        Boolean oppfyllerBetingelseOmArbeidserfaring = null;
-        if (ORDINAER_REGISTRERING.equals(registreringType)) {
-            oppfyllerBetingelseOmArbeidserfaring =
-                    arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer())
-                            .harJobbetSammenhengendeSeksAvTolvSisteManeder(now());
-        }
-
-        StartRegistreringStatusDto startRegistreringStatus = map(
-                brukersTilstand,
-                muligGeografiskTilknytning,
-                oppfyllerBetingelseOmArbeidserfaring,
-                bruker.getGjeldendeFoedselsnummer().alder(now()));
-
-        LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
-        return startRegistreringStatus;
-    }
-
-    private Optional<GeografiskTilknytning> hentGeografiskTilknytning(Bruker bruker) {
-        Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
-        try {
-            long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
-            LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
-
-        } catch (RuntimeException e) {
-            LOG.warn("Hent geografisk tilknytning fra TPS feilet. Skal ikke påvirke annen bruk.", e);
-        }
-
-        return geografiskTilknytning;
-    }
-
-    public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
-        AktiveringTilstand original = aktiveringTilstandRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
-        AktiveringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
-        aktiveringTilstandRepository.oppdater(oppdatert);
-    }
-
     private Profilering profilerBrukerTilInnsatsgruppe(Foedselsnummer fnr, Besvarelse besvarelse) {
         return profileringService.profilerBruker(
                 fnr.alder(now()),
@@ -202,6 +139,12 @@ public class BrukerRegistreringService {
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
 
         return id;
+    }
+
+    public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
+        AktiveringTilstand original = aktiveringTilstandRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
+        AktiveringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
+        aktiveringTilstandRepository.oppdater(oppdatert);
     }
 
     public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {

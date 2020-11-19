@@ -2,17 +2,14 @@ package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import com.google.common.net.MediaType;
 import no.nav.common.oidc.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.resources.StartRegistreringStatusDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +20,7 @@ import org.mockserver.integration.ClientAndServer;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -54,10 +49,8 @@ class SykmeldtInfoClientTest {
     public void setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         oppfolgingClient = buildOppfolgingClient();
-        PersonGateway personGateway = mock(PersonGateway.class);
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
-        ArbeidsforholdGateway arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
         ProfileringService profileringService = mock(ProfileringService.class);
         ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
@@ -73,8 +66,6 @@ class SykmeldtInfoClientTest {
                         brukerRegistreringRepository,
                         profileringRepository,
                         oppfolgingGateway,
-                        personGateway,
-                        arbeidsforholdGateway,
                         profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfileringProducer,
@@ -106,32 +97,48 @@ class SykmeldtInfoClientTest {
         brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER);
     }
 
-    @Test
-    @Disabled
-    public void testAtHentingAvSykeforloepMetadataGirOk() {
-        mockSykmeldtIArena();
-        mockSykmeldtOver39u();
-        StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER);
-        assertSame(startRegistreringStatus.getRegistreringType(), SYKMELDT_REGISTRERING);
-    }
-
+    /*
+        @Test
+        @Disabled
+        public void testAtHentingAvSykeforloepMetadataGirOk() {
+            mockSykmeldtIArena();
+            mockSykmeldtOver39u();
+            StartRegistreringStatusDto startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER);
+            assertSame(startRegistreringStatus.getRegistreringType(), SYKMELDT_REGISTRERING);
+        }
+    */
     @Test
     public void testAtGirInternalServerErrorExceptionDersomRegistreringAvSykmeldtFeiler() {
         mockSykmeldtIArena();
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
-        mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(502));
+        mockServer
+                .when(request()
+                        .withMethod("POST")
+                        .withPath("/oppfolging/aktiverSykmeldt"))
+                .respond(response()
+                        .withStatusCode(502));
         assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER));
     }
 
     private void mockSykmeldtOver39u() {
-        mockServer.when(request().withMethod("GET").withPath("/sykeforloep/metadata"))
-                .respond(response().withBody(sykmeldtOver39u(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer
+                .when(request()
+                        .withMethod("GET")
+                        .withPath("/sykeforloep/metadata"))
+                .respond(response()
+                        .withBody(sykmeldtOver39u(), MediaType.JSON_UTF_8)
+                        .withStatusCode(200));
     }
 
     private void mockSykmeldtIArena() {
-        mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
-                .respond(response().withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8).withStatusCode(200));
+        mockServer
+                .when(request()
+                        .withMethod("GET")
+                        .withPath("/oppfolging"))
+                .respond(response()
+                        .withBody(harIkkeOppfolgingsflaggOgErInaktivIArenaBody(), MediaType.JSON_UTF_8)
+                        .withStatusCode(200));
     }
 
     private String sykmeldtOver39u() {
