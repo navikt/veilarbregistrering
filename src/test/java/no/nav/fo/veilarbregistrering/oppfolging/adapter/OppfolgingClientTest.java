@@ -86,7 +86,7 @@ class OppfolgingClientTest {
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository,
-                        new HentBrukerTilstandService(
+                        new BrukerTilstandService(
                                 new OppfolgingGatewayImpl(oppfolgingClient),
                                 new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
 

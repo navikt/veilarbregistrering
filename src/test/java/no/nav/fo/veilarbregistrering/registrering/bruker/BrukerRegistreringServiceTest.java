@@ -74,7 +74,7 @@ public class BrukerRegistreringServiceTest {
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository,
-                        new HentBrukerTilstandService(
+                        new BrukerTilstandService(
                                 oppfolgingGateway,
                                 new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
     }

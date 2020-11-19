@@ -6,12 +6,12 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 
-public class HentBrukerTilstandService {
+public class BrukerTilstandService {
 
     private final OppfolgingGateway oppfolgingGateway;
     private final SykemeldingService sykemeldingService;
 
-    public HentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
+    public BrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykemeldingService = sykemeldingService;
     }
