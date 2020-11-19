@@ -16,6 +16,7 @@ public enum Status {
 
     MOTTATT("mottatt"),
     ARENA_OK("ok"),
+    OVERFORT_ARENA("overfort_arena"),
     EVENT_PUBLISERT("eventPublisert"),
     UKJENT_BRUKER("ukjentBruker"),
     MANGLER_ARBEIDSTILLATELSE("oppholdstillatelse"),
