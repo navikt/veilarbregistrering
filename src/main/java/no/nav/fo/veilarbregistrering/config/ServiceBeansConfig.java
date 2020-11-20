@@ -80,6 +80,17 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    InaktivBrukerService inaktivBrukerService(
+            BrukerTilstandService brukerTilstandService,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            OppfolgingGateway oppfolgingGateway) {
+        return new InaktivBrukerService(
+                brukerTilstandService,
+                brukerRegistreringRepository,
+                oppfolgingGateway);
+    }
+
+    @Bean
     SykmeldtRegistreringService sykmeldtRegistreringService(
             BrukerTilstandService arbeidssokerService,
             OppfolgingGateway oppfolgingGateway,
@@ -133,7 +144,8 @@ public class ServiceBeansConfig {
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
             StartRegistreringStatusService startRegistreringStatusService,
-            SykmeldtRegistreringService sykmeldtRegistreringService) {
+            SykmeldtRegistreringService sykmeldtRegistreringService,
+            InaktivBrukerService inaktivBrukerService) {
         return new RegistreringResource(
                 pepClient,
                 userService,
@@ -142,7 +154,8 @@ public class ServiceBeansConfig {
                 hentRegistreringService,
                 unleashService,
                 sykmeldtRegistreringService,
-                startRegistreringStatusService);
+                startRegistreringStatusService,
+                inaktivBrukerService);
     }
 
     @Bean

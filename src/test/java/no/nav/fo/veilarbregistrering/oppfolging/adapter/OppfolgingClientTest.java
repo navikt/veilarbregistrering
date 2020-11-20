@@ -45,6 +45,7 @@ class OppfolgingClientTest {
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
     private BrukerRegistreringService brukerRegistreringService;
+    private InaktivBrukerService inaktivBrukerService;
     private OppfolgingClient oppfolgingClient;
     private ProfileringService profileringService;
     private ClientAndServer mockServer;
@@ -69,18 +70,27 @@ class OppfolgingClientTest {
         };
         AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
 
+        OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
+
+        BrukerTilstandService brukerTilstandService = new BrukerTilstandService(
+                oppfolgingGateway,
+                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)));
+
         brukerRegistreringService =
                 new BrukerRegistreringService(
                         brukerRegistreringRepository,
                         profileringRepository,
-                        new OppfolgingGatewayImpl(oppfolgingClient),
+                        oppfolgingGateway,
                         profileringService,
                         arbeidssokerRegistrertProducer,
                         arbeidssokerProfilertProducer,
                         aktiveringTilstandRepository,
-                        new BrukerTilstandService(
-                                new OppfolgingGatewayImpl(oppfolgingClient),
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
+                        brukerTilstandService);
+
+        inaktivBrukerService = new InaktivBrukerService(
+                brukerTilstandService,
+                brukerRegistreringRepository,
+                oppfolgingGateway);
 
         when(profileringService.profilerBruker(anyInt(), any(), any()))
                 .thenReturn(new Profilering()
@@ -140,7 +150,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging"))
                 .respond(response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8).withStatusCode(200));
 
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(BRUKER));
+        assertThrows(RuntimeException.class, () -> inaktivBrukerService.reaktiverBruker(BRUKER));
     }
 
     @Test
@@ -149,7 +159,7 @@ class OppfolgingClientTest {
                 .respond(response().withBody(settOppfolgingOgReaktivering(false, true), MediaType.JSON_UTF_8).withStatusCode(200));
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(response().withStatusCode(204));
 
-        brukerRegistreringService.reaktiverBruker(BRUKER);
+        inaktivBrukerService.reaktiverBruker(BRUKER);
     }
 
     @Test

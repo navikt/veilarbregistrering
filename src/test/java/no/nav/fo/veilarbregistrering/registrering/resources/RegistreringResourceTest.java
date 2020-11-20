@@ -41,6 +41,7 @@ public class RegistreringResourceTest {
         sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
         startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
+        InaktivBrukerService inaktivBrukerService = mock(InaktivBrukerService.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
@@ -50,7 +51,8 @@ public class RegistreringResourceTest {
                 hentRegistreringService,
                 unleashService,
                 sykmeldtRegistreringService,
-                startRegistreringStatusService);
+                startRegistreringStatusService,
+                inaktivBrukerService);
     }
 
     @Test

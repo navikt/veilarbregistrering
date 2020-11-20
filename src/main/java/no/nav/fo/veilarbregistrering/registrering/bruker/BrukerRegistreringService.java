@@ -51,19 +51,6 @@ public class BrukerRegistreringService {
     }
 
     @Transactional
-    public void reaktiverBruker(Bruker bruker) {
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
-        if (!brukersTilstand.kanReaktiveres()) {
-            throw new RuntimeException("Bruker kan ikke reaktiveres.");
-        }
-
-        brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
-        oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
-
-        LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());
-    }
-
-    @Transactional
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
 
