@@ -25,6 +25,7 @@ public class RegistreringResourceTest {
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
+    private SykmeldtRegistreringService sykmeldtRegistreringService;
     private HentRegistreringService hentRegistreringService;
     private StartRegistreringStatusService startRegistreringStatusService;
 
@@ -37,6 +38,7 @@ public class RegistreringResourceTest {
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         hentRegistreringService = mock(HentRegistreringService.class);
+        sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
         startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
 
@@ -47,6 +49,7 @@ public class RegistreringResourceTest {
                 brukerRegistreringService,
                 hentRegistreringService,
                 unleashService,
+                sykmeldtRegistreringService,
                 startRegistreringStatusService);
     }
 
