@@ -105,14 +105,24 @@ class OppgaveRouterTest {
     }
 
     @Test
-    fun `brukere med adressebeskyttelse overlates til oppgave api`() {
+    fun `brukere med adressebeskyttelse FORTROLIG (kode 6) overlates til oppgave api`() {
+        val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)
+        assertThat(enhetsnr).isEmpty
+    }
+
+    @Test
+    fun `brukere med adressebeskyttelse STRENGT_FORTROLIG (kode 7) overlates til oppgave api`() {
+        val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+        assertThat(enhetsnr).isEmpty
+    }
+
+    fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
         val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
-        val person = Person.of(null, null, AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+        val person = Person.of(null, null, adressebeskyttelseGradering)
         val pdlOppslagGateway = StubPdlOppslagGateway(users = mapOf(BRUKER.aktorId to person))
         val oppgaveRouter = oppgaveRouter(personGateway = personGateway, pdlOppslagGateway = pdlOppslagGateway)
 
-        val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).isEmpty
+        return oppgaveRouter.hentEnhetsnummerFor(BRUKER)
     }
 
     private fun oppgaveRouter(
