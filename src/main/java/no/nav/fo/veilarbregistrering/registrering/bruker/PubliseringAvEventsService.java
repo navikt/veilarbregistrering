@@ -47,7 +47,13 @@ public class PubliseringAvEventsService {
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        /*arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
+        /*
+        // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
+        // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
+        // Dette skjer pga. compaction-innstillingen definert i paw-iac repoet på github.
+        // Så hvis førstnevnte feiler forhindrer vi at duplikate meldinger skrives til sistnevnte.
+
+        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 new ArbeidssokerRegistrertInternalEvent(
                         bruker.getAktorId(),
                         ordinaerBrukerRegistrering.getBesvarelse(),
