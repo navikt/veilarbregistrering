@@ -25,7 +25,6 @@ import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistrering
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OppgaveForAvvistRegistreringSchedulerConfig;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
-import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvRegistreringEventsSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +46,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         PepConfig.class,
         OverforTilArenaSchedulerConfig.class,
         OppgaveForAvvistRegistreringSchedulerConfig.class,
-        PubliseringAvRegistreringEventsSchedulerConfig.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,

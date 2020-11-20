@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.scheduler;
 
-import net.javacrumbs.shedlock.core.SchedulerLock;
+import no.nav.common.leaderelection.LeaderElection;
 import no.nav.fo.veilarbregistrering.registrering.bruker.PubliseringAvEventsService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
@@ -25,7 +25,6 @@ public class PubliseringAvRegistreringEventsScheduler {
     }
 
     @Scheduled(cron = "0/10 * * * * *")
-    @SchedulerLock(name = "eventPublisering")
     public void publiserRegistreringEvents() {
 
         leggTilCallId();
@@ -36,7 +35,11 @@ public class PubliseringAvRegistreringEventsScheduler {
         }
 
         LOG.info("Publisering av registreringevents er togglet på");
-        publiseringAvEventsService.publiserEvents();
+
+        if (LeaderElection.isLeader()) {
+            LOG.info("I´am the leader");
+            publiseringAvEventsService.publiserEvents();
+        }
 
         MDC.clear();
     }
