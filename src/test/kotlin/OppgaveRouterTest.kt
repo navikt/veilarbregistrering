@@ -116,6 +116,12 @@ class OppgaveRouterTest {
         assertThat(enhetsnr).isEmpty
     }
 
+    @Test
+    fun `brukere med adressebeskyttelse STRENGT_FORTROLIG_UTLAND routes eksplisitt til spesialkontor`() {
+        val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND)
+        assertThat(enhetsnr).hasValue(Enhetnr.enhetForAdressebeskyttelse())
+    }
+
     fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
         val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
         val person = Person.of(null, null, adressebeskyttelseGradering)
