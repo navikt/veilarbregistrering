@@ -14,7 +14,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,28 +86,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalReaktivereInaktivBrukerUnder28Dager() {
-        mockInaktivBrukerSomSkalReaktiveres();
-        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-
-        brukerRegistreringService.reaktiverBruker(BRUKER_INTERN);
-        verify(brukerRegistreringRepository, times(1)).lagreReaktiveringForBruker(any());
-    }
-
-    @Test
-    void reaktiveringAvBrukerOver28DagerSkalGiException() {
-        mockInaktivBrukerSomSkalReaktiveres();
-        mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
-        mockOppfolgingMedRespons(
-                new OppfolgingStatusData()
-                        .withUnderOppfolging(false)
-                        .withKanReaktiveres(false)
-        );
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.reaktiverBruker(BRUKER_INTERN));
-        verify(brukerRegistreringRepository, times(0)).lagreReaktiveringForBruker(any());
-    }
-
-    @Test
     void skalRegistrereSelvgaaendeBrukerIDatabasen() {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring();
         mockOppfolgingMedRespons(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
@@ -167,12 +144,6 @@ public class BrukerRegistreringServiceTest {
     private void mockInaktivBrukerUtenReaktivering() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false)
-        );
-    }
-
-    private void mockInaktivBrukerSomSkalReaktiveres() {
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
         );
     }
 

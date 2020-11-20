@@ -46,6 +46,7 @@ public class RegistreringResource {
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
     private final StartRegistreringStatusService startRegistreringStatusService;
+    private final InaktivBrukerService inaktivBrukerService;
 
     public RegistreringResource(
             VeilarbAbacPepClient pepClient,
@@ -54,7 +55,9 @@ public class RegistreringResource {
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
-            SykmeldtRegistreringService sykmeldtRegistreringService, StartRegistreringStatusService startRegistreringStatusService) {
+            SykmeldtRegistreringService sykmeldtRegistreringService,
+            StartRegistreringStatusService startRegistreringStatusService,
+            InaktivBrukerService inaktivBrukerService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
@@ -63,6 +66,7 @@ public class RegistreringResource {
         this.unleashService = unleashService;
         this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
+        this.inaktivBrukerService = inaktivBrukerService;
     }
 
     @GET
@@ -166,7 +170,7 @@ public class RegistreringResource {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
-        brukerRegistreringService.reaktiverBruker(bruker);
+        inaktivBrukerService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
             reportFields(MANUELL_REAKTIVERING_EVENT);
