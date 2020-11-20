@@ -7,9 +7,10 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
-import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ class SykmeldtInfoClientTest {
     private static final String IDENT = "10108000398"; //Aremark fiktivt fnr.";;
     private static final Bruker BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("AKTØRID"));
 
-    private BrukerRegistreringService brukerRegistreringService;
+    private SykmeldtRegistreringService sykmeldtRegistreringService;
     private OppfolgingClient oppfolgingClient;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private ClientAndServer mockServer;
@@ -50,29 +51,17 @@ class SykmeldtInfoClientTest {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT);
         oppfolgingClient = buildOppfolgingClient();
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
-        ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
-        ProfileringService profileringService = mock(ProfileringService.class);
-        ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer = (event) -> {
-        }; //Noop, vi trenger ikke kafka
-        ArbeidssokerProfilertProducer arbeidssokerProfileringProducer = (aktorId, innsatsgruppe, profilertDato) -> {
-        }; //Noop, vi trenger ikke kafka
-        AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
 
-        brukerRegistreringService =
-                new BrukerRegistreringService(
-                        brukerRegistreringRepository,
-                        profileringRepository,
-                        oppfolgingGateway,
-                        profileringService,
-                        arbeidssokerRegistrertProducer,
-                        arbeidssokerProfileringProducer,
-                        aktiveringTilstandRepository,
+        sykmeldtRegistreringService =
+                new SykmeldtRegistreringService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))),
+                        oppfolgingGateway,
+                        brukerRegistreringRepository);
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {
@@ -94,7 +83,7 @@ class SykmeldtInfoClientTest {
         mockSykmeldtOver39u();
         SykmeldtRegistrering sykmeldtRegistrering = gyldigSykmeldtRegistrering();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(response().withStatusCode(204));
-        brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER);
+        sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER);
     }
 
     /*
@@ -118,7 +107,7 @@ class SykmeldtInfoClientTest {
                         .withPath("/oppfolging/aktiverSykmeldt"))
                 .respond(response()
                         .withStatusCode(502));
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER));
+        assertThrows(RuntimeException.class, () -> sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER));
     }
 
     private void mockSykmeldtOver39u() {

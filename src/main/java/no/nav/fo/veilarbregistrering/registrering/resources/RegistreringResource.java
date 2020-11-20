@@ -40,6 +40,7 @@ public class RegistreringResource {
 
     private final UnleashService unleashService;
     private final BrukerRegistreringService brukerRegistreringService;
+    private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
@@ -53,13 +54,14 @@ public class RegistreringResource {
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
-            StartRegistreringStatusService startRegistreringStatusService) {
+            SykmeldtRegistreringService sykmeldtRegistreringService, StartRegistreringStatusService startRegistreringStatusService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.hentRegistreringService = hentRegistreringService;
         this.unleashService = unleashService;
+        this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
     }
 
@@ -191,13 +193,13 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            long id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, SYKMELDT);
 
             reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
         reportFields(SYKMELDT_BESVARELSE_EVENT,

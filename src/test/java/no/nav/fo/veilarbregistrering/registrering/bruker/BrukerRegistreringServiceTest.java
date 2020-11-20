@@ -127,21 +127,6 @@ public class BrukerRegistreringServiceTest {
     }
 
     @Test
-    void skalIkkeRegistrereSykmeldteMedTomBesvarelse() {
-        mockSykmeldtBrukerOver39uker();
-        mockSykmeldtMedArbeidsgiver();
-        SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
-    }
-
-    @Test
-    void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
-        mockSykmeldtMedArbeidsgiver();
-        SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
-    }
-
-    @Test
     public void skal_oppdatere_registreringtilstand_med_status_og_sistendret() {
         LocalDateTime sistEndret = LocalDateTime.now();
         AktiveringTilstand original = RegistreringTilstandTestdataBuilder
@@ -188,21 +173,6 @@ public class BrukerRegistreringServiceTest {
     private void mockInaktivBrukerSomSkalReaktiveres() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
                 new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
-        );
-    }
-
-
-    private void mockSykmeldtBrukerOver39uker() {
-        String dagensDatoMinus13Uker = now().plusWeeks(13).toString();
-        when(sykeforloepMetadataClient.hentSykmeldtInfoData(any())).thenReturn(
-                new InfotrygdData()
-                        .withMaksDato(dagensDatoMinus13Uker)
-        );
-    }
-
-    private void mockSykmeldtMedArbeidsgiver() {
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(
-                new OppfolgingStatusData().withErSykmeldtMedArbeidsgiver(true).withKanReaktiveres(false)
         );
     }
 
