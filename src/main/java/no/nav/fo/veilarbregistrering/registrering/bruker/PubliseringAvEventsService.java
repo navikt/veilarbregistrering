@@ -47,6 +47,10 @@ public class PubliseringAvEventsService {
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
+        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
+        aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
+        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
+
         /*
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
@@ -64,8 +68,5 @@ public class PubliseringAvEventsService {
                 profilering.getInnsatsgruppe(),
                 ordinaerBrukerRegistrering.getOpprettetDato());*/
 
-        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
-        aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
-        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
     }
 }
