@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 
 import javax.servlet.http.HttpServlet;
@@ -10,10 +10,10 @@ import java.io.IOException;
 
 public class InternalRegistreringStatusServlet extends HttpServlet {
 
-    private final BrukerRegistreringService brukerRegistreringService;
+    private final AktiveringTilstandService aktiveringTilstandService;
 
-    public InternalRegistreringStatusServlet(BrukerRegistreringService brukerRegistreringService) {
-        this.brukerRegistreringService = brukerRegistreringService;
+    public InternalRegistreringStatusServlet(AktiveringTilstandService aktiveringTilstandService) {
+        this.aktiveringTilstandService = aktiveringTilstandService;
     }
 
     public static final String PATH = "/internal/status";
@@ -23,6 +23,6 @@ public class InternalRegistreringStatusServlet extends HttpServlet {
         Status status = Status.parse(req.getParameter("status"));
         String id = req.getParameter("id");
 
-        brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(id, status));
+        aktiveringTilstandService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(id, status));
     }
 }

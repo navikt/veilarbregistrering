@@ -12,21 +12,17 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -101,31 +97,6 @@ public class BrukerRegistreringServiceTest {
         mockBrukerUnderOppfolging();
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         assertThrows(RuntimeException.class, () -> registrerBruker(selvgaaendeBruker, BRUKER_INTERN));
-    }
-
-    @Test
-    public void skal_oppdatere_registreringtilstand_med_status_og_sistendret() {
-        LocalDateTime sistEndret = LocalDateTime.now();
-        AktiveringTilstand original = RegistreringTilstandTestdataBuilder
-                .registreringTilstand()
-                .status(Status.ARENA_OK)
-                .opprettet(sistEndret.minusDays(1))
-                .sistEndret(sistEndret)
-                .build();
-        when(aktiveringTilstandRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
-
-        brukerRegistreringService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
-
-        ArgumentCaptor<AktiveringTilstand> argumentCaptor = ArgumentCaptor.forClass(AktiveringTilstand.class);
-        verify(aktiveringTilstandRepository).oppdater(argumentCaptor.capture());
-        AktiveringTilstand capturedArgument = argumentCaptor.getValue();
-
-        assertThat(capturedArgument.getId()).isEqualTo(original.getId());
-        assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());
-        assertThat(capturedArgument.getBrukerRegistreringId()).isEqualTo(original.getBrukerRegistreringId());
-        assertThat(capturedArgument.getOpprettet()).isEqualTo(original.getOpprettet());
-        assertThat(capturedArgument.getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
-
     }
 
     private void mockOppfolgingMedRespons(OppfolgingStatusData oppfolgingStatusData) {
