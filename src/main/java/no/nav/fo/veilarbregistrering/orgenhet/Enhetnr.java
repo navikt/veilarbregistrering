@@ -25,6 +25,11 @@ public class Enhetnr {
         return Enhetnr.of("2930");
     }
 
+    public static Enhetnr enhetForAdressebeskyttelse() {
+        // NAV Vikafossen håndterer brukere med adressebeskyttelse
+        return Enhetnr.of("2103");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

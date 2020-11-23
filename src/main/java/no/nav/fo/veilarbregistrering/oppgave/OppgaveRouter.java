@@ -57,8 +57,9 @@ public class OppgaveRouter {
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {
-        if (harBrukerAdressebeskyttelse(bruker)) {
-            return Optional.empty();
+        AdressebeskyttelseGradering adressebeskyttelseGradering = hentAdressebeskyttelse(bruker);
+        if (adressebeskyttelseGradering.erGradert()) {
+            return adressebeskyttelseGradering.getEksplisittRoutingEnhet();
         }
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
@@ -104,13 +105,15 @@ public class OppgaveRouter {
         }
     }
 
-    private boolean harBrukerAdressebeskyttelse(Bruker bruker) {
+    private AdressebeskyttelseGradering hentAdressebeskyttelse(Bruker bruker) {
         try {
             Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
-            return person.map(Person::harAdressebeskyttelse).orElse(false);
+            return person.map(Person::getAdressebeskyttelseGradering)
+                    .orElse(AdressebeskyttelseGradering.UKJENT);
+
         } catch (Exception e) {
             LOG.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e);
-            return false;
+            return AdressebeskyttelseGradering.UKJENT;
         }
     }
 
