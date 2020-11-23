@@ -7,12 +7,9 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
@@ -107,15 +104,5 @@ public class BrukerRegistreringService {
                 fnr.alder(now()),
                 fnr,
                 besvarelse);
-    }
-
-    public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
-        AktiveringTilstand original = aktiveringTilstandRepository.hentAktiveringTilstand(registreringTilstandDto.getId());
-        AktiveringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
-        aktiveringTilstandRepository.oppdater(oppdatert);
-    }
-
-    public List<AktiveringTilstand> finnAktiveringTilstandMed(Status status) {
-        return aktiveringTilstandRepository.finnAktiveringTilstandMed(status);
     }
 }

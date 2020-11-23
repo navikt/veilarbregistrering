@@ -62,6 +62,11 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    AktiveringTilstandService aktiveringTilstandService(AktiveringTilstandRepository aktiveringTilstandRepository) {
+        return new AktiveringTilstandService(aktiveringTilstandRepository);
+    }
+
+    @Bean
     BrukerTilstandService brukerTilstandService(
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService) {
@@ -325,13 +330,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringStatusoversiktServlet(brukerRegistreringService);
+    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(AktiveringTilstandService aktiveringTilstandService) {
+        return new InternalRegistreringStatusoversiktServlet(aktiveringTilstandService);
     }
 
     @Bean
-    InternalRegistreringStatusServlet internalRegistreringResendingServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringStatusServlet(brukerRegistreringService);
+    InternalRegistreringStatusServlet internalRegistreringResendingServlet(AktiveringTilstandService aktiveringTilstandService) {
+        return new InternalRegistreringStatusServlet(aktiveringTilstandService);
     }
 
     @Bean
