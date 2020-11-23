@@ -20,7 +20,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRe
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandTestdataBuilder.registreringTilstand;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.*;
 import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
@@ -277,6 +277,6 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
 
         Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
 
-        assertThat(nesteRegistreringKlarForPublisering.isPresent()).isFalse();
+        assertThat(nesteRegistreringKlarForPublisering).isEmpty();
     }
 }
