@@ -96,8 +96,8 @@ public class AktiveringTilstandRepositoryImpl implements AktiveringTilstandRepos
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?" +
                 " ORDER BY OPPRETTET" +
-                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{"OVERFORT_ARENA", 0, 1}, new AktiveringTilstandMapper());
+                " FETCH NEXT ? ROWS ONLY";
+        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{"OVERFORT_ARENA", 1}, new AktiveringTilstandMapper());
         return registreringsTilstander.stream().findFirst();
     }
 
