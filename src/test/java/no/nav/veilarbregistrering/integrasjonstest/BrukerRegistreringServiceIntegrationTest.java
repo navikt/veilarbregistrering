@@ -96,16 +96,6 @@ class BrukerRegistreringServiceIntegrationTest {
         assertThat(brukerRegistrering.isPresent()).isFalse();
     }
 
-    @Test
-    public void skalLagreIDatabaseDersomKallTilArenaErOK() {
-        cofigureMocks();
-
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER);
-
-        Optional<OrdinaerBrukerRegistrering> reg = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
-        assertThat(reg.isPresent()).isTrue();
-    }
-
     private void cofigureMocks() {
         when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
         when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
