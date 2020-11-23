@@ -26,22 +26,23 @@ public class PubliseringAvRegistreringEventsScheduler {
 
     @Scheduled(cron = "0/10 * * * * *")
     public void publiserRegistreringEvents() {
+        try {
+            leggTilCallId();
 
-        leggTilCallId();
+            if (!skalPublisereEvents()) {
+                LOG.info("Publisering av registreringevents er togglet av");
+                return;
+            }
 
-        if (!skalPublisereEvents()) {
-            LOG.info("Publisering av registreringevents er togglet av");
-            return;
+            LOG.info("Publisering av registreringevents er togglet på");
+
+            if (LeaderElection.isLeader()) {
+                LOG.info("I´am the leader");
+                publiseringAvEventsService.publiserEvents();
+            }
+        } finally {
+            MDC.clear();
         }
-
-        LOG.info("Publisering av registreringevents er togglet på");
-
-        if (LeaderElection.isLeader()) {
-            LOG.info("I´am the leader");
-            publiseringAvEventsService.publiserEvents();
-        }
-
-        MDC.clear();
     }
 
     private boolean skalPublisereEvents() {
