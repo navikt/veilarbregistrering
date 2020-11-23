@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import static no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId;
 
-@Component
 public class PubliseringAvRegistreringEventsScheduler {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvRegistreringEventsScheduler.class);
