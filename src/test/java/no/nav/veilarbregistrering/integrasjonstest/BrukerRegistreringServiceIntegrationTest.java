@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import org.junit.AfterClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,12 @@ class BrukerRegistreringServiceIntegrationTest {
     @AfterEach
     public void tearDown() {
         context.stop();
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        context.close();
+        context = null;
     }
 
     @Test
