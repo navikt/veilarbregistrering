@@ -47,7 +47,7 @@ public class PubliseringAvEventsService {
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
+        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA);
         aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
         LOG.info("Ny tilstand for registrering: {}", oppdatertAktiveringTilstand);
 

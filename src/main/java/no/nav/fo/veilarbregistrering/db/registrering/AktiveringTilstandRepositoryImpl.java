@@ -94,10 +94,10 @@ public class AktiveringTilstandRepositoryImpl implements AktiveringTilstandRepos
     @Override
     public Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering() {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
-                " WHERE STATUS = ?" +
+                " WHERE STATUS IN (?, ?)" +
                 " ORDER BY OPPRETTET" +
                 " FETCH NEXT ? ROWS ONLY";
-        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{"OVERFORT_ARENA", 1}, new AktiveringTilstandMapper());
+        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{"OVERFORT_ARENA", "EVENT_PUBLISERT", 1}, new AktiveringTilstandMapper());
         return registreringsTilstander.stream().findFirst();
     }
 
