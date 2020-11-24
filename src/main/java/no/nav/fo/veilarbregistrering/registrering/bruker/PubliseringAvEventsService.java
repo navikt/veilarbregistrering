@@ -36,7 +36,7 @@ public class PubliseringAvEventsService {
     public void publiserEvents() {
         Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Ingen registreringer klare (status = OVERFOERT_ARENA) for publisering");
+            LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;
         }
 
