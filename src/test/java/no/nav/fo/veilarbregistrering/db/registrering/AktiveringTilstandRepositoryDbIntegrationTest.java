@@ -264,14 +264,14 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretNyesteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
-                .status(EVENT_PUBLISERT)
+                .status(PUBLISERT_KAFKA)
                 .build();
         aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
 
         AktiveringTilstand eldsteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretEldsteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(10))
-                .status(EVENT_PUBLISERT)
+                .status(PUBLISERT_KAFKA)
                 .build();
         aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
 
