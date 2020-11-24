@@ -49,7 +49,7 @@ public class PubliseringAvEventsService {
 
         AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
         aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
-        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
+        LOG.info("Ny tilstand for registrering: {}", oppdatertAktiveringTilstand);
 
         /*
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
