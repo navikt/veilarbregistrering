@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils;
@@ -77,7 +76,6 @@ public class ArenaOrdsTokenProviderClient {
                 tokenCache.getOrdsToken().getExpiresIn() - MINIMUM_TIME_TO_EXPIRE_BEFORE_REFRESH, SECONDS);
     }
 
-    @Getter
     private static class TokenCache {
         private final OrdsToken ordsToken;
         private final LocalDateTime time;
@@ -85,6 +83,14 @@ public class ArenaOrdsTokenProviderClient {
         TokenCache(OrdsToken ordsToken) {
             this.ordsToken = ordsToken;
             this.time = LocalDateTime.now();
+        }
+
+        public OrdsToken getOrdsToken() {
+            return this.ordsToken;
+        }
+
+        public LocalDateTime getTime() {
+            return this.time;
         }
     }
 
