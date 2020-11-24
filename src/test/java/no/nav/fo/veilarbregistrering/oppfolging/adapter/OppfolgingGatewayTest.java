@@ -5,8 +5,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +60,7 @@ class OppfolgingGatewayTest {
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null, null, null);
+        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null, null);
     }
 
     @Test
