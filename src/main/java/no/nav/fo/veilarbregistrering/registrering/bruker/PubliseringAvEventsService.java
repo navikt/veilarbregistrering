@@ -34,9 +34,9 @@ public class PubliseringAvEventsService {
 
     @Transactional
     public void publiserEvents() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandForOverforing();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
         if (!muligRegistreringTilstand.isPresent()) {
-            LOG.info("Ingen registreringer klare (status = OVERFOERT_ARENA_OK) for publisering av events");
+            LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;
         }
 
@@ -45,12 +45,17 @@ public class PubliseringAvEventsService {
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
         AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.EVENT_PUBLISERT);
-        LOG.info("Ny tilstand: {}", oppdatertAktiveringTilstand);
         aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
+        LOG.info("Ny tilstand for registrering: {}", oppdatertAktiveringTilstand);
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
+        /*
+        // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
+        // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
+        // Dette skjer pga. compaction-innstillingen definert i paw-iac repoet på github.
+        // Så hvis førstnevnte feiler forhindrer vi at duplikate meldinger skrives til sistnevnte.
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
                 new ArbeidssokerRegistrertInternalEvent(
@@ -61,6 +66,7 @@ public class PubliseringAvEventsService {
         arbeidssokerProfilertProducer.publiserProfilering(
                 bruker.getAktorId(),
                 profilering.getInnsatsgruppe(),
-                ordinaerBrukerRegistrering.getOpprettetDato());
+                ordinaerBrukerRegistrering.getOpprettetDato());*/
+
     }
 }

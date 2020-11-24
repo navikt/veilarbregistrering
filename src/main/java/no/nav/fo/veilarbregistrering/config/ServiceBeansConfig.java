@@ -31,6 +31,7 @@ import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistrering
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvHistorikkTask;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvRegistreringEventsScheduler;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
@@ -287,6 +288,30 @@ public class ServiceBeansConfig {
                 brukerRegistreringRepository,
                 oppfolgingGateway,
                 arbeidssokerRegistrertProducer, aktiveringTilstandRepository);
+    }
+
+    @Bean
+    PubliseringAvEventsService publiseringAvEventsService(
+            ProfileringRepository profileringRepository,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            AktiveringTilstandRepository aktiveringTilstandRepository,
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+        return new PubliseringAvEventsService(
+                profileringRepository,
+                brukerRegistreringRepository,
+                arbeidssokerRegistrertProducer,
+                aktiveringTilstandRepository,
+                arbeidssokerProfilertProducer
+        );
+    }
+
+    @Bean
+    public PubliseringAvRegistreringEventsScheduler publiseringAvRegistreringEventsScheduler(
+            UnleashService unleashService,
+            PubliseringAvEventsService publiseringAvEventsService
+    ) {
+        return new PubliseringAvRegistreringEventsScheduler(unleashService, publiseringAvEventsService);
     }
 
     @Bean

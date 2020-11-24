@@ -71,7 +71,6 @@ public abstract class DbIntegrasjonsTest {
         if (annotationConfigApplicationContext != null) {
             annotationConfigApplicationContext.stop();
             annotationConfigApplicationContext.close();
-            annotationConfigApplicationContext.destroy();
             annotationConfigApplicationContext = null;
         }
     }

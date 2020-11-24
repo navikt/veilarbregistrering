@@ -62,7 +62,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
 
-        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofArenaOk(oppettetBrukerRegistrering.getId());
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
         aktiveringTilstandRepository.lagre(registreringTilstand);
 
         arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(

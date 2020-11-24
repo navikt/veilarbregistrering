@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
+import org.junit.AfterClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +77,12 @@ class BrukerRegistreringServiceIntegrationTest {
         context.stop();
     }
 
+    @AfterClass
+    public static void cleanup() {
+        context.close();
+        context = null;
+    }
+
     @Test
     public void skalRulleTilbakeDatabaseDersomKallTilArenaFeiler() {
         cofigureMocks();
@@ -87,16 +94,6 @@ class BrukerRegistreringServiceIntegrationTest {
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
-    }
-
-    @Test
-    public void skalLagreIDatabaseDersomKallTilArenaErOK() {
-        cofigureMocks();
-
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER);
-
-        Optional<OrdinaerBrukerRegistrering> reg = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(ordinaerBrukerRegistrering.getId()));
-        assertThat(reg.isPresent()).isTrue();
     }
 
     private void cofigureMocks() {

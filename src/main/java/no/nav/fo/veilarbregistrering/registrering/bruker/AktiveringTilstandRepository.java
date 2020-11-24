@@ -10,4 +10,5 @@ public interface AktiveringTilstandRepository {
     List<AktiveringTilstand> finnAktiveringTilstandMed(Status status);
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
+    Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering();
 }
