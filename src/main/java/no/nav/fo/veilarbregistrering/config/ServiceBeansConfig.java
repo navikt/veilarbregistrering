@@ -290,10 +290,9 @@ public class ServiceBeansConfig {
 
     @Bean
     public PubliseringAvRegistreringEventsScheduler publiseringAvRegistreringEventsScheduler(
-            UnleashService unleashService,
             PubliseringAvEventsService publiseringAvEventsService
     ) {
-        return new PubliseringAvRegistreringEventsScheduler(unleashService, publiseringAvEventsService);
+        return new PubliseringAvRegistreringEventsScheduler(publiseringAvEventsService);
     }
 
     @Bean

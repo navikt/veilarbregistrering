@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.OVERFORT_ARENA;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.PUBLISERT_KAFKA;
+
 public class PubliseringAvEventsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvEventsService.class);
@@ -34,7 +37,8 @@ public class PubliseringAvEventsService {
 
     @Transactional
     public void publiserEvents() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
+        rapporterRegistreringStatusAntallForPublisering();
+        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;
@@ -67,5 +71,19 @@ public class PubliseringAvEventsService {
                 profilering.getInnsatsgruppe(),
                 ordinaerBrukerRegistrering.getOpprettetDato());
 
+    }
+
+    private void rapporterRegistreringStatusAntallForPublisering() {
+        try {
+            rapporterRegistreringStatusAntall(OVERFORT_ARENA);
+            rapporterRegistreringStatusAntall(PUBLISERT_KAFKA);
+        } catch (Exception e) {
+            LOG.error("Feil ved rapportering av antall statuser", e);
+        }
+    }
+
+    private void rapporterRegistreringStatusAntall(Status status) {
+        int antall = aktiveringTilstandRepository.hentAntall(status);
+        PubliseringMetrics.rapporterRegistreringStatusAntall(status, antall);
     }
 }

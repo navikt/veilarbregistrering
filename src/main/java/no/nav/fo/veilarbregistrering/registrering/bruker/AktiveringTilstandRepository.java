@@ -8,7 +8,8 @@ public interface AktiveringTilstandRepository {
     void oppdater(AktiveringTilstand aktiveringTilstand);
     AktiveringTilstand hentAktiveringTilstand(long id);
     List<AktiveringTilstand> finnAktiveringTilstandMed(Status status);
+    Optional<AktiveringTilstand> finnNesteAktiveringTilstandMed(Status status);
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
-    Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering();
+    int hentAntall(Status status);
 }

@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.scheduler;
 
 import no.nav.common.leaderelection.LeaderElection;
 import no.nav.fo.veilarbregistrering.registrering.bruker.PubliseringAvEventsService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -15,11 +14,9 @@ public class PubliseringAvRegistreringEventsScheduler {
 
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvRegistreringEventsScheduler.class);
 
-    private final UnleashService unleashService;
     private final PubliseringAvEventsService publiseringAvEventsService;
 
-    public PubliseringAvRegistreringEventsScheduler(UnleashService unleashService, PubliseringAvEventsService publiseringAvEventsService) {
-        this.unleashService = unleashService;
+    public PubliseringAvRegistreringEventsScheduler(PubliseringAvEventsService publiseringAvEventsService) {
         this.publiseringAvEventsService = publiseringAvEventsService;
     }
 
@@ -28,23 +25,13 @@ public class PubliseringAvRegistreringEventsScheduler {
         try {
             leggTilCallId();
 
-            if (!skalPublisereEvents()) {
-                LOG.info("Publisering av registreringevents er togglet av");
+            if (!LeaderElection.isLeader()) {
                 return;
             }
 
-            LOG.info("Publisering av registreringevents er togglet på");
-
-            if (LeaderElection.isLeader()) {
-                LOG.info("I´am the leader");
-                publiseringAvEventsService.publiserEvents();
-            }
+            publiseringAvEventsService.publiserEvents();
         } finally {
             MDC.clear();
         }
-    }
-
-    private boolean skalPublisereEvents() {
-        return unleashService.isEnabled("veilarbregistrering.publiserEvents");
     }
 }
