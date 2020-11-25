@@ -279,4 +279,31 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
 
         assertThat(nesteRegistreringKlarForPublisering).isEmpty();
     }
+
+    @Test
+    public void skal_telle_antall_registreringer_med_status() {
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
+        OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
+
+        final int antallPublisertKafka = 5;
+        final int antallOverfortArena = 3;
+
+        lagAktiveringTilstand(lagretRegistrering, PUBLISERT_KAFKA, antallPublisertKafka);
+        lagAktiveringTilstand(lagretRegistrering, OVERFORT_ARENA, antallOverfortArena);
+
+        assertThat(aktiveringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka);
+        assertThat(aktiveringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena);
+        assertThat(aktiveringTilstandRepository.hentAntall(ARENA_OK)).isEqualTo(0);
+    }
+
+    private void lagAktiveringTilstand(OrdinaerBrukerRegistrering registrering, Status status, int antall) {
+        for (int i = 0; i < antall; i++) {
+            AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+                    .brukerRegistreringId(registrering.getId())
+                    .opprettet(LocalDateTime.now().minusMinutes(5))
+                    .status(status)
+                    .build();
+            aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+        }
+    }
 }

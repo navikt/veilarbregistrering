@@ -11,4 +11,5 @@ public interface AktiveringTilstandRepository {
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandMed(Status status);
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
+    int hentAntall(Status status);
 }
