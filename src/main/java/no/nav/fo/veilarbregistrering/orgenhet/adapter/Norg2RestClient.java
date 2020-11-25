@@ -20,10 +20,10 @@ class Norg2RestClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(Norg2RestClient.class);
 
-    private final String url;
+    private final String baseUrl;
 
     Norg2RestClient(String baseUrl) {
-        this.url = baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch";
+        this.baseUrl = baseUrl;
     }
 
     List<RsNavKontorDto> hentEnhetFor(Kommunenummer kommunenummer) {
@@ -51,8 +51,16 @@ class Norg2RestClient {
 
     Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
         return RestUtils.createClient()
-                        .target(url)
+                        .target(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
                         .request(MediaType.APPLICATION_JSON)
                         .post(json(rsArbeidsfordelingCriteriaDto));
+    }
+
+    List<RsEnhet> hentAlleEnheter() {
+        return RestUtils.createClient()
+                .target(baseUrl + "/v1/enhet").queryParam("oppgavebehandlerFilter=UFILTRERT")
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<RsEnhet>>() {
+                });
     }
 }

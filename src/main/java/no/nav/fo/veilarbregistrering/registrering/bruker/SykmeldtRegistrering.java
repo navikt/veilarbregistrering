@@ -4,9 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,8 +25,4 @@ public class SykmeldtRegistrering extends BrukerRegistrering {
         return BrukerRegistreringType.SYKMELDT;
     }
 
-    @Override
-    public DinSituasjonSvar getBrukersSituasjon() {
-        return besvarelse != null ? besvarelse.getDinSituasjon() : null;
-    }
 }

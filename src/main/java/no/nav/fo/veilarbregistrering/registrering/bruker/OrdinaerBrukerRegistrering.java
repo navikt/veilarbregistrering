@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
-import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 
@@ -30,11 +28,6 @@ public class OrdinaerBrukerRegistrering extends BrukerRegistrering {
     @Override
     public BrukerRegistreringType hentType() {
         return ORDINAER;
-    }
-
-    @Override
-    public DinSituasjonSvar getBrukersSituasjon() {
-        return besvarelse != null ? besvarelse.getDinSituasjon() : null;
     }
 
 }

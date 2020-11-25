@@ -1,0 +1,15 @@
+{
+  "table": "SIAMO.PERSON",
+  "op_type": "D",
+  "op_ts": "2020-10-04 02:30:45.000000",
+  "current_ts": "2020-10-04T02:30:48.149035",
+  "pos": "00000000350026486256",
+  "tokens": {},
+  "before": {
+    "PERSON_ID": 1365747,
+    "FODSELSNR": null,
+    "FORMIDLINGSGRUPPEKODE": "IJOBS",
+    "MOD_DATO": "2016-03-12 00:47:50",
+    "PERSON_ID_STATUS": "AKTIV"
+  }
+}

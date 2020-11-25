@@ -6,10 +6,8 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.Oppholdstype;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,8 +22,6 @@ import static org.mockito.Mockito.mock;
 
 public class PdlOppslagClientTest {
 
-    private static final String HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json";
-    private static final String HENT_PERSON_OK_UTEN_PERIODER_JSON = "/pdl/hentPersonOkUtenPerioder.json";
     private static final String HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json";
     private static final String HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json";
     private static final String HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json";
@@ -36,32 +32,6 @@ public class PdlOppslagClientTest {
     @Before
     public void setUp() {
         requestProvider = mock(Provider.class);
-    }
-
-    @Test
-    public void skalHenteOppholdTilPerson() {
-        PdlOppslagClient client = new PdlOppslagClient("", null) {
-            @Override
-            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(HENT_PERSON_OK_JSON);
-            }
-        };
-        PdlPerson person = client.hentPerson(AktorId.of("444hhh"));
-
-        Assert.assertEquals(Oppholdstype.MIDLERTIDIG, person.getOpphold().get(0).getType());
-    }
-
-    @Test
-    public void skalHenteOppholdUtenPeriodeTilPerson() {
-        PdlOppslagClient service = new PdlOppslagClient("", null) {
-            @Override
-            String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-                return toJson(HENT_PERSON_OK_UTEN_PERIODER_JSON);
-            }
-        };
-        PdlPerson person = service.hentPerson(AktorId.of("444hhh"));
-
-        Assert.assertEquals(Oppholdstype.PERMANENT, person.getOpphold().get(0).getType());
     }
 
     @Test(expected = RuntimeException.class)

@@ -26,6 +26,12 @@ public class CacheConfig {
             .timeToIdleSeconds(3600)
             .timeToLiveSeconds(3600);
 
+    public static final String HENT_ALLE_ENHETER_V2 = "hentAlleEnheterV2";
+    private static final CacheConfiguration HENT_ALLE_ENHETER_V2_CACHE = new CacheConfiguration(HENT_ALLE_ENHETER_V2, 100000)
+            .memoryStoreEvictionPolicy(LRU)
+            .timeToIdleSeconds(3600)
+            .timeToLiveSeconds(3600);
+
     public static final String HENT_PERSON_FOR_AKTORID = "hentPerson";
     private static final CacheConfiguration HENT_PERSON_FOR_AKTORID_CACHE = new CacheConfiguration(HENT_PERSON_FOR_AKTORID, 100000)
             .memoryStoreEvictionPolicy(LRU)
@@ -44,6 +50,7 @@ public class CacheConfig {
         config.addCache(ABAC_CACHE);
         config.addCache(HENT_ARBEIDSFORHOLD_CACHE);
         config.addCache(HENT_ALLE_ENHETER_CACHE);
+        config.addCache(HENT_ALLE_ENHETER_V2_CACHE);
         config.addCache(HENT_PERSON_FOR_AKTORID_CACHE);
         config.addCache(HENT_PERSONIDENTER_CACHE);
         return new EhCacheCacheManager(net.sf.ehcache.CacheManager.newInstance(config));

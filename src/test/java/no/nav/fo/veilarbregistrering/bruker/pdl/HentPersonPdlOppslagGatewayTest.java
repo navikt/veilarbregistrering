@@ -59,18 +59,11 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     private PdlPerson dummyPdlPerson() {
-        PdlPersonOpphold pdlPersonOpphold = new PdlPersonOpphold();
-        pdlPersonOpphold.setType(Oppholdstype.PERMANENT);
-
-        PdlStatsborgerskap statsborgerskap = new PdlStatsborgerskap();
-        statsborgerskap.setLand("NOR");
-
-        PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setOpphold(singletonList(pdlPersonOpphold));
-        pdlPerson.setStatsborgerskap(singletonList(statsborgerskap));
 
         PdlFoedsel pdlFoedsel = new PdlFoedsel();
         pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
+
+        PdlPerson pdlPerson = new PdlPerson();
         pdlPerson.setFoedsel(singletonList(pdlFoedsel));
 
         PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();

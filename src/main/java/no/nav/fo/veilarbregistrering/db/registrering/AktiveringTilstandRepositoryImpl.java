@@ -91,6 +91,16 @@ public class AktiveringTilstandRepositoryImpl implements AktiveringTilstandRepos
         return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
     }
 
+    @Override
+    public Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering() {
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
+                " WHERE STATUS = ?" +
+                " ORDER BY OPPRETTET" +
+                " FETCH NEXT ? ROWS ONLY";
+        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{"OVERFORT_ARENA", 1}, new AktiveringTilstandMapper());
+        return registreringsTilstander.stream().findFirst();
+    }
+
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }

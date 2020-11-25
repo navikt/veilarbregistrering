@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static org.mockito.Mockito.mock;
 
 @Configuration

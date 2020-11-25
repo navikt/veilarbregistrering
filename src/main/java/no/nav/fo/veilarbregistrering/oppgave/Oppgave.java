@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -16,28 +16,31 @@ public class Oppgave {
         beskrivelser.put(
                 OppgaveType.OPPHOLDSTILLATELSE,
                 "Brukeren får ikke registrert seg som arbeidssøker pga. manglende oppholdstillatelse i Arena, " +
-                        "og har selv opprettet denne oppgaven. " +
-                        "Ring bruker og følg midlertidig rutine på navet om løsning for registreringen av arbeids- og oppholdstillatelse."
+                        "og har selv opprettet denne oppgaven." +
+                        "\n\nFølg rutinen som er beskrevet for registreringen av arbeids- og oppholdstillatelse: " +
+                        "https://navno.sharepoint.com/sites/fag-og-ytelser-regelverk-og-rutiner/SitePages/Registrering-av-arbeids--og-oppholdstillatelse.aspx" +
+                        "\n\nHar oppgaven havnet i feil oppgaveliste? Da ønsker vi som har utviklet løsningen tilbakemelding på dette. " +
+                        "Meld sak her: https://jira.adeo.no/plugins/servlet/desk/portal/541/create/3384. Takk!"
         );
         beskrivelser.put(
                 OppgaveType.UTVANDRET,
                 "Brukeren får ikke registrert seg som arbeidssøker fordi bruker står som utvandret i TPS og ikke er befolket i Arena, " +
                         "og har selv opprettet denne oppgaven. " +
-                        "Ring bruker og følg vanlig rutine for slike tilfeller." +
+                        "\n\nRing bruker og følg vanlig rutine for slike tilfeller." +
                         "\n\nHar oppgaven havnet i feil oppgaveliste? Da ønsker vi som har utviklet løsningen tilbakemelding på dette. " +
                         "Meld sak her: https://jira.adeo.no/plugins/servlet/desk/portal/541/create/3384. Takk!"
         );
     }
 
     private final AktorId aktorId;
-    private final Enhetsnr enhetsnr;
+    private final Enhetnr enhetnr;
     private final OppgaveType oppgaveType;
     private final LocalDate fristFerdigstillelse;
     private final LocalDate aktivDato;
 
-    private Oppgave(AktorId aktorId, Enhetsnr enhetsnr, OppgaveType oppgaveType, LocalDate fristFerdigstillelse, LocalDate aktivDato) {
+    private Oppgave(AktorId aktorId, Enhetnr enhetnr, OppgaveType oppgaveType, LocalDate fristFerdigstillelse, LocalDate aktivDato) {
         this.aktorId = aktorId;
-        this.enhetsnr = enhetsnr;
+        this.enhetnr = enhetnr;
         this.oppgaveType = oppgaveType;
         this.fristFerdigstillelse = fristFerdigstillelse;
         this.aktivDato = aktivDato;
@@ -45,11 +48,11 @@ public class Oppgave {
 
     public static Oppgave opprettOppgave(
             AktorId aktorId,
-            Enhetsnr enhetsnr,
+            Enhetnr enhetnr,
             OppgaveType oppgaveType,
             LocalDate dagensDato) {
 
-        return new Oppgave(aktorId, enhetsnr, oppgaveType, fristFerdigstilleles(dagensDato), dagensDato);
+        return new Oppgave(aktorId, enhetnr, oppgaveType, fristFerdigstilleles(dagensDato), dagensDato);
     }
 
     private static LocalDate fristFerdigstilleles(LocalDate dagensDato) {
@@ -60,8 +63,8 @@ public class Oppgave {
         return aktorId;
     }
 
-    public Optional<Enhetsnr> getEnhetsnr() {
-        return Optional.ofNullable(enhetsnr);
+    public Optional<Enhetnr> getEnhetnr() {
+        return Optional.ofNullable(enhetnr);
     }
 
     public LocalDate getFristFerdigstillelse() {
@@ -82,7 +85,7 @@ public class Oppgave {
         if (o == null || getClass() != o.getClass()) return false;
         Oppgave oppgave = (Oppgave) o;
         return Objects.equals(aktorId, oppgave.aktorId) &&
-                Objects.equals(enhetsnr, oppgave.enhetsnr) &&
+                Objects.equals(enhetnr, oppgave.enhetnr) &&
                 oppgaveType == oppgave.oppgaveType &&
                 Objects.equals(fristFerdigstillelse, oppgave.fristFerdigstillelse) &&
                 Objects.equals(aktivDato, oppgave.aktivDato);
@@ -90,6 +93,6 @@ public class Oppgave {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktorId, enhetsnr, oppgaveType, fristFerdigstillelse, aktivDato);
+        return Objects.hash(aktorId, enhetnr, oppgaveType, fristFerdigstillelse, aktivDato);
     }
 }

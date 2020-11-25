@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import com.google.gson.Gson;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 
 import javax.servlet.http.HttpServlet;
@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 
 public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
 
-    private final BrukerRegistreringService brukerRegistreringService;
+    private final AktiveringTilstandService aktiveringTilstandService;
 
-    public InternalRegistreringStatusoversiktServlet(BrukerRegistreringService brukerRegistreringService) {
-        this.brukerRegistreringService = brukerRegistreringService;
+    public InternalRegistreringStatusoversiktServlet(AktiveringTilstandService aktiveringTilstandService) {
+        this.aktiveringTilstandService = aktiveringTilstandService;
     }
 
     public static final String PATH = "/internal/statusoversikt";
@@ -28,7 +28,7 @@ public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Status status = Status.parse(req.getParameter("status"));
 
-        String aktiveringTilstandIderJson = of(brukerRegistreringService.finnAktiveringTilstandMed(status).stream()
+        String aktiveringTilstandIderJson = of(aktiveringTilstandService.finnAktiveringTilstandMed(status).stream()
                 .map(AktiveringTilstand::getId)
                 .collect(toList()))
                 .map(aktiveringTilstander -> new Gson().toJson(aktiveringTilstander)).get();

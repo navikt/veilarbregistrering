@@ -21,11 +21,9 @@ import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
-import no.nav.fo.veilarbregistrering.orgenhet.adapter.OrganisasjonEnhetV2Config;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.scheduler.OppgaveForAvvistRegistreringSchedulerConfig;
-import no.nav.fo.veilarbregistrering.registrering.scheduler.OverforTilArenaSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,9 +43,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         DatabaseConfig.class,
         KafkaConfig.class,
         PepConfig.class,
-        OverforTilArenaSchedulerConfig.class,
         OppgaveForAvvistRegistreringSchedulerConfig.class,
-        OrganisasjonEnhetV2Config.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,
@@ -118,8 +114,8 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     private OidcAuthenticatorConfig createAzureAdB2CConfig() {
-        String discoveryUrl = getRequiredProperty("AAD_B2C_DISCOVERY_URL");
-        String clientId = getRequiredProperty("AAD_B2C_CLIENTID_USERNAME");
+        String discoveryUrl = getRequiredProperty("LOGINSERVICE_IDPORTEN_DISCOVERY_URL");
+        String clientId = getRequiredProperty("LOGINSERVICE_IDPORTEN_AUDIENCE");
 
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(discoveryUrl)
