@@ -3,14 +3,13 @@ package no.nav.fo.veilarbregistrering.oppgave;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,21 +38,28 @@ public class OppgaveRouter {
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
     private final PersonGateway personGateway;
+    private final UnleashService unleashService;
+    private final PdlOppslagGateway pdlOppslagGateway;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway) {
+            PersonGateway personGateway,
+            UnleashService unleashService,
+            PdlOppslagGateway pdlOppslagGateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.personGateway = personGateway;
+        this.unleashService = unleashService;
+        this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerFor(Bruker bruker, OppgaveType oppgaveType) {
-        if (!oppgaveType.equals(OppgaveType.UTVANDRET)) {
-            return Optional.empty();
+    public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {
+        AdressebeskyttelseGradering adressebeskyttelseGradering = hentAdressebeskyttelse(bruker);
+        if (adressebeskyttelseGradering.erGradert()) {
+            return adressebeskyttelseGradering.getEksplisittRoutingEnhet();
         }
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
@@ -72,7 +78,7 @@ public class OppgaveRouter {
             if (gk.byMedBydeler()) {
                 LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
                 reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
-                return Optional.of(Enhetsnr.internBrukerstotte());
+                return Optional.of(Enhetnr.internBrukerstotte());
             }
 
             if (!gk.utland()) {
@@ -86,12 +92,12 @@ public class OppgaveRouter {
         }
 
         try {
-            Optional<Enhetsnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
+            Optional<Enhetnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
             if (enhetsnr.isPresent()) {
                 reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
                 return enhetsnr;
             }
-            return of(Enhetsnr.internBrukerstotte());
+            return of(Enhetnr.internBrukerstotte());
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
@@ -99,7 +105,19 @@ public class OppgaveRouter {
         }
     }
 
-    public Optional<Enhetsnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
+    private AdressebeskyttelseGradering hentAdressebeskyttelse(Bruker bruker) {
+        try {
+            Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
+            return person.map(Person::getAdressebeskyttelseGradering)
+                    .orElse(AdressebeskyttelseGradering.UKJENT);
+
+        } catch (Exception e) {
+            LOG.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e);
+            return AdressebeskyttelseGradering.UKJENT;
+        }
+    }
+
+    public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
@@ -134,10 +152,10 @@ public class OppgaveRouter {
         Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
         if (kommunenummer.kommuneMedBydeler()) {
             LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.asString());
-            return of(Enhetsnr.internBrukerstotte());
+            return of(Enhetnr.internBrukerstotte());
         }
 
-        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
+        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
         if (!enhetsnr.isPresent()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);

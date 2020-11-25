@@ -13,7 +13,6 @@ securitytokenservice_clientid: srvdp-arbeidssoker-o
 veilarbpersonapi_url: https://veilarbperson-q1.nais.preprod.local/veilarbperson/api
 veilarboppfolgingapi_url: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
 abac_pdp_endpoint_url: https://wasapp-q1.adeo.no/asm-pdp/authorize
-norg_url: https://app-q1.adeo.no/norg2/ws/OrganisasjonEnhet/v2
 norg2_url: https://app-q1.adeo.no/norg2/api
 oppgave_url: https://oppgave.nais.preprod.local/api/v1
 pdl_url: http://pdl-api.default.svc.nais.local/graphql
@@ -24,8 +23,10 @@ kafka_schema_url: http://kafka-schema-registry.tpa.svc.nais.local:8081
 arena_ords_api: https://arena-ords-q1.nais.preprod.local/arena/api
 arena_ords_token_provider: https://arena-ords-q1.nais.preprod.local/arena/api/oauth/token
 ingresses:
+  - https://veilarbregistrering-q1.dev.adeo.no
   - https://veilarbregistrering-q1.nais.preprod.local
   - https://app-q1.adeo.no/veilarbregistrering
 oracleuser_path: /oracle/data/dev/creds/veilarbregistrering_q1-user
+oracle_config_path: /oracle/data/dev/config/veilarbregistrering_q1
 serviceuser_path: /serviceuser/data/dev/srvveilarbregistrering
 secrets_path: /kv/preprod/fss/veilarbregistrering/q1

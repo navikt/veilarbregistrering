@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 
 public class OppgaveGatewayImpl implements OppgaveGateway {
 
@@ -21,8 +21,8 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
     public OppgaveResponse opprett(Oppgave oppgave) {
         OppgaveDto oppgaveDto = new OppgaveDto();
         oppgaveDto.setAktoerId(oppgave.getAktorId().asString());
-        oppgaveDto.setTildeltEnhetsnr(oppgave.getEnhetsnr()
-                .map(Enhetsnr::asString)
+        oppgaveDto.setTildeltEnhetsnr(oppgave.getEnhetnr()
+                .map(Enhetnr::asString)
                 .orElse(null));
         oppgaveDto.setBeskrivelse(oppgave.getBeskrivelse());
         oppgaveDto.setTema(OPPFOLGING);

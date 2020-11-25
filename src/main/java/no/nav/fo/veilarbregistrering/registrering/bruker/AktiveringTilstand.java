@@ -16,8 +16,8 @@ public class AktiveringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
-    public static AktiveringTilstand ofArenaOk(long brukerRegistreringId) {
-        return new AktiveringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.ARENA_OK);
+    public static AktiveringTilstand ofOverfortArena(long brukerRegistreringId) {
+        return new AktiveringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.OVERFORT_ARENA);
     }
 
     public static AktiveringTilstand ofMottattRegistrering(long brukerRegistreringId) {

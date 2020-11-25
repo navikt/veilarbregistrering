@@ -46,7 +46,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
@@ -62,7 +62,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
         oppgaveService.opprettOppgave(BRUKER, UTVANDRET);
@@ -78,7 +78,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
         oppgaveService.opprettOppgave(BRUKER, OPPHOLDSTILLATELSE);
 
@@ -112,7 +112,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         OppgaveImpl oppgaveSomBleOpprettetTreDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0));
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetTreDagerFor);
 
@@ -132,7 +132,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void ingen_tidligere_oppgaver() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList());
         when(oppgaveGateway.opprett(any())).thenReturn(new DummyOppgaveResponse());
 
@@ -149,7 +149,7 @@ public class OppgaveServiceTest {
 
     @Test
     public void skal_ikke_kaste_exception_dersom_det_finnes_oppgave_av_annen_type() {
-        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER, OPPHOLDSTILLATELSE)).thenReturn(Optional.empty());
+        when(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty());
         OppgaveImpl oppgaveSomBleOpprettetEnDagerFor = new OppgaveImpl(23, BRUKER.getAktorId(), OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0));
         List<OppgaveImpl> oppgaver = Collections.singletonList(oppgaveSomBleOpprettetEnDagerFor);
 

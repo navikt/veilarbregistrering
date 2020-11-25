@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.oppfolging.ArenaAktiveringException;
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 import no.nav.json.JsonUtils;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +28,19 @@ public class OppfolgingClient {
 
     private final String baseUrl;
     private final Provider<HttpServletRequest> httpServletRequestProvider;
-    private final UnleashService unleashService;
 
-    private SystemUserTokenProvider systemUserTokenProvider;
-    private GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
+    private final SystemUserTokenProvider systemUserTokenProvider;
+    private final GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
     public OppfolgingClient(
             String baseUrl,
             Provider<HttpServletRequest> httpServletRequestProvider,
             SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider,
-            UnleashService unleashService) {
+            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.httpServletRequestProvider = httpServletRequestProvider;
         this.systemUserTokenProvider = systemUserTokenProvider;
         this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
-        this.unleashService = unleashService;
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
@@ -91,10 +85,6 @@ public class OppfolgingClient {
         String url = baseUrl + "/oppfolging/aktiverbruker";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
 
-        if (asynkArenaOverforing()) {
-            return behandleHttpResponseAsynk(response, url);
-        }
-
         return behandleHttpResponse(response, url);
     }
 
@@ -118,10 +108,6 @@ public class OppfolgingClient {
                 .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
     }
 
-    private boolean asynkArenaOverforing() {
-        return unleashService.isEnabled("veilarbregistrering.asynkArenaOverforing");
-    }
-
     private int behandleHttpResponse(Response response, String url) {
         int status = response.getStatus();
 
@@ -135,52 +121,7 @@ public class OppfolgingClient {
         }
     }
 
-    private int behandleHttpResponseAsynk(Response response, String url) {
-        int status = response.getStatus();
-
-        if (status == 204) {
-            return status;
-        } else if (status == 403) {
-            AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
-            throw new ArenaAktiveringException(map(aktiverBrukerFeilDto));
-        } else if (status == 400) {
-            throw new BadRequestException(response);
-        } else if (status == 401) {
-            throw new NotAuthorizedException(response);
-        } else if (status == 500) {
-            throw new InternalServerErrorException(response);
-        } else {
-            throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
-        }
-    }
-
     static AktiverBrukerFeilDto parseResponse(String json) {
         return JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
-    }
-
-    private static Status map(AktiverBrukerFeilDto aktiverBrukerFeil) {
-        Status status;
-        switch (aktiverBrukerFeil.getType()) {
-            case BRUKER_ER_UKJENT: {
-                status = Status.UKJENT_BRUKER;
-                break;
-            }
-            case BRUKER_KAN_IKKE_REAKTIVERES: {
-                status = Status.KAN_IKKE_REAKTIVERES;
-                break;
-            }
-            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: {
-                status = Status.DOD_UTVANDRET_ELLER_FORSVUNNET;
-                break;
-            }
-            case BRUKER_MANGLER_ARBEIDSTILLATELSE: {
-                status = Status.MANGLER_ARBEIDSTILLATELSE;
-                break;
-            }
-            default:
-                LOG.error("Ukjent returverdi fra veilarboppfolging/Arena: " + aktiverBrukerFeil.getType());
-                status = Status.TEKNISK_FEIL;
-        }
-        return status;
     }
 }

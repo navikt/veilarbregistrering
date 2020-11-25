@@ -23,13 +23,11 @@ public class OppfolgingGatewayConfig {
     OppfolgingClient oppfolgingClient(
             Provider<HttpServletRequest> provider,
             SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider,
-            UnleashService unleashService) {
+            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
         return new OppfolgingClient(
                 getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME),
                 provider, systemUserTokenProvider,
-                gammelSystemUserTokenProvider,
-                unleashService);
+                gammelSystemUserTokenProvider);
     }
 
     @Bean

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.nav.fo.veilarbregistrering.FileToJson;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetsnr;
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,12 +29,12 @@ public class Norg2GatewayTest {
 
     @Test
     public void skal_hente_enhetsnr_fra_norg2_for_kommunenummer() {
-        Optional<Enhetsnr> enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer.of("0302"));
+        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer.of("0302"));
         assertThat(enhetsnr).isNotEmpty();
-        assertThat(enhetsnr).hasValue(Enhetsnr.of("0393"));
+        assertThat(enhetsnr).hasValue(Enhetnr.of("0393"));
     }
 
-    private class Norg2StubClient extends Norg2RestClient {
+    private static class Norg2StubClient extends Norg2RestClient {
 
         private final Gson gson = new GsonBuilder().create();
 

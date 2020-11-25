@@ -12,15 +12,14 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - veilarboppfolging (og Arena) : REST
 - [Arena ORDS : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidssoker/adapter/README.md)
 - veilarbperson : REST
-- Aktør-service (fnr/dnr -> aktørId) : SOAP
 - ABAC (tilgangskontroll)
 - Aareg (siste arbeidsforhold) : SOAP
-- [Enhetsregisteret](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
-- [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
+- [Enhetsregisteret : REST](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
+- [NAV Organisasjon (for veileder pr ident) : REST](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST
 - Unleash (feature toggle)
 - [Oppgave : REST -> "kontakt bruker"-oppgaver](src/main/java/no/nav/fo/veilarbregistrering/oppgave/adapter/README.md)
-- PDL : Graphql
+- [PDL : Graphql](src/main/java/no/nav/fo/veilarbregistrering/bruker/pdl/README.md)
 - [KRR : REST](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md)
 
 # Komme i gang
@@ -45,4 +44,4 @@ Spørsmål knyttet til koden eller prosjektet kan stilles via issues her på git
 
 ## For NAV-ansatte
 
-Interne henvendelser kan sendes via Slack i kanalen `#område-arbeid-pilo`t.
+Interne henvendelser kan sendes via Slack i kanalen `#område-arbeid-paw`.

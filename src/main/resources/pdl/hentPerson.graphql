@@ -1,15 +1,5 @@
-query($ident: ID!, $oppholdHistorikk: Boolean!){
+query($ident: ID!){
   hentPerson(ident: $ident) {
-    opphold(historikk: $oppholdHistorikk) {
-        type,
-        oppholdFra,
-        oppholdTil
-    },
-    statsborgerskap {
-        land,
-        gyldigFraOgMed,
-        gyldigTilOgMed
-    },
     foedsel {
         foedselsdato
     },
@@ -18,11 +8,8 @@ query($ident: ID!, $oppholdHistorikk: Boolean!){
         nummer,
         prioritet
     },
-    geografiskTilknytning {
-        gtType,
-        gtKommune,
-        gtBydel,
-        gtLand
+    adressebeskyttelse {
+        gradering
     }
   }
 }

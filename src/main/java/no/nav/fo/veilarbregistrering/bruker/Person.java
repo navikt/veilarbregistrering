@@ -4,39 +4,23 @@ import java.util.Optional;
 
 public class Person {
 
-    private final Opphold opphold;
-    private final Statsborgerskap statsborgerskap;
     private final Telefonnummer telefonnummer;
     private final Foedselsdato foedselsdato;
-    private final GeografiskTilknytning geografiskTilknytning;
+    private final AdressebeskyttelseGradering adressebeskyttelseGradering;
 
     public static Person of(
-            Opphold opphold,
-            Statsborgerskap statsborgerskap,
             Telefonnummer telefonnummer,
             Foedselsdato foedselsdato,
-            GeografiskTilknytning geografiskTilknytning) {
-        return new Person(opphold, statsborgerskap, telefonnummer, foedselsdato, geografiskTilknytning);
+            AdressebeskyttelseGradering adressebeskyttelseGradering) {
+        return new Person(telefonnummer, foedselsdato, adressebeskyttelseGradering);
     }
 
-    private Person(Opphold opphold,
-                   Statsborgerskap statsborgerskap,
-                   Telefonnummer telefonnummer,
+    private Person(Telefonnummer telefonnummer,
                    Foedselsdato foedselsdato,
-                   GeografiskTilknytning geografiskTilknytning) {
-        this.opphold = opphold;
-        this.statsborgerskap = statsborgerskap;
+                   AdressebeskyttelseGradering adressebeskyttelseGradering) {
         this.telefonnummer = telefonnummer;
         this.foedselsdato = foedselsdato;
-        this.geografiskTilknytning = geografiskTilknytning;
-    }
-
-    public Opphold getOpphold() {
-        return opphold != null ? opphold : Opphold.nullable();
-    }
-
-    public Statsborgerskap getStatsborgerskap() {
-        return statsborgerskap;
+        this.adressebeskyttelseGradering = adressebeskyttelseGradering;
     }
 
     public Optional<Telefonnummer> getTelefonnummer() {
@@ -47,17 +31,11 @@ public class Person {
         return foedselsdato;
     }
 
-    public Optional<GeografiskTilknytning> getGeografiskTilknytning() {
-        return Optional.ofNullable(geografiskTilknytning);
+    public AdressebeskyttelseGradering getAdressebeskyttelseGradering() {
+        return adressebeskyttelseGradering;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "opphold='" + opphold + '\'' +
-                ", statsborgerskap='" + statsborgerskap + '\'' +
-                ", geografiskTilknytning='" + geografiskTilknytning + '\'' +
-                '}';
+    public boolean harAdressebeskyttelse() {
+        return adressebeskyttelseGradering != null && adressebeskyttelseGradering.erGradert();
     }
-
 }

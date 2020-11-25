@@ -2,19 +2,18 @@ package no.nav.fo.veilarbregistrering.db.registrering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
+import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
@@ -185,5 +184,40 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
 
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
+    }
+
+    @Override
+    public Page<ArbeidssokerRegistrertInternalEvent> findRegistreringByPage(Pageable pageable) {
+        String rowCountSql = "SELECT count(1) AS row_count " +
+                "FROM BRUKER_REGISTRERING";
+
+        int total = db.queryForObject(rowCountSql, Integer.class);
+
+        String querySql = "SELECT * " +
+                "FROM BRUKER_REGISTRERING " +
+                "ORDER BY BRUKER_REGISTRERING_ID ASC " +
+                "OFFSET " + pageable.getOffset() + " ROWS " +
+                "FETCH NEXT " + pageable.getPageSize() + " ROWS ONLY";
+
+        List<ArbeidssokerRegistrertInternalEvent> dto = db.query(
+                querySql, (rs, rowNum) -> new ArbeidssokerRegistrertInternalEvent(
+                        AktorId.of(rs.getString("AKTOR_ID")),
+                        new Besvarelse()
+                                .setDinSituasjon(ofNullable(rs.getString("BEGRUNNELSE_FOR_REGISTRERING"))
+                                        .map(t -> DinSituasjonSvar.valueOf(t))
+                                        .orElse(null))
+                                .setUtdanning(ofNullable(rs.getString(NUS_KODE))
+                                        .map(t -> UtdanningUtils.mapTilUtdanning(t))
+                                        .orElse(null))
+                                .setUtdanningGodkjent(ofNullable(rs.getString(UTDANNING_GODKJENT_NORGE))
+                                        .map(t -> UtdanningGodkjentSvar.valueOf(t))
+                                        .orElse(null))
+                                .setUtdanningBestatt(ofNullable(rs.getString(UTDANNING_BESTATT))
+                                        .map(t -> UtdanningBestattSvar.valueOf(t))
+                                        .orElse(null)),
+                        rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
+                ));
+
+        return new PageImpl<>(dto, pageable, total);
     }
 }

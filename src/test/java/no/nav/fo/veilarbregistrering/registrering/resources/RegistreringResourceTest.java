@@ -9,9 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
@@ -27,6 +25,9 @@ public class RegistreringResourceTest {
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
+    private SykmeldtRegistreringService sykmeldtRegistreringService;
+    private HentRegistreringService hentRegistreringService;
+    private StartRegistreringStatusService startRegistreringStatusService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
 
@@ -36,20 +37,27 @@ public class RegistreringResourceTest {
         userService = mock(UserService.class);
         ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
+        hentRegistreringService = mock(HentRegistreringService.class);
+        sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
+        startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
+        InaktivBrukerService inaktivBrukerService = mock(InaktivBrukerService.class);
 
         registreringResource = new RegistreringResource(
                 pepClient,
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
-                unleashService
-        );
+                hentRegistreringService,
+                unleashService,
+                sykmeldtRegistreringService,
+                startRegistreringStatusService,
+                inaktivBrukerService);
     }
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
-        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
+        when(startRegistreringStatusService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
@@ -57,7 +65,7 @@ public class RegistreringResourceTest {
 
     @Test
     public void skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
-        when(brukerRegistreringService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
+        when(startRegistreringStatusService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
         when(userService.finnBrukerGjennomPdl()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
@@ -66,8 +74,8 @@ public class RegistreringResourceTest {
 
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
-        when(brukerRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
-        when(brukerRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
+        when(hentRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
+        when(hentRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());

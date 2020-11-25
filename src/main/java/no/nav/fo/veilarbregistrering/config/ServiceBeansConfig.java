@@ -21,16 +21,17 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
-import no.nav.fo.veilarbregistrering.orgenhet.HentEnheterGateway;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.profilering.StartRegistreringUtils;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringResource;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvHistorikkTask;
+import no.nav.fo.veilarbregistrering.registrering.scheduler.PubliseringAvRegistreringEventsScheduler;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
@@ -51,35 +52,93 @@ public class ServiceBeansConfig {
     }
 
     @Bean
+    HentRegistreringService hentRegistreringService(
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ProfileringRepository profileringRepository,
+            ManuellRegistreringService manuellRegistreringService) {
+        return new HentRegistreringService(
+                brukerRegistreringRepository,
+                profileringRepository,
+                manuellRegistreringService);
+    }
+
+    @Bean
+    AktiveringTilstandService aktiveringTilstandService(AktiveringTilstandRepository aktiveringTilstandRepository) {
+        return new AktiveringTilstandService(aktiveringTilstandRepository);
+    }
+
+    @Bean
+    BrukerTilstandService brukerTilstandService(
+            OppfolgingGateway oppfolgingGateway,
+            SykemeldingService sykemeldingService) {
+        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService);
+    }
+
+    @Bean
+    StartRegistreringStatusService startRegistreringStatusService(
+            ArbeidsforholdGateway arbeidsforholdGateway,
+            BrukerTilstandService brukerTilstandService,
+            PersonGateway personGateway) {
+        return new StartRegistreringStatusService(
+                arbeidsforholdGateway,
+                brukerTilstandService,
+                personGateway);
+    }
+
+    @Bean
+    InaktivBrukerService inaktivBrukerService(
+            BrukerTilstandService brukerTilstandService,
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            OppfolgingGateway oppfolgingGateway) {
+        return new InaktivBrukerService(
+                brukerTilstandService,
+                brukerRegistreringRepository,
+                oppfolgingGateway);
+    }
+
+    @Bean
+    SykmeldtRegistreringService sykmeldtRegistreringService(
+            BrukerTilstandService arbeidssokerService,
+            OppfolgingGateway oppfolgingGateway,
+            BrukerRegistreringRepository brukerRegistreringRepository) {
+        return new SykmeldtRegistreringService(
+                arbeidssokerService,
+                oppfolgingGateway,
+                brukerRegistreringRepository);
+    }
+
+    @Bean
     BrukerRegistreringService registrerBrukerService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
-            PersonGateway personGateway,
-            PdlOppslagGateway pdlOppslagGateway,
-            SykemeldingService sykemeldingService,
-            ArbeidsforholdGateway arbeidsforholdGateway,
-            ManuellRegistreringService manuellRegistreringService,
-            StartRegistreringUtils startRegistreringUtils,
-            UnleashService unleashService,
+            ProfileringService profileringService,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository
-    ) {
+            AktiveringTilstandRepository aktiveringTilstandRepository,
+            BrukerTilstandService brukerTilstandService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
-                personGateway,
-                pdlOppslagGateway,
-                sykemeldingService,
-                arbeidsforholdGateway,
-                manuellRegistreringService,
-                startRegistreringUtils,
-                unleashService,
+                profileringService,
                 arbeidssokerRegistrertProducer,
                 arbeidssokerProfilertProducer,
-                aktiveringTilstandRepository);
+                aktiveringTilstandRepository,
+                brukerTilstandService);
+    }
+
+    @Bean
+    PubliseringAvHistorikkTask publiseringAvHistorikkTask(
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            UnleashService unleashService
+    ) {
+        return new PubliseringAvHistorikkTask(
+                brukerRegistreringRepository,
+                arbeidssokerRegistrertProducer,
+                unleashService
+        );
     }
 
     @Bean
@@ -88,15 +147,21 @@ public class ServiceBeansConfig {
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            UnleashService unleashService
-    ) {
+            HentRegistreringService hentRegistreringService,
+            UnleashService unleashService,
+            StartRegistreringStatusService startRegistreringStatusService,
+            SykmeldtRegistreringService sykmeldtRegistreringService,
+            InaktivBrukerService inaktivBrukerService) {
         return new RegistreringResource(
                 pepClient,
                 userService,
                 manuellRegistreringService,
                 brukerRegistreringService,
-                unleashService
-        );
+                hentRegistreringService,
+                unleashService,
+                sykmeldtRegistreringService,
+                startRegistreringStatusService,
+                inaktivBrukerService);
     }
 
     @Bean
@@ -147,8 +212,10 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway);
+            PersonGateway personGateway,
+            UnleashService unleashService,
+            PdlOppslagGateway pdlOppslagGateway) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway);
     }
 
     @Bean
@@ -162,8 +229,10 @@ public class ServiceBeansConfig {
     @Bean
     ManuellRegistreringService manuellRegistreringService(
             ManuellRegistreringRepository manuellRegistreringRepository,
-            HentEnheterGateway hentEnheterGateway) {
-        return new ManuellRegistreringService(manuellRegistreringRepository, hentEnheterGateway);
+            Norg2Gateway norg2Gateway) {
+        return new ManuellRegistreringService(
+                manuellRegistreringRepository,
+                norg2Gateway);
     }
 
     @Bean
@@ -208,17 +277,27 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArenaOverforingService arenaOverforingService(
+    PubliseringAvEventsService publiseringAvEventsService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            OppfolgingGateway oppfolgingGateway,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository) {
-        return new ArenaOverforingService(
+            AktiveringTilstandRepository aktiveringTilstandRepository,
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+        return new PubliseringAvEventsService(
                 profileringRepository,
                 brukerRegistreringRepository,
-                oppfolgingGateway,
-                arbeidssokerRegistrertProducer, aktiveringTilstandRepository);
+                arbeidssokerRegistrertProducer,
+                aktiveringTilstandRepository,
+                arbeidssokerProfilertProducer
+        );
+    }
+
+    @Bean
+    public PubliseringAvRegistreringEventsScheduler publiseringAvRegistreringEventsScheduler(
+            UnleashService unleashService,
+            PubliseringAvEventsService publiseringAvEventsService
+    ) {
+        return new PubliseringAvRegistreringEventsScheduler(unleashService, publiseringAvEventsService);
     }
 
     @Bean
@@ -234,8 +313,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    StartRegistreringUtils startRegistreringUtils() {
-        return new StartRegistreringUtils();
+    ProfileringService profileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
+        return new ProfileringService(arbeidsforholdGateway);
     }
 
     @Bean
@@ -244,12 +323,6 @@ public class ServiceBeansConfig {
             PdlOppslagGateway pdlOppslagGateway
     ) {
         return new UserService(provider, pdlOppslagGateway);
-    }
-
-    @Bean
-    OppholdstillatelseService datakvalitetOppholdstillatelseService(
-            PdlOppslagGateway pdlOppslagGateway) {
-        return new OppholdstillatelseServiceImpl(pdlOppslagGateway);
     }
 
     @Bean
@@ -268,13 +341,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringStatusoversiktServlet(brukerRegistreringService);
+    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(AktiveringTilstandService aktiveringTilstandService) {
+        return new InternalRegistreringStatusoversiktServlet(aktiveringTilstandService);
     }
 
     @Bean
-    InternalRegistreringStatusServlet internalRegistreringResendingServlet(BrukerRegistreringService brukerRegistreringService, UnleashService unleashService) {
-        return new InternalRegistreringStatusServlet(brukerRegistreringService);
+    InternalRegistreringStatusServlet internalRegistreringResendingServlet(AktiveringTilstandService aktiveringTilstandService) {
+        return new InternalRegistreringStatusServlet(aktiveringTilstandService);
     }
 
     @Bean

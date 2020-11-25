@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker;
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.*;
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.sql.SqlUtils;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map;
 
 public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
@@ -34,6 +38,16 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
 
     @Override
     public long lagre(EndretFormidlingsgruppeCommand endretFormidlingsgruppeCommand) {
+        String personId = endretFormidlingsgruppeCommand.getPersonId();
+        String formidlingsgruppe = endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue();
+        Timestamp formidlingsgruppeEndret = Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret());
+
+        if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
+            LOG.info(format("Endringen er allerede lagret, denne forkastes. PersonID: %s, Formidlingsgruppe: %s, Endret: %s"
+                    , personId, formidlingsgruppe, formidlingsgruppeEndret.toString()));
+            return -1;
+        }
+
         long id = nesteFraSekvens("FORMIDLINGSGRUPPE_SEQ");
         try {
             SqlUtils.insert(jdbcTemplate, "FORMIDLINGSGRUPPE")
@@ -41,11 +55,11 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
                     .value("FOEDSELSNUMMER", endretFormidlingsgruppeCommand.getFoedselsnummer()
                             .orElseThrow(() -> new IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!"))
                             .stringValue())
-                    .value("PERSON_ID", endretFormidlingsgruppeCommand.getPersonId())
+                    .value("PERSON_ID", personId)
                     .value("PERSON_ID_STATUS", endretFormidlingsgruppeCommand.getPersonIdStatus())
                     .value("OPERASJON", endretFormidlingsgruppeCommand.getOperation().name())
                     .value("FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getFormidlingsgruppe().stringValue())
-                    .value("FORMIDLINGSGRUPPE_ENDRET", Timestamp.valueOf(endretFormidlingsgruppeCommand.getFormidlingsgruppeEndret()))
+                    .value("FORMIDLINGSGRUPPE_ENDRET", formidlingsgruppeEndret)
                     .value("FORR_FORMIDLINGSGRUPPE", endretFormidlingsgruppeCommand.getForrigeFormidlingsgruppe()
                             .map(Formidlingsgruppe::stringValue)
                             .orElse(null))
@@ -61,6 +75,17 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
             );
         }
         return id;
+    }
+
+    private boolean erAlleredePersistentLagret(String personID, String formidlingsgruppe, Timestamp endret) {
+        String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE PERSON_ID = ? AND FORMIDLINGSGRUPPE = ? AND FORMIDLINGSGRUPPE_ENDRET = ?";
+
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = jdbcTemplate.query(
+                sql,
+                new Object[]{personID, formidlingsgruppe, endret}, new FormidlingsgruppeendringRowMapper()
+        );
+
+        return !formidlingsgruppeendringer.isEmpty();
     }
 
     private long nesteFraSekvens(String sekvensNavn) {

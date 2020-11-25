@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
+import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper;
 import no.nav.fo.veilarbregistrering.log.CallId;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -30,14 +31,18 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private final Properties kafkaConsumerProperties;
     private final String topic;
     private final ArbeidssokerService arbeidssokerService;
+    private final UnleashService unleashService;
+
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
             String topic,
-            ArbeidssokerService arbeidssokerService) {
+            ArbeidssokerService arbeidssokerService,
+            UnleashService unleashService) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.topic = topic;
         this.arbeidssokerService = arbeidssokerService;
+        this.unleashService = unleashService;
 
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
@@ -45,6 +50,12 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
     @Override
     public void run() {
+
+        final String mdcTopicKey = "topic";
+        final String mdcOffsetKey = "offset";
+        final String mdcPartitionKey = "partition";
+
+        MDC.put(mdcTopicKey, topic);
         LOG.info("Running");
 
         try(KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaConsumerProperties)) {
@@ -52,28 +63,45 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
 
             LOG.info("Subscribing to {}", topic);
 
-            while (true) {
+            while (!stopKonsumeringAvFormidlingsgruppe()) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMinutes(2));
                 LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic);
 
                 consumerRecords.forEach(record -> {
                     CallId.leggTilCallId();
+                    MDC.put(mdcOffsetKey, String.valueOf(record.offset()));
+                    MDC.put(mdcPartitionKey, String.valueOf(record.partition()));
 
-                    behandleRecord(record);
+                    try {
+                        behandleRecord(record);
+                    } catch (RuntimeException e) {
+                        LOG.error(String.format("Behandling av record feilet: %s", record.value()), e);
+                        throw e;
 
-                    MDC.remove(MDC_CALL_ID);
+                    } finally {
+                        MDC.remove(MDC_CALL_ID);
+                        MDC.remove(mdcOffsetKey);
+                        MDC.remove(mdcPartitionKey);
+                    }
+
                 });
                 consumer.commitSync();
             }
 
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
+        } finally {
             MDC.remove(MDC_CALL_ID);
+            MDC.remove(mdcTopicKey);
         }
     }
 
     void behandleRecord(ConsumerRecord<String, String> record) {
         FormidlingsgruppeEvent formidlingsgruppeEvent = FormidlingsgruppeMapper.map(record.value());
         arbeidssokerService.behandle(formidlingsgruppeEvent);
+    }
+
+    private boolean stopKonsumeringAvFormidlingsgruppe() {
+        return unleashService.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
     }
 }

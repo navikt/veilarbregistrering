@@ -40,22 +40,33 @@ public class RegistreringResource {
 
     private final UnleashService unleashService;
     private final BrukerRegistreringService brukerRegistreringService;
+    private final SykmeldtRegistreringService sykmeldtRegistreringService;
+    private final HentRegistreringService hentRegistreringService;
     private final UserService userService;
     private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
+    private final StartRegistreringStatusService startRegistreringStatusService;
+    private final InaktivBrukerService inaktivBrukerService;
 
     public RegistreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
             ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
-            UnleashService unleashService
-    ) {
+            HentRegistreringService hentRegistreringService,
+            UnleashService unleashService,
+            SykmeldtRegistreringService sykmeldtRegistreringService,
+            StartRegistreringStatusService startRegistreringStatusService,
+            InaktivBrukerService inaktivBrukerService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
+        this.hentRegistreringService = hentRegistreringService;
         this.unleashService = unleashService;
+        this.sykmeldtRegistreringService = sykmeldtRegistreringService;
+        this.startRegistreringStatusService = startRegistreringStatusService;
+        this.inaktivBrukerService = inaktivBrukerService;
     }
 
     @GET
@@ -64,8 +75,8 @@ public class RegistreringResource {
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker)); //FIXME: BrukerAdapter bør i stedet være pepClient-adapter
-        StartRegistreringStatusDto status = brukerRegistreringService.hentStartRegistreringStatus(bruker);
+        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
         rapporterRegistreringsstatus(status);
         return status;
     }
@@ -85,10 +96,6 @@ public class RegistreringResource {
 
         OrdinaerBrukerRegistrering registrering;
         if (AutentiseringUtils.erVeileder()) {
-
-            if (!brukereSkalBliManueltRegistrert()){
-                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
-            }
 
             final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
@@ -116,8 +123,8 @@ public class RegistreringResource {
 
         pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringService.hentSykmeldtRegistrering(bruker);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker);
 
         BrukerRegistreringWrapper brukerRegistreringWrapper = BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering);
         if (brukerRegistreringWrapper == null) {
@@ -163,7 +170,7 @@ public class RegistreringResource {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
-        brukerRegistreringService.reaktiverBruker(bruker);
+        inaktivBrukerService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
             reportFields(MANUELL_REAKTIVERING_EVENT);
@@ -186,30 +193,22 @@ public class RegistreringResource {
 
         if (AutentiseringUtils.erVeileder()) {
 
-            if (!brukereSkalBliManueltRegistrert()){
-                throw new RuntimeException("Bruker kan ikke bli manuelt registrert");
-            }
-
             final String enhetId = userService.getEnhetIdFromUrlOrThrow();
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            long id = brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            long id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, SYKMELDT);
 
             reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
 
         } else {
-            brukerRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
+            sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
         }
 
         reportFields(SYKMELDT_BESVARELSE_EVENT,
                 sykmeldtRegistrering.getBesvarelse().getUtdanning(),
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
-    }
-
-    private boolean brukereSkalBliManueltRegistrert() {
-        return unleashService.isEnabled("arbeidssokerregistrering.manuell_registrering");
     }
 
     private boolean tjenesteErNede() {

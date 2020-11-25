@@ -51,7 +51,6 @@ class PdlOppslagClient {
     PdlIdenter hentIdenter(Foedselsnummer fnr) {
         PdlHentIdenterRequest request = new PdlHentIdenterRequest(hentIdenterQuery(), new HentIdenterVariables(fnr.stringValue()));
         String json = hentIdenterRequest(fnr.stringValue(), request);
-        LOG.info("json-response fra PDL: {}", json);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
         return response.getData().getPdlIdenter();
@@ -60,7 +59,6 @@ class PdlOppslagClient {
     PdlIdenter hentIdenter(AktorId aktorId) {
         PdlHentIdenterRequest request = new PdlHentIdenterRequest(hentIdenterQuery(), new HentIdenterVariables(aktorId.asString()));
         String json = hentIdenterRequest(aktorId.asString(), request);
-        LOG.info("json-response fra PDL: {}", json);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
         return response.getData().getPdlIdenter();
@@ -91,7 +89,6 @@ class PdlOppslagClient {
     PdlPerson hentPerson(AktorId aktorId) {
         PdlHentPersonRequest request = new PdlHentPersonRequest(hentPersonQuery(), new HentPersonVariables(aktorId.asString(), false));
         String json = hentPersonRequest(aktorId.asString(), request);
-        LOG.debug("json-response fra PDL: {}", json);
         PdlHentPersonResponse resp = gson.fromJson(json, PdlHentPersonResponse.class);
         validateResponse(resp);
         return resp.getData().getHentPerson();

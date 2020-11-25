@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.enhet;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
