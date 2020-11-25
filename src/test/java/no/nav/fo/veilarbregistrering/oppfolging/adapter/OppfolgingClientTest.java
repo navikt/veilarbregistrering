@@ -111,7 +111,7 @@ class OppfolgingClientTest {
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
         UnleashService unleashService = mock(UnleashService.class);
         when(unleashService.isEnabled(any())).thenReturn(false);
-        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider, gammelSystemUserTokenProvider, unleashService);
+        OppfolgingClient oppfolgingClient = this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider, gammelSystemUserTokenProvider);
         return oppfolgingClient;
     }
 

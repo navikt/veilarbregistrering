@@ -277,20 +277,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ArenaOverforingService arenaOverforingService(
-            ProfileringRepository profileringRepository,
-            BrukerRegistreringRepository brukerRegistreringRepository,
-            OppfolgingGateway oppfolgingGateway,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository) {
-        return new ArenaOverforingService(
-                profileringRepository,
-                brukerRegistreringRepository,
-                oppfolgingGateway,
-                arbeidssokerRegistrertProducer, aktiveringTilstandRepository);
-    }
-
-    @Bean
     PubliseringAvEventsService publiseringAvEventsService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
