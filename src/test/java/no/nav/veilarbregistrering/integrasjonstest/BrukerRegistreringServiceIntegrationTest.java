@@ -161,8 +161,6 @@ class BrukerRegistreringServiceIntegrationTest {
                 ProfileringRepository profileringRepository,
                 OppfolgingGateway oppfolgingGateway,
                 ProfileringService profileringService,
-                ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-                ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                 AktiveringTilstandRepository aktiveringTilstandRepository,
                 BrukerTilstandService brukerTilstandService) {
 
@@ -171,8 +169,6 @@ class BrukerRegistreringServiceIntegrationTest {
                     profileringRepository,
                     oppfolgingGateway,
                     profileringService,
-                    arbeidssokerRegistrertProducer,
-                    arbeidssokerProfilertProducer,
                     aktiveringTilstandRepository,
                     brukerTilstandService);
         }

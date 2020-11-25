@@ -26,23 +26,17 @@ public class BrukerRegistreringService {
     private final ProfileringRepository profileringRepository;
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
-    private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
-    private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      ProfileringService profileringService,
-                                     ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-                                     ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
                                      AktiveringTilstandRepository aktiveringTilstandRepository,
                                      BrukerTilstandService brukerTilstandService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
         this.profileringService = profileringService;
-        this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
-        this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
         this.aktiveringTilstandRepository = aktiveringTilstandRepository;
         this.brukerTilstandService = brukerTilstandService;
     }
@@ -64,17 +58,6 @@ public class BrukerRegistreringService {
 
         AktiveringTilstand registreringTilstand = AktiveringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
         aktiveringTilstandRepository.lagre(registreringTilstand);
-
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-                new ArbeidssokerRegistrertInternalEvent(
-                        bruker.getAktorId(),
-                        oppettetBrukerRegistrering.getBesvarelse(),
-                        oppettetBrukerRegistrering.getOpprettetDato()));
-
-        arbeidssokerProfilertProducer.publiserProfilering(
-                bruker.getAktorId(),
-                profilering.getInnsatsgruppe(),
-                oppettetBrukerRegistrering.getOpprettetDato());
 
         return oppettetBrukerRegistrering;
     }

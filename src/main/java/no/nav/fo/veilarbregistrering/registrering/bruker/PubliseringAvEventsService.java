@@ -51,7 +51,6 @@ public class PubliseringAvEventsService {
         aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
         LOG.info("Ny tilstand for registrering: {}", oppdatertAktiveringTilstand);
 
-        /*
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
         // Dette skjer pga. compaction-innstillingen definert i paw-iac repoet på github.
@@ -66,7 +65,7 @@ public class PubliseringAvEventsService {
         arbeidssokerProfilertProducer.publiserProfilering(
                 bruker.getAktorId(),
                 profilering.getInnsatsgruppe(),
-                ordinaerBrukerRegistrering.getOpprettetDato());*/
+                ordinaerBrukerRegistrering.getOpprettetDato());
 
     }
 }

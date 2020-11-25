@@ -113,8 +113,6 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
             ProfileringService profileringService,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             AktiveringTilstandRepository aktiveringTilstandRepository,
             BrukerTilstandService brukerTilstandService) {
         return new BrukerRegistreringService(
@@ -122,8 +120,6 @@ public class ServiceBeansConfig {
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
-                arbeidssokerRegistrertProducer,
-                arbeidssokerProfilertProducer,
                 aktiveringTilstandRepository,
                 brukerTilstandService);
     }
