@@ -249,7 +249,7 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
                 .build();
         long eldsteRegistreringTilstandId = aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
 
-        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
+        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
 
         assertThat(nesteRegistreringKlarForPublisering.get().getId()).isEqualTo(eldsteRegistreringTilstandId);
     }
@@ -275,7 +275,7 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
                 .build();
         aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
 
-        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.nesteRegistreringKlarForPublisering();
+        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
 
         assertThat(nesteRegistreringKlarForPublisering).isEmpty();
     }
