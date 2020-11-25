@@ -82,62 +82,6 @@ public class OppfolgingStatusData {
         this.erIkkeArbeidssokerUtenOppfolging = erIkkeArbeidssokerUtenOppfolging;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof OppfolgingStatusData)) return false;
-        final OppfolgingStatusData other = (OppfolgingStatusData) o;
-        if (!other.canEqual((Object) this)) return false;
-        if (this.isUnderOppfolging() != other.isUnderOppfolging()) return false;
-        final Object this$kanReaktiveres = this.getKanReaktiveres();
-        final Object other$kanReaktiveres = other.getKanReaktiveres();
-        if (this$kanReaktiveres == null ? other$kanReaktiveres != null : !this$kanReaktiveres.equals(other$kanReaktiveres))
-            return false;
-        final Object this$erSykmeldtMedArbeidsgiver = this.getErSykmeldtMedArbeidsgiver();
-        final Object other$erSykmeldtMedArbeidsgiver = other.getErSykmeldtMedArbeidsgiver();
-        if (this$erSykmeldtMedArbeidsgiver == null ? other$erSykmeldtMedArbeidsgiver != null : !this$erSykmeldtMedArbeidsgiver.equals(other$erSykmeldtMedArbeidsgiver))
-            return false;
-        final Object this$formidlingsgruppe = this.getFormidlingsgruppe();
-        final Object other$formidlingsgruppe = other.getFormidlingsgruppe();
-        if (this$formidlingsgruppe == null ? other$formidlingsgruppe != null : !this$formidlingsgruppe.equals(other$formidlingsgruppe))
-            return false;
-        final Object this$servicegruppe = this.getServicegruppe();
-        final Object other$servicegruppe = other.getServicegruppe();
-        if (this$servicegruppe == null ? other$servicegruppe != null : !this$servicegruppe.equals(other$servicegruppe))
-            return false;
-        final Object this$rettighetsgruppe = this.getRettighetsgruppe();
-        final Object other$rettighetsgruppe = other.getRettighetsgruppe();
-        if (this$rettighetsgruppe == null ? other$rettighetsgruppe != null : !this$rettighetsgruppe.equals(other$rettighetsgruppe))
-            return false;
-        final Object this$erIkkeArbeidssokerUtenOppfolging = this.getErIkkeArbeidssokerUtenOppfolging();
-        final Object other$erIkkeArbeidssokerUtenOppfolging = other.getErIkkeArbeidssokerUtenOppfolging();
-        if (this$erIkkeArbeidssokerUtenOppfolging == null ? other$erIkkeArbeidssokerUtenOppfolging != null : !this$erIkkeArbeidssokerUtenOppfolging.equals(other$erIkkeArbeidssokerUtenOppfolging))
-            return false;
-        return true;
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof OppfolgingStatusData;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + (this.isUnderOppfolging() ? 79 : 97);
-        final Object $kanReaktiveres = this.getKanReaktiveres();
-        result = result * PRIME + ($kanReaktiveres == null ? 43 : $kanReaktiveres.hashCode());
-        final Object $erSykmeldtMedArbeidsgiver = this.getErSykmeldtMedArbeidsgiver();
-        result = result * PRIME + ($erSykmeldtMedArbeidsgiver == null ? 43 : $erSykmeldtMedArbeidsgiver.hashCode());
-        final Object $formidlingsgruppe = this.getFormidlingsgruppe();
-        result = result * PRIME + ($formidlingsgruppe == null ? 43 : $formidlingsgruppe.hashCode());
-        final Object $servicegruppe = this.getServicegruppe();
-        result = result * PRIME + ($servicegruppe == null ? 43 : $servicegruppe.hashCode());
-        final Object $rettighetsgruppe = this.getRettighetsgruppe();
-        result = result * PRIME + ($rettighetsgruppe == null ? 43 : $rettighetsgruppe.hashCode());
-        final Object $erIkkeArbeidssokerUtenOppfolging = this.getErIkkeArbeidssokerUtenOppfolging();
-        result = result * PRIME + ($erIkkeArbeidssokerUtenOppfolging == null ? 43 : $erIkkeArbeidssokerUtenOppfolging.hashCode());
-        return result;
-    }
-
     public OppfolgingStatusData withUnderOppfolging(boolean underOppfolging) {
         return this.underOppfolging == underOppfolging ? this : new OppfolgingStatusData(underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
     }
@@ -166,7 +110,4 @@ public class OppfolgingStatusData {
         return this.erIkkeArbeidssokerUtenOppfolging == erIkkeArbeidssokerUtenOppfolging ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, erIkkeArbeidssokerUtenOppfolging);
     }
 
-    public String toString() {
-        return "OppfolgingStatusData(underOppfolging=" + this.isUnderOppfolging() + ", kanReaktiveres=" + this.getKanReaktiveres() + ", erSykmeldtMedArbeidsgiver=" + this.getErSykmeldtMedArbeidsgiver() + ", formidlingsgruppe=" + this.getFormidlingsgruppe() + ", servicegruppe=" + this.getServicegruppe() + ", rettighetsgruppe=" + this.getRettighetsgruppe() + ", erIkkeArbeidssokerUtenOppfolging=" + this.getErIkkeArbeidssokerUtenOppfolging() + ")";
-    }
 }
