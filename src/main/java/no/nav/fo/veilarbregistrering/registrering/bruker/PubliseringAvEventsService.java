@@ -84,6 +84,6 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntall(Status status) {
         int antall = aktiveringTilstandRepository.hentAntall(status);
-        PubliseringMetrics.rapporterRegistreringStatusAntall(status, antall);
+        PubliseringMetrikker.rapporterRegistreringStatusAntall(status, antall);
     }
 }

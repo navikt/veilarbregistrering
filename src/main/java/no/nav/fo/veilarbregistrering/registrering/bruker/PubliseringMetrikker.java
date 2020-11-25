@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PubliseringMetrics {
+public class PubliseringMetrikker {
 
-    private static final Map<Status, AtomicInteger> verdier = new HashMap<>();
+    private static final Map<Status, AtomicInteger> statusVerdier = new HashMap<>();
 
     public static void rapporterRegistreringStatusAntall(Status status, int antall) {
-        AtomicInteger registrertAntall = verdier.computeIfAbsent(status, (s) -> {
+        AtomicInteger registrertAntall = statusVerdier.computeIfAbsent(status, (s) -> {
             AtomicInteger atomiskAntall = new AtomicInteger();
             MetricsFactory.getMeterRegistry().gauge("veilarbregistrering_registrert_status",
                     Arrays.asList(Tag.of("status", status.name())),
