@@ -26,10 +26,6 @@ public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
     }
 
     private Arbeidsforhold createArbeidsforhold(LocalDate from, LocalDate to) {
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
-        arbeidsforhold.setStyrk("1234");
-        arbeidsforhold.setFom(from);
-        arbeidsforhold.setTom(to);
-        return arbeidsforhold;
+        return new Arbeidsforhold(null, null, from, to);
     }
 }

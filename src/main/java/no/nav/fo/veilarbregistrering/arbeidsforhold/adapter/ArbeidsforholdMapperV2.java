@@ -8,14 +8,13 @@ import static java.util.Optional.ofNullable;
 
 class ArbeidsforholdMapperV2 {
     static Arbeidsforhold map(ArbeidsforholdDto arbeidsforholdDto) {
-        return new Arbeidsforhold()
-                .setArbeidsgiverOrgnummer(map(arbeidsforholdDto.getArbeidsgiver()))
-                .setStyrk(arbeidsforholdDto.getArbeidsavtaler().stream()
+        return new Arbeidsforhold(map(arbeidsforholdDto.getArbeidsgiver()),
+                arbeidsforholdDto.getArbeidsavtaler().stream()
                         .findFirst()
                         .map(a -> a.getYrke())
-                        .orElse("utenstyrkkode"))
-                .setFom(getFom(arbeidsforholdDto.getAnsettelsesperiode()))
-                .setTom(getTom(arbeidsforholdDto.getAnsettelsesperiode()));
+                        .orElse("utenstyrkkode"),
+                getFom(arbeidsforholdDto.getAnsettelsesperiode()),
+                getTom(arbeidsforholdDto.getAnsettelsesperiode()));
     }
 
     private static String map(ArbeidsgiverDto arbeidsgiver) {

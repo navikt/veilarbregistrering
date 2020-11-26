@@ -114,10 +114,12 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(
-                FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
-                        .setArbeidsgiverOrgnummer("orgnummer")
-                        .setStyrk("styrk")
-                        .setFom(LocalDate.of(2017, 1, 10))))
+                FlereArbeidsforhold.of(Collections.singletonList(
+                        new Arbeidsforhold(
+                                "orgnummer",
+                                "styrk",
+                                LocalDate.of(2017, 1, 10),
+                                null)))
         );
     }
 }

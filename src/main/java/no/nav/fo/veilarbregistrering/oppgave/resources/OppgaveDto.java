@@ -4,17 +4,14 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
 
 public class OppgaveDto {
 
-    long id;
-    String tildeltEnhetsnr;
-    OppgaveType oppgaveType;
+    private final long id;
+    private final String tildeltEnhetsnr;
+    private final OppgaveType oppgaveType;
 
     public OppgaveDto(long id, String tildeltEnhetsnr, OppgaveType oppgaveType) {
         this.id = id;
         this.tildeltEnhetsnr = tildeltEnhetsnr;
         this.oppgaveType = oppgaveType;
-    }
-
-    public OppgaveDto() {
     }
 
     public long getId() {
@@ -27,18 +24,6 @@ public class OppgaveDto {
 
     public OppgaveType getOppgaveType() {
         return this.oppgaveType;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setTildeltEnhetsnr(String tildeltEnhetsnr) {
-        this.tildeltEnhetsnr = tildeltEnhetsnr;
-    }
-
-    public void setOppgaveType(OppgaveType oppgaveType) {
-        this.oppgaveType = oppgaveType;
     }
 
 }
