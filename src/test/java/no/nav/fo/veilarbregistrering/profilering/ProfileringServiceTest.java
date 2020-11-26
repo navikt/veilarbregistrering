@@ -172,13 +172,13 @@ class ProfileringServiceTest {
 
         private StubArbeidsforholdGateway() {
             arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_10_MND, FlereArbeidsforhold.of(Collections.singletonList(
-                    new Arbeidsforhold()
-                            .setFom(now().minusMonths(10))
-                            .setTom(now()))));
+                    arbeidsforholdMedDato(now().minusMonths(10), now()))));
             arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_2_MND, FlereArbeidsforhold.of(Collections.singletonList(
-                    new Arbeidsforhold()
-                            .setFom(now().minusMonths(2))
-                            .setTom(now()))));
+                    arbeidsforholdMedDato(now().minusMonths(2), now()))));
+        }
+
+        private Arbeidsforhold arbeidsforholdMedDato(LocalDate fom, LocalDate tom) {
+            return new Arbeidsforhold(null, null, fom, tom);
         }
 
         @Override

@@ -5,26 +5,26 @@ import java.time.LocalDate;
 public class ArbeidsforholdTestdataBuilder {
 
     public static Arbeidsforhold paagaaende() {
-        LocalDate fom0 = LocalDate.of(2017,11,1);
-        LocalDate tom0 = null;
-        return new Arbeidsforhold().setFom(fom0).setTom(tom0).setArbeidsgiverOrgnummer("555555555");
+        LocalDate fom = LocalDate.of(2017,11,1);
+        LocalDate tom = null;
+        return new Arbeidsforhold("555555555", null, fom, tom);
     }
 
     public static Arbeidsforhold siste() {
-        LocalDate fom1 = LocalDate.of(2017,11,1);
-        LocalDate tom1 = LocalDate.of(2017,11,30);
-        return new Arbeidsforhold().setFom(fom1).setTom(tom1).setArbeidsgiverOrgnummer("123456789");
+        LocalDate fom = LocalDate.of(2017,11,1);
+        LocalDate tom = LocalDate.of(2017,11,30);
+        return new Arbeidsforhold("123456789", null, fom, tom);
     }
 
     public static Arbeidsforhold nestSiste() {
-        LocalDate fom2 = LocalDate.of(2017,9,1);
-        LocalDate tom2 = LocalDate.of(2017,9,30);
-        return new Arbeidsforhold().setFom(fom2).setTom(tom2).setArbeidsgiverOrgnummer("987654321");
+        LocalDate fom = LocalDate.of(2017,9,1);
+        LocalDate tom = LocalDate.of(2017,9,30);
+        return new Arbeidsforhold("987654321", null, fom, tom);
     }
 
     public static Arbeidsforhold eldre() {
-        LocalDate fom3 = LocalDate.of(2017,4,1);
-        LocalDate tom3 = LocalDate.of(2017,4,30);
-        return new Arbeidsforhold().setFom(fom3).setTom(tom3);
+        LocalDate fom = LocalDate.of(2017,4,1);
+        LocalDate tom = LocalDate.of(2017,4,30);
+        return new Arbeidsforhold(null, null, fom, tom);
     }
 }

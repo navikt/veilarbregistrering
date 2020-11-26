@@ -18,10 +18,10 @@ public class AaregGatewayTest {
     public void hent_arbeidsforhold_fra_aareg_via_rest() {
         FlereArbeidsforhold flereArbeidsforhold = aaregGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
         assertThat(flereArbeidsforhold.siste()).isEqualTo(
-                new Arbeidsforhold()
-                        .setArbeidsgiverOrgnummer("981129687")
-                        .setStyrk("2130123")
-                        .setFom(LocalDate.of(2014, 7, 1))
-                        .setTom(LocalDate.of(2015, 12, 31)));
+                new Arbeidsforhold(
+                        "981129687",
+                        "2130123",
+                        LocalDate.of(2014, 7, 1),
+                        LocalDate.of(2015, 12, 31)));
     }
 }

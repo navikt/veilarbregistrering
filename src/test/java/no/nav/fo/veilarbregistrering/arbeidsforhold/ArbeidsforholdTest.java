@@ -12,7 +12,7 @@ public class ArbeidsforholdTest {
     public void datoSkalVaereInneforPeriodeNaarTomErNull() {
         LocalDate mnd = LocalDate.of(2017,12,1);
         LocalDate fom = LocalDate.of(2010,12,1);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom);
+        Arbeidsforhold arbeidsforhold = arbeidsforholdMedDato(fom, null);
         assertThat(arbeidsforhold.erDatoInnenforPeriode(mnd)).isTrue();
     }
 
@@ -21,7 +21,7 @@ public class ArbeidsforholdTest {
         LocalDate mnd = LocalDate.of(2017,12,1);
         LocalDate fom = LocalDate.of(2017,12,1);
         LocalDate tom = LocalDate.of(2017,12,30);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
+        Arbeidsforhold arbeidsforhold = arbeidsforholdMedDato(fom, tom);
         assertThat(arbeidsforhold.erDatoInnenforPeriode(mnd)).isTrue();
     }
 
@@ -30,7 +30,7 @@ public class ArbeidsforholdTest {
         LocalDate mnd = LocalDate.of(2017,12,1);
         LocalDate fom = LocalDate.of(2017,10,1);
         LocalDate tom = LocalDate.of(2017,12,1);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
+        Arbeidsforhold arbeidsforhold = arbeidsforholdMedDato(fom, tom);
         assertThat(arbeidsforhold.erDatoInnenforPeriode(mnd)).isTrue();
     }
 
@@ -39,7 +39,11 @@ public class ArbeidsforholdTest {
         LocalDate mnd = LocalDate.of(2017,12,1);
         LocalDate fom = LocalDate.of(2017,9,1);
         LocalDate tom = LocalDate.of(2017,11,30);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold().setFom(fom).setTom(tom);
+        Arbeidsforhold arbeidsforhold = arbeidsforholdMedDato(fom, tom);
         assertThat(arbeidsforhold.erDatoInnenforPeriode(mnd)).isFalse();
+    }
+
+    private Arbeidsforhold arbeidsforholdMedDato(LocalDate fom, LocalDate tom) {
+        return new Arbeidsforhold(null, null, fom, tom);
     }
 }
