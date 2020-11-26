@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import com.google.common.net.MediaType
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.brukerdialog.security.domain.IdentType
 import no.nav.common.auth.SsoToken
 import no.nav.common.auth.Subject
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
@@ -26,20 +27,21 @@ import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
 class OppgaveIntegrationTest {
-    private var mockServer: ClientAndServer? = null
-    private var oppgaveService: OppgaveService? = null
-    private var oppgaveRouter: OppgaveRouter? = null
+    private lateinit var mockServer: ClientAndServer
+    private lateinit var oppgaveService: OppgaveService
+    private lateinit var oppgaveRouter: OppgaveRouter
+
     @AfterEach
     fun tearDown() {
-        mockServer!!.stop()
+        mockServer.stop()
     }
 
     @BeforeEach
     fun setup() {
-        val oppgaveRepository = Mockito.mock(OppgaveRepository::class.java)
+        val oppgaveRepository: OppgaveRepository = mock()
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
-        oppgaveRouter = Mockito.mock(OppgaveRouter::class.java)
+        oppgaveRouter = mock()
         oppgaveService = CustomOppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
@@ -49,12 +51,12 @@ class OppgaveIntegrationTest {
     }
 
     private fun buildClient(): OppgaveRestClient {
-        val systemUserTokenProvider = Mockito.mock(SystemUserTokenProvider::class.java)
-        val httpServletRequestProvider: Provider<HttpServletRequest> = Mockito.mock<Provider<*>>(Provider::class.java)
-        val httpServletRequest = Mockito.mock(HttpServletRequest::class.java)
-        Mockito.`when`(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
-        Mockito.`when`(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        Mockito.`when`(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
+        val systemUserTokenProvider: SystemUserTokenProvider = mock()
+        val httpServletRequestProvider: Provider<HttpServletRequest> = mock()
+        val httpServletRequest: HttpServletRequest = mock()
+        whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
+        whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
+        whenever(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
         val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
@@ -63,8 +65,8 @@ class OppgaveIntegrationTest {
     fun vellykket_opprettelse_av_oppgave_skal_gi_201() {
         val dagensdato = LocalDate.of(2020, 5, 27).toString()
         val toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString()
-        Mockito.`when`(oppgaveRouter!!.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.of(Enhetnr.of("0301")))
-        mockServer!!.`when`(
+        whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.of(Enhetnr.of("0301")))
+        mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("POST")
                         .withPath("/oppgaver")
@@ -93,7 +95,7 @@ class OppgaveIntegrationTest {
         val oppgaveResponse = SubjectHandler.withSubject<OppgaveResponse>(
                 Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", HashMap<String, Any?>()))
         ) {
-            oppgaveService!!.opprettOppgave(
+            oppgaveService.opprettOppgave(
                     BRUKER,
                     OppgaveType.UTVANDRET)
         }

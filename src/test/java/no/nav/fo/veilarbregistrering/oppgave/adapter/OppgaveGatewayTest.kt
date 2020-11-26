@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import com.google.common.net.MediaType
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.brukerdialog.security.domain.IdentType
 import no.nav.common.auth.SsoToken
 import no.nav.common.auth.Subject
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
@@ -26,10 +27,12 @@ import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
 internal class OppgaveGatewayTest {
-    private var mockServer: ClientAndServer? = null
+
+    private lateinit var mockServer: ClientAndServer
+
     @AfterEach
     fun tearDown() {
-        mockServer!!.stop()
+        mockServer.stop()
     }
 
     @BeforeEach
@@ -38,12 +41,12 @@ internal class OppgaveGatewayTest {
     }
 
     private fun buildClient(): OppgaveRestClient {
-        val systemUserTokenProvider = Mockito.mock(SystemUserTokenProvider::class.java)
-        val httpServletRequestProvider: Provider<HttpServletRequest> = Mockito.mock<Provider<*>>(Provider::class.java)
-        val httpServletRequest = Mockito.mock(HttpServletRequest::class.java)
-        Mockito.`when`(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
-        Mockito.`when`(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        Mockito.`when`(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
+        val systemUserTokenProvider: SystemUserTokenProvider = mock()
+        val httpServletRequestProvider: Provider<HttpServletRequest> = mock()
+        val httpServletRequest: HttpServletRequest = mock()
+        whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
+        whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
+        whenever(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
         val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
@@ -53,7 +56,7 @@ internal class OppgaveGatewayTest {
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
         val dagensdato = LocalDate.of(2020, 5, 26)
         val toDagerSenere = LocalDate.of(2020, 5, 28)
-        mockServer!!.`when`(
+        mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("POST")
                         .withPath("/oppgaver")

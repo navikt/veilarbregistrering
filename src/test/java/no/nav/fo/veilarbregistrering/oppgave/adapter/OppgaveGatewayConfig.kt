@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class OppgaveGatewayConfig {
+open class OppgaveGatewayConfig {
     @Bean
-    fun oppgaveGateway(): OppgaveGateway {
+    open fun oppgaveGateway(): OppgaveGateway {
         return OppgaveGateway { oppgave: Oppgave? -> null }
     }
 }
