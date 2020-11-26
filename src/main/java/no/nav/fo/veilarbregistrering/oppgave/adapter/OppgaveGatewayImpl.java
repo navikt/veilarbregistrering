@@ -19,17 +19,18 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
 
     @Override
     public OppgaveResponse opprett(Oppgave oppgave) {
-        OppgaveDto oppgaveDto = new OppgaveDto();
-        oppgaveDto.setAktoerId(oppgave.getAktorId().asString());
-        oppgaveDto.setTildeltEnhetsnr(oppgave.getEnhetnr()
-                .map(Enhetnr::asString)
-                .orElse(null));
-        oppgaveDto.setBeskrivelse(oppgave.getBeskrivelse());
-        oppgaveDto.setTema(OPPFOLGING);
-        oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
-        oppgaveDto.setFristFerdigstillelse(oppgave.getFristFerdigstillelse().toString());
-        oppgaveDto.setAktivDato(oppgave.getAktivDato().toString());
-        oppgaveDto.setPrioritet(NORM);
+
+        OppgaveDto oppgaveDto = new OppgaveDto(oppgave.getAktorId().asString(),
+                oppgave.getBeskrivelse(),
+                OPPFOLGING,
+                KONTAKT_BRUKER,
+                oppgave.getFristFerdigstillelse().toString(),
+                oppgave.getAktivDato().toString(),
+                NORM,
+                oppgave.getEnhetnr()
+                        .map(Enhetnr::asString)
+                        .orElse(null)
+                );
 
         return restClient.opprettOppgave(oppgaveDto);
     }
