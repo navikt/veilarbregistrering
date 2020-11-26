@@ -3,12 +3,16 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 import java.time.LocalDate;
 
 public class ArbeidsforholdDto {
-    private String arbeidsgiverOrgnummer;
-    private String styrk;
-    private LocalDate fom;
-    private LocalDate tom;
+    private final String arbeidsgiverOrgnummer;
+    private final String styrk;
+    private final LocalDate fom;
+    private final LocalDate tom;
 
-    public ArbeidsforholdDto() {
+    public ArbeidsforholdDto(String arbeidsgiverOrgnummer, String styrk, LocalDate fom, LocalDate tom) {
+        this.arbeidsgiverOrgnummer = arbeidsgiverOrgnummer;
+        this.styrk = styrk;
+        this.fom = fom;
+        this.tom = tom;
     }
 
     public String getArbeidsgiverOrgnummer() {
@@ -25,25 +29,5 @@ public class ArbeidsforholdDto {
 
     public LocalDate getTom() {
         return this.tom;
-    }
-
-    public ArbeidsforholdDto setArbeidsgiverOrgnummer(String arbeidsgiverOrgnummer) {
-        this.arbeidsgiverOrgnummer = arbeidsgiverOrgnummer;
-        return this;
-    }
-
-    public ArbeidsforholdDto setStyrk(String styrk) {
-        this.styrk = styrk;
-        return this;
-    }
-
-    public ArbeidsforholdDto setFom(LocalDate fom) {
-        this.fom = fom;
-        return this;
-    }
-
-    public ArbeidsforholdDto setTom(LocalDate tom) {
-        this.tom = tom;
-        return this;
     }
 }
