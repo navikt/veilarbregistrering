@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.resources;
 
 import com.google.gson.Gson;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiveringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
 
 import javax.servlet.http.HttpServlet;
@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 
 public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
 
-    private final AktiveringTilstandService aktiveringTilstandService;
+    private final RegistreringTilstandService registreringTilstandService;
 
-    public InternalRegistreringStatusoversiktServlet(AktiveringTilstandService aktiveringTilstandService) {
-        this.aktiveringTilstandService = aktiveringTilstandService;
+    public InternalRegistreringStatusoversiktServlet(RegistreringTilstandService registreringTilstandService) {
+        this.registreringTilstandService = registreringTilstandService;
     }
 
     public static final String PATH = "/internal/statusoversikt";
@@ -28,16 +28,16 @@ public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Status status = Status.parse(req.getParameter("status"));
 
-        String aktiveringTilstandIderJson = of(aktiveringTilstandService.finnAktiveringTilstandMed(status).stream()
-                .map(AktiveringTilstand::getId)
+        String registreringTilstandIderJson = of(registreringTilstandService.finnRegistreringTilstandMed(status).stream()
+                .map(RegistreringTilstand::getId)
                 .collect(toList()))
-                .map(aktiveringTilstander -> new Gson().toJson(aktiveringTilstander)).get();
+                .map(registreringTilstander -> new Gson().toJson(registreringTilstander)).get();
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(200);
-        out.print(aktiveringTilstandIderJson);
+        out.print(registreringTilstandIderJson);
         out.flush();
         out.close();
     }

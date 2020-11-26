@@ -21,7 +21,7 @@ public class BrukerRegistreringService {
     private static final Logger LOG = LoggerFactory.getLogger(BrukerRegistreringService.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final AktiveringTilstandRepository aktiveringTilstandRepository;
+    private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ProfileringService profileringService;
     private final ProfileringRepository profileringRepository;
     private final OppfolgingGateway oppfolgingGateway;
@@ -31,13 +31,13 @@ public class BrukerRegistreringService {
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      ProfileringService profileringService,
-                                     AktiveringTilstandRepository aktiveringTilstandRepository,
+                                     RegistreringTilstandRepository registreringTilstandRepository,
                                      BrukerTilstandService brukerTilstandService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
         this.profileringService = profileringService;
-        this.aktiveringTilstandRepository = aktiveringTilstandRepository;
+        this.registreringTilstandRepository = registreringTilstandRepository;
         this.brukerTilstandService = brukerTilstandService;
     }
 
@@ -56,8 +56,8 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
 
-        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
-        aktiveringTilstandRepository.lagre(registreringTilstand);
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
+        registreringTilstandRepository.lagre(registreringTilstand);
 
         return oppettetBrukerRegistrering;
     }

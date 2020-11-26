@@ -10,35 +10,35 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class AktiveringTilstandServiceTest {
+public class RegistreringTilstandServiceTest {
 
-    private AktiveringTilstandRepository aktiveringTilstandRepository;
+    private RegistreringTilstandRepository registreringTilstandRepository;
 
-    private AktiveringTilstandService aktiveringTilstandService;
+    private RegistreringTilstandService registreringTilstandService;
 
     @BeforeEach
     public void setup() {
-        aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
+        registreringTilstandRepository = mock(RegistreringTilstandRepository.class);
 
-        aktiveringTilstandService = new AktiveringTilstandService(aktiveringTilstandRepository);
+        registreringTilstandService = new RegistreringTilstandService(registreringTilstandRepository);
     }
 
     @Test
     public void skal_oppdatere_registreringtilstand_med_status_og_sistendret() {
         LocalDateTime sistEndret = LocalDateTime.now();
-        AktiveringTilstand original = RegistreringTilstandTestdataBuilder
+        RegistreringTilstand original = RegistreringTilstandTestdataBuilder
                 .registreringTilstand()
                 .status(Status.ARENA_OK)
                 .opprettet(sistEndret.minusDays(1))
                 .sistEndret(sistEndret)
                 .build();
-        when(aktiveringTilstandRepository.hentAktiveringTilstand(original.getId())).thenReturn(original);
+        when(registreringTilstandRepository.hentRegistreringTilstand(original.getId())).thenReturn(original);
 
-        aktiveringTilstandService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
+        registreringTilstandService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
 
-        ArgumentCaptor<AktiveringTilstand> argumentCaptor = ArgumentCaptor.forClass(AktiveringTilstand.class);
-        verify(aktiveringTilstandRepository).oppdater(argumentCaptor.capture());
-        AktiveringTilstand capturedArgument = argumentCaptor.getValue();
+        ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
+        verify(registreringTilstandRepository).oppdater(argumentCaptor.capture());
+        RegistreringTilstand capturedArgument = argumentCaptor.getValue();
 
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());
         assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());

@@ -14,7 +14,7 @@ import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
@@ -63,8 +63,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    AktiveringTilstandService aktiveringTilstandService(AktiveringTilstandRepository aktiveringTilstandRepository) {
-        return new AktiveringTilstandService(aktiveringTilstandRepository);
+    RegistreringTilstandService registreringTilstandService(RegistreringTilstandRepository registreringTilstandRepository) {
+        return new RegistreringTilstandService(registreringTilstandRepository);
     }
 
     @Bean
@@ -113,14 +113,14 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
             ProfileringService profileringService,
-            AktiveringTilstandRepository aktiveringTilstandRepository,
+            RegistreringTilstandRepository registreringTilstandRepository,
             BrukerTilstandService brukerTilstandService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
-                aktiveringTilstandRepository,
+                registreringTilstandRepository,
                 brukerTilstandService);
     }
 
@@ -237,8 +237,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    AktiveringTilstandRepository aktiveringTilstandRepository(JdbcTemplate db) {
-        return new AktiveringTilstandRepositoryImpl(db);
+    RegistreringTilstandRepository registreringTilstandRepository(JdbcTemplate db) {
+        return new RegistreringTilstandRepositoryImpl(db);
     }
 
     @Bean
@@ -277,13 +277,13 @@ public class ServiceBeansConfig {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository,
+            RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
         return new PubliseringAvEventsService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
-                aktiveringTilstandRepository,
+                registreringTilstandRepository,
                 arbeidssokerProfilertProducer
         );
     }
@@ -299,11 +299,11 @@ public class ServiceBeansConfig {
     OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService(
             OppgaveService oppgaveService,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            AktiveringTilstandRepository aktiveringTilstandRepository) {
+            RegistreringTilstandRepository registreringTilstandRepository) {
         return new OppgaveForAvvistRegistreringService(
                 oppgaveService,
                 brukerRegistreringRepository,
-                aktiveringTilstandRepository
+                registreringTilstandRepository
         );
     }
 
@@ -336,13 +336,13 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(AktiveringTilstandService aktiveringTilstandService) {
-        return new InternalRegistreringStatusoversiktServlet(aktiveringTilstandService);
+    InternalRegistreringStatusoversiktServlet internalRegistreringTilstandServlet(RegistreringTilstandService registreringTilstandService) {
+        return new InternalRegistreringStatusoversiktServlet(registreringTilstandService);
     }
 
     @Bean
-    InternalRegistreringStatusServlet internalRegistreringResendingServlet(AktiveringTilstandService aktiveringTilstandService) {
-        return new InternalRegistreringStatusServlet(aktiveringTilstandService);
+    InternalRegistreringStatusServlet internalRegistreringResendingServlet(RegistreringTilstandService registreringTilstandService) {
+        return new InternalRegistreringStatusServlet(registreringTilstandService);
     }
 
     @Bean

@@ -23,7 +23,7 @@ import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDat
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
     private static final AktorId AKTOR_ID_11111 = AktorId.of("11111");
@@ -33,20 +33,20 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
     private JdbcTemplate jdbcTemplate;
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
-    private AktiveringTilstandRepository aktiveringTilstandRepository;
+    private RegistreringTilstandRepository registreringTilstandRepository;
 
     @BeforeEach
     public void setup() {
         setupInMemoryDatabaseContext();
         brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
-        aktiveringTilstandRepository = new AktiveringTilstandRepositoryImpl(jdbcTemplate);
+        registreringTilstandRepository = new RegistreringTilstandRepositoryImpl(jdbcTemplate);
     }
 
     @Test
     public void skal_kaste_DataIntegrityViolationException_hvis_registreringstilstand_lagres_uten_at_registrering_er_lagret() {
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
 
-        assertThrows(DataIntegrityViolationException.class, () -> aktiveringTilstandRepository.lagre(AktiveringTilstand.ofMottattRegistrering(registrering.getId())));
+        assertThrows(DataIntegrityViolationException.class, () -> registreringTilstandRepository.lagre(RegistreringTilstand.ofMottattRegistrering(registrering.getId())));
     }
 
     @Test
@@ -54,13 +54,13 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
 
-        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofMottattRegistrering(lagretRegistrering.getId());
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(lagretRegistrering.getId());
 
-        long id = aktiveringTilstandRepository.lagre(registreringTilstand);
+        long id = registreringTilstandRepository.lagre(registreringTilstand);
 
         assertThat(id).isNotNegative();
 
-        AktiveringTilstand lagretTilstand = aktiveringTilstandRepository.hentAktiveringTilstand(id);
+        RegistreringTilstand lagretTilstand = registreringTilstandRepository.hentRegistreringTilstand(id);
 
         assertThat(lagretTilstand.getId()).isEqualTo(id);
         assertThat(lagretTilstand.getUuid()).isNotNull();
@@ -80,25 +80,25 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
 
 
-        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .build();
-        long id1 = aktiveringTilstandRepository.lagre(eldsteRegistrering);
+        long id1 = registreringTilstandRepository.lagre(eldsteRegistrering);
 
-        AktiveringTilstand nyesteRegistering = registreringTilstand()
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistering);
+        registreringTilstandRepository.lagre(nyesteRegistering);
 
-        AktiveringTilstand midtersteRegistering = registreringTilstand()
+        RegistreringTilstand midtersteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering3.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(3))
                 .build();
-        aktiveringTilstandRepository.lagre(midtersteRegistering);
+        registreringTilstandRepository.lagre(midtersteRegistering);
 
-        Optional<AktiveringTilstand> lagretTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandForOverforing();
+        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandForOverforing();
 
         assertThat(lagretTilstand.get().getId()).isEqualTo(id1);
         assertThat(lagretTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
@@ -114,28 +114,28 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
         OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
 
-        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(ARENA_OK)
                 .build();
-        aktiveringTilstandRepository.lagre(eldsteRegistrering);
+        registreringTilstandRepository.lagre(eldsteRegistrering);
 
-        AktiveringTilstand nyesteRegistering = registreringTilstand()
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .status(ARENA_OK)
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistering);
+        registreringTilstandRepository.lagre(nyesteRegistering);
 
-        AktiveringTilstand midtersteRegistering = registreringTilstand()
+        RegistreringTilstand midtersteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering3.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(3))
                 .status(ARENA_OK)
                 .build();
-        aktiveringTilstandRepository.lagre(midtersteRegistering);
+        registreringTilstandRepository.lagre(midtersteRegistering);
 
-        Optional<AktiveringTilstand> lagretTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandForOverforing();
+        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandForOverforing();
 
         assertThat(lagretTilstand.isPresent()).isFalse();
     }
@@ -144,23 +144,23 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
     public void finnRegistreringTilstandMed_skal_returnere_alle_tilstander_med_angitt_status() {
         OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
 
-        AktiveringTilstand tilstand1 = registreringTilstand()
+        RegistreringTilstand tilstand1 = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(MOTTATT)
                 .build();
-        aktiveringTilstandRepository.lagre(tilstand1);
+        registreringTilstandRepository.lagre(tilstand1);
 
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
 
-        AktiveringTilstand tilstand2 = registreringTilstand()
+        RegistreringTilstand tilstand2 = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(ARENA_OK)
                 .build();
-        aktiveringTilstandRepository.lagre(tilstand2);
+        registreringTilstandRepository.lagre(tilstand2);
 
-        List<AktiveringTilstand> mottatteRegistreringer = aktiveringTilstandRepository.finnAktiveringTilstandMed(MOTTATT);
+        List<RegistreringTilstand> mottatteRegistreringer = registreringTilstandRepository.finnRegistreringTilstandMed(MOTTATT);
         assertThat(mottatteRegistreringer).hasSize(1);
     }
 
@@ -172,21 +172,21 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
 
 
-        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(DOD_UTVANDRET_ELLER_FORSVUNNET)
                 .build();
-        long id1 = aktiveringTilstandRepository.lagre(eldsteRegistrering);
+        long id1 = registreringTilstandRepository.lagre(eldsteRegistrering);
 
-        AktiveringTilstand nyesteRegistering = registreringTilstand()
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .status(MANGLER_ARBEIDSTILLATELSE)
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistering);
+        registreringTilstandRepository.lagre(nyesteRegistering);
 
-        Optional<AktiveringTilstand> nesteTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
+        Optional<RegistreringTilstand> nesteTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandSomHarFeilet();
 
         assertThat(nesteTilstand.get().getId()).isEqualTo(id1);
         assertThat(nesteTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
@@ -202,28 +202,28 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
         OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
 
-        AktiveringTilstand eldsteRegistrering = registreringTilstand()
+        RegistreringTilstand eldsteRegistrering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(ARENA_OK)
                 .build();
-        aktiveringTilstandRepository.lagre(eldsteRegistrering);
+        registreringTilstandRepository.lagre(eldsteRegistrering);
 
-        AktiveringTilstand nyesteRegistering = registreringTilstand()
+        RegistreringTilstand nyesteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(1))
                 .status(UKJENT_BRUKER)
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistering);
+        registreringTilstandRepository.lagre(nyesteRegistering);
 
-        AktiveringTilstand midtersteRegistering = registreringTilstand()
+        RegistreringTilstand midtersteRegistering = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering3.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(3))
                 .status(UKJENT_TEKNISK_FEIL)
                 .build();
-        aktiveringTilstandRepository.lagre(midtersteRegistering);
+        registreringTilstandRepository.lagre(midtersteRegistering);
 
-        Optional<AktiveringTilstand> lagretTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
+        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandSomHarFeilet();
 
         assertThat(lagretTilstand.isPresent()).isFalse();
     }
@@ -235,21 +235,21 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1);
         OrdinaerBrukerRegistrering lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1);
 
-        AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+        RegistreringTilstand nyesteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretNyesteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(OVERFORT_ARENA)
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+        registreringTilstandRepository.lagre(nyesteRegistreringTilstand);
 
-        AktiveringTilstand eldsteRegistreringTilstand = registreringTilstand()
+        RegistreringTilstand eldsteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretEldsteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(10))
                 .status(OVERFORT_ARENA)
                 .build();
-        long eldsteRegistreringTilstandId = aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
+        long eldsteRegistreringTilstandId = registreringTilstandRepository.lagre(eldsteRegistreringTilstand);
 
-        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
+        Optional<RegistreringTilstand> nesteRegistreringKlarForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA);
 
         assertThat(nesteRegistreringKlarForPublisering.get().getId()).isEqualTo(eldsteRegistreringTilstandId);
     }
@@ -261,21 +261,21 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         OrdinaerBrukerRegistrering lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1);
         OrdinaerBrukerRegistrering lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1);
 
-        AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+        RegistreringTilstand nyesteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretNyesteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
                 .status(PUBLISERT_KAFKA)
                 .build();
-        aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+        registreringTilstandRepository.lagre(nyesteRegistreringTilstand);
 
-        AktiveringTilstand eldsteRegistreringTilstand = registreringTilstand()
+        RegistreringTilstand eldsteRegistreringTilstand = registreringTilstand()
                 .brukerRegistreringId(lagretEldsteRegistrering.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(10))
                 .status(PUBLISERT_KAFKA)
                 .build();
-        aktiveringTilstandRepository.lagre(eldsteRegistreringTilstand);
+        registreringTilstandRepository.lagre(eldsteRegistreringTilstand);
 
-        Optional<AktiveringTilstand> nesteRegistreringKlarForPublisering = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
+        Optional<RegistreringTilstand> nesteRegistreringKlarForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA);
 
         assertThat(nesteRegistreringKlarForPublisering).isEmpty();
     }
@@ -288,22 +288,22 @@ public class AktiveringTilstandRepositoryDbIntegrationTest extends DbIntegrasjon
         final int antallPublisertKafka = 5;
         final int antallOverfortArena = 3;
 
-        lagAktiveringTilstand(lagretRegistrering, PUBLISERT_KAFKA, antallPublisertKafka);
-        lagAktiveringTilstand(lagretRegistrering, OVERFORT_ARENA, antallOverfortArena);
+        lagRegistreringTilstand(lagretRegistrering, PUBLISERT_KAFKA, antallPublisertKafka);
+        lagRegistreringTilstand(lagretRegistrering, OVERFORT_ARENA, antallOverfortArena);
 
-        assertThat(aktiveringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka);
-        assertThat(aktiveringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena);
-        assertThat(aktiveringTilstandRepository.hentAntall(ARENA_OK)).isEqualTo(0);
+        assertThat(registreringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka);
+        assertThat(registreringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena);
+        assertThat(registreringTilstandRepository.hentAntall(ARENA_OK)).isEqualTo(0);
     }
 
-    private void lagAktiveringTilstand(OrdinaerBrukerRegistrering registrering, Status status, int antall) {
+    private void lagRegistreringTilstand(OrdinaerBrukerRegistrering registrering, Status status, int antall) {
         for (int i = 0; i < antall; i++) {
-            AktiveringTilstand nyesteRegistreringTilstand = registreringTilstand()
+            RegistreringTilstand nyesteRegistreringTilstand = registreringTilstand()
                     .brukerRegistreringId(registrering.getId())
                     .opprettet(LocalDateTime.now().minusMinutes(5))
                     .status(status)
                     .build();
-            aktiveringTilstandRepository.lagre(nyesteRegistreringTilstand);
+            registreringTilstandRepository.lagre(nyesteRegistreringTilstand);
         }
     }
 }
