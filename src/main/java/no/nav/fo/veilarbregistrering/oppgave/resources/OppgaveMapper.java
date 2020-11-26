@@ -9,10 +9,6 @@ class OppgaveMapper {
     }
 
     static OppgaveDto map(OppgaveResponse oppgaveResponse, OppgaveType oppgaveType) {
-        OppgaveDto oppgaveDto = new OppgaveDto();
-        oppgaveDto.setId(oppgaveResponse.getId());
-        oppgaveDto.setTildeltEnhetsnr(oppgaveResponse.getTildeltEnhetsnr());
-        oppgaveDto.setOppgaveType(oppgaveType);
-        return oppgaveDto;
+        return new OppgaveDto(oppgaveResponse.getId(), oppgaveResponse.getTildeltEnhetsnr(), oppgaveType);
     }
 }
