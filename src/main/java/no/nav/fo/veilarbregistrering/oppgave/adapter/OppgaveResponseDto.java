@@ -1,17 +1,34 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 class OppgaveResponseDto implements OppgaveResponse {
 
     long id;
     String tildeltEnhetsnr;
+
+    public OppgaveResponseDto(long id, String tildeltEnhetsnr) {
+        this.id = id;
+        this.tildeltEnhetsnr = tildeltEnhetsnr;
+    }
+
+    public OppgaveResponseDto() {
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public String getTildeltEnhetsnr() {
+        return this.tildeltEnhetsnr;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setTildeltEnhetsnr(String tildeltEnhetsnr) {
+        this.tildeltEnhetsnr = tildeltEnhetsnr;
+    }
+
 }

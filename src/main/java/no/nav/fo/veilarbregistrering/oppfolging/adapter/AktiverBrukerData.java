@@ -1,16 +1,32 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class AktiverBrukerData {
     Fnr fnr;
     Innsatsgruppe innsatsgruppe;
+
+    public AktiverBrukerData(Fnr fnr, Innsatsgruppe innsatsgruppe) {
+        this.fnr = fnr;
+        this.innsatsgruppe = innsatsgruppe;
+    }
+
+    public AktiverBrukerData() {
+    }
+
+    public Fnr getFnr() {
+        return this.fnr;
+    }
+
+    public Innsatsgruppe getInnsatsgruppe() {
+        return this.innsatsgruppe;
+    }
+
+    public void setFnr(Fnr fnr) {
+        this.fnr = fnr;
+    }
+
+    public void setInnsatsgruppe(Innsatsgruppe innsatsgruppe) {
+        this.innsatsgruppe = innsatsgruppe;
+    }
 }
