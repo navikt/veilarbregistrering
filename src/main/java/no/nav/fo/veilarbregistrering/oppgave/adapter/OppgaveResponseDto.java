@@ -4,8 +4,8 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 
 class OppgaveResponseDto implements OppgaveResponse {
 
-    long id;
-    String tildeltEnhetsnr;
+    private long id;
+    private String tildeltEnhetsnr;
 
     public OppgaveResponseDto(long id, String tildeltEnhetsnr) {
         this.id = id;
