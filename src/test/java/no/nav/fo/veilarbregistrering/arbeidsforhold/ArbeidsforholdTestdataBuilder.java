@@ -27,4 +27,8 @@ public class ArbeidsforholdTestdataBuilder {
         LocalDate tom = LocalDate.of(2017,4,30);
         return new Arbeidsforhold(null, null, fom, tom);
     }
+
+    public static Arbeidsforhold medDato(LocalDate fom, LocalDate tom) {
+        return new Arbeidsforhold(null, null, fom, tom);
+    }
 }

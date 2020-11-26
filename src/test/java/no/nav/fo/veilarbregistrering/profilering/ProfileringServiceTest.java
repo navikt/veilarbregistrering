@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.profilering;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -172,13 +173,9 @@ class ProfileringServiceTest {
 
         private StubArbeidsforholdGateway() {
             arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_10_MND, FlereArbeidsforhold.of(Collections.singletonList(
-                    arbeidsforholdMedDato(now().minusMonths(10), now()))));
+                    ArbeidsforholdTestdataBuilder.medDato(now().minusMonths(10), now()))));
             arbeidsforholdMap.put(FOEDSELSNUMMER_MINUS_2_MND, FlereArbeidsforhold.of(Collections.singletonList(
-                    arbeidsforholdMedDato(now().minusMonths(2), now()))));
-        }
-
-        private Arbeidsforhold arbeidsforholdMedDato(LocalDate fom, LocalDate tom) {
-            return new Arbeidsforhold(null, null, fom, tom);
+                    ArbeidsforholdTestdataBuilder.medDato(now().minusMonths(2), now()))));
         }
 
         @Override

@@ -43,17 +43,13 @@ public class FlereArbeidsforholdTest {
         LocalDate fom1 = LocalDate.of(2017,11,1);
         LocalDate tom1 = null;
 
-        Arbeidsforhold paagaaendeArbeidsforholdVarighet3 = arbeidsforholdMedDato(fom3, tom3);
-        Arbeidsforhold paagaaendeArbeidsforholdVarighet2 = arbeidsforholdMedDato(fom2, tom2);
-        Arbeidsforhold paagaaendeArbeidsforholdVarighet1 = arbeidsforholdMedDato(fom1, tom1);
+        Arbeidsforhold paagaaendeArbeidsforholdVarighet3 = ArbeidsforholdTestdataBuilder.medDato(fom3, tom3);
+        Arbeidsforhold paagaaendeArbeidsforholdVarighet2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
+        Arbeidsforhold paagaaendeArbeidsforholdVarighet1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
 
         List<Arbeidsforhold> flerePaagendeArbeidsforhold =
                 asList(paagaaendeArbeidsforholdVarighet2, paagaaendeArbeidsforholdVarighet1, paagaaendeArbeidsforholdVarighet3);
         assertThat(FlereArbeidsforhold.of(flerePaagendeArbeidsforhold).siste()).isEqualTo(paagaaendeArbeidsforholdVarighet3);
-    }
-
-    private Arbeidsforhold arbeidsforholdMedDato(LocalDate fom, LocalDate tom) {
-        return new Arbeidsforhold(null, null, fom, tom);
     }
 
     @Test
@@ -65,9 +61,9 @@ public class FlereArbeidsforholdTest {
         LocalDate fom1 = LocalDate.of(2017,11,1);
         LocalDate tom1 = LocalDate.of(2017,11,30);
 
-        Arbeidsforhold sisteArbeidsforholdVarighet3 = arbeidsforholdMedDato(fom3, tom3);
-        Arbeidsforhold sisteArbeidsforholdvarighet2 = arbeidsforholdMedDato(fom2, tom2);
-        Arbeidsforhold sisteArbeidsforholdVarighet1 = arbeidsforholdMedDato(fom1, tom1);
+        Arbeidsforhold sisteArbeidsforholdVarighet3 = ArbeidsforholdTestdataBuilder.medDato(fom3, tom3);
+        Arbeidsforhold sisteArbeidsforholdvarighet2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
+        Arbeidsforhold sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
 
         List<Arbeidsforhold> flereSisteArbeidsforhold =
                 asList(sisteArbeidsforholdVarighet1, sisteArbeidsforholdvarighet2, sisteArbeidsforholdVarighet3);
@@ -92,8 +88,8 @@ public class FlereArbeidsforholdTest {
         LocalDate tom1 = LocalDate.of(2017,12,1);
         LocalDate fom2 = LocalDate.of(2017,12,1);
         LocalDate tom2 = LocalDate.of(2017,12,30);
-        Arbeidsforhold arbeidsforhold1 = arbeidsforholdMedDato(fom1, tom1);
-        Arbeidsforhold arbeidsforhold2 = arbeidsforholdMedDato(fom2, tom2);
+        Arbeidsforhold arbeidsforhold1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
+        Arbeidsforhold arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
         assertThat(FlereArbeidsforhold.of(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isTrue();
@@ -106,8 +102,8 @@ public class FlereArbeidsforholdTest {
         LocalDate tom1 = LocalDate.of(2017,12,1);
         LocalDate fom2 = LocalDate.of(2017,12,1);
         LocalDate tom2 = LocalDate.of(2017,12,30);
-        Arbeidsforhold arbeidsforhold1 = arbeidsforholdMedDato(fom1, tom1);
-        Arbeidsforhold arbeidsforhold2 = arbeidsforholdMedDato(fom2, tom2);
+        Arbeidsforhold arbeidsforhold1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
+        Arbeidsforhold arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
         assertThat(FlereArbeidsforhold.of(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isFalse();
@@ -124,8 +120,8 @@ public class FlereArbeidsforholdTest {
         LocalDate tom1 = LocalDate.of(2017,10,31);
         LocalDate fom2 = LocalDate.of(2017,9,1);
         LocalDate tom2 = LocalDate.of(2017,9,30);
-        Arbeidsforhold arbeidsforhold1 = arbeidsforholdMedDato(fom1, tom1);
-        Arbeidsforhold arbeidsforhold2 = arbeidsforholdMedDato(fom2, tom2);
+        Arbeidsforhold arbeidsforhold1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
+        Arbeidsforhold arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
         assertThat(FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)).isTrue();
@@ -142,8 +138,8 @@ public class FlereArbeidsforholdTest {
         LocalDate tom1 = LocalDate.of(2017,11,30);
         LocalDate fom2 = LocalDate.of(2017,9,1);
         LocalDate tom2 = LocalDate.of(2017,9,30);
-        Arbeidsforhold arbeidsforhold1 = arbeidsforholdMedDato(fom1, tom1);
-        Arbeidsforhold arbeidsforhold2 = arbeidsforholdMedDato(fom2, tom2);
+        Arbeidsforhold arbeidsforhold1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
+        Arbeidsforhold arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
         List<Arbeidsforhold> arbeidsforhold = asList(arbeidsforhold1, arbeidsforhold2);
 
         assertThat(FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)).isFalse();
