@@ -18,7 +18,7 @@ public class PubliseringAvEventsService {
 
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final AktiveringTilstandRepository aktiveringTilstandRepository;
+    private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
 
@@ -26,11 +26,11 @@ public class PubliseringAvEventsService {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            AktiveringTilstandRepository aktiveringTilstandRepository,
+            RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
-        this.aktiveringTilstandRepository = aktiveringTilstandRepository;
+        this.registreringTilstandRepository = registreringTilstandRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
     }
@@ -38,22 +38,22 @@ public class PubliseringAvEventsService {
     @Transactional
     public void publiserEvents() {
         rapporterRegistreringStatusAntallForPublisering();
-        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandMed(OVERFORT_ARENA);
+        Optional<RegistreringTilstand> muligRegistreringTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA);
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;
         }
 
-        AktiveringTilstand aktiveringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-        long brukerRegistreringId = aktiveringTilstand.getBrukerRegistreringId();
+        RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
+        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        AktiveringTilstand oppdatertAktiveringTilstand = aktiveringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA);
-        aktiveringTilstandRepository.oppdater(oppdatertAktiveringTilstand);
-        LOG.info("Ny tilstand for registrering: {}", oppdatertAktiveringTilstand);
+        RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA);
+        registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand);
+        LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand);
 
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
@@ -83,7 +83,7 @@ public class PubliseringAvEventsService {
     }
 
     private void rapporterRegistreringStatusAntall(Status status) {
-        int antall = aktiveringTilstandRepository.hentAntall(status);
+        int antall = registreringTilstandRepository.hentAntall(status);
         PubliseringMetrikker.rapporterRegistreringStatusAntall(status, antall);
     }
 }
