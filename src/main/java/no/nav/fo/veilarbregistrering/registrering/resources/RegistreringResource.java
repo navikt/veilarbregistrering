@@ -102,12 +102,14 @@ public class RegistreringResource {
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            brukerRegistreringService.overforArena(registrering.getId(), bruker);
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, registrering.getId(), ORDINAER);
 
             reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);
 
         } else {
             registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            brukerRegistreringService.overforArena(registrering.getId(), bruker);
         }
 
         AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());

@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
@@ -50,16 +52,29 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), oppettetBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(oppettetBrukerRegistrering.getId(), profilering);
 
-        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
 
-        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofMottattRegistrering(oppettetBrukerRegistrering.getId());
         aktiveringTilstandRepository.lagre(registreringTilstand);
 
         return oppettetBrukerRegistrering;
+    }
+
+    @Transactional
+    public void overforArena(long registreringsId, Bruker bruker) {
+
+        Profilering profilering = profileringRepository.hentProfileringForId(registreringsId);
+
+        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+
+        AktiveringTilstand aktiveringTilstand = aktiveringTilstandRepository.hentTilstandFor(registreringsId)
+                .map(a -> a.oppdaterStatus(Status.OVERFORT_ARENA))
+                .orElseThrow(RuntimeException::new);
+
+        aktiveringTilstandRepository.oppdater(aktiveringTilstand);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {

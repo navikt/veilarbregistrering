@@ -82,7 +82,6 @@ public class BrukerRegistreringServiceTest {
         OrdinaerBrukerRegistrering selvgaaendeBruker = gyldigBrukerRegistrering();
         when(brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(selvgaaendeBruker);
         registrerBruker(selvgaaendeBruker, BRUKER_INTERN);
-        verify(oppfolgingClient, times(1)).aktiverBruker(any());
         verify(brukerRegistreringRepository, times(1)).lagre(any(), any());
     }
 

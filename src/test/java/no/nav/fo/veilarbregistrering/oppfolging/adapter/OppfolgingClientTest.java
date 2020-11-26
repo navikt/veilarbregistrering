@@ -114,8 +114,7 @@ class OppfolgingClientTest {
         mockIkkeUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        when (brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(new OrdinaerBrukerRegistrering());
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.overforArena(ordinaerBrukerRegistrering.getId(), BRUKER));
     }
 
 
