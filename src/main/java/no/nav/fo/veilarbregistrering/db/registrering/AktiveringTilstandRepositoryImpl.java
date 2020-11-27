@@ -110,6 +110,15 @@ public class AktiveringTilstandRepositoryImpl implements AktiveringTilstandRepos
         return antall;
     }
 
+    @Override
+    public Optional<AktiveringTilstand> hentTilstandFor(long registreringsId) {
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
+                " WHERE BRUKER_REGISTRERING_ID = ?" +
+                " FETCH NEXT ? ROWS ONLY";
+        List<AktiveringTilstand> registreringsTilstander = db.query(sql, new Object[]{registreringsId, 1}, new AktiveringTilstandMapper());
+        return registreringsTilstander.stream().findFirst();
+    }
+
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }

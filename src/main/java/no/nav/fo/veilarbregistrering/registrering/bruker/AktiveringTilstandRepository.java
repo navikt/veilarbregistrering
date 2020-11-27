@@ -12,4 +12,5 @@ public interface AktiveringTilstandRepository {
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandForOverforing();
     Optional<AktiveringTilstand> finnNesteAktiveringTilstandSomHarFeilet();
     int hentAntall(Status status);
+    Optional<AktiveringTilstand> hentTilstandFor(long registreringsId);
 }

@@ -62,6 +62,43 @@ public class BrukerRegistreringService {
         return oppettetBrukerRegistrering;
     }
 
+    @Transactional
+    public OrdinaerBrukerRegistrering registrerBrukerUtenOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
+
+        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
+
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
+
+        AktiveringTilstand registreringTilstand = AktiveringTilstand.ofMottattRegistrering(opprettetBrukerRegistrering.getId());
+        aktiveringTilstandRepository.lagre(registreringTilstand);
+
+        LOG.info("Brukerregistrering (id: {}) gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering.getId(), opprettetBrukerRegistrering, profilering);
+
+        return opprettetBrukerRegistrering;
+    }
+
+    @Transactional
+    public void overforArena(long registreringId, Bruker bruker) {
+
+        Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
+
+        AktiveringTilstand aktiveringTilstand = aktiveringTilstandRepository.hentTilstandFor(registreringId)
+                .map(a -> a.oppdaterStatus(Status.OVERFORT_ARENA))
+                .orElseThrow(IllegalArgumentException::new);
+
+        aktiveringTilstandRepository.oppdater(aktiveringTilstand);
+
+        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+
+        LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId);
+    }
+
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
 
