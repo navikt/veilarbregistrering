@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class RegistreringTilstandTestdataBuilder {
 
@@ -19,7 +18,6 @@ public class RegistreringTilstandTestdataBuilder {
         public RegistreringTilstand build() {
             return RegistreringTilstand.of(
                     -1L,
-                    UUID.randomUUID(),
                     brukerRegistreringId,
                     opprettet,
                     sistEndret,
