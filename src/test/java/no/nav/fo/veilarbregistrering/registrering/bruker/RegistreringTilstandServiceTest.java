@@ -41,7 +41,6 @@ public class RegistreringTilstandServiceTest {
         RegistreringTilstand capturedArgument = argumentCaptor.getValue();
 
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());
-        assertThat(capturedArgument.getUuid()).isEqualTo(original.getUuid());
         assertThat(capturedArgument.getBrukerRegistreringId()).isEqualTo(original.getBrukerRegistreringId());
         assertThat(capturedArgument.getOpprettet()).isEqualTo(original.getOpprettet());
         assertThat(capturedArgument.getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);

@@ -25,7 +25,6 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
         long id = nesteFraSekvens("REGISTRERING_TILSTAND_SEQ");
         SqlUtils.insert(db, "REGISTRERING_TILSTAND")
                 .value("ID", id)
-                .value("UUID", registreringTilstand.getUuid().toString())
                 .value("BRUKER_REGISTRERING_ID", registreringTilstand.getBrukerRegistreringId())
                 .value("OPPRETTET", Timestamp.valueOf(registreringTilstand.getOpprettet()))
                 .value("SIST_ENDRET", ofNullable(registreringTilstand.getSistEndret())

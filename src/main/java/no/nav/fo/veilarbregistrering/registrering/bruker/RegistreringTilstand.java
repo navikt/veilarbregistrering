@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * RegistreringTilstand representerer tilstanden til en BrukerRegistrering på vei mot Arena.
@@ -10,35 +9,29 @@ import java.util.UUID;
 public class RegistreringTilstand {
 
     private long id;
-    private UUID uuid;
     private long brukerRegistreringId;
     private LocalDateTime opprettet;
     private LocalDateTime sistEndret;
     private Status status;
 
     public static RegistreringTilstand ofOverfortArena(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.OVERFORT_ARENA);
+        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, Status.OVERFORT_ARENA);
     }
 
     public static RegistreringTilstand ofMottattRegistrering(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, UUID.randomUUID(), brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
+        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
     }
 
-    public static RegistreringTilstand of(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
-        return new RegistreringTilstand(id, uuid, brukerRegistreringId, opprettet, sistEndret, status);
+    public static RegistreringTilstand of(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+        return new RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status);
     }
 
-    private RegistreringTilstand(long id, UUID uuid, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+    private RegistreringTilstand(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
         this.id = id;
-        this.uuid = uuid;
         this.brukerRegistreringId = brukerRegistreringId;
         this.opprettet = opprettet;
         this.sistEndret = sistEndret;
         this.status = status;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     public long getBrukerRegistreringId() {
@@ -62,13 +55,12 @@ public class RegistreringTilstand {
     }
 
     public RegistreringTilstand oppdaterStatus(Status status) {
-        return new RegistreringTilstand(this.id, this.uuid, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
+        return new RegistreringTilstand(this.id, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
     }
 
     @Override
     public String toString() {
         return "RegistreringTilstand{" +
-                "uuid=" + uuid +
                 ", id=" + id +
                 ", brukerRegistreringId=" + brukerRegistreringId +
                 ", opprettet=" + opprettet +

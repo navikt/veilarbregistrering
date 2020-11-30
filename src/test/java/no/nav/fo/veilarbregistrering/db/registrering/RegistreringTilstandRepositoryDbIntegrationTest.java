@@ -63,7 +63,6 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
         RegistreringTilstand lagretTilstand = registreringTilstandRepository.hentRegistreringTilstand(id);
 
         assertThat(lagretTilstand.getId()).isEqualTo(id);
-        assertThat(lagretTilstand.getUuid()).isNotNull();
         assertThat(lagretTilstand.getBrukerRegistreringId()).isEqualTo(lagretRegistrering.getId());
         assertThat(lagretTilstand.getOpprettet()).isBetween(now().minusSeconds(10), now().plusSeconds(10));
         assertThat(lagretTilstand.getSistEndret()).isNull();
