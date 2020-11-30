@@ -5,8 +5,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
@@ -20,7 +20,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
 
     private lateinit var jdbcTemplate: JdbcTemplate
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
-    private lateinit var aktiveringTilstandRepository: AktiveringTilstandRepository
+    private lateinit var registreringTilstandRepository: RegistreringTilstandRepository
     private lateinit var profileringRepository: ProfileringRepository
 
     private val FOEDSELSNUMMER = Foedselsnummer.of("12345678911")
@@ -31,7 +31,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
     fun setup() {
         jdbcTemplate = getBean(JdbcTemplate::class.java)
         brukerRegistreringRepository = BrukerRegistreringRepositoryImpl(jdbcTemplate)
-        aktiveringTilstandRepository = AktiveringTilstandRepositoryImpl(jdbcTemplate)
+        registreringTilstandRepository = RegistreringTilstandRepositoryImpl(jdbcTemplate)
         profileringRepository = ProfileringRepositoryImpl(jdbcTemplate)
     }
 
@@ -42,8 +42,8 @@ class CreateViewTest : DbIntegrasjonsTest() {
 
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
-        val initiellTilstand = AktiveringTilstand.medStatus(Status.MOTTATT, ordinaerBrukerRegistrering.id)
-        val id: Long = aktiveringTilstandRepository.lagre(initiellTilstand)
+        val initiellTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, ordinaerBrukerRegistrering.id)
+        val id: Long = registreringTilstandRepository.lagre(initiellTilstand)
 
         Profilering()
                 .setAlder(42)
@@ -52,8 +52,8 @@ class CreateViewTest : DbIntegrasjonsTest() {
                 .apply { profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.id, this) }
 
         Status.values().forEach {
-            val tilstand = aktiveringTilstandRepository.hentAktiveringTilstand(id).oppdaterStatus(it)
-            aktiveringTilstandRepository.oppdater(tilstand)
+            val tilstand = registreringTilstandRepository.hentRegistreringTilstand(id).oppdaterStatus(it)
+            registreringTilstandRepository.oppdater(tilstand)
 
             val finnesIBrukerRegistrering = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING", Int::class.java)!! > 0
             val finnesIBrukerRegistreringTekst = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING_TEKST", Int::class.java)!! > 0
