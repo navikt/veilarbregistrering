@@ -36,7 +36,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
     }
 
     @Test
-    fun `Test`() {
+    fun `Riktig status er hensyntatt i viewene`() {
         val result = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING", Int::class.java)
         assertThat(result!!).isEqualTo(0)
 
