@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.publisering;
 
 public interface ArbeidssokerRegistrertProducer {
 

@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
