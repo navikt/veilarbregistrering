@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
+import no.nav.fo.veilarbregistrering.bruker.Telefonnummer;
 
 class KontaktinfoMapper {
 
@@ -12,7 +13,7 @@ class KontaktinfoMapper {
         kontaktinfoDto.setTelefonnummerHosKrr(kontaktinfo.getTelefonnummerFraKrr()
                 .orElse(null));
         kontaktinfoDto.setTelefonnummerHosNav(kontaktinfo.getTelefonnummerFraNav()
-                .map(telefonnummer -> telefonnummer.asLandkodeOgNummer())
+                .map(Telefonnummer::asLandkodeOgNummer)
                 .orElse(null));
 
         return kontaktinfoDto;

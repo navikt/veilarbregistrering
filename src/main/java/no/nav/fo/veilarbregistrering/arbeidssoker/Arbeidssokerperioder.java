@@ -31,8 +31,7 @@ public class Arbeidssokerperioder {
 
     public boolean dekkerHele(Periode forespurtPeriode) {
         Optional<Arbeidssokerperiode> eldsteArbeidssokerperiode = arbeidssokerperioder.stream()
-                .sorted(Comparator.comparing(e -> e.getPeriode().getFra()))
-                .findFirst();
+                .min(Comparator.comparing(e -> e.getPeriode().getFra()));
 
         return eldsteArbeidssokerperiode
                 .map(arbeidssokerperiode -> forespurtPeriode.fraOgMed(arbeidssokerperiode.getPeriode()))

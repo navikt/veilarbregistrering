@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson;
 
-public class PdlTelefonnummer implements Comparable {
+public class PdlTelefonnummer implements Comparable<PdlTelefonnummer> {
 
     private String nummer;
     private String landskode;
@@ -34,11 +34,11 @@ public class PdlTelefonnummer implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (this.prioritet > ((PdlTelefonnummer)o).getPrioritet()) {
+    public int compareTo(PdlTelefonnummer o) {
+        if (this.prioritet > o.getPrioritet()) {
             return 1;
         }
-        if (this.prioritet < ((PdlTelefonnummer)o).getPrioritet()) {
+        if (this.prioritet < o.getPrioritet()) {
             return -1;
         }
         return 0;

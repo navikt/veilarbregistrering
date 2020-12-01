@@ -36,9 +36,9 @@ class AaregRestClient {
     /**
      * Identifikator for arbeidstaker (FNR/DNR/Aktør-id)
      */
-    private  static final String NAV_PERSONIDENT = "Nav-Personident";
+    private static final String NAV_PERSONIDENT = "Nav-Personident";
 
-    private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
+    private static final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
 
     private final String baseUrl;
     private final SystemUserTokenProvider systemUserTokenProvider;

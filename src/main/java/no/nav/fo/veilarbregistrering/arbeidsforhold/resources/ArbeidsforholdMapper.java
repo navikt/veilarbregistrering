@@ -8,12 +8,11 @@ class ArbeidsforholdMapper {
     }
 
     static ArbeidsforholdDto map(Arbeidsforhold arbeidsforhold) {
-        ArbeidsforholdDto arbeidsforholdDto = new ArbeidsforholdDto(
+        return new ArbeidsforholdDto(
                 arbeidsforhold.getArbeidsgiverOrgnummer(),
                 arbeidsforhold.getStyrk(),
                 arbeidsforhold.getFom(),
                 arbeidsforhold.getTom()
         );
-        return arbeidsforholdDto;
     }
 }

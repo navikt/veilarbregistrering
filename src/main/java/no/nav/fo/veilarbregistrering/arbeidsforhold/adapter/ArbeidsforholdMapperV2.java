@@ -11,7 +11,7 @@ class ArbeidsforholdMapperV2 {
         return new Arbeidsforhold(map(arbeidsforholdDto.getArbeidsgiver()),
                 arbeidsforholdDto.getArbeidsavtaler().stream()
                         .findFirst()
-                        .map(a -> a.getYrke())
+                        .map(ArbeidsavtaleDto::getYrke)
                         .orElse("utenstyrkkode"),
                 getFom(arbeidsforholdDto.getAnsettelsesperiode()),
                 getTom(arbeidsforholdDto.getAnsettelsesperiode()));

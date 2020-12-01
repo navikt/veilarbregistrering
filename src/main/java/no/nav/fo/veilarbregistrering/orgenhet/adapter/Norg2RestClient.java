@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ class Norg2RestClient {
         if (Response.Status.OK.equals(status)) {
             List<RsNavKontorDto> rsNavKontorDtos = response.readEntity(new GenericType<List<RsNavKontorDto>>() {
             });
-            return rsNavKontorDtos.stream().collect(Collectors.toList());
+            return new ArrayList<>(rsNavKontorDtos);
         }
 
         if (Response.Status.NOT_FOUND.equals(status)) {

@@ -105,8 +105,7 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
         String sql = "SELECT COUNT(1) FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?";
 
-        int antall = db.queryForObject(sql, new Object[]{ status.name() }, Integer.class);
-        return antall;
+        return db.queryForObject(sql, new Object[]{ status.name() }, Integer.class);
     }
 
     private long nesteFraSekvens(String sekvensNavn) {

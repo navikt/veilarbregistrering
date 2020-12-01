@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
@@ -9,7 +10,6 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,6 @@ public class OppgaveRouter {
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
     private final PersonGateway personGateway;
-    private final UnleashService unleashService;
     private final PdlOppslagGateway pdlOppslagGateway;
 
     public OppgaveRouter(
@@ -46,13 +45,11 @@ public class OppgaveRouter {
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
-            UnleashService unleashService,
             PdlOppslagGateway pdlOppslagGateway) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.personGateway = personGateway;
-        this.unleashService = unleashService;
         this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
@@ -125,7 +122,7 @@ public class OppgaveRouter {
             return Optional.empty();
         }
         Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
-                .map(sisteArbeidsforhold -> sisteArbeidsforhold.getOrganisasjonsnummer())
+                .map(Arbeidsforhold::getOrganisasjonsnummer)
                 .orElseThrow(IllegalStateException::new);
         if (!organisasjonsnummer.isPresent()) {
             LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
@@ -141,7 +138,7 @@ public class OppgaveRouter {
         }
 
         Optional<Kommunenummer> muligKommunenummer = organisasjonsdetaljer
-                .map(a -> a.kommunenummer())
+                .map(Organisasjonsdetaljer::kommunenummer)
                 .orElseThrow(IllegalStateException::new);
         if (!muligKommunenummer.isPresent()) {
             LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");

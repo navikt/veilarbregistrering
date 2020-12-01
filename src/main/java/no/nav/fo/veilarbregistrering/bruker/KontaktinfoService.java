@@ -71,8 +71,8 @@ public class KontaktinfoService {
 
     private Kontaktinfo opprettKontaktinfo(Optional<Person> person, Optional<Telefonnummer> telefonnummer) {
         return Kontaktinfo.of(
-                person.map(p -> p.getTelefonnummer()
-                        .map(t -> t.asLandkodeOgNummer()).orElse(null))
+                person.flatMap(p -> p.getTelefonnummer()
+                        .map(Telefonnummer::asLandkodeOgNummer))
                         .orElse(null),
                 telefonnummer
                         .orElse(null)
