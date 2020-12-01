@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class HelligdagerTest {
