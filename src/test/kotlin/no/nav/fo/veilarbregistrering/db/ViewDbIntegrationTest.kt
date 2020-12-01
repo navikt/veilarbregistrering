@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.db
 
 import no.nav.json.JsonUtils
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.json.JSONArray
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,20 +23,20 @@ class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest()
                 "COUNT(*) AS VIEW_COUNT " +
                 "FROM INFORMATION_SCHEMA.VIEWS;"
         )[0]["VIEW_COUNT"] as Long
-        Assertions.assertThat(count).isEqualTo(antallViews.toLong())
+        assertThat(count).isEqualTo(antallViews.toLong())
     }
 
     @Test
     fun `view eksisterer`() {
         val viewData = jdbcTemplate.queryForList("SELECT * FROM $viewName;")
-        Assertions.assertThat(viewData).isNotNull
+        assertThat(viewData).isNotNull
     }
 
     @Test
     fun `view skal reflektere kolonner i tabell`() {
         val kolonneData = jsonFormatter(JsonUtils.toJson(hentKolonneDataForView(viewName)))
         val kolonneDataFasit = jsonFormatter(lesInnholdFraFil("view-meta-data/" + viewName.toLowerCase() + ".json"))
-        Assertions.assertThat(kolonneData).isEqualTo(kolonneDataFasit)
+        assertThat(kolonneData).isEqualTo(kolonneDataFasit)
     }
 
     private fun hentKolonneDataForView(view: String): List<Map<String, Any>> {
