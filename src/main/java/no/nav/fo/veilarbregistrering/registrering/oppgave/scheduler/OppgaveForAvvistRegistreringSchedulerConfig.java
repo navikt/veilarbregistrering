@@ -1,10 +1,10 @@
-package no.nav.fo.veilarbregistrering.registrering.scheduler;
+package no.nav.fo.veilarbregistrering.registrering.oppgave.scheduler;
 
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfiguration;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfigurationBuilder;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OppgaveForAvvistRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.oppgave.OppgaveForAvvistRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
