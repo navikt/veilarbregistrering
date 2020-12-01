@@ -56,7 +56,7 @@ public class BrukerRegistreringService {
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
         LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofOverfortArena(oppettetBrukerRegistrering.getId());
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, oppettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
 
         return oppettetBrukerRegistrering;

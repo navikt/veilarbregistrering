@@ -46,7 +46,7 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
     public void skal_kaste_DataIntegrityViolationException_hvis_registreringstilstand_lagres_uten_at_registrering_er_lagret() {
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
 
-        assertThrows(DataIntegrityViolationException.class, () -> registreringTilstandRepository.lagre(RegistreringTilstand.ofMottattRegistrering(registrering.getId())));
+        assertThrows(DataIntegrityViolationException.class, () -> registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, registrering.getId())));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
         OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
         OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.ofMottattRegistrering(lagretRegistrering.getId());
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, lagretRegistrering.getId());
 
         long id = registreringTilstandRepository.lagre(registreringTilstand);
 

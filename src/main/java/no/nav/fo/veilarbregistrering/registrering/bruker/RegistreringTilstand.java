@@ -14,16 +14,12 @@ public class RegistreringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
-    public static RegistreringTilstand ofOverfortArena(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, Status.OVERFORT_ARENA);
-    }
-
-    public static RegistreringTilstand ofMottattRegistrering(long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, Status.MOTTATT);
-    }
-
     public static RegistreringTilstand of(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
         return new RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status);
+    }
+
+    public static RegistreringTilstand medStatus(Status status, long brukerRegistreringId) {
+        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, status);
     }
 
     private RegistreringTilstand(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
