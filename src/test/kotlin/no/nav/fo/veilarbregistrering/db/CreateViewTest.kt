@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.oppgave
+package no.nav.fo.veilarbregistrering.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -11,8 +11,7 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status.*
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate
@@ -39,7 +38,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
     @Test
     fun `Riktig status er hensyntatt i viewene`() {
         val result = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING", Int::class.java)
-        assertThat(result!!).isEqualTo(0)
+        Assertions.assertThat(result!!).isEqualTo(0)
 
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
@@ -62,20 +61,20 @@ class CreateViewTest : DbIntegrasjonsTest() {
 
             val expected = skalStatusVisesIView(it)
 
-            assertThat(finnesIBrukerRegistrering).isEqualTo(expected)
-            assertThat(finnesIBrukerRegistreringTekst).isEqualTo(expected)
-            assertThat(finnesIProfilering).isEqualTo(expected)
+            Assertions.assertThat(finnesIBrukerRegistrering).isEqualTo(expected)
+            Assertions.assertThat(finnesIBrukerRegistreringTekst).isEqualTo(expected)
+            Assertions.assertThat(finnesIProfilering).isEqualTo(expected)
         }
     }
 
 
     fun skalStatusVisesIView(status: Status): Boolean =
             when (status) {
-                OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND -> true
+                Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA, Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND -> true
 
-                MOTTATT, ARENA_OK, UKJENT_BRUKER,
-                MANGLER_ARBEIDSTILLATELSE, KAN_IKKE_REAKTIVERES,
-                DOD_UTVANDRET_ELLER_FORSVUNNET, UKJENT_TEKNISK_FEIL,
-                TEKNISK_FEIL, OPPGAVE_OPPRETTET, OPPGAVE_FEILET -> false
+                Status.MOTTATT, Status.ARENA_OK, Status.UKJENT_BRUKER,
+                Status.MANGLER_ARBEIDSTILLATELSE, Status.KAN_IKKE_REAKTIVERES,
+                Status.DOD_UTVANDRET_ELLER_FORSVUNNET, Status.UKJENT_TEKNISK_FEIL,
+                Status.TEKNISK_FEIL, Status.OPPGAVE_OPPRETTET, Status.OPPGAVE_FEILET -> false
             }
 }
