@@ -51,15 +51,16 @@ class CreateViewTest : DbIntegrasjonsTest() {
                 .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
                 .apply { profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.id, this) }
 
-        Status.values().forEach {
-            val tilstand = registreringTilstandRepository.hentRegistreringTilstand(id).oppdaterStatus(it)
-            registreringTilstandRepository.oppdater(tilstand)
+        Status.values().forEach { status ->
+            registreringTilstandRepository.hentRegistreringTilstand(id).oppdaterStatus(status).also { tilstand ->
+                registreringTilstandRepository.oppdater(tilstand)
+            }
 
             val finnesIBrukerRegistrering = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING", Int::class.java)!! > 0
             val finnesIBrukerRegistreringTekst = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING_TEKST", Int::class.java)!! > 0
             val finnesIProfilering = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_PROFILERING", Int::class.java)!! > 0
 
-            val expected = skalStatusVisesIView(it)
+            val expected = skalStatusVisesIView(status)
 
             assertThat(finnesIBrukerRegistrering).isEqualTo(expected)
             assertThat(finnesIBrukerRegistreringTekst).isEqualTo(expected)
@@ -68,7 +69,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
     }
 
 
-    fun skalStatusVisesIView(status: Status): Boolean =
+    private fun skalStatusVisesIView(status: Status): Boolean =
             when (status) {
                 OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND -> true
 
