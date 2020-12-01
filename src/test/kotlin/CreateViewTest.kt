@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -70,11 +71,11 @@ class CreateViewTest : DbIntegrasjonsTest() {
 
     fun skalStatusVisesIView(status: Status): Boolean =
             when (status) {
-                Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA -> true
+                OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND -> true
 
-                Status.MOTTATT, Status.ARENA_OK, Status.UKJENT_BRUKER,
-                Status.MANGLER_ARBEIDSTILLATELSE, Status.KAN_IKKE_REAKTIVERES,
-                Status.DOD_UTVANDRET_ELLER_FORSVUNNET, Status.UKJENT_TEKNISK_FEIL,
-                Status.TEKNISK_FEIL, Status.OPPGAVE_OPPRETTET, Status.OPPGAVE_FEILET -> false
+                MOTTATT, ARENA_OK, UKJENT_BRUKER,
+                MANGLER_ARBEIDSTILLATELSE, KAN_IKKE_REAKTIVERES,
+                DOD_UTVANDRET_ELLER_FORSVUNNET, UKJENT_TEKNISK_FEIL,
+                TEKNISK_FEIL, OPPGAVE_OPPRETTET, OPPGAVE_FEILET -> false
             }
 }
