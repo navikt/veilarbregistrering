@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.registrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
 public class RegistreringTilstandDto {
 

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
 import java.util.Arrays;
 

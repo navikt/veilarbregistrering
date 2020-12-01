@@ -10,7 +10,10 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status.*
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.*
 import org.junit.Before
 import org.junit.Test

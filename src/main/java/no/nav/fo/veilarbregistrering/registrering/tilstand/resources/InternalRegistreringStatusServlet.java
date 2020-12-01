@@ -1,7 +1,7 @@
-package no.nav.fo.veilarbregistrering.registrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
