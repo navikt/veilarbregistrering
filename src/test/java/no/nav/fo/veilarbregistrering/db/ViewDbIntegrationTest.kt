@@ -10,16 +10,15 @@ import org.springframework.jdbc.core.JdbcTemplate
 import java.util.*
 import javax.inject.Inject
 
-@RunWith(value = Parameterized::class)
-class ViewDbIntegrationTest : DbIntegrasjonsTest() {
-    @Inject
-    private val jdbcTemplate: JdbcTemplate? = null
+@RunWith(Parameterized::class)
+class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest() {
 
-    @Parameterized.Parameter(value = 0)
-    var viewName: String? = null
+    @Inject
+    private lateinit var jdbcTemplate: JdbcTemplate
+
     @Test
-    fun database_skal_ha_riktig_antall_views() {
-        val count = jdbcTemplate!!.queryForList("" +
+    fun `database skal ha riktig antall views`() {
+        val count = jdbcTemplate.queryForList(
                 "SELECT " +
                 "COUNT(*) AS VIEW_COUNT " +
                 "FROM INFORMATION_SCHEMA.VIEWS;"
@@ -28,33 +27,34 @@ class ViewDbIntegrationTest : DbIntegrasjonsTest() {
     }
 
     @Test
-    fun view_eksisterer() {
-        val viewData = jdbcTemplate!!.queryForList("SELECT * FROM $viewName;")
+    fun `view eksisterer`() {
+        val viewData = jdbcTemplate.queryForList("SELECT * FROM $viewName;")
         Assertions.assertThat(viewData).isNotNull
     }
 
     @Test
-    fun view_skal_reflektere_kolonner_i_tabell() {
+    fun `view skal reflektere kolonner i tabell`() {
         val kolonneData = jsonFormatter(JsonUtils.toJson(hentKolonneDataForView(viewName)))
-        val kolonneDataFasit = jsonFormatter(lesInnholdFraFil("view-meta-data/" + viewName!!.toLowerCase() + ".json"))
+        val kolonneDataFasit = jsonFormatter(lesInnholdFraFil("view-meta-data/" + viewName.toLowerCase() + ".json"))
         Assertions.assertThat(kolonneData).isEqualTo(kolonneDataFasit)
     }
 
-    private fun hentKolonneDataForView(view: String?): List<Map<String, Any>> {
-        return jdbcTemplate!!.queryForList(
+    private fun hentKolonneDataForView(view: String): List<Map<String, Any>> {
+        return jdbcTemplate.queryForList(
                 "SELECT " +
                         "COLUMN_NAME, " +
                         "TYPE_NAME, " +
                         "CHARACTER_MAXIMUM_LENGTH " +
                         "FROM INFORMATION_SCHEMA.COLUMNS " +
-                        "WHERE TABLE_NAME = '" + view + "';"
+                        "WHERE TABLE_NAME = '$view';"
         )
     }
 
     companion object {
-        @Parameterized.Parameters(name = "{0}")
-        fun views(): Array<Any> {
-            return arrayOf(
+        @Parameterized.Parameters
+        @JvmStatic
+        fun views(): List<String> {
+            return listOf(
                     "DVH_BRUKER_REGISTRERING",
                     "DVH_BEGRUNNELSE_KODEVERK",
                     "DVH_BRUKER_PROFILERING",
@@ -69,6 +69,7 @@ class ViewDbIntegrationTest : DbIntegrasjonsTest() {
         }
 
         private val antallViews = views().size
+
         private fun jsonFormatter(jsonArray: String): String {
             return JSONArray(jsonArray).toString()
         }
@@ -76,4 +77,5 @@ class ViewDbIntegrationTest : DbIntegrasjonsTest() {
         private fun lesInnholdFraFil(filNavn: String): String {
             return Scanner(ViewDbIntegrationTest::class.java.classLoader.getResourceAsStream(filNavn), "UTF-8").useDelimiter("\\A").next()
         }
+    }
 }
