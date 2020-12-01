@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent;
 import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertInternalEvent;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

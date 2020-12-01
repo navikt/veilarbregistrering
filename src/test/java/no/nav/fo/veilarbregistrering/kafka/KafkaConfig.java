@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
 import no.nav.fo.veilarbregistrering.oppgave.KontaktBrukerHenvendelseProducer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerProfilertProducer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
