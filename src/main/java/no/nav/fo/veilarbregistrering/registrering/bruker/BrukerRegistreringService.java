@@ -45,21 +45,21 @@ public class BrukerRegistreringService {
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
 
-        OrdinaerBrukerRegistrering oppettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), oppettetBrukerRegistrering.getBesvarelse());
-        profileringRepository.lagreProfilering(oppettetBrukerRegistrering.getId(), profilering);
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
 
         oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
-        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, oppettetBrukerRegistrering.getId());
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, opprettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
 
-        return oppettetBrukerRegistrering;
+        return opprettetBrukerRegistrering;
     }
 
     @Transactional
