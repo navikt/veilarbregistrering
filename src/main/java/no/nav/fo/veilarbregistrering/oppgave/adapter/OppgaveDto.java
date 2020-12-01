@@ -2,14 +2,14 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
 class OppgaveDto {
 
-    private String aktoerId;
-    private String beskrivelse;
-    private String tema;
-    private String oppgavetype;
-    private String fristFerdigstillelse;
-    private String aktivDato;
-    private String prioritet;
-    private String tildeltEnhetsnr;
+    private final String aktoerId;
+    private final String beskrivelse;
+    private final String tema;
+    private final String oppgavetype;
+    private final String fristFerdigstillelse;
+    private final String aktivDato;
+    private final String prioritet;
+    private final String tildeltEnhetsnr;
 
     public OppgaveDto(String aktoerId, String beskrivelse, String tema, String oppgavetype, String fristFerdigstillelse, String aktivDato, String prioritet, String tildeltEnhetsnr) {
         this.aktoerId = aktoerId;
@@ -20,9 +20,6 @@ class OppgaveDto {
         this.aktivDato = aktivDato;
         this.prioritet = prioritet;
         this.tildeltEnhetsnr = tildeltEnhetsnr;
-    }
-
-    public OppgaveDto() {
     }
 
     public String getAktoerId() {
@@ -55,38 +52,6 @@ class OppgaveDto {
 
     public String getTildeltEnhetsnr() {
         return this.tildeltEnhetsnr;
-    }
-
-    public void setAktoerId(String aktoerId) {
-        this.aktoerId = aktoerId;
-    }
-
-    public void setBeskrivelse(String beskrivelse) {
-        this.beskrivelse = beskrivelse;
-    }
-
-    public void setTema(String tema) {
-        this.tema = tema;
-    }
-
-    public void setOppgavetype(String oppgavetype) {
-        this.oppgavetype = oppgavetype;
-    }
-
-    public void setFristFerdigstillelse(String fristFerdigstillelse) {
-        this.fristFerdigstillelse = fristFerdigstillelse;
-    }
-
-    public void setAktivDato(String aktivDato) {
-        this.aktivDato = aktivDato;
-    }
-
-    public void setPrioritet(String prioritet) {
-        this.prioritet = prioritet;
-    }
-
-    public void setTildeltEnhetsnr(String tildeltEnhetsnr) {
-        this.tildeltEnhetsnr = tildeltEnhetsnr;
     }
 
 }

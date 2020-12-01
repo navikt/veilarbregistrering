@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
@@ -54,9 +55,9 @@ class ArbeidsforholdResourceTest {
         LocalDate fom1 = LocalDate.of(2017,11,1);
         LocalDate tom1 = LocalDate.of(2017,11,30);
 
-        Arbeidsforhold sisteArbeidsforholdVarighet3 = new Arbeidsforhold().setFom(fom3).setTom(tom3);
-        Arbeidsforhold sisteArbeidsforholdvarighet2 = new Arbeidsforhold().setFom(fom2).setTom(tom2);
-        Arbeidsforhold sisteArbeidsforholdVarighet1 = new Arbeidsforhold().setFom(fom1).setTom(tom1);
+        Arbeidsforhold sisteArbeidsforholdVarighet3 = ArbeidsforholdTestdataBuilder.medDato(fom3, tom3);
+        Arbeidsforhold sisteArbeidsforholdvarighet2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2);
+        Arbeidsforhold sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1);
 
         return FlereArbeidsforhold.of(asList(
                 sisteArbeidsforholdVarighet1,

@@ -12,15 +12,14 @@ import static java.util.Optional.ofNullable;
 
 class ArbeidsforholdMapper {
     static Arbeidsforhold map(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
-        return new Arbeidsforhold()
-                .setArbeidsgiverOrgnummer(map(arbeidsforhold.getArbeidsgiver()))
-                .setStyrk(arbeidsforhold.getArbeidsavtale().stream()
-                        .findFirst()
-                        .map(Arbeidsavtale::getYrke)
-                        .map(Yrker::getKodeRef)
-                        .orElse("utenstyrkkode"))
-                .setFom(getFom(arbeidsforhold.getAnsettelsesPeriode()))
-                .setTom(getTom(arbeidsforhold.getAnsettelsesPeriode()));
+        return new Arbeidsforhold(map(arbeidsforhold.getArbeidsgiver()),
+                        arbeidsforhold.getArbeidsavtale().stream()
+                                .findFirst()
+                                .map(Arbeidsavtale::getYrke)
+                                .map(Yrker::getKodeRef)
+                                .orElse("utenstyrkkode"),
+                        getFom(arbeidsforhold.getAnsettelsesPeriode()),
+                        getTom(arbeidsforhold.getAnsettelsesPeriode()));
     }
 
     private static String map(Aktoer arbeidsgiver) {

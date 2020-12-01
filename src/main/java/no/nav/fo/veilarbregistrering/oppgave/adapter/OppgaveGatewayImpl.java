@@ -7,9 +7,9 @@ import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 
 public class OppgaveGatewayImpl implements OppgaveGateway {
 
-    private static final String KONTAKT_BRUKER = "KONT_BRUK";
-    private static final String OPPFOLGING = "OPP";
-    private static final String NORM = "NORM";
+    private static final String OPPGAVETYPE_KONTAKT_BRUKER = "KONT_BRUK";
+    private static final String TEMA_OPPFOLGING = "OPP";
+    private static final String PRIORITET_NORM = "NORM";
 
     private final OppgaveRestClient restClient;
 
@@ -19,17 +19,18 @@ public class OppgaveGatewayImpl implements OppgaveGateway {
 
     @Override
     public OppgaveResponse opprett(Oppgave oppgave) {
-        OppgaveDto oppgaveDto = new OppgaveDto();
-        oppgaveDto.setAktoerId(oppgave.getAktorId().asString());
-        oppgaveDto.setTildeltEnhetsnr(oppgave.getEnhetnr()
-                .map(Enhetnr::asString)
-                .orElse(null));
-        oppgaveDto.setBeskrivelse(oppgave.getBeskrivelse());
-        oppgaveDto.setTema(OPPFOLGING);
-        oppgaveDto.setOppgavetype(KONTAKT_BRUKER);
-        oppgaveDto.setFristFerdigstillelse(oppgave.getFristFerdigstillelse().toString());
-        oppgaveDto.setAktivDato(oppgave.getAktivDato().toString());
-        oppgaveDto.setPrioritet(NORM);
+
+        OppgaveDto oppgaveDto = new OppgaveDto(oppgave.getAktorId().asString(),
+                oppgave.getBeskrivelse(),
+                TEMA_OPPFOLGING,
+                OPPGAVETYPE_KONTAKT_BRUKER,
+                oppgave.getFristFerdigstillelse().toString(),
+                oppgave.getAktivDato().toString(),
+                PRIORITET_NORM,
+                oppgave.getEnhetnr()
+                        .map(Enhetnr::asString)
+                        .orElse(null)
+                );
 
         return restClient.opprettOppgave(oppgaveDto);
     }

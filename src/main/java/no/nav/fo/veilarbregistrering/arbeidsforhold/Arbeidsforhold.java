@@ -5,16 +5,20 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Arbeidsforhold {
-    private String arbeidsgiverOrgnummer;
-    private String styrk;
-    private LocalDate fom;
-    private LocalDate tom;
+    private final String arbeidsgiverOrgnummer;
+    private final String styrk;
+    private final LocalDate fom;
+    private final LocalDate tom;
 
-    public Arbeidsforhold() {
+    public Arbeidsforhold(String arbeidsgiverOrgnummer, String styrk, LocalDate fom, LocalDate tom) {
+        this.arbeidsgiverOrgnummer = arbeidsgiverOrgnummer;
+        this.styrk = styrk;
+        this.fom = fom;
+        this.tom = tom;
     }
 
     static Arbeidsforhold utenStyrkkode() {
-        return new Arbeidsforhold().setStyrk("utenstyrkkode");
+        return new Arbeidsforhold(null, "utenstyrkkode", null, null);
     }
 
     boolean erDatoInnenforPeriode(LocalDate innevaerendeMnd) {
@@ -42,26 +46,6 @@ public class Arbeidsforhold {
 
     public LocalDate getTom() {
         return this.tom;
-    }
-
-    public Arbeidsforhold setArbeidsgiverOrgnummer(String arbeidsgiverOrgnummer) {
-        this.arbeidsgiverOrgnummer = arbeidsgiverOrgnummer;
-        return this;
-    }
-
-    public Arbeidsforhold setStyrk(String styrk) {
-        this.styrk = styrk;
-        return this;
-    }
-
-    public Arbeidsforhold setFom(LocalDate fom) {
-        this.fom = fom;
-        return this;
-    }
-
-    public Arbeidsforhold setTom(LocalDate tom) {
-        this.tom = tom;
-        return this;
     }
 
     public boolean equals(final Object o) {

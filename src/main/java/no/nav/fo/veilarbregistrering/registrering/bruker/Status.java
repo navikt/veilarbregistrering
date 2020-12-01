@@ -25,7 +25,9 @@ public enum Status {
     UKJENT_TEKNISK_FEIL("ukjentTeknisk"),
     TEKNISK_FEIL("teknisk"),
     OPPGAVE_OPPRETTET("oppgaveOpprettet"),
-    OPPGAVE_FEILET("oppgaveFeilet");
+    OPPGAVE_FEILET("oppgaveFeilet"),
+    OPPRINNELIG_OPPRETTET_UTEN_TILSTAND("opprinneligOpprettetUtenTilstand"),
+    ;
 
     private final String status;
 

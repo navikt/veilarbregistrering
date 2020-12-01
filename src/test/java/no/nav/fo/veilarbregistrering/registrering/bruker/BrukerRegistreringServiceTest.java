@@ -32,7 +32,7 @@ public class BrukerRegistreringServiceTest {
     private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;
-    private AktiveringTilstandRepository aktiveringTilstandRepository;
+    private RegistreringTilstandRepository registreringTilstandRepository;
     private SykmeldtInfoClient sykeforloepMetadataClient;
     private BrukerRegistreringService brukerRegistreringService;
     private OppfolgingClient oppfolgingClient;
@@ -46,7 +46,7 @@ public class BrukerRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
         ProfileringService profileringService = new ProfileringService(arbeidsforholdGateway);
-        aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
+        registreringTilstandRepository = mock(RegistreringTilstandRepository.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
 
@@ -56,7 +56,7 @@ public class BrukerRegistreringServiceTest {
                         profileringRepository,
                         oppfolgingGateway,
                         profileringService,
-                        aktiveringTilstandRepository,
+                        registreringTilstandRepository,
                         new BrukerTilstandService(
                                 oppfolgingGateway,
                                 new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
@@ -114,10 +114,12 @@ public class BrukerRegistreringServiceTest {
 
     private void mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(
-                FlereArbeidsforhold.of(Collections.singletonList(new Arbeidsforhold()
-                        .setArbeidsgiverOrgnummer("orgnummer")
-                        .setStyrk("styrk")
-                        .setFom(LocalDate.of(2017, 1, 10))))
+                FlereArbeidsforhold.of(Collections.singletonList(
+                        new Arbeidsforhold(
+                                "orgnummer",
+                                "styrk",
+                                LocalDate.of(2017, 1, 10),
+                                null)))
         );
     }
 }

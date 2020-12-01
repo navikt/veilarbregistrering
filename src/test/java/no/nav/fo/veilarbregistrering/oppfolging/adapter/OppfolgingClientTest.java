@@ -64,7 +64,7 @@ class OppfolgingClientTest {
         ProfileringRepository profileringRepository = mock(ProfileringRepository.class);
         SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         profileringService = mock(ProfileringService.class);
-        AktiveringTilstandRepository aktiveringTilstandRepository = mock(AktiveringTilstandRepository.class);
+        RegistreringTilstandRepository registreringTilstandRepository = mock(RegistreringTilstandRepository.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
 
@@ -78,7 +78,7 @@ class OppfolgingClientTest {
                         profileringRepository,
                         oppfolgingGateway,
                         profileringService,
-                        aktiveringTilstandRepository,
+                        registreringTilstandRepository,
                         brukerTilstandService);
 
         inaktivBrukerService = new InaktivBrukerService(

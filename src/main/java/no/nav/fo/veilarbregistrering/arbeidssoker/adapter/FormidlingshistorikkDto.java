@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class FormidlingshistorikkDto {
 
-    private String formidlingsgruppeKode;
-    private String modDato;
-    private LocalDate fraDato;
-    private LocalDate tilDato;
+    private final String formidlingsgruppeKode;
+    private final String modDato;
+    private final LocalDate fraDato;
+    private final LocalDate tilDato;
 
 
     public FormidlingshistorikkDto(String formidlingsgruppeKode, String modDato, LocalDate fraDato, LocalDate tilDato) {

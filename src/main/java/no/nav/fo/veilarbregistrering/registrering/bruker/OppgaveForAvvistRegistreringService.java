@@ -15,15 +15,15 @@ public class OppgaveForAvvistRegistreringService {
 
     private final OppgaveService oppgaveService;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final AktiveringTilstandRepository aktiveringTilstandRepository;
+    private final RegistreringTilstandRepository registreringTilstandRepository;
 
     public OppgaveForAvvistRegistreringService(
             OppgaveService oppgaveService,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            AktiveringTilstandRepository aktiveringTilstandRepository) {
+            RegistreringTilstandRepository registreringTilstandRepository) {
         this.oppgaveService = oppgaveService;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
-        this.aktiveringTilstandRepository = aktiveringTilstandRepository;
+        this.registreringTilstandRepository = registreringTilstandRepository;
     }
 
     /**
@@ -37,21 +37,21 @@ public class OppgaveForAvvistRegistreringService {
      */
     @Transactional
     public void opprettOppgaveAsynk() {
-        Optional<AktiveringTilstand> muligRegistreringTilstand = aktiveringTilstandRepository.finnNesteAktiveringTilstandSomHarFeilet();
+        Optional<RegistreringTilstand> muligRegistreringTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandSomHarFeilet();
 
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Fant ingen feilede registreringer (status = UTVANDRET, OPPHOLDSTILLATELSE) å opprette oppgave for");
             return;
         }
 
-        AktiveringTilstand aktiveringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-        long brukerRegistreringId = aktiveringTilstand.getBrukerRegistreringId();
+        RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
+        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
 
         Status status;
         try {
-            oppgaveService.opprettOppgave(bruker, map(aktiveringTilstand.getStatus()));
+            oppgaveService.opprettOppgave(bruker, map(registreringTilstand.getStatus()));
             status = Status.OPPGAVE_OPPRETTET;
 
         } catch (RuntimeException e) {
@@ -60,7 +60,7 @@ public class OppgaveForAvvistRegistreringService {
         }
 
         // TODO Trenger vi en kobling mellom oppgave og registrering i db?
-        aktiveringTilstandRepository.oppdater(aktiveringTilstand.oppdaterStatus(status));
+        registreringTilstandRepository.oppdater(registreringTilstand.oppdaterStatus(status));
     }
 
     private static OppgaveType map(Status status) {

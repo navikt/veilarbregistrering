@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.AktiveringTilstandRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
@@ -17,6 +17,8 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -111,8 +113,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        AktiveringTilstandRepository aktiveringTilstandRepository(JdbcTemplate db) {
-            return new AktiveringTilstandRepositoryImpl(db);
+        RegistreringTilstandRepository registreringTilstandRepository(JdbcTemplate db) {
+            return new RegistreringTilstandRepositoryImpl(db);
         }
 
         @Bean
@@ -161,7 +163,7 @@ class BrukerRegistreringServiceIntegrationTest {
                 ProfileringRepository profileringRepository,
                 OppfolgingGateway oppfolgingGateway,
                 ProfileringService profileringService,
-                AktiveringTilstandRepository aktiveringTilstandRepository,
+                RegistreringTilstandRepository registreringTilstandRepository,
                 BrukerTilstandService brukerTilstandService) {
 
             return new BrukerRegistreringService(
@@ -169,7 +171,7 @@ class BrukerRegistreringServiceIntegrationTest {
                     profileringRepository,
                     oppfolgingGateway,
                     profileringService,
-                    aktiveringTilstandRepository,
+                    registreringTilstandRepository,
                     brukerTilstandService);
         }
 
