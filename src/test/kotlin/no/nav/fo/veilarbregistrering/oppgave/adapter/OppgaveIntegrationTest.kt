@@ -62,7 +62,7 @@ class OppgaveIntegrationTest {
     }
 
     @Test
-    fun vellykket_opprettelse_av_oppgave_skal_gi_201() {
+    fun `vellykket opprettelse av oppgave skal gi 201`() {
         val dagensdato = LocalDate.of(2020, 5, 27).toString()
         val toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString()
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.of(Enhetnr.of("0301")))

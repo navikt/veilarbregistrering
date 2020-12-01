@@ -52,7 +52,7 @@ internal class OppgaveGatewayTest {
     }
 
     @Test
-    fun vellykket_opprettelse_av_oppgave_skal_gi_201() {
+    fun `vellykket opprettelse av oppgave skal gi 201`() {
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
         val dagensdato = LocalDate.of(2020, 5, 26)
         val toDagerSenere = LocalDate.of(2020, 5, 28)

@@ -33,7 +33,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun opprettOppgave_ang_opphold_skal_gi_beskrivelse_om_rutine() {
+    fun `opprettOppgave ang opphold skal gi beskrivelse om rutine`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
@@ -45,7 +45,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun opprettOppgave_ang_dod_utvandret_skal_gi_beskrivelse_om_rutine() {
+    fun `opprettOppgave ang dod utvandret skal gi beskrivelse om rutine`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET)
@@ -57,7 +57,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun skal_lagre_oppgave_ved_vellykket_opprettelse_av_oppgave() {
+    fun `skal lagre oppgave ved vellykket opprettelse av oppgave`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
@@ -65,7 +65,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun skal_kaste_exception_dersom_det_finnes_nyere_oppholdsoppgave_fra_for() {
+    fun `skal kaste exception dersom det finnes nyere oppholdsoppgave fra for`() {
         val oppgaveSomBleOpprettetDagenFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
         whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
@@ -74,7 +74,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun skal_kaste_exception_dersom_det_finnes_nyere_utvandretoppgave_fra_for() {
+    fun `skal kaste exception dersom det finnes nyere utvandretoppgave fra for`() {
         val oppgaveSomBleOpprettetDagenFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.UTVANDRET, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
         whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
@@ -83,7 +83,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun skal_ikke_kaste_exception_dersom_det_finnes_eldre_oppgave_fra_for() {
+    fun `skal ikke kaste exception dersom det finnes eldre oppgave fra for`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         val oppgaveSomBleOpprettetTreDagerFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetTreDagerFor)
@@ -98,7 +98,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun ingen_tidligere_oppgaver() {
+    fun `ingen tidligere oppgaver`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(emptyList())
         whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
@@ -111,7 +111,7 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun skal_ikke_kaste_exception_dersom_det_finnes_oppgave_av_annen_type() {
+    fun `skal ikke kaste exception dersom det finnes oppgave av annen type`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         val oppgaveSomBleOpprettetEnDagerFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetEnDagerFor)
