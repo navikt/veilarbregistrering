@@ -1,9 +1,8 @@
-package no.nav.fo.veilarbregistrering.oppgave
+package no.nav.fo.veilarbregistrering.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
@@ -12,7 +11,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.Status.*
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate
@@ -43,7 +42,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
 
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
-        val initiellTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, ordinaerBrukerRegistrering.id)
+        val initiellTilstand = RegistreringTilstand.medStatus(MOTTATT, ordinaerBrukerRegistrering.id)
         val id: Long = registreringTilstandRepository.lagre(initiellTilstand)
 
         Profilering()
