@@ -13,7 +13,7 @@ class FormidlingshistorikkMapper {
     static List<Arbeidssokerperiode> map(FormidlingsgruppeResponseDto response) {
         return response.getFormidlingshistorikk()
                 .stream()
-                .map(r -> map(r))
+                .map(FormidlingshistorikkMapper::map)
                 .collect(toList());
     }
 

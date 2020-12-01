@@ -139,7 +139,7 @@ class OppgaveRouterTest {
             unleashService: UnleashService = mock(),
             pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway()
     ) =
-            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, unleashService, pdlOppslagGateway)
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway)
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {

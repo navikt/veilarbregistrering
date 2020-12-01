@@ -23,7 +23,7 @@ public class BrukersTilstand implements HasMetrics {
     public BrukersTilstand(Oppfolgingsstatus Oppfolgingsstatus, SykmeldtInfoData sykmeldtInfoData) {
         this.oppfolgingStatusData = Oppfolgingsstatus;
         this.sykmeldtInfoData = sykmeldtInfoData;
-        this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData);;
+        this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData);
     }
 
     public boolean kanReaktiveres() {

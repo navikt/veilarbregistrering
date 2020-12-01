@@ -205,16 +205,16 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                         AktorId.of(rs.getString("AKTOR_ID")),
                         new Besvarelse()
                                 .setDinSituasjon(ofNullable(rs.getString("BEGRUNNELSE_FOR_REGISTRERING"))
-                                        .map(t -> DinSituasjonSvar.valueOf(t))
+                                        .map(DinSituasjonSvar::valueOf)
                                         .orElse(null))
                                 .setUtdanning(ofNullable(rs.getString(NUS_KODE))
-                                        .map(t -> UtdanningUtils.mapTilUtdanning(t))
+                                        .map(UtdanningUtils::mapTilUtdanning)
                                         .orElse(null))
                                 .setUtdanningGodkjent(ofNullable(rs.getString(UTDANNING_GODKJENT_NORGE))
-                                        .map(t -> UtdanningGodkjentSvar.valueOf(t))
+                                        .map(UtdanningGodkjentSvar::valueOf)
                                         .orElse(null))
                                 .setUtdanningBestatt(ofNullable(rs.getString(UTDANNING_BESTATT))
-                                        .map(t -> UtdanningBestattSvar.valueOf(t))
+                                        .map(UtdanningBestattSvar::valueOf)
                                         .orElse(null)),
                         rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
                 ));

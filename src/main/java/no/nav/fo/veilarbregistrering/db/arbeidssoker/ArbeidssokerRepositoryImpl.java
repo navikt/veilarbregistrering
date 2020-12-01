@@ -109,7 +109,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         String sql = "SELECT * FROM FORMIDLINGSGRUPPE WHERE FOEDSELSNUMMER IN (:foedselsnummer)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("foedselsnummer", listeMedFoedselsnummer.stream().map(f -> f.stringValue()).collect(Collectors.toList()));
+        parameters.addValue("foedselsnummer", listeMedFoedselsnummer.stream().map(Foedselsnummer::stringValue).collect(Collectors.toList()));
 
         List<Formidlingsgruppeendring> formidlingsgruppeendringer = namedParameterJdbcTemplate.query(sql, parameters, new FormidlingsgruppeendringRowMapper());
 
@@ -118,7 +118,7 @@ public class ArbeidssokerRepositoryImpl implements ArbeidssokerRepository {
         return map(formidlingsgruppeendringer);
     }
 
-    private class FormidlingsgruppeendringRowMapper implements RowMapper<Formidlingsgruppeendring> {
+    private static class FormidlingsgruppeendringRowMapper implements RowMapper<Formidlingsgruppeendring> {
 
         @Override
         public Formidlingsgruppeendring mapRow(ResultSet rs, int i) throws SQLException {

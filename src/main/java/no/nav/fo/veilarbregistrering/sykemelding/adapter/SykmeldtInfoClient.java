@@ -49,11 +49,8 @@ public class SykmeldtInfoClient {
     private String getToken(HttpServletRequest request) {
         Optional<String> tokenFromCookie = getTokenFromCookie(request, AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME);
 
-        if (tokenFromCookie.isPresent()) {
-            return tokenFromCookie.get();
-        }
+        return tokenFromCookie.orElseGet(() -> TokenUtils.getTokenFromHeader(request).orElse(null));
 
-        return TokenUtils.getTokenFromHeader(request).orElse(null);
     }
 
     private Optional<String> getTokenFromCookie(HttpServletRequest request, String cookieName) {

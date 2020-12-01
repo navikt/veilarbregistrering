@@ -55,9 +55,7 @@ public class Kommunenummer {
 
         private static boolean contains(String kommenummer) {
             return Arrays.stream(KommuneMedBydel.values())
-                    .filter(k -> k.kommenummer.equals(kommenummer))
-                    .findFirst()
-                    .isPresent();
+                    .anyMatch(k -> k.kommenummer.equals(kommenummer));
         }
     }
 }

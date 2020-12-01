@@ -31,19 +31,13 @@ public class Organisasjonsdetaljer {
             return kommunenummerFraForretningsadresse;
         }
 
-        Optional<Kommunenummer> kommunenummerFraPostadresse = kommunenummerFraFoersteGyldigeAdresse(postadresser);
-        if (kommunenummerFraPostadresse.isPresent()) {
-            return kommunenummerFraPostadresse;
-        }
-
-        return Optional.empty();
+        return kommunenummerFraFoersteGyldigeAdresse(postadresser);
     }
 
     private Optional<Kommunenummer> kommunenummerFraFoersteGyldigeAdresse(List<? extends Adresse> adresse) {
         return adresse.stream()
-                .filter(a -> a.erGyldig())
+                .filter(Adresse::erGyldig)
                 .findFirst()
-                .map(a -> a.getKommunenummer());
+                .map(Adresse::getKommunenummer);
     }
-
 }
