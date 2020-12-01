@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.registrering;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.sbl.sql.SqlUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 

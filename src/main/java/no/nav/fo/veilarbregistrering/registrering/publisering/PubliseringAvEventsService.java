@@ -4,14 +4,17 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.OVERFORT_ARENA;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.Status.PUBLISERT_KAFKA;
+import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
+import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.PUBLISERT_KAFKA;
 
 public class PubliseringAvEventsService {
 

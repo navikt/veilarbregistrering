@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
 
 import com.google.gson.Gson;
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
