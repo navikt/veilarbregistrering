@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
@@ -31,7 +30,6 @@ public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest 
 
     @BeforeEach
     public void setup() {
-        setupInMemoryDatabaseContext();
         this.arbeidssokerRepository = new ArbeidssokerRepositoryImpl(jdbcTemplate);
     }
 

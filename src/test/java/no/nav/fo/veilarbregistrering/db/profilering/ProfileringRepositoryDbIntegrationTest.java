@@ -10,8 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
-import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
-
 public class ProfileringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     @Inject
@@ -21,7 +19,6 @@ public class ProfileringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
 
     @BeforeEach
     public void setup() {
-        setupInMemoryDatabaseContext();
         profileringRepository = new ProfileringRepositoryImpl(jdbcTemplate);
     }
 
