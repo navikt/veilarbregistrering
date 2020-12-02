@@ -14,17 +14,17 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.AfterClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -48,6 +48,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static BrukerRegistreringService brukerRegistreringService;
     private static OppfolgingGateway oppfolgingGateway;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
+    private static RegistreringTilstandRepository registreringTilstandRepository;
     private static ProfileringService profileringService;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
@@ -68,6 +69,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
+        registreringTilstandRepository = context.getBean(RegistreringTilstandRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
         oppfolgingGateway = context.getBean(OppfolgingGateway.class);
         profileringService = context.getBean(ProfileringService.class);
@@ -95,6 +97,25 @@ class BrukerRegistreringServiceIntegrationTest {
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
         assertThat(brukerRegistrering.isPresent()).isFalse();
+    }
+
+    @Test
+    @Disabled
+    public void skalRulleTilbakeDatabaseDersomOverforingTilArenaFeiler() {
+        cofigureMocks();
+        doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
+
+        long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
+
+        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER));
+        assertThat(run.isFailure()).isTrue();
+
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
+        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+
+        assertThat(brukerRegistrering.isPresent()).isTrue();
+        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.MOTTATT);
     }
 
     private void cofigureMocks() {
