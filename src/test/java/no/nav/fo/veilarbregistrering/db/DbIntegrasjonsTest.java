@@ -2,10 +2,6 @@ package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
 import no.nav.veilarbregistrering.db.DatabaseTestContext;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,7 +19,6 @@ public abstract class DbIntegrasjonsTest {
     private TransactionStatus transactionStatus;
 
     @BeforeAll
-    @BeforeClass
     public static void setupContext() {
         setupContext(
                 DatabaseConfig.class
@@ -42,19 +37,16 @@ public abstract class DbIntegrasjonsTest {
     }
 
     @BeforeEach
-    @Before
     public void injectAvhengigheter() {
         annotationConfigApplicationContext.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
     @BeforeEach
-    @Before
     public void startTransaksjon() {
         transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
     }
 
     @AfterEach
-    @After
     public void rollbackTransaksjon() {
         if (platformTransactionManager != null && transactionStatus != null) {
             platformTransactionManager.rollback(transactionStatus);
@@ -66,7 +58,6 @@ public abstract class DbIntegrasjonsTest {
     }
 
     @AfterAll
-    @AfterClass
     public static void close() {
         if (annotationConfigApplicationContext != null) {
             annotationConfigApplicationContext.stop();
