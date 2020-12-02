@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.RegistreringTilstandDto;
-
 import java.util.List;
 
 public class RegistreringTilstandService {
@@ -12,9 +10,9 @@ public class RegistreringTilstandService {
         this.registreringTilstandRepository = registreringTilstandRepository;
     }
 
-    public void oppdaterRegistreringTilstand(RegistreringTilstandDto registreringTilstandDto) {
-        RegistreringTilstand original = registreringTilstandRepository.hentRegistreringTilstand(registreringTilstandDto.getId());
-        RegistreringTilstand oppdatert = original.oppdaterStatus(registreringTilstandDto.getStatus());
+    public void oppdaterRegistreringTilstand(OppdaterRegistreringTilstandCommand command) {
+        RegistreringTilstand original = registreringTilstandRepository.hentRegistreringTilstand(command.getId());
+        RegistreringTilstand oppdatert = original.oppdaterStatus(command.getStatus());
         registreringTilstandRepository.oppdater(oppdatert);
     }
 

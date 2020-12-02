@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
 
+import no.nav.fo.veilarbregistrering.registrering.tilstand.OppdaterRegistreringTilstandCommand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
@@ -23,6 +24,6 @@ public class InternalRegistreringStatusServlet extends HttpServlet {
         Status status = Status.parse(req.getParameter("status"));
         String id = req.getParameter("id");
 
-        registreringTilstandService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(id, status));
+        registreringTilstandService.oppdaterRegistreringTilstand(OppdaterRegistreringTilstandCommand.of(id, status));
     }
 }

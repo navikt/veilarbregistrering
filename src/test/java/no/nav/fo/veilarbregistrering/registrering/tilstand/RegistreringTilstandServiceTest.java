@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.RegistreringTilstandDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -34,7 +33,7 @@ public class RegistreringTilstandServiceTest {
                 .build();
         when(registreringTilstandRepository.hentRegistreringTilstand(original.getId())).thenReturn(original);
 
-        registreringTilstandService.oppdaterRegistreringTilstand(RegistreringTilstandDto.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
+        registreringTilstandService.oppdaterRegistreringTilstand(OppdaterRegistreringTilstandCommand.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
 
         ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
         verify(registreringTilstandRepository).oppdater(argumentCaptor.capture());

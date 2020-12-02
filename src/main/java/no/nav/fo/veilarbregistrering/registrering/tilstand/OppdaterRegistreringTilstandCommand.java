@@ -1,21 +1,19 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
+package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
-
-public class RegistreringTilstandDto {
+public class OppdaterRegistreringTilstandCommand {
 
     private final long id;
     private final Status status;
 
-    public static RegistreringTilstandDto of(long id, Status status) {
-        return new RegistreringTilstandDto(id, status);
+    public static OppdaterRegistreringTilstandCommand of(long id, Status status) {
+        return new OppdaterRegistreringTilstandCommand(id, status);
     }
 
-    public static RegistreringTilstandDto of(String id, Status status) {
-        return new RegistreringTilstandDto(Long.parseLong(id), status);
+    public static OppdaterRegistreringTilstandCommand of(String id, Status status) {
+        return new OppdaterRegistreringTilstandCommand(Long.parseLong(id), status);
     }
 
-    private RegistreringTilstandDto(long id, Status status)  {
+    private OppdaterRegistreringTilstandCommand(long id, Status status)  {
         this.id = id;
         this.status = status;
     }
