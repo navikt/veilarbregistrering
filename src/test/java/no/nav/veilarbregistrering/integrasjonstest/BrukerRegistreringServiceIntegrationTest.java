@@ -8,22 +8,22 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
 import org.junit.AfterClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,18 +134,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public SykmeldtInfoClient sykmeldtInfoClient() {
-            return mock(SykmeldtInfoClient.class);
-        }
-
-        @Bean
-        public SykemeldingGateway sykemeldingGateway(SykmeldtInfoClient sykmeldtInfoClient){
-            return new SykemeldingGatewayImpl(sykmeldtInfoClient);
-        }
-
-        @Bean
-        public SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
-            return new SykemeldingService(sykemeldingGateway);
+        public SykemeldingService sykemeldingService() {
+            return mock(SykemeldingService.class);
         }
 
         @Bean
