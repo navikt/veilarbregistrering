@@ -5,7 +5,6 @@ import java.util.Arrays;
 public enum Status {
 
     MOTTATT("mottatt"),
-    ARENA_OK("ok"),
     OVERFORT_ARENA("overfort_arena"),
     PUBLISERT_KAFKA("publisertKafka"),
     UKJENT_BRUKER("ukjentBruker"),
