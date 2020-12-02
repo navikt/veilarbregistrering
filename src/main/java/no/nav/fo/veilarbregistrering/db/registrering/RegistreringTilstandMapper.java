@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.registrering;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

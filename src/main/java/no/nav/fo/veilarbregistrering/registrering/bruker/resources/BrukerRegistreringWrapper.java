@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistrering;

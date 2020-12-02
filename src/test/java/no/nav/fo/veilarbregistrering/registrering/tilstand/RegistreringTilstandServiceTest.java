@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
-import no.nav.fo.veilarbregistrering.registrering.resources.RegistreringTilstandDto;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.RegistreringTilstandDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

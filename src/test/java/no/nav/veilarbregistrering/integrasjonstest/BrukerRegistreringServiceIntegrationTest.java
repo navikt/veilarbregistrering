@@ -19,6 +19,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;

@@ -1,7 +1,7 @@
-package no.nav.fo.veilarbregistrering.registrering.scheduler;
+package no.nav.fo.veilarbregistrering.registrering.oppgave.scheduler;
 
 import net.javacrumbs.shedlock.core.SchedulerLock;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OppgaveForAvvistRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.oppgave.OppgaveForAvvistRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

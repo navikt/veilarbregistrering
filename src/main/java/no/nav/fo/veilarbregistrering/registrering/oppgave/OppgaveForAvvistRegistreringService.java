@@ -1,8 +1,12 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;

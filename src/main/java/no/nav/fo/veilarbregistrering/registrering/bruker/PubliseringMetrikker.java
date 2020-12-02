@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import io.micrometer.core.instrument.Tag;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.metrics.MetricsFactory;
 
 import java.util.Arrays;

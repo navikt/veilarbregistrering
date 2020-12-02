@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.resources;
+package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;

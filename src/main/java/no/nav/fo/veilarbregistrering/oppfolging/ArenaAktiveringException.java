@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.Status;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
 public class ArenaAktiveringException extends RuntimeException {
 
