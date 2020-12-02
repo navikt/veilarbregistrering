@@ -79,6 +79,6 @@ class CreateViewTest : DbIntegrasjonsTest() {
                 MOTTATT, ARENA_OK, UKJENT_BRUKER,
                 MANGLER_ARBEIDSTILLATELSE, KAN_IKKE_REAKTIVERES,
                 DOD_UTVANDRET_ELLER_FORSVUNNET, UKJENT_TEKNISK_FEIL,
-                TEKNISK_FEIL, OPPGAVE_OPPRETTET -> false
+                TEKNISK_FEIL -> false
             }
 }
