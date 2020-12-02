@@ -2,16 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
 import java.util.Arrays;
 
-/**
- * Status representerer tilstanden til den aktuelle registreringen, og hvor de er i flyten.
- *
- * MOTTATT -> ARENA_OK
- * MOTTATT -> MANGLER_ARBEIDSTILLATELSE -> OPPGAVE_OPPRETTET
- * MOTTATT -> DOD_UTVANDRET_ELLER_FORSVUNNET -> OPPGAVE_OPPRETTET
- * MOTTATT ->
- *
- * Ved å sette status
- */
 public enum Status {
 
     MOTTATT("mottatt"),
@@ -24,8 +14,6 @@ public enum Status {
     DOD_UTVANDRET_ELLER_FORSVUNNET("utvandret"),
     UKJENT_TEKNISK_FEIL("ukjentTeknisk"),
     TEKNISK_FEIL("teknisk"),
-    OPPGAVE_OPPRETTET("oppgaveOpprettet"),
-    OPPGAVE_FEILET("oppgaveFeilet"),
     OPPRINNELIG_OPPRETTET_UTEN_TILSTAND("opprinneligOpprettetUtenTilstand"),
     ;
 

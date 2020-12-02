@@ -7,10 +7,8 @@ public interface RegistreringTilstandRepository {
     long lagre(RegistreringTilstand registreringTilstand);
     void oppdater(RegistreringTilstand registreringTilstand);
     RegistreringTilstand hentRegistreringTilstand(long id);
-    List<RegistreringTilstand> finnRegistreringTilstandMed(Status status);
+    List<RegistreringTilstand> finnRegistreringTilstanderMed(Status status);
     Optional<RegistreringTilstand> finnNesteRegistreringTilstandMed(Status status);
-    Optional<RegistreringTilstand> finnNesteRegistreringTilstandForOverforing();
-    Optional<RegistreringTilstand> finnNesteRegistreringTilstandSomHarFeilet();
     int hentAntall(Status status);
     Optional<RegistreringTilstand> hentTilstandFor(long registreringsId);
 }

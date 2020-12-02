@@ -23,7 +23,6 @@ import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
-import no.nav.fo.veilarbregistrering.registrering.oppgave.scheduler.OppgaveForAvvistRegistreringSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +42,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         DatabaseConfig.class,
         KafkaConfig.class,
         PepConfig.class,
-        OppgaveForAvvistRegistreringSchedulerConfig.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
         AAregServiceWSConfig.class,

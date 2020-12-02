@@ -17,7 +17,7 @@ public class RegistreringTilstandService {
     }
 
     public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
-        return registreringTilstandRepository.finnRegistreringTilstandMed(status);
+        return registreringTilstandRepository.finnRegistreringTilstanderMed(status);
     }
 
 }

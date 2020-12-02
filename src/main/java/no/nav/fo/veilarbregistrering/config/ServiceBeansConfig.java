@@ -27,7 +27,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.oppgave.OppgaveForAvvistRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
@@ -299,18 +298,6 @@ public class ServiceBeansConfig {
             PubliseringAvEventsService publiseringAvEventsService
     ) {
         return new PubliseringAvRegistreringEventsScheduler(publiseringAvEventsService);
-    }
-
-    @Bean
-    OppgaveForAvvistRegistreringService oppgaveForAvvistRegistreringService(
-            OppgaveService oppgaveService,
-            BrukerRegistreringRepository brukerRegistreringRepository,
-            RegistreringTilstandRepository registreringTilstandRepository) {
-        return new OppgaveForAvvistRegistreringService(
-                oppgaveService,
-                brukerRegistreringRepository,
-                registreringTilstandRepository
-        );
     }
 
     @Bean

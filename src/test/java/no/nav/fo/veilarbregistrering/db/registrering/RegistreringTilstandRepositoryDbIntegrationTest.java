@@ -73,76 +73,6 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
     }
 
     @Test
-    public void skal_finne_den_eldste_tilstanden_med_status_mottatt() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
-
-
-        RegistreringTilstand eldsteRegistrering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering1.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(5))
-                .build();
-        long id1 = registreringTilstandRepository.lagre(eldsteRegistrering);
-
-        RegistreringTilstand nyesteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering2.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(1))
-                .build();
-        registreringTilstandRepository.lagre(nyesteRegistering);
-
-        RegistreringTilstand midtersteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering3.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(3))
-                .build();
-        registreringTilstandRepository.lagre(midtersteRegistering);
-
-        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandForOverforing();
-
-        assertThat(lagretTilstand.get().getId()).isEqualTo(id1);
-        assertThat(lagretTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
-        assertThat(lagretTilstand.get().getStatus()).isEqualTo(Status.MOTTATT);
-    }
-
-    @Test
-    public void skal_returnere_empty_naar_ingen_flere_mottatte() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
-
-        RegistreringTilstand eldsteRegistrering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering1.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(5))
-                .status(ARENA_OK)
-                .build();
-        registreringTilstandRepository.lagre(eldsteRegistrering);
-
-        RegistreringTilstand nyesteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering2.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(1))
-                .status(ARENA_OK)
-                .build();
-        registreringTilstandRepository.lagre(nyesteRegistering);
-
-        RegistreringTilstand midtersteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering3.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(3))
-                .status(ARENA_OK)
-                .build();
-        registreringTilstandRepository.lagre(midtersteRegistering);
-
-        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandForOverforing();
-
-        assertThat(lagretTilstand.isPresent()).isFalse();
-    }
-
-    @Test
     public void finnRegistreringTilstandMed_skal_returnere_alle_tilstander_med_angitt_status() {
         OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
 
@@ -162,72 +92,8 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
                 .build();
         registreringTilstandRepository.lagre(tilstand2);
 
-        List<RegistreringTilstand> mottatteRegistreringer = registreringTilstandRepository.finnRegistreringTilstandMed(MOTTATT);
+        List<RegistreringTilstand> mottatteRegistreringer = registreringTilstandRepository.finnRegistreringTilstanderMed(MOTTATT);
         assertThat(mottatteRegistreringer).hasSize(1);
-    }
-
-    @Test
-    public void skal_finne_siste_aktivering_som_har_feilet() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
-
-
-        RegistreringTilstand eldsteRegistrering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering1.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(5))
-                .status(DOD_UTVANDRET_ELLER_FORSVUNNET)
-                .build();
-        long id1 = registreringTilstandRepository.lagre(eldsteRegistrering);
-
-        RegistreringTilstand nyesteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering2.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(1))
-                .status(MANGLER_ARBEIDSTILLATELSE)
-                .build();
-        registreringTilstandRepository.lagre(nyesteRegistering);
-
-        Optional<RegistreringTilstand> nesteTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandSomHarFeilet();
-
-        assertThat(nesteTilstand.get().getId()).isEqualTo(id1);
-        assertThat(nesteTilstand.get().getBrukerRegistreringId()).isEqualTo(lagretRegistrering1.getId());
-        assertThat(nesteTilstand.get().getStatus()).isEqualTo(DOD_UTVANDRET_ELLER_FORSVUNNET);
-    }
-
-    @Test
-    public void skal_returnere_empty_naar_ingen_flere_som_har_feilet() {
-        OrdinaerBrukerRegistrering registrering1 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering2 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering registrering3 = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1);
-        OrdinaerBrukerRegistrering lagretRegistrering3 = brukerRegistreringRepository.lagre(registrering3, BRUKER_1);
-
-        RegistreringTilstand eldsteRegistrering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering1.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(5))
-                .status(ARENA_OK)
-                .build();
-        registreringTilstandRepository.lagre(eldsteRegistrering);
-
-        RegistreringTilstand nyesteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering2.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(1))
-                .status(UKJENT_BRUKER)
-                .build();
-        registreringTilstandRepository.lagre(nyesteRegistering);
-
-        RegistreringTilstand midtersteRegistering = registreringTilstand()
-                .brukerRegistreringId(lagretRegistrering3.getId())
-                .opprettet(LocalDateTime.now().minusMinutes(3))
-                .status(UKJENT_TEKNISK_FEIL)
-                .build();
-        registreringTilstandRepository.lagre(midtersteRegistering);
-
-        Optional<RegistreringTilstand> lagretTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandSomHarFeilet();
-
-        assertThat(lagretTilstand.isPresent()).isFalse();
     }
 
     @Test
