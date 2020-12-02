@@ -63,7 +63,7 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
     }
 
     @Override
-    public List<RegistreringTilstand> finnRegistreringTilstandMed(Status status) {
+    public List<RegistreringTilstand> finnRegistreringTilstanderMed(Status status) {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND WHERE STATUS = ?";
         return db.query(sql, new Object[]{status.name()}, new RegistreringTilstandMapper());
     }

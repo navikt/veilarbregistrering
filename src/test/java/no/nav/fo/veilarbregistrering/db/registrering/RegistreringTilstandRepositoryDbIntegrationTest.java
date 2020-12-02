@@ -92,7 +92,7 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
                 .build();
         registreringTilstandRepository.lagre(tilstand2);
 
-        List<RegistreringTilstand> mottatteRegistreringer = registreringTilstandRepository.finnRegistreringTilstandMed(MOTTATT);
+        List<RegistreringTilstand> mottatteRegistreringer = registreringTilstandRepository.finnRegistreringTilstanderMed(MOTTATT);
         assertThat(mottatteRegistreringer).hasSize(1);
     }
 
