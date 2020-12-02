@@ -27,13 +27,13 @@ public class RegistreringTilstandServiceTest {
         LocalDateTime sistEndret = LocalDateTime.now();
         RegistreringTilstand original = RegistreringTilstandTestdataBuilder
                 .registreringTilstand()
-                .status(Status.ARENA_OK)
+                .status(Status.MOTTATT)
                 .opprettet(sistEndret.minusDays(1))
                 .sistEndret(sistEndret)
                 .build();
         when(registreringTilstandRepository.hentRegistreringTilstand(original.getId())).thenReturn(original);
 
-        registreringTilstandService.oppdaterRegistreringTilstand(OppdaterRegistreringTilstandCommand.of(original.getId(), Status.MANGLER_ARBEIDSTILLATELSE));
+        registreringTilstandService.oppdaterRegistreringTilstand(OppdaterRegistreringTilstandCommand.of(original.getId(), Status.OVERFORT_ARENA));
 
         ArgumentCaptor<RegistreringTilstand> argumentCaptor = ArgumentCaptor.forClass(RegistreringTilstand.class);
         verify(registreringTilstandRepository).oppdater(argumentCaptor.capture());
@@ -42,6 +42,6 @@ public class RegistreringTilstandServiceTest {
         assertThat(capturedArgument.getId()).isEqualTo(original.getId());
         assertThat(capturedArgument.getBrukerRegistreringId()).isEqualTo(original.getBrukerRegistreringId());
         assertThat(capturedArgument.getOpprettet()).isEqualTo(original.getOpprettet());
-        assertThat(capturedArgument.getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
+        assertThat(capturedArgument.getStatus()).isEqualTo(Status.OVERFORT_ARENA);
     }
 }

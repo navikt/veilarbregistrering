@@ -76,7 +76,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
             when (status) {
                 OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND -> true
 
-                MOTTATT, ARENA_OK, UKJENT_BRUKER,
+                MOTTATT, UKJENT_BRUKER,
                 MANGLER_ARBEIDSTILLATELSE, KAN_IKKE_REAKTIVERES,
                 DOD_UTVANDRET_ELLER_FORSVUNNET, UKJENT_TEKNISK_FEIL,
                 TEKNISK_FEIL -> false

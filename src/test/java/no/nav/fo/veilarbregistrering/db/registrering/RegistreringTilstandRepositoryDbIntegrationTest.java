@@ -88,7 +88,7 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
         RegistreringTilstand tilstand2 = registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.getId())
                 .opprettet(LocalDateTime.now().minusMinutes(5))
-                .status(ARENA_OK)
+                .status(PUBLISERT_KAFKA)
                 .build();
         registreringTilstandRepository.lagre(tilstand2);
 
@@ -161,7 +161,7 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
 
         assertThat(registreringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka);
         assertThat(registreringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena);
-        assertThat(registreringTilstandRepository.hentAntall(ARENA_OK)).isEqualTo(0);
+        assertThat(registreringTilstandRepository.hentAntall(MOTTATT)).isEqualTo(0);
     }
 
     private void lagRegistreringTilstand(OrdinaerBrukerRegistrering registrering, Status status, int antall) {
