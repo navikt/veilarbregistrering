@@ -12,4 +12,5 @@ public interface RegistreringTilstandRepository {
     Optional<RegistreringTilstand> finnNesteRegistreringTilstandForOverforing();
     Optional<RegistreringTilstand> finnNesteRegistreringTilstandSomHarFeilet();
     int hentAntall(Status status);
+    Optional<RegistreringTilstand> hentTilstandFor(long registreringsId);
 }

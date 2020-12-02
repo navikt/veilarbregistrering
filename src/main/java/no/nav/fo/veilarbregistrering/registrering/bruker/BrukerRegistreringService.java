@@ -48,21 +48,58 @@ public class BrukerRegistreringService {
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
 
-        OrdinaerBrukerRegistrering oppettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
 
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), oppettetBrukerRegistrering.getBesvarelse());
-        profileringRepository.lagreProfilering(oppettetBrukerRegistrering.getId(), profilering);
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
 
         oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
-        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", oppettetBrukerRegistrering, profilering);
+        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, oppettetBrukerRegistrering.getId());
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, opprettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
 
-        return oppettetBrukerRegistrering;
+        return opprettetBrukerRegistrering;
+    }
+
+    @Transactional
+    public OrdinaerBrukerRegistrering registrerBrukerUtenOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
+
+        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+
+        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
+        profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
+
+        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
+
+        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
+        registreringTilstandRepository.lagre(registreringTilstand);
+
+        LOG.info("Brukerregistrering (id: {}) gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering.getId(), opprettetBrukerRegistrering, profilering);
+
+        return opprettetBrukerRegistrering;
+    }
+
+    @Transactional
+    public void overforArena(long registreringId, Bruker bruker) {
+
+        Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
+
+        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository.hentTilstandFor(registreringId)
+                .map(a -> a.oppdaterStatus(Status.OVERFORT_ARENA))
+                .orElseThrow(IllegalArgumentException::new);
+
+        registreringTilstandRepository.oppdater(aktiveringTilstand);
+
+        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+
+        LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {

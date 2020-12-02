@@ -107,12 +107,28 @@ public class RegistreringResource {
             reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);
 
         } else {
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            if (skalSplitteRegistreringOgOverforing()) {
+                registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker);
+            } else {
+                registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            }
         }
 
         AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
 
         return registrering;
+    }
+
+    private OrdinaerBrukerRegistrering splittRegistreringOgOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
+        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker);
+
+        brukerRegistreringService.overforArena(ordinaerBrukerRegistrering.getId(), bruker);
+
+        return registrering;
+    }
+
+    private boolean skalSplitteRegistreringOgOverforing() {
+        return unleashService.isEnabled("veilarbregistrering.splittRegistreringOgOverforing");
     }
 
     @GET

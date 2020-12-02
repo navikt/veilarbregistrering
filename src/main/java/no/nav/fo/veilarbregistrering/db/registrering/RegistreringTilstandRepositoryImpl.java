@@ -109,6 +109,15 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
         return antall;
     }
 
+    @Override
+    public Optional<RegistreringTilstand> hentTilstandFor(long registreringsId) {
+        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
+                " WHERE BRUKER_REGISTRERING_ID = ?" +
+                " FETCH NEXT ? ROWS ONLY";
+        List<RegistreringTilstand> registreringsTilstander = db.query(sql, new Object[]{registreringsId, 1}, new RegistreringTilstandMapper());
+        return registreringsTilstander.stream().findFirst();
+    }
+
     private long nesteFraSekvens(String sekvensNavn) {
         return db.queryForObject("select " + sekvensNavn + ".nextval from dual", Long.class);
     }
