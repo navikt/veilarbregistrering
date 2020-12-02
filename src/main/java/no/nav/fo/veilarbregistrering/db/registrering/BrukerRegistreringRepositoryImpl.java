@@ -6,8 +6,12 @@ import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.sbl.sql.DbConstants;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
@@ -20,6 +24,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -141,6 +146,25 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .where(WhereClause.equals(BRUKER_REGISTRERING_ID, brukerregistreringId))
                 .column("*")
                 .execute();
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering hentOrdinaerBrukerregistreringForAktorIdOgTilstand(AktorId aktorId, Status... tilstander) {
+        ArrayList<String> params = new ArrayList<>();
+        params.add(aktorId.asString());
+        Arrays.stream(tilstander).forEach(t -> params.add(t.name()));
+
+        String inSql = String.join(",", Collections.nCopies(tilstander.length, "?"));
+
+        String sql = "SELECT * FROM BRUKER_REGISTRERING" +
+                " LEFT JOIN REGISTRERING_TILSTAND ON REGISTRERING_TILSTAND.BRUKER_REGISTRERING_ID = BRUKER_REGISTRERING.BRUKER_REGISTRERING_ID" +
+                " WHERE BRUKER_REGISTRERING.AKTOR_ID = ?" +
+                " AND REGISTRERING_TILSTAND.STATUS in ("+ inSql + ")" +
+                " ORDER BY BRUKER_REGISTRERING.OPPRETTET_DATO" +
+                " FETCH NEXT 1 ROWS ONLY";
+
+        List<OrdinaerBrukerRegistrering> brukerRegistreringer = db.query(sql, params.toArray(), new OrdinaerBrukerRegistreringMapper());
+        return brukerRegistreringer.stream().findFirst().orElse(null);
     }
 
     @Override

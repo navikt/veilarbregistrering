@@ -3,10 +3,12 @@ package no.nav.fo.veilarbregistrering.db.registrering;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
-class OrdinaerBrukerRegistreringMapper {
+class OrdinaerBrukerRegistreringMapper implements RowMapper<OrdinaerBrukerRegistrering> {
 
     @SneakyThrows
     static OrdinaerBrukerRegistrering map(ResultSet rs) {
@@ -27,5 +29,10 @@ class OrdinaerBrukerRegistreringMapper {
                         .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)))
                         .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(BrukerRegistreringRepositoryImpl.JOBBHISTORIKK)))
                 );
+    }
+
+    @Override
+    public OrdinaerBrukerRegistrering mapRow(ResultSet resultSet, int i) throws SQLException {
+        return map(resultSet);
     }
 }
