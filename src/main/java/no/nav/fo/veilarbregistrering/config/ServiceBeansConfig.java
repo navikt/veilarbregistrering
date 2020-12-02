@@ -294,13 +294,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    public PubliseringAvRegistreringEventsScheduler publiseringAvRegistreringEventsScheduler(
-            PubliseringAvEventsService publiseringAvEventsService
-    ) {
-        return new PubliseringAvRegistreringEventsScheduler(publiseringAvEventsService);
-    }
-
-    @Bean
     ProfileringService profileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ProfileringService(arbeidsforholdGateway);
     }

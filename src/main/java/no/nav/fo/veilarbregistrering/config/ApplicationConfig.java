@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
+import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
@@ -53,7 +54,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         PdlOppslagConfig.class,
         EnhetGatewayConfig.class,
         KrrConfig.class,
-        FormidlingsgruppeGatewayConfig.class
+        FormidlingsgruppeGatewayConfig.class,
+        PubliseringSchedulerConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 
