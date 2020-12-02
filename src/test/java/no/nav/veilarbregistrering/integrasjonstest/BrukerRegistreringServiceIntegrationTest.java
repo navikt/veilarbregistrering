@@ -11,9 +11,7 @@ import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
@@ -48,7 +46,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static AnnotationConfigApplicationContext context;
 
     private static BrukerRegistreringService brukerRegistreringService;
-    private static OppfolgingClient oppfolgingClient;
+    private static OppfolgingGateway oppfolgingGateway;
     private static BrukerRegistreringRepository brukerRegistreringRepository;
     private static ProfileringService profileringService;
 
@@ -71,7 +69,7 @@ class BrukerRegistreringServiceIntegrationTest {
         MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
         brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
         brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
-        oppfolgingClient = context.getBean(OppfolgingClient.class);
+        oppfolgingGateway = context.getBean(OppfolgingGateway.class);
         profileringService = context.getBean(ProfileringService.class);
     }
 
@@ -89,7 +87,7 @@ class BrukerRegistreringServiceIntegrationTest {
     @Test
     public void skalRulleTilbakeDatabaseDersomKallTilArenaFeiler() {
         cofigureMocks();
-        doThrow(new RuntimeException()).when(oppfolgingClient).aktiverBruker(any());
+        doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER));
         assertThat(run.isFailure()).isTrue();
@@ -100,7 +98,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     private void cofigureMocks() {
-        when(oppfolgingClient.hentOppfolgingsstatus(any())).thenReturn(new OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false));
+        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(new Oppfolgingsstatus(false, false, null,null,null,null));
         when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
     }
 
@@ -124,13 +122,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public OppfolgingClient oppfolgingClient() {
-            return mock(OppfolgingClient.class);
-        }
-
-        @Bean
-        public OppfolgingGateway oppfolgingGateway(OppfolgingClient oppfolgingClient) {
-            return new OppfolgingGatewayImpl(oppfolgingClient);
+        public OppfolgingGateway oppfolgingGateway() {
+            return mock(OppfolgingGateway.class);
         }
 
         @Bean
