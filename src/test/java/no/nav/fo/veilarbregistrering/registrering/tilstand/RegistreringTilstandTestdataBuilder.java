@@ -1,8 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand;
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
-
 import java.time.LocalDateTime;
 
 public class RegistreringTilstandTestdataBuilder {
