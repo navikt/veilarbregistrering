@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
@@ -150,22 +151,42 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
 
     @Test
     public void skal_telle_antall_registreringer_med_status() {
-        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
-        OrdinaerBrukerRegistrering lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
-
         final int antallPublisertKafka = 5;
         final int antallOverfortArena = 3;
 
-        lagRegistreringTilstand(lagretRegistrering, PUBLISERT_KAFKA, antallPublisertKafka);
-        lagRegistreringTilstand(lagretRegistrering, OVERFORT_ARENA, antallOverfortArena);
+        lagRegistreringMedTilstand(PUBLISERT_KAFKA, antallPublisertKafka);
+        lagRegistreringMedTilstand(OVERFORT_ARENA, antallOverfortArena);
 
         assertThat(registreringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka);
         assertThat(registreringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena);
         assertThat(registreringTilstandRepository.hentAntall(MOTTATT)).isEqualTo(0);
     }
 
-    private void lagRegistreringTilstand(OrdinaerBrukerRegistrering registrering, Status status, int antall) {
+    @Test
+    public void skal_kaste_exception_ved_forsoek_paa_aa_lagre_tilstand_med_brukerregistreringid_som_allerede_finnes() {
+        OrdinaerBrukerRegistrering registrering = gyldigBrukerRegistrering();
+
+        registrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1);
+
+        RegistreringTilstand registreringTilstandMottatt = registreringTilstand()
+                .brukerRegistreringId(registrering.getId())
+                .opprettet(LocalDateTime.now().minusDays(10))
+                .status(MOTTATT)
+                .build();
+        RegistreringTilstand registreringTilstandOverfort = registreringTilstand()
+                .brukerRegistreringId(registrering.getId())
+                .opprettet(LocalDateTime.now().minusMinutes(5))
+                .status(OVERFORT_ARENA)
+                .build();
+
+        registreringTilstandRepository.lagre(registreringTilstandMottatt);
+
+        assertThrows(DuplicateKeyException.class, () -> registreringTilstandRepository.lagre(registreringTilstandOverfort));
+    }
+
+    private void lagRegistreringMedTilstand(Status status, int antall) {
         for (int i = 0; i < antall; i++) {
+            OrdinaerBrukerRegistrering registrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1);
             RegistreringTilstand nyesteRegistreringTilstand = registreringTilstand()
                     .brukerRegistreringId(registrering.getId())
                     .opprettet(LocalDateTime.now().minusMinutes(5))
