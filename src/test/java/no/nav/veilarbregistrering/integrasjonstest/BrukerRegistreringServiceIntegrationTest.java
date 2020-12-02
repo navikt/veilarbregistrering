@@ -14,23 +14,27 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import org.junit.AfterClass;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Optional;
 
@@ -41,49 +45,32 @@ import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDat
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@ContextConfiguration(classes = {DatabaseConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
 class BrukerRegistreringServiceIntegrationTest {
 
-    private static AnnotationConfigApplicationContext context;
-
-    private static BrukerRegistreringService brukerRegistreringService;
-    private static OppfolgingGateway oppfolgingGateway;
-    private static BrukerRegistreringRepository brukerRegistreringRepository;
-    private static RegistreringTilstandRepository registreringTilstandRepository;
-    private static ProfileringService profileringService;
+    @Autowired
+    private BrukerRegistreringService brukerRegistreringService;
+    @Autowired
+    private OppfolgingGateway oppfolgingGateway;
+    @Autowired
+    private BrukerRegistreringRepository brukerRegistreringRepository;
+    @Autowired
+    private RegistreringTilstandRepository registreringTilstandRepository;
+    @Autowired
+    private ProfileringService profileringService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
     private static final Bruker BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
-
         setupInMemoryDatabaseContext();
-
-        context = new AnnotationConfigApplicationContext(
-                DatabaseConfig.class,
-                BrukerregistreringConfigTest.class
-        );
-
-        context.start();
-
-        MigrationUtils.createTables((JdbcTemplate) context.getBean("jdbcTemplate"));
-        brukerRegistreringRepository = context.getBean(BrukerRegistreringRepositoryImpl.class);
-        registreringTilstandRepository = context.getBean(RegistreringTilstandRepositoryImpl.class);
-        brukerRegistreringService = context.getBean(BrukerRegistreringService.class);
-        oppfolgingGateway = context.getBean(OppfolgingGateway.class);
-        profileringService = context.getBean(ProfileringService.class);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        context.stop();
-    }
-
-    @AfterClass
-    public static void cleanup() {
-        context.close();
-        context = null;
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test

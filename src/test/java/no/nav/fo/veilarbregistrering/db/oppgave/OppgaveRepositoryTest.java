@@ -5,8 +5,8 @@ import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveImpl;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
 
     private OppgaveRepository oppgaveRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         oppgaveRepository = new OppgaveRepositoryImpl(jdbcTemplate);
     }

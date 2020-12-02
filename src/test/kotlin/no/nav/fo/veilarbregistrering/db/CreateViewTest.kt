@@ -15,8 +15,8 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.*
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.jdbc.core.JdbcTemplate
 
 class CreateViewTest : DbIntegrasjonsTest() {
@@ -30,7 +30,7 @@ class CreateViewTest : DbIntegrasjonsTest() {
     private val AKTOR_ID_11111 = AktorId.of("11111")
     private val BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111)
 
-    @Before
+    @BeforeEach
     fun setup() {
         jdbcTemplate = getBean(JdbcTemplate::class.java)
         brukerRegistreringRepository = BrukerRegistreringRepositoryImpl(jdbcTemplate)
