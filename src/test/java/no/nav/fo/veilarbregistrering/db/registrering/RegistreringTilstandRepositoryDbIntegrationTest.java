@@ -4,7 +4,8 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
-import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
@@ -23,7 +24,6 @@ import static java.time.LocalDateTime.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandTestdataBuilder.registreringTilstand;
 import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*;
-import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,7 +41,6 @@ public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasj
 
     @BeforeEach
     public void setup() {
-        setupInMemoryDatabaseContext();
         brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
         registreringTilstandRepository = new RegistreringTilstandRepositoryImpl(jdbcTemplate);
     }

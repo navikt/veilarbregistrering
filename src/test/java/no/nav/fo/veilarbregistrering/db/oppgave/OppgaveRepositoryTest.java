@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.inject.Inject;
 import java.util.List;
 
-import static no.nav.veilarbregistrering.db.DatabaseTestContext.setupInMemoryDatabaseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
@@ -24,7 +23,6 @@ public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
 
     @Before
     public void setup() {
-        setupInMemoryDatabaseContext();
         oppgaveRepository = new OppgaveRepositoryImpl(jdbcTemplate);
     }
 
