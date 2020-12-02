@@ -3,15 +3,14 @@ package no.nav.fo.veilarbregistrering.db
 import no.nav.json.JsonUtils
 import org.assertj.core.api.Assertions.*
 import org.json.JSONArray
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.jdbc.core.JdbcTemplate
 import java.util.*
 import javax.inject.Inject
 
-@RunWith(Parameterized::class)
-class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest() {
+class ViewDbIntegrationTest : DbIntegrasjonsTest() {
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -26,14 +25,16 @@ class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest()
         assertThat(count).isEqualTo(antallViews.toLong())
     }
 
-    @Test
-    fun `view eksisterer`() {
+    @ParameterizedTest
+    @MethodSource("viewsForTest")
+    fun `view eksisterer`(viewName: String) {
         val viewData = jdbcTemplate.queryForList("SELECT * FROM $viewName;")
         assertThat(viewData).isNotNull
     }
 
-    @Test
-    fun `view skal reflektere kolonner i tabell`() {
+    @ParameterizedTest
+    @MethodSource("viewsForTest")
+    fun `view skal reflektere kolonner i tabell`(viewName: String) {
         val kolonneData = jsonFormatter(JsonUtils.toJson(hentKolonneDataForView(viewName)))
         val kolonneDataFasit = jsonFormatter(lesInnholdFraFil("view-meta-data/" + viewName.toLowerCase() + ".json"))
         assertThat(kolonneData).isEqualTo(kolonneDataFasit)
@@ -51,10 +52,9 @@ class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest()
     }
 
     companion object {
-        @Parameterized.Parameters
+
         @JvmStatic
-        fun views(): List<String> {
-            return listOf(
+        fun viewsForTest() = listOf(
                     "DVH_BRUKER_REGISTRERING",
                     "DVH_BEGRUNNELSE_KODEVERK",
                     "DVH_BRUKER_PROFILERING",
@@ -66,9 +66,9 @@ class ViewDbIntegrationTest(private val viewName: String) : DbIntegrasjonsTest()
                     "DVH_SITUASJON_KODEVERK",
                     "DVH_TILBAKE_KODEVERK"
             )
-        }
 
-        private val antallViews = views().size
+
+        private val antallViews = viewsForTest().count()
 
         private fun jsonFormatter(jsonArray: String): String {
             return JSONArray(jsonArray).toString()
