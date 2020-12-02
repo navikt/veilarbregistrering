@@ -69,17 +69,6 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
     }
 
     @Override
-    public Optional<RegistreringTilstand> finnNesteRegistreringTilstandSomHarFeilet() {
-        String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
-                " WHERE STATUS IN (?, ?)" +
-                " ORDER BY OPPRETTET" +
-                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        List<RegistreringTilstand> registreringTilstand = db.query(sql, new Object[]{"MANGLER_ARBEIDSTILLATELSE", "DOD_UTVANDRET_ELLER_FORSVUNNET", 0, 1}, new RegistreringTilstandMapper());
-        return registreringTilstand.isEmpty() ? Optional.empty() : Optional.of(registreringTilstand.get(0));
-    }
-
-    @Override
     public Optional<RegistreringTilstand> finnNesteRegistreringTilstandMed(Status status) {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE STATUS = ?" +
