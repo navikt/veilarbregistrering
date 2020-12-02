@@ -122,7 +122,7 @@ public class RegistreringResource {
     private OrdinaerBrukerRegistrering splittRegistreringOgOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
         OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker);
 
-        brukerRegistreringService.overforArena(ordinaerBrukerRegistrering.getId(), bruker);
+        brukerRegistreringService.overforArena(registrering.getId(), bruker);
 
         return registrering;
     }
