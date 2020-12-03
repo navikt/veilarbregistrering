@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.db;
 
 import lombok.SneakyThrows;
-import no.nav.veilarbregistrering.db.DatabaseTestContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,8 +26,6 @@ public abstract class DbIntegrasjonsTest {
 
     @SneakyThrows
     private static void setupContext(Class<?>... classes) {
-        DatabaseTestContext.setupInMemoryDatabaseContext();
-
         annotationConfigApplicationContext = new AnnotationConfigApplicationContext(classes);
         annotationConfigApplicationContext.start();
         platformTransactionManager = getBean(PlatformTransactionManager.class);
@@ -65,5 +62,4 @@ public abstract class DbIntegrasjonsTest {
             annotationConfigApplicationContext = null;
         }
     }
-
 }
