@@ -36,8 +36,8 @@ public class DatabaseConfig {
         return new DataSourceTransactionManager(ds);
     }
 
-    @Bean(name = "myTxMgr")
-    public PlatformTransactionManager myTxMgr(DataSource ds) {
+    @Bean(name = "txMgrTest")
+    public PlatformTransactionManager txMgrTest(DataSource ds) {
         return new DataSourceTransactionManager(ds);
     }
 
