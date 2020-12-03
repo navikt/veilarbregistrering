@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringJUnitConfig
-@Transactional
+@Transactional(transactionManager = "myTxMgr")
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
 public class OppgaveRepositoryTest {
 
