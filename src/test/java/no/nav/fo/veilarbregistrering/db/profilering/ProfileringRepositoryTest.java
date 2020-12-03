@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.db.profilering;
 
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
