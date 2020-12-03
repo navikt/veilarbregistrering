@@ -3,39 +3,47 @@ package no.nav.fo.veilarbregistrering.db
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
-import org.assertj.core.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.springframework.transaction.annotation.Transactional
 
-class CreateViewTest : DbIntegrasjonsTest() {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
+open class CreateViewTest {
 
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
+    @Autowired
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
+    @Autowired
     private lateinit var registreringTilstandRepository: RegistreringTilstandRepository
+    @Autowired
     private lateinit var profileringRepository: ProfileringRepository
 
     private val FOEDSELSNUMMER = Foedselsnummer.of("12345678911")
     private val AKTOR_ID_11111 = AktorId.of("11111")
     private val BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111)
 
-    @BeforeEach
+    @BeforeAll
     fun setup() {
-        jdbcTemplate = getBean(JdbcTemplate::class.java)
-        brukerRegistreringRepository = BrukerRegistreringRepositoryImpl(jdbcTemplate)
-        registreringTilstandRepository = RegistreringTilstandRepositoryImpl(jdbcTemplate)
-        profileringRepository = ProfileringRepositoryImpl(jdbcTemplate)
+        MigrationUtils.createTables(jdbcTemplate)
     }
 
     @Test
@@ -70,7 +78,6 @@ class CreateViewTest : DbIntegrasjonsTest() {
             assertThat(finnesIProfilering).isEqualTo(expected)
         }
     }
-
 
     private fun skalStatusVisesIView(status: Status): Boolean =
             when (status) {

@@ -1,26 +1,37 @@
 package no.nav.fo.veilarbregistrering.db.registrering;
 
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
-import org.junit.jupiter.api.BeforeEach;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.inject.Inject;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ManuellRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+public class ManuellRegistreringRepositoryDbIntegrationTest {
 
-    @Inject
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private ManuellRegistreringRepositoryImpl manuellRegistreringRepository;
+    @Autowired
+    private ManuellRegistreringRepository manuellRegistreringRepository;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
-        manuellRegistreringRepository = new ManuellRegistreringRepositoryImpl(jdbcTemplate);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test

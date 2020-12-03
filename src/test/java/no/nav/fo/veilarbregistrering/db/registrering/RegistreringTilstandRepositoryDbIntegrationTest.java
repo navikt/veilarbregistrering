@@ -3,19 +3,25 @@ package no.nav.fo.veilarbregistrering.db.registrering;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +33,28 @@ import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RegistreringTilstandRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+public class RegistreringTilstandRepositoryDbIntegrationTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
     private static final AktorId AKTOR_ID_11111 = AktorId.of("11111");
     private static final Bruker BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111);
 
-    @Inject
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private BrukerRegistreringRepository brukerRegistreringRepository;
+
+    @Autowired
     private RegistreringTilstandRepository registreringTilstandRepository;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
-        brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
-        registreringTilstandRepository = new RegistreringTilstandRepositoryImpl(jdbcTemplate);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test

@@ -4,10 +4,18 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.*;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -17,20 +25,25 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArbeidssokerRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+public class ArbeidssokerRepositoryDbIntegrationTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("01234567890");
     private static final Foedselsnummer FOEDSELSNUMMER_2 = Foedselsnummer.of("01234567892");
     private static final Foedselsnummer FOEDSELSNUMMER_3 = Foedselsnummer.of("01234567895");
 
-    @Inject
-    private JdbcTemplate jdbcTemplate;
-
+    @Autowired
     private ArbeidssokerRepository arbeidssokerRepository;
 
-    @BeforeEach
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeAll
     public void setup() {
-        this.arbeidssokerRepository = new ArbeidssokerRepositoryImpl(jdbcTemplate);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test
