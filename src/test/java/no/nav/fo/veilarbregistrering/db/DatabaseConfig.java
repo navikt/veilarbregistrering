@@ -19,10 +19,6 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
-    public static final String VEILARBREGISTRERINGDB_URL = "VEILARBREGISTRERINGDB_URL";
-    public static final String VEILARBREGISTRERINGDB_USERNAME = "VEILARBREGISTRERINGDB_USERNAME";
-    public static final String VEILARBREGISTRERINGDB_PASSWORD = "VEILARBREGISTRERINGDB_PASSWORD";
-
     @Bean
     public static DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
