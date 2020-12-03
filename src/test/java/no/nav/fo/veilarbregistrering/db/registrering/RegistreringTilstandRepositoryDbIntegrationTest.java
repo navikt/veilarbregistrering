@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringJUnitConfig
-@Transactional(transactionManager = "myTxMgr")
+@Transactional(transactionManager = "txMgrTest")
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
 public class RegistreringTilstandRepositoryDbIntegrationTest {
 

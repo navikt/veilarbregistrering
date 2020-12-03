@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringJUnitConfig
-@Transactional(transactionManager = "myTxMgr")
+@Transactional(transactionManager = "txMgrTest")
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
 public class ProfileringRepositoryDbIntegrationTest {
 
