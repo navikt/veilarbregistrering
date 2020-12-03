@@ -4,7 +4,9 @@ import no.nav.fo.veilarbregistrering.besvarelse.*;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
@@ -12,18 +14,25 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTes
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.inject.Inject;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjonsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+public class BrukerRegistreringRepositoryDbIntegrationTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
     private static final AktorId AKTOR_ID_11111 = AktorId.of("11111");
@@ -35,14 +44,15 @@ public class BrukerRegistreringRepositoryDbIntegrationTest extends DbIntegrasjon
     private static final AktorId AKTOR_ID_33333 = AktorId.of("33333");
     private static final Bruker BRUKER_3 = Bruker.of(FOEDSELSNUMMER_3, AKTOR_ID_33333);
 
-    @Inject
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private BrukerRegistreringRepository brukerRegistreringRepository;
 
     @BeforeEach
     public void setup() {
-        brukerRegistreringRepository = new BrukerRegistreringRepositoryImpl(jdbcTemplate);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test

@@ -1,29 +1,40 @@
 package no.nav.fo.veilarbregistrering.db.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.db.DbIntegrasjonsTest;
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.MigrationUtils;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveImpl;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OppgaveRepositoryTest extends DbIntegrasjonsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@Transactional
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+public class OppgaveRepositoryTest {
 
-    @Inject
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private OppgaveRepository oppgaveRepository;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
-        oppgaveRepository = new OppgaveRepositoryImpl(jdbcTemplate);
+        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @Test

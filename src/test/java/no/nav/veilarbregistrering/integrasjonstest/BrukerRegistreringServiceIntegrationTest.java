@@ -7,9 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -18,14 +16,11 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -46,7 +42,8 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringJUnitConfig
-@ContextConfiguration(classes = {DatabaseConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
+@Transactional(transactionManager = "myTxMgr")
+@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
 class BrukerRegistreringServiceIntegrationTest {
 
     @Autowired
@@ -85,7 +82,6 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
-    @Disabled
     public void skalRulleTilbakeDatabaseDersomOverforingTilArenaFeiler() {
         cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
@@ -111,21 +107,6 @@ class BrukerRegistreringServiceIntegrationTest {
     @Configuration
     @ComponentScan
     public static class BrukerregistreringConfigTest {
-
-        @Bean
-        public BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
-            return new BrukerRegistreringRepositoryImpl(db);
-        }
-
-        @Bean
-        RegistreringTilstandRepository registreringTilstandRepository(JdbcTemplate db) {
-            return new RegistreringTilstandRepositoryImpl(db);
-        }
-
-        @Bean
-        public ProfileringRepository profileringRepository(JdbcTemplate db) {
-            return new ProfileringRepositoryImpl(db);
-        }
 
         @Bean
         public OppfolgingGateway oppfolgingGateway() {
@@ -170,20 +151,5 @@ class BrukerRegistreringServiceIntegrationTest {
             return mock(VeilarbAbacPepClient.class);
         }
 
-        @Bean
-        ArbeidssokerRegistrertProducer meldingsSender() {
-            return (event) -> {
-                //noop
-            };
-        }
-
-        @Bean
-        ArbeidssokerProfilertProducer arbeidssokerProfilertProducer() {
-            return (aktorId, innsatsgruppe, profilertDato) -> {
-                //noop
-            };
-        }
     }
-
-
 }

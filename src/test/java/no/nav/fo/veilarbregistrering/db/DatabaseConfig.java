@@ -36,6 +36,11 @@ public class DatabaseConfig {
         return new DataSourceTransactionManager(ds);
     }
 
+    @Bean(name = "myTxMgr")
+    public PlatformTransactionManager myTxMgr(DataSource ds) {
+        return new DataSourceTransactionManager(ds);
+    }
+
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);

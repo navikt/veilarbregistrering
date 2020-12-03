@@ -11,12 +11,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssoker
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
@@ -25,25 +19,23 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
-import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringAvHistorikkTask;
-import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringAvRegistreringEventsScheduler;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
@@ -190,11 +182,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    OppgaveRepository oppgaveRepository(JdbcTemplate jdbcTemplate) {
-        return new OppgaveRepositoryImpl(jdbcTemplate);
-    }
-
-    @Bean
     OppgaveService oppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
@@ -236,21 +223,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
-        return new BrukerRegistreringRepositoryImpl(db);
-    }
-
-    @Bean
-    RegistreringTilstandRepository registreringTilstandRepository(JdbcTemplate db) {
-        return new RegistreringTilstandRepositoryImpl(db);
-    }
-
-    @Bean
-    ArbeidssokerRepository arbeidssokerRepository(JdbcTemplate db) {
-        return new ArbeidssokerRepositoryImpl(db);
-    }
-
-    @Bean
     ArbeidssokerService arbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
@@ -264,16 +236,6 @@ public class ServiceBeansConfig {
             UserService userService,
             VeilarbAbacPepClient pepClient) {
         return new ArbeidssokerResource(arbeidssokerService, userService, pepClient);
-    }
-
-    @Bean
-    ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
-        return new ManuellRegistreringRepositoryImpl(db);
-    }
-
-    @Bean
-    ProfileringRepository profileringRepository(JdbcTemplate db) {
-        return new ProfileringRepositoryImpl(db);
     }
 
     @Bean
