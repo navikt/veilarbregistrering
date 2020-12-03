@@ -68,7 +68,6 @@ class BrukerRegistreringServiceIntegrationTest {
 
     @BeforeAll
     public void setup() {
-        //setupInMemoryDatabaseContext();
         MigrationUtils.createTables(jdbcTemplate);
     }
 
