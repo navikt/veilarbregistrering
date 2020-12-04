@@ -1,26 +1,18 @@
 package no.nav.fo.veilarbregistrering.db.registrering;
 
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
+import no.nav.fo.veilarbregistrering.db.TransactionalTest;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringJUnitConfig
-@Transactional(transactionManager = "txMgrTest")
-@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+@TransactionalTest
 public class ManuellRegistreringRepositoryDbIntegrationTest {
 
     @Autowired

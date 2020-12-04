@@ -3,9 +3,8 @@ package no.nav.fo.veilarbregistrering.db.registrering;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
+import no.nav.fo.veilarbregistrering.db.TransactionalTest;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
@@ -13,14 +12,10 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,10 +28,7 @@ import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringJUnitConfig
-@Transactional(transactionManager = "txMgrTest")
-@ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class})
+@TransactionalTest
 public class RegistreringTilstandRepositoryDbIntegrationTest {
 
     private static final Foedselsnummer FOEDSELSNUMMER = Foedselsnummer.of("12345678911");
