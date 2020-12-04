@@ -4,18 +4,22 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.MigrationUtils
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
 @TransactionalTest
+@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
 open class ArbeidssokerRepositoryDbIntegrationTest(
 
     @Autowired

@@ -3,7 +3,9 @@ package no.nav.fo.veilarbregistrering.db.registrering
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.MigrationUtils
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
@@ -20,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 
 @TransactionalTest
+@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
 open class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Autowired

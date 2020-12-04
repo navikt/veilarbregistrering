@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
+import no.nav.fo.veilarbregistrering.db.TransactionalTest;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -22,15 +23,12 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -40,9 +38,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRe
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringJUnitConfig
-@Transactional(transactionManager = "txMgrTest")
+@TransactionalTest
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
 class BrukerRegistreringServiceIntegrationTest {
 
