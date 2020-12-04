@@ -101,7 +101,12 @@ public class RegistreringResource {
             final String veilederIdent = AutentiseringUtils.hentIdent()
                     .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
 
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            if (skalSplitteRegistreringOgOverforing()) {
+                registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker);
+            } else {
+                registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+            }
+
             manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, registrering.getId(), ORDINAER);
 
             reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);
