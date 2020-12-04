@@ -4,27 +4,18 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.MigrationUtils
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ExtendWith(SpringExtension::class)
-@Transactional(transactionManager = "txMgrTest")
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
+@TransactionalTest
 open class ArbeidssokerRepositoryDbIntegrationTest(
 
     @Autowired

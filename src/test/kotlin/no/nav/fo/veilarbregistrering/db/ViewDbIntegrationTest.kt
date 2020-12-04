@@ -5,20 +5,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringJUnitConfig
-@Transactional
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
+@TransactionalTest
 open class ViewDbIntegrationTest {
 
     @Autowired
@@ -80,7 +73,6 @@ open class ViewDbIntegrationTest {
                 "DVH_SITUASJON_KODEVERK",
                 "DVH_TILBAKE_KODEVERK"
         )
-
 
         private val antallViews = viewsForTest().count()
 
