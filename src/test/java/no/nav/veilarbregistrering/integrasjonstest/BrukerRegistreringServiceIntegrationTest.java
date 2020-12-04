@@ -21,7 +21,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +69,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
-    public void skalRulleTilbakeDatabaseDersomKallTilArenaFeiler() {
+    public void skal_Rulle_Tilbake_Database_Dersom_Kall_Til_Arena_Feiler() {
         cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
@@ -83,7 +82,7 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
-    public void skalRulleTilbakeDatabaseDersomOverforingTilArenaFeiler() {
+    public void skal_Rulle_Tilbake_Database_Dersom_Overforing_Til_Arena_Feiler() {
         cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
