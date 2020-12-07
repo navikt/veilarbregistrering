@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
@@ -23,7 +23,7 @@ open class ManuellRegistreringRepositoryDbIntegrationTest(
     @Autowired
     private val manuellRegistreringRepository: ManuellRegistreringRepository) {
 
-    @BeforeAll
+    @BeforeEach
     fun setup() {
         MigrationUtils.createTables(jdbcTemplate)
     }

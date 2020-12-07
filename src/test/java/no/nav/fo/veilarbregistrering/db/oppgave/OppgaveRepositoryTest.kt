@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
@@ -23,7 +23,7 @@ open class OppgaveRepositoryTest(
     @Autowired
     private val oppgaveRepository: OppgaveRepository) {
 
-    @BeforeAll
+    @BeforeEach
     fun setup() {
         MigrationUtils.createTables(jdbcTemplate)
     }

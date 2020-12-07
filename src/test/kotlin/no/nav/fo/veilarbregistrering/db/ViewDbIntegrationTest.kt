@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.db
 import no.nav.json.JsonUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -19,7 +19,7 @@ open class ViewDbIntegrationTest {
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @BeforeAll
+    @BeforeEach
     fun setup() {
         MigrationUtils.createTables(jdbcTemplate)
     }

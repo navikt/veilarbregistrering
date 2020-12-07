@@ -21,7 +21,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +59,7 @@ class BrukerRegistreringServiceIntegrationTest {
     private static final Bruker BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         MigrationUtils.createTables(jdbcTemplate);
     }

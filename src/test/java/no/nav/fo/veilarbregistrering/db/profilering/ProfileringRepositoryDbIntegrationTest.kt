@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
@@ -22,7 +22,7 @@ open class ProfileringRepositoryDbIntegrationTest(
     @Autowired
     private val profileringRepository: ProfileringRepository) {
 
-    @BeforeAll
+    @BeforeEach
     fun setup() {
         MigrationUtils.createTables(jdbcTemplate)
     }

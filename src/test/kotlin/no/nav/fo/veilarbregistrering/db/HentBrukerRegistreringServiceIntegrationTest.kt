@@ -46,8 +46,6 @@ open class HentBrukerRegistreringServiceIntegrationTest(
         @Autowired val jdbcTemplate: JdbcTemplate
 ) {
 
-
-
     @BeforeEach
     fun setupEach() {
         MigrationUtils.createTables(jdbcTemplate)
