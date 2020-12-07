@@ -16,12 +16,13 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagP
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito
@@ -32,30 +33,33 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringJUnitConfig
-@Transactional(transactionManager = "txMgrTest")
+@TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 open class HentBrukerRegistreringServiceIntegrationTest(
-        @Autowired val brukerRegistreringService: BrukerRegistreringService,
+        @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
+        @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
         @Autowired val hentRegistreringService: HentRegistreringService,
         @Autowired var oppfolgingGateway: OppfolgingGateway,
-        @Autowired var profileringService: ProfileringService
+        @Autowired var profileringService: ProfileringService,
+        @Autowired val jdbcTemplate: JdbcTemplate
 ) {
+
+
 
     @BeforeEach
     fun setupEach() {
+        MigrationUtils.createTables(jdbcTemplate)
         `when`(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(Oppfolgingsstatus(false, false, null, null, null, null));
         `when`(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
     }
 
     @Test
     fun `henter opp registrert bruker med filtre på tilstand`() {
-        brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER)
+        brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
+            registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+        }
         assertThat(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER)).isNotNull
     }
 
@@ -72,23 +76,6 @@ open class HentBrukerRegistreringServiceIntegrationTest(
                     db: JdbcTemplate,
                     brukerRegistreringRepository: BrukerRegistreringRepository,
                     profileringRepository: ProfileringRepository) = HentRegistreringService(brukerRegistreringRepository, profileringRepository, manuellRegistreringService(db))
-
-            @Bean
-            open fun brukerRegistreringService(
-                    brukerRegistreringRepository: BrukerRegistreringRepository?,
-                    profileringRepository: ProfileringRepository?,
-                    oppfolgingGateway: OppfolgingGateway?,
-                    profileringService: ProfileringService?,
-                    registreringTilstandRepository: RegistreringTilstandRepository?,
-                    brukerTilstandService: BrukerTilstandService?): BrukerRegistreringService? {
-                return BrukerRegistreringService(
-                        brukerRegistreringRepository,
-                        profileringRepository,
-                        oppfolgingGateway,
-                        profileringService,
-                        registreringTilstandRepository,
-                        brukerTilstandService)
-            }
 
             @Bean
             open fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway?, sykemeldingService: SykemeldingService?): BrukerTilstandService? {
