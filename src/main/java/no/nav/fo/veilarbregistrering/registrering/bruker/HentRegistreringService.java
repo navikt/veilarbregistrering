@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 
 public class HentRegistreringService {
 
@@ -23,7 +24,7 @@ public class HentRegistreringService {
 
     public OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringForAktorId(bruker.getAktorId());
+                .hentOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA, Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND);
 
         if (ordinaerBrukerRegistrering == null) {
             return null;
