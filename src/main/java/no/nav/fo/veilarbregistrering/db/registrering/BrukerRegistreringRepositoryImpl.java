@@ -160,7 +160,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 " LEFT JOIN REGISTRERING_TILSTAND ON REGISTRERING_TILSTAND.BRUKER_REGISTRERING_ID = BRUKER_REGISTRERING.BRUKER_REGISTRERING_ID" +
                 " WHERE BRUKER_REGISTRERING.AKTOR_ID = ?" +
                 " AND REGISTRERING_TILSTAND.STATUS in ("+ inSql + ")" +
-                " ORDER BY BRUKER_REGISTRERING.OPPRETTET_DATO" +
+                " ORDER BY BRUKER_REGISTRERING.OPPRETTET_DATO DESC" +
                 " FETCH NEXT 1 ROWS ONLY";
 
         List<OrdinaerBrukerRegistrering> brukerRegistreringer = db.query(sql, params.toArray(), new OrdinaerBrukerRegistreringMapper());
