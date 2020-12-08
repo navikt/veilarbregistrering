@@ -17,6 +17,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
@@ -69,7 +70,7 @@ class BrukerRegistreringServiceIntegrationTest {
         cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
-        Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER));
+        Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
@@ -85,7 +86,7 @@ class BrukerRegistreringServiceIntegrationTest {
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
 
-        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER));
+        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
@@ -120,6 +121,11 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public ManuellRegistreringRepository manuellRegistreringRepository() {
+            return mock(ManuellRegistreringRepository.class);
+        }
+
+        @Bean
         public BrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
             return new BrukerTilstandService(oppfolgingGateway, sykemeldingService);
         }
@@ -131,7 +137,8 @@ class BrukerRegistreringServiceIntegrationTest {
                 OppfolgingGateway oppfolgingGateway,
                 ProfileringService profileringService,
                 RegistreringTilstandRepository registreringTilstandRepository,
-                BrukerTilstandService brukerTilstandService) {
+                BrukerTilstandService brukerTilstandService,
+                ManuellRegistreringRepository manuellRegistreringRepository) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -139,7 +146,8 @@ class BrukerRegistreringServiceIntegrationTest {
                     oppfolgingGateway,
                     profileringService,
                     registreringTilstandRepository,
-                    brukerTilstandService);
+                    brukerTilstandService,
+                    manuellRegistreringRepository);
         }
 
         @Bean

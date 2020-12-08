@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -60,7 +61,8 @@ public class BrukerRegistreringServiceTest {
                         registreringTilstandRepository,
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))));
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))),
+                        mock(ManuellRegistreringRepository.class));
     }
 
     /*
@@ -99,7 +101,7 @@ public class BrukerRegistreringServiceTest {
     }
 
     private void registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
+        brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker, null);
     }
 
     private void mockBrukerUnderOppfolging() {

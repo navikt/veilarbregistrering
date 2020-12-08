@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -80,7 +81,9 @@ class OppfolgingClientTest {
                         oppfolgingGateway,
                         profileringService,
                         registreringTilstandRepository,
-                        brukerTilstandService);
+                        brukerTilstandService,
+                        mock(ManuellRegistreringRepository.class)
+                );
 
         inaktivBrukerService = new InaktivBrukerService(
                 brukerTilstandService,
@@ -116,7 +119,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(404));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
         when (brukerRegistreringRepository.lagre(any(OrdinaerBrukerRegistrering.class), any(Bruker.class))).thenReturn(new OrdinaerBrukerRegistrering());
-        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertThrows(RuntimeException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER, null));
     }
 
 
@@ -125,7 +128,7 @@ class OppfolgingClientTest {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(401));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER, null));
     }
 
     @Test
@@ -137,7 +140,7 @@ class OppfolgingClientTest {
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8));
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertNotNull(brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertNotNull(brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER, null));
     }
 
     @Test
@@ -162,7 +165,7 @@ class OppfolgingClientTest {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withStatusCode(502));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER, null));
     }
 
     //FIXME: Vurder å flytte disse testene til en ny testklasse med mindre kompleksitet hvor vi tester Client eller
@@ -171,19 +174,19 @@ class OppfolgingClientTest {
     @Test
     public void testAtGirInternalServerErrorExceptionDersomBrukerIkkkeHarTilgangTilOppfolgingStatus() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(401));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER, null));
     }
 
     @Test
     public void testAtGirInternalServerErrorExceptionDersomOppfolgingFeiler() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(500));
-        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
+        assertThrows(InternalServerErrorException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER, null));
     }
 
     @Test
     public void testAtGirWebApplicationExceptionExceptionDersomIngenTilgang() {
         mockServer.when(request().withMethod("GET").withPath("/oppfolging")).respond(response().withStatusCode(403));
-        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER));
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.hentStartRegistreringStatus(BRUKER, null));
     }
 */
     @Test
@@ -191,7 +194,7 @@ class OppfolgingClientTest {
         mockUnderOppfolgingApi();
         mockServer.when(request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(response().withBody("").withStatusCode(403));
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = gyldigBrukerRegistrering();
-        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER));
+        assertThrows(WebApplicationException.class, () -> brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, BRUKER, null));
     }
 
     //FIXME: Vurder å flytte disse testene til en ny testklasse med mindre kompleksitet hvor vi tester Client eller
