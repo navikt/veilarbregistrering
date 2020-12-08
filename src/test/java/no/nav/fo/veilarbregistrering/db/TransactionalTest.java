@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @SpringJUnitConfig
-@Transactional(transactionManager = "txMgrTest")
+@Transactional
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface TransactionalTest {

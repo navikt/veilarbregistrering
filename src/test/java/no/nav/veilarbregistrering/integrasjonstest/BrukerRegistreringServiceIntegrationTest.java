@@ -8,11 +8,11 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
-import no.nav.fo.veilarbregistrering.db.TransactionalTest;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
+import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
@@ -21,14 +21,16 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRe
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@TransactionalTest
+@SpringJUnitConfig
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
 class BrukerRegistreringServiceIntegrationTest {
 
@@ -53,6 +55,8 @@ class BrukerRegistreringServiceIntegrationTest {
     @Autowired
     private ProfileringService profileringService;
     @Autowired
+    private ProfileringRepository profileringRepository;
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
@@ -64,6 +68,13 @@ class BrukerRegistreringServiceIntegrationTest {
         MigrationUtils.createTables(jdbcTemplate);
     }
 
+    @AfterEach
+    public void tearDown() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_PROFILERING");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "REGISTRERING_TILSTAND");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_REGISTRERING");
+    }
+
     @Test
     public void skal_Rulle_Tilbake_Database_Dersom_Kall_Til_Arena_Feiler() {
         cofigureMocks();
@@ -71,6 +82,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER));
         assertThat(run.isFailure()).isTrue();
+        assertThat(run.getCause().toString()).isEqualTo(RuntimeException.class.getName());
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
@@ -84,9 +96,11 @@ class BrukerRegistreringServiceIntegrationTest {
 
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering());
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER));
         assertThat(run.isFailure()).isTrue();
+        assertThat(run.getCause().toString()).isEqualTo(RuntimeException.class.getName());
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
@@ -101,7 +115,6 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Configuration
-    @ComponentScan
     public static class BrukerregistreringConfigTest {
 
         @Bean

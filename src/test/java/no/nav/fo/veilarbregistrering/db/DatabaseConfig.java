@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.db;
 
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import no.nav.sbl.jdbc.Database;
@@ -33,11 +32,6 @@ public class DatabaseConfig {
 
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(DataSource ds) {
-        return new DataSourceTransactionManager(ds);
-    }
-
-    @Bean(name = "txMgrTest")
-    public PlatformTransactionManager txMgrTest(DataSource ds) {
         return new DataSourceTransactionManager(ds);
     }
 
