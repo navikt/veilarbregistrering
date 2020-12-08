@@ -1,5 +1,8 @@
 package no.nav.fo.veilarbregistrering.db
 
+import no.nav.fo.veilarbregistrering.besvarelse.Stilling
+import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder
+import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -21,6 +24,9 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -33,6 +39,8 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 @TransactionalTest
@@ -54,17 +62,21 @@ open class HentBrukerRegistreringServiceIntegrationTest(
     }
 
     @Test
-    fun `henter opp registrert bruker med filtre på tilstand`() {
+    fun `henter opp siste brukerregistrering med filtre på tilstand`() {
         brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
         }
-        assertThat(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER)).isNotNull
+        brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
+            registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+        }
+        assertEquals(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling, gyldigStilling())
     }
 
     companion object {
         private val ident = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"))
-        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
+        private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb().setOpprettetDato(LocalDate.of(2014, 12, 8).atStartOfDay())
+        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
 
         @Configuration
         @ComponentScan

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,7 +79,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
                 .value(BRUKER_REGISTRERING_ID, id)
                 .value(AKTOR_ID, bruker.getAktorId().asString())
                 .value("FOEDSELSNUMMER", bruker.getGjeldendeFoedselsnummer().stringValue())
-                .value(OPPRETTET_DATO, DbConstants.CURRENT_TIMESTAMP)
+                .value(OPPRETTET_DATO, registrering.getOpprettetDato() != null ? Timestamp.valueOf(registrering.getOpprettetDato()) : DbConstants.CURRENT_TIMESTAMP)
                 .value(TEKSTER_FOR_BESVARELSE, teksterForBesvarelse)
                 // Siste stilling
                 .value(YRKESPRAKSIS, stilling.getStyrk08())
@@ -159,7 +160,7 @@ public class BrukerRegistreringRepositoryImpl implements BrukerRegistreringRepos
         String sql = "SELECT * FROM BRUKER_REGISTRERING" +
                 " LEFT JOIN REGISTRERING_TILSTAND ON REGISTRERING_TILSTAND.BRUKER_REGISTRERING_ID = BRUKER_REGISTRERING.BRUKER_REGISTRERING_ID" +
                 " WHERE BRUKER_REGISTRERING.AKTOR_ID = ?" +
-                " AND REGISTRERING_TILSTAND.STATUS in ("+ inSql + ")" +
+                " AND REGISTRERING_TILSTAND.STATUS in (" + inSql + ")" +
                 " ORDER BY BRUKER_REGISTRERING.OPPRETTET_DATO DESC" +
                 " FETCH NEXT 1 ROWS ONLY";
 
