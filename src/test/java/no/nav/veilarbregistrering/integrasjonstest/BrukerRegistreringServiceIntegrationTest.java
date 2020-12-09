@@ -4,7 +4,6 @@ import io.vavr.control.Try;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
@@ -36,9 +35,10 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark;
 import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringJUnitConfig
@@ -60,8 +60,7 @@ class BrukerRegistreringServiceIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private static final Foedselsnummer ident = Foedselsnummer.of("10108000398"); //Aremark fiktivt fnr.";
-    private static final Bruker BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"));
+    private static final Bruker BRUKER = Bruker.of(aremark(), AktorId.of("AKTØRID"));
     private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
@@ -78,7 +77,8 @@ class BrukerRegistreringServiceIntegrationTest {
 
     @Test
     public void skal_Rulle_Tilbake_Database_Dersom_Kall_Til_Arena_Feiler() {
-        cofigureMocks();
+        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(new Oppfolgingsstatus(false, false, null,null,null,null));
+        when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER, null));
@@ -87,12 +87,11 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
 
-        assertThat(brukerRegistrering.isPresent()).isFalse();
+        assertThat(brukerRegistrering).isEmpty();
     }
 
     @Test
     public void skal_Rulle_Tilbake_Database_Dersom_Overforing_Til_Arena_Feiler() {
-        cofigureMocks();
         doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
 
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
@@ -106,13 +105,24 @@ class BrukerRegistreringServiceIntegrationTest {
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
 
-        assertThat(brukerRegistrering.isPresent()).isTrue();
+        assertThat(brukerRegistrering).isNotEmpty();
         assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.MOTTATT);
     }
 
-    private void cofigureMocks() {
-        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(new Oppfolgingsstatus(false, false, null,null,null,null));
-        when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
+    @Test
+    public void gitt_at_overforing_til_arena_gikk_bra_skal_status_oppdateres_til_overfort_arena() {
+        long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering());
+
+        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
+        assertThat(run.isSuccess()).isTrue();
+
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
+        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+
+        assertThat(brukerRegistrering).isNotEmpty();
+        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.OVERFORT_ARENA);
     }
 
     @Configuration
