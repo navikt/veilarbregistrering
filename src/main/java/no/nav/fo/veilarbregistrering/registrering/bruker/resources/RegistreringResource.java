@@ -97,9 +97,9 @@ public class RegistreringResource {
         OrdinaerBrukerRegistrering registrering;
         if (AutentiseringUtils.erVeileder()) {
             veileder = new NavVeileder(
-                    userService.getEnhetIdFromUrlOrThrow(),
                     AutentiseringUtils.hentIdent()
-                            .orElseThrow(() -> new RuntimeException("Fant ikke ident"))
+                            .orElseThrow(() -> new RuntimeException("Fant ikke ident")),
+                    userService.getEnhetIdFromUrlOrThrow()
             );
         }
 
