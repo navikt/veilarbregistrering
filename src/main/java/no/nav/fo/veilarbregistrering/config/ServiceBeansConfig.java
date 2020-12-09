@@ -111,14 +111,14 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             ProfileringService profileringService,
             RegistreringTilstandRepository registreringTilstandRepository,
-            BrukerTilstandService brukerTilstandService) {
+            BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
                 registreringTilstandRepository,
-                brukerTilstandService);
+                brukerTilstandService, manuellRegistreringRepository);
     }
 
     @Bean

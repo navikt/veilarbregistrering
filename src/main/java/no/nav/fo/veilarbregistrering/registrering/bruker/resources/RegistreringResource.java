@@ -26,7 +26,6 @@ import java.util.List;
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
-import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
@@ -94,40 +93,30 @@ public class RegistreringResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
+        NavVeileder veileder = null;
         OrdinaerBrukerRegistrering registrering;
         if (AutentiseringUtils.erVeileder()) {
-
-            final String enhetId = userService.getEnhetIdFromUrlOrThrow();
-            final String veilederIdent = AutentiseringUtils.hentIdent()
-                    .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
-
-            if (skalSplitteRegistreringOgOverforing()) {
-                registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker);
-            } else {
-                registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
-            }
-
-            manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, registrering.getId(), ORDINAER);
-
-            reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);
-
-        } else {
-            if (skalSplitteRegistreringOgOverforing()) {
-                registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker);
-            } else {
-                registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker);
-            }
+            veileder = new NavVeileder(
+                    userService.getEnhetIdFromUrlOrThrow(),
+                    AutentiseringUtils.hentIdent()
+                            .orElseThrow(() -> new RuntimeException("Fant ikke ident"))
+            );
         }
 
+        if (skalSplitteRegistreringOgOverforing()) {
+            registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker, veileder);
+        } else {
+            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker, veileder);
+        }
         AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
 
         return registrering;
     }
 
-    private OrdinaerBrukerRegistrering splittRegistreringOgOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker);
+    private OrdinaerBrukerRegistrering splittRegistreringOgOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker, NavVeileder veileder) {
+        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder);
 
-        brukerRegistreringService.overforArena(registrering.getId(), bruker);
+        brukerRegistreringService.overforArena(registrering.getId(), bruker, veileder);
 
         return registrering;
     }
