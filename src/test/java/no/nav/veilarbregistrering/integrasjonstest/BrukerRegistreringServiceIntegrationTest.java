@@ -12,10 +12,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
@@ -32,6 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.ws.rs.WebApplicationException;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -65,6 +63,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
+        reset(oppfolgingGateway);
         MigrationUtils.createTables(jdbcTemplate);
     }
 
@@ -110,7 +109,47 @@ class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
+    public void skal_sette_registreringsstatus_dersom_arenafeil_er_dod_eller_utvandret() {
+        when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET));
+
+        long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering());
+
+        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
+        assertThat(run.isFailure()).isTrue();
+        assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"DOD_UTVANDRET_ELLER_FORSVUNNET\"}");
+
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
+        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+
+        assertThat(brukerRegistrering).isNotEmpty();
+        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.DOD_UTVANDRET_ELLER_FORSVUNNET);
+    }
+
+    @Test
+    public void skal_sette_registreringsstatus_dersom_arenafeil_er_mangler_opphold() {
+        AktiverBrukerResultat aktiverBrukerResultat = AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE);
+        when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(aktiverBrukerResultat);
+
+        long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering());
+
+        Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
+        assertThat(run.isFailure()).isTrue();
+        assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"MANGLER_ARBEIDSTILLATELSE\"}");
+
+        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
+        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+
+        assertThat(brukerRegistrering).isNotEmpty();
+        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
+    }
+
+    @Test
     public void gitt_at_overforing_til_arena_gikk_bra_skal_status_oppdateres_til_overfort_arena() {
+        when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(AktiverBrukerResultat.Companion.ok());
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering());

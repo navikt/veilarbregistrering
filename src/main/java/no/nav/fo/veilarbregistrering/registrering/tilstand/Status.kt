@@ -3,8 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.tilstand
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
-import java.lang.IllegalStateException
-import java.util.*
 
 enum class Status(private val status: String) {
     MOTTATT("mottatt"),
@@ -20,12 +18,10 @@ enum class Status(private val status: String) {
 
     companion object {
         @JvmStatic
-        fun parse(status: String): Status {
-            return Arrays.stream(values())
-                    .filter { s: Status -> s.status == status }
-                    .findFirst()
-                    .orElseThrow { IllegalStateException() }
-        }
+        fun parse(status: String): Status =
+             values().find { s: Status -> s.status == status }
+                    ?: throw IllegalStateException("Ukjent Status ble forsøkt parset")
+
         fun from(aktiverBrukerFeil: AktiverBrukerResultat.AktiverBrukerFeil): Status =
             when(aktiverBrukerFeil) {
                 BRUKER_MANGLER_ARBEIDSTILLATELSE -> MANGLER_ARBEIDSTILLATELSE

@@ -129,7 +129,7 @@ public class OppfolgingClient {
             case BRUKER_MANGLER_ARBEIDSTILLATELSE: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE;
             case BRUKER_KAN_IKKE_REAKTIVERES: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES;
             case BRUKER_ER_UKJENT: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_UKJENT;
-            default: throw new IllegalArgumentException("Ukjent feil fra Arena");
+            default: throw new IllegalStateException("Ukjent feil fra Arena: " + aktiverBrukerFeilDto.getType());
         }
     }
 

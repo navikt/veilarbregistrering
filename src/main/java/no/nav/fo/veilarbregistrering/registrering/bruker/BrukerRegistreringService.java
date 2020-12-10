@@ -119,6 +119,7 @@ public class BrukerRegistreringService {
 
     }
 
+    @Transactional(noRollbackFor = {WebApplicationException.class})
     public void overforArena(long registreringId, Bruker bruker, NavVeileder veileder) {
 
         RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
@@ -131,8 +132,7 @@ public class BrukerRegistreringService {
         throw new WebApplicationException(JsonUtils.toJson(new AktiveringFeilResponse(registreringTilstand.getStatus().toString())));
     }
 
-    @Transactional
-    protected RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
+    private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
 
         Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
 
