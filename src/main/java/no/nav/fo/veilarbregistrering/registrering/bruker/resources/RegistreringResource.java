@@ -94,7 +94,6 @@ public class RegistreringResource {
 
 
         NavVeileder veileder = null;
-        ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
         OrdinaerBrukerRegistrering registrering;
         if (AutentiseringUtils.erVeileder()) {
             veileder = new NavVeileder(
@@ -103,6 +102,7 @@ public class RegistreringResource {
                     userService.getEnhetIdFromUrlOrThrow()
             );
         }
+        ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
 
         if (skalSplitteRegistreringOgOverforing()) {
             registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker, veileder);

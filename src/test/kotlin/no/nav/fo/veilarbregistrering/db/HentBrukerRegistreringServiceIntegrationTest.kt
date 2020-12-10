@@ -79,7 +79,6 @@ open class HentBrukerRegistreringServiceIntegrationTest(
         private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
 
         @Configuration
-        @ComponentScan
         open class TestContext {
             @Bean
             open fun hentRegistreringService(
