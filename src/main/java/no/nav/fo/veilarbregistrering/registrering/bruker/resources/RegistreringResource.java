@@ -84,7 +84,6 @@ public class RegistreringResource {
     @Path("/startregistrering")
     @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
-
         if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
@@ -92,6 +91,7 @@ public class RegistreringResource {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+
 
         NavVeileder veileder = null;
         OrdinaerBrukerRegistrering registrering;
@@ -102,6 +102,7 @@ public class RegistreringResource {
                     userService.getEnhetIdFromUrlOrThrow()
             );
         }
+        ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
 
         if (skalSplitteRegistreringOgOverforing()) {
             registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker, veileder);
