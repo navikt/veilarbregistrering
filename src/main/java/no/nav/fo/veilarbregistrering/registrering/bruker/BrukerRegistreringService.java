@@ -113,7 +113,6 @@ public class BrukerRegistreringService {
                 .setVeilederEnhetId(veileder.getEnhetsId());
 
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
-
     }
 
     @Transactional

@@ -97,11 +97,13 @@ public class ServiceBeansConfig {
     SykmeldtRegistreringService sykmeldtRegistreringService(
             BrukerTilstandService arbeidssokerService,
             OppfolgingGateway oppfolgingGateway,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ManuellRegistreringRepository manuellRegistreringRepository) {
         return new SykmeldtRegistreringService(
                 arbeidssokerService,
                 oppfolgingGateway,
-                brukerRegistreringRepository);
+                brukerRegistreringRepository,
+                manuellRegistreringRepository);
     }
 
     @Bean
@@ -111,14 +113,16 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             ProfileringService profileringService,
             RegistreringTilstandRepository registreringTilstandRepository,
-            BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository) {
+            BrukerTilstandService brukerTilstandService,
+            ManuellRegistreringRepository manuellRegistreringRepository) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
                 registreringTilstandRepository,
-                brukerTilstandService, manuellRegistreringRepository);
+                brukerTilstandService,
+                manuellRegistreringRepository);
     }
 
     @Bean
@@ -138,7 +142,6 @@ public class ServiceBeansConfig {
     RegistreringResource registreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
@@ -148,7 +151,6 @@ public class ServiceBeansConfig {
         return new RegistreringResource(
                 pepClient,
                 userService,
-                manuellRegistreringService,
                 brukerRegistreringService,
                 hentRegistreringService,
                 unleashService,

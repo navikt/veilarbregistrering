@@ -2,11 +2,16 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REGISTRERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
+import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT;
 
 public class SykmeldtRegistreringService {
 
@@ -15,18 +20,35 @@ public class SykmeldtRegistreringService {
     private final BrukerTilstandService brukerTilstandService;
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final ManuellRegistreringRepository manuellRegistreringRepository;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            ManuellRegistreringRepository manuellRegistreringRepository) {
         this.brukerTilstandService = brukerTilstandService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.manuellRegistreringRepository = manuellRegistreringRepository;
     }
 
     @Transactional
-    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
+    public long registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker, NavVeileder navVeileder) {
+        validerSykmeldtdRegistrering(sykmeldtRegistrering, bruker);
+
+        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getGjeldendeFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
+        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
+
+        lagreManuellRegistrering(id, navVeileder);
+        registrerOverfortStatistikk(navVeileder);
+
+        LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
+
+        return id;
+    }
+
+    private void validerSykmeldtdRegistrering(SykmeldtRegistrering sykmeldtRegistrering, Bruker bruker) {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
@@ -35,11 +57,22 @@ public class SykmeldtRegistreringService {
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");
         }
+    }
 
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.getGjeldendeFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
-        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
-        LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
+    private void lagreManuellRegistrering(long id, NavVeileder veileder) {
+        if (veileder == null) return;
 
-        return id;
+        ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
+                .setRegistreringId(id)
+                .setBrukerRegistreringType(SYKMELDT)
+                .setVeilederIdent(veileder.getVeilederIdent())
+                .setVeilederEnhetId(veileder.getEnhetsId());
+
+        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
+    }
+
+    private void registrerOverfortStatistikk(NavVeileder veileder) {
+        if (veileder == null) return;
+        reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
     }
 }

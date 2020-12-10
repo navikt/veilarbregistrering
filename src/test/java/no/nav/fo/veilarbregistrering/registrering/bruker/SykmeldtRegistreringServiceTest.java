@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
@@ -37,6 +38,7 @@ public class SykmeldtRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
+        ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
 
         sykmeldtRegistreringService =
                 new SykmeldtRegistreringService(
@@ -44,7 +46,8 @@ public class SykmeldtRegistreringServiceTest {
                                 oppfolgingGateway,
                                 new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))),
                         oppfolgingGateway,
-                        brukerRegistreringRepository);
+                        brukerRegistreringRepository,
+                        manuellRegistreringRepository);
     }
 
     @Test
@@ -52,14 +55,14 @@ public class SykmeldtRegistreringServiceTest {
         mockSykmeldtBrukerOver39uker();
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = new SykmeldtRegistrering().setBesvarelse(null);
-        assertThrows(RuntimeException.class, () -> sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
+        assertThrows(RuntimeException.class, () -> sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null));
     }
 
     @Test
     void skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtMedArbeidsgiver();
         SykmeldtRegistrering sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering();
-        assertThrows(RuntimeException.class, () -> sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN));
+        assertThrows(RuntimeException.class, () -> sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null));
     }
 
     private void mockSykmeldtBrukerOver39uker() {
