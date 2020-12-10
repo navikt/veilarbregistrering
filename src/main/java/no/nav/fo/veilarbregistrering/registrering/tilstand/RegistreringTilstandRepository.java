@@ -10,5 +10,5 @@ public interface RegistreringTilstandRepository {
     List<RegistreringTilstand> finnRegistreringTilstanderMed(Status status);
     Optional<RegistreringTilstand> finnNesteRegistreringTilstandMed(Status status);
     int hentAntall(Status status);
-    Optional<RegistreringTilstand> hentTilstandFor(long registreringsId);
+    RegistreringTilstand hentTilstandFor(long registreringsId);
 }

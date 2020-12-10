@@ -102,10 +102,10 @@ class BrukerRegistreringServiceIntegrationTest {
         assertThat(run.getCause().toString()).isEqualTo(RuntimeException.class.getName());
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
-        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+        RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
 
         assertThat(brukerRegistrering).isNotEmpty();
-        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.MOTTATT);
+        assertThat(registreringTilstand.getStatus()).isEqualTo(Status.MOTTATT);
     }
 
     @Test
@@ -121,10 +121,10 @@ class BrukerRegistreringServiceIntegrationTest {
         assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"DOD_UTVANDRET_ELLER_FORSVUNNET\"}");
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
-        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+        RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
 
         assertThat(brukerRegistrering).isNotEmpty();
-        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.DOD_UTVANDRET_ELLER_FORSVUNNET);
+        assertThat(registreringTilstand.getStatus()).isEqualTo(Status.DOD_UTVANDRET_ELLER_FORSVUNNET);
     }
 
     @Test
@@ -141,10 +141,10 @@ class BrukerRegistreringServiceIntegrationTest {
         assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"MANGLER_ARBEIDSTILLATELSE\"}");
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
-        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+        RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
 
         assertThat(brukerRegistrering).isNotEmpty();
-        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
+        assertThat(registreringTilstand.getStatus()).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE);
     }
 
     @Test
@@ -158,10 +158,10 @@ class BrukerRegistreringServiceIntegrationTest {
         assertThat(run.isSuccess()).isTrue();
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
-        Optional<RegistreringTilstand> registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
+        RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
 
         assertThat(brukerRegistrering).isNotEmpty();
-        assertThat(registreringTilstand.get().getStatus()).isEqualTo(Status.OVERFORT_ARENA);
+        assertThat(registreringTilstand.getStatus()).isEqualTo(Status.OVERFORT_ARENA);
     }
 
     @Configuration

@@ -155,9 +155,9 @@ public class BrukerRegistreringService {
     }
 
     private RegistreringTilstand oppdaterRegistreringTilstand(long registreringId, Status status) {
-        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository.hentTilstandFor(registreringId)
-                .map(a -> a.oppdaterStatus(status))
-                .orElseThrow(IllegalArgumentException::new);
+        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository
+                .hentTilstandFor(registreringId)
+                .oppdaterStatus(status);
 
         return registreringTilstandRepository.oppdater(aktiveringTilstand);
     }

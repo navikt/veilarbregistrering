@@ -89,12 +89,13 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
     }
 
     @Override
-    public Optional<RegistreringTilstand> hentTilstandFor(long registreringsId) {
+    public RegistreringTilstand hentTilstandFor(long registreringsId) {
         String sql = "SELECT * FROM REGISTRERING_TILSTAND" +
                 " WHERE BRUKER_REGISTRERING_ID = ?" +
                 " FETCH NEXT ? ROWS ONLY";
         List<RegistreringTilstand> registreringsTilstander = db.query(sql, new Object[]{registreringsId, 1}, new RegistreringTilstandMapper());
-        return registreringsTilstander.stream().findFirst();
+        return registreringsTilstander.stream().findFirst()
+                .orElseThrow( () -> new IllegalStateException("Registrering med id " + registreringsId + " mangler tilstand"));
     }
 
     private long nesteFraSekvens(String sekvensNavn) {
