@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
 import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
@@ -10,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
@@ -123,12 +126,12 @@ public class OppfolgingClient {
         }
     }
 
-    private AktiverBrukerResultat.AktiverBrukerFeil mapper(AktiverBrukerFeilDto aktiverBrukerFeilDto) {
+    private AktiverBrukerFeil mapper(AktiverBrukerFeilDto aktiverBrukerFeilDto) {
         switch(aktiverBrukerFeilDto.getType()) {
-            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
-            case BRUKER_MANGLER_ARBEIDSTILLATELSE: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE;
-            case BRUKER_KAN_IKKE_REAKTIVERES: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES;
-            case BRUKER_ER_UKJENT: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_UKJENT;
+            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: return AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
+            case BRUKER_MANGLER_ARBEIDSTILLATELSE: return AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE;
+            case BRUKER_KAN_IKKE_REAKTIVERES: return AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES;
+            case BRUKER_ER_UKJENT: return AktiverBrukerFeil.BRUKER_ER_UKJENT;
             default: throw new IllegalStateException("Ukjent feil fra Arena: " + aktiverBrukerFeilDto.getType());
         }
     }

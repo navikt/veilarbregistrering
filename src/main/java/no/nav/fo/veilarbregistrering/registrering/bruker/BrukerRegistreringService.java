@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.apiapp.feil.FeilDTO;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -12,12 +13,12 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
-import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REGISTRERING_EVENT;
@@ -129,7 +130,9 @@ public class BrukerRegistreringService {
             return;
         }
 
-        throw new WebApplicationException(JsonUtils.toJson(new AktiveringFeilResponse(registreringTilstand.getStatus().toString())));
+        String feilType = AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()).toString();
+        FeilDTO feilDTO = new FeilDTO("1", feilType, new FeilDTO.Detaljer(feilType, "", ""));
+        throw new WebApplicationException(Response.serverError().entity(feilDTO).build());
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {

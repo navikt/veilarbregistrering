@@ -110,7 +110,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     @Test
     public void skal_sette_registreringsstatus_dersom_arenafeil_er_dod_eller_utvandret() {
-        when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET));
+        when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET));
 
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id));
@@ -118,7 +118,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
-        assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"DOD_UTVANDRET_ELLER_FORSVUNNET\"}");
+        assertThat(run.getCause()).isInstanceOf(WebApplicationException.class);
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
@@ -129,7 +129,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
     @Test
     public void skal_sette_registreringsstatus_dersom_arenafeil_er_mangler_opphold() {
-        AktiverBrukerResultat aktiverBrukerResultat = AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE);
+        AktiverBrukerResultat aktiverBrukerResultat = AktiverBrukerResultat.Companion.feilFrom(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE);
         when(oppfolgingGateway.aktiverBruker(any(), any())).thenReturn(aktiverBrukerResultat);
 
         long id = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER).getId();
@@ -138,7 +138,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
-        assertThat(run.getCause().toString()).isEqualTo("javax.ws.rs.WebApplicationException: {\"type\":\"MANGLER_ARBEIDSTILLATELSE\"}");
+        assertThat(run.getCause()).isInstanceOf(WebApplicationException.class);
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
