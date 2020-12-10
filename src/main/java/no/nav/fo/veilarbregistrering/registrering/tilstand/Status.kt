@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
 
 enum class Status(private val status: String) {
     MOTTATT("mottatt"),
@@ -22,7 +22,7 @@ enum class Status(private val status: String) {
              values().find { s: Status -> s.status == status }
                     ?: throw IllegalStateException("Ukjent Status ble forsøkt parset")
 
-        fun from(aktiverBrukerFeil: AktiverBrukerResultat.AktiverBrukerFeil): Status =
+        fun from(aktiverBrukerFeil: AktiverBrukerFeil): Status =
             when(aktiverBrukerFeil) {
                 BRUKER_MANGLER_ARBEIDSTILLATELSE -> MANGLER_ARBEIDSTILLATELSE
                 BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET -> DOD_UTVANDRET_ELLER_FORSVUNNET
