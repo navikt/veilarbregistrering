@@ -12,9 +12,12 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.ws.rs.WebApplicationException;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REGISTRERING_EVENT;
@@ -116,21 +119,47 @@ public class BrukerRegistreringService {
 
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = {WebApplicationException.class})
     public void overforArena(long registreringId, Bruker bruker, NavVeileder veileder) {
+
+        RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
+
+        if (registreringTilstand.getStatus() == Status.OVERFORT_ARENA) {
+            registrerOverfortStatistikk(veileder);
+            return;
+        }
+
+        throw new WebApplicationException(JsonUtils.toJson(new AktiveringFeilResponse(registreringTilstand.getStatus().toString())));
+    }
+
+    private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
 
         Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
 
-        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository.hentTilstandFor(registreringId)
-                .map(a -> a.oppdaterStatus(Status.OVERFORT_ARENA))
-                .orElseThrow(IllegalArgumentException::new);
+        AktiverBrukerResultat aktiverBrukerResultat = oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
 
-        registreringTilstandRepository.oppdater(aktiveringTilstand);
+        if (aktiverBrukerResultat.erFeil()) {
 
-        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
-        registrerOverfortStatistikk(veileder);
+            RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.Companion.from(aktiverBrukerResultat.feil()));
+
+            LOG.info("Overføring av registrering (id: {}) til Arena feilet med {}", registreringId, aktiverBrukerResultat.feil());
+
+            return oppdatertRegistreringTilstand;
+        }
+
+        RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA);
 
         LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId);
+
+        return oppdatertRegistreringTilstand;
+    }
+
+    private RegistreringTilstand oppdaterRegistreringTilstand(long registreringId, Status status) {
+        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository.hentTilstandFor(registreringId)
+                .map(a -> a.oppdaterStatus(status))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return registreringTilstandRepository.oppdater(aktiveringTilstand);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {

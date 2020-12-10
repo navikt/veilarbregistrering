@@ -41,7 +41,7 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
      * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
      */
     @Override
-    public void oppdater(RegistreringTilstand registreringTilstand) {
+    public RegistreringTilstand oppdater(RegistreringTilstand registreringTilstand) {
         RegistreringTilstand original = hentRegistreringTilstand(registreringTilstand.getId());
 
         if (original.getSistEndret() != null && original.getSistEndret().isAfter(registreringTilstand.getSistEndret())) {
@@ -54,6 +54,8 @@ public class RegistreringTilstandRepositoryImpl implements RegistreringTilstandR
                 .set("SIST_ENDRET", Timestamp.valueOf(registreringTilstand.getSistEndret()))
                 .whereEquals("ID", registreringTilstand.getId())
                 .execute();
+
+        return hentRegistreringTilstand(registreringTilstand.getId());
     }
 
     @Override
