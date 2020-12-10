@@ -117,9 +117,19 @@ public class OppfolgingClient {
         } else if (status == 403) {
             LOG.warn("Feil ved kall mot: {}, response : {}", url, response);
             AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
-            return AktiverBrukerResultat.Companion.feilFrom(aktiverBrukerFeilDto);
+            return AktiverBrukerResultat.Companion.feilFrom(mapper(aktiverBrukerFeilDto));
         } else {
             throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
+        }
+    }
+
+    private AktiverBrukerResultat.AktiverBrukerFeil mapper(AktiverBrukerFeilDto aktiverBrukerFeilDto) {
+        switch(aktiverBrukerFeilDto.getType()) {
+            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
+            case BRUKER_MANGLER_ARBEIDSTILLATELSE: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE;
+            case BRUKER_KAN_IKKE_REAKTIVERES: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES;
+            case BRUKER_ER_UKJENT: return AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_UKJENT;
+            default: throw new IllegalArgumentException("Ukjent feil fra Arena");
         }
     }
 

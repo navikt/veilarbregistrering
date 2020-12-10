@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand
 
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType.BRUKER_MANGLER_ARBEIDSTILLATELSE
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
 import java.lang.IllegalStateException
 import java.util.*
 
@@ -26,8 +26,8 @@ enum class Status(private val status: String) {
                     .findFirst()
                     .orElseThrow { IllegalStateException() }
         }
-        fun from(aktiverBrukerFeilDto: AktiverBrukerFeilDto.ArenaFeilType): Status =
-            when(aktiverBrukerFeilDto) {
+        fun from(aktiverBrukerFeil: AktiverBrukerResultat.AktiverBrukerFeil): Status =
+            when(aktiverBrukerFeil) {
                 BRUKER_MANGLER_ARBEIDSTILLATELSE -> MANGLER_ARBEIDSTILLATELSE
                 BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET -> DOD_UTVANDRET_ELLER_FORSVUNNET
                 else -> UKJENT_TEKNISK_FEIL
