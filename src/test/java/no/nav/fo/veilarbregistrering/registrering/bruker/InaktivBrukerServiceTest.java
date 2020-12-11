@@ -33,6 +33,7 @@ public class InaktivBrukerServiceTest {
     public void setup() {
         brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         oppfolgingClient = mock(OppfolgingClient.class);
+        when(oppfolgingClient.reaktiverBruker(any())).thenReturn(AktiverBrukerResultat.Companion.ok());
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);

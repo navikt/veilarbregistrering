@@ -3,13 +3,17 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
 import no.nav.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
@@ -61,27 +65,27 @@ public class OppfolgingClient {
         }
     }
 
-    public void reaktiverBruker(Foedselsnummer fnr) {
-        withClient(
+    public AktiverBrukerResultat reaktiverBruker(Foedselsnummer fnr) {
+        return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerReAktivering(fnr, c)
         );
     }
 
-    private int postBrukerReAktivering(Foedselsnummer fnr, Client client) {
+    private AktiverBrukerResultat postBrukerReAktivering(Foedselsnummer fnr, Client client) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(new Fnr(fnr.stringValue())));
         return behandleHttpResponse(response, url);
     }
 
-    public void aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        withClient(
+    public AktiverBrukerResultat aktiverBruker(AktiverBrukerData aktiverBrukerData) {
+        return withClient(
                 builder().readTimeout(HTTP_READ_TIMEOUT).build()
                 , c -> postBrukerAktivering(aktiverBrukerData, c)
         );
     }
 
-    private int postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
+    private AktiverBrukerResultat postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
 
@@ -95,7 +99,7 @@ public class OppfolgingClient {
         );
     }
 
-    private int postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr, Client client) {
+    private AktiverBrukerResultat postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr, Client client) {
         String url = baseUrl + "/oppfolging/aktiverSykmeldt/?fnr=" + fnr.stringValue();
         Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(sykmeldtBrukerType));
         return behandleHttpResponse(response, url);
@@ -108,16 +112,27 @@ public class OppfolgingClient {
                 .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
     }
 
-    private int behandleHttpResponse(Response response, String url) {
+    private AktiverBrukerResultat behandleHttpResponse(Response response, String url) {
         int status = response.getStatus();
 
         if (status == 204) {
-            return status;
+            return AktiverBrukerResultat.Companion.ok();
         } else if (status == 403) {
             LOG.warn("Feil ved kall mot: {}, response : {}", url, response);
-            throw new WebApplicationException(response);
+            AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
+            return AktiverBrukerResultat.Companion.feilFrom(mapper(aktiverBrukerFeilDto));
         } else {
             throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
+        }
+    }
+
+    private AktiverBrukerFeil mapper(AktiverBrukerFeilDto aktiverBrukerFeilDto) {
+        switch(aktiverBrukerFeilDto.getType()) {
+            case BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET: return AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET;
+            case BRUKER_MANGLER_ARBEIDSTILLATELSE: return AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE;
+            case BRUKER_KAN_IKKE_REAKTIVERES: return AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES;
+            case BRUKER_ER_UKJENT: return AktiverBrukerFeil.BRUKER_ER_UKJENT;
+            default: throw new IllegalStateException("Ukjent feil fra Arena: " + aktiverBrukerFeilDto.getType());
         }
     }
 

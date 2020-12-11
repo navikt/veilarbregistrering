@@ -5,10 +5,10 @@ import java.util.Optional;
 
 public interface RegistreringTilstandRepository {
     long lagre(RegistreringTilstand registreringTilstand);
-    void oppdater(RegistreringTilstand registreringTilstand);
+    RegistreringTilstand oppdater(RegistreringTilstand registreringTilstand);
     RegistreringTilstand hentRegistreringTilstand(long id);
     List<RegistreringTilstand> finnRegistreringTilstanderMed(Status status);
     Optional<RegistreringTilstand> finnNesteRegistreringTilstandMed(Status status);
     int hentAntall(Status status);
-    Optional<RegistreringTilstand> hentTilstandFor(long registreringsId);
+    RegistreringTilstand hentTilstandFor(long registreringsId);
 }
