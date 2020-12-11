@@ -46,7 +46,6 @@ public class RegistreringResourceTest {
         registreringResource = new RegistreringResource(
                 pepClient,
                 userService,
-                manuellRegistreringService,
                 brukerRegistreringService,
                 hentRegistreringService,
                 unleashService,

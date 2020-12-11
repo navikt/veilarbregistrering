@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +17,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.*;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REAKTIVERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.SYKMELDT_BESVARELSE_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
-import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
 @Component
@@ -42,7 +40,6 @@ public class RegistreringResource {
     private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
     private final UserService userService;
-    private final ManuellRegistreringService manuellRegistreringService;
     private final VeilarbAbacPepClient pepClient;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;
@@ -50,7 +47,6 @@ public class RegistreringResource {
     public RegistreringResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            ManuellRegistreringService manuellRegistreringService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
@@ -59,7 +55,6 @@ public class RegistreringResource {
             InaktivBrukerService inaktivBrukerService) {
         this.pepClient = pepClient;
         this.userService = userService;
-        this.manuellRegistreringService = manuellRegistreringService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.hentRegistreringService = hentRegistreringService;
         this.unleashService = unleashService;
@@ -92,18 +87,10 @@ public class RegistreringResource {
 
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
+        NavVeileder veileder = navVeileder();
 
-        NavVeileder veileder = null;
-        OrdinaerBrukerRegistrering registrering;
-        if (AutentiseringUtils.erVeileder()) {
-            veileder = new NavVeileder(
-                    AutentiseringUtils.hentIdent()
-                            .orElseThrow(() -> new RuntimeException("Fant ikke ident")),
-                    userService.getEnhetIdFromUrlOrThrow()
-            );
-        }
         ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
-
+        OrdinaerBrukerRegistrering registrering;
         if (skalSplitteRegistreringOgOverforing()) {
             registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker, veileder);
         } else {
@@ -202,24 +189,24 @@ public class RegistreringResource {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
         pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
-        if (AutentiseringUtils.erVeileder()) {
+        NavVeileder veileder = navVeileder();
 
-            final String enhetId = userService.getEnhetIdFromUrlOrThrow();
-            final String veilederIdent = AutentiseringUtils.hentIdent()
-                    .orElseThrow(() -> new RuntimeException("Fant ikke ident"));
-
-            long id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
-            manuellRegistreringService.lagreManuellRegistrering(veilederIdent, enhetId, id, SYKMELDT);
-
-            reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
-
-        } else {
-            sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker);
-        }
+        sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder);
 
         reportFields(SYKMELDT_BESVARELSE_EVENT,
                 sykmeldtRegistrering.getBesvarelse().getUtdanning(),
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
+    }
+
+    private NavVeileder navVeileder() {
+        if (!AutentiseringUtils.erVeileder()) {
+            return null;
+        }
+
+        return new NavVeileder(
+                AutentiseringUtils.hentIdent()
+                        .orElseThrow(() -> new RuntimeException("Fant ikke ident")),
+                userService.getEnhetIdFromUrlOrThrow());
     }
 
     private boolean tjenesteErNede() {

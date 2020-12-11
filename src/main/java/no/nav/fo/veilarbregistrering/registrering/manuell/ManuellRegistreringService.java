@@ -24,21 +24,6 @@ public class ManuellRegistreringService {
         this.norg2Gateway = norg2Gateway;
     }
 
-    public void lagreManuellRegistrering(
-            String veilederIdent,
-            String veilederEnhetId,
-            long registreringId,
-            BrukerRegistreringType brukerRegistreringType){
-
-        final ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setRegistreringId(registreringId)
-                .setBrukerRegistreringType(brukerRegistreringType)
-                .setVeilederIdent(veilederIdent)
-                .setVeilederEnhetId(veilederEnhetId);
-
-        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
-    }
-
     public Veileder hentManuellRegistreringVeileder(long registreringId, BrukerRegistreringType brukerRegistreringType) {
         ManuellRegistrering registrering = manuellRegistreringRepository
                 .hentManuellRegistrering(registreringId, brukerRegistreringType);
