@@ -90,27 +90,14 @@ public class RegistreringResource {
         NavVeileder veileder = navVeileder();
 
         ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
-        OrdinaerBrukerRegistrering registrering;
-        if (skalSplitteRegistreringOgOverforing()) {
-            registrering = splittRegistreringOgOverforing(ordinaerBrukerRegistrering, bruker, veileder);
-        } else {
-            registrering = brukerRegistreringService.registrerBruker(ordinaerBrukerRegistrering, bruker, veileder);
-        }
+
+        OrdinaerBrukerRegistrering opprettetRegistrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder);
+
+        brukerRegistreringService.overforArena(opprettetRegistrering.getId(), bruker, veileder);
+
         AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
 
-        return registrering;
-    }
-
-    private OrdinaerBrukerRegistrering splittRegistreringOgOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker, NavVeileder veileder) {
-        OrdinaerBrukerRegistrering registrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder);
-
-        brukerRegistreringService.overforArena(registrering.getId(), bruker, veileder);
-
-        return registrering;
-    }
-
-    private boolean skalSplitteRegistreringOgOverforing() {
-        return unleashService.isEnabled("veilarbregistrering.splittRegistreringOgOverforing");
+        return opprettetRegistrering;
     }
 
     @GET
