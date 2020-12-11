@@ -1,8 +1,10 @@
-package no.nav.fo.veilarbregistrering.registrering.manuell;
+package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +16,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ManuellRegistreringServiceTest {
+class HentRegistreringServiceTest {
 
-    private ManuellRegistreringService manuellRegistreringService;
+    private HentRegistreringService hentRegistreringService;
 
     @BeforeEach
     public void setup(){
@@ -24,7 +26,7 @@ class ManuellRegistreringServiceTest {
         UnleashService unleashService = mock(UnleashService.class);
         when(unleashService.isEnabled(any())).thenReturn(true);
         Norg2Gateway norg2Gateway = mock(Norg2Gateway.class);
-        manuellRegistreringService = new ManuellRegistreringService(manuellRegistreringRepository, norg2Gateway);
+        hentRegistreringService = new HentRegistreringService(null, null, manuellRegistreringRepository, norg2Gateway);
 
         Map<Enhetnr, NavEnhet> enheter = new HashMap();
         enheter.put(Enhetnr.of("1234"), new NavEnhet("1234", "TEST1"));
@@ -34,13 +36,13 @@ class ManuellRegistreringServiceTest {
     }
     @Test
     public void skalFinneRiktigEnhet(){
-        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet(Enhetnr.of("1234"));
+        Optional<NavEnhet> enhet = hentRegistreringService.finnEnhet(Enhetnr.of("1234"));
         assertThat(enhet).hasValue(new NavEnhet("1234", "TEST1"));
     }
 
     @Test
     public void skalReturnereEmptyHvisIngenEnhetErFunnet(){
-        Optional<NavEnhet> enhet = manuellRegistreringService.finnEnhet(Enhetnr.of("2345"));
+        Optional<NavEnhet> enhet = hentRegistreringService.finnEnhet(Enhetnr.of("2345"));
         assertThat(enhet).isEmpty();
     }
 }

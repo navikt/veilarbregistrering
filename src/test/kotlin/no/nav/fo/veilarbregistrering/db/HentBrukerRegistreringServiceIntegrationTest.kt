@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.db
 
-import no.nav.fo.veilarbregistrering.besvarelse.Stilling
-import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder
 import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -23,10 +21,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -35,12 +30,10 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 @TransactionalTest
@@ -84,7 +77,8 @@ open class HentBrukerRegistreringServiceIntegrationTest(
             open fun hentRegistreringService(
                     db: JdbcTemplate,
                     brukerRegistreringRepository: BrukerRegistreringRepository,
-                    profileringRepository: ProfileringRepository) = HentRegistreringService(brukerRegistreringRepository, profileringRepository, manuellRegistreringService(db))
+                        profileringRepository: ProfileringRepository,
+            manuellRegistreringRepository: ManuellRegistreringRepository) = HentRegistreringService(brukerRegistreringRepository, profileringRepository, manuellRegistreringRepository, norg2Gateway())
 
             @Bean
             open fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway?, sykemeldingService: SykemeldingService?): BrukerTilstandService? {
@@ -99,12 +93,6 @@ open class HentBrukerRegistreringServiceIntegrationTest(
 
             @Bean
             open fun profileringService(): ProfileringService = Mockito.mock(ProfileringService::class.java)
-
-            @Bean
-            open fun manuellRegistreringService(db: JdbcTemplate) = ManuellRegistreringService(manuellRegistreringRepository(db), norg2Gateway())
-
-            @Bean
-            open fun manuellRegistreringRepository(db: JdbcTemplate): ManuellRegistreringRepository = ManuellRegistreringRepositoryImpl(db)
 
             @Bean
             open fun norg2Gateway() = object : Norg2Gateway {

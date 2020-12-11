@@ -52,11 +52,13 @@ public class ServiceBeansConfig {
     HentRegistreringService hentRegistreringService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
-            ManuellRegistreringService manuellRegistreringService) {
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            Norg2Gateway norg2Gateway) {
         return new HentRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
-                manuellRegistreringService);
+                manuellRegistreringRepository,
+                norg2Gateway);
     }
 
     @Bean
