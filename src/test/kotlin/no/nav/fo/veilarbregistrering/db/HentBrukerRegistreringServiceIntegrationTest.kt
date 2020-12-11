@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigSt
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
@@ -14,9 +13,11 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
