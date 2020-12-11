@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.tilstand
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.*
 
 enum class Status(private val status: String) {
     MOTTATT("mottatt"),
@@ -26,6 +25,8 @@ enum class Status(private val status: String) {
             when(aktiverBrukerFeil) {
                 BRUKER_MANGLER_ARBEIDSTILLATELSE -> MANGLER_ARBEIDSTILLATELSE
                 BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET -> DOD_UTVANDRET_ELLER_FORSVUNNET
+                BRUKER_KAN_IKKE_REAKTIVERES -> KAN_IKKE_REAKTIVERES
+                BRUKER_ER_UKJENT -> UKJENT_BRUKER
                 else -> UKJENT_TEKNISK_FEIL
             }
     }
