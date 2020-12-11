@@ -31,7 +31,7 @@ public class Norg2GatewayTest {
     public void skal_hente_enhetsnr_fra_norg2_for_kommunenummer() {
         Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer.of("0302"));
         assertThat(enhetsnr).isNotEmpty();
-        assertThat(enhetsnr).hasValue(Enhetnr.of("0393"));
+        assertThat(enhetsnr).hasValue(Enhetnr.Companion.of("0393"));
     }
 
     private static class Norg2StubClient extends Norg2RestClient {
