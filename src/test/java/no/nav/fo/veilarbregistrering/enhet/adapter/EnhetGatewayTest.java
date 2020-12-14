@@ -29,7 +29,7 @@ public class EnhetGatewayTest {
     @Test
     public void hentOrganisasjonsdetaljer_skal_kunne_hente_ut_kommunenummer_fra_enhetsregisteret() {
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer
-                = enhetGateway.hentOrganisasjonsdetaljer(Organisasjonsnummer.of("995298775"));
+                = enhetGateway.hentOrganisasjonsdetaljer(Organisasjonsnummer.Companion.of("995298775"));
 
         assertThat(organisasjonsdetaljer).isNotEmpty();
         assertThat(organisasjonsdetaljer.get().kommunenummer()).hasValue(Kommunenummer.of("0301"));
@@ -38,7 +38,7 @@ public class EnhetGatewayTest {
     @Test
     public void hentOrganisasjonsdetaljer_skal_gi_empty_result_ved_ukjent_org_nr() {
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer
-                = enhetGateway.hentOrganisasjonsdetaljer(Organisasjonsnummer.of("123456789"));
+                = enhetGateway.hentOrganisasjonsdetaljer(Organisasjonsnummer.Companion.of("123456789"));
 
         assertThat(organisasjonsdetaljer).isEmpty();
     }
@@ -59,7 +59,7 @@ public class EnhetGatewayTest {
 
         EnhetStubClient() {
             super(null);
-            jsonResponse.put(Organisasjonsnummer.of("995298775"), toJson(OK_JSON));
+            jsonResponse.put(Organisasjonsnummer.Companion.of("995298775"), toJson(OK_JSON));
         }
 
         @Override
