@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.db.registrering;
 
-import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.besvarelse.*;
 
@@ -12,13 +11,16 @@ import static no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRe
 
 class SykmeldtRegistreringMapper {
 
-    @SneakyThrows
     static SykmeldtRegistrering map(ResultSet rs) {
-        return new SykmeldtRegistrering()
-                .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
-                .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
-                .setTeksterForBesvarelse(BrukerRegistreringRepositoryImpl.tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))
-                .setBesvarelse(besvarelse(rs));
+        try {
+            return new SykmeldtRegistrering()
+                    .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
+                    .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
+                    .setTeksterForBesvarelse(BrukerRegistreringRepositoryImpl.tilTeksterForBesvarelse(rs.getString(TEKSTER_FOR_BESVARELSE)))
+                    .setBesvarelse(besvarelse(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static Besvarelse besvarelse(ResultSet rs) throws SQLException {
