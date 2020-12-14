@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder;
@@ -34,7 +33,6 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark;
-import static no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -52,14 +50,11 @@ class BrukerRegistreringServiceIntegrationTest {
     @Autowired
     private RegistreringTilstandRepository registreringTilstandRepository;
     @Autowired
-    private ProfileringService profileringService;
-    @Autowired
     private ProfileringRepository profileringRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private static final Bruker BRUKER = Bruker.of(aremark(), AktorId.of("AKTØRID"));
-    private static final OrdinaerBrukerRegistrering SELVGAENDE_BRUKER = gyldigBrukerRegistrering();
 
     @BeforeEach
     public void setup() {
@@ -72,21 +67,6 @@ class BrukerRegistreringServiceIntegrationTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_PROFILERING");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "REGISTRERING_TILSTAND");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_REGISTRERING");
-    }
-
-    @Test
-    public void skal_Rulle_Tilbake_Database_Dersom_Kall_Til_Arena_Feiler() {
-        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(new Oppfolgingsstatus(false, false, null,null,null,null));
-        when(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
-        doThrow(new RuntimeException()).when(oppfolgingGateway).aktiverBruker(any(), any());
-
-        Try<Void> run = Try.run(() -> brukerRegistreringService.registrerBruker(SELVGAENDE_BRUKER, BRUKER, null));
-        assertThat(run.isFailure()).isTrue();
-        assertThat(run.getCause().toString()).isEqualTo(RuntimeException.class.getName());
-
-        Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(1L));
-
-        assertThat(brukerRegistrering).isEmpty();
     }
 
     @Test

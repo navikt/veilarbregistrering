@@ -55,30 +55,6 @@ public class BrukerRegistreringService {
         this.manuellRegistreringRepository = manuellRegistreringRepository;
     }
 
-    @Transactional
-    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker, NavVeileder veileder) {
-        validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
-
-        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
-
-        lagreManuellRegistrering(opprettetBrukerRegistrering, veileder);
-
-        Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
-        profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
-
-        oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
-        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
-        registrerOverfortStatistikk(veileder);
-
-        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
-        LOG.info("Brukerregistrering gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering, profilering);
-
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, opprettetBrukerRegistrering.getId());
-        registreringTilstandRepository.lagre(registreringTilstand);
-
-        return opprettetBrukerRegistrering;
-    }
-
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
         reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);

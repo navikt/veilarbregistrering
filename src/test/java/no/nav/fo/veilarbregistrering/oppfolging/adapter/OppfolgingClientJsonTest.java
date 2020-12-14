@@ -9,7 +9,7 @@ public class OppfolgingClientJsonTest {
 
     @Test
     public void skal_parse_response_fra_oppfolging() {
-        String json = FileToJson.toJson("/oppfolging/aktiverBrukerFeil.json");
+        String json = FileToJson.toJson("/oppfolging/kanikkeReaktiveres.json");
         AktiverBrukerFeilDto aktiverBrukerFeilDto = OppfolgingClient.parseResponse(json);
         assertThat(aktiverBrukerFeilDto).isNotNull();
         assertThat(aktiverBrukerFeilDto.getType()).isEqualTo(AktiverBrukerFeilDto.ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES);

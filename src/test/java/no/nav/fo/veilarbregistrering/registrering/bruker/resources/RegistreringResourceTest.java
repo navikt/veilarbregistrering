@@ -22,7 +22,6 @@ public class RegistreringResourceTest {
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
-    private SykmeldtRegistreringService sykmeldtRegistreringService;
     private HentRegistreringService hentRegistreringService;
     private StartRegistreringStatusService startRegistreringStatusService;
 
@@ -32,7 +31,7 @@ public class RegistreringResourceTest {
         userService = mock(UserService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         hentRegistreringService = mock(HentRegistreringService.class);
-        sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
+        SykmeldtRegistreringService sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
         startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
         InaktivBrukerService inaktivBrukerService = mock(InaktivBrukerService.class);
@@ -88,10 +87,12 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI)).setId(2L);
 
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(aremark(), AktorId.of("1234")));
+        when(brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, Bruker.of(aremark(), AktorId.of("1234")), null)).thenReturn(ordinaerBrukerRegistrering);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
+
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 }
