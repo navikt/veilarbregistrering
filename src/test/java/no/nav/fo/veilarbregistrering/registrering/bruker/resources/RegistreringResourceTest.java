@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,20 +24,19 @@ public class RegistreringResourceTest {
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
-    private SykmeldtRegistreringService sykmeldtRegistreringService;
     private HentRegistreringService hentRegistreringService;
     private StartRegistreringStatusService startRegistreringStatusService;
 
     private static String IDENT = "10108000398"; //Aremark fiktivt fnr.";
+    private static Bruker BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234"));
 
     @Before
     public void setup() {
         pepClient = mock(VeilarbAbacPepClient.class);
         userService = mock(UserService.class);
-        ManuellRegistreringService manuellRegistreringService = mock(ManuellRegistreringService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         hentRegistreringService = mock(HentRegistreringService.class);
-        sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
+        SykmeldtRegistreringService sykmeldtRegistreringService = mock(SykmeldtRegistreringService.class);
         startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
         InaktivBrukerService inaktivBrukerService = mock(InaktivBrukerService.class);
@@ -57,7 +55,7 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         when(startRegistreringStatusService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
-        when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.finnBrukerGjennomPdl()).thenReturn(BRUKER);
         registreringResource.hentStartRegistreringStatus();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -75,7 +73,7 @@ public class RegistreringResourceTest {
     public void skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
         when(hentRegistreringService.hentOrdinaerBrukerRegistrering(any(Bruker.class))).thenReturn(gyldigBrukerRegistrering());
         when(hentRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
-        when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.finnBrukerGjennomPdl()).thenReturn(BRUKER);
         registreringResource.hentRegistrering();
         verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
     }
@@ -86,7 +84,7 @@ public class RegistreringResourceTest {
                 .setBesvarelse(new Besvarelse()
                         .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
-        when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.finnBrukerGjennomPdl()).thenReturn(BRUKER);
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
@@ -94,10 +92,13 @@ public class RegistreringResourceTest {
     @Test
     public void skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering()
-                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI));
+                .setBesvarelse(new Besvarelse().setHelseHinder(HelseHinderSvar.NEI)).setId(2L);
 
-        when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("1234")));
+        when(userService.finnBrukerGjennomPdl()).thenReturn(BRUKER);
+        when(brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, BRUKER, null)).thenReturn(ordinaerBrukerRegistrering);
+
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
+
         verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 

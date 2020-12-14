@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
