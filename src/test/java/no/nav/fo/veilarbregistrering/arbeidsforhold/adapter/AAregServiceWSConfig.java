@@ -13,7 +13,7 @@ public class AAregServiceWSConfig {
 
     @Bean
     ArbeidsforholdGateway arbeidsforholdGateway() {
-        return new ArbeidsforholdGatewayMock();
+        return new StubArbeidsforholdGateway();
     }
 
     @Bean
