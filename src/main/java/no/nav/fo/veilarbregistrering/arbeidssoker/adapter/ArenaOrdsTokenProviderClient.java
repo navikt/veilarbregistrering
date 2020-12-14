@@ -1,13 +1,13 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -47,7 +47,6 @@ public class ArenaOrdsTokenProviderClient {
         return tokenCache.getOrdsToken().getAccessToken();
     }
 
-    @SneakyThrows
     private void refreshToken() {
         String basicAuth = basicCredentials(
                 getRequiredProperty(ARENA_ORDS_CLIENT_ID_PROPERTY),
@@ -64,6 +63,8 @@ public class ArenaOrdsTokenProviderClient {
             RestUtils.throwIfNotSuccessful(response);
             OrdsToken ordsToken = RestUtils.parseJsonResponseOrThrow(response, OrdsToken.class);
             this.tokenCache = new TokenCache(ordsToken);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

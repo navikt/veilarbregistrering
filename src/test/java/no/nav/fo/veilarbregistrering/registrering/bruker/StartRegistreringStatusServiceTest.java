@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import lombok.SneakyThrows;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
@@ -156,7 +155,6 @@ public class StartRegistreringStatusServiceTest {
         assertThat(SYKMELDT_REGISTRERING.equals(startRegistreringStatus.getRegistreringType())).isFalse();
     }
 
-    @SneakyThrows
     private StartRegistreringStatusDto getStartRegistreringStatus(Bruker bruker) {
         return brukerRegistreringService.hentStartRegistreringStatus(bruker);
     }
@@ -201,7 +199,6 @@ public class StartRegistreringStatusServiceTest {
         );
     }
 
-    @SneakyThrows
     private void mockArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
         when(arbeidsforholdGateway.hentArbeidsforhold(any())).thenReturn(FlereArbeidsforhold.of(arbeidsforhold));
     }
