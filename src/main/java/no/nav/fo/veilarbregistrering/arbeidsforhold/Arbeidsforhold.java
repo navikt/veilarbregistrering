@@ -28,7 +28,7 @@ public class Arbeidsforhold {
 
     public Optional<Organisasjonsnummer> getOrganisasjonsnummer() {
         return arbeidsgiverOrgnummer != null
-                ? Optional.of(Organisasjonsnummer.of(arbeidsgiverOrgnummer))
+                ? Optional.of(Organisasjonsnummer.Companion.of(arbeidsgiverOrgnummer))
                 : Optional.empty();
     }
 
