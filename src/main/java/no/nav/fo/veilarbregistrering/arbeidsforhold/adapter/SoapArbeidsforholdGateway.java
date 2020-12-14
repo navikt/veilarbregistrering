@@ -26,13 +26,13 @@ import static io.vavr.Predicates.instanceOf;
 import static java.util.stream.Collectors.toList;
 import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_ARBEIDSFORHOLD;
 
-public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
+public class SoapArbeidsforholdGateway implements ArbeidsforholdGateway {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdGatewayImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SoapArbeidsforholdGateway.class);
 
     private final ArbeidsforholdV3 arbeidsforholdV3;
 
-    public ArbeidsforholdGatewayImpl(ArbeidsforholdV3 arbeidsforholdV3) {
+    public SoapArbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
     }
 

@@ -10,9 +10,9 @@ import java.util.List;
 
 import static java.time.LocalDate.now;
 
-public class ArbeidsforholdGatewayMock extends ArbeidsforholdGatewayImpl {
+public class StubArbeidsforholdGateway extends SoapArbeidsforholdGateway {
 
-    public ArbeidsforholdGatewayMock() {
+    public StubArbeidsforholdGateway() {
         super(null);
     }
 

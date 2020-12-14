@@ -20,7 +20,7 @@ public class AAregServiceWSConfig {
 
     @Bean
     ArbeidsforholdGateway arbeidsforholdGateway(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new ArbeidsforholdGatewayImpl(arbeidsforholdV3);
+        return new SoapArbeidsforholdGateway(arbeidsforholdV3);
     }
 
     @Bean

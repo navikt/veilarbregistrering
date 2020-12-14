@@ -7,22 +7,20 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.stream.Collectors;
+public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
 
-public class ArbeidsforholdGatewayProxyImpl implements ArbeidsforholdGateway {
+    private final static Logger LOG = LoggerFactory.getLogger(ProxyArbeidsforholdGateway.class);
 
-    private final static Logger LOG = LoggerFactory.getLogger(ArbeidsforholdGatewayProxyImpl.class);
-
-    private final AaregRestClient aaregRestClient;
-    private final ArbeidsforholdGateway arbeidsforholdGateway;
+    private final SoapArbeidsforholdGateway soapArbeidsforholdGateway;
+    private final RestArbeidsforholdGateway restArbeidsforholdGateway;
     private final UnleashService unleashService;
 
-    public ArbeidsforholdGatewayProxyImpl(
-            AaregRestClient aaregRestClient,
-            ArbeidsforholdGateway arbeidsforholdGateway, UnleashService unleashService) {
-        this.aaregRestClient = aaregRestClient;
-        this.arbeidsforholdGateway = arbeidsforholdGateway;
+    public ProxyArbeidsforholdGateway(
+            SoapArbeidsforholdGateway soapArbeidsforholdGateway,
+            RestArbeidsforholdGateway restArbeidsforholdGateway,
+            UnleashService unleashService) {
+        this.soapArbeidsforholdGateway = soapArbeidsforholdGateway;
+        this.restArbeidsforholdGateway = restArbeidsforholdGateway;
         this.unleashService = unleashService;
     }
 
@@ -40,17 +38,15 @@ public class ArbeidsforholdGatewayProxyImpl implements ArbeidsforholdGateway {
 
     private FlereArbeidsforhold hentArbeidsforholdFraSoap(Foedselsnummer fnr) {
         LOG.info("Henter arbeidsforhold fra SOAP-tjenesten");
-        return arbeidsforholdGateway.hentArbeidsforhold(fnr);
+        return soapArbeidsforholdGateway.hentArbeidsforhold(fnr);
     }
 
     private FlereArbeidsforhold hentArbeidsforholdFraRest(Foedselsnummer fnr) {
         LOG.info("Henter arbeidsforhold fra REST-tjenesten");
+
         FlereArbeidsforhold flereArbeidsforhold;
         try {
-            List<ArbeidsforholdDto> arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(fnr);
-            flereArbeidsforhold = FlereArbeidsforhold.of(arbeidsforholdDtos.stream()
-                    .map(ArbeidsforholdMapperV2::map)
-                    .collect(Collectors.toList()));
+            flereArbeidsforhold = restArbeidsforholdGateway.hentArbeidsforhold(fnr);
         } catch (RuntimeException e) {
             LOG.error("Hent arbeidsforhold via REST feilet: ", e);
             flereArbeidsforhold = FlereArbeidsforhold.of(null);
