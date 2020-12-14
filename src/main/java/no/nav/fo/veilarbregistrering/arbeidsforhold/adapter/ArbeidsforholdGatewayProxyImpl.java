@@ -28,18 +28,14 @@ public class ArbeidsforholdGatewayProxyImpl implements ArbeidsforholdGateway {
 
     @Override
     public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
-        FlereArbeidsforhold flereArbeidsforhold = hentArbeidsforholdFraSoap(fnr);
+        FlereArbeidsforhold arbeidsforholdFraSoap = hentArbeidsforholdFraSoap(fnr);
 
         if (arbeidsforholdRestIsEnabled()) {
-            FlereArbeidsforhold flereArbeidsforhold1 = hentArbeidsforholdFraRest(fnr);
-            if (flereArbeidsforhold.equals(flereArbeidsforhold1)) {
-                LOG.info("Ny og gammel respons er lik");
-            } else {
-                LOG.info(String.format("SOAP: %s", flereArbeidsforhold.toString()));
-            }
+            FlereArbeidsforhold arbeidsforholdFraRest = hentArbeidsforholdFraRest(fnr);
+            arbeidsforholdFraSoap.sammenlignMed(arbeidsforholdFraRest);
         }
 
-        return flereArbeidsforhold;
+        return arbeidsforholdFraSoap;
     }
 
     private FlereArbeidsforhold hentArbeidsforholdFraSoap(Foedselsnummer fnr) {
