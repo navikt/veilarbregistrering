@@ -75,7 +75,7 @@ public class OppgaveRouter {
             if (gk.byMedBydeler()) {
                 LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
                 reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
-                return Optional.of(Enhetnr.internBrukerstotte());
+                return Optional.of(Enhetnr.Companion.internBrukerstotte());
             }
 
             if (!gk.utland()) {
@@ -94,7 +94,7 @@ public class OppgaveRouter {
                 reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
                 return enhetsnr;
             }
-            return of(Enhetnr.internBrukerstotte());
+            return of(Enhetnr.Companion.internBrukerstotte());
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
             reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
@@ -149,7 +149,7 @@ public class OppgaveRouter {
         Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
         if (kommunenummer.kommuneMedBydeler()) {
             LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.asString());
-            return of(Enhetnr.internBrukerstotte());
+            return of(Enhetnr.Companion.internBrukerstotte());
         }
 
         Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);

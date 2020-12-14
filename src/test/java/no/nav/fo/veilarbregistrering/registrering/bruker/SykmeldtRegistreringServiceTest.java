@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.FnrUtilsTest;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -16,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 public class SykmeldtRegistreringServiceTest {
 
-    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
+    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = fodselsnummerOnDateMinusYears(now(), 40);
     private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"));
 
     private BrukerRegistreringRepository brukerRegistreringRepository;

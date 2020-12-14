@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 public class StartRegistreringStatusServiceTest {
 
-    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = Foedselsnummer.of(FnrUtilsTest.getFodselsnummerOnDateMinusYears(now(), 40));
+    private static final Foedselsnummer FNR_OPPFYLLER_KRAV = fodselsnummerOnDateMinusYears(now(), 40);
     private static final Bruker BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"));
 
     private StartRegistreringStatusService brukerRegistreringService;

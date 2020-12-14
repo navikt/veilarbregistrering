@@ -21,7 +21,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
@@ -52,11 +51,13 @@ public class ServiceBeansConfig {
     HentRegistreringService hentRegistreringService(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ProfileringRepository profileringRepository,
-            ManuellRegistreringService manuellRegistreringService) {
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            Norg2Gateway norg2Gateway) {
         return new HentRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
-                manuellRegistreringService);
+                manuellRegistreringRepository,
+                norg2Gateway);
     }
 
     @Bean
@@ -213,15 +214,6 @@ public class ServiceBeansConfig {
             UserService userService,
             OppgaveService oppgaveService) {
         return new OppgaveResource(pepClient, userService, oppgaveService);
-    }
-
-    @Bean
-    ManuellRegistreringService manuellRegistreringService(
-            ManuellRegistreringRepository manuellRegistreringRepository,
-            Norg2Gateway norg2Gateway) {
-        return new ManuellRegistreringService(
-                manuellRegistreringRepository,
-                norg2Gateway);
     }
 
     @Bean
