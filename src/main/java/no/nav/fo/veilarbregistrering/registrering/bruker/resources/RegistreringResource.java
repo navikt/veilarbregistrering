@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.fo.veilarbregistrering.besvarelse.Stilling;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
@@ -18,8 +15,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REAKTIVERING_EVENT;
@@ -30,8 +25,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartR
 @Component
 @Path("/")
 @Produces("application/json")
-@Api(value = "RegistreringResource", description = "Tjenester for registrering og reaktivering av arbeidssøker.")
-public class RegistreringResource {
+public class RegistreringResource implements RegistreringApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
 
@@ -65,7 +59,7 @@ public class RegistreringResource {
 
     @GET
     @Path("/startregistrering")
-    @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
+    @Override
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
@@ -77,7 +71,7 @@ public class RegistreringResource {
 
     @POST
     @Path("/startregistrering")
-    @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
+    @Override
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
@@ -102,7 +96,7 @@ public class RegistreringResource {
 
     @GET
     @Path("/registrering")
-    @ApiOperation(value = "Henter siste registrering av bruker.")
+    @Override
     public BrukerRegistreringWrapper hentRegistrering() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
@@ -119,33 +113,9 @@ public class RegistreringResource {
         return brukerRegistreringWrapper;
     }
 
-    @GET
-    @Path("/dummyregistrering")
-    @ApiOperation(value = "Henter dummy registrering.")
-    public OrdinaerBrukerRegistrering hentDummyRegistrering() {
-
-        Stilling stilling = new Stilling();
-        stilling.setLabel("Barnehageassistent");
-
-        TekstForSporsmal tekstForSporsmal1 = new TekstForSporsmal("", "Hva tenker du om din fremtidige situasjon?", "Jeg trenger ny jobb");
-        TekstForSporsmal tekstForSporsmal2 = new TekstForSporsmal("", "Er utdanningen din bestått?", "Ikke aktuelt");
-        TekstForSporsmal tekstForSporsmal3 = new TekstForSporsmal("", "Er utdanningen din godkjent i Norge?", "Ikke aktuelt");
-        TekstForSporsmal tekstForSporsmal4 = new TekstForSporsmal("", "Hva er din høyeste fullførte utdanning?", "Ingen utdanning");
-        TekstForSporsmal tekstForSporsmal5 = new TekstForSporsmal("", "Er det noe annet enn helsen din som NAV bør ta hensyn til?", "Nei");
-        List<TekstForSporsmal> teksterForSporsmal = Arrays.asList(tekstForSporsmal1, tekstForSporsmal2, tekstForSporsmal3, tekstForSporsmal4, tekstForSporsmal5);
-
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = new OrdinaerBrukerRegistrering();
-        ordinaerBrukerRegistrering.setId(103);
-        ordinaerBrukerRegistrering.setOpprettetDato(LocalDateTime.now());
-        ordinaerBrukerRegistrering.setSisteStilling(stilling);
-        ordinaerBrukerRegistrering.setTeksterForBesvarelse(teksterForSporsmal);
-
-        return ordinaerBrukerRegistrering;
-    }
-
     @POST
     @Path("/startreaktivering")
-    @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
+    @Override
     public void reaktivering() {
 
         if(tjenesteErNede()){
@@ -166,7 +136,7 @@ public class RegistreringResource {
 
     @POST
     @Path("/startregistrersykmeldt")
-    @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
+    @Override
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
 
         if(tjenesteErNede()){
