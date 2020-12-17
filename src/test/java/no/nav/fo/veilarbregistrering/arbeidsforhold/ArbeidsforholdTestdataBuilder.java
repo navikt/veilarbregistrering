@@ -4,6 +4,18 @@ import java.time.LocalDate;
 
 public class ArbeidsforholdTestdataBuilder {
 
+    public static Arbeidsforhold tidligereArbeidsforhold() {
+        return medDato(
+                LocalDate.of(2012, 3, 1),
+                LocalDate.of(2016, 3, 31));
+    }
+
+    public static Arbeidsforhold åpentArbeidsforhold() {
+        return medDato(
+                LocalDate.of(2016, 4, 1),
+                null);
+    }
+
     public static Arbeidsforhold paagaaende() {
         LocalDate fom = LocalDate.of(2017,11,1);
         LocalDate tom = null;
