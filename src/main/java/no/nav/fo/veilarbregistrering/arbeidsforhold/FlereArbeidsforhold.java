@@ -1,8 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDate;
 import java.util.*;
 
@@ -10,8 +7,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
 
 public class FlereArbeidsforhold {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FlereArbeidsforhold.class);
 
     static int antallMnd = 12;
     static int minAntallMndSammenhengendeJobb = 6;
@@ -93,14 +88,5 @@ public class FlereArbeidsforhold {
         return "FlereArbeidsforhold{" +
                 "flereArbeidsforhold=" + flereArbeidsforhold +
                 '}';
-    }
-
-    public void sammenlignMed(FlereArbeidsforhold arbeidsforholdFraRest) {
-        if (this.flereArbeidsforhold.equals(arbeidsforholdFraRest)) {
-            LOG.info("Ny og gammel respons er lik");
-        } else {
-            LOG.info(String.format("SOAP: %s", flereArbeidsforhold.toString()));
-            LOG.info(String.format("REST: %s", arbeidsforholdFraRest.toString()));
-        }
     }
 }

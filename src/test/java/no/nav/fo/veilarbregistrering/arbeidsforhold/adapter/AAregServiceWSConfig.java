@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,8 +14,21 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 public class AAregServiceWSConfig {
 
     @Bean
-    ArbeidsforholdGateway arbeidsforholdGateway() {
+    ArbeidsforholdGateway soapArbeidsforholdGateway() {
         return new StubArbeidsforholdGateway();
+    }
+
+    @Bean
+    ArbeidsforholdGateway restArbeidsforholdGateway() {
+        return new RestArbeidsforholdGateway(new StubAaregRestClient());
+    }
+
+    @Bean
+    ArbeidsforholdGateway proxyArbeidsforholdGatway(
+            @Qualifier("soapArbeidsforholdGateway") ArbeidsforholdGateway soapArbeidsforholdGateway,
+            @Qualifier("restArbeidsforholdGateway") ArbeidsforholdGateway restArbeidsforholdGateway,
+            UnleashService unleashService) {
+        return new ProxyArbeidsforholdGateway(soapArbeidsforholdGateway, restArbeidsforholdGateway, unleashService);
     }
 
     @Bean
