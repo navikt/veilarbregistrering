@@ -32,7 +32,7 @@ public class ProxyArbeidsforholdGatewayTest {
                 new Arbeidsforhold(
                         null,
                         null,
-                        LocalDate.of(2020, 11, 14),
+                        LocalDate.of(2020, 11, 17),
                         null));
     }
 
@@ -46,7 +46,7 @@ public class ProxyArbeidsforholdGatewayTest {
                 new Arbeidsforhold(
                         null,
                         null,
-                        LocalDate.of(2020, 11, 14),
+                        LocalDate.of(2020, 11, 17),
                         null));
     }
 }
