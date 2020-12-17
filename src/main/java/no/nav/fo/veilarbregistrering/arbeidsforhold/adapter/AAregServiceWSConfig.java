@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,7 +37,10 @@ public class AAregServiceWSConfig {
     }
 
     @Bean
-    ArbeidsforholdGateway proxyArbeidsforholdGatway(ArbeidsforholdGateway soapArbeidsforholdGateway, ArbeidsforholdGateway restArbeidsforholdGateway, UnleashService unleashService) {
+    ArbeidsforholdGateway proxyArbeidsforholdGatway(
+            @Qualifier("soapArbeidsforholdGateway") ArbeidsforholdGateway soapArbeidsforholdGateway,
+            @Qualifier("restArbeidsforholdGateway") ArbeidsforholdGateway restArbeidsforholdGateway,
+            UnleashService unleashService) {
         return new ProxyArbeidsforholdGateway(soapArbeidsforholdGateway, restArbeidsforholdGateway, unleashService);
     }
 

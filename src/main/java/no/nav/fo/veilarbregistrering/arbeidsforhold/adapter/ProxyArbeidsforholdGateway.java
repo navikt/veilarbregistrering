@@ -30,7 +30,13 @@ public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
 
         if (arbeidsforholdRestIsEnabled()) {
             FlereArbeidsforhold arbeidsforholdFraRest = hentArbeidsforholdFraRest(fnr);
-            arbeidsforholdFraSoap.sammenlignMed(arbeidsforholdFraRest);
+
+            if (arbeidsforholdFraSoap.equals(arbeidsforholdFraRest)) {
+                LOG.info("Ny og gammel respons er lik");
+            } else {
+                LOG.info(String.format("SOAP: %s", arbeidsforholdFraSoap.toString()));
+                LOG.info(String.format("REST: %s", arbeidsforholdFraRest.toString()));
+            }
         }
 
         return arbeidsforholdFraSoap;
