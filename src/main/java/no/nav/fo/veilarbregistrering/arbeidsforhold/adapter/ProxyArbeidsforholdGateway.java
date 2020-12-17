@@ -11,13 +11,13 @@ public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
 
     private final static Logger LOG = LoggerFactory.getLogger(ProxyArbeidsforholdGateway.class);
 
-    private final SoapArbeidsforholdGateway soapArbeidsforholdGateway;
-    private final RestArbeidsforholdGateway restArbeidsforholdGateway;
+    private final ArbeidsforholdGateway soapArbeidsforholdGateway;
+    private final ArbeidsforholdGateway restArbeidsforholdGateway;
     private final UnleashService unleashService;
 
     public ProxyArbeidsforholdGateway(
-            SoapArbeidsforholdGateway soapArbeidsforholdGateway,
-            RestArbeidsforholdGateway restArbeidsforholdGateway,
+            ArbeidsforholdGateway soapArbeidsforholdGateway,
+            ArbeidsforholdGateway restArbeidsforholdGateway,
             UnleashService unleashService) {
         this.soapArbeidsforholdGateway = soapArbeidsforholdGateway;
         this.restArbeidsforholdGateway = restArbeidsforholdGateway;
