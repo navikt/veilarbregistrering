@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 
@@ -8,7 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.time.LocalDate.now;
+import static no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder.*;
 
 public class StubArbeidsforholdGateway extends SoapArbeidsforholdGateway {
 
@@ -18,14 +19,11 @@ public class StubArbeidsforholdGateway extends SoapArbeidsforholdGateway {
 
     @Override
     public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
+
         List<Arbeidsforhold> arbeidsforholdListe = new ArrayList();
-        arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(200), now().minusDays(30)));
-        arbeidsforholdListe.add(createArbeidsforhold(now().minusDays(30), null));
+        arbeidsforholdListe.add(tidligereArbeidsforhold());
+        arbeidsforholdListe.add(åpentArbeidsforhold());
 
         return FlereArbeidsforhold.of(arbeidsforholdListe);
-    }
-
-    private Arbeidsforhold createArbeidsforhold(LocalDate from, LocalDate to) {
-        return new Arbeidsforhold(null, null, from, to);
     }
 }
