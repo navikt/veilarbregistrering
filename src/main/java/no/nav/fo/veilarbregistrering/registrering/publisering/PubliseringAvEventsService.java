@@ -42,7 +42,7 @@ public class PubliseringAvEventsService {
     @Transactional
     public void publiserEvents() {
         rapporterRegistreringStatusAntallForPublisering();
-        Optional<RegistreringTilstand> muligRegistreringTilstand = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA);
+        Optional<RegistreringTilstand> muligRegistreringTilstand = Optional.ofNullable(registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA));
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;

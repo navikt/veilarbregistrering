@@ -15,6 +15,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 @Configuration
 public class RepositoryConfig {
@@ -25,8 +26,8 @@ public class RepositoryConfig {
     }
 
     @Bean
-    RegistreringTilstandRepository registreringTilstandRepository(JdbcTemplate db) {
-        return new RegistreringTilstandRepositoryImpl(db);
+    RegistreringTilstandRepository registreringTilstandRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new RegistreringTilstandRepositoryImpl(namedParameterJdbcTemplate);
     }
 
     @Bean
