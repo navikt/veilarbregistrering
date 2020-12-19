@@ -14,8 +14,8 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         val params = mapOf(
             "id" to id,
             "bruker_registrering_id" to registreringTilstand.brukerRegistreringId,
-            "opprettet" to registreringTilstand.opprettet,
-            "sist_endret" to registreringTilstand.sistEndret,
+            "opprettet" to Timestamp.valueOf(registreringTilstand.opprettet),
+            "sist_endret" to registreringTilstand.sistEndret?.let(Timestamp::valueOf),
             "status" to registreringTilstand.status.name
         )
 
@@ -45,7 +45,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val params = mapOf(
             "status" to registreringTilstand.status.name,
-            "sist_endret" to registreringTilstand.sistEndret,
+            "sist_endret" to Timestamp.valueOf(registreringTilstand.sistEndret),
             "id" to registreringTilstand.id
         )
 
