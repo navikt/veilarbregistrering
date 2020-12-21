@@ -9,10 +9,7 @@ import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.tilstand.*
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -102,7 +99,7 @@ open class RegistreringTilstandRepositoryDbIntegrationTest(
                 .build()
         val eldsteRegistreringTilstandId = registreringTilstandRepository.lagre(eldsteRegistreringTilstand)
         val nesteRegistreringKlarForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA)
-        assertThat(nesteRegistreringKlarForPublisering.get().id).isEqualTo(eldsteRegistreringTilstandId)
+        assertThat(nesteRegistreringKlarForPublisering?.id).isEqualTo(eldsteRegistreringTilstandId)
     }
 
     @Test
@@ -124,7 +121,7 @@ open class RegistreringTilstandRepositoryDbIntegrationTest(
                 .build()
         registreringTilstandRepository.lagre(eldsteRegistreringTilstand)
         val nesteRegistreringKlarForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA)
-        assertThat(nesteRegistreringKlarForPublisering).isEmpty
+        assertThat(nesteRegistreringKlarForPublisering).isNull()
     }
 
     @Test
