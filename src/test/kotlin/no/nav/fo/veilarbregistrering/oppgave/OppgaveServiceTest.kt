@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -35,7 +34,7 @@ class OppgaveServiceTest {
     @Test
     fun `opprettOppgave ang opphold skal gi beskrivelse om rutine`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         val oppgave = Oppgave.opprettOppgave(
                 BRUKER.aktorId,
@@ -47,7 +46,7 @@ class OppgaveServiceTest {
     @Test
     fun `opprettOppgave ang dod utvandret skal gi beskrivelse om rutine`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET)
         val oppgave = Oppgave.opprettOppgave(
                 BRUKER.aktorId,
@@ -59,7 +58,7 @@ class OppgaveServiceTest {
     @Test
     fun `skal lagre oppgave ved vellykket opprettelse av oppgave`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         verify(oppgaveRepository, times(1)).opprettOppgave(BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 234L)
     }
@@ -68,7 +67,7 @@ class OppgaveServiceTest {
     fun `skal kaste exception dersom det finnes nyere oppholdsoppgave fra for`() {
         val oppgaveSomBleOpprettetDagenFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
-        whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
+        whenever(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver)
         Assertions.assertThrows(Feil::class.java) { oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE) }
         verifyZeroInteractions(oppgaveGateway)
     }
@@ -77,7 +76,7 @@ class OppgaveServiceTest {
     fun `skal kaste exception dersom det finnes nyere utvandretoppgave fra for`() {
         val oppgaveSomBleOpprettetDagenFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.UTVANDRET, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
-        whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
+        whenever(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver)
         Assertions.assertThrows(Feil::class.java) { oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET) }
         verifyZeroInteractions(oppgaveGateway)
     }
@@ -87,8 +86,8 @@ class OppgaveServiceTest {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         val oppgaveSomBleOpprettetTreDagerFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetTreDagerFor)
-        whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver)
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         val oppgave = Oppgave.opprettOppgave(
                 BRUKER.aktorId,
@@ -100,8 +99,8 @@ class OppgaveServiceTest {
     @Test
     fun `ingen tidligere oppgaver`() {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
-        whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(emptyList())
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveRepository.hentOppgaverFor(any())).thenReturn(emptyList())
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         val oppgave = Oppgave.opprettOppgave(
                 BRUKER.aktorId,
@@ -115,8 +114,8 @@ class OppgaveServiceTest {
         whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.empty())
         val oppgaveSomBleOpprettetEnDagerFor = OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetEnDagerFor)
-        whenever(oppgaveRepository.hentOppgaverFor(ArgumentMatchers.any())).thenReturn(oppgaver)
-        whenever(oppgaveGateway.opprett(ArgumentMatchers.any())).thenReturn(DummyOppgaveResponse())
+        whenever(oppgaveRepository.hentOppgaverFor(any())).thenReturn(oppgaver)
+        whenever(oppgaveGateway.opprett(any())).thenReturn(DummyOppgaveResponse())
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET)
         val oppgave = Oppgave.opprettOppgave(
                 BRUKER.aktorId,
