@@ -121,13 +121,13 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, mapOf("aktor_id" to aktorId.asString()), registreringMapper).firstOrNull()
     }
 
-    override fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering {
+    override fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering? {
         val sql = "SELECT * FROM $SYKMELDT_REGISTRERING" +
                 " WHERE $AKTOR_ID = :aktor_id " +
                 " ORDER BY $SYKMELDT_REGISTRERING_ID DESC" +
                 " FETCH NEXT 1 ROWS ONLY"
 
-        return db.queryForObject(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt)!!
+        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt).firstOrNull()
     }
 
     override fun lagreReaktiveringForBruker(aktorId: AktorId) {

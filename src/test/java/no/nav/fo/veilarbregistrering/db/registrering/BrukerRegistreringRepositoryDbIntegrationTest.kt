@@ -61,7 +61,15 @@ open class BrukerRegistreringRepositoryDbIntegrationTest(
         brukerRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
         brukerRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
         val registrering = brukerRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)
-        assertSykmeldtRegistrertBruker(bruker2, registrering)
+        assertSykmeldtRegistrertBruker(bruker2, registrering!!)
+    }
+
+    @Test
+    fun `bruker som har registrering og ingen sykmeldtregistrering skal ikke få feil`() {
+        val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+            .setAndreForhold(AndreForholdSvar.NEI))
+        brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        assertThat(brukerRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)).isNull()
     }
 
     @Test

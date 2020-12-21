@@ -17,7 +17,7 @@ interface BrukerRegistreringRepository {
     ): OrdinaerBrukerRegistrering?
 
     fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering?
-    fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering
+    fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering?
     fun lagreReaktiveringForBruker(aktorId: AktorId)
     fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker
     fun findRegistreringByPage(pageable: Pageable): Page<ArbeidssokerRegistrertInternalEvent>
