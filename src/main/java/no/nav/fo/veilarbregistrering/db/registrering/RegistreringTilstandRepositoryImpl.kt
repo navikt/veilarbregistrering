@@ -19,7 +19,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             "status" to registreringTilstand.status.name
         )
 
-        val sql = "INSERT INTO $TABLE_NAME" +
+        val sql = "INSERT INTO $REGISTRERING_TILSTAND" +
                 " ($ID, $BRUKER_REGISTRERING_ID, $OPPRETTET, $SIST_ENDRET, $STATUS)" +
                 " VALUES (:id, :bruker_registrering_id, :opprettet, :sist_endret, :status)"
 
@@ -49,7 +49,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             "id" to registreringTilstand.id
         )
 
-        val sql = "UPDATE $TABLE_NAME" +
+        val sql = "UPDATE $REGISTRERING_TILSTAND" +
                 " SET $STATUS = :status, $SIST_ENDRET = :sist_endret" +
                 " WHERE $ID = :id"
 
@@ -58,13 +58,13 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     override fun hentRegistreringTilstand(id: Long): RegistreringTilstand {
-        val sql = "SELECT * FROM $TABLE_NAME WHERE ID = :id"
+        val sql = "SELECT * FROM $REGISTRERING_TILSTAND WHERE ID = :id"
 
         return db.queryForObject(sql, mapOf("id" to id), rowMapper())!!
     }
 
     override fun finnRegistreringTilstanderMed(status: Status): MutableList<RegistreringTilstand> {
-        val sql = "SELECT * FROM $TABLE_NAME WHERE STATUS = :status"
+        val sql = "SELECT * FROM $REGISTRERING_TILSTAND WHERE STATUS = :status"
 
         return db.query(sql, mapOf("status" to status.name), rowMapper())
     }
@@ -73,7 +73,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     override fun finnNesteRegistreringTilstandMed(status: Status): RegistreringTilstand? {
         val params = mapOf("status" to status.name)
 
-        val sql = "SELECT * FROM $TABLE_NAME" +
+        val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
                 " WHERE $STATUS = :status" +
                 " ORDER BY $OPPRETTET" +
                 " FETCH NEXT 1 ROWS ONLY"
@@ -84,7 +84,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     override fun hentAntall(status: Status): Int {
         val params = mapOf("status" to status.name)
 
-        val sql = "SELECT COUNT(1) FROM $TABLE_NAME" +
+        val sql = "SELECT COUNT(1) FROM $REGISTRERING_TILSTAND" +
                 " WHERE $STATUS = :status"
 
         return db.queryForObject(sql, params, Int::class.java)!!
@@ -94,7 +94,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     override fun hentTilstandFor(registreringsId: Long): RegistreringTilstand {
         val params = mapOf("bruker_registrering_id" to registreringsId)
 
-        val sql = "SELECT * FROM $TABLE_NAME" +
+        val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
                 " WHERE $BRUKER_REGISTRERING_ID = :bruker_registrering_id" +
                 " FETCH NEXT 1 ROWS ONLY"
         val registreringsTilstander: MutableList<RegistreringTilstand> =
@@ -123,7 +123,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             )
         }
 
-        const val TABLE_NAME = "REGISTRERING_TILSTAND"
+        const val REGISTRERING_TILSTAND = "REGISTRERING_TILSTAND"
         const val SEQ_TABLE_NAME = "REGISTRERING_TILSTAND_SEQ"
         const val ID = "ID"
         const val BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID"
