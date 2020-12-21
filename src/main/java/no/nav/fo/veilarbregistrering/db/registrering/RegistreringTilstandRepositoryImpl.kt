@@ -21,7 +21,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val sql = "INSERT INTO $TABLE_NAME" +
                 " ($ID, $BRUKER_REGISTRERING_ID, $OPPRETTET, $SIST_ENDRET, $STATUS)" +
-                " VALUES (:id, :bruker_registrering_id, :opprettet, :sist_endret, :status);"
+                " VALUES (:id, :bruker_registrering_id, :opprettet, :sist_endret, :status)"
 
         db.update(sql, params)
         return id
@@ -51,8 +51,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val sql = "UPDATE $TABLE_NAME" +
                 " SET $STATUS = :status, $SIST_ENDRET = :sist_endret" +
-                " WHERE $ID = :id" +
-                " "
+                " WHERE $ID = :id"
 
         db.update(sql, params)
         return hentRegistreringTilstand(registreringTilstand.id)
