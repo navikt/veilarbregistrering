@@ -48,7 +48,7 @@ open class BrukerRegistreringRepositoryDbIntegrationTest(
                 .setAndreForhold(AndreForholdSvar.NEI))
         brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
         brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
-        val registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111)!!
+        val registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111)
         assertRegistrertBruker(registrering2, registrering)
     }
 

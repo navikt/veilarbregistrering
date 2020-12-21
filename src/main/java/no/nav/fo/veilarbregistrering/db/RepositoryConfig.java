@@ -21,7 +21,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 public class RepositoryConfig {
 
     @Bean
-    BrukerRegistreringRepository brukerRegistreringRepository(NamedParameterJdbcTemplate db) {
+    BrukerRegistreringRepository brukerRegistreringRepository(JdbcTemplate db) {
         return new BrukerRegistreringRepositoryImpl(db);
     }
 
