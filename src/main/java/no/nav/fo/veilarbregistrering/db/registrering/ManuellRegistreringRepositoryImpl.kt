@@ -39,6 +39,7 @@ class ManuellRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempla
                 " WHERE $REGISTRERING_ID = :id AND $BRUKER_REGISTRERING_TYPE = :bruker_registrering_type" +
                 " FETCH NEXT 1 ROWS ONLY"
 
+
         return db.query(sql, params, rowMapper).firstOrNull()
     }
 

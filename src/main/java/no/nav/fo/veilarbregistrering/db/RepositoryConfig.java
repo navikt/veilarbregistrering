@@ -31,7 +31,7 @@ public class RepositoryConfig {
     }
 
     @Bean
-    ArbeidssokerRepository arbeidssokerRepository(JdbcTemplate db) {
+    ArbeidssokerRepository arbeidssokerRepository(NamedParameterJdbcTemplate db) {
         return new ArbeidssokerRepositoryImpl(db);
     }
 
