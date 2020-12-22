@@ -46,7 +46,7 @@ public class RepositoryConfig {
     }
 
     @Bean
-    ManuellRegistreringRepository manuellRegistreringRepository(JdbcTemplate db) {
+    ManuellRegistreringRepository manuellRegistreringRepository(NamedParameterJdbcTemplate db) {
         return new ManuellRegistreringRepositoryImpl(db);
     }
 }
