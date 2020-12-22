@@ -36,7 +36,7 @@ public class RepositoryConfig {
     }
 
     @Bean
-    OppgaveRepository oppgaveRepository(JdbcTemplate db) {
+    OppgaveRepository oppgaveRepository(NamedParameterJdbcTemplate db) {
         return new OppgaveRepositoryImpl(db);
     }
 
