@@ -1,12 +1,12 @@
 package no.nav.veilarbregistrering.integrasjonstest;
 
 import io.vavr.control.Try;
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
@@ -177,6 +177,11 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
+        public MetricsService metricsService() {
+            return mock(MetricsService.class);
+        }
+
+        @Bean
         BrukerRegistreringService brukerRegistreringService(
                 BrukerRegistreringRepository brukerRegistreringRepository,
                 ProfileringRepository profileringRepository,
@@ -184,7 +189,8 @@ class BrukerRegistreringServiceIntegrationTest {
                 ProfileringService profileringService,
                 RegistreringTilstandRepository registreringTilstandRepository,
                 BrukerTilstandService brukerTilstandService,
-                ManuellRegistreringRepository manuellRegistreringRepository) {
+                ManuellRegistreringRepository manuellRegistreringRepository,
+                MetricsService metricsService) {
 
             return new BrukerRegistreringService(
                     brukerRegistreringRepository,
@@ -193,7 +199,8 @@ class BrukerRegistreringServiceIntegrationTest {
                     profileringService,
                     registreringTilstandRepository,
                     brukerTilstandService,
-                    manuellRegistreringRepository);
+                    manuellRegistreringRepository,
+                    metricsService);
         }
 
         @Bean

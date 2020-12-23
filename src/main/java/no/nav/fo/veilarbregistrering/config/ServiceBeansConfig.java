@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.metrics.InfluxClient;
+import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
@@ -12,6 +14,7 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
@@ -32,7 +35,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalReg
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +46,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ServiceBeansConfig {
 
     @Bean
-    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway) {
-        return new SykemeldingService(sykemeldingGateway);
+    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway, MetricsService metricsService) {
+        return new SykemeldingService(sykemeldingGateway, metricsService);
     }
 
     @Bean
@@ -78,11 +80,13 @@ public class ServiceBeansConfig {
     StartRegistreringStatusService startRegistreringStatusService(
             @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
-            PersonGateway personGateway) {
+            PersonGateway personGateway,
+            MetricsService metricsService) {
         return new StartRegistreringStatusService(
                 arbeidsforholdGateway,
                 brukerTilstandService,
-                personGateway);
+                personGateway,
+                metricsService);
     }
 
     @Bean
@@ -101,12 +105,14 @@ public class ServiceBeansConfig {
             BrukerTilstandService arbeidssokerService,
             OppfolgingGateway oppfolgingGateway,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            ManuellRegistreringRepository manuellRegistreringRepository) {
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            MetricsService metricsService) {
         return new SykmeldtRegistreringService(
                 arbeidssokerService,
                 oppfolgingGateway,
                 brukerRegistreringRepository,
-                manuellRegistreringRepository);
+                manuellRegistreringRepository,
+                metricsService);
     }
 
     @Bean
@@ -117,7 +123,8 @@ public class ServiceBeansConfig {
             ProfileringService profileringService,
             RegistreringTilstandRepository registreringTilstandRepository,
             BrukerTilstandService brukerTilstandService,
-            ManuellRegistreringRepository manuellRegistreringRepository) {
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            MetricsService metricsService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
@@ -125,7 +132,8 @@ public class ServiceBeansConfig {
                 profileringService,
                 registreringTilstandRepository,
                 brukerTilstandService,
-                manuellRegistreringRepository);
+                manuellRegistreringRepository,
+                metricsService);
     }
 
     @Bean
@@ -150,7 +158,8 @@ public class ServiceBeansConfig {
             UnleashService unleashService,
             StartRegistreringStatusService startRegistreringStatusService,
             SykmeldtRegistreringService sykmeldtRegistreringService,
-            InaktivBrukerService inaktivBrukerService) {
+            InaktivBrukerService inaktivBrukerService,
+            MetricsService metricsService) {
         return new RegistreringResource(
                 pepClient,
                 userService,
@@ -159,7 +168,9 @@ public class ServiceBeansConfig {
                 unleashService,
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
-                inaktivBrukerService);
+                inaktivBrukerService,
+                metricsService
+                );
     }
 
     @Bean
@@ -191,12 +202,14 @@ public class ServiceBeansConfig {
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
+            MetricsService metricsService) {
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                kontaktBrukerHenvendelseProducer
+                kontaktBrukerHenvendelseProducer,
+                metricsService
         );
     }
 
@@ -206,8 +219,9 @@ public class ServiceBeansConfig {
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
-            PdlOppslagGateway pdlOppslagGateway) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway);
+            PdlOppslagGateway pdlOppslagGateway,
+            MetricsService metricsService) {
+        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway, metricsService);
     }
 
     @Bean
@@ -222,8 +236,9 @@ public class ServiceBeansConfig {
     ArbeidssokerService arbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
-            UnleashService unleashService) {
-        return new ArbeidssokerService(arbeidssokerRepository, formidlingsgruppeGateway, unleashService);
+            UnleashService unleashService,
+            MetricsService metricsService) {
+        return new ArbeidssokerService(arbeidssokerRepository, formidlingsgruppeGateway, unleashService, metricsService);
     }
 
     @Bean
@@ -297,5 +312,15 @@ public class ServiceBeansConfig {
     @Bean
     InternalArbeidssokerServlet internalArbeidssokerServlet(UserService userService, ArbeidssokerService arbeidssokerService) {
         return new InternalArbeidssokerServlet(userService, arbeidssokerService);
+    }
+
+    @Bean
+    MetricsClient metricsClient() {
+        return new InfluxClient();
+    }
+
+    @Bean
+    MetricsService metricsService(MetricsClient metricsClient) {
+        return new MetricsService(metricsClient);
     }
 }

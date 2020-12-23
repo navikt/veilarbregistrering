@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
@@ -9,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REGISTRERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
+import static no.nav.fo.veilarbregistrering.metrics.Events.MANUELL_REGISTRERING_EVENT;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT;
 
 public class SykmeldtRegistreringService {
@@ -21,16 +21,19 @@ public class SykmeldtRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
+    private MetricsService metricsService;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
             BrukerRegistreringRepository brukerRegistreringRepository,
-            ManuellRegistreringRepository manuellRegistreringRepository) {
+            ManuellRegistreringRepository manuellRegistreringRepository,
+            MetricsService metricsService) {
         this.brukerTilstandService = brukerTilstandService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
+        this.metricsService = metricsService;
     }
 
     @Transactional
@@ -73,6 +76,6 @@ public class SykmeldtRegistreringService {
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
+        metricsService.reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
     }
 }

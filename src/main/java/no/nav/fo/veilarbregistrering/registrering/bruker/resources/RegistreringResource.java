@@ -1,11 +1,13 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+
+import no.nav.common.abac.Pep;
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,10 +18,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.time.LocalDateTime;
 
-import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REAKTIVERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.SYKMELDT_BESVARELSE_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
+import static no.nav.fo.veilarbregistrering.metrics.Events.MANUELL_REAKTIVERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Events.SYKMELDT_BESVARELSE_EVENT;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
 @Component
@@ -34,19 +34,21 @@ public class RegistreringResource implements RegistreringApi {
     private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final Pep pepClient;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;
+    private final MetricsService metricsService;
 
     public RegistreringResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
             UnleashService unleashService,
             SykmeldtRegistreringService sykmeldtRegistreringService,
             StartRegistreringStatusService startRegistreringStatusService,
-            InaktivBrukerService inaktivBrukerService) {
+            InaktivBrukerService inaktivBrukerService,
+            MetricsService metricsService) {
         this.pepClient = pepClient;
         this.userService = userService;
         this.brukerRegistreringService = brukerRegistreringService;
@@ -55,6 +57,7 @@ public class RegistreringResource implements RegistreringApi {
         this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
         this.inaktivBrukerService = inaktivBrukerService;
+        this.metricsService = metricsService;
     }
 
     @GET
@@ -63,9 +66,9 @@ public class RegistreringResource implements RegistreringApi {
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
         StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
-        rapporterRegistreringsstatus(status);
+        rapporterRegistreringsstatus(metricsService, status);
         return status;
     }
 
@@ -79,7 +82,7 @@ public class RegistreringResource implements RegistreringApi {
 
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         NavVeileder veileder = navVeileder();
 
@@ -89,7 +92,7 @@ public class RegistreringResource implements RegistreringApi {
 
         brukerRegistreringService.overforArena(opprettetRegistrering.getId(), bruker, veileder);
 
-        AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(metricsService, bruker.getGjeldendeFoedselsnummer());
 
         return opprettetRegistrering;
     }
@@ -100,7 +103,7 @@ public class RegistreringResource implements RegistreringApi {
     public BrukerRegistreringWrapper hentRegistrering() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
         SykmeldtRegistrering sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker);
@@ -124,14 +127,14 @@ public class RegistreringResource implements RegistreringApi {
 
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         inaktivBrukerService.reaktiverBruker(bruker);
 
         if (AutentiseringUtils.erVeileder()) {
-            reportFields(MANUELL_REAKTIVERING_EVENT);
+            metricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
         }
 
-        AlderMetrikker.rapporterAlder(bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(metricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
     @POST
@@ -144,13 +147,13 @@ public class RegistreringResource implements RegistreringApi {
         }
 
         final Bruker bruker = userService.finnBrukerGjennomPdl();
-        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         NavVeileder veileder = navVeileder();
 
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder);
 
-        reportFields(SYKMELDT_BESVARELSE_EVENT,
+        metricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
                 sykmeldtRegistrering.getBesvarelse().getUtdanning(),
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
     }

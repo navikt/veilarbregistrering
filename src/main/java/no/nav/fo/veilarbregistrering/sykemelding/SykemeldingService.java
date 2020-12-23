@@ -2,22 +2,23 @@ package no.nav.fo.veilarbregistrering.sykemelding;
 
 import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.metrics.Events;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MAKSDATO_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 
 public class SykemeldingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SykemeldingService.class);
 
     public final SykemeldingGateway sykemeldingGateway;
+    private final MetricsService metricsService;
 
-    public SykemeldingService(SykemeldingGateway sykemeldingGateway) {
+    public SykemeldingService(SykemeldingGateway sykemeldingGateway, MetricsService metricsService) {
         this.sykemeldingGateway = sykemeldingGateway;
+        this.metricsService = metricsService;
     }
 
     public SykmeldtInfoData hentSykmeldtInfoData(Foedselsnummer fnr) {
@@ -33,7 +34,7 @@ public class SykemeldingService {
             Maksdato maksdato = sykemeldingGateway.hentReberegnetMaksdato(fnr);
 
             LOG.info(maksdato.toString());
-            reportTags(MAKSDATO_EVENT, maksdato);
+            metricsService.reportTags(Events.MAKSDATO_EVENT, maksdato);
 
             boolean erSykmeldtOver39Uker = maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.now());
 

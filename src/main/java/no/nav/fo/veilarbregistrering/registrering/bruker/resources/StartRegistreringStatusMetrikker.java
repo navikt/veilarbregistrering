@@ -1,17 +1,21 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
+import no.nav.fo.veilarbregistrering.metrics.Event;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType;
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
+
 
 class StartRegistreringStatusMetrikker {
-    static void rapporterRegistreringsstatus(StartRegistreringStatusDto registreringStatus) {
-        Event event = MetricsFactory.createEvent("registrering.bruker.data");
-        event.addFieldToReport("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT);
-        event.addFieldToReport("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING);
-        event.addFieldToReport("sykmeldUnder39uker", registreringStatus.getRegistreringType() == RegistreringType.SPERRET);
-        event.addFieldToReport("sykmeldOver39uker", registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING);
-        event.addFieldToReport("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder());
-        event.report();
+    static void rapporterRegistreringsstatus(MetricsService metricsService, StartRegistreringStatusDto registreringStatus) {
+        metricsService.reportFields(
+                Event.of("registrering.bruker.data"),
+                Metric.of("erAktivIArena", registreringStatus.getRegistreringType() == RegistreringType.ALLEREDE_REGISTRERT),
+                Metric.of("kreverReaktivering", registreringStatus.getRegistreringType() == RegistreringType.REAKTIVERING),
+                Metric.of("sykmeldUnder39uker", registreringStatus.getRegistreringType() == RegistreringType.SPERRET),
+                Metric.of("sykmeldOver39uker", registreringStatus.getRegistreringType() == RegistreringType.SYKMELDT_REGISTRERING),
+                Metric.of("jobbetSiste6av12Mnd", registreringStatus.getJobbetSeksAvTolvSisteManeder())
+        );
+
     }
 }

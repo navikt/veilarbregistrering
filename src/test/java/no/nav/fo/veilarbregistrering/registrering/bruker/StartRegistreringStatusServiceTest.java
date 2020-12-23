@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -12,7 +14,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,14 +47,16 @@ public class StartRegistreringStatusServiceTest {
         oppfolgingClient = mock(OppfolgingClient.class);
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
-        SykemeldingService sykemeldingService = new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient));
+        MetricsService metricsService = mock(MetricsService.class);
+        SykemeldingService sykemeldingService = new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), metricsService);
         personGateway = mock(PersonGateway.class);
         UnleashService unleashService = mock(UnleashService.class);
 
         brukerRegistreringService = new StartRegistreringStatusService(
                     arbeidsforholdGateway,
                     new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService),
-                    personGateway);
+                    personGateway,
+                    metricsService);
     }
 
     @Test
