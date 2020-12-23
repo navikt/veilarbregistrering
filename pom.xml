@@ -5,97 +5,89 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.common</groupId>
-        <artifactId>mor-pom</artifactId>
-        <version>1.2020.09.07_16.00-4f2f19a76bb2</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <relativePath/>
     </parent>
 
-    <groupId>no.nav.fo</groupId>
+    <groupId>no.nav</groupId>
     <artifactId>veilarbregistrering</artifactId>
+    <name>veilarbregistrering</name>
     <version>1</version>
-    <packaging>war</packaging>
 
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>http://packages.confluent.io/maven</url>
-        </repository>
-    </repositories>
+
 
     <properties>
-        <kotlin.version>1.2.41</kotlin.version>
+        <java.version>1.8</java.version>
+        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
+        <common.version>2.2020.05.29_11.07-5849331d146f</common.version>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+        <springfox.version>2.9.2</springfox.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>bom</artifactId>
-                <version>${project.parent.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <!-- Spring boot -->
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>metrics</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>json</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.10.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>nais</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
+
+        <!-- Nav-tjenester -->
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
+            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
+
+        <!-- Common-avhengigheter -->
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>abac</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>metrics</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <version>1.2019.09.25-00.21-49b69f0625e0</version>
+            <groupId>no.nav.common</groupId>
+            <artifactId>leader-election</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.bekk.bekkopen</groupId>
-            <artifactId>nocommons</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>util</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>feature-toggle</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.arbeid</groupId>
@@ -107,69 +99,23 @@
             <artifactId>kafka-avro-serializer</artifactId>
             <version>5.0.2</version>
         </dependency>
+
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>oidc</artifactId>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>oidc-security</artifactId>
-            <version>1.2020.02.21_09.07-69c044da9255</version>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>javax.inject</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-            <version>2.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -179,11 +125,18 @@
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
+            <version>19.3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>4.0.3</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -191,12 +144,35 @@
             <version>2.7.9</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>api-app</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>test-config</artifactId>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
@@ -230,38 +206,6 @@
             <version>2.2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>jobutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>leader-election</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
             <version>5.4.1</version>
@@ -279,20 +223,6 @@
             <version>5.4.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <!-- Eksplisitt bruk vår egen ${kotlin.version} her i stedet for å la versjonen komme fra common-java-modules.
-                 Dette passer på at vi også har lik versjon i kotlin-maven-plugin.
-                 Dersom vår versjon endres til noe annet enn definert i common-java-modules, vil vi få en byggfeil. -->
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <!-- Feature toggle -->
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>feature-toggle</artifactId>
-        </dependency>
 
     </dependencies>
 
@@ -300,12 +230,17 @@
         <finalName>veilarbregistrering</finalName>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
                 <executions>
                     <execution>
                         <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -318,6 +253,7 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
+                        <phase>test-compile</phase>
                         <goals> <goal>test-compile</goal> </goals>
                         <configuration>
                             <sourceDirs>
@@ -327,10 +263,14 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <jvmTarget>11</jvmTarget>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
                     <execution>
@@ -352,10 +292,29 @@
                         <phase>test-compile</phase>
                         <goals> <goal>testCompile</goal> </goals>
                     </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
                 </executions>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
             <id>github</id>
@@ -380,6 +339,11 @@
                 <repository>
                     <id>internal-mirror-github-navikt</id>
                     <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+                </repository>
+                <repository>
+                    <id>confluent</id>
+                    <name>confluent</name>
+                    <url>https://packages.confluent.io/maven/</url>
                 </repository>
             </repositories>
 

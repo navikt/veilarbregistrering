@@ -6,5 +6,10 @@
             <username>token</username>
             <password>${env.GITHUB_TOKEN}</password>
         </server>
+        <server>
+            <id>confluent</id>
+            <name>confluent</name>
+            <url>https://packages.confluent.io/maven/</url>
+        </server>
     </servers>
 </settings>
