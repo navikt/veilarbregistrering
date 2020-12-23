@@ -6,12 +6,13 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class ProfileringRepositoryTest {
 
     @Test
     fun `profilering skal sette riktig informasjon i database`() {
-        val jdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
+        val jdbcTemplate = Mockito.mock(NamedParameterJdbcTemplate::class.java)
         val profileringRepository = ProfileringRepositoryImpl(jdbcTemplate)
         val profilering = Profilering()
                 .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
@@ -19,10 +20,22 @@ class ProfileringRepositoryTest {
                 .setAlder(36)
         val brukerregistreringId = 7258365L
         profileringRepository.lagreProfilering(brukerregistreringId, profilering)
-        val query = String.format("insert into %s (%s,%s,%s) values (?,?,?)", BRUKER_PROFILERING, BRUKER_REGISTRERING_ID, PROFILERING_TYPE, VERDI)
-        verify(jdbcTemplate).update(query, brukerregistreringId, ALDER, profilering.alder)
-        verify(jdbcTemplate).update(query, brukerregistreringId, ARB_6_AV_SISTE_12_MND, profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder)
-        verify(jdbcTemplate).update(query, brukerregistreringId, RESULTAT_PROFILERING, profilering.innsatsgruppe.arenakode)
+        val query = "INSERT INTO $BRUKER_PROFILERING ($BRUKER_REGISTRERING_ID, $PROFILERING_TYPE, $VERDI)" +
+                " VALUES (:bruker_registrering_id, :type, :verdi)"
+        val idParam = mapOf("bruker_registrering_id" to brukerregistreringId)
+
+        verify(jdbcTemplate).update(query, idParam + mapOf("type" to ALDER, "verdi" to profilering.alder))
+        verify(jdbcTemplate).update(
+            query,
+            idParam + mapOf(
+                "type" to ARB_6_AV_SISTE_12_MND,
+                "verdi" to profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder
+            )
+        )
+        verify(jdbcTemplate).update(
+            query,
+            idParam + mapOf("type" to RESULTAT_PROFILERING, "verdi" to profilering.innsatsgruppe.arenakode)
+        )
     }
 
     companion object {
