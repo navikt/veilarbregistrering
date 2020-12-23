@@ -41,7 +41,7 @@ public class RepositoryConfig {
     }
 
     @Bean
-    ProfileringRepository profileringRepository(JdbcTemplate db) {
+    ProfileringRepository profileringRepository(NamedParameterJdbcTemplate db) {
         return new ProfileringRepositoryImpl(db);
     }
 

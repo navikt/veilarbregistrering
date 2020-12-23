@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,5 +35,8 @@ open class ProfileringRepositoryDbIntegrationTest(
                 .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
                 .setInnsatsgruppe(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING)
         profileringRepository.lagreProfilering(9, profilering)
+
+        val profileringFraDb = profileringRepository.hentProfileringForId(9)
+        assertThat(profileringFraDb.toString()).isEqualTo(profilering.toString())
     }
 }
