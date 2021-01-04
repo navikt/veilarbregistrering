@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.rest.RestUtils;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static no.nav.common.auth.SsoToken.Type.OIDC;
 import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 class AaregRestClient {
@@ -80,7 +82,7 @@ class AaregRestClient {
                 .target(baseUrl + "/v1/arbeidstaker/arbeidsforhold")
                 .queryParam("regelverk=A_ORDNINGEN")
                 .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .header(AUTHORIZATION, "Bearer " + SubjectHandler.getSsoToken(OIDC))
                 .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(NAV_PERSONIDENT, fnr.stringValue())
                 .header(NAV_CALL_ID_HEADER, MDC.get(MDC_CALL_ID))

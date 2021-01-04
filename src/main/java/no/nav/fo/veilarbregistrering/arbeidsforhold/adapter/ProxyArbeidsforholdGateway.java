@@ -54,7 +54,7 @@ public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
         try {
             flereArbeidsforhold = restArbeidsforholdGateway.hentArbeidsforhold(fnr);
         } catch (RuntimeException e) {
-            LOG.error("Hent arbeidsforhold via REST feilet: ", e);
+            LOG.error("Hent arbeidsforhold via REST feilet", e);
             flereArbeidsforhold = FlereArbeidsforhold.of(null);
         }
 
