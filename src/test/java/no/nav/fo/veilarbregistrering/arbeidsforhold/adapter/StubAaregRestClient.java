@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 class StubAaregRestClient extends AaregRestClient {
 
     StubAaregRestClient() {
-        super(null, null, null);
+        super(null, null);
     }
 
     @Override

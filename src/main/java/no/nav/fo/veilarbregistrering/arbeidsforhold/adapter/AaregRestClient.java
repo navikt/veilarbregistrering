@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +44,10 @@ class AaregRestClient {
 
     private final String baseUrl;
     private final SystemUserTokenProvider systemUserTokenProvider;
-    private final GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
-    AaregRestClient(
-            String baseUrl,
-            SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
+    AaregRestClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
-        this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
     }
 
     /**
@@ -83,7 +77,7 @@ class AaregRestClient {
     }
 
     protected String utforRequest(Foedselsnummer fnr) {
-        String token = this.gammelSystemUserTokenProvider.getToken();
+        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
         return RestUtils.createClient()
                 .target(baseUrl + "/v1/arbeidstaker/arbeidsforhold")
                 .queryParam("regelverk=A_ORDNINGEN")

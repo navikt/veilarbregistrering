@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.common.oidc.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
@@ -28,13 +27,8 @@ public class AAregServiceWSConfig {
     }
 
     @Bean
-    AaregRestClient aaregRestClient(
-            SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
-        return new AaregRestClient(
-                getRequiredProperty(REST_URL),
-                systemUserTokenProvider,
-                gammelSystemUserTokenProvider);
+    AaregRestClient aaregRestClient(SystemUserTokenProvider systemUserTokenProvider) {
+        return new AaregRestClient(getRequiredProperty(REST_URL), systemUserTokenProvider);
     }
 
     @Bean
