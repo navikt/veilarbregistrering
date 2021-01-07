@@ -12,7 +12,7 @@ public class ArbeidsforholdMapperTest {
     public void skalMappeAlleVerdier() {
         LocalDate fom = LocalDate.of(2017,12,1);
         LocalDate tom = LocalDate.of(2017,12,30);
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold("453542352", "STK", fom, tom);
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold("453542352", "STK", fom, tom, null);
 
         ArbeidsforholdDto arbeidsforholdDto = ArbeidsforholdMapper.map(arbeidsforhold);
 

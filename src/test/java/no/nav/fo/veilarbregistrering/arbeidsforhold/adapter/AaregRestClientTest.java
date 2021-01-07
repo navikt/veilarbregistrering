@@ -36,6 +36,8 @@ public class AaregRestClientTest {
         arbeidsavtaleDto.setYrke("2130123");
         arbeidsforholdDto.setArbeidsavtaler(Collections.singletonList(arbeidsavtaleDto));
 
+        arbeidsforholdDto.setNavArbeidsforholdId(123456);
+
         assertThat(arbeidsforholdDtos).containsOnly(arbeidsforholdDto);
     }
 }

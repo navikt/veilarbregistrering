@@ -19,7 +19,8 @@ class ArbeidsforholdMapper {
                                 .map(Yrker::getKodeRef)
                                 .orElse("utenstyrkkode"),
                         getFom(arbeidsforhold.getAnsettelsesPeriode()),
-                        getTom(arbeidsforhold.getAnsettelsesPeriode()));
+                        getTom(arbeidsforhold.getAnsettelsesPeriode()),
+                        String.valueOf(arbeidsforhold.getArbeidsforholdIDnav()));
     }
 
     private static String map(Aktoer arbeidsgiver) {

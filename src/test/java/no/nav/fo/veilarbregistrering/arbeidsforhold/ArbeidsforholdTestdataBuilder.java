@@ -19,28 +19,28 @@ public class ArbeidsforholdTestdataBuilder {
     public static Arbeidsforhold paagaaende() {
         LocalDate fom = LocalDate.of(2017,11,1);
         LocalDate tom = null;
-        return new Arbeidsforhold("555555555", null, fom, tom);
+        return new Arbeidsforhold("555555555", null, fom, tom, null);
     }
 
     public static Arbeidsforhold siste() {
         LocalDate fom = LocalDate.of(2017,11,1);
         LocalDate tom = LocalDate.of(2017,11,30);
-        return new Arbeidsforhold("123456789", null, fom, tom);
+        return new Arbeidsforhold("123456789", null, fom, tom, null);
     }
 
     public static Arbeidsforhold nestSiste() {
         LocalDate fom = LocalDate.of(2017,9,1);
         LocalDate tom = LocalDate.of(2017,9,30);
-        return new Arbeidsforhold("987654321", null, fom, tom);
+        return new Arbeidsforhold("987654321", null, fom, tom, null);
     }
 
     public static Arbeidsforhold eldre() {
         LocalDate fom = LocalDate.of(2017,4,1);
         LocalDate tom = LocalDate.of(2017,4,30);
-        return new Arbeidsforhold(null, null, fom, tom);
+        return new Arbeidsforhold(null, null, fom, tom, null);
     }
 
     public static Arbeidsforhold medDato(LocalDate fom, LocalDate tom) {
-        return new Arbeidsforhold(null, null, fom, tom);
+        return new Arbeidsforhold(null, null, fom, tom, null);
     }
 }

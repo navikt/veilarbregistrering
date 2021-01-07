@@ -9,16 +9,18 @@ public class Arbeidsforhold {
     private final String styrk;
     private final LocalDate fom;
     private final LocalDate tom;
+    private final String navArbeidsforholdId;
 
-    public Arbeidsforhold(String arbeidsgiverOrgnummer, String styrk, LocalDate fom, LocalDate tom) {
+    public Arbeidsforhold(String arbeidsgiverOrgnummer, String styrk, LocalDate fom, LocalDate tom, String navArbeidsforholdId) {
         this.arbeidsgiverOrgnummer = arbeidsgiverOrgnummer;
         this.styrk = styrk;
         this.fom = fom;
         this.tom = tom;
+        this.navArbeidsforholdId = navArbeidsforholdId;
     }
 
     static Arbeidsforhold utenStyrkkode() {
-        return new Arbeidsforhold(null, "utenstyrkkode", null, null);
+        return new Arbeidsforhold(null, "utenstyrkkode", null, null, null);
     }
 
     boolean erDatoInnenforPeriode(LocalDate innevaerendeMnd) {
@@ -88,6 +90,11 @@ public class Arbeidsforhold {
     }
 
     public String toString() {
-        return "Arbeidsforhold(arbeidsgiverOrgnummer=" + this.getArbeidsgiverOrgnummer() + ", styrk=" + this.getStyrk() + ", fom=" + this.getFom() + ", tom=" + this.getTom() + ")";
+        return "Arbeidsforhold(" +
+                "arbeidsgiverOrgnummer=" + this.getArbeidsgiverOrgnummer() +
+                ", styrk=" + this.getStyrk() +
+                ", fom=" + this.getFom() +
+                ", tom=" + this.getTom() +
+                ", navArbeidsforholdId=" + this.navArbeidsforholdId + ")";
     }
 }

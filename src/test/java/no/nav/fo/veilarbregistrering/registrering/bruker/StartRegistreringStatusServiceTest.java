@@ -161,7 +161,7 @@ public class StartRegistreringStatusServiceTest {
 
     private List<Arbeidsforhold> arbeidsforholdSomOppfyllerKrav() {
         return Collections.singletonList(new Arbeidsforhold(
-                "orgnummer", "styrk", LocalDate.of(2017, 1, 10), null));
+                "orgnummer", "styrk", LocalDate.of(2017, 1, 10), null, null));
     }
 
     private OppfolgingStatusData inaktivBruker() {
@@ -215,9 +215,8 @@ public class StartRegistreringStatusServiceTest {
                         "orgnummer",
                         "styrk",
                         LocalDate.of(2017, 1, 10),
-                        null
-                )))
-        );
+                        null,
+                        null))));
     }
 
     private void mockOppfolgingMedRespons(OppfolgingStatusData oppfolgingStatusData) {

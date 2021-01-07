@@ -72,7 +72,7 @@ public class FlereArbeidsforholdTest {
 
     @Test
     public void skalDefaultArbeidsforhold() {
-        Arbeidsforhold arbeidsforhold = new Arbeidsforhold(null, "utenstyrkkode", null, null);
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold(null, "utenstyrkkode", null, null, null);
         assertThat(FlereArbeidsforhold.of(Collections.emptyList()).siste()).isEqualTo(arbeidsforhold);
     }
 

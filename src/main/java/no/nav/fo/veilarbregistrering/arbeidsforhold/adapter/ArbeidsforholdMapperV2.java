@@ -14,7 +14,10 @@ class ArbeidsforholdMapperV2 {
                         .map(ArbeidsavtaleDto::getYrke)
                         .orElse("utenstyrkkode"),
                 getFom(arbeidsforholdDto.getAnsettelsesperiode()),
-                getTom(arbeidsforholdDto.getAnsettelsesperiode()));
+                getTom(arbeidsforholdDto.getAnsettelsesperiode()),
+                ofNullable(arbeidsforholdDto.getNavArbeidsforholdId())
+                        .map(id -> id.toString())
+                        .orElse(null));
     }
 
     private static String map(ArbeidsgiverDto arbeidsgiver) {
