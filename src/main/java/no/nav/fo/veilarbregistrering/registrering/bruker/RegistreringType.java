@@ -7,7 +7,11 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 public enum RegistreringType implements Metric {
     REAKTIVERING, SPERRET, ALLEREDE_REGISTRERT, SYKMELDT_REGISTRERING, ORDINAER_REGISTRERING;
 
-    protected static RegistreringType beregnRegistreringType(Oppfolgingsstatus oppfolgingsstatus, SykmeldtInfoData sykeforloepMetaData) {
+    protected static RegistreringType beregnRegistreringType(
+            Oppfolgingsstatus oppfolgingsstatus,
+            SykmeldtInfoData sykeforloepMetaData,
+            boolean maksdatoToggletAv) {
+
         if (oppfolgingsstatus.isUnderOppfolging() && !oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
             return ALLEREDE_REGISTRERT;
 
@@ -15,7 +19,9 @@ public enum RegistreringType implements Metric {
             return REAKTIVERING;
 
         } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)) {
-            if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
+            if (maksdatoToggletAv) {
+                return SYKMELDT_REGISTRERING;
+            } else if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
                 return SYKMELDT_REGISTRERING;
             } else {
                 return SPERRET;

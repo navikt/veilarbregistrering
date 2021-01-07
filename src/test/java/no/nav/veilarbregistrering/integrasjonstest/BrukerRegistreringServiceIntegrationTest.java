@@ -17,6 +17,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -148,6 +149,9 @@ class BrukerRegistreringServiceIntegrationTest {
     public static class BrukerregistreringConfigTest {
 
         @Bean
+        public UnleashService unleashService() { return mock(UnleashService.class); }
+
+        @Bean
         public OppfolgingGateway oppfolgingGateway() {
             return mock(OppfolgingGateway.class);
         }
@@ -168,8 +172,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        public BrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService) {
-            return new BrukerTilstandService(oppfolgingGateway, sykemeldingService);
+        public BrukerTilstandService hentBrukerTilstandService(OppfolgingGateway oppfolgingGateway, SykemeldingService sykemeldingService, UnleashService unleashService) {
+            return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService);
         }
 
         @Bean

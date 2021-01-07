@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -53,6 +54,7 @@ class SykmeldtInfoClientTest {
         oppfolgingClient = buildOppfolgingClient();
         BrukerRegistreringRepository brukerRegistreringRepository = mock(BrukerRegistreringRepository.class);
         sykeforloepMetadataClient = buildSykeForloepClient();
+        UnleashService unleashService = mock(UnleashService.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
         ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
@@ -61,7 +63,7 @@ class SykmeldtInfoClientTest {
                 new SykmeldtRegistreringService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient))),
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)), unleashService),
                         oppfolgingGateway,
                         brukerRegistreringRepository,
                         manuellRegistreringRepository);

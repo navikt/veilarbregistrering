@@ -31,7 +31,7 @@ public class RegistreringTypeTest {
 
         SykmeldtInfoData sykeforlop = new SykmeldtInfoData(maksDato, erArbeidsrettetOppfolgingSykmeldtInngangAktiv);
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop);
+        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SPERRET);
     }
@@ -52,7 +52,7 @@ public class RegistreringTypeTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop);
+        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SPERRET);
     }
@@ -73,7 +73,7 @@ public class RegistreringTypeTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop);
+        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
     }

@@ -22,6 +22,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
+import no.nav.sbl.featuretoggle.unleash.UnleashService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -82,9 +83,12 @@ open class HentBrukerRegistreringServiceIntegrationTest(
             manuellRegistreringRepository: ManuellRegistreringRepository) = HentRegistreringService(brukerRegistreringRepository, profileringRepository, manuellRegistreringRepository, norg2Gateway())
 
             @Bean
-            open fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway?, sykemeldingService: SykemeldingService?): BrukerTilstandService? {
-                return BrukerTilstandService(oppfolgingGateway, sykemeldingService)
+            open fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway, sykemeldingService: SykemeldingService, unleashService: UnleashService): BrukerTilstandService {
+                return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService)
             }
+
+            @Bean
+            open fun unleashService(): UnleashService = Mockito.mock(UnleashService::class.java)
 
             @Bean
             open fun sykemeldingService(): SykemeldingService = Mockito.mock(SykemeldingService::class.java)
