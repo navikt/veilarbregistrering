@@ -80,7 +80,7 @@ class AaregRestClient {
         String token = this.systemUserTokenProvider.getSystemUserAccessToken();
         return RestUtils.createClient()
                 .target(baseUrl + "/v1/arbeidstaker/arbeidsforhold")
-                .queryParam("regelverk=A_ORDNINGEN")
+                .queryParam("regelverk", "A_ORDNINGEN")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + SubjectHandler.getSsoToken(OIDC)
                         .orElseThrow(() -> new IllegalStateException("Fant ikke SSO token via OIDC")))
