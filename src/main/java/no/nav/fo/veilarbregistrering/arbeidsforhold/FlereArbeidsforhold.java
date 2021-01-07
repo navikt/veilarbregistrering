@@ -89,4 +89,10 @@ public class FlereArbeidsforhold {
                 "flereArbeidsforhold=" + flereArbeidsforhold +
                 '}';
     }
+
+    public boolean erLik(FlereArbeidsforhold arbeidsforholdFraRest) {
+        boolean inneholderInternListeAlleInnkommende = this.flereArbeidsforhold.containsAll(arbeidsforholdFraRest.flereArbeidsforhold);
+        boolean inneholderInnkommendeAlleInternListe = arbeidsforholdFraRest.flereArbeidsforhold.containsAll(this.flereArbeidsforhold);
+        return inneholderInternListeAlleInnkommende && inneholderInnkommendeAlleInternListe;
+    }
 }
