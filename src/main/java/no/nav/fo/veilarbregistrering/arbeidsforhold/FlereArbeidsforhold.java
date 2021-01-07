@@ -47,14 +47,12 @@ public class FlereArbeidsforhold {
 
     public Optional<Arbeidsforhold> sisteUtenNoeEkstra() {
         return flereArbeidsforhold.stream()
-                .min(sorterArbeidsforholdEtterTilDato()
-                        .thenComparing(Arbeidsforhold::getFom));
+                .min(sorterArbeidsforholdEtterTilDato().thenComparing(Arbeidsforhold::getFom));
     }
 
     public Arbeidsforhold siste() {
         return flereArbeidsforhold.stream()
-                .min(sorterArbeidsforholdEtterTilDato()
-                        .thenComparing(Arbeidsforhold::getFom))
+                .min(sorterArbeidsforholdEtterTilDato().thenComparing(Arbeidsforhold::getFom))
                 .orElse(Arbeidsforhold.utenStyrkkode());
     }
 
