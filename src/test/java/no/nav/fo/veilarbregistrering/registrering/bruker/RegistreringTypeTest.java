@@ -17,6 +17,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RegistreringTypeTest {
 
     @Test
+    public void beregnRegistreringType_gir_SYKMELDT_REGISTRERING_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Null_Og_Toggle_Er_Skrudd_På() {
+        Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
+                false,
+                false,
+                true,
+                Formidlingsgruppe.of("IARBS"),
+                Servicegruppe.of("VURDI"),
+                Rettighetsgruppe.of("IYT"));
+
+        String maksDato = null;
+        boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv = false;
+
+        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(maksDato, erArbeidsrettetOppfolgingSykmeldtInngangAktiv);
+
+        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, true);
+
+        assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
+    }
+
+    @Test
     public void beregnRegistreringType_gir_SPERRET_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Null() {
         Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
                 false,
