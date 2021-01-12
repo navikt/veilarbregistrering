@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
-import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.PUBLISERT_KAFKA;
+import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*;
 
 public class PubliseringAvEventsService {
 
@@ -81,6 +80,7 @@ public class PubliseringAvEventsService {
         try {
             rapporterRegistreringStatusAntall(OVERFORT_ARENA);
             rapporterRegistreringStatusAntall(PUBLISERT_KAFKA);
+            rapporterRegistreringStatusAntall(MOTTATT);
         } catch (Exception e) {
             LOG.error("Feil ved rapportering av antall statuser", e);
         }
