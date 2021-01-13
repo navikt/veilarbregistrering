@@ -43,16 +43,7 @@ public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
 
     private FlereArbeidsforhold hentArbeidsforholdFraRest(Foedselsnummer fnr) {
         LOG.info("Henter arbeidsforhold fra REST-tjenesten");
-
-        FlereArbeidsforhold flereArbeidsforhold;
-        try {
-            flereArbeidsforhold = restArbeidsforholdGateway.hentArbeidsforhold(fnr);
-        } catch (RuntimeException e) {
-            LOG.error("Hent arbeidsforhold via REST feilet", e);
-            flereArbeidsforhold = FlereArbeidsforhold.of(null);
-        }
-
-        return flereArbeidsforhold;
+        return restArbeidsforholdGateway.hentArbeidsforhold(fnr);
     }
 
     private boolean arbeidsforholdRestIsEnabled() {
