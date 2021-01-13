@@ -3,8 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,20 +10,23 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.mockito.Mockito.*;
 
 class ArbeidsforholdGatewayTest {
 
-    private static ArbeidsforholdV3 arbeidsforholdV3;
     private static AnnotationConfigApplicationContext context;
 
+    private static AaregRestClient aaregRestClient;
 
     @BeforeAll
     public static void setup() {
-        arbeidsforholdV3 = mock(ArbeidsforholdV3.class);
+        aaregRestClient = mock(AaregRestClient.class);
 
-        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(SoapArbeidsforholdGateway.class)
-                .addConstructorArgValue(arbeidsforholdV3).getBeanDefinition();
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(RestArbeidsforholdGateway.class)
+                .addConstructorArgValue(aaregRestClient).getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();
         context.register(CacheConfig.class);
@@ -40,21 +41,45 @@ class ArbeidsforholdGatewayTest {
     }
 
     @Test
-    public void skalCacheVedKallPaaSammeFnr() throws Exception {
+    public void skalCacheVedKallPaaSammeFnr() {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
-        when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
+        when(aaregRestClient.finnArbeidsforhold(any())).thenReturn(Arrays.asList(getArbeidsforholdDto()));
         arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
         arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
-        verify(arbeidsforholdV3, times(1)).finnArbeidsforholdPrArbeidstaker(any());
+        verify(aaregRestClient, times(1)).finnArbeidsforhold(any());
     }
 
     @Test
-    public void skalIkkeCacheVedKallPaaForskjelligFnr() throws Exception {
+    public void skalIkkeCacheVedKallPaaForskjelligFnr() {
         ArbeidsforholdGateway arbeidsforholdGateway = context.getBean(ArbeidsforholdGateway.class);
-        when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any())).thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
+        when(aaregRestClient.finnArbeidsforhold(any())).thenReturn(Arrays.asList(getArbeidsforholdDto()));
         arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
         arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("109987654321"));
-        verify(arbeidsforholdV3, times(2)).finnArbeidsforholdPrArbeidstaker(any());
+        verify(aaregRestClient, times(2)).finnArbeidsforhold(any());
     }
 
+    private ArbeidsforholdDto getArbeidsforholdDto() {
+
+        ArbeidsforholdDto arbeidsforholdDto = new ArbeidsforholdDto();
+
+        ArbeidsgiverDto arbeidsgiverDto = new ArbeidsgiverDto();
+        arbeidsgiverDto.setOrganisasjonsnummer("981129687");
+        arbeidsgiverDto.setType("Organisasjon");
+        arbeidsforholdDto.setArbeidsgiver(arbeidsgiverDto);
+
+        AnsettelsesperiodeDto ansettelsesperiodeDto = new AnsettelsesperiodeDto();
+        PeriodeDto periodeDto = new PeriodeDto();
+        periodeDto.setFom("2014-07-01");
+        periodeDto.setTom("2015-12-31");
+        ansettelsesperiodeDto.setPeriode(periodeDto);
+        arbeidsforholdDto.setAnsettelsesperiode(ansettelsesperiodeDto);
+
+        ArbeidsavtaleDto arbeidsavtaleDto = new ArbeidsavtaleDto();
+        arbeidsavtaleDto.setYrke("2130123");
+        arbeidsforholdDto.setArbeidsavtaler(Collections.singletonList(arbeidsavtaleDto));
+
+        arbeidsforholdDto.setNavArbeidsforholdId(123456);
+
+        return arbeidsforholdDto;
+    }
 }
