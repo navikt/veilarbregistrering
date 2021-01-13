@@ -78,16 +78,10 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntallForPublisering() {
         try {
-            rapporterRegistreringStatusAntall(OVERFORT_ARENA);
-            rapporterRegistreringStatusAntall(PUBLISERT_KAFKA);
-            rapporterRegistreringStatusAntall(MOTTATT);
+            registreringTilstandRepository.hentAntallPerStatus()
+                    .forEach(PubliseringMetrikker::rapporterRegistreringStatusAntall);
         } catch (Exception e) {
             LOG.error("Feil ved rapportering av antall statuser", e);
         }
-    }
-
-    private void rapporterRegistreringStatusAntall(Status status) {
-        int antall = registreringTilstandRepository.hentAntall(status);
-        PubliseringMetrikker.rapporterRegistreringStatusAntall(status, antall);
     }
 }

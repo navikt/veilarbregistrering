@@ -6,6 +6,6 @@ interface RegistreringTilstandRepository {
     fun hentRegistreringTilstand(id: Long): RegistreringTilstand
     fun finnRegistreringTilstanderMed(status: Status): List<RegistreringTilstand>
     fun finnNesteRegistreringTilstandMed(status: Status): RegistreringTilstand?
-    fun hentAntall(status: Status): Int
+    fun hentAntallPerStatus(): Map<String, Int>
     fun hentTilstandFor(registreringsId: Long): RegistreringTilstand
 }

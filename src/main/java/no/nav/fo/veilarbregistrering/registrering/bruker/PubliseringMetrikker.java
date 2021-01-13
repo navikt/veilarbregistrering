@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import io.micrometer.core.instrument.Tag;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.metrics.MetricsFactory;
 
 import java.util.Arrays;
@@ -11,13 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PubliseringMetrikker {
 
-    private static final Map<Status, AtomicInteger> statusVerdier = new HashMap<>();
+    private static final Map<String, AtomicInteger> statusVerdier = new HashMap<>();
 
-    public static void rapporterRegistreringStatusAntall(Status status, int antall) {
+    public static void rapporterRegistreringStatusAntall(String status, int antall) {
         AtomicInteger registrertAntall = statusVerdier.computeIfAbsent(status, (s) -> {
             AtomicInteger atomiskAntall = new AtomicInteger();
             MetricsFactory.getMeterRegistry().gauge("veilarbregistrering_registrert_status",
-                    Arrays.asList(Tag.of("status", status.name())),
+                    Arrays.asList(Tag.of("status", status)),
                     atomiskAntall, AtomicInteger::get
             );
             return atomiskAntall;
