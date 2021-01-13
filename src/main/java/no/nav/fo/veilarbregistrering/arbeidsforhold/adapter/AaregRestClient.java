@@ -3,25 +3,29 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import no.nav.common.auth.SubjectHandler;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.sbl.rest.RestUtils;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static no.nav.common.auth.SsoToken.Type.OIDC;
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
+import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 
 class AaregRestClient {
 
@@ -54,40 +58,46 @@ class AaregRestClient {
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     List<ArbeidsforholdDto> finnArbeidsforhold(Foedselsnummer fnr) {
+        String response = utforRequest(fnr);
+        return parse(response);
+    }
+
+    protected String utforRequest(Foedselsnummer fnr) {
+        String token = this.systemUserTokenProvider.getSystemUserToken();
         try {
-            String jsonResponse = utforRequest(fnr);
-            return parse(jsonResponse);
-
-        } catch (BadRequestException e) {
-            throw new RuntimeException("Ugyldig input", e);
-
-        } catch (NotAuthorizedException e) {
-            throw new RuntimeException("Token mangler eller er ugyldig", e);
-
-        } catch (ForbiddenException e) {
-            throw new RuntimeException("Ingen tilgang til forespurt ressurs", e);
-
-        } catch (NotFoundException e) {
-            LOG.warn("Søk på arbeidforhold gav ingen treff", e);
-            return Collections.emptyList();
-
-        } catch (RuntimeException e) {
+            Response response = RestClient.baseClient().newCall(
+                    new Request.Builder()
+                            .url(HttpUrl.parse(baseUrl).newBuilder()
+                                    .addPathSegments("/v1/arbeidstaker/arbeidsforhold")
+                                    .addQueryParameter("regelverk", "A_ORDNINGEN")
+                                    .build())
+                            .header(ACCEPT, APPLICATION_JSON_VALUE)
+                            .header(AUTHORIZATION, "Bearer " + "TOKEN"//TODO SubjectHandler.getSsoToken(OIDC)
+                                    //.orElseThrow(() -> new IllegalStateException("Fant ikke SSO token via OIDC")))
+                            )
+                            .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
+                            .header(NAV_PERSONIDENT, fnr.stringValue())
+                            .header(NAV_CALL_ID_HEADER, MDC.get(MDC_CALL_ID))
+                            .build())
+                    .execute();
+            return behandleResponse(response);
+        } catch (IOException e) {
             throw new RuntimeException("Noe gikk galt mot Aareg", e);
         }
     }
 
-    protected String utforRequest(Foedselsnummer fnr) {
-        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
-        return RestUtils.createClient()
-                .target(baseUrl + "/v1/arbeidstaker/arbeidsforhold")
-                .queryParam("regelverk", "A_ORDNINGEN")
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer " + SubjectHandler.getSsoToken(OIDC)
-                        .orElseThrow(() -> new IllegalStateException("Fant ikke SSO token via OIDC")))
-                .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
-                .header(NAV_PERSONIDENT, fnr.stringValue())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDC_CALL_ID))
-                .get(String.class);
+    private String behandleResponse(Response response) throws IOException {
+        if (response.isSuccessful()) {
+            return RestUtils.getBodyStr(response).orElseThrow();
+        } else {
+            String feilmelding = Map.of(
+                    BAD_REQUEST, "Ugyldig input",
+                    UNAUTHORIZED, "Token mangler eller er ugyldig",
+                    FORBIDDEN, "Ingen tilgang til forespurt ressurs",
+                    NOT_FOUND, "Søk på arbeidforhold gav ingen treff"
+            ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg");
+            throw new RuntimeException(feilmelding);
+        }
     }
 
     private static List<ArbeidsforholdDto> parse(String json) {

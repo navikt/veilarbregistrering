@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
@@ -19,10 +18,10 @@ public class SykemeldingResource implements SykemeldingApi {
 
     private final SykemeldingService sykemeldingService;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final Pep pepClient;
 
     public SykemeldingResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             SykemeldingService sykemeldingService) {
         this.pepClient = pepClient;
@@ -36,7 +35,7 @@ public class SykemeldingResource implements SykemeldingApi {
     public SykmeldtInfoData hentSykmeldtInfoData() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
+        //pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
         return sykemeldingService.hentSykmeldtInfoData(bruker.getGjeldendeFoedselsnummer());
     }

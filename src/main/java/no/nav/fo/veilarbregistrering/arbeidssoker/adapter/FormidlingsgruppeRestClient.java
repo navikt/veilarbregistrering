@@ -1,20 +1,26 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.google.gson.*;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.NotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
-import static no.nav.sbl.rest.RestUtils.withClient;
 
 class FormidlingsgruppeRestClient {
 
@@ -48,17 +54,23 @@ class FormidlingsgruppeRestClient {
     }
 
     String utfoerRequest(Foedselsnummer foedselsnummer, Periode periode) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                client -> client
-                        .target(url)
-                        .queryParam("fnr", foedselsnummer.stringValue())
-                        .queryParam("fraDato", periode.fraDatoAs_yyyyMMdd())
+        Request request = new Request.Builder()
+                .url(HttpUrl.parse(url).newBuilder()
+                        .addQueryParameter("fnr", foedselsnummer.stringValue())
+                        .addQueryParameter("fraDato", periode.fraDatoAs_yyyyMMdd())
                         //TODO: null-sjekk på tilDato - skal ikke alltid med
-                        .queryParam("tilDato", periode.tilDatoAs_yyyyMMdd())
-                        .request()
-                        .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
-                        .get(String.class));
+                        .addQueryParameter("tilDato", periode.tilDatoAs_yyyyMMdd())
+                        .build())
+                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
+                .build();
+
+        OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
+        try {
+            Response response = httpClient.newCall(request).execute();
+            return RestUtils.parseJsonResponseOrThrow(response, String.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static FormidlingsgruppeResponseDto parse(String jsonResponse) {

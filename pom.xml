@@ -16,14 +16,12 @@
     <name>veilarbregistrering</name>
     <version>1</version>
 
-
-
     <properties>
         <java.version>1.8</java.version>
         <kotlin.version>1.4.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
-        <common.version>2.2020.05.29_11.07-5849331d146f</common.version>
+        <common.version>2.2020.11.25_13.46-a7ba8251568a</common.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
@@ -49,6 +47,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Nav-tjenester -->
@@ -95,11 +98,38 @@
             <version>1.202010190947-866fe12</version>
         </dependency>
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>sts</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>auth</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+
+
+        <!-- ymse -->
+        <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <version>5.0.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>0.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
@@ -165,6 +195,11 @@
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>2.10.0</version>
+        </dependency>
 
 
         <!-- Test dependencies -->
@@ -222,6 +257,17 @@
             <artifactId>mockserver-client-java</artifactId>
             <version>5.4.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>runtime</scope>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>cxf</artifactId>
+            <version>1.2020.01.23-17.30-c6684f7b3098</version>
         </dependency>
 
     </dependencies>
@@ -308,8 +354,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>

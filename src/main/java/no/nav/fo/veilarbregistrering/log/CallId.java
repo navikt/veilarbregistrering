@@ -5,7 +5,8 @@ import org.slf4j.MDC;
 
 import java.nio.charset.StandardCharsets;
 
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
+import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
+
 
 public class CallId {
 

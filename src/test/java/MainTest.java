@@ -1,6 +1,8 @@
 import no.nav.apiapp.ApiApp;
 import no.nav.fo.veilarbregistrering.config.ApplicationTestConfig;
 import no.nav.testconfig.ApiAppTest;
+import okhttp3.HttpUrl;
+import okhttp3.HttpUrl;
 
 public class MainTest {
     public static final String TEST_PORT = "8810";
@@ -14,3 +16,5 @@ public class MainTest {
         ApiApp.runApp(ApplicationTestConfig.class, arguments);
     }
 }
+
+

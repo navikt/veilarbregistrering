@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper;
 import no.nav.fo.veilarbregistrering.log.CallId;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
+import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 
 /**
  * 1. Den skal konsumere TOPIC for "Formidlingsgruppe" fra Arena

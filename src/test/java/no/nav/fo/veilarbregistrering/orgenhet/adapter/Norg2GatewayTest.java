@@ -6,13 +6,13 @@ import no.nav.fo.veilarbregistrering.FileToJson;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
+import okhttp3.MediaType;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,9 +50,8 @@ public class Norg2GatewayTest {
             RsNavKontorDto[] rsNavKontorDto = gson.fromJson(json, RsNavKontorDto[].class);
 
             final Response response = Mockito.mock(Response.class);
-            Mockito.when(response.getStatus()).thenReturn(Response.Status.OK.getStatusCode());
-            Mockito.when(response.readEntity(Mockito.any(Class.class))).thenReturn(Arrays.asList(rsNavKontorDto));
-            Mockito.when(response.readEntity(Mockito.any(GenericType.class))).thenReturn(Arrays.asList(rsNavKontorDto));
+            Mockito.when(response.code()).thenReturn(200);
+            Mockito.when(response.body()).thenReturn(ResponseBody.create(MediaType.parse("application/json"), gson.toJson(rsNavKontorDto)));
 
             return response;
         }

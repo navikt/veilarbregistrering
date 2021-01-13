@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient;
 
-import no.nav.log.LogFilter;
-import no.nav.log.MDCConstants;
-import no.nav.sbl.util.EnvironmentUtils;
-import no.nav.sbl.util.StringUtils;
+import no.nav.common.log.LogFilter;
+import no.nav.common.log.MDCConstants;
+import no.nav.common.utils.EnvironmentUtils;
+import no.nav.common.utils.StringUtils;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,7 +15,8 @@ import java.io.IOException;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static no.nav.log.LogFilter.NAV_CALL_ID_HEADER_NAMES;
+import static no.nav.common.log.LogFilter.NAV_CALL_ID_HEADER_NAMES;
+
 
 public class LogInterceptor implements Interceptor {
 

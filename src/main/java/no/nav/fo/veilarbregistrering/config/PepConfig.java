@@ -1,31 +1,26 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.common.oidc.SystemUserTokenProvider;
-import no.nav.sbl.dialogarena.common.abac.pep.Pep;
-import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
+import no.nav.common.abac.Pep;
+import no.nav.common.abac.VeilarbPep;
+import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
+import no.nav.common.utils.Credentials;
+import no.nav.common.utils.NaisUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 
 @Configuration
-@Import({AbacContext.class})
+@EnableConfigurationProperties({EnvironmentProperties.class})
 public class PepConfig {
 
-    @Inject
-    SystemUserTokenProvider systemUserTokenProvider;
 
-    @Inject
     @Bean
-    public VeilarbAbacPepClient pepClient(Pep pep) {
-
-        return VeilarbAbacPepClient.ny()
-                .medPep(pep)
-                .medResourceTypePerson()
-                .medSystemUserTokenProvider(()->systemUserTokenProvider.getSystemUserAccessToken())
-                .bygg();
+    public Pep veilarbPep(EnvironmentProperties properties) {
+        Credentials serviceUserCredentials = NaisUtils.getCredentials("service_user");
+        return new VeilarbPep(
+                properties.getAbacUrl(), serviceUserCredentials.username,
+                serviceUserCredentials.password, new SpringAuditRequestInfoSupplier()
+        );
     }
-
 }

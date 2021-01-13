@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
@@ -11,7 +11,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 
 @Component
@@ -20,11 +19,12 @@ import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 public class OppgaveResource implements OppgaveApi {
 
     private final OppgaveService oppgaveService;
+    private Pep pepClient;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+
 
     public OppgaveResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             OppgaveService oppgaveService) {
         this.pepClient = pepClient;
@@ -37,7 +37,7 @@ public class OppgaveResource implements OppgaveApi {
     public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        // TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
 
         OppgaveResponse oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 

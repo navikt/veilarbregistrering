@@ -1,10 +1,11 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.config.RequestContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +46,12 @@ public class PersonGatewayTest {
 
     private VeilArbPersonClient buildClient() {
         SystemUserTokenProvider systemUserTokenProvider = mock(SystemUserTokenProvider.class);
-        Provider<HttpServletRequest> httpServletRequestProvider = mock(Provider.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
+        when(RequestContext.servletRequest()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
-        when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
+        when(systemUserTokenProvider.getSystemUserToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        VeilArbPersonClient veilArbPersonClient = this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider);
-        return veilArbPersonClient;
+        return this.veilArbPersonClient = new VeilArbPersonClient(baseUrl, systemUserTokenProvider);
     }
 
     @Test

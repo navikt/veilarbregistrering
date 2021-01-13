@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
-import no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
-import static no.nav.sbl.util.EnvironmentUtils.requireApplicationName;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.requireApplicationName;
 
 @Configuration
 public class UnleashConfig {

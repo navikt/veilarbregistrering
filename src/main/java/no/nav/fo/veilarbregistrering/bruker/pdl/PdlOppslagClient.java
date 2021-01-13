@@ -1,22 +1,25 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.log.MDCConstants;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.*;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.HentIdenterVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.HentPersonVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
-import no.nav.log.MDCConstants;
-import no.nav.sbl.rest.RestUtils;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.ws.rs.client.Entity;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
@@ -24,6 +27,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import static no.nav.common.rest.client.RestClient.baseClient;
+import static no.nav.common.rest.client.RestUtils.getBodyStr;
+import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
 
 class PdlOppslagClient {
 
@@ -64,17 +71,24 @@ class PdlOppslagClient {
         return response.getData().getPdlIdenter();
     }
 
-    String hentIdenterRequest(String personident, PdlHentIdenterRequest request) {
-        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
+    String hentIdenterRequest(String personident, PdlHentIdenterRequest requestBody) {
+        String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        return RestUtils.withClient(client ->
-                client.target(baseUrl)
-                        .request()
-                        .header(NAV_PERSONIDENT_HEADER, personident)
-                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", "Bearer " + token)
-                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                        .post(Entity.json(request), String.class));
+        try {
+            Response response = baseClient().newCall(
+                    new Request.Builder()
+                            .url(baseUrl)
+                            .header(NAV_PERSONIDENT_HEADER, personident)
+                            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+                            .header("Authorization", "Bearer " + token)
+                            .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                            .method("post", toJsonRequestBody(requestBody))
+                            .build())
+                    .execute();
+            return getBodyStr(response).orElseThrow();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String hentIdenterQuery() {
@@ -95,17 +109,24 @@ class PdlOppslagClient {
     }
 
     String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
+        String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        return RestUtils.withClient(client ->
-                client.target(baseUrl)
-                        .request()
-                        .header(NAV_PERSONIDENT_HEADER, fnr)
-                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", "Bearer " + token)
-                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                        .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-                        .post(Entity.json(request), String.class));
+        try {
+            Response response = baseClient().newCall(
+                    new Request.Builder()
+                            .url(baseUrl)
+                            .header(NAV_PERSONIDENT_HEADER, fnr)
+                            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+                            .header("Authorization", "Bearer " + token)
+                            .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                            .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
+                            .method("post", toJsonRequestBody(request))
+                            .build())
+                    .execute();
+            return getBodyStr(response).orElseThrow();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String hentPersonQuery() {

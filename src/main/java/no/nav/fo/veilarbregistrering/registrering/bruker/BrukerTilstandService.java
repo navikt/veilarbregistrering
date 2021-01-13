@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 
 public class BrukerTilstandService {
 

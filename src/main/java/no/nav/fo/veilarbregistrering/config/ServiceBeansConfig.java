@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.config;
 
+import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.common.leaderelection.LeaderElectionHttpClient;
 import no.nav.common.metrics.InfluxClient;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
@@ -35,11 +38,11 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalReg
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
+import org.apache.zookeeper.server.quorum.Leader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -102,13 +105,13 @@ public class ServiceBeansConfig {
 
     @Bean
     SykmeldtRegistreringService sykmeldtRegistreringService(
-            BrukerTilstandService arbeidssokerService,
+            BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             MetricsService metricsService) {
         return new SykmeldtRegistreringService(
-                arbeidssokerService,
+                brukerTilstandService,
                 oppfolgingGateway,
                 brukerRegistreringRepository,
                 manuellRegistreringRepository,
@@ -140,18 +143,20 @@ public class ServiceBeansConfig {
     PubliseringAvHistorikkTask publiseringAvHistorikkTask(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            UnleashService unleashService
+            UnleashService unleashService,
+            LeaderElectionClient leaderElectionClient
     ) {
         return new PubliseringAvHistorikkTask(
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
-                unleashService
+                unleashService,
+                leaderElectionClient
         );
     }
 
     @Bean
     RegistreringResource registreringResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
@@ -175,7 +180,7 @@ public class ServiceBeansConfig {
 
     @Bean
     ArbeidsforholdResource arbeidsforholdResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ArbeidsforholdResource(
@@ -187,7 +192,7 @@ public class ServiceBeansConfig {
 
     @Bean
     SykemeldingResource sykemeldingResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             SykemeldingService sykemeldingService) {
         return new SykemeldingResource(
@@ -226,7 +231,7 @@ public class ServiceBeansConfig {
 
     @Bean
     OppgaveResource oppgaveResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             OppgaveService oppgaveService) {
         return new OppgaveResource(pepClient, userService, oppgaveService);
@@ -245,7 +250,7 @@ public class ServiceBeansConfig {
     ArbeidssokerResource arbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            VeilarbAbacPepClient pepClient) {
+            Pep pepClient) {
         return new ArbeidssokerResource(arbeidssokerService, userService, pepClient);
     }
 
@@ -273,10 +278,9 @@ public class ServiceBeansConfig {
 
     @Bean
     UserService userService(
-            Provider<HttpServletRequest> provider,
             PdlOppslagGateway pdlOppslagGateway
     ) {
-        return new UserService(provider, pdlOppslagGateway);
+        return new UserService(pdlOppslagGateway);
     }
 
     @Bean
@@ -288,7 +292,7 @@ public class ServiceBeansConfig {
 
     @Bean
     KontaktinfoResource kontaktinfoResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             KontaktinfoService kontaktinfoService) {
         return new KontaktinfoResource(pepClient, userService, kontaktinfoService);
@@ -322,5 +326,10 @@ public class ServiceBeansConfig {
     @Bean
     MetricsService metricsService(MetricsClient metricsClient) {
         return new MetricsService(metricsClient);
+    }
+
+    @Bean
+    public LeaderElectionClient leaderElectionClient() {
+        return new LeaderElectionHttpClient();
     }
 }

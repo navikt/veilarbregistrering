@@ -1,30 +1,35 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
-import no.nav.common.oidc.utils.TokenUtils;
+import no.nav.common.auth.utils.TokenUtils;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.sbl.rest.RestUtils;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-import javax.inject.Provider;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
-import static no.nav.common.oidc.Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME;
-import static no.nav.sbl.rest.RestUtils.withClient;
+import static no.nav.common.auth.Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME;
+import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
 
 public class SykmeldtInfoClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String baseUrl;
-    private final Provider<HttpServletRequest> httpServletRequestProvider;
+    private final OkHttpClient client;
 
-    public SykmeldtInfoClient(String baseUrl, Provider<HttpServletRequest> httpServletRequestProvider) {
+    public SykmeldtInfoClient(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.httpServletRequestProvider = httpServletRequestProvider;
+        this.client = RestClient.baseClientBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
     }
 
     public InfotrygdData hentSykmeldtInfoData(Foedselsnummer fnr) {
@@ -32,16 +37,18 @@ public class SykmeldtInfoClient {
     }
 
     private InfotrygdData getSykeforloepMetadata(String url) {
-        HttpServletRequest request = httpServletRequestProvider.get();
+        HttpServletRequest request = servletRequest();
 
         try {
-            return withClient(RestUtils.RestConfig.builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                    c -> c.target(url)
-                            .request()
+            Response response = client.newCall(
+                    new Request.Builder()
+                            .url(url)
                             .header(COOKIE, request.getHeader(COOKIE))
                             .header("Authorization", "Bearer " + getToken(request))
-                            .get(InfotrygdData.class));
-        } catch (Exception e) {
+                            .build())
+                    .execute();
+            return RestUtils.parseJsonResponseOrThrow(response, InfotrygdData.class);
+        } catch (IOException e) {
             throw new InternalServerErrorException("Hent maksdato fra Infotrygd feilet.", e);
         }
     }

@@ -1,16 +1,16 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient;
 
-import no.nav.json.JsonUtils;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+
+import no.nav.common.json.JsonUtils;
+import no.nav.common.rest.client.RestClient;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class RestUtils {
 

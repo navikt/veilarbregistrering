@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import static no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdMapper.map;
-import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 
 @Component
 @Path("/")
@@ -21,10 +20,10 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final Pep pepClient;
 
     public ArbeidsforholdResource(
-            VeilarbAbacPepClient pepClient,
+            Pep pepClient,
             UserService userService,
             ArbeidsforholdGateway arbeidsforholdGateway) {
         this.pepClient = pepClient;
@@ -38,7 +37,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
 
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         return map(flereArbeidsforhold.siste());

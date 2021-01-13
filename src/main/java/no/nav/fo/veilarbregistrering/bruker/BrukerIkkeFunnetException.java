@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
+import no.nav.fo.veilarbregistrering.feil.Feil;
+import no.nav.fo.veilarbregistrering.feil.FeilType;
 
 public class BrukerIkkeFunnetException extends Feil {
     public BrukerIkkeFunnetException(String melding) {

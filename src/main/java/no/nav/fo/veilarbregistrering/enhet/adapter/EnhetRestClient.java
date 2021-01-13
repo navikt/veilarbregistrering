@@ -1,30 +1,38 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter;
 
 import com.google.gson.*;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.NotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
-import static no.nav.sbl.rest.RestUtils.withClient;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 
 class EnhetRestClient {
 
-    private static final int HTTP_READ_TIMEOUT = 120000;
+    private static final long HTTP_READ_TIMEOUT = 120000;
 
     private static final Logger LOG = LoggerFactory.getLogger(EnhetRestClient.class);
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
     private final String url;
+    private final OkHttpClient client;
 
     EnhetRestClient(String baseUrl) {
         this.url = baseUrl + "/v1/organisasjon/";
+        client = RestClient.baseClientBuilder().readTimeout(HTTP_READ_TIMEOUT, MILLISECONDS).build();
     }
 
     Optional<OrganisasjonDetaljerDto> hentOrganisasjon(Organisasjonsnummer organisasjonsnummer) {
@@ -43,12 +51,16 @@ class EnhetRestClient {
     }
 
     String utfoerRequest(Organisasjonsnummer organisasjonsnummer) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                client -> client
-                        .target(url + organisasjonsnummer.asString())
-                        .request()
-                        .get(String.class));
+        Request request = new Request.Builder()
+                .url(this.url + organisasjonsnummer.asString())
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static OrganisasjonDto parse(String jsonResponse) {

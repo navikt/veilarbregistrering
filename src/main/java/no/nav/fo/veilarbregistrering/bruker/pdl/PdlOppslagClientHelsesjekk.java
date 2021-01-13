@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.apiapp.selftest.Helsesjekk;
-import no.nav.apiapp.selftest.HelsesjekkMetadata;
 
-import static no.nav.sbl.rest.RestUtils.withClient;
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
 
-public class PdlOppslagClientHelsesjekk implements Helsesjekk {
+public class PdlOppslagClientHelsesjekk implements HealthCheck {
 
     private String baseUrl;
 
@@ -14,24 +13,8 @@ public class PdlOppslagClientHelsesjekk implements Helsesjekk {
     }
 
     @Override
-    public void helsesjekk() throws Throwable {
-        int status = withClient(c ->
-                c.target(baseUrl)
-                        .request()
-                        .options()
-                        .getStatus());
-        if (!(status >= 200 && status < 300)) {
-            throw new IllegalStateException("HTTP status " + status);
-        }
+    public HealthCheckResult checkHealth() {
+        return no.nav.fo.veilarbregistrering.config.HealthCheck.performHealthCheck(baseUrl);
     }
 
-    @Override
-    public HelsesjekkMetadata getMetadata() {
-        return new HelsesjekkMetadata(
-                "PDL",
-                baseUrl,
-                "Ping av PDL",
-                true
-        );
-    }
 }

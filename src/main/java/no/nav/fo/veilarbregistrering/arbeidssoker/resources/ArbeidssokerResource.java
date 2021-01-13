@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.slf4j.Logger;
@@ -31,12 +30,12 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
 
     private final ArbeidssokerService arbeidssokerService;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final Pep pepClient;
 
     public ArbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            VeilarbAbacPepClient pepClient) {
+            Pep pepClient) {
         this.arbeidssokerService = arbeidssokerService;
         this.userService = userService;
         this.pepClient = pepClient;
@@ -52,7 +51,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
+        // TODO pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed));

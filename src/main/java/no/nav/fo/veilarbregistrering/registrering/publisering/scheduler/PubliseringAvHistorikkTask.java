@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler;
 
-import no.nav.common.leaderelection.LeaderElection;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,11 +19,13 @@ public class PubliseringAvHistorikkTask implements Runnable {
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final UnleashService unleashService;
+    private final LeaderElectionClient leaderElectionClient;
 
     public PubliseringAvHistorikkTask(
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            UnleashService unleashService) {
+            UnleashService unleashService,
+            LeaderElectionClient leaderElectionClient) {
 
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
@@ -35,13 +37,14 @@ public class PubliseringAvHistorikkTask implements Runnable {
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
          */
+        this.leaderElectionClient = leaderElectionClient;
     }
 
     @Override
     public void run() {
         LOG.info("Running");
 
-        if(LeaderElection.isLeader()) {
+        if(leaderElectionClient.isLeader()) {
             LOG.info("I´am the leader");
 
             Pageable pageable = PageRequest.of(0, PAGESIZE).first();

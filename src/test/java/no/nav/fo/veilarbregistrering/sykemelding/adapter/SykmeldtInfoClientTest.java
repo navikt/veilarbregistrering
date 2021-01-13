@@ -1,10 +1,13 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.config.RequestContext;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
@@ -13,7 +16,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -58,27 +60,30 @@ class SykmeldtInfoClientTest {
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
         ManuellRegistreringRepository manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
+        MetricsService metricsService = mock(MetricsService.class);
 
         sykmeldtRegistreringService =
                 new SykmeldtRegistreringService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)), unleashService),
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), metricsService),
+                                unleashService),
                         oppfolgingGateway,
                         brukerRegistreringRepository,
-                        manuellRegistreringRepository);
+                        manuellRegistreringRepository,
+                        metricsService);
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/";
-        return sykeforloepMetadataClient = new SykmeldtInfoClient(baseUrl, httpServletRequestProvider);
+        return sykeforloepMetadataClient = new SykmeldtInfoClient(baseUrl);
     }
 
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null, null);
+        return oppfolgingClient = new OppfolgingClient(baseUrl, null, null);
     }
 
     @Test
@@ -152,9 +157,9 @@ class SykmeldtInfoClientTest {
             SystemUserTokenProvider systemUserTokenProvider = mock(SystemUserTokenProvider.class);
             Provider<HttpServletRequest> httpServletRequestProvider = mock(Provider.class);
             HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-            when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
+            when(RequestContext.servletRequest()).thenReturn(httpServletRequest);
             when(httpServletRequest.getHeader(any())).thenReturn("");
-            when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
+            when(systemUserTokenProvider.getSystemUserToken()).thenReturn("testToken");
             return httpServletRequestProvider;
         }
     }

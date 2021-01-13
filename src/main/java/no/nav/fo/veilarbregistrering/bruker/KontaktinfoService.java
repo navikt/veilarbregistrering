@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
+import no.nav.fo.veilarbregistrering.feil.Feil;
+import no.nav.fo.veilarbregistrering.feil.FeilType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +56,12 @@ public class KontaktinfoService {
         }
 
         if (feiltyper.contains(FeilType.INGEN_TILGANG)) {
-            throw new Feil(FeilType.INGEN_TILGANG);
+            throw new Feil(FeilType.INGEN_TILGANG, melding);
         }
         if (feiltyper.contains(FeilType.UKJENT)) {
-            throw new Feil(FeilType.UKJENT);
+            throw new Feil(FeilType.UKJENT, melding);
         }
-        throw new Feil(FeilType.FINNES_IKKE);
+        throw new Feil(FeilType.FINNES_IKKE, melding);
     }
 
     private boolean fantMinstEttTelefonnummer(Optional<Person> person, Optional<Telefonnummer> telefonnummer) {

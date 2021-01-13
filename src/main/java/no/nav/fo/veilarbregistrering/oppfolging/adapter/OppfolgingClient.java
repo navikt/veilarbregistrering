@@ -1,28 +1,31 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
-import no.nav.json.JsonUtils;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.time.Duration;
 
-import static javax.ws.rs.client.Entity.json;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
-import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
-import static no.nav.sbl.rest.RestUtils.withClient;
 
 public class OppfolgingClient {
 
@@ -31,30 +34,34 @@ public class OppfolgingClient {
     private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String baseUrl;
-    private final Provider<HttpServletRequest> httpServletRequestProvider;
+    private final OkHttpClient client;
 
     private final SystemUserTokenProvider systemUserTokenProvider;
     private final GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
     public OppfolgingClient(
             String baseUrl,
-            Provider<HttpServletRequest> httpServletRequestProvider,
             SystemUserTokenProvider systemUserTokenProvider,
             GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
         this.baseUrl = baseUrl;
-        this.httpServletRequestProvider = httpServletRequestProvider;
         this.systemUserTokenProvider = systemUserTokenProvider;
         this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
+        this.client = RestClient.baseClient().newBuilder().readTimeout(Duration.of(HTTP_READ_TIMEOUT, MILLIS)).build();
     }
 
     public OppfolgingStatusData hentOppfolgingsstatus(Foedselsnummer fnr) {
-        String cookies = httpServletRequestProvider.get().getHeader(COOKIE);
+        String cookies = servletRequest().getHeader(COOKIE);
+        Request request = new Request.Builder()
+                .url(HttpUrl.parse(baseUrl).newBuilder()
+                        .addPathSegment("oppfolging")
+                        .addQueryParameter("fnr", fnr.stringValue())
+                        .build())
+                .header(COOKIE, cookies)
+                .build();
         try {
-            return withClient(builder().readTimeout(HTTP_READ_TIMEOUT).build(),
-                    c -> c.target(baseUrl + "/oppfolging?fnr=" + fnr.stringValue())
-                            .request()
-                            .header(COOKIE, cookies)
-                            .get(OppfolgingStatusData.class));
+            return RestUtils.parseJsonResponseOrThrow(
+                    client.newCall(request).execute(),
+                    OppfolgingStatusData.class);
         } catch (ForbiddenException e) {
             LOG.error("Ingen tilgang " + e);
             Response response = e.getResponse();
@@ -66,60 +73,66 @@ public class OppfolgingClient {
     }
 
     public AktiverBrukerResultat reaktiverBruker(Foedselsnummer fnr) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerReAktivering(fnr, c)
-        );
-    }
-
-    private AktiverBrukerResultat postBrukerReAktivering(Foedselsnummer fnr, Client client) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(new Fnr(fnr.stringValue())));
-        return behandleHttpResponse(response, url);
+        try {
+            okhttp3.Response response = client.newCall(
+                    buildSystemAuthorizationRequest()
+                            .url(url)
+                            .method("post", RestUtils.toJsonRequestBody(new Fnr(fnr.stringValue())))
+                            .build())
+                    .execute();
+            return behandleHttpResponse(response, url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public AktiverBrukerResultat aktiverBruker(AktiverBrukerData aktiverBrukerData) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postBrukerAktivering(aktiverBrukerData, c)
-        );
-    }
-
-    private AktiverBrukerResultat postBrukerAktivering(AktiverBrukerData aktiverBrukerData, Client client) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(aktiverBrukerData));
-
-        return behandleHttpResponse(response, url);
+        try {
+            okhttp3.Response response = client.newCall(
+                    buildSystemAuthorizationRequest()
+                            .url(url)
+                            .method("post", RestUtils.toJsonRequestBody(aktiverBrukerData))
+                            .build())
+                    .execute();
+            return behandleHttpResponse(response, url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr) {
-        withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppfolgingSykmeldt(sykmeldtBrukerType, fnr, c)
-        );
+        HttpUrl url = HttpUrl.parse(baseUrl).newBuilder().addPathSegments("/oppfolging/aktiverSykmeldt/")
+                .addQueryParameter("fnr", fnr.stringValue())
+                .build();
+        try {
+            okhttp3.Response response = client.newCall(
+                    buildSystemAuthorizationRequest()
+                            .url(url)
+                            .method("post", RestUtils.toJsonRequestBody(sykmeldtBrukerType))
+                            .build())
+                    .execute();
+            behandleHttpResponse(response, url.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private AktiverBrukerResultat postOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr, Client client) {
-        String url = baseUrl + "/oppfolging/aktiverSykmeldt/?fnr=" + fnr.stringValue();
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url).post(json(sykmeldtBrukerType));
-        return behandleHttpResponse(response, url);
-    }
-
-    private Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        return client.target(url)
-                .request()
+    private Request.Builder buildSystemAuthorizationRequest() {
+        return new Request.Builder()
                 .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
                 .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
     }
 
-    private AktiverBrukerResultat behandleHttpResponse(Response response, String url) {
-        int status = response.getStatus();
+    private AktiverBrukerResultat behandleHttpResponse(okhttp3.Response response, String url) throws IOException {
+        int status = response.code();
 
         if (status == 204) {
             return AktiverBrukerResultat.Companion.ok();
         } else if (status == 403) {
             LOG.warn("Feil ved kall mot: {}, response : {}", url, response);
-            AktiverBrukerFeilDto aktiverBrukerFeilDto = parseResponse(response.readEntity(String.class));
+            AktiverBrukerFeilDto aktiverBrukerFeilDto = parse(response);
             return AktiverBrukerResultat.Companion.feilFrom(mapper(aktiverBrukerFeilDto));
         } else {
             throw new RuntimeException(String.format("Uventet respons (%s) ved kall mot %s", status, url));
@@ -136,7 +149,11 @@ public class OppfolgingClient {
         }
     }
 
-    static AktiverBrukerFeilDto parseResponse(String json) {
-        return JsonUtils.fromJson(json, AktiverBrukerFeilDto.class);
+    static AktiverBrukerFeilDto parse(okhttp3.Response response) throws IOException {
+        return RestUtils.parseJsonResponseOrThrow(response, AktiverBrukerFeilDto.class);
+    }
+
+    private HttpServletRequest servletRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 }

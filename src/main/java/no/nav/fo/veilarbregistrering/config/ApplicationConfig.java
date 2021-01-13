@@ -1,13 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.ApiApplication;
-import no.nav.apiapp.ServletUtil;
-import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.oidc.Constants;
-import no.nav.common.oidc.SystemUserTokenProvider;
-import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AAregServiceWSConfig;
+import no.nav.common.auth.Constants;
+import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
 import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
@@ -15,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
+import no.nav.fo.veilarbregistrering.db.HelsesjekkConfig;
 import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig;
@@ -26,17 +22,16 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.Publiser
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
@@ -47,7 +42,6 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         PepConfig.class,
         Norg2GatewayConfig.class,
         CacheConfig.class,
-        AAregServiceWSConfig.class,
         UnleashConfig.class,
         PersonGatewayConfig.class,
         OppfolgingGatewayConfig.class,
@@ -57,9 +51,11 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         EnhetGatewayConfig.class,
         KrrConfig.class,
         FormidlingsgruppeGatewayConfig.class,
-        PubliseringSchedulerConfig.class
+        PubliseringSchedulerConfig.class,
+        HelsesjekkConfig.class
 })
-public class ApplicationConfig implements ApiApplication {
+@EnableConfigurationProperties({EnvironmentProperties.class})
+public class ApplicationConfig {
 
     public static final String APPLICATION_NAME = "veilarbregistrering";
 
@@ -80,7 +76,6 @@ public class ApplicationConfig implements ApiApplication {
     @Inject
     private JdbcTemplate jdbcTemplate;
 
-    @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
                 .addOidcAuthenticator(createOpenAmAuthenticatorConfig())

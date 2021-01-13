@@ -1,17 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.brukerdialog.security.domain.IdToken;
-import no.nav.brukerdialog.security.domain.IdTokenAndRefreshToken;
-import no.nav.brukerdialog.security.domain.OidcCredential;
-import no.nav.brukerdialog.security.oidc.*;
-import no.nav.brukerdialog.security.oidc.provider.IssoOidcProvider;
-import no.nav.brukerdialog.security.oidc.provider.IssoOidcProviderConfig;
-import no.nav.sbl.rest.RestUtils;
 
 import javax.ws.rs.client.Client;
 import java.time.Instant;
-
-import static no.nav.brukerdialog.security.Constants.REFRESH_TIME;
 
 public class GammelSystemUserTokenProvider {
 

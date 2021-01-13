@@ -3,10 +3,8 @@ package no.nav.fo.veilarbregistrering.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -15,10 +13,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+
 
 @Configuration
-@Import(DataSourceHelsesjekk.class)
 @EnableTransactionManagement
 public class DatabaseConfig {
 
@@ -52,10 +50,4 @@ public class DatabaseConfig {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
-
-    @Bean
-    public Database database(JdbcTemplate jdbcTemplate) {
-        return new Database(jdbcTemplate);
-    }
-
 }

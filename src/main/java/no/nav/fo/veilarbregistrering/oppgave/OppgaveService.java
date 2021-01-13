@@ -87,10 +87,10 @@ public class OppgaveService {
                 }
 
                 @Override
-                public Response.Status getStatus() {
+                public int getStatus() {
                     return Response.Status.FORBIDDEN;
                 }
-            });
+            }, "Oppgaven er allerede opprettet");
         });
     }
 

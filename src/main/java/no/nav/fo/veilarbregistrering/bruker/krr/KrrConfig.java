@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbregistrering.bruker.krr;
 
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class KrrConfig {

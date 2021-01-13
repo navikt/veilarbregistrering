@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 

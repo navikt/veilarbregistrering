@@ -1,18 +1,16 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
 
-import static no.bekk.bekkopen.person.FodselsnummerValidator.isValid;
-import static no.nav.common.auth.SubjectHandler.getIdent;
+import static no.nav.common.auth.context.AuthContextHolder.getSubject;
+import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
 
+@Service
 public class UserService {
 
-    private final Provider<HttpServletRequest> requestProvider;
     private final PdlOppslagGateway pdlOppslagGateway;
 
-    public UserService(Provider<HttpServletRequest> requestProvider, PdlOppslagGateway pdlOppslagGateway) {
-        this.requestProvider = requestProvider;
+    public UserService(PdlOppslagGateway pdlOppslagGateway) {
         this.pdlOppslagGateway = pdlOppslagGateway;
     }
 
@@ -44,7 +42,8 @@ public class UserService {
             fnr = getFnr();
         }
 
-        if (!isValid(fnr)) {
+        if (false) {
+            //TODO Valider fnr
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }
 
@@ -52,15 +51,15 @@ public class UserService {
     }
 
     public String getFnrFromUrl() {
-        return requestProvider.get().getParameter("fnr");
+        return servletRequest().getParameter("fnr");
     }
 
     private String getFnr() {
-        return getIdent().orElseThrow(IllegalArgumentException::new);
+        return getSubject().orElseThrow(IllegalArgumentException::new);
     }
 
     public String getEnhetIdFromUrlOrThrow() {
-        final String enhetId = requestProvider.get().getParameter("enhetId");
+        final String enhetId = servletRequest().getParameter("enhetId");
 
         if (enhetId == null) {
             throw new RuntimeException("Mangler enhetId");

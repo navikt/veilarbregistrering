@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static net.sf.ehcache.store.MemoryStoreEvictionPolicy.LRU;
-import static no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext.ABAC_CACHE;
 
 @Configuration
 @EnableCaching
@@ -53,7 +52,7 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-        config.addCache(ABAC_CACHE);
+        //config.addCache(ABAC_CACHE);
         config.addCache(HENT_ARBEIDSFORHOLD_CACHE);
         config.addCache(HENT_ARBEIDSFORHOLD_REST_CACHE);
         config.addCache(HENT_ALLE_ENHETER_CACHE);

@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 
 import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
 import static no.nav.arbeid.soker.profilering.ProfilertTil.*;
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
+import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 
 class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProducer {
 
