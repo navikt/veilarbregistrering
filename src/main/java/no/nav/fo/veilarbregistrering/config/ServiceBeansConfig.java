@@ -33,7 +33,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -76,7 +75,7 @@ public class ServiceBeansConfig {
 
     @Bean
     StartRegistreringStatusService startRegistreringStatusService(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PersonGateway personGateway) {
         return new StartRegistreringStatusService(
@@ -166,7 +165,7 @@ public class ServiceBeansConfig {
     ArbeidsforholdResource arbeidsforholdResource(
             VeilarbAbacPepClient pepClient,
             UserService userService,
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway) {
+            ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ArbeidsforholdResource(
                 pepClient,
                 userService,
@@ -202,7 +201,7 @@ public class ServiceBeansConfig {
 
     @Bean
     OppgaveRouter oppgaveRouter(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
@@ -251,8 +250,7 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    ProfileringService profileringService(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway) {
+    ProfileringService profileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ProfileringService(arbeidsforholdGateway);
     }
 
