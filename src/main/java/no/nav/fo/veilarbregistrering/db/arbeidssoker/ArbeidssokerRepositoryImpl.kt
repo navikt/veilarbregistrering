@@ -47,7 +47,7 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
                 " $FORR_FORMIDLINGSGRUPPE_ENDRET, $FORMIDLINGSGRUPPE_LEST)" +
                 " VALUES (:id, :fnr, :person_id, :person_id_status, :operasjon, :formidlingsgruppe, " +
                 " :formidlingsgruppe_endret, :forrige_formidlingsgruppe, :forrige_formidlingsgruppe_endret," +
-                " :formidlingsgruppe_lest);"
+                " :formidlingsgruppe_lest)"
         try {
             db.update(sql, params)
         } catch (e: DataIntegrityViolationException) {
@@ -62,7 +62,7 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
         val sql = "SELECT * FROM $FORMIDLINGSGRUPPE " +
                 " WHERE $PERSON_ID = :person_id " +
                 " AND $FORMIDLINGSGRUPPE = :formidlingsgruppe " +
-                " AND $FORMIDLINGSGRUPPE_ENDRET = :endret;"
+                " AND $FORMIDLINGSGRUPPE_ENDRET = :endret"
 
         val formidlingsgruppeendringer = db.query(sql, params, fgruppeMapper)
         return formidlingsgruppeendringer.isNotEmpty()
