@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
@@ -58,21 +55,9 @@ class AaregRestClient {
             String jsonResponse = utforRequest(fnr);
             return parse(jsonResponse);
 
-        } catch (BadRequestException e) {
-            throw new RuntimeException("Ugyldig input", e);
-
-        } catch (NotAuthorizedException e) {
-            throw new RuntimeException("Token mangler eller er ugyldig", e);
-
-        } catch (ForbiddenException e) {
-            throw new RuntimeException("Ingen tilgang til forespurt ressurs", e);
-
         } catch (NotFoundException e) {
             LOG.warn("Søk på arbeidforhold gav ingen treff", e);
             return Collections.emptyList();
-
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Noe gikk galt mot Aareg", e);
         }
     }
 

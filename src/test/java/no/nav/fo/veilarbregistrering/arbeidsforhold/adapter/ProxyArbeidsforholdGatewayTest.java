@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,6 @@ public class ProxyArbeidsforholdGatewayTest {
 
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGatewayProxy.hentArbeidsforhold(Foedselsnummer.of("12345678910"));
 
-        assertThat(flereArbeidsforhold.siste()).isEqualTo(åpentArbeidsforhold());
+        assertThat(flereArbeidsforhold).isEqualTo(FlereArbeidsforholdTestdataBuilder.somJson());
     }
 }
