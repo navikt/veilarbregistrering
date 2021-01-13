@@ -26,21 +26,14 @@ public class ProxyArbeidsforholdGateway implements ArbeidsforholdGateway {
 
     @Override
     public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
-        FlereArbeidsforhold arbeidsforholdFraSoap = hentArbeidsforholdFraSoap(fnr);
-
+        FlereArbeidsforhold flereArbeidsforhold;
         if (arbeidsforholdRestIsEnabled()) {
-            FlereArbeidsforhold arbeidsforholdFraRest = hentArbeidsforholdFraRest(fnr);
-
-            if (arbeidsforholdFraSoap.erLik(arbeidsforholdFraRest)) {
-                LOG.info("Ny og gammel respons er lik");
-            } else {
-                LOG.info("Ny og gammel respons er ulik");
-                LOG.info(String.format("SOAP: %s", arbeidsforholdFraSoap.toString()));
-                LOG.info(String.format("REST: %s", arbeidsforholdFraRest.toString()));
-            }
+            flereArbeidsforhold = hentArbeidsforholdFraRest(fnr);
+        } else {
+            flereArbeidsforhold = hentArbeidsforholdFraSoap(fnr);
         }
 
-        return arbeidsforholdFraSoap;
+        return flereArbeidsforhold;
     }
 
     private FlereArbeidsforhold hentArbeidsforholdFraSoap(Foedselsnummer fnr) {
