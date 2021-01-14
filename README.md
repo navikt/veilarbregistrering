@@ -13,7 +13,7 @@ for beskrivelse av APIet til `veilarbregistrering`.
 - [Arena ORDS : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidssoker/adapter/README.md)
 - veilarbperson : REST
 - ABAC (tilgangskontroll)
-- Aareg (siste arbeidsforhold) : SOAP
+- [Aareg (siste arbeidsforhold) : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidsforhold/adapter/README.md)
 - [Enhetsregisteret : REST](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
 - [NAV Organisasjon (for veileder pr ident) : REST](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
 - Infotrygd (maksdato) : REST

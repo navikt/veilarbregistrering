@@ -11,12 +11,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RestArbeidsforholdGatewayTest {
+public class ArbeidsforholdGatewayImplTest {
 
     private final UnleashService unleashService = mock(UnleashService.class);
 
     private ArbeidsforholdGateway arbeidsforholdGatewayProxy =
-            new RestArbeidsforholdGateway(new StubAaregRestClient());
+            new ArbeidsforholdGatewayImpl(new StubAaregRestClient());
 
     @Test
     public void hent_arbeidsforhold_fra_aareg_via_rest() {

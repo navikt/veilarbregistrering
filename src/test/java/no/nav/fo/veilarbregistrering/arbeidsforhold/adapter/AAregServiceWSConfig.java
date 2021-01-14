@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class AAregServiceWSConfig {
 
     @Bean
-    ArbeidsforholdGateway restArbeidsforholdGateway() {
-        return new RestArbeidsforholdGateway(new StubAaregRestClient());
+    ArbeidsforholdGateway arbeidsforholdGateway() {
+        return new ArbeidsforholdGatewayImpl(new StubAaregRestClient());
     }
 }
