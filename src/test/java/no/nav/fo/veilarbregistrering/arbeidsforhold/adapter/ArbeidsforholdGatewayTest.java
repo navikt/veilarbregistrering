@@ -25,7 +25,7 @@ class ArbeidsforholdGatewayTest {
     public static void setup() {
         aaregRestClient = mock(AaregRestClient.class);
 
-        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(RestArbeidsforholdGateway.class)
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGatewayImpl.class)
                 .addConstructorArgValue(aaregRestClient).getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();

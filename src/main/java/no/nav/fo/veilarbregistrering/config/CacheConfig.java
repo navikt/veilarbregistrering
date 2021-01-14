@@ -14,8 +14,8 @@ import static no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext.ABAC_CA
 @EnableCaching
 public class CacheConfig {
 
-    public static final String HENT_ARBEIDSFORHOLD_REST = "hentArbeidsforholdRest";
-    private static final CacheConfiguration HENT_ARBEIDSFORHOLD_REST_CACHE = new CacheConfiguration(HENT_ARBEIDSFORHOLD_REST, 100000)
+    public static final String HENT_ARBEIDSFORHOLD = "hentArbeidsforhold";
+    private static final CacheConfiguration HENT_ARBEIDSFORHOLD_CACHE = new CacheConfiguration(HENT_ARBEIDSFORHOLD, 100000)
             .memoryStoreEvictionPolicy(LRU)
             .timeToIdleSeconds(3600)
             .timeToLiveSeconds(3600);
@@ -48,7 +48,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addCache(ABAC_CACHE);
-        config.addCache(HENT_ARBEIDSFORHOLD_REST_CACHE);
+        config.addCache(HENT_ARBEIDSFORHOLD_CACHE);
         config.addCache(HENT_ALLE_ENHETER_CACHE);
         config.addCache(HENT_ALLE_ENHETER_V2_CACHE);
         config.addCache(HENT_PERSON_FOR_AKTORID_CACHE);
