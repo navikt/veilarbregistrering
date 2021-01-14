@@ -3,11 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter
 import com.google.common.net.MediaType
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import no.nav.brukerdialog.security.domain.IdentType
-import no.nav.common.auth.SsoToken
-import no.nav.common.auth.Subject
-import no.nav.common.auth.SubjectHandler
-import no.nav.common.oidc.SystemUserTokenProvider
+import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -43,10 +39,10 @@ class OppgaveIntegrationTest {
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
         oppgaveRouter = mock()
         oppgaveService = CustomOppgaveService(
-                oppgaveGateway,
-                oppgaveRepository,
-                oppgaveRouter,
-                KontaktBrukerHenvendelseProducer { aktorId: AktorId?, oppgaveType: OppgaveType? -> }
+            oppgaveGateway,
+            oppgaveRepository,
+            oppgaveRouter,
+            { _: AktorId?, _: OppgaveType? -> }
         )
     }
 
@@ -56,7 +52,7 @@ class OppgaveIntegrationTest {
         val httpServletRequest: HttpServletRequest = mock()
         whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
         whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        whenever(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
+        whenever(systemUserTokenProvider.systemUserToken).thenReturn("testToken")
         val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
@@ -92,13 +88,12 @@ class OppgaveIntegrationTest {
                 .respond(HttpResponse.response()
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8))
-        val oppgaveResponse = SubjectHandler.withSubject<OppgaveResponse>(
-                Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", HashMap<String, Any?>()))
-        ) {
+        val oppgaveResponse =
             oppgaveService.opprettOppgave(
-                    BRUKER,
-                    OppgaveType.UTVANDRET)
-        }
+                BRUKER,
+                OppgaveType.UTVANDRET
+            ) //TODO provide subject somehow
+
         Assertions.assertThat(oppgaveResponse.id).isEqualTo(5436732)
         Assertions.assertThat(oppgaveResponse.tildeltEnhetsnr).isEqualTo("3012")
     }
@@ -117,7 +112,7 @@ class OppgaveIntegrationTest {
             oppgaveGateway: OppgaveGateway?,
             oppgaveRepository: OppgaveRepository?,
             oppgaveRouter: OppgaveRouter?,
-            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer) {
+            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, mock()) {
         override fun idag(): LocalDate {
             return LocalDate.of(2020, 5, 27)
         }

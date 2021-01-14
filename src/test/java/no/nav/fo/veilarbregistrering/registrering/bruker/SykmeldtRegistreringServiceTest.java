@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
@@ -9,7 +12,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +41,7 @@ public class SykmeldtRegistreringServiceTest {
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         manuellRegistreringRepository = mock(ManuellRegistreringRepository.class);
         UnleashService unleashService = mock(UnleashService.class);
+        MetricsService metricsService = mock(MetricsService.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
 
@@ -46,10 +49,12 @@ public class SykmeldtRegistreringServiceTest {
                 new SykmeldtRegistreringService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)), unleashService),
+                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), mock(AutorisasjonService.class), metricsService),
+                                unleashService),
                         oppfolgingGateway,
                         brukerRegistreringRepository,
-                        manuellRegistreringRepository);
+                        manuellRegistreringRepository,
+                        metricsService);
     }
 
     @Test

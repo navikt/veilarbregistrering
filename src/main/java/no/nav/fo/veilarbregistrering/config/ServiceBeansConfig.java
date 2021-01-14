@@ -1,5 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.leaderelection.LeaderElectionClient;
@@ -13,6 +16,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
@@ -38,19 +42,15 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalReg
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
-import org.apache.zookeeper.server.quorum.Leader;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 public class ServiceBeansConfig {
 
     @Bean
-    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway, MetricsService metricsService) {
-        return new SykemeldingService(sykemeldingGateway, metricsService);
+    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway, AutorisasjonService autorisasjonService, MetricsService metricsService) {
+        return new SykemeldingService(sykemeldingGateway, autorisasjonService, metricsService);
     }
 
     @Bean
@@ -81,7 +81,7 @@ public class ServiceBeansConfig {
 
     @Bean
     StartRegistreringStatusService startRegistreringStatusService(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PersonGateway personGateway,
             MetricsService metricsService) {
@@ -156,7 +156,7 @@ public class ServiceBeansConfig {
 
     @Bean
     RegistreringResource registreringResource(
-            Pep pepClient,
+            AutorisasjonService autorisasjonService,
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
@@ -166,7 +166,7 @@ public class ServiceBeansConfig {
             InaktivBrukerService inaktivBrukerService,
             MetricsService metricsService) {
         return new RegistreringResource(
-                pepClient,
+                autorisasjonService,
                 userService,
                 brukerRegistreringService,
                 hentRegistreringService,
@@ -180,11 +180,11 @@ public class ServiceBeansConfig {
 
     @Bean
     ArbeidsforholdResource arbeidsforholdResource(
-            Pep pepClient,
+            AutorisasjonService autorisasjonService,
             UserService userService,
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway) {
+            ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ArbeidsforholdResource(
-                pepClient,
+                autorisasjonService,
                 userService,
                 arbeidsforholdGateway
         );
@@ -220,7 +220,7 @@ public class ServiceBeansConfig {
 
     @Bean
     OppgaveRouter oppgaveRouter(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway,
+            ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
@@ -260,19 +260,21 @@ public class ServiceBeansConfig {
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+            MetricsService metricsService) {
         return new PubliseringAvEventsService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
                 registreringTilstandRepository,
-                arbeidssokerProfilertProducer
+                arbeidssokerProfilertProducer,
+                metricsService
         );
     }
 
     @Bean
     ProfileringService profileringService(
-            @Qualifier("proxyArbeidsforholdGatway") ArbeidsforholdGateway arbeidsforholdGateway) {
+            ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ProfileringService(arbeidsforholdGateway);
     }
 
@@ -296,6 +298,11 @@ public class ServiceBeansConfig {
             UserService userService,
             KontaktinfoService kontaktinfoService) {
         return new KontaktinfoResource(pepClient, userService, kontaktinfoService);
+    }
+
+    @Bean
+    AutorisasjonService autorisasjonService(Pep veilarbPep) {
+        return new AutorisasjonService(veilarbPep);
     }
 
     @Bean
@@ -324,12 +331,22 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    MetricsService metricsService(MetricsClient metricsClient) {
-        return new MetricsService(metricsClient);
+    MetricsService metricsService(MetricsClient metricsClient, MeterRegistry meterRegistry) {
+        return new MetricsService(metricsClient, meterRegistry);
     }
 
     @Bean
     public LeaderElectionClient leaderElectionClient() {
         return new LeaderElectionHttpClient();
+    }
+
+    @Bean
+    MeterRegistry prometheusMeterRegistry() {
+        return new PrometheusMeterRegistry(PrometheusConfig.DEFAULT) {
+            @Override
+            public void close() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 }

@@ -16,6 +16,7 @@ import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_ALLEREDE_OPPR
 import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvType;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 public class OppgaveService {
 
@@ -88,7 +89,7 @@ public class OppgaveService {
 
                 @Override
                 public int getStatus() {
-                    return Response.Status.FORBIDDEN;
+                    return FORBIDDEN.value();
                 }
             }, "Oppgaven er allerede opprettet");
         });

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
@@ -25,18 +26,21 @@ public class PubliseringAvEventsService {
     private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
+    private MetricsService metricsService;
 
     public PubliseringAvEventsService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+            MetricsService metricsService) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
+        this.metricsService = metricsService;
     }
 
     @Transactional
@@ -88,6 +92,6 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntall(Status status) {
         int antall = registreringTilstandRepository.hentAntall(status);
-        PubliseringMetrikker.rapporterRegistreringStatusAntall(status, antall);
+        metricsService.rapporterRegistreringStatusAntall(status, antall);
     }
 }

@@ -4,6 +4,7 @@ import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
@@ -25,7 +26,7 @@ import java.util.Optional;
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -48,7 +49,8 @@ public class StartRegistreringStatusServiceTest {
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
         sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         MetricsService metricsService = mock(MetricsService.class);
-        SykemeldingService sykemeldingService = new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), metricsService);
+        AutorisasjonService autorisasjonService = mock(AutorisasjonService.class);
+        SykemeldingService sykemeldingService = new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, metricsService);
         personGateway = mock(PersonGateway.class);
         UnleashService unleashService = mock(UnleashService.class);
 

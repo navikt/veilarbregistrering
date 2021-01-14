@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.abac.Pep;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,8 +10,8 @@ import static org.mockito.Mockito.mock;
 public class PepConfig {
 
     @Bean
-    public VeilarbAbacPepClient pepClient() {
-        return mock(VeilarbAbacPepClient.class);
+    public Pep pepClient() {
+        return mock(Pep.class);
     }
 
 }

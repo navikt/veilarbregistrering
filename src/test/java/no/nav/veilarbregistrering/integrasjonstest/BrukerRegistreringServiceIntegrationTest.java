@@ -1,6 +1,8 @@
 package no.nav.veilarbregistrering.integrasjonstest;
 
 import io.vavr.control.Try;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
@@ -17,7 +19,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -204,8 +205,8 @@ class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        VeilarbAbacPepClient pepClient() {
-            return mock(VeilarbAbacPepClient.class);
+        AutorisasjonService pepClient() {
+            return mock(AutorisasjonService.class);
         }
 
     }

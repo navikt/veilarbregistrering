@@ -9,19 +9,19 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 
+fun main(vararg args: String) {
+    Application.readVaultSecrets()
+    SslUtils.setupTruststore()
+    runApplication<Application>(*args)
+}
+
 @SpringBootApplication
 open class Application {
-
-    fun main(vararg args: String) {
-        readVaultSecrets()
-        SslUtils.setupTruststore()
-        runApplication<Application>(*args)
-    }
 
     companion object {
         private const val SECRETS_PATH = "/var/run/secrets/nais.io/"
 
-        private fun readVaultSecrets() {
+        internal fun readVaultSecrets() {
             System.setProperty("SRVVEILARBREGISTRERING_USERNAME", getVaultSecret("serviceuser_creds/username"))
             System.setProperty("SRVVEILARBREGISTRERING_PASSWORD", getVaultSecret("serviceuser_creds/password"))
 

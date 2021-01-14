@@ -1,13 +1,14 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 public class RegistreringResourceTest {
 
-    private VeilarbAbacPepClient pepClient;
+    private AutorisasjonService autorisasjonService;
     private RegistreringResource registreringResource;
     private UserService userService;
     private BrukerRegistreringService brukerRegistreringService;
@@ -27,7 +28,7 @@ public class RegistreringResourceTest {
 
     @Before
     public void setup() {
-        pepClient = mock(VeilarbAbacPepClient.class);
+        autorisasjonService = mock(AutorisasjonService.class);
         userService = mock(UserService.class);
         brukerRegistreringService = mock(BrukerRegistreringService.class);
         hentRegistreringService = mock(HentRegistreringService.class);
@@ -35,16 +36,18 @@ public class RegistreringResourceTest {
         startRegistreringStatusService = mock(StartRegistreringStatusService.class);
         UnleashService unleashService = mock(UnleashService.class);
         InaktivBrukerService inaktivBrukerService = mock(InaktivBrukerService.class);
+        MetricsService metricsService = mock(MetricsService.class);
 
         registreringResource = new RegistreringResource(
-                pepClient,
+                autorisasjonService,
                 userService,
                 brukerRegistreringService,
                 hentRegistreringService,
                 unleashService,
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
-                inaktivBrukerService);
+                inaktivBrukerService,
+                metricsService);
     }
 
     @Test
@@ -52,7 +55,7 @@ public class RegistreringResourceTest {
         when(startRegistreringStatusService.hentStartRegistreringStatus(any())).thenReturn(new StartRegistreringStatusDto());
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(aremark(), AktorId.of("1234")));
         registreringResource.hentStartRegistreringStatus();
-        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
+        verify(autorisasjonService, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
@@ -61,7 +64,7 @@ public class RegistreringResourceTest {
         when(userService.finnBrukerGjennomPdl()).thenCallRealMethod();
         when(userService.getFnrFromUrl()).thenReturn("ugyldigFnr");
         assertThrows(RuntimeException.class, () -> registreringResource.hentRegistrering());
-        verify(pepClient, times(0)).sjekkLesetilgangTilBruker(any());
+        verify(autorisasjonService, times(0)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
@@ -70,7 +73,7 @@ public class RegistreringResourceTest {
         when(hentRegistreringService.hentSykmeldtRegistrering(any(Bruker.class))).thenReturn(null);
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(aremark(), AktorId.of("1234")));
         registreringResource.hentRegistrering();
-        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
+        verify(autorisasjonService, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     @Test
@@ -81,7 +84,7 @@ public class RegistreringResourceTest {
                         .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING));
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(aremark(), AktorId.of("1234")));
         registreringResource.registrerSykmeldt(sykmeldtRegistrering);
-        verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
+        verify(autorisasjonService, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 
     @Test
@@ -93,6 +96,6 @@ public class RegistreringResourceTest {
         when(brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, Bruker.of(aremark(), AktorId.of("1234")), null)).thenReturn(ordinaerBrukerRegistrering);
         registreringResource.registrerBruker(ordinaerBrukerRegistrering);
 
-        verify(pepClient, times(1)).sjekkSkrivetilgangTilBruker(any());
+        verify(autorisasjonService, times(1)).sjekkSkrivetilgangTilBruker(any());
     }
 }

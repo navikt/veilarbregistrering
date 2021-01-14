@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -18,7 +20,7 @@ public class SykemeldingServiceTest {
         SykemeldingGateway sykemeldingGateway = mock(SykemeldingGateway.class);
         when(sykemeldingGateway.hentReberegnetMaksdato(any())).thenReturn(Maksdato.nullable());
 
-        sykemeldingService = new SykemeldingService(sykemeldingGateway);
+        sykemeldingService = new SykemeldingService(sykemeldingGateway, mock(AutorisasjonService.class), mock(MetricsService.class));
 
         SykmeldtInfoData sykmeldtInfoData = sykemeldingService.hentSykmeldtInfoData(any());
         assertThat(sykmeldtInfoData.getMaksDato()).isNull();
@@ -30,7 +32,7 @@ public class SykemeldingServiceTest {
         SykemeldingGateway sykemeldingGateway = mock(SykemeldingGateway.class);
         when(sykemeldingGateway.hentReberegnetMaksdato(any())).thenReturn(Maksdato.of("2021-11-01"));
 
-        sykemeldingService = new SykemeldingService(sykemeldingGateway);
+        sykemeldingService = new SykemeldingService(sykemeldingGateway, mock(AutorisasjonService.class), mock(MetricsService.class));
 
         SykmeldtInfoData sykmeldtInfoData = sykemeldingService.hentSykmeldtInfoData(any());
         assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo("2021-11-01");
@@ -43,7 +45,7 @@ public class SykemeldingServiceTest {
         String maksdato = LocalDate.now().plusWeeks(3).toString();
         when(sykemeldingGateway.hentReberegnetMaksdato(any())).thenReturn(Maksdato.of(maksdato));
 
-        sykemeldingService = new SykemeldingService(sykemeldingGateway);
+        sykemeldingService = new SykemeldingService(sykemeldingGateway, mock(AutorisasjonService.class), mock(MetricsService.class));
 
         SykmeldtInfoData sykmeldtInfoData = sykemeldingService.hentSykmeldtInfoData(any());
         assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo(maksdato);

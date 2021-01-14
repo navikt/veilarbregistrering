@@ -1,8 +1,10 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.apiapp.feil.FeilDTO;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.feil.Feil;
+import no.nav.fo.veilarbregistrering.feil.FeilType;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -10,7 +12,7 @@ import javax.ws.rs.core.Response;
 public class OppfolgingClientMock extends OppfolgingClient {
 
     OppfolgingClientMock() {
-        super(null, null, null, null);
+        super(null, null);
     }
 
     @Override
@@ -36,8 +38,21 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     private void sendException(String feilType) {
-        FeilDTO feilDTO = new FeilDTO("1", feilType, new FeilDTO.Detaljer(feilType, "", ""));
-        throw new WebApplicationException(Response.serverError().entity(feilDTO).build());
+        Feil feil = new Feil(
+                new Feil.Type() {
+
+                    @Override
+                    public int getStatus() {
+                        return 500;
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getName() {
+                        return feilType;
+                    }
+                }, "");
+        throw new WebApplicationException(Response.serverError().entity(feil).build());
     }
 
 }

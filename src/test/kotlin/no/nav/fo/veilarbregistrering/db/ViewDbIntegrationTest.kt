@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.db
 
-import no.nav.json.JsonUtils
+import no.nav.common.json.JsonUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
 import org.junit.jupiter.api.BeforeEach

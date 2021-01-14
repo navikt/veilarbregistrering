@@ -24,7 +24,7 @@ class ArbeidsforholdGatewayTest {
     public static void setup() {
         arbeidsforholdV3 = mock(ArbeidsforholdV3.class);
 
-        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(SoapArbeidsforholdGateway.class)
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGateway.class)
                 .addConstructorArgValue(arbeidsforholdV3).getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();

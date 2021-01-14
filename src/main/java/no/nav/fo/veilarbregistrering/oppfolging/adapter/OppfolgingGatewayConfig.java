@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.common.sts.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +17,10 @@ public class OppfolgingGatewayConfig {
     @Bean
     OppfolgingClient oppfolgingClient(
 
-            SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
+            SystemUserTokenProvider systemUserTokenProvider) {
         return new OppfolgingClient(
                 getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME),
-                systemUserTokenProvider,
-                gammelSystemUserTokenProvider);
+                systemUserTokenProvider);
     }
 
     @Bean

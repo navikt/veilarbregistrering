@@ -15,14 +15,12 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
 
     private UserService userService;
-    private Provider<HttpServletRequest> requestProvider;
     private PdlOppslagGateway pdlOppslagGateway;
 
     @Before
     public void setUp() {
-        requestProvider = mock(Provider.class);
         pdlOppslagGateway = mock(PdlOppslagGateway.class);
-        userService = new UserService(requestProvider, pdlOppslagGateway);
+        userService = new UserService(pdlOppslagGateway);
     }
 
     @Test
@@ -30,7 +28,6 @@ public class UserServiceTest {
         String enhetId = "1234";
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("enhetId")).thenReturn(enhetId);
-        when(requestProvider.get()).thenReturn(request);
 
         String enhetIdFraUrl = userService.getEnhetIdFromUrlOrThrow();
         Assert.assertEquals(enhetId, enhetIdFraUrl);
@@ -40,7 +37,6 @@ public class UserServiceTest {
     public void skalFeileHvisUrlIkkeHarEnhetId(){
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("enhetId")).thenReturn(null);
-        when(requestProvider.get()).thenReturn(request);
 
         userService.getEnhetIdFromUrlOrThrow();
     }

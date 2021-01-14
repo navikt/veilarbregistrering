@@ -1,13 +1,15 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +44,12 @@ public class InaktivBrukerServiceTest {
                 new InaktivBrukerService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)), unleashService),
+                                new SykemeldingService(
+                                        new SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                                        mock(AutorisasjonService.class),
+                                        mock(MetricsService.class)),
+                                unleashService
+                        ),
                         brukerRegistreringRepository,
                         oppfolgingGateway);
     }

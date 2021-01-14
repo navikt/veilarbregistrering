@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
+import no.nav.fo.veilarbregistrering.feil.Feil;
+import no.nav.fo.veilarbregistrering.feil.FeilType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,7 +46,7 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         } catch (BrukerIkkeFunnetException e) {
             throw e;
         } catch (RuntimeException e) {
-            throw new Feil(FeilType.UKJENT, e);
+            throw new Feil(FeilType.UKJENT, e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         } catch (BrukerIkkeFunnetException e) {
             throw e;
         } catch (RuntimeException e) {
-            throw new Feil(FeilType.UKJENT, e);
+            throw new Feil(FeilType.UKJENT, e.getMessage());
         }
     }
 }

@@ -1,12 +1,14 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import com.google.common.net.MediaType;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.FileToJson;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
@@ -14,7 +16,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,12 +60,14 @@ class OppfolgingClientTest {
         SykmeldtInfoClient sykeforloepMetadataClient = mock(SykmeldtInfoClient.class);
         ProfileringService profileringService = mock(ProfileringService.class);
         UnleashService unleashService = mock(UnleashService.class);
+        AutorisasjonService autorisasjonService = mock(AutorisasjonService.class);
+        MetricsService metricsService = mock(MetricsService.class);
 
         OppfolgingGatewayImpl oppfolgingGateway = new OppfolgingGatewayImpl(oppfolgingClient);
 
         BrukerTilstandService brukerTilstandService = new BrukerTilstandService(
                 oppfolgingGateway,
-                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient)), unleashService);
+                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, metricsService), unleashService);
 
         inaktivBrukerService = new InaktivBrukerService(
                 brukerTilstandService,
@@ -80,17 +83,15 @@ class OppfolgingClientTest {
 
     private OppfolgingClient buildClient() {
         SystemUserTokenProvider systemUserTokenProvider = mock(SystemUserTokenProvider.class);
-        GammelSystemUserTokenProvider gammelSystemUserTokenProvider = mock(GammelSystemUserTokenProvider.class);
         Provider<HttpServletRequest> httpServletRequestProvider = mock(Provider.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
         when(httpServletRequest.getHeader(any())).thenReturn("");
-        when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
-        when(gammelSystemUserTokenProvider.getToken()).thenReturn("testToken");
+        when(systemUserTokenProvider.getSystemUserToken()).thenReturn("testToken");
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
         UnleashService unleashService = mock(UnleashService.class);
         when(unleashService.isEnabled(any())).thenReturn(false);
-        return this.oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, systemUserTokenProvider, gammelSystemUserTokenProvider);
+        return this.oppfolgingClient = new OppfolgingClient(baseUrl, systemUserTokenProvider);
     }
 
     @Test

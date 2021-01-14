@@ -19,12 +19,12 @@ public class HelsesjekkConfig {
 
     @Bean
     public SelfTestChecks selfTestChecks(JdbcTemplate jdbcTemplate,
-                                         Pep pep,
+                                         Pep veilarbPep,
                                          UnleashService unleashService) {
         List<SelfTestCheck> selfTestChecks = Arrays.asList(
 
                 new SelfTestCheck("Enkel spørring mot Databasen til veilarregistrering.", true, checkDbHealth(jdbcTemplate)),
-                new SelfTestCheck("ABAC tilgangskontroll - ping", true, pep.getAbacClient()),
+                new SelfTestCheck("ABAC tilgangskontroll - ping", true, veilarbPep.getAbacClient()),
                 new SelfTestCheck("Sjekker at feature-toggles kan hentes fra Unleash", false, unleashService)
         );
         return new SelfTestChecks(selfTestChecks);

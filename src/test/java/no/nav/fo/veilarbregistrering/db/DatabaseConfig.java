@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@Import(DataSourceHelsesjekk.class)
 @EnableTransactionManagement
 public class DatabaseConfig {
 
@@ -46,9 +44,5 @@ public class DatabaseConfig {
         return new NamedParameterJdbcTemplate(dataSource);
     }
 
-    @Bean
-    public Database database(JdbcTemplate jdbcTemplate) {
-        return new Database(jdbcTemplate);
-    }
 
 }

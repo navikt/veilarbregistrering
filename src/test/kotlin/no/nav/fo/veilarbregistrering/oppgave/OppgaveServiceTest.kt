@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.oppgave
 
 import com.nhaarman.mockitokotlin2.*
-import no.nav.apiapp.feil.Feil
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.feil.Feil
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,10 +24,10 @@ class OppgaveServiceTest {
         oppgaveRepository = mock()
         oppgaveRouter = mock()
         oppgaveService = CustomOppgaveService(
-                oppgaveGateway,
-                oppgaveRepository,
-                oppgaveRouter,
-                KontaktBrukerHenvendelseProducer { aktorId: AktorId?, oppgaveType: OppgaveType? -> }
+            oppgaveGateway,
+            oppgaveRepository,
+            oppgaveRouter,
+            { _: AktorId?, _: OppgaveType? -> }
         )
     }
 
@@ -138,7 +138,7 @@ class OppgaveServiceTest {
             oppgaveGateway: OppgaveGateway?,
             oppgaveRepository: OppgaveRepository?,
             oppgaveRouter: OppgaveRouter?,
-            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer) {
+            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, mock()) {
         override fun idag(): LocalDate {
             return LocalDate.of(2020, 4, 10)
         }

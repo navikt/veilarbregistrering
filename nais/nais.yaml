@@ -8,7 +8,7 @@ metadata:
 spec:
   envFrom:
     - configmap: loginservice-idporten
-    - configMap: pto-
+    - configMap: pto-config
   image: {{image}}
   ingresses:
   {{#each ingresses as |url|}}

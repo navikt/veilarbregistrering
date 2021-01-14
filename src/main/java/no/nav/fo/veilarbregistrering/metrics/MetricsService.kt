@@ -1,9 +1,17 @@
 package no.nav.fo.veilarbregistrering.metrics
 
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Tag
 import no.nav.common.metrics.MetricsClient
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import no.nav.common.metrics.Event as MetricsEvent
 
-class MetricsService(private val metricsClient: MetricsClient) {
+class MetricsService(
+    private val metricsClient: MetricsClient,
+    private val meterRegistry: MeterRegistry
+) {
 
     fun reportSimple(event: Event, field: Metric, tag: Metric) {
         val metricsEvent = MetricsEvent(event.key)
@@ -44,6 +52,20 @@ class MetricsService(private val metricsClient: MetricsClient) {
     }
 
     fun startTime() = StartTime(System.nanoTime())
+    private val statusVerdier: Map<Status, AtomicInteger> = HashMap()
+
+    fun rapporterRegistreringStatusAntall(status: Status, antall: Int) {
+        val registrertAntall = statusVerdier.getOrElse(status) {
+            val atomiskAntall = AtomicInteger()
+            meterRegistry.gauge(
+                "veilarbregistrering_registrert_status",
+                listOf(Tag.of("status", status.name)),
+                atomiskAntall
+            ) { obj: AtomicInteger -> obj.get().toDouble() }
+            atomiskAntall
+        }
+        registrertAntall.set(antall)
+    }
 
     private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
         metrics.filterNotNull()
@@ -52,6 +74,8 @@ class MetricsService(private val metricsClient: MetricsClient) {
     private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
         metrics.filterNotNull()
             .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
+
+    class StartTime internal constructor(val time: Long)
 }
 
 enum class JaNei : Metric {
@@ -66,4 +90,3 @@ enum class JaNei : Metric {
     }
 }
 
-class StartTime(val time: Long)

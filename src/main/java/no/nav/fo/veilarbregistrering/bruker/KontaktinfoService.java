@@ -56,12 +56,12 @@ public class KontaktinfoService {
         }
 
         if (feiltyper.contains(FeilType.INGEN_TILGANG)) {
-            throw new Feil(FeilType.INGEN_TILGANG, melding);
+            throw new Feil(FeilType.INGEN_TILGANG, "");
         }
         if (feiltyper.contains(FeilType.UKJENT)) {
-            throw new Feil(FeilType.UKJENT, melding);
+            throw new Feil(FeilType.UKJENT, "");
         }
-        throw new Feil(FeilType.FINNES_IKKE, melding);
+        throw new Feil(FeilType.FINNES_IKKE, "");
     }
 
     private boolean fantMinstEttTelefonnummer(Optional<Person> person, Optional<Telefonnummer> telefonnummer) {

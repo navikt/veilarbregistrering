@@ -27,7 +27,6 @@ enum class Status(private val status: String) {
                 BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET -> DOD_UTVANDRET_ELLER_FORSVUNNET
                 BRUKER_KAN_IKKE_REAKTIVERES -> KAN_IKKE_REAKTIVERES
                 BRUKER_ER_UKJENT -> UKJENT_BRUKER
-                else -> UKJENT_TEKNISK_FEIL
             }
     }
 }

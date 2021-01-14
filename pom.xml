@@ -111,6 +111,11 @@
 
         <!-- ymse -->
         <dependency>
+            <groupId>no.bekk.bekkopen</groupId>
+            <artifactId>nocommons</artifactId>
+            <version>0.11.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <version>5.0.2</version>
@@ -268,6 +273,17 @@
             <groupId>no.nav.common</groupId>
             <artifactId>cxf</artifactId>
             <version>1.2020.01.23-17.30-c6684f7b3098</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.2.8.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.5.3</version>
         </dependency>
 
     </dependencies>

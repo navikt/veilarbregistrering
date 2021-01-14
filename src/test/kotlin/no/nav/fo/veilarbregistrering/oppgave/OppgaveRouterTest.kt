@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder
@@ -12,10 +13,10 @@ import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer.KommuneMedBydel
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
-import no.nav.sbl.featuretoggle.unleash.UnleashService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -132,14 +133,14 @@ class OppgaveRouterTest {
     }
 
     private fun oppgaveRouter(
-            arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
-            enhetGateway: EnhetGateway = StubEnhetGateway(),
-            norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
-            personGateway: PersonGateway = StubPersonGateway(),
-            unleashService: UnleashService = mock(),
-            pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway()
+        arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
+        enhetGateway: EnhetGateway = StubEnhetGateway(),
+        norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
+        personGateway: PersonGateway = StubPersonGateway(),
+        pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
+        metricsService: MetricsService = mock()
     ) =
-            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway)
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway, metricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {

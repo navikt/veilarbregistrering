@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 class ArbeidsforholdResourceTest {
 
-    private VeilarbAbacPepClient pepClient;
+    private AutorisasjonService autorisasjonService;
     private ArbeidsforholdResource arbeidsforholdResource;
     private UserService userService;
     private ArbeidsforholdGateway arbeidsforholdGateway;
@@ -28,12 +28,12 @@ class ArbeidsforholdResourceTest {
 
     @BeforeEach
     public void setup() {
-        pepClient = mock(VeilarbAbacPepClient.class);
+        autorisasjonService = mock(AutorisasjonService.class);
         userService = mock(UserService.class);
         arbeidsforholdGateway = mock(ArbeidsforholdGateway.class);
 
         arbeidsforholdResource = new ArbeidsforholdResource(
-                pepClient,
+                autorisasjonService,
                 userService,
                 arbeidsforholdGateway
         );
@@ -44,7 +44,7 @@ class ArbeidsforholdResourceTest {
         when(userService.finnBrukerGjennomPdl()).thenReturn(Bruker.of(IDENT, AktorId.of("1234")));
         when(arbeidsforholdGateway.hentArbeidsforhold(IDENT)).thenReturn(flereArbeidsforhold());
         arbeidsforholdResource.hentSisteArbeidsforhold();
-        verify(pepClient, times(1)).sjekkLesetilgangTilBruker(any());
+        verify(autorisasjonService, times(1)).sjekkLesetilgangTilBruker(any());
     }
 
     private FlereArbeidsforhold flereArbeidsforhold() {

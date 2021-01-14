@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.sykemelding;
 
-import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
@@ -14,10 +14,12 @@ public class SykemeldingService {
     private static final Logger LOG = LoggerFactory.getLogger(SykemeldingService.class);
 
     public final SykemeldingGateway sykemeldingGateway;
+    private AutorisasjonService autorisasjonService;
     private final MetricsService metricsService;
 
-    public SykemeldingService(SykemeldingGateway sykemeldingGateway, MetricsService metricsService) {
+    public SykemeldingService(SykemeldingGateway sykemeldingGateway, AutorisasjonService autorisasjonService, MetricsService metricsService) {
         this.sykemeldingGateway = sykemeldingGateway;
+        this.autorisasjonService = autorisasjonService;
         this.metricsService = metricsService;
     }
 
@@ -25,7 +27,7 @@ public class SykemeldingService {
 
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData();
 
-        if (AutentiseringUtils.erVeileder()) {
+        if (autorisasjonService.erInternBruker()) {
             // Veiledere har ikke tilgang til å gjøre kall mot infotrygd
             // Sett inngang aktiv, slik at de får registrert sykmeldte brukere
             sykmeldtInfoData.setErArbeidsrettetOppfolgingSykmeldtInngangAktiv(true);

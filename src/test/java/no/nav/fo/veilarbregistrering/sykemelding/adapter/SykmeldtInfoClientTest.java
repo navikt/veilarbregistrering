@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 import com.google.common.net.MediaType;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.sts.SystemUserTokenProvider;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -66,7 +67,10 @@ class SykmeldtInfoClientTest {
                 new SykmeldtRegistreringService(
                         new BrukerTilstandService(
                                 oppfolgingGateway,
-                                new SykemeldingService(new SykemeldingGatewayImpl(sykeforloepMetadataClient), metricsService),
+                                new SykemeldingService(
+                                        new SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                                        mock(AutorisasjonService.class),
+                                        metricsService),
                                 unleashService),
                         oppfolgingGateway,
                         brukerRegistreringRepository,
@@ -83,7 +87,7 @@ class SykmeldtInfoClientTest {
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, null, null);
+        return oppfolgingClient = new OppfolgingClient(baseUrl, null);
     }
 
     @Test

@@ -4,7 +4,6 @@ import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.config.GammelSystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
 import okhttp3.HttpUrl;
@@ -37,15 +36,12 @@ public class OppfolgingClient {
     private final OkHttpClient client;
 
     private final SystemUserTokenProvider systemUserTokenProvider;
-    private final GammelSystemUserTokenProvider gammelSystemUserTokenProvider;
 
     public OppfolgingClient(
             String baseUrl,
-            SystemUserTokenProvider systemUserTokenProvider,
-            GammelSystemUserTokenProvider gammelSystemUserTokenProvider) {
+            SystemUserTokenProvider systemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
-        this.gammelSystemUserTokenProvider = gammelSystemUserTokenProvider;
         this.client = RestClient.baseClient().newBuilder().readTimeout(Duration.of(HTTP_READ_TIMEOUT, MILLIS)).build();
     }
 
@@ -121,8 +117,8 @@ public class OppfolgingClient {
 
     private Request.Builder buildSystemAuthorizationRequest() {
         return new Request.Builder()
-                .header("SystemAuthorization", this.gammelSystemUserTokenProvider.getToken())
-                .header(AUTHORIZATION, "Bearer " + this.gammelSystemUserTokenProvider.getToken());
+                .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                .header(AUTHORIZATION, "Bearer " + this.systemUserTokenProvider.getSystemUserToken());
     }
 
     private AktiverBrukerResultat behandleHttpResponse(okhttp3.Response response, String url) throws IOException {

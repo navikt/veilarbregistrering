@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources;
 
-import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.springframework.stereotype.Component;
@@ -20,13 +20,13 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final UserService userService;
-    private final Pep pepClient;
+    private final AutorisasjonService autorisasjonService;
 
     public ArbeidsforholdResource(
-            Pep pepClient,
+            AutorisasjonService autorisasjonService,
             UserService userService,
             ArbeidsforholdGateway arbeidsforholdGateway) {
-        this.pepClient = pepClient;
+        this.autorisasjonService = autorisasjonService;
         this.userService = userService;
         this.arbeidsforholdGateway = arbeidsforholdGateway;
     }
@@ -37,7 +37,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer().stringValue());
 
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         return map(flereArbeidsforhold.siste());

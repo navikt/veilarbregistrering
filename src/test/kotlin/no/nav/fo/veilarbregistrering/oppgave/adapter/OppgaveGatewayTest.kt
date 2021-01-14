@@ -3,11 +3,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter
 import com.google.common.net.MediaType
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import no.nav.brukerdialog.security.domain.IdentType
-import no.nav.common.auth.SsoToken
-import no.nav.common.auth.Subject
-import no.nav.common.auth.SubjectHandler
-import no.nav.common.oidc.SystemUserTokenProvider
+import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
@@ -46,7 +42,7 @@ internal class OppgaveGatewayTest {
         val httpServletRequest: HttpServletRequest = mock()
         whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
         whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        whenever(systemUserTokenProvider.systemUserAccessToken).thenReturn("testToken")
+        whenever(systemUserTokenProvider.systemUserToken).thenReturn("testToken")
         val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
@@ -86,9 +82,7 @@ internal class OppgaveGatewayTest {
                 AktorId.of("12e1e3"),
                 null, OppgaveType.OPPHOLDSTILLATELSE,
                 dagensdato)
-        val oppgaveResponse = SubjectHandler.withSubject<OppgaveResponse>(
-                Subject("foo", IdentType.EksternBruker, SsoToken.oidcToken("bar", HashMap<String, Any?>()))
-        ) { oppgaveGateway.opprett(oppgave) }
+        val oppgaveResponse = oppgaveGateway.opprett(oppgave) //TODO provide subject somehow
         Assertions.assertThat(oppgaveResponse.id).isEqualTo(5436732)
         Assertions.assertThat(oppgaveResponse.tildeltEnhetsnr).isEqualTo("3012")
     }

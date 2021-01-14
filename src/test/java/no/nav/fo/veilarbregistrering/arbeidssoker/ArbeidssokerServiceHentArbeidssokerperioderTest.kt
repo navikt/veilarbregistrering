@@ -1,11 +1,12 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
+import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.sbl.featuretoggle.unleash.UnleashService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,7 +24,8 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         arbeidssokerService = ArbeidssokerService(
             StubArbeidssokerRepository(),
             StubFormidlingsgruppeGateway(),
-            unleashService
+            unleashService,
+            mock()
         )
     }
 

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
-import no.nav.fo.veilarbregistrering.bruker.AutentiseringUtils;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
@@ -33,14 +33,14 @@ public class RegistreringResource implements RegistreringApi {
     private final BrukerRegistreringService brukerRegistreringService;
     private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
+    private AutorisasjonService autorisasjonsService;
     private final UserService userService;
-    private final Pep pepClient;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;
     private final MetricsService metricsService;
 
     public RegistreringResource(
-            Pep pepClient,
+            AutorisasjonService autorisasjonsService,
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
@@ -49,7 +49,7 @@ public class RegistreringResource implements RegistreringApi {
             StartRegistreringStatusService startRegistreringStatusService,
             InaktivBrukerService inaktivBrukerService,
             MetricsService metricsService) {
-        this.pepClient = pepClient;
+        this.autorisasjonsService = autorisasjonsService;
         this.userService = userService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.hentRegistreringService = hentRegistreringService;
@@ -130,7 +130,7 @@ public class RegistreringResource implements RegistreringApi {
         //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
         inaktivBrukerService.reaktiverBruker(bruker);
 
-        if (AutentiseringUtils.erVeileder()) {
+        if (autorisasjonsService.erVeileder()) {
             metricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
         }
 
@@ -159,13 +159,12 @@ public class RegistreringResource implements RegistreringApi {
     }
 
     private NavVeileder navVeileder() {
-        if (!AutentiseringUtils.erVeileder()) {
+        if (!autorisasjonsService.erVeileder()) {
             return null;
         }
 
         return new NavVeileder(
-                AutentiseringUtils.hentIdent()
-                        .orElseThrow(() -> new RuntimeException("Fant ikke ident")),
+                autorisasjonsService.getInnloggetVeilederIdent(),
                 userService.getEnhetIdFromUrlOrThrow());
     }
 
