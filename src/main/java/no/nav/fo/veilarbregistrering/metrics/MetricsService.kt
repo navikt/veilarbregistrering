@@ -8,7 +8,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import no.nav.common.metrics.Event as MetricsEvent
 
-class MetricsService(
+open class MetricsService(
     private val metricsClient: MetricsClient,
     private val meterRegistry: MeterRegistry
 ) {

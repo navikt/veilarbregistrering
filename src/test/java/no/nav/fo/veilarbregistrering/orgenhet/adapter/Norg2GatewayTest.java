@@ -6,15 +6,13 @@ import no.nav.fo.veilarbregistrering.FileToJson;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
-import okhttp3.MediaType;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils.dummyResponseBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Norg2GatewayTest {
@@ -49,9 +47,11 @@ public class Norg2GatewayTest {
             String json = FileToJson.toJson(OK_JSON);
             RsNavKontorDto[] rsNavKontorDto = gson.fromJson(json, RsNavKontorDto[].class);
 
-            final Response response = Mockito.mock(Response.class);
-            Mockito.when(response.code()).thenReturn(200);
-            Mockito.when(response.body()).thenReturn(ResponseBody.create(MediaType.parse("application/json"), gson.toJson(rsNavKontorDto)));
+            final Response response =
+                dummyResponseBuilder()
+                        .code(200)
+                        .body(ResponseBody.create(MediaType.parse("application/json"), gson.toJson(rsNavKontorDto)))
+                        .build();
 
             return response;
         }

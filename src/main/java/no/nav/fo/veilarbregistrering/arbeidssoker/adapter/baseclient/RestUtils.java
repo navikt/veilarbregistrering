@@ -40,22 +40,18 @@ public class RestUtils {
         return getBodyStr(response).map(bodyStr -> JsonUtils.fromJson(bodyStr, classOfT));
     }
 
-    public static <T> Optional<List<T>> parseJsonArrayResponse(Response response, Class<T> classOfT) throws IOException {
-        return getBodyStr(response).map(bodyStr -> JsonUtils.fromJsonArray(bodyStr, classOfT));
-    }
-
     public static <T> T parseJsonResponseOrThrow(Response response, Class<T> classOfT) throws IOException {
         return parseJsonResponse(response, classOfT)
                 .orElseThrow(() -> new IllegalStateException("Unable to parse JSON object from response body"));
     }
 
-    public static <T> List<T> parseJsonResponseArrayOrThrow(Response response, Class<T> classOfT) throws IOException {
-        return parseJsonArrayResponse(response, classOfT)
-                .orElseThrow(() -> new IllegalStateException("Unable to parse JSON array from response body"));
+    public static Response.Builder dummyResponseBuilder() {
+        return new Response.Builder()
+                .request(new Request.Builder().url("https://nav.no").build())
+                .protocol(Protocol.HTTP_1_1)
+                .message("");
     }
 
-    public static RequestBody toJsonRequestBody(Object obj) {
-        return RequestBody.create(MEDIA_TYPE_JSON, JsonUtils.toJson(obj));
-    }
+
 
 }
