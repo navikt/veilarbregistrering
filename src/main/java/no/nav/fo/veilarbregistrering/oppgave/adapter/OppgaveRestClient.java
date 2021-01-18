@@ -32,7 +32,7 @@ public class OppgaveRestClient {
         try {
             Response response = client.newCall(
                     buildSystemAuthorizationRequestWithUrl(url)
-                            .method("post", RestUtils.toJsonRequestBody(oppgaveDto))
+                            .method("POST", RestUtils.toJsonRequestBody(oppgaveDto))
                             .build()
             ).execute();
 

@@ -17,7 +17,7 @@ import no.nav.common.types.identer.Fnr
 import org.springframework.http.HttpStatus
 import java.util.*
 
-class AutorisasjonService(private val veilarbPep: Pep) {
+open class AutorisasjonService(private val veilarbPep: Pep) {
     fun skalVereInternBruker() {
         if (!AuthContextHolder.erInternBruker()) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Ugyldig bruker type")

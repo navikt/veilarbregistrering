@@ -58,7 +58,7 @@ class Norg2RestClient {
         Request request = new Request.Builder()
                 .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
-                .method("post", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
+                .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
                 .build();
         return RestClient.baseClient().newCall(request).execute();
     }

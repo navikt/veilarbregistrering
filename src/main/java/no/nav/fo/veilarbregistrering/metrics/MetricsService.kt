@@ -20,23 +20,23 @@ class MetricsService(
         metricsClient.report(metricsEvent)
     }
 
-    fun reportTags(event: Event, vararg metrics: Metric?): Unit =
+    fun reportTags(event: Event, vararg metrics: Metric): Unit =
         MetricsEvent(event.key)
             .also { addAllTags(it, metrics.toList()) }
             .let { metricsClient.report(it) }
 
-    fun reportTags(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric?): Unit =
+    fun reportTags(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric): Unit =
         MetricsEvent(event.key)
             .also { addAllTags(it, hasMetrics.metrics()) }
             .also { addAllTags(it, metrics.toList()) }
             .let { metricsClient.report(it) }
 
-    fun reportFields(event: Event, vararg metrics: Metric?) =
+    fun reportFields(event: Event, vararg metrics: Metric) =
         MetricsEvent(event.key)
             .also { addAllFields(it, metrics.toList()) }
             .let { metricsClient.report(it) }
 
-    fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric?) =
+    fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric) =
         MetricsEvent(event.key)
             .also { addAllFields(it, hasMetrics.metrics()) }
             .also { addAllFields(it, metrics.toList()) }

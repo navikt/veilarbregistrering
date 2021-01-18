@@ -82,7 +82,7 @@ class PdlOppslagClient {
                             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                             .header("Authorization", "Bearer " + token)
                             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                            .method("post", toJsonRequestBody(requestBody))
+                            .method("POST", toJsonRequestBody(requestBody))
                             .build())
                     .execute();
             return getBodyStr(response).orElseThrow();
@@ -120,7 +120,7 @@ class PdlOppslagClient {
                             .header("Authorization", "Bearer " + token)
                             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
                             .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-                            .method("post", toJsonRequestBody(request))
+                            .method("POST", toJsonRequestBody(request))
                             .build())
                     .execute();
             return getBodyStr(response).orElseThrow();

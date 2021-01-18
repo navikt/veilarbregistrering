@@ -74,7 +74,7 @@ public class OppfolgingClient {
             okhttp3.Response response = client.newCall(
                     buildSystemAuthorizationRequest()
                             .url(url)
-                            .method("post", RestUtils.toJsonRequestBody(new Fnr(fnr.stringValue())))
+                            .method("POST", RestUtils.toJsonRequestBody(new Fnr(fnr.stringValue())))
                             .build())
                     .execute();
             return behandleHttpResponse(response, url);
@@ -89,7 +89,7 @@ public class OppfolgingClient {
             okhttp3.Response response = client.newCall(
                     buildSystemAuthorizationRequest()
                             .url(url)
-                            .method("post", RestUtils.toJsonRequestBody(aktiverBrukerData))
+                            .method("POST", RestUtils.toJsonRequestBody(aktiverBrukerData))
                             .build())
                     .execute();
             return behandleHttpResponse(response, url);
@@ -106,7 +106,7 @@ public class OppfolgingClient {
             okhttp3.Response response = client.newCall(
                     buildSystemAuthorizationRequest()
                             .url(url)
-                            .method("post", RestUtils.toJsonRequestBody(sykmeldtBrukerType))
+                            .method("POST", RestUtils.toJsonRequestBody(sykmeldtBrukerType))
                             .build())
                     .execute();
             behandleHttpResponse(response, url.toString());
