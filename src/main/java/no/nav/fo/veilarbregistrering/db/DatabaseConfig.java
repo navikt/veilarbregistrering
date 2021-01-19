@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.jdbc.Database;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -51,11 +50,6 @@ public class DatabaseConfig {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    @Bean
-    public Database database(JdbcTemplate jdbcTemplate) {
-        return new Database(jdbcTemplate);
     }
 
 }
