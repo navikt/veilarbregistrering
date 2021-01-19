@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils.dummyResponseBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppfolgingClientJsonTest {
@@ -15,7 +16,7 @@ public class OppfolgingClientJsonTest {
     @Test
     public void skal_parse_response_fra_oppfolging() throws IOException {
         String json = FileToJson.toJson("/oppfolging/kanikkeReaktiveres.json");
-        AktiverBrukerFeilDto aktiverBrukerFeilDto = OppfolgingClient.parse(new Response.Builder().body(ResponseBody.create(MediaType.parse("application/json"), json)).build());
+        AktiverBrukerFeilDto aktiverBrukerFeilDto = OppfolgingClient.parse(dummyResponseBuilder().code(200).body(ResponseBody.create(MediaType.parse("application/json"), json)).build());
         assertThat(aktiverBrukerFeilDto).isNotNull();
         assertThat(aktiverBrukerFeilDto.getType()).isEqualTo(AktiverBrukerFeilDto.ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES);
     }

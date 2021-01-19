@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukersTilstand;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 

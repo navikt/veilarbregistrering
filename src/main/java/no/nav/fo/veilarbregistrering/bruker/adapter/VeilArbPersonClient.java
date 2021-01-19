@@ -42,7 +42,7 @@ class VeilArbPersonClient {
         try {
             Request request = new Request.Builder()
                     .url(HttpUrl.parse(baseUrl).newBuilder()
-                            .addPathSegments("/person/geografisktilknytning")
+                            .addPathSegments("person/geografisktilknytning")
                             .addQueryParameter("fnr", foedselsnummer.stringValue())
                             .build())
                     .header(COOKIE, cookies)

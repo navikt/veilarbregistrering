@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.db
 
+import io.mockk.every
+import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -26,10 +28,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -52,8 +50,8 @@ open class HentBrukerRegistreringServiceIntegrationTest(
     @BeforeEach
     fun setupEach() {
         MigrationUtils.createTables(jdbcTemplate)
-        `when`(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(Oppfolgingsstatus(false, false, null, null, null, null));
-        `when`(profileringService.profilerBruker(anyInt(), any(), any())).thenReturn(lagProfilering());
+        every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns Oppfolgingsstatus(false, false, null, null, null, null)
+        every { profileringService.profilerBruker(any(), any(), any()) } returns lagProfilering()
     }
 
     @Test
@@ -88,16 +86,16 @@ open class HentBrukerRegistreringServiceIntegrationTest(
             }
 
             @Bean
-            open fun unleashService(): UnleashService = Mockito.mock(UnleashService::class.java)
+            open fun unleashService(): UnleashService = mockk()
 
             @Bean
-            open fun sykemeldingService(): SykemeldingService = Mockito.mock(SykemeldingService::class.java)
+            open fun sykemeldingService(): SykemeldingService = mockk()
 
             @Bean
-            open fun oppfolgingGateway(): OppfolgingGateway = Mockito.mock(OppfolgingGateway::class.java)
+            open fun oppfolgingGateway(): OppfolgingGateway = mockk()
 
             @Bean
-            open fun profileringService(): ProfileringService = Mockito.mock(ProfileringService::class.java)
+            open fun profileringService(): ProfileringService = mockk()
 
             @Bean
             open fun norg2Gateway() = object : Norg2Gateway {

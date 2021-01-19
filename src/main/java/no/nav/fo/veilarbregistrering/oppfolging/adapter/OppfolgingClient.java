@@ -25,6 +25,7 @@ import java.time.Duration;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
 
 public class OppfolgingClient {
 
@@ -99,7 +100,7 @@ public class OppfolgingClient {
     }
 
     void settOppfolgingSykmeldt(SykmeldtBrukerType sykmeldtBrukerType, Foedselsnummer fnr) {
-        HttpUrl url = HttpUrl.parse(baseUrl).newBuilder().addPathSegments("/oppfolging/aktiverSykmeldt/")
+        HttpUrl url = HttpUrl.parse(baseUrl).newBuilder().addPathSegments("oppfolging/aktiverSykmeldt/")
                 .addQueryParameter("fnr", fnr.stringValue())
                 .build();
         try {
@@ -147,9 +148,5 @@ public class OppfolgingClient {
 
     static AktiverBrukerFeilDto parse(okhttp3.Response response) throws IOException {
         return RestUtils.parseJsonResponseOrThrow(response, AktiverBrukerFeilDto.class);
-    }
-
-    private HttpServletRequest servletRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 }

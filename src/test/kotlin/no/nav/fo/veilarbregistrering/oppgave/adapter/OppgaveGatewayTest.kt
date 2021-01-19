@@ -1,24 +1,21 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import com.google.common.net.MediaType
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import java.time.LocalDate
-import java.util.*
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
@@ -37,12 +34,12 @@ internal class OppgaveGatewayTest {
     }
 
     private fun buildClient(): OppgaveRestClient {
-        val systemUserTokenProvider: SystemUserTokenProvider = mock()
-        val httpServletRequestProvider: Provider<HttpServletRequest> = mock()
-        val httpServletRequest: HttpServletRequest = mock()
-        whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
-        whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        whenever(systemUserTokenProvider.systemUserToken).thenReturn("testToken")
+        val systemUserTokenProvider: SystemUserTokenProvider = mockk()
+        val httpServletRequestProvider: Provider<HttpServletRequest> = mockk()
+        val httpServletRequest: HttpServletRequest = mockk()
+        every { httpServletRequestProvider.get() } returns httpServletRequest
+        every { httpServletRequest.getHeader(any()) } returns ""
+        every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }

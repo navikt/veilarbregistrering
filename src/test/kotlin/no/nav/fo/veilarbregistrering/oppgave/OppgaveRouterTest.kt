@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import no.nav.common.featuretoggle.UnleashService
+import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataBuilder
@@ -123,7 +121,7 @@ class OppgaveRouterTest {
         assertThat(enhetsnr).hasValue(Enhetnr.enhetForAdressebeskyttelse())
     }
 
-    fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
+    private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
         val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
         val person = Person.of(null, null, adressebeskyttelseGradering)
         val pdlOppslagGateway = StubPdlOppslagGateway(users = mapOf(BRUKER.aktorId to person))
@@ -138,7 +136,7 @@ class OppgaveRouterTest {
         norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
         personGateway: PersonGateway = StubPersonGateway(),
         pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
-        metricsService: MetricsService = mock()
+        metricsService: MetricsService = mockk(relaxed = true)
     ) =
             OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway, metricsService)
 
@@ -157,7 +155,7 @@ class OppgaveRouterTest {
 
     private class StubArbeidsforholdGateway : ArbeidsforholdGateway {
         override fun hentArbeidsforhold(fnr: Foedselsnummer?) =
-                FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()
+            FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()!!
     }
 
     private class StubPersonGateway : PersonGateway {
@@ -181,13 +179,6 @@ class OppgaveRouterTest {
         }
 
     }
-
-    private fun unleashServiceMedFeatures(vararg aktiverteFeatures: String) =
-            mock<UnleashService>().also { unleashService ->
-                aktiverteFeatures.forEach { aktivertFeature ->
-                    whenever(unleashService.isEnabled(aktivertFeature)).thenReturn(true)
-                }
-            }
 
     companion object {
         private val BRUKER = Bruker.of(

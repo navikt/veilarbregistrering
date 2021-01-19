@@ -83,7 +83,7 @@ open class ViewDbIntegrationTest {
         }
 
         private fun lesInnholdFraFil(filNavn: String): String {
-            return Scanner(ViewDbIntegrationTest::class.java.classLoader.getResourceAsStream(filNavn), "UTF-8").useDelimiter("\\A").next()
+            return Scanner(ViewDbIntegrationTest::class.java.classLoader.getResourceAsStream(filNavn)!!, "UTF-8").useDelimiter("\\A").next()
         }
     }
 }

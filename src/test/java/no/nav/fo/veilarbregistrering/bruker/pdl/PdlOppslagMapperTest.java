@@ -1,11 +1,14 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.AdressebeskyttelseGradering;
+import no.nav.fo.veilarbregistrering.bruker.Gruppe;
+import no.nav.fo.veilarbregistrering.bruker.Identer;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
-import org.junit.Test;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlGradering;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 

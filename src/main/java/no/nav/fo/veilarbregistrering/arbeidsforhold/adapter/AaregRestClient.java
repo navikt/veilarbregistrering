@@ -68,7 +68,7 @@ class AaregRestClient {
             Response response = RestClient.baseClient().newCall(
                     new Request.Builder()
                             .url(HttpUrl.parse(baseUrl).newBuilder()
-                                    .addPathSegments("/v1/arbeidstaker/arbeidsforhold")
+                                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
                                     .addQueryParameter("regelverk", "A_ORDNINGEN")
                                     .build())
                             .header(ACCEPT, APPLICATION_JSON_VALUE)

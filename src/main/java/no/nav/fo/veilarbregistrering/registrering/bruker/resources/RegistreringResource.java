@@ -66,7 +66,7 @@ public class RegistreringResource implements RegistreringApi {
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.getAktorId());
         StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
         rapporterRegistreringsstatus(metricsService, status);
         return status;
@@ -82,7 +82,7 @@ public class RegistreringResource implements RegistreringApi {
 
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        autorisasjonsService.sjekkSkrivetilgangMedAktorId(bruker.getAktorId());
 
         NavVeileder veileder = navVeileder();
 
@@ -103,7 +103,7 @@ public class RegistreringResource implements RegistreringApi {
     public BrukerRegistreringWrapper hentRegistrering() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.getAktorId());
 
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker);
         SykmeldtRegistrering sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker);
@@ -147,7 +147,7 @@ public class RegistreringResource implements RegistreringApi {
         }
 
         final Bruker bruker = userService.finnBrukerGjennomPdl();
-        //TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        autorisasjonsService.sjekkSkrivetilgangMedAktorId(bruker.getAktorId());
 
         NavVeileder veileder = navVeileder();
 

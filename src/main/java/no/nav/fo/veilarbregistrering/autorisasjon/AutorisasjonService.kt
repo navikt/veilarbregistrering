@@ -60,14 +60,14 @@ open class AutorisasjonService(private val veilarbPep: Pep) {
 
     fun sjekkSkrivetilgangTilBruker(fnr: String) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr))
 
-    fun sjekkLesetilgangMedAktorId(aktorId: String?) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId.of(aktorId))) {
+    fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId.of(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
 
-    fun sjekkSkrivetilgangMedAktorId(aktorId: String?) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId.of(aktorId))) {
+    fun sjekkSkrivetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId.of(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }

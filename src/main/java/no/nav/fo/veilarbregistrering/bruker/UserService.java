@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.nav.common.types.identer.Fnr;
 import org.springframework.stereotype.Service;
 
 import static no.nav.common.auth.context.AuthContextHolder.getSubject;
@@ -42,7 +43,7 @@ public class UserService {
             fnr = getFnr();
         }
 
-        if (false) {
+        if (!fnr.matches("\\d{11}")) {
             //TODO Valider fnr
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }

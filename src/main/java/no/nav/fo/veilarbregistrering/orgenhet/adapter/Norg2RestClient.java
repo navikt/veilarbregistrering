@@ -66,7 +66,7 @@ class Norg2RestClient {
     List<RsEnhet> hentAlleEnheter() {
         Request request = new Request.Builder()
                 .url(HttpUrl.parse(baseUrl).newBuilder()
-                        .addPathSegments("/v1/enhet")
+                        .addPathSegments("v1/enhet")
                         .addQueryParameter("oppgavebehandlerFilter", "UFILTRERT").build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .build();

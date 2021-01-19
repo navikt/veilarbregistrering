@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import com.google.common.net.MediaType
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -13,7 +13,6 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
@@ -34,10 +33,10 @@ class OppgaveIntegrationTest {
 
     @BeforeEach
     fun setup() {
-        val oppgaveRepository: OppgaveRepository = mock()
+        val oppgaveRepository: OppgaveRepository = mockk(relaxed = true)
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
-        oppgaveRouter = mock()
+        oppgaveRouter = mockk()
         oppgaveService = CustomOppgaveService(
             oppgaveGateway,
             oppgaveRepository,
@@ -47,13 +46,13 @@ class OppgaveIntegrationTest {
     }
 
     private fun buildClient(): OppgaveRestClient {
-        val systemUserTokenProvider: SystemUserTokenProvider = mock()
-        val httpServletRequestProvider: Provider<HttpServletRequest> = mock()
-        val httpServletRequest: HttpServletRequest = mock()
-        whenever(httpServletRequestProvider.get()).thenReturn(httpServletRequest)
-        whenever(httpServletRequest.getHeader(ArgumentMatchers.any())).thenReturn("")
-        whenever(systemUserTokenProvider.systemUserToken).thenReturn("testToken")
-        val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
+        val systemUserTokenProvider: SystemUserTokenProvider = mockk()
+        val httpServletRequestProvider: Provider<HttpServletRequest> = mockk()
+        val httpServletRequest: HttpServletRequest = mockk()
+        every {httpServletRequestProvider.get() } returns httpServletRequest
+        every { httpServletRequest.getHeader(any()) } returns ""
+        every { systemUserTokenProvider.systemUserToken } returns "testToken"
+        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
 
@@ -61,7 +60,7 @@ class OppgaveIntegrationTest {
     fun `vellykket opprettelse av oppgave skal gi 201`() {
         val dagensdato = LocalDate.of(2020, 5, 27).toString()
         val toArbeidsdagerSenere = LocalDate.of(2020, 5, 29).toString()
-        whenever(oppgaveRouter.hentEnhetsnummerFor(BRUKER)).thenReturn(Optional.of(Enhetnr.of("0301")))
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.of(Enhetnr.of("0301"))
         mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("POST")
@@ -112,7 +111,7 @@ class OppgaveIntegrationTest {
             oppgaveGateway: OppgaveGateway?,
             oppgaveRepository: OppgaveRepository?,
             oppgaveRouter: OppgaveRouter?,
-            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, mock()) {
+            kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?) : OppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter, kontaktBrukerHenvendelseProducer, mockk(relaxed = true)) {
         override fun idag(): LocalDate {
             return LocalDate.of(2020, 5, 27)
         }
@@ -121,6 +120,6 @@ class OppgaveIntegrationTest {
     companion object {
         private const val MOCKSERVER_URL = "localhost"
         private const val MOCKSERVER_PORT = 1081
-        val BRUKER = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.of("12e1e3"))
+        val BRUKER: Bruker = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.of("12e1e3"))
     }
 }
