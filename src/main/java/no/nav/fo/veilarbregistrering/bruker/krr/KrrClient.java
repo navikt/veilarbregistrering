@@ -57,7 +57,7 @@ class KrrClient {
                 return Optional.empty();
             }
 
-            kontaktinfoDto = parse(RestUtils.getBodyStr(response).orElseThrow(), foedselsnummer);
+            kontaktinfoDto = parse(RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new), foedselsnummer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (NotFoundException e) {

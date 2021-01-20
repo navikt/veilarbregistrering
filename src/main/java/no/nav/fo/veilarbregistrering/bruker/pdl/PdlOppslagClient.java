@@ -16,8 +16,6 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.io.IOException;
@@ -33,9 +31,6 @@ import static no.nav.common.rest.client.RestUtils.getBodyStr;
 import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
 
 class PdlOppslagClient {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagClient.class);
-
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
     private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
@@ -85,7 +80,7 @@ class PdlOppslagClient {
                             .method("POST", toJsonRequestBody(requestBody))
                             .build())
                     .execute();
-            return getBodyStr(response).orElseThrow();
+            return getBodyStr(response).orElseThrow(RuntimeException::new);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -123,7 +118,7 @@ class PdlOppslagClient {
                             .method("POST", toJsonRequestBody(request))
                             .build())
                     .execute();
-            return getBodyStr(response).orElseThrow();
+            return getBodyStr(response).orElseThrow(RuntimeException::new);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
