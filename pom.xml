@@ -16,6 +16,13 @@
     <name>veilarbregistrering</name>
     <version>1</version>
 
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven</url>
+        </repository>
+    </repositories>
+
     <properties>
         <java.version>1.8</java.version>
         <kotlin.version>1.4.21</kotlin.version>
@@ -390,11 +397,6 @@
                 <repository>
                     <id>internal-mirror-github-navikt</id>
                     <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-                </repository>
-                <repository>
-                    <id>confluent</id>
-                    <name>confluent</name>
-                    <url>https://packages.confluent.io/maven/</url>
                 </repository>
             </repositories>
 
