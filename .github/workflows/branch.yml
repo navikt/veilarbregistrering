@@ -5,6 +5,9 @@ on:
     branches-ignore:
       - main
 
+env:
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/veilarbregistrering
+
 jobs:
 
   test-build-and-push:
@@ -12,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+
+      - name: Lag tag for image
+        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Lag full image referanse
+        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
+
       - name: Set up Maven cache
         uses: actions/cache@v1
         with:
@@ -25,6 +35,36 @@ jobs:
           java-version: 11
 
       - name: Build with Maven
-        run: mvn -Pgithub -B test package --settings maven-settings.xml
+        run: mvn -Pgithub -B package --settings maven-settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${IMAGE} .
+          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${IMAGE}
+
+  deploy-q1:
+    name: Deploy to q1 FSS
+    needs: test-build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Lag tag for image
+        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Lag full image referanse
+        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
+
+      - name: Deploy to Q1
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          DRY_RUN: false
+          RESOURCE: nais/nais.yaml
+          VARS: nais/vars-q1.yaml
