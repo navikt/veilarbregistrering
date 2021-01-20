@@ -15,10 +15,6 @@ import java.util.List
 
 @Configuration
 open class FilterConfig {
-    private val ALLOWED_SERVICE_USERS = List.of(
-        "srvveilarbportefolje", "srvveilarbdialog", "srvveilarbaktivitet",
-        "srvveilarbjobbsoke", "srvveilarbdirigent", "srvveilarbregistre"
-    )
 
     private fun createOpenAmAuthenticatorConfig(): OidcAuthenticatorConfig? {
         val discoveryUrl = EnvironmentUtils.getRequiredProperty("OPENAM_DISCOVERY_URL")
