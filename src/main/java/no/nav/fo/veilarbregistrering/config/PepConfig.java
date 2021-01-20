@@ -9,17 +9,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+
 
 @Configuration
-@EnableConfigurationProperties({EnvironmentProperties.class})
 public class PepConfig {
 
 
+    private static final String ABAC_URL_PROPERTY = "ABAC_PDP_ENDPOINT_URL";
+
     @Bean
-    public Pep veilarbPep(EnvironmentProperties properties) {
+    public Pep veilarbPep() {
         Credentials serviceUserCredentials = NaisUtils.getCredentials("service_user");
         return new VeilarbPep(
-                properties.getAbacUrl(), serviceUserCredentials.username,
+                getRequiredProperty(ABAC_URL_PROPERTY), serviceUserCredentials.username,
                 serviceUserCredentials.password, new SpringAuditRequestInfoSupplier()
         );
     }

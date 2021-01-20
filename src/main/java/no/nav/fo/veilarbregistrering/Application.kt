@@ -16,7 +16,7 @@ fun main(vararg args: String) {
 }
 
 @SpringBootApplication
-open class Application {
+class Application {
 
     companion object {
         private const val SECRETS_PATH = "/var/run/secrets/nais.io/"
@@ -37,6 +37,13 @@ open class Application {
                 throw IllegalStateException(String.format("Klarte ikke laste property fra vault for path: %s", path), e)
             }
         }
+
+        /*
+        private fun setOtherProperties () {
+            setProperty(STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"))
+            setProperty(SENSU_BATCHES_PER_SECOND_PROPERTY_NAME, "3")
+        }
+        */
     }
 }
 

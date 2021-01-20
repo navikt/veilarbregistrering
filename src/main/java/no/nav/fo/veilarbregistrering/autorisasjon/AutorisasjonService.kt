@@ -48,8 +48,8 @@ open class AutorisasjonService(private val veilarbPep: Pep) {
         //  Ved å konvertere null til tom streng muliggjør vi å spørre om tilgang til enhet for brukere som
         //  ikke har enhet. Sluttbrukere da få permit mens veiledere vil få deny.
         return veilarbPep.harTilgangTilEnhet(
-            innloggetBrukerToken, Optional.ofNullable(enhetId).map { enhetId: String? -> EnhetId.of(enhetId) }
-                .orElse(EnhetId.of("")))
+            innloggetBrukerToken, EnhetId.of(enhetId?: "")
+        )
     }
 
     fun harTilgangTilEnhetMedSperre(enhetId: String?): Boolean {
