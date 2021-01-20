@@ -19,5 +19,4 @@ public class UnleashConfig {
                 .unleashApiUrl(getRequiredProperty(UNLEASH_API_URL_PROPERTY))
                 .build());
     }
-
 }

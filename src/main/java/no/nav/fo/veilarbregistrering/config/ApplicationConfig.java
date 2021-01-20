@@ -17,8 +17,6 @@ import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig;
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig;
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig;
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig;
-import no.nav.veilarboppfolging.config.FilterConfig;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -37,6 +35,7 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
         Norg2GatewayConfig.class,
         CacheConfig.class,
         UnleashConfig.class,
+        MetricsConfig.class,
         PersonGatewayConfig.class,
         ArbeidsforholdGatewayConfig.class,
         OppfolgingGatewayConfig.class,
@@ -50,10 +49,7 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
         HelsesjekkConfig.class
 })
 @EnableScheduling
-@EnableConfigurationProperties({EnvironmentProperties.class})
 public class ApplicationConfig {
-
-    public static final String APPLICATION_NAME = "veilarbregistrering";
 
     @Bean
     SystemUserTokenProvider systemUserTokenProvider() {

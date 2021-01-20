@@ -1,4 +1,4 @@
-package no.nav.veilarboppfolging.config
+package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
@@ -8,7 +8,6 @@ import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
 import no.nav.common.log.LogFilter
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
 import no.nav.common.utils.EnvironmentUtils
-import no.nav.fo.veilarbregistrering.config.EnvironmentProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -64,7 +63,7 @@ open class FilterConfig {
     }
 
     @Bean
-    open fun authenticationFilterRegistrationBean(properties: EnvironmentProperties): FilterRegistrationBean<*> {
+    open fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<OidcAuthenticationFilter>()
         val authenticationFilter = OidcAuthenticationFilter(
             OidcAuthenticator.fromConfigs(

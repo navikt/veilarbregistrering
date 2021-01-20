@@ -12,8 +12,6 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 public class ArbeidsforholdGatewayConfig {
     private final static String REST_URL = "AAREG_REST_API";
 
-
-
     @Bean
     AaregRestClient aaregRestClient(SystemUserTokenProvider systemUserTokenProvider) {
         return new AaregRestClient(getRequiredProperty(REST_URL), systemUserTokenProvider);

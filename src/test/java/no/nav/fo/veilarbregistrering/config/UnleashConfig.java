@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 
 @Configuration
 public class UnleashConfig {
-    public static final String UNLEASH_API_URL_PROPERTY = "UNLEASH_API_URL";
 
     @Bean
     public UnleashService unleashService() {

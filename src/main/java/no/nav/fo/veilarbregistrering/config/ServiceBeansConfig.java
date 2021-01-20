@@ -326,11 +326,6 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    MetricsClient metricsClient() {
-        return new InfluxClient();
-    }
-
-    @Bean
     MetricsService metricsService(MetricsClient metricsClient, MeterRegistry meterRegistry) {
         return new MetricsService(metricsClient, meterRegistry);
     }
