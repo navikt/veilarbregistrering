@@ -15,7 +15,7 @@ fun main(vararg args: String) {
 /*        LocalH2Database.setUsePersistentDb();
     TestDriver.init();*/
 
-    runApplication<TestApplication>() {
+    runApplication<TestApplication>(*args) {
         setAdditionalProfiles("local")
     }
 

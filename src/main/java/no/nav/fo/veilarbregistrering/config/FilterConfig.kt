@@ -11,10 +11,9 @@ import no.nav.common.utils.EnvironmentUtils
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.util.List
 
 @Configuration
-open class FilterConfig {
+class FilterConfig {
 
     private fun createOpenAmAuthenticatorConfig(): OidcAuthenticatorConfig? {
         val discoveryUrl = EnvironmentUtils.getRequiredProperty("OPENAM_DISCOVERY_URL")

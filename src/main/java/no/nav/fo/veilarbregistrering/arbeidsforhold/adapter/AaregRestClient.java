@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ class AaregRestClient {
 
     private String behandleResponse(Response response) throws IOException {
         if (response.isSuccessful()) {
-            return RestUtils.getBodyStr(response).orElseThrow();
+            return RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new);
         } else {
             String feilmelding = Map.of(
                     BAD_REQUEST, "Ugyldig input",

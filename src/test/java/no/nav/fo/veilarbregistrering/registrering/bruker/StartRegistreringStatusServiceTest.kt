@@ -119,7 +119,7 @@ class StartRegistreringStatusServiceTest {
     fun gitt_at_geografiskTilknytning_er_1234_skal_1234_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
-        every { personGateway!!.hentGeografiskTilknytning(any()) } returns
+        every { personGateway.hentGeografiskTilknytning(any()) } returns
                 Optional.of(GeografiskTilknytning.of("1234"))
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus).isNotNull

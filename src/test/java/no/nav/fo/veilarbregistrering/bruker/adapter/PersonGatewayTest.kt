@@ -78,7 +78,7 @@ class PersonGatewayTest {
                 HttpResponse.response()
                     .withStatusCode(404)
             )
-        val geografiskTilknytning = personGateway!!.hentGeografiskTilknytning(foedselsnummer)
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer)
         Assertions.assertThat(geografiskTilknytning).isEmpty
     }
 
@@ -96,7 +96,7 @@ class PersonGatewayTest {
                     .withBody("{\"geografiskTilknytning\": " + "null" + "}", MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
-        val geografiskTilknytning = personGateway!!.hentGeografiskTilknytning(foedselsnummer)
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer)
         Assertions.assertThat(geografiskTilknytning).isEmpty
     }
 
