@@ -33,7 +33,7 @@ mvn test
 
 # starte
 # Kjør main-metoden i Main.java
-# For lokal test kjøring kjør MainTest.java
+# For lokal test kjøring kjør ApplicationLocal.java
 ```
 
 ---
