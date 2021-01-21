@@ -60,22 +60,4 @@ public class ApplicationConfig {
         );
     }
 
-
-    /*@Transactional
-    @Override
-    public void startup(ServletContext servletContext) {
-        MigrationUtils.createTables(jdbcTemplate);
-
-        InternalRegistreringStatusoversiktServlet internalRegistreringStatusoversiktServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringStatusoversiktServlet.class);
-        ServletUtil.leggTilServlet(servletContext, internalRegistreringStatusoversiktServlet, InternalRegistreringStatusoversiktServlet.PATH);
-
-        InternalRegistreringStatusServlet internalRegistreringStatusServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalRegistreringStatusServlet.class);
-        ServletUtil.leggTilServlet(servletContext, internalRegistreringStatusServlet, InternalRegistreringStatusServlet.PATH);
-
-        InternalIdentServlet internalIdentServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalIdentServlet.class);
-        ServletUtil.leggTilServlet(servletContext, internalIdentServlet, InternalIdentServlet.PATH);
-
-        InternalArbeidssokerServlet internalArbeidssokerServlet = WebApplicationContextUtils.findWebApplicationContext(servletContext).getBean(InternalArbeidssokerServlet.class);
-        ServletUtil.leggTilServlet(servletContext, internalArbeidssokerServlet, InternalArbeidssokerServlet.PATH);
-    }*/
 }
