@@ -42,7 +42,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRe
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@Disabled
+
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {DatabaseConfig.class, RepositoryConfig.class, BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest.class})
@@ -170,11 +170,6 @@ class BrukerRegistreringServiceIntegrationTest {
         @Bean
         public ProfileringService profileringService() {
             return mock(ProfileringService.class);
-        }
-
-        @Bean
-        public ManuellRegistreringRepository manuellRegistreringRepository() {
-            return mock(ManuellRegistreringRepository.class);
         }
 
         @Bean
