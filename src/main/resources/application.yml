@@ -1,6 +1,7 @@
 spring:
   flyway:
     enabled: true
+    table: schema_version
   datasource:
     url: ${VEILARBREGISTRERINGDB_URL}
     username: ${VEILARBREGISTRERINGDB_USERNAME}
