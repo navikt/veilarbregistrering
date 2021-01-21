@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -36,8 +38,9 @@ import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.util.*
 
-@TransactionalTest
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
+@JdbcTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 class HentBrukerRegistreringServiceIntegrationTest(
         @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
         @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,

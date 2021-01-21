@@ -8,12 +8,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.util.*
 
-@TransactionalTest
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
+@JdbcTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
 open class ViewDbIntegrationTest {
 
     @Autowired
