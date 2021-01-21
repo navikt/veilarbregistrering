@@ -335,13 +335,4 @@ public class ServiceBeansConfig {
         return new LeaderElectionHttpClient();
     }
 
-    @Bean
-    MeterRegistry prometheusMeterRegistry() {
-        return new PrometheusMeterRegistry(PrometheusConfig.DEFAULT) {
-            @Override
-            public void close() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
 }

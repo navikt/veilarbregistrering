@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.config
 
-import io.mockk.mockk
+import no.nav.common.auth.context.UserRole
+import no.nav.common.test.auth.TestAuthContextFilter
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,12 +11,12 @@ import org.springframework.context.annotation.Configuration
 class FilterConfig {
 
     @Bean
-    fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> = mockk()
-
-    @Bean
-    fun logFilterRegistrationBean(): FilterRegistrationBean<*> = mockk(relaxed = true)
-
-    @Bean
-    fun setStandardHeadersFilterRegistrationBean(): FilterRegistrationBean<*> = mockk()
+    fun testSubjectFilterRegistrationBean(): FilterRegistrationBean<*>? {
+        val registration = FilterRegistrationBean<TestAuthContextFilter>()
+        registration.filter = TestAuthContextFilter(UserRole.INTERN, "randomUID")
+        registration.order = 1
+        registration.addUrlPatterns("/api/*")
+        return registration
+    }
 }
 
