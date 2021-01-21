@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering;
 import no.nav.common.utils.SslUtils
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 import java.nio.charset.StandardCharsets
@@ -15,7 +16,7 @@ fun main(vararg args: String) {
     runApplication<Application>(*args)
 }
 
-
+@EnableAutoConfiguration
 @Import(ApplicationConfig::class)
 //@Configuration
 class Application {
