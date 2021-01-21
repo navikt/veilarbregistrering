@@ -20,7 +20,7 @@ import java.util.*
 
 @TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
-open class ArbeidssokerRepositoryDbIntegrationTest(
+class ArbeidssokerRepositoryDbIntegrationTest(
 
     @Autowired
     private val arbeidssokerRepository: ArbeidssokerRepository,

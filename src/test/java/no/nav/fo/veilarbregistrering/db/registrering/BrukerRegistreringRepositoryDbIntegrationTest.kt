@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration
 
 @TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
-open class BrukerRegistreringRepositoryDbIntegrationTest(
+class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
     private val jdbcTemplate: JdbcTemplate,

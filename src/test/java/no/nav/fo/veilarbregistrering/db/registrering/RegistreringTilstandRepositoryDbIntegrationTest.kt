@@ -9,7 +9,10 @@ import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.db.TransactionalTest
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.tilstand.*
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -24,7 +27,7 @@ import java.time.LocalDateTime
 
 @TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
-open class RegistreringTilstandRepositoryDbIntegrationTest(
+class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Autowired
     private val jdbcTemplate: JdbcTemplate,

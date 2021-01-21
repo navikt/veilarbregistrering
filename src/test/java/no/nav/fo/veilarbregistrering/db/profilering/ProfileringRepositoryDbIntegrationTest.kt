@@ -11,22 +11,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 
+@EnableAutoConfiguration
 @TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
-open class ProfileringRepositoryDbIntegrationTest(
+class ProfileringRepositoryDbIntegrationTest(
 
-    @Autowired
-    private val jdbcTemplate: JdbcTemplate,
+
     @Autowired
     private val profileringRepository: ProfileringRepository) {
 
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
+
 
     @Test
     fun profilerBruker() {

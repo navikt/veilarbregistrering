@@ -7,15 +7,12 @@ import org.springframework.context.annotation.Import
 
 @EnableAutoConfiguration
 @Import(ApplicationTestConfig::class)
-open class TestApplication
+open class ApplicationLocal
 
 fun main(vararg args: String) {
 
-    // We need to initialize the driver before spring starts or Flyway will not be able to use the driver
-/*        LocalH2Database.setUsePersistentDb();
-    TestDriver.init();*/
 
-    runApplication<TestApplication>(*args) {
+    runApplication<ApplicationLocal>(*args) {
         setAdditionalProfiles("local")
     }
 

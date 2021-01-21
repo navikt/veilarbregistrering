@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.assertThat
+import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -26,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringJUnitConfig
 @Transactional
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class])
-open class CreateViewTest {
+class CreateViewTest {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate

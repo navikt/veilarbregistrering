@@ -38,18 +38,16 @@ import java.util.*
 
 @TransactionalTest
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
-open class HentBrukerRegistreringServiceIntegrationTest(
+class HentBrukerRegistreringServiceIntegrationTest(
         @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
         @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
         @Autowired val hentRegistreringService: HentRegistreringService,
         @Autowired var oppfolgingGateway: OppfolgingGateway,
-        @Autowired var profileringService: ProfileringService,
-        @Autowired val jdbcTemplate: JdbcTemplate
+        @Autowired var profileringService: ProfileringService
 ) {
 
     @BeforeEach
     fun setupEach() {
-        MigrationUtils.createTables(jdbcTemplate)
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns Oppfolgingsstatus(false, false, null, null, null, null)
         every { profileringService.profilerBruker(any(), any(), any()) } returns lagProfilering()
     }

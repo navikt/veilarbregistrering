@@ -5,9 +5,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class MigrationUtils {
     public static void createTables(JdbcTemplate jdbcTemplate) {
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(jdbcTemplate.getDataSource());
-        flyway.migrate();
+//        Flyway flyway = new Flyway();
+//        flyway.setDataSource(jdbcTemplate.getDataSource());
+//        flyway.migrate();
     }
 
 }
