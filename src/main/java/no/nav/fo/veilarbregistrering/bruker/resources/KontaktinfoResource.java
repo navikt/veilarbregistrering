@@ -5,15 +5,12 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
-@Component
-@Path("/person")
-@Produces("application/json")
+@RestController
+@RequestMapping("/api/person")
 public class KontaktinfoResource implements KontaktinfoApi {
 
     private final KontaktinfoService kontaktinfoService;
@@ -29,9 +26,8 @@ public class KontaktinfoResource implements KontaktinfoApi {
         this.kontaktinfoService = kontaktinfoService;
     }
 
-    @GET
-    @Path("/kontaktinfo")
     @Override
+    @GetMapping("/kontaktinfo")
     public KontaktinfoDto hentKontaktinfo() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 

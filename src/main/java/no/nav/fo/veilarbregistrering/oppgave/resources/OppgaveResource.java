@@ -5,23 +5,20 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import org.springframework.stereotype.Component;
-
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 
-@Component
-@Path("/oppgave")
-@Produces("application/json")
+
+@RestController
+@RequestMapping("/api/oppgave")
 public class OppgaveResource implements OppgaveApi {
 
     private final OppgaveService oppgaveService;
     private Pep pepClient;
     private final UserService userService;
-
 
     public OppgaveResource(
             Pep pepClient,
@@ -32,8 +29,8 @@ public class OppgaveResource implements OppgaveApi {
         this.oppgaveService = oppgaveService;
     }
 
-    @POST
     @Override
+    @PostMapping
     public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 

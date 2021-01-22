@@ -8,21 +8,19 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import java.time.LocalDateTime;
 
 import static no.nav.fo.veilarbregistrering.metrics.Events.MANUELL_REAKTIVERING_EVENT;
 import static no.nav.fo.veilarbregistrering.metrics.Events.SYKMELDT_BESVARELSE_EVENT;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
-@Component
-@Path("/")
-@Produces("application/json")
+@RestController
+@RequestMapping("/api")
 public class RegistreringResource implements RegistreringApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
@@ -58,9 +56,8 @@ public class RegistreringResource implements RegistreringApi {
         this.metricsService = metricsService;
     }
 
-    @GET
-    @Path("/startregistrering")
     @Override
+    @GetMapping("/startregistrering")
     public StartRegistreringStatusDto hentStartRegistreringStatus() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
@@ -70,9 +67,8 @@ public class RegistreringResource implements RegistreringApi {
         return status;
     }
 
-    @POST
-    @Path("/startregistrering")
     @Override
+    @PostMapping("/startregistrering")
     public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
@@ -95,9 +91,8 @@ public class RegistreringResource implements RegistreringApi {
         return opprettetRegistrering;
     }
 
-    @GET
-    @Path("/registrering")
     @Override
+    @GetMapping("/registrering")
     public BrukerRegistreringWrapper hentRegistrering() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
@@ -114,9 +109,8 @@ public class RegistreringResource implements RegistreringApi {
         return brukerRegistreringWrapper;
     }
 
-    @POST
-    @Path("/startreaktivering")
     @Override
+    @PostMapping("/startreaktivering")
     public void reaktivering() {
 
         if(tjenesteErNede()){
@@ -135,9 +129,8 @@ public class RegistreringResource implements RegistreringApi {
         AlderMetrikker.rapporterAlder(metricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
-    @POST
-    @Path("/startregistrersykmeldt")
     @Override
+    @PostMapping("/startregistrersykmeldt")
     public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
 
         if(tjenesteErNede()){

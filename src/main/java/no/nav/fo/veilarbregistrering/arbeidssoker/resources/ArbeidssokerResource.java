@@ -9,21 +9,19 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 
-@Component
-@Path("/arbeidssoker")
-@Produces("application/json")
+@RestController
+@RequestMapping("/api/arbeidssoker")
 public class ArbeidssokerResource implements ArbeidssokerApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerResource.class);
@@ -41,13 +39,12 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
         this.pepClient = pepClient;
     }
 
-    @GET
-    @Path("/perioder")
     @Override
+    @GetMapping("/perioder")
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
-            @QueryParam("fnr") String fnr,
-            @QueryParam("fraOgMed") LocalDate fraOgMed,
-            @QueryParam("tilOgMed") LocalDate tilOgMed
+            @RequestParam("fnr") String fnr,
+            @RequestParam("fraOgMed") LocalDate fraOgMed,
+            @RequestParam("tilOgMed") LocalDate tilOgMed
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 

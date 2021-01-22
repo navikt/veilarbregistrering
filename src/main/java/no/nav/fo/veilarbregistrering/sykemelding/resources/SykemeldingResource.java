@@ -5,15 +5,12 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
-@Component
-@Path("/")
-@Produces("application/json")
+@RestController
+@RequestMapping("/api")
 public class SykemeldingResource implements SykemeldingApi {
 
     private final SykemeldingService sykemeldingService;
@@ -29,9 +26,8 @@ public class SykemeldingResource implements SykemeldingApi {
         this.sykemeldingService = sykemeldingService;
     }
 
-    @GET
-    @Path("/sykmeldtinfodata")
     @Override
+    @GetMapping("/sykmeldtinfodata")
     public SykmeldtInfoData hentSykmeldtInfoData() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
