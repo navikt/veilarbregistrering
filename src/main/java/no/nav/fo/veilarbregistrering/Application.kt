@@ -18,11 +18,10 @@ fun main(vararg args: String) {
 
 @EnableAutoConfiguration
 @Import(ApplicationConfig::class)
-//@Configuration
 class Application {
 
     companion object {
-        private const val SECRETS_PATH = "/var/run/secrets/nais.io/"
+        internal const val SECRETS_PATH = "/var/run/secrets/nais.io/"
 
         internal fun readVaultSecrets() {
             System.setProperty("SRVVEILARBREGISTRERING_USERNAME", getVaultSecret("serviceuser_creds/username"))
