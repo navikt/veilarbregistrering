@@ -1,13 +1,10 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.common.leaderelection.LeaderElectionHttpClient;
-import no.nav.common.metrics.InfluxClient;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
@@ -34,7 +31,6 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
-import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringAvHistorikkTask;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
@@ -137,21 +133,6 @@ public class ServiceBeansConfig {
                 brukerTilstandService,
                 manuellRegistreringRepository,
                 metricsService);
-    }
-
-    @Bean
-    PubliseringAvHistorikkTask publiseringAvHistorikkTask(
-            BrukerRegistreringRepository brukerRegistreringRepository,
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            UnleashService unleashService,
-            LeaderElectionClient leaderElectionClient
-    ) {
-        return new PubliseringAvHistorikkTask(
-                brukerRegistreringRepository,
-                arbeidssokerRegistrertProducer,
-                unleashService,
-                leaderElectionClient
-        );
     }
 
     @Bean
