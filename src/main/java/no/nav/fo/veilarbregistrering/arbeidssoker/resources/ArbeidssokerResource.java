@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import no.nav.common.abac.Pep;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
@@ -28,15 +28,15 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
 
     private final ArbeidssokerService arbeidssokerService;
     private final UserService userService;
-    private final Pep pepClient;
+    private final AutorisasjonService autorisasjonService;
 
     public ArbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            Pep pepClient) {
+            AutorisasjonService autorisasjonService) {
         this.arbeidssokerService = arbeidssokerService;
         this.userService = userService;
-        this.pepClient = pepClient;
+        this.autorisasjonService = autorisasjonService;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        // TODO pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed));

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
-import no.nav.common.abac.Pep;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService;
@@ -15,13 +15,13 @@ public class KontaktinfoResource implements KontaktinfoApi {
 
     private final KontaktinfoService kontaktinfoService;
     private final UserService userService;
-    private final Pep pepClient;
+    private final AutorisasjonService autorisasjonService;
 
     public KontaktinfoResource(
-            Pep pepClient,
             UserService userService,
-            KontaktinfoService kontaktinfoService) {
-        this.pepClient = pepClient;
+            KontaktinfoService kontaktinfoService,
+            AutorisasjonService autorisasjonService) {
+        this.autorisasjonService = autorisasjonService;
         this.userService = userService;
         this.kontaktinfoService = kontaktinfoService;
     }
@@ -31,7 +31,7 @@ public class KontaktinfoResource implements KontaktinfoApi {
     public KontaktinfoDto hentKontaktinfo() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        //TODO pepClient.sjekkLesetilgangTilBruker(map(bruker));
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         Kontaktinfo kontaktinfo = kontaktinfoService.hentKontaktinfo(bruker);
         return KontaktinfoMapper.map(kontaktinfo);

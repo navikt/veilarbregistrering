@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources;
 
-import no.nav.common.abac.Pep;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
@@ -17,16 +17,16 @@ import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 public class OppgaveResource implements OppgaveApi {
 
     private final OppgaveService oppgaveService;
-    private Pep pepClient;
     private final UserService userService;
+    private final AutorisasjonService autorisasjonService;
 
     public OppgaveResource(
-            Pep pepClient,
             UserService userService,
-            OppgaveService oppgaveService) {
-        this.pepClient = pepClient;
+            OppgaveService oppgaveService,
+            AutorisasjonService autorisasjonService) {
         this.userService = userService;
         this.oppgaveService = oppgaveService;
+        this.autorisasjonService = autorisasjonService;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class OppgaveResource implements OppgaveApi {
     public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        // TODO pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        autorisasjonService.sjekkSkrivetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         OppgaveResponse oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 

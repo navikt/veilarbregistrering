@@ -24,7 +24,7 @@ public class ArbeidsforholdResource implements ArbeidsforholdApi {
     public ArbeidsforholdDto hentSisteArbeidsforhold() {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer().stringValue());
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         return map(flereArbeidsforhold.siste());

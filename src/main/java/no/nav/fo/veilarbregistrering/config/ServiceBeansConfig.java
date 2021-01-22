@@ -221,10 +221,10 @@ public class ServiceBeansConfig {
 
     @Bean
     OppgaveResource oppgaveResource(
-            Pep pepClient,
             UserService userService,
-            OppgaveService oppgaveService) {
-        return new OppgaveResource(pepClient, userService, oppgaveService);
+            OppgaveService oppgaveService,
+            AutorisasjonService autorisasjonService) {
+        return new OppgaveResource(userService, oppgaveService, autorisasjonService);
     }
 
     @Bean
@@ -244,8 +244,8 @@ public class ServiceBeansConfig {
     ArbeidssokerResource arbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            Pep pepClient) {
-        return new ArbeidssokerResource(arbeidssokerService, userService, pepClient);
+            AutorisasjonService autorisasjonService) {
+        return new ArbeidssokerResource(arbeidssokerService, userService, autorisasjonService);
     }
 
     @Bean
@@ -284,10 +284,10 @@ public class ServiceBeansConfig {
 
     @Bean
     KontaktinfoResource kontaktinfoResource(
-            Pep pepClient,
             UserService userService,
-            KontaktinfoService kontaktinfoService) {
-        return new KontaktinfoResource(pepClient, userService, kontaktinfoService);
+            KontaktinfoService kontaktinfoService,
+            AutorisasjonService autorisasjonService) {
+        return new KontaktinfoResource(userService, kontaktinfoService, autorisasjonService);
     }
 
     @Bean

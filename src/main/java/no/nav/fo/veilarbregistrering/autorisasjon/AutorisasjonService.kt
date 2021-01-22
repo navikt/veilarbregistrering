@@ -14,6 +14,7 @@ import no.nav.common.abac.domain.request.*
 import no.nav.common.types.identer.AktorId
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.springframework.http.HttpStatus
 import java.util.*
 
@@ -56,9 +57,9 @@ open class AutorisasjonService(private val veilarbPep: Pep) {
         return veilarbPep.harTilgangTilEnhetMedSperre(innloggetBrukerToken, EnhetId.of(enhetId))
     }
 
-    fun sjekkLesetilgangTilBruker(fnr: String) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr))
+    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
 
-    fun sjekkSkrivetilgangTilBruker(fnr: String) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr))
+    fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId.of(aktorId.asString()))) {
