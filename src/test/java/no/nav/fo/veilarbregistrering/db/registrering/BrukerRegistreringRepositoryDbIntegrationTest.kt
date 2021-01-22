@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
-import no.nav.fo.veilarbregistrering.besvarelse.*
+import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar
+import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
+import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.data.domain.PageRequest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 
@@ -110,40 +111,6 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         val bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.id)
         assertThat(bruker.gjeldendeFoedselsnummer).isEqualTo(BRUKER_1.gjeldendeFoedselsnummer)
         assertThat(bruker.aktorId).isEqualTo(BRUKER_1.aktorId)
-    }
-
-    @Test
-    fun findRegistreringByPage_skal_returnere_eldste_registrering_pa_bakgrunn_av_id() {
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_2)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_3)
-        val pageRequest = PageRequest.of(0, 2)
-        val registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest)
-        assertThat(registreringByPage.totalPages).isEqualTo(2)
-    }
-
-    @Test
-    fun findRegistreringByPage_skal_paging_for_a_levere_batcher_med_rader() {
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_2)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_3)
-        val pageRequest = PageRequest.of(1, 2)
-        val registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest)
-        assertThat(registreringByPage.totalPages).isEqualTo(2)
-    }
-
-    @Test
-    fun findRegistreringByPage_skal_returnere_internEvents() {
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_2)
-        brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_3)
-        val pageRequest = PageRequest.of(0, 2)
-        val registreringByPage = brukerRegistreringRepository.findRegistreringByPage(pageRequest)
-        val randomEvent = registreringByPage.content[0]
-        assertThat(randomEvent.brukersSituasjon).hasValue(DinSituasjonSvar.JOBB_OVER_2_AAR)
-        assertThat(randomEvent.utdanningSvar).hasValue(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
-        assertThat(randomEvent.utdanningBestattSvar).hasValue(UtdanningBestattSvar.JA)
-        assertThat(randomEvent.utdanningGodkjentSvar).hasValue(UtdanningGodkjentSvar.JA)
     }
 
     companion object {
