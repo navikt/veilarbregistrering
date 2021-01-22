@@ -8,10 +8,7 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -69,7 +66,7 @@ public class RegistreringResource implements RegistreringApi {
 
     @Override
     @PostMapping("/startregistrering")
-    public OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
+    public OrdinaerBrukerRegistrering registrerBruker(@RequestBody OrdinaerBrukerRegistrering ordinaerBrukerRegistrering) {
         if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
         }
@@ -131,7 +128,7 @@ public class RegistreringResource implements RegistreringApi {
 
     @Override
     @PostMapping("/startregistrersykmeldt")
-    public void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering) {
+    public void registrerSykmeldt(@RequestBody SykmeldtRegistrering sykmeldtRegistrering) {
 
         if(tjenesteErNede()){
             throw new RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.");
