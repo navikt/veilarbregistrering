@@ -18,6 +18,7 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
+import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
@@ -157,6 +158,11 @@ public class ServiceBeansConfig {
                 inaktivBrukerService,
                 metricsService
                 );
+    }
+
+    @Bean
+    HelsesjekkResource helsesjekkResource() {
+        return new HelsesjekkResource();
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.helsesjekk.resources
 
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.rest.client.RestClient
