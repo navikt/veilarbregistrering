@@ -14,7 +14,7 @@ public class PdlOppslagClientHelsesjekk implements HealthCheck {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return no.nav.fo.veilarbregistrering.helsesjekk.resources.HealthCheck.performHealthCheck(baseUrl);
+        return no.nav.fo.veilarbregistrering.helsesjekk.HealthCheck.performHealthCheck(baseUrl);
     }
 
 }
