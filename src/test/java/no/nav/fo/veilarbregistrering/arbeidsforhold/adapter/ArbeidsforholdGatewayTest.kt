@@ -17,7 +17,7 @@ class ArbeidsforholdGatewayTest {
     fun setup() {
         aaregRestClient = mockk(relaxed = true)
         val beanDefinition: BeanDefinition =
-            BeanDefinitionBuilder.rootBeanDefinition(RestArbeidsforholdGateway::class.java)
+            BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGatewayImpl::class.java)
                 .addConstructorArgValue(aaregRestClient).beanDefinition
         context = AnnotationConfigApplicationContext()
         context.register(CacheConfig::class.java)

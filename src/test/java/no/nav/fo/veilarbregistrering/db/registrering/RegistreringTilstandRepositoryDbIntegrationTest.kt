@@ -130,14 +130,23 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun `skal telle antall registreringer med status`() {
-        val antallPublisertKafka = 5
+    fun `telling av registreringstatus uten verdier i databasen`() {
+        val statuser = registreringTilstandRepository.hentAntallPerStatus()
+        assertThat(statuser.size).isGreaterThan(0)
+        assertThat(statuser.filter { it.value != 0 }).isEmpty()
+    }
+
+    @Test
+    fun `telling av registreringstatus for alle typer`() {
+        val antallUkjentTekniskFeil = 2
         val antallOverfortArena = 3
-        lagRegistreringMedTilstand(PUBLISERT_KAFKA, antallPublisertKafka)
+        lagRegistreringMedTilstand(UKJENT_TEKNISK_FEIL, antallUkjentTekniskFeil)
         lagRegistreringMedTilstand(OVERFORT_ARENA, antallOverfortArena)
-        assertThat(registreringTilstandRepository.hentAntall(PUBLISERT_KAFKA)).isEqualTo(antallPublisertKafka)
-        assertThat(registreringTilstandRepository.hentAntall(OVERFORT_ARENA)).isEqualTo(antallOverfortArena)
-        assertThat(registreringTilstandRepository.hentAntall(MOTTATT)).isEqualTo(0)
+
+        val statuser = registreringTilstandRepository.hentAntallPerStatus()
+        assertThat(statuser[UKJENT_TEKNISK_FEIL]).isEqualTo(antallUkjentTekniskFeil)
+        assertThat(statuser[OVERFORT_ARENA]).isEqualTo(antallOverfortArena)
+        assertThat(statuser[MOTTATT]).isEqualTo(0)
     }
 
     @Test

@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import no.nav.common.metrics.Event as MetricsEvent
 
 open class MetricsService(
-    private val metricsClient: MetricsClient,
-    private val meterRegistry: MeterRegistry
+        private val metricsClient: MetricsClient,
+        private val meterRegistry: MeterRegistry
 ) {
 
     fun reportSimple(event: Event, field: Metric, tag: Metric) {
@@ -21,59 +21,61 @@ open class MetricsService(
     }
 
     fun reportTags(event: Event, vararg metrics: Metric): Unit =
-        MetricsEvent(event.key)
-            .also { addAllTags(it, metrics.toList()) }
-            .let { metricsClient.report(it) }
+            MetricsEvent(event.key)
+                    .also { addAllTags(it, metrics.toList()) }
+                    .let { metricsClient.report(it) }
 
     fun reportTags(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric): Unit =
-        MetricsEvent(event.key)
-            .also { addAllTags(it, hasMetrics.metrics()) }
-            .also { addAllTags(it, metrics.toList()) }
-            .let { metricsClient.report(it) }
+            MetricsEvent(event.key)
+                    .also { addAllTags(it, hasMetrics.metrics()) }
+                    .also { addAllTags(it, metrics.toList()) }
+                    .let { metricsClient.report(it) }
 
     fun reportFields(event: Event, vararg metrics: Metric) =
-        MetricsEvent(event.key)
-            .also { addAllFields(it, metrics.toList()) }
-            .let { metricsClient.report(it) }
+            MetricsEvent(event.key)
+                    .also { addAllFields(it, metrics.toList()) }
+                    .let { metricsClient.report(it) }
 
     fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric) =
-        MetricsEvent(event.key)
-            .also { addAllFields(it, hasMetrics.metrics()) }
-            .also { addAllFields(it, metrics.toList()) }
-            .let { metricsClient.report(it) }
+            MetricsEvent(event.key)
+                    .also { addAllFields(it, hasMetrics.metrics()) }
+                    .also { addAllFields(it, metrics.toList()) }
+                    .let { metricsClient.report(it) }
 
     fun reportTimer(event: Event, start: StartTime, failureCause: String? = null) {
         MetricsEvent("${event.key}.timer")
-            .also { metricsEvent ->
-                metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
-                failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
-            }
-            .let { metricsClient.report(it) }
+                .also { metricsEvent ->
+                    metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
+                    failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
+                }
+                .let { metricsClient.report(it) }
     }
 
     fun startTime() = StartTime(System.nanoTime())
     private val statusVerdier: Map<Status, AtomicInteger> = HashMap()
 
-    fun rapporterRegistreringStatusAntall(status: Status, antall: Int) {
-        val registrertAntall = statusVerdier.getOrElse(status) {
-            val atomiskAntall = AtomicInteger()
-            meterRegistry.gauge(
-                "veilarbregistrering_registrert_status",
-                listOf(Tag.of("status", status.name)),
+    fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
+        antallPerStatus.forEach {
+            val registrertAntall = statusVerdier.getOrElse(it.key) {
+                val atomiskAntall = AtomicInteger()
+                meterRegistry.gauge(
+                        "veilarbregistrering_registrert_status",
+                        listOf(Tag.of("status", it.key.name)),
+                        atomiskAntall
+                ) { obj: AtomicInteger -> obj.get().toDouble() }
                 atomiskAntall
-            ) { obj: AtomicInteger -> obj.get().toDouble() }
-            atomiskAntall
+            }
+            registrertAntall.set(it.value)
         }
-        registrertAntall.set(antall)
     }
 
     private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
-        metrics.filterNotNull()
-            .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
+            metrics.filterNotNull()
+                    .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
 
     private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
-        metrics.filterNotNull()
-            .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
+            metrics.filterNotNull()
+                    .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
     class StartTime internal constructor(val time: Long)
 }

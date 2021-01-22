@@ -1,7 +1,6 @@
 namespace: default
 app_environment_name: p
 feature_endpoint_url: https://feature-fss.nais.adeo.no/feature
-aareg_url: https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3
 aareg_rest_api: https://modapp.adeo.no/aareg-services/api
 openam_discovery_url: https://isso.adeo.no/isso/oauth2/.well-known/openid-configuration
 veilarblogin_openam_clientid: veilarblogin-p

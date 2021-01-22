@@ -10,7 +10,7 @@ public class ArbeidsforholdGatewayConfig {
 
     @Bean
     ArbeidsforholdGateway arbeidsforholdGateway() {
-        return new RestArbeidsforholdGateway(new StubAaregRestClient());
+        return new ArbeidsforholdGatewayImpl(new StubAaregRestClient());
     }
 
 }

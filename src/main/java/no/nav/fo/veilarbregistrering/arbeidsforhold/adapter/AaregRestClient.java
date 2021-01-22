@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
@@ -73,9 +74,7 @@ class AaregRestClient {
                                     .addQueryParameter("regelverk", "A_ORDNINGEN")
                                     .build())
                             .header(ACCEPT, APPLICATION_JSON_VALUE)
-                            .header(AUTHORIZATION, "Bearer " + "TOKEN"//TODO SubjectHandler.getSsoToken(OIDC)
-                                    //.orElseThrow(() -> new IllegalStateException("Fant ikke SSO token via OIDC")))
-                            )
+                            .header(AUTHORIZATION, "Bearer " + AuthContextHolder.requireIdTokenString())
                             .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
                             .header(NAV_PERSONIDENT, fnr.stringValue())
                             .header(NAV_CALL_ID_HEADER, MDC.get(MDC_CALL_ID))

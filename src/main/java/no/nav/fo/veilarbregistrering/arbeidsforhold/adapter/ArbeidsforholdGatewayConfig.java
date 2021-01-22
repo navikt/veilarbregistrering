@@ -19,6 +19,6 @@ public class ArbeidsforholdGatewayConfig {
 
     @Bean
     ArbeidsforholdGateway arbeidsforholdGateway(AaregRestClient aaregRestClient) {
-        return new RestArbeidsforholdGateway(aaregRestClient);
+        return new ArbeidsforholdGatewayImpl(aaregRestClient);
     }
 }

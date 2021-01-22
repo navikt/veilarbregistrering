@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
@@ -83,15 +84,10 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntallForPublisering() {
         try {
-            rapporterRegistreringStatusAntall(OVERFORT_ARENA);
-            rapporterRegistreringStatusAntall(PUBLISERT_KAFKA);
+            Map<Status, Integer> antallPerStatus = registreringTilstandRepository.hentAntallPerStatus();
+            metricsService.rapporterRegistreringStatusAntall(antallPerStatus);
         } catch (Exception e) {
             LOG.error("Feil ved rapportering av antall statuser", e);
         }
-    }
-
-    private void rapporterRegistreringStatusAntall(Status status) {
-        int antall = registreringTilstandRepository.hentAntall(status);
-        metricsService.rapporterRegistreringStatusAntall(status, antall);
     }
 }

@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.registrering
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import org.springframework.jdbc.core.RowCallbackHandler
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
@@ -81,13 +82,21 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, params, rowMapper()).firstOrNull()
     }
 
-    override fun hentAntall(status: Status): Int {
-        val params = mapOf("status" to status.name)
+    override fun hentAntallPerStatus(): Map<Status, Int> {
+        val statusAntall = mutableMapOf<Status, Int>()
+        Status.values().forEach { statusAntall[it] = 0 }
 
-        val sql = "SELECT COUNT(1) FROM $REGISTRERING_TILSTAND" +
-                " WHERE $STATUS = :status"
+        val antallAlias = "antall"
+        val sql = "SELECT $STATUS, COUNT(1) AS $antallAlias FROM $REGISTRERING_TILSTAND" +
+                " GROUP BY $STATUS"
 
-        return db.queryForObject(sql, params, Int::class.java)!!
+        db.query(sql) { rs ->
+            val status = rs.getString(STATUS)
+            val antall = rs.getInt(antallAlias)
+            statusAntall[Status.valueOf(status)] = antall
+        }
+
+        return statusAntall
     }
 
 
