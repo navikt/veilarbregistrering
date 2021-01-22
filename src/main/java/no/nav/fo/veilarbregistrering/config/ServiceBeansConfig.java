@@ -316,10 +316,4 @@ public class ServiceBeansConfig {
     MetricsService metricsService(MetricsClient metricsClient, MeterRegistry meterRegistry) {
         return new MetricsService(metricsClient, meterRegistry);
     }
-
-    @Bean
-    public LeaderElectionClient leaderElectionClient() {
-        return new LeaderElectionHttpClient();
-    }
-
 }
