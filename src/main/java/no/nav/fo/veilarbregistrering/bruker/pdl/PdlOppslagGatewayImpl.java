@@ -41,11 +41,13 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
     @Cacheable(HENT_PERSONIDENTER)
     public Identer hentIdenter(Foedselsnummer fnr) {
         try {
+            LOG.info("Fødselsnummer ulik null? %s", fnr != null);
             PdlIdenter pdlIdenter = pdlOppslagClient.hentIdenter(fnr);
             return PdlOppslagMapper.map(pdlIdenter);
         } catch (BrukerIkkeFunnetException e) {
             throw e;
         } catch (RuntimeException e) {
+            LOG.error("HentIdenterFeilet: ", e);
             throw new Feil(FeilType.UKJENT, e.getMessage());
         }
     }
