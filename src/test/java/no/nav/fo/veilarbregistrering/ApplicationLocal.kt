@@ -11,7 +11,6 @@ open class ApplicationLocal
 
 fun main(vararg args: String) {
 
-
     runApplication<ApplicationLocal>(*args) {
         setAdditionalProfiles("local")
     }

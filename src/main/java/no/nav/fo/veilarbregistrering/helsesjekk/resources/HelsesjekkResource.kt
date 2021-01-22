@@ -1,20 +1,20 @@
 package no.nav.fo.veilarbregistrering.helsesjekk.resources
 
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
 
-@Path("/internal")
-@Produces("application/json")
+@RestController
+@RequestMapping("/internal")
 class HelsesjekkResource {
 
-    @GET
-    @Path("/isAlive")
+    @GetMapping("/isAlive")
     fun isAlive() {
     }
 
     @GET
-    @Path("/isReady")
+    @GetMapping("/isReady")
     fun isReady() {
     }
 

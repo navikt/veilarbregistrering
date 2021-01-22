@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-
-import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;

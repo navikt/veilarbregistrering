@@ -1,4 +1,6 @@
 spring:
+  main:
+    banner-mode: off
   flyway:
     enabled: true
   datasource:
@@ -8,3 +10,13 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
+
+server:
+  servlet:
+    context-path: /veilarbregistrering
+
+management:
+  endpoints:
+    web:
+      base-path: /internal
+
