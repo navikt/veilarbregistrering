@@ -18,11 +18,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.MDC;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -86,14 +86,6 @@ class PdlOppslagClient {
         }
     }
 
-    private String hentIdenterQuery() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentIdenter.graphql").toURI()));
-            return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
-        }
-    }
 
     PdlPerson hentPerson(AktorId aktorId) {
         PdlHentPersonRequest request = new PdlHentPersonRequest(hentPersonQuery(), new HentPersonVariables(aktorId.asString(), false));
@@ -124,11 +116,19 @@ class PdlOppslagClient {
         }
     }
 
+    private String hentIdenterQuery() {
+        return hentRessursfil("pdl/hentIdenter.graphql");
+    }
+
     private String hentPersonQuery() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
-            return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException | URISyntaxException e) {
+       return hentRessursfil("pdl/hentPerson.graphql");
+    }
+
+    private String hentRessursfil(String sti) {
+        ClassLoader classLoader = PdlOppslagClient.class.getClassLoader();
+        try (InputStream resourceStream = classLoader.getResourceAsStream(sti)) {
+            return new String(resourceStream.readAllBytes(), StandardCharsets.UTF_8).replaceAll("[\n\r]]", "");
+        } catch (IOException e) {
             throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
         }
     }
