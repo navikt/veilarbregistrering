@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding.resources;
 
 import no.nav.common.abac.Pep;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
@@ -15,13 +16,13 @@ public class SykemeldingResource implements SykemeldingApi {
 
     private final SykemeldingService sykemeldingService;
     private final UserService userService;
-    private final Pep pepClient;
+    private final AutorisasjonService autorisasjonsService;
 
     public SykemeldingResource(
-            Pep pepClient,
             UserService userService,
-            SykemeldingService sykemeldingService) {
-        this.pepClient = pepClient;
+            SykemeldingService sykemeldingService,
+            AutorisasjonService autorisasjonsService) {
+        this.autorisasjonsService = autorisasjonsService;
         this.userService = userService;
         this.sykemeldingService = sykemeldingService;
     }

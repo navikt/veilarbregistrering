@@ -26,7 +26,7 @@ public class RegistreringResource implements RegistreringApi {
     private final BrukerRegistreringService brukerRegistreringService;
     private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
-    private AutorisasjonService autorisasjonsService;
+    private final AutorisasjonService autorisasjonsService;
     private final UserService userService;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;

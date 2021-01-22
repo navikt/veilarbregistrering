@@ -13,11 +13,14 @@ public class SykemeldingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SykemeldingService.class);
 
-    public final SykemeldingGateway sykemeldingGateway;
-    private AutorisasjonService autorisasjonService;
+    private final SykemeldingGateway sykemeldingGateway;
+    private final AutorisasjonService autorisasjonService;
     private final MetricsService metricsService;
 
-    public SykemeldingService(SykemeldingGateway sykemeldingGateway, AutorisasjonService autorisasjonService, MetricsService metricsService) {
+    public SykemeldingService(
+            SykemeldingGateway sykemeldingGateway,
+            AutorisasjonService autorisasjonService,
+            MetricsService metricsService) {
         this.sykemeldingGateway = sykemeldingGateway;
         this.autorisasjonService = autorisasjonService;
         this.metricsService = metricsService;

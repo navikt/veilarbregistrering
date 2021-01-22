@@ -3,8 +3,6 @@ package no.nav.fo.veilarbregistrering.config;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
-import no.nav.common.leaderelection.LeaderElectionClient;
-import no.nav.common.leaderelection.LeaderElectionHttpClient;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
@@ -46,7 +44,10 @@ import org.springframework.context.annotation.Configuration;
 public class ServiceBeansConfig {
 
     @Bean
-    SykemeldingService sykemeldingService(SykemeldingGateway sykemeldingGateway, AutorisasjonService autorisasjonService, MetricsService metricsService) {
+    SykemeldingService sykemeldingService(
+            SykemeldingGateway sykemeldingGateway,
+            AutorisasjonService autorisasjonService,
+            MetricsService metricsService) {
         return new SykemeldingService(sykemeldingGateway, autorisasjonService, metricsService);
     }
 
@@ -156,8 +157,7 @@ public class ServiceBeansConfig {
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
                 inaktivBrukerService,
-                metricsService
-                );
+                metricsService);
     }
 
     @Bean
@@ -173,20 +173,18 @@ public class ServiceBeansConfig {
         return new ArbeidsforholdResource(
                 autorisasjonService,
                 userService,
-                arbeidsforholdGateway
-        );
+                arbeidsforholdGateway);
     }
 
     @Bean
     SykemeldingResource sykemeldingResource(
-            Pep pepClient,
             UserService userService,
-            SykemeldingService sykemeldingService) {
+            SykemeldingService sykemeldingService,
+            AutorisasjonService autorisasjonsService) {
         return new SykemeldingResource(
-                pepClient,
                 userService,
-                sykemeldingService
-        );
+                sykemeldingService,
+                autorisasjonsService);
     }
 
     @Bean
@@ -201,8 +199,7 @@ public class ServiceBeansConfig {
                 oppgaveRepository,
                 oppgaveRouter,
                 kontaktBrukerHenvendelseProducer,
-                metricsService
-        );
+                metricsService);
     }
 
     @Bean
@@ -213,7 +210,13 @@ public class ServiceBeansConfig {
             PersonGateway personGateway,
             PdlOppslagGateway pdlOppslagGateway,
             MetricsService metricsService) {
-        return new OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway, metricsService);
+        return new OppgaveRouter(
+                arbeidsforholdGateway,
+                enhetGateway,
+                norg2Gateway,
+                personGateway,
+                pdlOppslagGateway,
+                metricsService);
     }
 
     @Bean
@@ -230,7 +233,11 @@ public class ServiceBeansConfig {
             FormidlingsgruppeGateway formidlingsgruppeGateway,
             UnleashService unleashService,
             MetricsService metricsService) {
-        return new ArbeidssokerService(arbeidssokerRepository, formidlingsgruppeGateway, unleashService, metricsService);
+        return new ArbeidssokerService(
+                arbeidssokerRepository,
+                formidlingsgruppeGateway,
+                unleashService,
+                metricsService);
     }
 
     @Bean
@@ -255,20 +262,16 @@ public class ServiceBeansConfig {
                 arbeidssokerRegistrertProducer,
                 registreringTilstandRepository,
                 arbeidssokerProfilertProducer,
-                metricsService
-        );
+                metricsService);
     }
 
     @Bean
-    ProfileringService profileringService(
-            ArbeidsforholdGateway arbeidsforholdGateway) {
+    ProfileringService profileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
         return new ProfileringService(arbeidsforholdGateway);
     }
 
     @Bean
-    UserService userService(
-            PdlOppslagGateway pdlOppslagGateway
-    ) {
+    UserService userService(PdlOppslagGateway pdlOppslagGateway) {
         return new UserService(pdlOppslagGateway);
     }
 
