@@ -11,10 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
@@ -55,10 +52,9 @@ public class OppfolgingClient {
                         .build())
                 .header(COOKIE, cookies)
                 .build();
-        try {
-            return RestUtils.parseJsonResponseOrThrow(
-                    client.newCall(request).execute(),
-                    OppfolgingStatusData.class);
+        try (okhttp3.Response response = client.newCall(request).execute()) {
+            return RestUtils.parseJsonResponseOrThrow(response, OppfolgingStatusData.class);
+
         } catch (ForbiddenException e) {
             LOG.error("Ingen tilgang " + e);
             Response response = e.getResponse();
