@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,8 +44,8 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
     @GetMapping("/perioder")
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
             @RequestParam("fnr") String fnr,
-            @RequestParam("fraOgMed") LocalDate fraOgMed,
-            @RequestParam("tilOgMed") LocalDate tilOgMed
+            @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fraOgMed,
+            @RequestParam("tilOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tilOgMed
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 
