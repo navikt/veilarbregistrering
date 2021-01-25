@@ -67,13 +67,13 @@ public class OppfolgingClient {
 
     public AktiverBrukerResultat reaktiverBruker(Foedselsnummer fnr) {
         String url = baseUrl + "/oppfolging/reaktiverbruker";
-        try {
-            okhttp3.Response response = client.newCall(
-                    buildSystemAuthorizationRequest()
-                            .url(url)
-                            .method("POST", RestUtils.toJsonRequestBody(new Fnr(fnr.stringValue())))
-                            .build())
-                    .execute();
+
+        Request request = buildSystemAuthorizationRequest()
+                .url(url)
+                .method("POST", RestUtils.toJsonRequestBody(new Fnr(fnr.stringValue())))
+                .build();
+        
+        try (okhttp3.Response response = client.newCall(request).execute()) {
             return behandleHttpResponse(response, url);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -82,13 +82,11 @@ public class OppfolgingClient {
 
     public AktiverBrukerResultat aktiverBruker(AktiverBrukerData aktiverBrukerData) {
         String url = baseUrl + "/oppfolging/aktiverbruker";
-        try {
-            okhttp3.Response response = client.newCall(
-                    buildSystemAuthorizationRequest()
-                            .url(url)
-                            .method("POST", RestUtils.toJsonRequestBody(aktiverBrukerData))
-                            .build())
-                    .execute();
+        Request request = buildSystemAuthorizationRequest()
+                .url(url)
+                .method("POST", RestUtils.toJsonRequestBody(aktiverBrukerData))
+                .build();
+        try (okhttp3.Response response = client.newCall(request).execute()) {
             return behandleHttpResponse(response, url);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -99,13 +97,12 @@ public class OppfolgingClient {
         HttpUrl url = HttpUrl.parse(baseUrl).newBuilder().addPathSegments("oppfolging/aktiverSykmeldt/")
                 .addQueryParameter("fnr", fnr.stringValue())
                 .build();
-        try {
-            okhttp3.Response response = client.newCall(
-                    buildSystemAuthorizationRequest()
-                            .url(url)
-                            .method("POST", RestUtils.toJsonRequestBody(sykmeldtBrukerType))
-                            .build())
-                    .execute();
+        Request request = buildSystemAuthorizationRequest()
+                .url(url)
+                .method("POST", RestUtils.toJsonRequestBody(sykmeldtBrukerType))
+                .build();
+
+        try (okhttp3.Response response = client.newCall(request).execute()) {
             behandleHttpResponse(response, url.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
