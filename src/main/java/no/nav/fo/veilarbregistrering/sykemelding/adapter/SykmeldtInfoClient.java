@@ -37,16 +37,15 @@ public class SykmeldtInfoClient {
     }
 
     private InfotrygdData getSykeforloepMetadata(String url) {
-        HttpServletRequest request = servletRequest();
+        HttpServletRequest servletRequest = servletRequest();
 
-        try {
-            Response response = client.newCall(
-                    new Request.Builder()
-                            .url(url)
-                            .header(COOKIE, request.getHeader(COOKIE))
-                            .header("Authorization", "Bearer " + getToken(request))
-                            .build())
-                    .execute();
+        Request request = new Request.Builder()
+                .url(url)
+                .header(COOKIE, servletRequest.getHeader(COOKIE))
+                .header("Authorization", "Bearer " + getToken(servletRequest))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
             return RestUtils.parseJsonResponseOrThrow(response, InfotrygdData.class);
         } catch (IOException e) {
             throw new InternalServerErrorException("Hent maksdato fra Infotrygd feilet.", e);
