@@ -102,6 +102,10 @@ public class ArenaOrdsTokenProviderClient {
         @JsonAlias("expires_in")
         int expiresIn;
 
+        public OrdsToken() {
+            //default constructor for `com.fasterxml.jackson.databind` som benyttes for å deserialisere.
+        };
+
         public OrdsToken(String accessToken, String tokenType, int expiresIn) {
             this.accessToken = accessToken;
             this.tokenType = tokenType;
