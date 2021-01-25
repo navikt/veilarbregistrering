@@ -39,20 +39,21 @@ class VeilArbPersonClient {
 
     Optional<GeografiskTilknytningDto> geografisktilknytning(Foedselsnummer foedselsnummer) {
         String cookies = servletRequest().getHeader(COOKIE);
-        try {
-            Request request = new Request.Builder()
-                    .url(HttpUrl.parse(baseUrl).newBuilder()
-                            .addPathSegments("person/geografisktilknytning")
-                            .addQueryParameter("fnr", foedselsnummer.stringValue())
-                            .build())
-                    .header(COOKIE, cookies)
-                    .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
-                    .build();
 
-            Response response = client.newCall(request).execute();
+        Request request = new Request.Builder()
+                .url(HttpUrl.parse(baseUrl).newBuilder()
+                        .addPathSegments("person/geografisktilknytning")
+                        .addQueryParameter("fnr", foedselsnummer.stringValue())
+                        .build())
+                .header(COOKIE, cookies)
+                .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 if (response.code() == NOT_FOUND.value()) {
                     LOG.warn("Fant ikke geografisk tilknytning for bruker.");
+                    response.close();
                     return Optional.empty();
                 } else if (response.code() == FORBIDDEN.value()) {
                     throw new RuntimeException("Bruker har ikke tilgang på å hente ut geografisk tilknytning fra VeilArbPerson-tjenesten.");
