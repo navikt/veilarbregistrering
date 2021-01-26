@@ -49,9 +49,7 @@ class KrrClient {
                 .header("Nav-Consumer-Id", "srvveilarbregistrering")
                 .header("Nav-Personidenter", foedselsnummer.stringValue())
                 .build();
-        try {
-            Response response = baseClient().newCall(request).execute();
-
+        try (Response response = baseClient().newCall(request).execute()) {
             if (!response.isSuccessful() || response.code() == NOT_FOUND) {
                 LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret");
                 return Optional.empty();
