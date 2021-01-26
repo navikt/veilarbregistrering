@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker;
 
+import no.bekk.bekkopen.person.FodselsnummerValidator;
 import no.nav.common.types.identer.Fnr;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +44,7 @@ public class UserService {
             fnr = getFnr();
         }
 
-        if (!fnr.matches("\\d{11}")) {
-            //TODO Valider fnr
+        if (!FodselsnummerValidator.isValid(fnr)) {
             throw new RuntimeException("Fødselsnummer ikke gyldig.");
         }
 
