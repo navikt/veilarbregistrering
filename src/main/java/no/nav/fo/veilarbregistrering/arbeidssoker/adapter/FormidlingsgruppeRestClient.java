@@ -11,6 +11,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
@@ -65,9 +66,10 @@ class FormidlingsgruppeRestClient {
                 .build();
 
         OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
-        try {
-            Response response = httpClient.newCall(request).execute();
-            return RestUtils.parseJsonResponseOrThrow(response, String.class);
+        try (Response response = httpClient.newCall(request).execute()){
+            if (response.code() == HttpStatus.NOT_FOUND.value()) throw new NotFoundException();
+            else if (!response.isSuccessful()) throw new RuntimeException("Feilkode: " + response.code());
+            return RestUtils.getBodyStr(response).orElseThrow(() -> new RuntimeException("Feil ved uthenting av response body"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
