@@ -23,4 +23,9 @@ public class ArbeidssokerperioderTestdataBuilder {
     public Arbeidssokerperioder build() {
         return new Arbeidssokerperioder(arbeidssokerperioder);
     }
+
+    public ArbeidssokerperioderTestdataBuilder arbeidssokerperiode(Builder<Arbeidssokerperiode> arbeidssokerperiode) {
+        this.arbeidssokerperioder.add(arbeidssokerperiode.build());
+        return this;
+    }
 }

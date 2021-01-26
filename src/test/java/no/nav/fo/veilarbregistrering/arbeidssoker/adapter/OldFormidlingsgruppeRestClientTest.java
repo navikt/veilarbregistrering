@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormidlingsgruppeRestClientTest {
+public class OldFormidlingsgruppeRestClientTest {
 
     @Test
     public void skal_parse_formidlingshistorikkResponse() {
