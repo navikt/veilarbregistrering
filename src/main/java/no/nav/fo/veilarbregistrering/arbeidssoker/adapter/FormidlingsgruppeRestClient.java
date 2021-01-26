@@ -12,8 +12,8 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
-import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -42,19 +42,20 @@ class FormidlingsgruppeRestClient {
     Optional<FormidlingsgruppeResponseDto> hentFormidlingshistorikk(Foedselsnummer foedselsnummer, Periode periode) {
         try {
             String response = utfoerRequest(foedselsnummer, periode);
+            if (response == null) {
+                LOG.warn("Søk på fødselsnummer gav ingen treff i Arena");
+                return Optional.empty();
+            }
             FormidlingsgruppeResponseDto formidlingsgruppeResponseDto = parse(response);
             return Optional.of(formidlingsgruppeResponseDto);
-
-        } catch (NotFoundException e) {
-            LOG.warn("Søk på fødselsnummer gav ingen treff i Arena", e);
-            return Optional.empty();
 
         } catch (RuntimeException e) {
             throw new RuntimeException("Hent formidlingshistorikk feilet", e);
         }
     }
 
-    String utfoerRequest(Foedselsnummer foedselsnummer, Periode periode) {
+    @Nullable
+    private String utfoerRequest(Foedselsnummer foedselsnummer, Periode periode) {
         Request request = new Request.Builder()
                 .url(HttpUrl.parse(url).newBuilder()
                         .addQueryParameter("fnr", foedselsnummer.stringValue())
@@ -67,7 +68,7 @@ class FormidlingsgruppeRestClient {
 
         OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
         try (Response response = httpClient.newCall(request).execute()){
-            if (response.code() == HttpStatus.NOT_FOUND.value()) throw new NotFoundException();
+            if (response.code() == HttpStatus.NOT_FOUND.value()) return null;
             else if (!response.isSuccessful()) throw new RuntimeException("Feilkode: " + response.code());
             return RestUtils.getBodyStr(response).orElseThrow(() -> new RuntimeException("Feil ved uthenting av response body"));
         } catch (IOException e) {

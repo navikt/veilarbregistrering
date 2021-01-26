@@ -32,7 +32,7 @@ class FormidlingsgruppeRestClientTest {
     }
 
     private fun buildClient(): FormidlingsgruppeRestClient {
-        val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
+        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
         return FormidlingsgruppeRestClient(baseUrl) { "arenaOrdsTokenProvider" }
     }
 
@@ -76,6 +76,28 @@ class FormidlingsgruppeRestClientTest {
                                 .fra(LocalDate.of(2020, 3, 12))
                                 .til(null))
                         .build())
+    }
+
+    @Test
+    fun `skal gi empty for ukjent person`() {
+        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
+
+        mockServer.`when`(
+            HttpRequest
+                .request()
+                .withMethod("GET")
+                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+                .withQueryStringParameter("fnr", "11118035157"))
+            .respond(response()
+                .withStatusCode(404))
+
+        val arbeidssokerperioder = formidlingsgruppeGateway.finnArbeissokerperioder(
+            Foedselsnummer.of("11118035157"),
+            Periode.of(
+                LocalDate.of(2020, 1, 10),
+                LocalDate.of(2020, 1, 11)))
+
+        assertThat(arbeidssokerperioder.asList()).isEmpty()
     }
 
     companion object {
