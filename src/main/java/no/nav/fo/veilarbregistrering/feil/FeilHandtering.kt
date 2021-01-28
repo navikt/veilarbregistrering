@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.feil.HentOppfolgingStatusException
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveresException
