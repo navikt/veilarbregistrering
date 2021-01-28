@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -37,7 +36,6 @@ class KrrClient {
     }
 
     Optional<KrrKontaktinfoDto> hentKontaktinfo(Foedselsnummer foedselsnummer) {
-        KrrKontaktinfoDto kontaktinfoDto;
         Request request = new Request.Builder()
                 .url(
                         HttpUrl.parse(baseUrl).newBuilder()
@@ -55,27 +53,23 @@ class KrrClient {
                 return Optional.empty();
             }
 
-            kontaktinfoDto = parse(RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new), foedselsnummer);
+            return parse(RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new), foedselsnummer);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (NotFoundException e) {
-            LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret");
-            return Optional.empty();
         }
-
-        return Optional.of(kontaktinfoDto);
     }
 
     /**
      * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
+     * @return
      */
-    static KrrKontaktinfoDto parse(String jsonResponse, Foedselsnummer foedselsnummer) {
+    static Optional<KrrKontaktinfoDto> parse(String jsonResponse, Foedselsnummer foedselsnummer) {
         if (new JSONObject(jsonResponse).has("kontaktinfo")) {
             JSONObject kontaktinfo = new JSONObject(jsonResponse)
                     .getJSONObject("kontaktinfo")
                     .getJSONObject(foedselsnummer.stringValue());
 
-            return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class);
+            return Optional.of(gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class));
         }
 
         if (new JSONObject(jsonResponse).has("feil")) {
@@ -86,7 +80,7 @@ class KrrClient {
             KrrFeilDto feil = gson.fromJson(response.toString(), KrrFeilDto.class);
 
             if ("Ingen kontaktinformasjon er registrert på personen".equals(feil.getMelding())) {
-                throw new NotFoundException(feil.getMelding());
+                return Optional.empty();
             }
 
             throw new RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.getMelding()));

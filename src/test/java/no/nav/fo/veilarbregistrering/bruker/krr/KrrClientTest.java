@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,10 +20,10 @@ public class KrrClientTest {
         String json = toJson(OK_JSON);
         Foedselsnummer foedselsnummer = Foedselsnummer.of("23067844532");
 
-        KrrKontaktinfoDto kontaktinfoDto = KrrClient.parse(json, foedselsnummer);
+        Optional<KrrKontaktinfoDto> kontaktinfoDto = KrrClient.parse(json, foedselsnummer);
 
-        assertThat(kontaktinfoDto).isNotNull();
-        assertThat(kontaktinfoDto.getMobiltelefonnummer()).isEqualTo("11111111");
+        assertThat(kontaktinfoDto).isNotEmpty();
+        assertThat(kontaktinfoDto.get().getMobiltelefonnummer()).isEqualTo("11111111");
     }
 
     @Test
