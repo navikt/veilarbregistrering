@@ -35,8 +35,13 @@ class Norg2RestClient {
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 
-        try {
-            Response response = utfoerRequest(rsArbeidsfordelingCriteriaDto);
+        Request request = new Request.Builder()
+                .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
+                .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
+                .build();
+
+        try (Response response = RestClient.baseClient().newCall(request).execute()) {
 
             if (response.isSuccessful()) {
                 List<RsNavKontorDto> rsNavKontorDtos = RestUtils.parseJsonResponseArrayOrThrow(response, RsNavKontorDto.class);
@@ -52,15 +57,6 @@ class Norg2RestClient {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-     Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) throws IOException {
-        Request request = new Request.Builder()
-                .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
-                .header(ACCEPT, APPLICATION_JSON_VALUE)
-                .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
-                .build();
-        return RestClient.baseClient().newCall(request).execute();
     }
 
     List<RsEnhet> hentAlleEnheter() {
