@@ -53,7 +53,6 @@ class VeilArbPersonClient {
             if (!response.isSuccessful()) {
                 if (response.code() == NOT_FOUND.value()) {
                     LOG.warn("Fant ikke geografisk tilknytning for bruker.");
-                    response.close();
                     return Optional.empty();
                 } else if (response.code() == FORBIDDEN.value()) {
                     throw new RuntimeException("Bruker har ikke tilgang på å hente ut geografisk tilknytning fra VeilArbPerson-tjenesten.");
