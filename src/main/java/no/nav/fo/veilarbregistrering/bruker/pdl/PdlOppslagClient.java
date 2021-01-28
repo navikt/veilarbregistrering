@@ -68,17 +68,16 @@ class PdlOppslagClient {
     String hentIdenterRequest(String personident, PdlHentIdenterRequest requestBody) {
         String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        try {
-            Response response = baseClient().newCall(
-                    new Request.Builder()
-                            .url(baseUrl)
-                            .header(NAV_PERSONIDENT_HEADER, personident)
-                            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                            .header("Authorization", "Bearer " + token)
-                            .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                            .method("POST", toJsonRequestBody(requestBody))
-                            .build())
-                    .execute();
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .header(NAV_PERSONIDENT_HEADER, personident)
+                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+                .header("Authorization", "Bearer " + token)
+                .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                .method("POST", toJsonRequestBody(requestBody))
+                .build();
+
+        try (Response response = baseClient().newCall(request).execute()) {
             return getBodyStr(response).orElseThrow(RuntimeException::new);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -94,21 +93,19 @@ class PdlOppslagClient {
         return resp.getData().getHentPerson();
     }
 
-    String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
+    String hentPersonRequest(String fnr, PdlHentPersonRequest pdlHentPersonRequest) {
         String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        try {
-            Response response = baseClient().newCall(
-                    new Request.Builder()
-                            .url(baseUrl)
-                            .header(NAV_PERSONIDENT_HEADER, fnr)
-                            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                            .header("Authorization", "Bearer " + token)
-                            .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                            .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-                            .method("POST", toJsonRequestBody(request))
-                            .build())
-                    .execute();
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .header(NAV_PERSONIDENT_HEADER, fnr)
+                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+                .header("Authorization", "Bearer " + token)
+                .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
+                .method("POST", toJsonRequestBody(pdlHentPersonRequest))
+                .build();
+        try (Response response = baseClient().newCall(request).execute()) {
             return getBodyStr(response).orElseThrow(RuntimeException::new);
         } catch (IOException e) {
             throw new RuntimeException(e);

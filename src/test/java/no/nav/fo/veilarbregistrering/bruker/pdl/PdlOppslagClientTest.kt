@@ -28,7 +28,7 @@ class PdlOppslagClientTest {
     @Test
     fun skalFeileVedError() {
         val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
-            public override fun hentPersonRequest(fnr: String, request: PdlHentPersonRequest): String {
+            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
         }
@@ -38,7 +38,7 @@ class PdlOppslagClientTest {
     @Test
     fun skalFeileVedNotFound() {
         val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
-            public override fun hentPersonRequest(fnr: String, request: PdlHentPersonRequest): String {
+            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_NOT_FOUND_JSON)
             }
         }
