@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.common.json.JsonUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
@@ -8,8 +7,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveres
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.ws.rs.WebApplicationException;
 
 public class InaktivBrukerService {
 

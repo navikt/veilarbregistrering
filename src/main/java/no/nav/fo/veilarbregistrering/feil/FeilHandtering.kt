@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.bruker.feil.*
+import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.feil.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveresException
@@ -52,4 +54,19 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun handleKanIkkeReaktiveresException(feil: KanIkkeReaktiveresException) =
         ResponseEntity.status(BAD_REQUEST)
             .body(feil.message)
+
+    @ExceptionHandler(HentOppfolgingStatusException::class)
+    fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException) =
+        ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            .body(feil.message)
+
+    @ExceptionHandler(RuntimeException::class)
+    fun handleRuntimeException(r: RuntimeException): ResponseEntity<Any> {
+        LOG.error(r.message ?: "Uventet feil", r)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
+    }
+
+    companion object {
+        private val LOG = loggerFor<FeilHandtering>()
+    }
 }
