@@ -4,6 +4,7 @@ import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.feil.HentOppfolgingStatusException;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
 import okhttp3.HttpUrl;
@@ -53,15 +54,13 @@ public class OppfolgingClient {
                 .header(COOKIE, cookies)
                 .build();
         try (okhttp3.Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + response.code());
+            }
             return RestUtils.parseJsonResponseOrThrow(response, OppfolgingStatusData.class);
 
-        } catch (ForbiddenException e) {
-            LOG.error("Ingen tilgang " + e);
-            Response response = e.getResponse();
-            throw new WebApplicationException(response);
-        } catch (Exception e) {
-            LOG.error("Feil ved kall til tjeneste " + e);
-            throw new InternalServerErrorException();
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
