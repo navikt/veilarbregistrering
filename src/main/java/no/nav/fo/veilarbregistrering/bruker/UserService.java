@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.bruker;
 
 import no.bekk.bekkopen.person.FodselsnummerValidator;
 import no.nav.common.types.identer.Fnr;
+import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException;
 import org.springframework.stereotype.Service;
 
 import static no.nav.common.auth.context.AuthContextHolder.getSubject;
@@ -45,7 +46,7 @@ public class UserService {
         }
 
         if (!FodselsnummerValidator.isValid(fnr)) {
-            throw new RuntimeException("Fødselsnummer ikke gyldig.");
+            throw new ManglendeBrukerInfoException("Fødselsnummer ikke gyldig.");
         }
 
         return Foedselsnummer.of(fnr);
@@ -63,7 +64,7 @@ public class UserService {
         final String enhetId = servletRequest().getParameter("enhetId");
 
         if (enhetId == null) {
-            throw new RuntimeException("Mangler enhetId");
+            throw new ManglendeBrukerInfoException("Mangler enhetId");
         }
 
         return enhetId;

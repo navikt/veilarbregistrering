@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
@@ -105,7 +106,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
-        assertThat(run.getCause()).isInstanceOf(WebApplicationException.class);
+        assertThat(run.getCause()).isInstanceOf(AktiverBrukerException.class);
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);
@@ -125,7 +126,7 @@ class BrukerRegistreringServiceIntegrationTest {
 
         Try<Void> run = Try.run(() -> brukerRegistreringService.overforArena(id, BRUKER, null));
         assertThat(run.isFailure()).isTrue();
-        assertThat(run.getCause()).isInstanceOf(WebApplicationException.class);
+        assertThat(run.getCause()).isInstanceOf(AktiverBrukerException.class);
 
         Optional<OrdinaerBrukerRegistrering> brukerRegistrering = ofNullable(brukerRegistreringRepository.hentBrukerregistreringForId(id));
         RegistreringTilstand registreringTilstand = registreringTilstandRepository.hentTilstandFor(id);

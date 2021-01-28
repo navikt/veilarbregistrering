@@ -1,13 +1,9 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.feil.Feil;
-import no.nav.fo.veilarbregistrering.feil.FeilType;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
-import org.jetbrains.annotations.NotNull;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
 
 public class OppfolgingClientMock extends OppfolgingClient {
 
@@ -38,21 +34,8 @@ public class OppfolgingClientMock extends OppfolgingClient {
     }
 
     private void sendException(String feilType) {
-        Feil feil = new Feil(
-                new Feil.Type() {
 
-                    @Override
-                    public int getStatus() {
-                        return 500;
-                    }
-
-                    @NotNull
-                    @Override
-                    public String getName() {
-                        return feilType;
-                    }
-                }, "");
-        throw new WebApplicationException(Response.serverError().entity(feil).build());
+        throw new AktiverBrukerException(AktiverBrukerFeil.valueOf(feilType));
     }
 
 }

@@ -2,8 +2,8 @@ package no.nav.fo.veilarbregistrering.bruker.pdl
 
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.bruker.AktorId
-import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent

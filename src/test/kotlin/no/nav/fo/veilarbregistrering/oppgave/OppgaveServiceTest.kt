@@ -7,7 +7,7 @@ import io.mockk.verify
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.feil.Feil
+import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -74,7 +74,7 @@ class OppgaveServiceTest {
             OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
         every { oppgaveRepository.hentOppgaverFor(any()) } returns oppgaver
-        Assertions.assertThrows(Feil::class.java) {
+        Assertions.assertThrows(OppgaveAlleredeOpprettet::class.java) {
             oppgaveService.opprettOppgave(
                 BRUKER,
                 OppgaveType.OPPHOLDSTILLATELSE
@@ -89,7 +89,7 @@ class OppgaveServiceTest {
             OppgaveImpl(23, BRUKER.aktorId, OppgaveType.UTVANDRET, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetDagenFor)
         every { oppgaveRepository.hentOppgaverFor(any()) } returns oppgaver
-        Assertions.assertThrows(Feil::class.java) { oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET) }
+        Assertions.assertThrows(OppgaveAlleredeOpprettet::class.java) { oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET) }
         verify { oppgaveGateway wasNot Called }
     }
 

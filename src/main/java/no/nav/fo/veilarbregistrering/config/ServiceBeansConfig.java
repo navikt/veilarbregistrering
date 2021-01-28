@@ -16,6 +16,7 @@ import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
+import no.nav.fo.veilarbregistrering.feil.FeilHandtering;
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
@@ -319,4 +320,7 @@ public class ServiceBeansConfig {
     MetricsService metricsService(MetricsClient metricsClient, MeterRegistry meterRegistry) {
         return new MetricsService(metricsClient, meterRegistry);
     }
+
+    @Bean
+    FeilHandtering feilHandtering() { return new FeilHandtering(); }
 }

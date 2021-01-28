@@ -3,29 +3,26 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.feil.Feil;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 
 public class BrukerRegistreringService {
@@ -39,7 +36,7 @@ public class BrukerRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private MetricsService metricsService;
+    private final MetricsService metricsService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -99,7 +96,7 @@ public class BrukerRegistreringService {
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
     }
 
-    @Transactional(noRollbackFor = {WebApplicationException.class})
+    @Transactional(noRollbackFor = {AktiverBrukerException.class})
     public void overforArena(long registreringId, Bruker bruker, NavVeileder veileder) {
 
         RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
@@ -109,22 +106,7 @@ public class BrukerRegistreringService {
             return;
         }
 
-        String feilType = AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()).toString();
-        Feil feil = new Feil(new Feil.Type() {
-            @NotNull
-            @Override
-            public String getName() {
-                return feilType;
-            }
-
-            @NotNull
-            @Override
-            public int getStatus() {
-                return INTERNAL_SERVER_ERROR.value();
-            }
-        }, "1");
-
-        throw new WebApplicationException(Response.serverError().entity(feil).build());
+        throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()));
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {

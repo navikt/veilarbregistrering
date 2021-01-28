@@ -1,13 +1,12 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.feil.Feil;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_ALLEREDE_OPPR
 import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvType;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 public class OppgaveService {
 
@@ -81,17 +79,9 @@ public class OppgaveService {
 
             metricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
 
-            throw new Feil(new Feil.Type() {
-                @Override
-                public String getName() {
-                    return "ALLEREDE_OPPRETTET_OPPGAVE";
-                }
-
-                @Override
-                public int getStatus() {
-                    return FORBIDDEN.value();
-                }
-            }, "Oppgaven er allerede opprettet");
+            throw new OppgaveAlleredeOpprettet(
+                    "ALLEREDE_OPPRETTET_OPPGAVE",
+                    "Oppgaven er allerede opprettet");
         });
     }
 

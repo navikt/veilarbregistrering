@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.feil
 
 import org.springframework.http.HttpStatus.*
 
-enum class FeilType(override val status: Int) : Feil.Type{
+enum class FeilType(val status: Int) {
         INGEN_TILGANG(FORBIDDEN.value()),
         UGYLDIG_REQUEST(BAD_REQUEST.value()),
         UGYLDIG_HANDLING(CONFLICT.value()),

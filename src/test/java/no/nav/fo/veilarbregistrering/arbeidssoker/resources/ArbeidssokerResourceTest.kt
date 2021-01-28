@@ -3,15 +3,11 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medArbs
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.config.ApplicationTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Configurable
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Bean
@@ -29,7 +25,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
     private val BRUKER: String = "12312312312"
 
     @Test
-    fun test() {
+    fun `Svarer med DTO med tom liste av perioder ved 404 fra aareg`() {
         val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER&fraOgMed=2010-01-01&tilOgMed=2021-01-01")
             .andExpect {
                 status { isOk }
@@ -67,7 +63,7 @@ class ArbeidssokerResourceConfig {
         val arbeidssokerService = mockk<ArbeidssokerService>()
 
         every { arbeidssokerService.hentArbeidssokerperioder(any(), any()) } returns
-                ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder().build()
+                arbeidssokerperioder().build()
         return arbeidssokerService
     }
 }
