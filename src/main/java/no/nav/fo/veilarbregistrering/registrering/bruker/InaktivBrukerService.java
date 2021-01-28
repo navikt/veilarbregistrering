@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.common.json.JsonUtils;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveresException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +32,14 @@ public class InaktivBrukerService {
     public void reaktiverBruker(Bruker bruker) {
         BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
         if (!brukersTilstand.kanReaktiveres()) {
-            throw new RuntimeException("Bruker kan ikke reaktiveres.");
+            throw new KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.");
         }
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
         AktiverBrukerResultat aktiverBrukerResultat = oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
 
         if (aktiverBrukerResultat.erFeil()) {
-            throw new WebApplicationException(JsonUtils.toJson(new AktiveringFeilResponse(aktiverBrukerResultat.feil().toString())));
+            throw new AktiverBrukerException(aktiverBrukerResultat.feil());
         }
 
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());

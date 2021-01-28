@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.feil
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -45,5 +46,10 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ManglendeBrukerInfoException::class)
     fun handleManglendeBrukerInfoException(feil: ManglendeBrukerInfoException) =
         ResponseEntity.status(UNAUTHORIZED)
+            .body(feil.message)
+
+    @ExceptionHandler(KanIkkeReaktiveresException::class)
+    fun handleKanIkkeReaktiveresException(feil: KanIkkeReaktiveresException) =
+        ResponseEntity.status(BAD_REQUEST)
             .body(feil.message)
 }
