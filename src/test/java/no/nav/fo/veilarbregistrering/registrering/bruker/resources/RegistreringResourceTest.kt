@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import io.mockk.*
 import no.nav.common.featuretoggle.UnleashService
+import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
@@ -11,49 +12,55 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import javax.servlet.http.HttpServletRequest
 
-class RegistreringResourceTest {
-    private lateinit var autorisasjonService: AutorisasjonService
-    private lateinit var registreringResource: RegistreringResource
-    private lateinit var userService: UserService
-    private lateinit var pdlOppslagGateway: PdlOppslagGateway
-    private lateinit var brukerRegistreringService: BrukerRegistreringService
-    private lateinit var hentRegistreringService: HentRegistreringService
-    private lateinit var startRegistreringStatusService: StartRegistreringStatusService
+@AutoConfigureMockMvc
+@WebMvcTest
+@ContextConfiguration(classes = [RegistreringResourceConfig::class])
+class RegistreringResourceTest(
+    @Autowired private val mvc: MockMvc,
+    @Autowired private val registreringResource: RegistreringResource,
+    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
+    @Autowired private val brukerRegistreringService: BrukerRegistreringService,
+    @Autowired private val hentRegistreringService: HentRegistreringService,
+    @Autowired private val startRegistreringStatusService: StartRegistreringStatusService,
+) {
     private lateinit var request: HttpServletRequest
 
     @BeforeEach
     fun setup() {
         clearAllMocks()
         mockkStatic(RequestContext::class)
-        autorisasjonService = mockk(relaxed = true)
-        pdlOppslagGateway = mockk()
-        brukerRegistreringService = mockk(relaxed = true)
-        hentRegistreringService = mockk()
-        startRegistreringStatusService = mockk()
-        userService = UserService(pdlOppslagGateway)
-        val sykmeldtRegistreringService: SykmeldtRegistreringService = mockk(relaxed = true)
-        val inaktivBrukerService: InaktivBrukerService = mockk()
-        val unleashService: UnleashService = mockk(relaxed = true)
-        val metricsService: MetricsService = mockk(relaxed = true)
         request = mockk(relaxed = true)
-        registreringResource = RegistreringResource(
-            autorisasjonService,
-            userService,
-            brukerRegistreringService,
-            hentRegistreringService,
-            unleashService,
-            sykmeldtRegistreringService,
-            startRegistreringStatusService,
-            inaktivBrukerService,
-            metricsService
-        )
-        every { autorisasjonService.erVeileder() } returns true
         every { RequestContext.servletRequest() } returns request
+        every { autorisasjonService.erVeileder() } returns true
+    }
+
+    @Test
+    fun `serialiserer startregistrering riktig`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns START_REGISTRERING_STATUS
+        val expected = FileToJson.toJson("/registrering/startregistrering.json")
+
+        val result = mvc.get("/api/startregistrering")
+            .andExpect { status { isOk } }
+            .andReturn().response.contentAsString
+
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -119,9 +126,57 @@ class RegistreringResourceTest {
 
     companion object {
         private val IDENT = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
-        private val IDENTER = Identer.of(mutableListOf(
-            Ident(IDENT.stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
-            Ident("22222222222", false, Gruppe.AKTORID)
-        ))
+        private val IDENTER = Identer.of(
+            mutableListOf(
+                Ident(IDENT.stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
+                Ident("22222222222", false, Gruppe.AKTORID)
+            )
+        )
+        private val START_REGISTRERING_STATUS = StartRegistreringStatusDto()
     }
+}
+@Configuration
+private class RegistreringResourceConfig {
+    @Bean
+    fun registreringResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        brukerRegistreringService: BrukerRegistreringService,
+        hentRegistreringService: HentRegistreringService,
+        unleashService: UnleashService,
+        sykmeldtRegistreringService: SykmeldtRegistreringService,
+        startRegistreringStatusService: StartRegistreringStatusService,
+        inaktivBrukerService: InaktivBrukerService,
+        metricsService: MetricsService,
+    ) = RegistreringResource(
+        autorisasjonService,
+        userService,
+        brukerRegistreringService,
+        hentRegistreringService,
+        unleashService,
+        sykmeldtRegistreringService,
+        startRegistreringStatusService,
+        inaktivBrukerService,
+        metricsService,
+    )
+    @Bean
+    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
+    @Bean
+    fun unleashService(): UnleashService = mockk(relaxed = true)
+    @Bean
+    fun metricsService(): MetricsService = mockk(relaxed = true)
+    @Bean
+    fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
+    @Bean
+    fun brukerRegistreringService(): BrukerRegistreringService = mockk(relaxed = true)
+    @Bean
+    fun hentRegistreringService(): HentRegistreringService = mockk()
+    @Bean
+    fun startRegistreringStatusService(): StartRegistreringStatusService = mockk()
+    @Bean
+    fun userService(pdlOppslagGateway: PdlOppslagGateway): UserService = UserService(pdlOppslagGateway)
+    @Bean
+    fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
+    @Bean
+    fun inaktivBrukerService(): InaktivBrukerService = mockk()
 }

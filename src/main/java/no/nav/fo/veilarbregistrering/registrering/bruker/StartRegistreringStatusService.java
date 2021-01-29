@@ -23,7 +23,7 @@ public class StartRegistreringStatusService {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final PersonGateway personGateway;
-    private MetricsService metricsService;
+    private final MetricsService metricsService;
 
     public StartRegistreringStatusService(
             ArbeidsforholdGateway arbeidsforholdGateway,
@@ -41,9 +41,8 @@ public class StartRegistreringStatusService {
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
-        muligGeografiskTilknytning.ifPresent(geografiskTilknytning -> {
-            metricsService.reportFields(Events.START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning);
-        });
+        muligGeografiskTilknytning.ifPresent(geografiskTilknytning ->
+                metricsService.reportFields(Events.START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning));
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
@@ -56,7 +55,7 @@ public class StartRegistreringStatusService {
 
         StartRegistreringStatusDto startRegistreringStatus = map(
                 brukersTilstand,
-                muligGeografiskTilknytning,
+                muligGeografiskTilknytning.orElse(null),
                 oppfyllerBetingelseOmArbeidserfaring,
                 bruker.getGjeldendeFoedselsnummer().alder(now()));
 

@@ -2,64 +2,22 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 
-class StartRegistreringStatusDto {
-    var maksDato: String? = null
-        private set
-    var isUnderOppfolging = false
-        private set
-    var isErSykmeldtMedArbeidsgiver = false
-        private set
-    var jobbetSeksAvTolvSisteManeder: Boolean? = null
-        private set
-    var registreringType: RegistreringType? = null
-        private set
-    var formidlingsgruppe: String? = null
-        private set
-    var servicegruppe: String? = null
-        private set
-    var rettighetsgruppe: String? = null
-        private set
-    var geografiskTilknytning: String? = null
-        private set
-    var alder = 0
-        private set
-
-    fun setMaksDato(maksDato: String?): StartRegistreringStatusDto {
-        this.maksDato = maksDato
-        return this
-    }
-
-    fun setUnderOppfolging(underOppfolging: Boolean): StartRegistreringStatusDto =
-        this.apply { this.isUnderOppfolging = underOppfolging }
-
-    fun setErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver: Boolean): StartRegistreringStatusDto =
-        this.apply { this.isErSykmeldtMedArbeidsgiver = erSykmeldtMedArbeidsgiver }
-
-    fun setJobbetSeksAvTolvSisteManeder(jobbetSeksAvTolvSisteManeder: Boolean?): StartRegistreringStatusDto =
-        this.apply { this.jobbetSeksAvTolvSisteManeder = jobbetSeksAvTolvSisteManeder }
-
-    fun setRegistreringType(registreringType: RegistreringType?): StartRegistreringStatusDto =
-        this.apply { this.registreringType = registreringType }
-
-    fun setFormidlingsgruppe(formidlingsgruppe: String?): StartRegistreringStatusDto =
-        this.apply { this.formidlingsgruppe = formidlingsgruppe }
-
-    fun setServicegruppe(servicegruppe: String?): StartRegistreringStatusDto =
-        this.apply { this.servicegruppe = servicegruppe }
-
-    fun setRettighetsgruppe(rettighetsgruppe: String?): StartRegistreringStatusDto =
-        this.apply { this.rettighetsgruppe = rettighetsgruppe }
-
-    fun setGeografiskTilknytning(geografiskTilknytning: String?): StartRegistreringStatusDto =
-        this.apply { this.geografiskTilknytning = geografiskTilknytning }
-
-    fun setAlder(alder: Int): StartRegistreringStatusDto =
-        this.apply { this.alder = alder }
-
+data class StartRegistreringStatusDto(
+    val maksDato: String? = null,
+    val underOppfolging: Boolean = false,
+    val erSykmeldtMedArbeidsgiver: Boolean = false,
+    val jobbetSeksAvTolvSisteManeder: Boolean? = null,
+    val registreringType: RegistreringType? = null,
+    val formidlingsgruppe: String? = null,
+    val servicegruppe: String? = null,
+    val rettighetsgruppe: String? = null,
+    val geografiskTilknytning: String? = null,
+    val alder: Int = 0,
+) {
     override fun toString(): String =
         "StartRegistreringStatusDto(maksDato=$maksDato, " +
-                "underOppfolging=$isUnderOppfolging, " +
-                "erSykmeldtMedArbeidsgiver=$isErSykmeldtMedArbeidsgiver, " +
+                "underOppfolging=$underOppfolging, " +
+                "erSykmeldtMedArbeidsgiver=$erSykmeldtMedArbeidsgiver, " +
                 "jobbetSeksAvTolvSisteManeder=$jobbetSeksAvTolvSisteManeder, " +
                 "registreringType=$registreringType, " +
                 "formidlingsgruppe=$formidlingsgruppe, " +
