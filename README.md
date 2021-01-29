@@ -8,19 +8,38 @@ Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/ar
 Se https://veilarbregistrering.nais.adeo.no/veilarbregistrering/internal/swagger/index.html?input_baseurl=/veilarbregistrering/api/swagger.json 
 for beskrivelse av APIet til `veilarbregistrering`.
 
-## Avhengigheter
-- veilarboppfolging (og Arena) : REST
-- [Arena ORDS : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidssoker/adapter/README.md)
-- veilarbperson : REST
-- ABAC (tilgangskontroll)
-- [Aareg (siste arbeidsforhold) : REST](src/main/java/no/nav/fo/veilarbregistrering/arbeidsforhold/adapter/README.md)
-- [Enhetsregisteret : REST](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md)
-- [NAV Organisasjon (for veileder pr ident) : REST](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md)
-- Infotrygd (maksdato) : REST
-- Unleash (feature toggle)
-- [Oppgave : REST -> "kontakt bruker"-oppgaver](src/main/java/no/nav/fo/veilarbregistrering/oppgave/adapter/README.md)
-- [PDL : Graphql](src/main/java/no/nav/fo/veilarbregistrering/bruker/pdl/README.md)
-- [KRR : REST](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md)
+## Innkommende kommuniksjon (inbound communication)
+| Collaborator | Query/Command/Event | Melding |
+| --- | --- | --- |
+| Arbeidssokerregistrering | query (REST/GET) | /startregistrering |
+| Arbeidssokerregistrering | command (REST/POST) | /startregistrering |
+| Arbeidssokerregistrering | query (REST/GET) | /registrering |
+| PTO | query (REST/GET) | /registrering |
+| Arbeidssokerregistrering | command (REST/POST) | /startreaktivering |
+| Arbeidssokerregistrering | command (REST/POST) | /startregistrersykmeldt |
+| Arbeidssokerregistrering | query (REST/GET) | /sistearbeidsforhold |
+| Arbeidssokerregistrering | query (REST/GET) | /person/kontaktinfo |
+| Arbeidssokerregistrering | command (REST/POST) | /oppgave |
+| Dagpenger | query (REST/GET) | /arbeidssoker/perioder |
+| Arena | event (Kafka) | FormidlingsgruppeEvent |
+| Helse | query (REST/GET) | /sykmeldtinfodata |
+
+## Utgående kommunikasjon (outbound communication)
+| Melding | Query/Command/Event | Collaborator |
+| :--- | :--- | :--- |
+| [Arena ORDS](src/main/java/no/nav/fo/veilarbregistrering/arbeidssoker/adapter/README.md) | query (REST/GET) | Arena |
+| --- | Command (REST/POST) | veilarboppfolging (og Arena) |
+| --- | Query (REST/GET) | veilarboppfolging (og Arena) |
+| --- | Query (REST/GET) | veilarbperson |
+| --- | --- | ABAC (tilgangskontroll) |
+| --- | Query (REST/GET) | [Aareg (siste arbeidsforhold)](src/main/java/no/nav/fo/veilarbregistrering/arbeidsforhold/adapter/README.md) |
+| --- | Query (REST/GET) | [Enhetsregisteret](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md) |
+| --- | --- | [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md) |
+| maksdato | Query (REST/GET) | Infotrygd |
+| --- | --- | Unleash (feature toggle) |
+| "kontakt bruker"-oppgave | --- | [Oppgave](src/main/java/no/nav/fo/veilarbregistrering/oppgave/adapter/README.md) |
+| --- | Query (Graphql) | [PDL](src/main/java/no/nav/fo/veilarbregistrering/bruker/pdl/README.md) |
+| --- | Query (REST/GET) | [KRR](src/main/java/no/nav/fo/veilarbregistrering/bruker/krr/README.md) |
 
 # Komme i gang
 
