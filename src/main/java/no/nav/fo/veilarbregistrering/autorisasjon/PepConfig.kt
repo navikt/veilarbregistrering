@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.autorisasjon
 
 import no.nav.common.abac.Pep
 import no.nav.common.abac.VeilarbPep

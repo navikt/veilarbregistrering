@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.metrics
 
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.prometheus.PrometheusConfig

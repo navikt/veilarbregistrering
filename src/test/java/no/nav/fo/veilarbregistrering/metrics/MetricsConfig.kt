@@ -1,7 +1,6 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.metrics
 
 import io.mockk.mockk
-import no.nav.common.metrics.InfluxClient
 import no.nav.common.metrics.MetricsClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -9,7 +9,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
-import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
@@ -18,8 +17,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.ws.rs.WebApplicationException;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;

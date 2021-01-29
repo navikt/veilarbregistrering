@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
-import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException;
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException;
 
 public class OppfolgingClientMock extends OppfolgingClient {
 

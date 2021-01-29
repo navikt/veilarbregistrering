@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
-import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

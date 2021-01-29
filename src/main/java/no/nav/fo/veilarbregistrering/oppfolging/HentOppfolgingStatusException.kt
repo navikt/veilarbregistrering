@@ -1,3 +1,3 @@
-package no.nav.fo.veilarbregistrering.oppfolging.adapter
+package no.nav.fo.veilarbregistrering.oppfolging
 
 class HentOppfolgingStatusException(s: String) : RuntimeException(s)

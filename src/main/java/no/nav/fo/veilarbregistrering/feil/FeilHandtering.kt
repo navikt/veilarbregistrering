@@ -2,10 +2,10 @@ package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.HentOppfolgingStatusException
-import no.nav.fo.veilarbregistrering.oppgave.feil.OppgaveAlleredeOpprettet
-import no.nav.fo.veilarbregistrering.registrering.bruker.feil.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.registrering.bruker.feil.KanIkkeReaktiveresException
+import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
+import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice

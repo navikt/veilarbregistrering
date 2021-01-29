@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.feil
+package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
 
