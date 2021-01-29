@@ -49,7 +49,7 @@ class OppgaveIntegrationTest {
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequestProvider: Provider<HttpServletRequest> = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
-        every {httpServletRequestProvider.get() } returns httpServletRequest
+        every { httpServletRequestProvider.get() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
@@ -90,7 +90,7 @@ class OppgaveIntegrationTest {
         val oppgaveResponse =
             oppgaveService.opprettOppgave(
                 BRUKER,
-                OppgaveType.UTVANDRET
+                    OppgaveType.UTVANDRET
             ) //TODO provide subject somehow
 
         Assertions.assertThat(oppgaveResponse.id).isEqualTo(5436732)
