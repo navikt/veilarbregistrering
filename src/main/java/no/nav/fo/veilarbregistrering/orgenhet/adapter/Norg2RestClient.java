@@ -42,19 +42,18 @@ class Norg2RestClient {
                 .build();
 
         try (Response response = RestClient.baseClient().newCall(request).execute()) {
-
-            if (response.isSuccessful()) {
-                List<RsNavKontorDto> rsNavKontorDtos = RestUtils.parseJsonResponseArrayOrThrow(response, RsNavKontorDto.class);
-                return new ArrayList<>(rsNavKontorDtos);
-            }
-
             if (response.code() == 404) {
                 LOG.warn("Fant ikke NavKontor for kommunenummer");
                 return Collections.emptyList();
             }
-            throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + response.code() + " - " + response);
-        }
-        catch (IOException e) {
+
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + response.code() + " - " + response);
+            }
+
+            List<RsNavKontorDto> rsNavKontorDtos = RestUtils.parseJsonResponseArrayOrThrow(response, RsNavKontorDto.class);
+            return new ArrayList<>(rsNavKontorDtos);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
