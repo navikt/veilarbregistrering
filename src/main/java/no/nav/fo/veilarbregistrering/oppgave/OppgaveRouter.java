@@ -39,7 +39,7 @@ public class OppgaveRouter {
     private final Norg2Gateway norg2Gateway;
     private final PersonGateway personGateway;
     private final PdlOppslagGateway pdlOppslagGateway;
-    private MetricsService metricsService;
+    private final MetricsService metricsService;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
@@ -119,7 +119,7 @@ public class OppgaveRouter {
 
     public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
-        if (!flereArbeidsforhold.sisteUtenNoeEkstra().isPresent()) {
+        if (flereArbeidsforhold.sisteUtenNoeEkstra().isEmpty()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
             metricsService.reportTags(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
             return Optional.empty();
@@ -127,14 +127,14 @@ public class OppgaveRouter {
         Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
                 .map(Arbeidsforhold::getOrganisasjonsnummer)
                 .orElseThrow(IllegalStateException::new);
-        if (!organisasjonsnummer.isPresent()) {
+        if (organisasjonsnummer.isEmpty()) {
             LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
             metricsService.reportTags(OPPGAVE_ROUTING_EVENT, OrgNummer_ikkeFunnet);
             return Optional.empty();
         }
 
-        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get());
-        if (!organisasjonsdetaljer.isPresent()) {
+        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = Optional.ofNullable(enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get()));
+        if (organisasjonsdetaljer.isEmpty()) {
             LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}", organisasjonsnummer.get().asString());
             metricsService.reportTags(OPPGAVE_ROUTING_EVENT, OrgDetaljer_IkkeFunnet);
             return Optional.empty();
@@ -143,7 +143,7 @@ public class OppgaveRouter {
         Optional<Kommunenummer> muligKommunenummer = organisasjonsdetaljer
                 .map(Organisasjonsdetaljer::kommunenummer)
                 .orElseThrow(IllegalStateException::new);
-        if (!muligKommunenummer.isPresent()) {
+        if (muligKommunenummer.isEmpty()) {
             LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");
             metricsService.reportTags(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
             return Optional.empty();
@@ -156,7 +156,7 @@ public class OppgaveRouter {
         }
 
         Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
-        if (!enhetsnr.isPresent()) {
+        if (enhetsnr.isEmpty()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
             metricsService.reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }

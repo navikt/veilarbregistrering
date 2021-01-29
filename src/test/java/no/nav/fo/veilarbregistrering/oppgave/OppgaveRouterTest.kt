@@ -42,7 +42,8 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1240"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Optional.of(Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList())) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
+
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
@@ -53,7 +54,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Optional.of(Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList())) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
@@ -82,7 +83,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Optional.of(Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList())) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("DNK")) }
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, personGateway = personGateway)
@@ -95,7 +96,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommunenummer.of(KommuneMedBydel.STAVANGER),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Optional.of(Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList())) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("DNK")) }
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, personGateway = personGateway)
@@ -132,7 +133,7 @@ class OppgaveRouterTest {
 
     private fun oppgaveRouter(
         arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
-        enhetGateway: EnhetGateway = StubEnhetGateway(),
+        enhetGateway: EnhetGateway = EnhetGateway { null },
         norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
         personGateway: PersonGateway = StubPersonGateway(),
         pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
@@ -160,11 +161,6 @@ class OppgaveRouterTest {
 
     private class StubPersonGateway : PersonGateway {
         override fun hentGeografiskTilknytning(foedselsnummer: Foedselsnummer?) = Optional.empty<GeografiskTilknytning>()
-    }
-
-    private class StubEnhetGateway : EnhetGateway {
-        override fun hentOrganisasjonsdetaljer(organisasjonsnummer: Organisasjonsnummer?) =
-                Optional.empty<Organisasjonsdetaljer>()
     }
 
     private class StubPdlOppslagGateway(private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
