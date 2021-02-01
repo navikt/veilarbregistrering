@@ -33,21 +33,6 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
 
         assertThat(responseBody).isNotNull
     }
-
-    companion object {
-        private val perioder = arbeidssokerperioder()
-            .arbeidssokerperiode(
-                medArbs()
-                    .fra(LocalDate.of(2020, 1, 12))
-                    .til(LocalDate.of(2020, 2, 20))
-            )
-            .arbeidssokerperiode(
-                medArbs()
-                    .fra(LocalDate.of(2020, 3, 12))
-                    .til(null)
-            )
-            .build()
-    }
 }
 
 @Configuration
@@ -63,7 +48,18 @@ class ArbeidssokerResourceConfig {
         val arbeidssokerService = mockk<ArbeidssokerService>()
 
         every { arbeidssokerService.hentArbeidssokerperioder(any(), any()) } returns
-                arbeidssokerperioder().build()
+                arbeidssokerperioder()
+                        .arbeidssokerperiode(
+                                medArbs()
+                                        .fra(LocalDate.of(2020, 1, 12))
+                                        .til(LocalDate.of(2020, 2, 20))
+                        )
+                        .arbeidssokerperiode(
+                                medArbs()
+                                        .fra(LocalDate.of(2020, 3, 12))
+                                        .til(null)
+                        )
+                        .build()
         return arbeidssokerService
     }
 }
