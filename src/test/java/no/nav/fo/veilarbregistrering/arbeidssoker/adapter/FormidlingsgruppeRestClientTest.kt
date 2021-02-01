@@ -1,12 +1,14 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
 import com.google.common.net.MediaType
+import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse.response
+import org.slf4j.MDC
 import java.time.LocalDate
 
 
@@ -28,6 +31,7 @@ class FormidlingsgruppeRestClientTest {
 
     @BeforeEach
     fun setup() {
+        leggTilCallId()
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
     }
 

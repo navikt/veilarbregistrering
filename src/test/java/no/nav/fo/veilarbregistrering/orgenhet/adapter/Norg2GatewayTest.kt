@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter
 import com.google.common.net.MediaType
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -23,6 +24,7 @@ class Norg2GatewayTest {
 
     @BeforeEach
     fun setup() {
+        leggTilCallId()
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
     }
 

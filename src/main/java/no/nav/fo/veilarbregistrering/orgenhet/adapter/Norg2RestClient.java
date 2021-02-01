@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
+import no.nav.common.log.MDCConstants;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
@@ -8,12 +9,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.OPPFOLGING;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -38,6 +41,7 @@ class Norg2RestClient {
         Request request = new Request.Builder()
                 .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
                 .build();
 
@@ -64,7 +68,9 @@ class Norg2RestClient {
                         .addPathSegments("v1/enhet")
                         .addQueryParameter("oppgavebehandlerFilter", "UFILTRERT").build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build();
+
         try (Response response = RestClient.baseClient().newCall(request).execute()) {
             return RestUtils.parseJsonResponseArrayOrThrow(response, RsEnhet.class);
         } catch (IOException e) {

@@ -10,6 +10,8 @@ import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 
 public class CallId {
 
+    public static final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
+
     public static byte[] getCorrelationIdAsBytes() {
         String correlationId = MDC.get(MDC_CALL_ID);
 

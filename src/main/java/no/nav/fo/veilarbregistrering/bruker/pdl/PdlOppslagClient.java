@@ -28,11 +28,11 @@ import java.util.Optional;
 import static no.nav.common.rest.client.RestClient.baseClient;
 import static no.nav.common.rest.client.RestUtils.getBodyStr;
 import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
+import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 
 class PdlOppslagClient {
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
-    private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
     private final String TEMA_HEADER = "Tema";
     private final String OPPFOLGING_TEMA_HEADERVERDI = "OPP";
 
