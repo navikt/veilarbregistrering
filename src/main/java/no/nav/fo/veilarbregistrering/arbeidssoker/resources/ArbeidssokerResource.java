@@ -45,7 +45,7 @@ public class ArbeidssokerResource implements ArbeidssokerApi {
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
             @RequestParam("fnr") String fnr,
             @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fraOgMed,
-            @RequestParam("tilOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tilOgMed
+            @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tilOgMed
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 
