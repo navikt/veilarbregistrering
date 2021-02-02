@@ -28,7 +28,7 @@ class SpringContextTest(
 
     @Test
     fun `selftest svarer med html`() {
-        mvc.get("/internal/selftest") {}.andExpect {
+        mvc.get("/internal/selftest").andExpect {
             status { isOk }
         }
     }
