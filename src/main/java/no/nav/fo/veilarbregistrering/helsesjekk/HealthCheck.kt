@@ -14,8 +14,7 @@ object HealthCheck {
                     .url(baseUrl)
                     .build()
             )
-                .execute()
-                .also {
+                .execute().use {
                     return when (val status = it.code()) {
                         in 200..299 -> HealthCheckResult.healthy()
                         else -> HealthCheckResult.unhealthy("HTTP status $status")
