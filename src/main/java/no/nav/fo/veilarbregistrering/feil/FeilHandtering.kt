@@ -35,10 +35,13 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
         ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
 
+
     @ExceptionHandler(OppgaveAlleredeOpprettet::class)
-    fun handleOppgaveAlleredeOpprettet(feil: OppgaveAlleredeOpprettet) =
-        ResponseEntity.status(INTERNAL_SERVER_ERROR)
+    fun handleOppgaveAlleredeOpprettet(feil: OppgaveAlleredeOpprettet): ResponseEntity<Any> {
+        LOG.warn(feil.message ?: "Uventet feil", feil)
+        return ResponseEntity.status(FORBIDDEN)
             .body(feil.message)
+    }
 
     @ExceptionHandler(HentIdenterException::class)
     fun handleHentIdenterException(feil: HentIdenterException) =

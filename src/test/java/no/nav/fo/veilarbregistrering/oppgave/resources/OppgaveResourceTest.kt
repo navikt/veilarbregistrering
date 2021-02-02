@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.oppgave.resources
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.fo.veilarbregistrering.feil.FeilHandtering
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType
@@ -37,10 +39,26 @@ class OppgaveResourceTest(@Autowired private val mvc: MockMvc) {
 
         Assertions.assertThat(responseBody).isNotNull
     }
+
+    @Test
+    fun `Opprettelse av duplikat oppgave skal gi 403`() {
+        val responseBody = mvc.perform(post("/api/oppgave")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"oppgaveType\": \"OPPHOLDSTILLATELSE\" }")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden)
+
+        Assertions.assertThat(responseBody).isNotNull
+    }
 }
 
 @Configuration
 class OppgaveResourceConfig {
+
+    @Bean
+    fun feilhandtering() : FeilHandtering {
+        return FeilHandtering()
+    }
 
     @Bean
     fun oppgaveResource(oppgaveService: OppgaveService) : OppgaveResource {
@@ -55,6 +73,8 @@ class OppgaveResourceConfig {
             override fun getId(): Long = 12313
             override fun getTildeltEnhetsnr(): String = "3215"
         }
+
+        every { oppgaveService.opprettOppgave(any(), OppgaveType.OPPHOLDSTILLATELSE) } throws OppgaveAlleredeOpprettet("test")
 
         return oppgaveService
     }

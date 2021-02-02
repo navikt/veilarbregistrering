@@ -71,16 +71,15 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            LOG.info("Fant en oppgave av samme type {} som ble opprettet {} - {} timer siden.",
-                    oppgave.getOppgavetype(),
-                    oppgave.getOpprettet().tidspunkt(),
-                    oppgave.getOpprettet().antallTimerSiden());
-
             metricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
 
             throw new OppgaveAlleredeOpprettet(
-                    "ALLEREDE_OPPRETTET_OPPGAVE",
-                    "Oppgaven er allerede opprettet");
+                    String.format(
+                            "Fant en oppgave av samme type %s som ble opprettet %s - %s timer siden.",
+                            oppgave.getOppgavetype(),
+                            oppgave.getOpprettet().tidspunkt(),
+                            oppgave.getOpprettet().antallTimerSiden())
+            );
         });
     }
 
