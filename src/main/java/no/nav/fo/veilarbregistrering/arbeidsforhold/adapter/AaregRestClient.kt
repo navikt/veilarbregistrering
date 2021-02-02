@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.io.IOException
-import java.util.Map
 
 internal open class AaregRestClient(private val baseUrl: String, private val systemUserTokenProvider: SystemUserTokenProvider) {
     /**
@@ -49,7 +48,11 @@ internal open class AaregRestClient(private val baseUrl: String, private val sys
     @Throws(IOException::class)
     private fun behandleResponse(response: Response): String {
         if (!response.isSuccessful) {
-            val feilmelding = Map.of(HttpStatus.BAD_REQUEST, "Ugyldig input", HttpStatus.UNAUTHORIZED, "Token mangler eller er ugyldig", HttpStatus.FORBIDDEN, "Ingen tilgang til forespurt ressurs", HttpStatus.NOT_FOUND, "Søk på arbeidforhold gav ingen treff"
+            val feilmelding = mapOf(
+                    HttpStatus.BAD_REQUEST to "Ugyldig input",
+                    HttpStatus.UNAUTHORIZED to "Token mangler eller er ugyldig",
+                    HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
+                    HttpStatus.NOT_FOUND to "Søk på arbeidforhold gav ingen treff"
             ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg")
             throw RuntimeException(feilmelding)
         }
