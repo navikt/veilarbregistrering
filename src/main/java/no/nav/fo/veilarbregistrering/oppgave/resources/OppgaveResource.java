@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +32,10 @@ public class OppgaveResource implements OppgaveApi {
 
     @Override
     @PostMapping
-    public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
+    public OppgaveDto opprettOppgave(@RequestBody OppgaveDto oppgaveDto) {
+        if (oppgaveDto == null || oppgaveDto.getOppgaveType() == null) {
+            throw new IllegalArgumentException("Oppgave m/ type må være angitt");
+        }
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         autorisasjonService.sjekkSkrivetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
