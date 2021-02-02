@@ -11,7 +11,7 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 @Configuration
 public class PdlOppslagConfig {
 
-    private static final String PDL_PROPERTY_NAME = "PDL_URL";
+    public static final String PDL_PROPERTY_NAME = "PDL_URL";
 
     @Bean
     PdlOppslagClient pdlOppslagClient(SystemUserTokenProvider systemUserTokenProvider) {
@@ -21,10 +21,5 @@ public class PdlOppslagConfig {
     @Bean
     PdlOppslagGateway pdlOppslagGateway(PdlOppslagClient pdlOppslagClient) {
         return new PdlOppslagGatewayImpl(pdlOppslagClient);
-    }
-
-    @Bean
-    PdlOppslagClientHelsesjekk pdlOppslagClientHelsesjekk() {
-        return new PdlOppslagClientHelsesjekk(getRequiredProperty(PDL_PROPERTY_NAME));
     }
 }

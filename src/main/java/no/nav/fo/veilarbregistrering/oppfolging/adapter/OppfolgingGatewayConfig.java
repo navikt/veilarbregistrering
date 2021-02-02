@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
-@Import(OppfolgingClientHelseSjekk.class)
 public class OppfolgingGatewayConfig {
 
     public static final String OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL";

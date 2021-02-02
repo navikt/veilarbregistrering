@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.health.selftest.SelfTestChecks;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
@@ -162,8 +163,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    HelsesjekkResource helsesjekkResource() {
-        return new HelsesjekkResource();
+    HelsesjekkResource helsesjekkResource(SelfTestChecks selfTestChecks) {
+        return new HelsesjekkResource(selfTestChecks);
     }
 
     @Bean

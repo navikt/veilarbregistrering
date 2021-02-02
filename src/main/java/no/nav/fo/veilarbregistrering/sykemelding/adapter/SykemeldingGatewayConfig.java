@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(SykmeldtInfoClientHelseSjekk.class)
 public class SykemeldingGatewayConfig {
 
     //FIXME: Verdien skal ikke være hardkodet, men hentes via properties
