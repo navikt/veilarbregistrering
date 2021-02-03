@@ -1,14 +1,11 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import no.nav.fo.veilarbregistrering.FileToJson;
-import okhttp3.MediaType;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils.dummyResponseBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppfolgingClientJsonTest {
@@ -19,5 +16,12 @@ public class OppfolgingClientJsonTest {
         AktiverBrukerFeilDto aktiverBrukerFeilDto = OppfolgingClient.parse(dummyResponseBuilder().code(200).body(ResponseBody.create(MediaType.parse("application/json"), json)).build());
         assertThat(aktiverBrukerFeilDto).isNotNull();
         assertThat(aktiverBrukerFeilDto.getType()).isEqualTo(AktiverBrukerFeilDto.ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES);
+    }
+
+    private static Response.Builder dummyResponseBuilder() {
+        return new Response.Builder()
+                .request(new Request.Builder().url("https://nav.no").build())
+                .protocol(Protocol.HTTP_1_1)
+                .message("");
     }
 }
