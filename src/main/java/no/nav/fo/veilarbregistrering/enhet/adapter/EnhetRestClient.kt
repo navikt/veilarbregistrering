@@ -1,15 +1,12 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter
 
 import com.google.gson.*
-import no.nav.common.log.MDCConstants
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
-import no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.slf4j.MDC
 import java.io.IOException
 import java.lang.reflect.Type
 import java.time.LocalDate
@@ -21,7 +18,6 @@ internal open class EnhetRestClient(baseUrl: String) {
     open fun hentOrganisasjon(organisasjonsnummer: Organisasjonsnummer): OrganisasjonDetaljerDto? {
         val request = Request.Builder()
                 .url(url + organisasjonsnummer.asString())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build()
 
         return try {

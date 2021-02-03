@@ -1,14 +1,12 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import no.nav.common.auth.utils.TokenUtils;
-import no.nav.common.log.MDCConstants;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.slf4j.MDC;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.common.auth.Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME;
 import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 
 public class SykmeldtInfoClient {
 
@@ -46,7 +43,6 @@ public class SykmeldtInfoClient {
                 .url(url)
                 .header(COOKIE, servletRequest.getHeader(COOKIE))
                 .header("Authorization", "Bearer " + getToken(servletRequest))
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

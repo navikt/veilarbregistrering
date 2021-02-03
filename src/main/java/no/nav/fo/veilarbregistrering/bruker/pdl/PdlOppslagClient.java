@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
-import no.nav.common.log.MDCConstants;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -16,7 +15,6 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,6 @@ import java.util.Optional;
 import static no.nav.common.rest.client.RestClient.baseClient;
 import static no.nav.common.rest.client.RestUtils.getBodyStr;
 import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 
 class PdlOppslagClient {
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
@@ -71,7 +68,6 @@ class PdlOppslagClient {
         Request request = new Request.Builder()
                 .url(baseUrl)
                 .header(NAV_PERSONIDENT_HEADER, personident)
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .header("Authorization", "Bearer " + token)
                 .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
                 .method("POST", toJsonRequestBody(requestBody))
@@ -99,7 +95,6 @@ class PdlOppslagClient {
         Request request = new Request.Builder()
                 .url(baseUrl)
                 .header(NAV_PERSONIDENT_HEADER, fnr)
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .header("Authorization", "Bearer " + token)
                 .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
                 .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)

@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.common.log.MDCConstants;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
@@ -13,7 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -22,7 +20,6 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 
 public class OppfolgingClient {
 
@@ -50,7 +47,6 @@ public class OppfolgingClient {
                         .addQueryParameter("fnr", fnr.stringValue())
                         .build())
                 .header(COOKIE, servletRequest().getHeader(COOKIE))
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build();
 
         try (okhttp3.Response response = client.newCall(request).execute()) {
@@ -111,8 +107,7 @@ public class OppfolgingClient {
     private Request.Builder buildSystemAuthorizationRequest() {
         return new Request.Builder()
                 .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
-                .header(AUTHORIZATION, "Bearer " + this.systemUserTokenProvider.getSystemUserToken())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID));
+                .header(AUTHORIZATION, "Bearer " + this.systemUserTokenProvider.getSystemUserToken());
     }
 
     private AktiverBrukerResultat behandleHttpResponse(okhttp3.Response response, String url) throws IOException {

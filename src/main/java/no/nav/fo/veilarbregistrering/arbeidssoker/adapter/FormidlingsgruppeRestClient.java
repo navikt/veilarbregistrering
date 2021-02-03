@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.google.gson.*;
-import no.nav.common.log.MDCConstants;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -12,7 +11,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
@@ -22,9 +20,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 
 class FormidlingsgruppeRestClient {
 
@@ -66,8 +61,6 @@ class FormidlingsgruppeRestClient {
                         //TODO: null-sjekk på tilDato - skal ikke alltid med
                         .addQueryParameter("tilDato", periode.tilDatoAs_yyyyMMdd())
                         .build())
-                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build();
 
         OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();

@@ -11,15 +11,12 @@ import okhttp3.Response;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 import static no.nav.common.rest.client.RestClient.baseClient;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 import static org.h2.util.IntIntHashMap.NOT_FOUND;
 
 class KrrClient {
@@ -44,7 +41,6 @@ class KrrClient {
                                 .addQueryParameter("inkluderSikkerDigitalPost", "false")
                                 .build())
                 .header(AUTHORIZATION, "Bearer " + systemUserTokenProvider.getSystemUserToken())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvveilarbregistrering")
                 .header("Nav-Personidenter", foedselsnummer.stringValue())
                 .build();

@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
-import no.nav.common.log.MDCConstants;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
@@ -11,7 +10,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -19,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
-import static no.nav.fo.veilarbregistrering.log.CallId.NAV_CALL_ID_HEADER;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -50,7 +47,6 @@ class VeilArbPersonClient {
                         .build())
                 .header(COOKIE, cookies)
                 .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
