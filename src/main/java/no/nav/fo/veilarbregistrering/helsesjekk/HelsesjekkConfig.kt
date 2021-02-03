@@ -32,14 +32,14 @@ class HelsesjekkConfig {
             SelfTestCheck("ABAC tilgangskontroll - ping", true, veilarbPep.abacClient),
             SelfTestCheck("Sjekker at feature-toggles kan hentes fra Unleash", false, unleashService),
             SelfTestCheck("Ping Oppfølging", false, healthCheck(oppFolgingPingUrl)),
-            SelfTestCheck("Ping Pdl", false, healthCheck(pdlPingUrl)),
+            SelfTestCheck("Ping Pdl", false, healthCheck(pdlPingUrl, true)),
             SelfTestCheck("Ping FO Infotrygd", false, healthCheck(foInfotrygdPingUrl)),
         )
         return SelfTestChecks(selfTestChecks)
     }
 
-    private fun healthCheck(url: String): HealthCheck = HealthCheck {
-        performHealthCheck(url)
+    private fun healthCheck(url: String, useOptions: Boolean = false): HealthCheck = HealthCheck {
+        performHealthCheck(url, useOptions)
     }
 
     private fun checkDbHealth(jdbcTemplate: JdbcTemplate): HealthCheck {

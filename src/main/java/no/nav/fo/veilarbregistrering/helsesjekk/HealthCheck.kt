@@ -7,13 +7,14 @@ import java.io.IOException
 
 object HealthCheck {
     @JvmStatic
-    fun performHealthCheck(baseUrl: String): HealthCheckResult {
+    fun performHealthCheck(baseUrl: String, useOptions: Boolean): HealthCheckResult {
+        val request = Request.Builder()
+            .url(baseUrl)
+            .let { if (useOptions) it.method("OPTIONS", null) else it }
+            .build()
+
         try {
-            RestClient.baseClient().newCall(
-                Request.Builder()
-                    .url(baseUrl)
-                    .build()
-            )
+            RestClient.baseClient().newCall(request)
                 .execute().use {
                     return when (val status = it.code()) {
                         in 200..299 -> HealthCheckResult.healthy()
