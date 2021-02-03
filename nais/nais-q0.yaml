@@ -1,11 +1,10 @@
-
-apiVersion: nais.io/v1alpha1
 kind: Application
+apiVersion: nais.io/v1alpha1
 metadata:
-  labels:
-    team: paw
   name: veilarbregistrering
   namespace: q0
+  labels:
+    team: paw
 spec:
   envFrom:
     - configmap: loginservice-idporten
