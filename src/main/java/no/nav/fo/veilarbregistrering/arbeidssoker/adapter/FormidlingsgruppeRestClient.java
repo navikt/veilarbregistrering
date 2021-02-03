@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 class FormidlingsgruppeRestClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
@@ -61,6 +63,7 @@ class FormidlingsgruppeRestClient {
                         //TODO: null-sjekk på tilDato - skal ikke alltid med
                         .addQueryParameter("tilDato", periode.tilDatoAs_yyyyMMdd())
                         .build())
+                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
                 .build();
 
         OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
