@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -126,6 +127,7 @@ public class RegistreringResource implements RegistreringApi {
 
     @Override
     @PostMapping("/startregistrersykmeldt")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void registrerSykmeldt(@RequestBody SykmeldtRegistrering sykmeldtRegistrering) {
 
         if(tjenesteErNede()){

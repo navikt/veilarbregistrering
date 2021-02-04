@@ -21,9 +21,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
@@ -47,6 +49,20 @@ class RegistreringResourceTest(
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
         every { autorisasjonService.erVeileder() } returns true
+    }
+
+    @Test
+    fun `startregistrersykmeldt har riktig status og responsbody`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        val responseString = mvc.post("/api/startregistrersykmeldt") {
+            contentType = MediaType.APPLICATION_JSON
+            content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
+        }.andExpect {
+            status { isNoContent }
+        }.andReturn().response.contentAsString
+
+        assertThat(responseString).isNullOrEmpty()
     }
 
     @Test
