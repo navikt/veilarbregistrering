@@ -72,7 +72,7 @@ spec:
   port: 8080
   prometheus:
     enabled: true
-    path: veilarbregistrering/internal/metrics
+    path: veilarbregistrering/internal/prometheus
   readiness:
     initialDelay: 60
     path: veilarbregistrering/internal/isReady

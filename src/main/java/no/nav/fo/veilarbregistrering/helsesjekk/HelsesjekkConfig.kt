@@ -6,6 +6,7 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.common.utils.EnvironmentUtils.getRequiredProperty
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig.PDL_PROPERTY_NAME
 import no.nav.fo.veilarbregistrering.helsesjekk.HealthCheck.performHealthCheck
@@ -36,6 +37,11 @@ class HelsesjekkConfig {
             SelfTestCheck("Ping FO Infotrygd", false, healthCheck(foInfotrygdPingUrl)),
         )
         return SelfTestChecks(selfTestChecks)
+    }
+
+    @Bean
+    fun selfTestMeterBinder(selfTestChecks: SelfTestChecks): SelfTestMeterBinder {
+        return SelfTestMeterBinder(selfTestChecks)
     }
 
     private fun healthCheck(url: String, useOptions: Boolean = false): HealthCheck = HealthCheck {
