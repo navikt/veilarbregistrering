@@ -66,5 +66,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           DRY_RUN: false
-          RESOURCE: nais/nais.yaml
-          VARS: nais/vars-q1.yaml
+          RESOURCE: nais/nais-q1.yaml
