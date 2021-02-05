@@ -1,21 +1,23 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import no.nav.sbl.rest.RestUtils;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static javax.ws.rs.client.Entity.json;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER;
 import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingCriteriaDto.OPPFOLGING;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 class Norg2RestClient {
 
@@ -33,35 +35,41 @@ class Norg2RestClient {
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 
-        Response response = utfoerRequest(rsArbeidsfordelingCriteriaDto);
+        Request request = new Request.Builder()
+                .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
+                .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
+                .build();
 
-        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
-        if (Response.Status.OK.equals(status)) {
-            List<RsNavKontorDto> rsNavKontorDtos = response.readEntity(new GenericType<List<RsNavKontorDto>>() {
-            });
+        try (Response response = RestClient.baseClient().newCall(request).execute()) {
+            if (response.code() == 404) {
+                LOG.warn("Fant ikke NavKontor for kommunenummer");
+                return Collections.emptyList();
+            }
+
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + response.code() + " - " + response);
+            }
+
+            List<RsNavKontorDto> rsNavKontorDtos = RestUtils.parseJsonResponseArrayOrThrow(response, RsNavKontorDto.class);
             return new ArrayList<>(rsNavKontorDtos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        if (Response.Status.NOT_FOUND.equals(status)) {
-            LOG.warn("Fant ikke NavKontor for kommunenummer");
-            return Collections.emptyList();
-        }
-
-        throw new RuntimeException("HentEnhetFor kommunenummer feilet med statuskode: " + status + " - " + response);
-    }
-
-    Response utfoerRequest(RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto) {
-        return RestUtils.createClient()
-                        .target(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
-                        .request(MediaType.APPLICATION_JSON)
-                        .post(json(rsArbeidsfordelingCriteriaDto));
     }
 
     List<RsEnhet> hentAlleEnheter() {
-        return RestUtils.createClient()
-                .target(baseUrl + "/v1/enhet").queryParam("oppgavebehandlerFilter=UFILTRERT")
-                .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<RsEnhet>>() {
-                });
+        Request request = new Request.Builder()
+                .url(HttpUrl.parse(baseUrl).newBuilder()
+                        .addPathSegments("v1/enhet")
+                        .addQueryParameter("oppgavebehandlerFilter", "UFILTRERT").build())
+                .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .build();
+
+        try (Response response = RestClient.baseClient().newCall(request).execute()) {
+            return RestUtils.parseJsonResponseArrayOrThrow(response, RsEnhet.class);
+        } catch (IOException e) {
+            return Collections.emptyList();
+        }
     }
 }

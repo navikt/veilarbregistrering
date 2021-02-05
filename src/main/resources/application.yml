@@ -1,0 +1,33 @@
+spring:
+  main:
+    banner-mode: off
+  flyway:
+    enabled: true
+    table: schema_version
+  datasource:
+    url: ${VEILARBREGISTRERINGDB_URL}
+    username: ${VEILARBREGISTRERINGDB_USERNAME}
+    password: ${VEILARBREGISTRERINGDB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+server:
+  servlet:
+    context-path: /veilarbregistrering
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      base-path: /internal
+      exposure:
+        include: prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true

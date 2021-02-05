@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
@@ -11,9 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*;
+import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
+import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.PUBLISERT_KAFKA;
 
 public class PubliseringAvEventsService {
 
@@ -24,18 +27,21 @@ public class PubliseringAvEventsService {
     private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
+    private MetricsService metricsService;
 
     public PubliseringAvEventsService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer) {
+            ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
+            MetricsService metricsService) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
+        this.metricsService = metricsService;
     }
 
     @Transactional
@@ -78,8 +84,8 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntallForPublisering() {
         try {
-            registreringTilstandRepository.hentAntallPerStatus()
-                    .forEach(PubliseringMetrikker::rapporterRegistreringStatusAntall);
+            Map<Status, Integer> antallPerStatus = registreringTilstandRepository.hentAntallPerStatus();
+            metricsService.rapporterRegistreringStatusAntall(antallPerStatus);
         } catch (Exception e) {
             LOG.error("Feil ved rapportering av antall statuser", e);
         }

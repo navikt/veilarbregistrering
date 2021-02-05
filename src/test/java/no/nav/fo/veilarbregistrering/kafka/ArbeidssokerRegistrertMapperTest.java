@@ -6,13 +6,13 @@ import no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar;
 import no.nav.arbeid.soker.registrering.UtdanningSvar;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder.gyldigBesvarelse;
 import static no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar.ER_PERMITTERT;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidssokerRegistrertMapperTest {
 

@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.apiapp.feil.FeilDTO;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.metrics.Events;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -17,14 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-
 import static java.time.LocalDate.now;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.MANUELL_REGISTRERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.PROFILERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportFields;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportTags;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.ORDINAER;
 
 
@@ -39,13 +33,15 @@ public class BrukerRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
+    private final MetricsService metricsService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      ProfileringService profileringService,
                                      RegistreringTilstandRepository registreringTilstandRepository,
-                                     BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository) {
+                                     BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
+                                     MetricsService metricsService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
@@ -53,11 +49,13 @@ public class BrukerRegistreringService {
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.brukerTilstandService = brukerTilstandService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
+
+        this.metricsService = metricsService;
     }
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        reportFields(MANUELL_REGISTRERING_EVENT, ORDINAER);
+        metricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
     }
 
     @Transactional
@@ -71,9 +69,9 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
 
-        reportTags(PROFILERING_EVENT, profilering.getInnsatsgruppe());
+        metricsService.reportTags(Events.PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
-        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(ordinaerBrukerRegistrering, profilering);
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(metricsService,ordinaerBrukerRegistrering, profilering);
 
         RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
@@ -95,7 +93,7 @@ public class BrukerRegistreringService {
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
     }
 
-    @Transactional(noRollbackFor = {WebApplicationException.class})
+    @Transactional(noRollbackFor = {AktiverBrukerException.class})
     public void overforArena(long registreringId, Bruker bruker, NavVeileder veileder) {
 
         RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
@@ -105,9 +103,7 @@ public class BrukerRegistreringService {
             return;
         }
 
-        String feilType = AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()).toString();
-        FeilDTO feilDTO = new FeilDTO("1", feilType, new FeilDTO.Detaljer(feilType, "", ""));
-        throw new WebApplicationException(Response.serverError().entity(feilDTO).build());
+        throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()));
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
@@ -155,7 +151,7 @@ public class BrukerRegistreringService {
             ValideringUtils.validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
             LOG.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
-            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(ordinaerBrukerRegistrering);
+            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(metricsService, ordinaerBrukerRegistrering);
             throw e;
         }
     }

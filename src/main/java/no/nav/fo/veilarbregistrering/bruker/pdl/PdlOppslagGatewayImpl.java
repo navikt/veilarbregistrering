@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.apiapp.feil.Feil;
-import no.nav.apiapp.feil.FeilType;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.feil.HentIdenterException;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import org.slf4j.Logger;
@@ -46,7 +46,8 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         } catch (BrukerIkkeFunnetException e) {
             throw e;
         } catch (RuntimeException e) {
-            throw new Feil(FeilType.UKJENT, e);
+            LOG.error("HentIdenterFeilet: ", e);
+            throw new HentIdenterException(e.getMessage());
         }
     }
 
@@ -58,7 +59,7 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
         } catch (BrukerIkkeFunnetException e) {
             throw e;
         } catch (RuntimeException e) {
-            throw new Feil(FeilType.UKJENT, e);
+            throw new HentIdenterException(e.getMessage());
         }
     }
 }

@@ -1,37 +1,35 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.bruker.BrukerIkkeFunnetException;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.*;
+import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.HentIdenterVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.HentPersonVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
-import no.nav.log.MDCConstants;
-import no.nav.sbl.rest.RestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import okhttp3.Request;
+import okhttp3.Response;
 
-import javax.ws.rs.client.Entity;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static no.nav.common.rest.client.RestClient.baseClient;
+import static no.nav.common.rest.client.RestUtils.getBodyStr;
+import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
+
 class PdlOppslagClient {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagClient.class);
-
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
-    private final String NAV_CALL_ID_HEADER = "Nav-Call-Id";
     private final String TEMA_HEADER = "Tema";
     private final String OPPFOLGING_TEMA_HEADERVERDI = "OPP";
 
@@ -64,27 +62,24 @@ class PdlOppslagClient {
         return response.getData().getPdlIdenter();
     }
 
-    String hentIdenterRequest(String personident, PdlHentIdenterRequest request) {
-        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
+    String hentIdenterRequest(String personident, PdlHentIdenterRequest requestBody) {
+        String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        return RestUtils.withClient(client ->
-                client.target(baseUrl)
-                        .request()
-                        .header(NAV_PERSONIDENT_HEADER, personident)
-                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", "Bearer " + token)
-                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                        .post(Entity.json(request), String.class));
-    }
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .header(NAV_PERSONIDENT_HEADER, personident)
+                .header("Authorization", "Bearer " + token)
+                .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                .method("POST", toJsonRequestBody(requestBody))
+                .build();
 
-    private String hentIdenterQuery() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentIdenter.graphql").toURI()));
-            return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
+        try (Response response = baseClient().newCall(request).execute()) {
+            return getBodyStr(response).orElseThrow(RuntimeException::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+
 
     PdlPerson hentPerson(AktorId aktorId) {
         PdlHentPersonRequest request = new PdlHentPersonRequest(hentPersonQuery(), new HentPersonVariables(aktorId.asString(), false));
@@ -94,25 +89,37 @@ class PdlOppslagClient {
         return resp.getData().getHentPerson();
     }
 
-    String hentPersonRequest(String fnr, PdlHentPersonRequest request) {
-        String token = this.systemUserTokenProvider.getSystemUserAccessToken();
+    String hentPersonRequest(String fnr, PdlHentPersonRequest pdlHentPersonRequest) {
+        String token = this.systemUserTokenProvider.getSystemUserToken();
 
-        return RestUtils.withClient(client ->
-                client.target(baseUrl)
-                        .request()
-                        .header(NAV_PERSONIDENT_HEADER, fnr)
-                        .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                        .header("Authorization", "Bearer " + token)
-                        .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
-                        .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-                        .post(Entity.json(request), String.class));
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .header(NAV_PERSONIDENT_HEADER, fnr)
+                .header("Authorization", "Bearer " + token)
+                .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
+                .method("POST", toJsonRequestBody(pdlHentPersonRequest))
+                .build();
+        try (Response response = baseClient().newCall(request).execute()) {
+            return getBodyStr(response).orElseThrow(RuntimeException::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String hentIdenterQuery() {
+        return hentRessursfil("pdl/hentIdenter.graphql");
     }
 
     private String hentPersonQuery() {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(PdlOppslagClient.class.getResource("/pdl/hentPerson.graphql").toURI()));
-            return new String(bytes).replaceAll("[\n\r]]", "");
-        } catch (IOException | URISyntaxException e) {
+       return hentRessursfil("pdl/hentPerson.graphql");
+    }
+
+    private String hentRessursfil(String sti) {
+        ClassLoader classLoader = PdlOppslagClient.class.getClassLoader();
+        try (InputStream resourceStream = classLoader.getResourceAsStream(sti)) {
+            return new String(resourceStream.readAllBytes(), StandardCharsets.UTF_8).replaceAll("[\n\r]]", "");
+        } catch (IOException e) {
             throw new RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e);
         }
     }

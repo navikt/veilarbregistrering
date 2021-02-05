@@ -2,14 +2,16 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar;
 import no.nav.fo.veilarbregistrering.besvarelse.SisteStillingSvar;
+import no.nav.fo.veilarbregistrering.metrics.Event;
+import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
-import no.nav.metrics.MetricsFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 class OrdinaerBrukerBesvarelseMetrikker {
-    static void rapporterOrdinaerBesvarelse(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
+    static void rapporterOrdinaerBesvarelse(MetricsService metricsService, OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Profilering profilering) {
         List<DinSituasjonSvar> svarSomIndikererArbeidSisteManeder = Arrays.asList(
                 DinSituasjonSvar.MISTET_JOBBEN,
                 DinSituasjonSvar.HAR_SAGT_OPP,
@@ -23,24 +25,24 @@ class OrdinaerBrukerBesvarelseMetrikker {
                 ordinaerBrukerRegistrering.getBesvarelse().getSisteStilling() == SisteStillingSvar.HAR_HATT_JOBB)
                 == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder();
 
-        MetricsFactory.createEvent("registrering.besvarelse.utdanning")
-                .addFieldToReport("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning())
-                .report();
+        metricsService.reportFields(Event.of("registrering.besvarelse.utdanning"),
+                Metric.of("utdanning", ordinaerBrukerRegistrering.getBesvarelse().getUtdanning()));
 
-        MetricsFactory.createEvent("registrering.besvarelse.dinsituasjon")
-                .addFieldToReport("dinsituasjon", ordinaerBrukerRegistrering.getBesvarelse().getDinSituasjon())
-                .report();
 
-        MetricsFactory.createEvent("registrering.besvarelse.helseHinder")
-                .addFieldToReport("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder())
-                .report();
+        metricsService.reportFields(Event.of("registrering.besvarelse.dinsituasjon"),
+                Metric.of("dinsituasjon", ordinaerBrukerRegistrering.getBesvarelse().getDinSituasjon()));
 
-        MetricsFactory.createEvent("registrering.besvarelse.andreForhold")
-                .addFieldToReport("andreForhold", ordinaerBrukerRegistrering.getBesvarelse().getAndreForhold())
-                .report();
 
-        MetricsFactory.createEvent("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg")
-                .addFieldToReport("samsvarermedinfofraareg", samsvarermedinfofraaareg)
-                .report();
+        metricsService.reportFields(Event.of("registrering.besvarelse.helseHinder"),
+                Metric.of("helseHinder", ordinaerBrukerRegistrering.getBesvarelse().getHelseHinder()));
+
+
+        metricsService.reportFields(Event.of("registrering.besvarelse.andreForhold"),
+                Metric.of("andreForhold", ordinaerBrukerRegistrering.getBesvarelse().getAndreForhold()));
+
+
+        metricsService.reportFields(Event.of("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg"),
+                Metric.of("samsvarermedinfofraareg", samsvarermedinfofraaareg));
+
     }
 }

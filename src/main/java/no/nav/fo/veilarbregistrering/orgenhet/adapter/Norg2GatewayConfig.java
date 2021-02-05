@@ -4,7 +4,8 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+
 
 @Configuration
 public class Norg2GatewayConfig {

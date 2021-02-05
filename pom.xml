@@ -5,15 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.common</groupId>
-        <artifactId>mor-pom</artifactId>
-        <version>1.2020.09.07_16.00-4f2f19a76bb2</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <relativePath/>
     </parent>
 
-    <groupId>no.nav.fo</groupId>
+    <groupId>no.nav</groupId>
     <artifactId>veilarbregistrering</artifactId>
+    <name>veilarbregistrering</name>
     <version>1</version>
-    <packaging>war</packaging>
 
     <repositories>
         <repository>
@@ -23,71 +24,137 @@
     </repositories>
 
     <properties>
-        <kotlin.version>1.2.41</kotlin.version>
+        <java.version>11</java.version>
+        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
+        <common.version>2.2020.11.25_13.46-a7ba8251568a</common.version>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+        <springfox.version>2.9.2</springfox.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>bom</artifactId>
-                <version>${project.parent.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <!-- Spring boot -->
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>metrics</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>json</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.10.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>nais</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
+
+        <!-- Nav-tjenester -->
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
+            <version>${tjenestespesifikasjoner.version}</version>
+        </dependency>
+
+        <!-- Common-avhengigheter -->
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>abac</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>metrics</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>leader-election</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>util</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>feature-toggle</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.arbeid</groupId>
+            <artifactId>veilarbregistrering-skjema</artifactId>
+            <version>1.202010190947-866fe12</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>sts</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>auth</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>cxf</artifactId>
+            <version>1.2020.01.23-17.30-c6684f7b3098</version>
+        </dependency>
+
+
+        <!-- ymse -->
+        <dependency>
+            <groupId>no.bekk.bekkopen</groupId>
+            <artifactId>nocommons</artifactId>
+            <version>0.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>5.0.2</version>
         </dependency>
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
+            <version>0.10.3</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <version>1.2019.09.25-00.21-49b69f0625e0</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.bekk.bekkopen</groupId>
-            <artifactId>nocommons</artifactId>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -98,92 +165,19 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.arbeid</groupId>
-            <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202010190947-866fe12</version>
-        </dependency>
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-avro-serializer</artifactId>
-            <version>5.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>oidc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>oidc-security</artifactId>
-            <version>1.2020.02.21_09.07-69c044da9255</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>javax.inject</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-            <version>2.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
+            <version>19.3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -191,71 +185,71 @@
             <version>2.7.9</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>api-app</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>test-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.nhaarman.mockitokotlin2</groupId>
-            <artifactId>mockito-kotlin</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>rest</artifactId>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>jobutils</artifactId>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>leader-election</artifactId>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>2.12.0</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>runtime</scope>
+            <version>1</version>
+        </dependency>
+
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
@@ -276,18 +270,46 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <!-- Eksplisitt bruk vår egen ${kotlin.version} her i stedet for å la versjonen komme fra common-java-modules.
-                 Dette passer på at vi også har lik versjon i kotlin-maven-plugin.
-                 Dersom vår versjon endres til noe annet enn definert i common-java-modules, vil vi få en byggfeil. -->
-            <version>${kotlin.version}</version>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.22.2</version>
+            <scope>test</scope>
         </dependency>
-
-        <!-- Feature toggle -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.2.8.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>1.10.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test-autoconfigure</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
-            <artifactId>feature-toggle</artifactId>
+            <artifactId>test</artifactId>
+            <version>${common.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -296,12 +318,41 @@
         <finalName>veilarbregistrering</finalName>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
+                <configuration>
+                    <jvmTarget>${java.version}</jvmTarget>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
                         <id>compile</id>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -314,7 +365,10 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <goals> <goal>test-compile</goal> </goals>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
@@ -326,32 +380,12 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <!-- Replacing default-compile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals> <goal>compile</goal> </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals> <goal>testCompile</goal> </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
             <id>github</id>

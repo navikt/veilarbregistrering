@@ -1,43 +1,44 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveResponse;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
-import static no.nav.fo.veilarbregistrering.bruker.BrukerAdapter.map;
 import static no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map;
 
-@Component
-@Path("/oppgave")
-@Produces("application/json")
+
+@RestController
+@RequestMapping("/api/oppgave")
 public class OppgaveResource implements OppgaveApi {
 
     private final OppgaveService oppgaveService;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final AutorisasjonService autorisasjonService;
 
     public OppgaveResource(
-            VeilarbAbacPepClient pepClient,
             UserService userService,
-            OppgaveService oppgaveService) {
-        this.pepClient = pepClient;
+            OppgaveService oppgaveService,
+            AutorisasjonService autorisasjonService) {
         this.userService = userService;
         this.oppgaveService = oppgaveService;
+        this.autorisasjonService = autorisasjonService;
     }
 
-    @POST
     @Override
-    public OppgaveDto opprettOppgave(OppgaveDto oppgaveDto) {
+    @PostMapping
+    public OppgaveDto opprettOppgave(@RequestBody OppgaveDto oppgaveDto) {
+        if (oppgaveDto == null || oppgaveDto.getOppgaveType() == null) {
+            throw new IllegalArgumentException("Oppgave m/ type må være angitt");
+        }
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkSkrivetilgangTilBruker(map(bruker));
+        autorisasjonService.sjekkSkrivetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         OppgaveResponse oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.getOppgaveType());
 

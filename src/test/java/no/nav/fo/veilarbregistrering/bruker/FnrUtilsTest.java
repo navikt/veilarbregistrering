@@ -6,7 +6,8 @@ import java.time.LocalDate;
 
 import static no.nav.fo.veilarbregistrering.bruker.FnrUtils.antallAarSidenDato;
 import static no.nav.fo.veilarbregistrering.bruker.FnrUtils.utledFodselsdatoForFnr;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class FnrUtilsTest {
 

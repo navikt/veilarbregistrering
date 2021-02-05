@@ -9,9 +9,9 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 import static no.nav.fo.veilarbregistrering.log.CallId.getCorrelationIdAsBytes;
-import static no.nav.log.MDCConstants.MDC_CALL_ID;
 
 class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProducer {
 

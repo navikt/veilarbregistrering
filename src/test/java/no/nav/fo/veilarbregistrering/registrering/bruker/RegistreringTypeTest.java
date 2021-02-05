@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 import no.nav.fo.veilarbregistrering.sykemelding.Maksdato;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
@@ -26,10 +26,7 @@ public class RegistreringTypeTest {
                 Servicegruppe.of("VURDI"),
                 Rettighetsgruppe.of("IYT"));
 
-        String maksDato = null;
-        boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv = false;
-
-        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(maksDato, erArbeidsrettetOppfolgingSykmeldtInngangAktiv);
+        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
         RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, true);
 
@@ -46,10 +43,7 @@ public class RegistreringTypeTest {
                 Servicegruppe.of("VURDI"),
                 Rettighetsgruppe.of("IYT"));
 
-        String maksDato = null;
-        boolean erArbeidsrettetOppfolgingSykmeldtInngangAktiv = false;
-
-        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(maksDato, erArbeidsrettetOppfolgingSykmeldtInngangAktiv);
+        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
         RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 

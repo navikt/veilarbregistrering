@@ -1,24 +1,20 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestClient;
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.baseclient.RestUtils;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 
 public class ArenaOrdsTokenProviderClient {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ArenaOrdsTokenProviderClient.class);
 
     public static final String ARENA_ORDS_CLIENT_ID_PROPERTY = "ARENA_ORDS_CLIENT_ID";
     public static final String ARENA_ORDS_CLIENT_SECRET_PROPERTY = "ARENA_ORDS_CLIENT_SECRET";
@@ -107,8 +103,8 @@ public class ArenaOrdsTokenProviderClient {
         int expiresIn;
 
         public OrdsToken() {
-            //default constructor
-        }
+            //default constructor for `com.fasterxml.jackson.databind` som benyttes for å deserialisere.
+        };
 
         public OrdsToken(String accessToken, String tokenType, int expiresIn) {
             this.accessToken = accessToken;
@@ -118,10 +114,6 @@ public class ArenaOrdsTokenProviderClient {
 
         public String getAccessToken() {
             return accessToken;
-        }
-
-        public String getTokenType() {
-            return tokenType;
         }
 
         public int getExpiresIn() {

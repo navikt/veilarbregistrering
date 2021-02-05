@@ -1,52 +1,45 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.rest.client.RestClient;
+import no.nav.common.rest.client.RestUtils;
+import no.nav.common.sts.SystemUserTokenProvider;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframework.http.HttpStatus;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
-import static javax.ws.rs.client.Entity.json;
-import static no.nav.sbl.rest.RestUtils.RestConfig.builder;
-import static no.nav.sbl.rest.RestUtils.withClient;
-
-public class OppgaveRestClient {
+class OppgaveRestClient {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String baseUrl;
+    private final OkHttpClient client;
     private SystemUserTokenProvider systemUserTokenProvider;
 
-    public OppgaveRestClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
+    OppgaveRestClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
         this.baseUrl = baseUrl;
         this.systemUserTokenProvider = systemUserTokenProvider;
+        this.client = RestClient.baseClientBuilder()
+                .readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
     }
 
-    protected OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
-        return withClient(
-                builder().readTimeout(HTTP_READ_TIMEOUT).build()
-                , c -> postOppgave(oppgaveDto, c)
-        );
-    }
+    OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
+        Request request = new Request.Builder()
+                .url(baseUrl + "/oppgaver")
+                .header("Authorization", "Bearer " + systemUserTokenProvider.getSystemUserToken())
+                .method("POST", RestUtils.toJsonRequestBody(oppgaveDto))
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.code() != HttpStatus.CREATED.value()) {
+                throw new RuntimeException("Opprett oppgave feilet med statuskode: " + response.code() + " - " + response);
+            }
 
-    private OppgaveResponseDto postOppgave(OppgaveDto oppgaveDto, Client client) {
-        String url = baseUrl + "/oppgaver";
-        Response response = buildSystemAuthorizationRequestWithUrl(client, url)
-                .post(json(oppgaveDto));
-
-        Response.Status status = Response.Status.fromStatusCode(response.getStatus());
-
-        if (status.equals(Response.Status.CREATED)) {
-            return response.readEntity(OppgaveResponseDto.class);
+            return RestUtils.parseJsonResponseOrThrow(response, OppgaveResponseDto.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        throw new RuntimeException("Opprett oppgave feilet med statuskode: " + status + " - " + response);
-    }
-
-    private Invocation.Builder buildSystemAuthorizationRequestWithUrl(Client client, String url) {
-        return client.target(url)
-                .request()
-                .header("Authorization",
-                        "Bearer " + this.systemUserTokenProvider.getSystemUserAccessToken());
     }
 }

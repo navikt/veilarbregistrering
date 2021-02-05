@@ -1,0 +1,33 @@
+spring:
+  main:
+    banner-mode: off
+  flyway:
+    enabled: true
+  datasource:
+    url: "jdbc:h2:mem:veilarbregistrering;DB_CLOSE_DELAY=-1;MODE=Oracle"
+    username: "sa"
+    password: "password"
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+server:
+  servlet:
+    context-path: /veilarbregistrering
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      base-path: /internal
+      exposure:
+        include: '*'
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+

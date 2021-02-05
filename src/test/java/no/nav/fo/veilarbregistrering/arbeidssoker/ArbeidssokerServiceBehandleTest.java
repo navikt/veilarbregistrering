@@ -1,8 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,8 @@ public class ArbeidssokerServiceBehandleTest {
         arbeidssokerService = new ArbeidssokerService(
                 arbeidssokerRepository,
                 mock(FormidlingsgruppeGateway.class),
-                mock(UnleashService.class)
+                mock(UnleashService.class),
+                mock(MetricsService.class)
         );
     }
 

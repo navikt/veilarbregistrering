@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 public class SykmeldtInfoClientMock extends SykmeldtInfoClient {
 
     public SykmeldtInfoClientMock() {
-        super(null, null);
+        super(null);
     }
 
     @Override

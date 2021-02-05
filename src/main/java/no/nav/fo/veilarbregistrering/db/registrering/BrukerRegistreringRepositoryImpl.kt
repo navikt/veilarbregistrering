@@ -12,11 +12,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.Pageable
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException
@@ -157,31 +153,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
     private fun nesteFraSekvens(sekvensNavn: String): Long {
         return db.queryForObject("SELECT $sekvensNavn.nextval FROM DUAL", noParams, Long::class.java)!!
-    }
-
-    override fun findRegistreringByPage(pageable: Pageable): Page<ArbeidssokerRegistrertInternalEvent> {
-        val rowCountSql = "SELECT count(1) AS row_count " +
-                "FROM $BRUKER_REGISTRERING"
-        val total = db.queryForObject(rowCountSql, noParams, Long::class.java)!!
-
-        val querySql = "SELECT * " +
-                "FROM $BRUKER_REGISTRERING " +
-                "ORDER BY $BRUKER_REGISTRERING_ID ASC " +
-                "OFFSET " + pageable.offset + " ROWS " +
-                "FETCH NEXT " + pageable.pageSize + " ROWS ONLY"
-
-        val dto = db.query(querySql) { rs, _ ->
-            ArbeidssokerRegistrertInternalEvent(
-                AktorId.of(rs.getString(AKTOR_ID)),
-                Besvarelse()
-                    .setDinSituasjon(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)?.let(DinSituasjonSvar::valueOf))
-                    .setUtdanning(rs.getString(NUS_KODE)?.let(UtdanningUtils::mapTilUtdanning))
-                    .setUtdanningGodkjent(rs.getString(UTDANNING_GODKJENT_NORGE)?.let(UtdanningGodkjentSvar::valueOf))
-                    .setUtdanningBestatt(rs.getString(UTDANNING_BESTATT)?.let(UtdanningBestattSvar::valueOf)),
-                rs.getTimestamp("OPPRETTET_DATO").toLocalDateTime()
-            )
-        }
-        return PageImpl(dto, pageable, total)
     }
 
     companion object {

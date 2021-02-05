@@ -1,36 +1,40 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import com.nhaarman.mockitokotlin2.reset
+import io.mockk.every
+import io.mockk.mockk
+import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.sbl.featuretoggle.unleash.UnleashService
+
+
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
+
 import java.time.LocalDate
 import java.util.*
 
 class ArbeidssokerServiceHentArbeidssokerperioderTest {
-    private val unleashService = Mockito.mock(UnleashService::class.java)
+    private val unleashService = mockk<UnleashService>()
     private lateinit var arbeidssokerService: ArbeidssokerService
+    private val metricsService = mockk<MetricsService>(relaxed = true)
     @BeforeEach
     fun setup() {
-        reset(unleashService)
         arbeidssokerService = ArbeidssokerService(
             StubArbeidssokerRepository(),
             StubFormidlingsgruppeGateway(),
-            unleashService
+            unleashService,
+            metricsService
         )
     }
 
     @Test
     fun hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {
-        `when`(unleashService!!.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE))
-            .thenReturn(true)
+        every { unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE) } returns true
+
         val forespurtPeriode = Periode.of(
             LocalDate.of(2020, 1, 2),
             LocalDate.of(2020, 5, 1)
@@ -45,7 +49,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     @Test
-    fun hentArbeidssokerperioder_skal_hente_fra_ords() {
+    fun `hentArbeidssokerperioder skal hente fra ords`() {
         val forespurtPeriode = Periode.of(
             LocalDate.of(2019, 12, 1),
             LocalDate.of(2020, 5, 1)
@@ -82,8 +86,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
     @Test
     fun hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_lokalt() {
-        `when`(unleashService!!.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE))
-            .thenReturn(true)
+        every {
+            unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
+        } returns true
+
         val bruker = Bruker.of(
             FOEDSELSNUMMER_3,
             AktorId.of("100002345678"),
@@ -105,8 +111,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
     @Test
     fun hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_ORDS() {
-        `when`(unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE))
-            .thenReturn(true)
+        every {
+            unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
+        } returns true
+
         val forespurtPeriode = Periode.of(
             LocalDate.of(2020, 1, 1),
             LocalDate.of(2020, 5, 9)

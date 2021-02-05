@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
-import no.nav.common.oidc.SystemUserTokenProvider;
+import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -52,15 +52,14 @@ class OppfolgingGatewayTest {
     }
 
     private SykmeldtInfoClient buildSykeForloepClient() {
-        Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT + "/";
-        return sykeforloepMetadataClient = new SykmeldtInfoClient(baseUrl, httpServletRequestProvider);
+        return sykeforloepMetadataClient = new SykmeldtInfoClient(baseUrl);
     }
 
     private OppfolgingClient buildOppfolgingClient() {
         Provider<HttpServletRequest> httpServletRequestProvider = new ConfigBuildClient().invoke();
         String baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT;
-        return oppfolgingClient = new OppfolgingClient(baseUrl, httpServletRequestProvider, null, null);
+        return oppfolgingClient = new OppfolgingClient(baseUrl,null);
     }
 
     @Test
@@ -100,7 +99,7 @@ class OppfolgingGatewayTest {
             HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
             when(httpServletRequestProvider.get()).thenReturn(httpServletRequest);
             when(httpServletRequest.getHeader(any())).thenReturn("");
-            when(systemUserTokenProvider.getSystemUserAccessToken()).thenReturn("testToken");
+            when(systemUserTokenProvider.getSystemUserToken()).thenReturn("testToken");
             return httpServletRequestProvider;
         }
     }

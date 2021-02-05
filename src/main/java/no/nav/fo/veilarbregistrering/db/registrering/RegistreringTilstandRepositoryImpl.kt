@@ -82,9 +82,9 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, params, rowMapper()).firstOrNull()
     }
 
-    override fun hentAntallPerStatus(): Map<String, Int> {
-        val statusAntall = mutableMapOf<String, Int>()
-        Status.values().forEach { statusAntall[it.name] = 0 }
+    override fun hentAntallPerStatus(): Map<Status, Int> {
+        val statusAntall = mutableMapOf<Status, Int>()
+        Status.values().forEach { statusAntall[it] = 0 }
 
         val antallAlias = "antall"
         val sql = "SELECT $STATUS, COUNT(1) AS $antallAlias FROM $REGISTRERING_TILSTAND" +
@@ -93,7 +93,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         db.query(sql) { rs ->
             val status = rs.getString(STATUS)
             val antall = rs.getInt(antallAlias)
-            statusAntall[status] = antall
+            statusAntall[Status.valueOf(status)] = antall
         }
 
         return statusAntall

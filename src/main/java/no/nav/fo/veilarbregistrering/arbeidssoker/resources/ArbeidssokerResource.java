@@ -1,58 +1,55 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.bruker.BrukerAdapter;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 
-@Component
-@Path("/arbeidssoker")
-@Produces("application/json")
+@RestController
+@RequestMapping("/api/arbeidssoker")
 public class ArbeidssokerResource implements ArbeidssokerApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerResource.class);
 
     private final ArbeidssokerService arbeidssokerService;
     private final UserService userService;
-    private final VeilarbAbacPepClient pepClient;
+    private final AutorisasjonService autorisasjonService;
 
     public ArbeidssokerResource(
             ArbeidssokerService arbeidssokerService,
             UserService userService,
-            VeilarbAbacPepClient pepClient) {
+            AutorisasjonService autorisasjonService) {
         this.arbeidssokerService = arbeidssokerService;
         this.userService = userService;
-        this.pepClient = pepClient;
+        this.autorisasjonService = autorisasjonService;
     }
 
-    @GET
-    @Path("/perioder")
     @Override
+    @GetMapping("/perioder")
     public ArbeidssokerperioderDto hentArbeidssokerperioder(
-            @QueryParam("fnr") String fnr,
-            @QueryParam("fraOgMed") LocalDate fraOgMed,
-            @QueryParam("tilOgMed") LocalDate tilOgMed
+            @RequestParam("fnr") String fnr,
+            @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fraOgMed,
+            @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tilOgMed
     ) {
         Bruker bruker = userService.finnBrukerGjennomPdl();
 
-        pepClient.sjekkLesetilgangTilBruker(BrukerAdapter.map(bruker));
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
         Arbeidssokerperioder arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
                 bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed));

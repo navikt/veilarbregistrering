@@ -1,11 +1,10 @@
-
-apiVersion: nais.io/v1alpha1
 kind: Application
+apiVersion: nais.io/v1alpha1
 metadata:
-  labels:
-    team: paw
   name: veilarbregistrering
   namespace: q0
+  labels:
+    team: paw
 spec:
   envFrom:
     - configmap: loginservice-idporten
@@ -72,7 +71,7 @@ spec:
   port: 8080
   prometheus:
     enabled: true
-    path: veilarbregistrering/internal/metrics
+    path: veilarbregistrering/internal/prometheus
   readiness:
     initialDelay: 60
     path: veilarbregistrering/internal/isReady

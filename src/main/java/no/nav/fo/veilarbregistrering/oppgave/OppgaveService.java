@@ -1,20 +1,17 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
-import no.nav.apiapp.feil.Feil;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.metrics.Metrics;
+import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.Event.OPPGAVE_OPPRETTET_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Metrics.reportSimple;
+import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_ALLEREDE_OPPRETTET_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_OPPRETTET_EVENT;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveAvType;
 import static no.nav.fo.veilarbregistrering.oppgave.OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden;
 
@@ -22,6 +19,7 @@ public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
 
+    private final MetricsService metricsService;
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
@@ -31,8 +29,10 @@ public class OppgaveService {
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer) {
+            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
+            MetricsService metricsService) {
 
+        this.metricsService = metricsService;
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
@@ -58,7 +58,7 @@ public class OppgaveService {
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgaveResponse.getId());
 
-        reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
+        metricsService.reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
 
         return oppgaveResponse;
     }
@@ -71,24 +71,15 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            LOG.info("Fant en oppgave av samme type {} som ble opprettet {} - {} timer siden.",
-                    oppgave.getOppgavetype(),
-                    oppgave.getOpprettet().tidspunkt(),
-                    oppgave.getOpprettet().antallTimerSiden());
+            metricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
 
-            Metrics.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
-
-            throw new Feil(new Feil.Type() {
-                @Override
-                public String getName() {
-                    return "ALLEREDE_OPPRETTET_OPPGAVE";
-                }
-
-                @Override
-                public Response.Status getStatus() {
-                    return Response.Status.FORBIDDEN;
-                }
-            });
+            throw new OppgaveAlleredeOpprettet(
+                    String.format(
+                            "Fant en oppgave av samme type %s som ble opprettet %s - %s timer siden.",
+                            oppgave.getOppgavetype(),
+                            oppgave.getOpprettet().tidspunkt(),
+                            oppgave.getOpprettet().antallTimerSiden())
+            );
         });
     }
 
