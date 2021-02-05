@@ -44,8 +44,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${IMAGE} .
         echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+        docker build --tag ${IMAGE} .
         docker push ${IMAGE}
 
   deploy-q0:
