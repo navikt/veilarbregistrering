@@ -107,6 +107,7 @@ public class RegistreringResource implements RegistreringApi {
 
     @Override
     @PostMapping("/startreaktivering")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reaktivering() {
 
         if(tjenesteErNede()){

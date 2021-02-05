@@ -66,6 +66,17 @@ class RegistreringResourceTest(
     }
 
     @Test
+    fun `startreaktivering returnerer riktig status og responsbody`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        val responseString = mvc.post("/api/startreaktivering").andExpect {
+            status { isNoContent }
+        }.andReturn().response.contentAsString
+
+        assertThat(responseString).isNullOrEmpty()
+    }
+
+    @Test
     fun `serialiserer startregistrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
@@ -194,5 +205,5 @@ private class RegistreringResourceConfig {
     @Bean
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
     @Bean
-    fun inaktivBrukerService(): InaktivBrukerService = mockk()
+    fun inaktivBrukerService(): InaktivBrukerService = mockk(relaxed = true)
 }
