@@ -117,7 +117,7 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>cxf</artifactId>
-            <version>1.2020.01.23-17.30-c6684f7b3098</version>
+            <version>1.2020.11.16_14.52-3f16e0d8c867</version>
         </dependency>
 
 
