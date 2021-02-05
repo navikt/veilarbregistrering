@@ -28,7 +28,7 @@
         <kotlin.version>1.4.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
-        <common.version>2.2020.11.25_13.46-a7ba8251568a</common.version>
+        <common.version>2.2021.01.05_08.07-2c586ccadf95</common.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
