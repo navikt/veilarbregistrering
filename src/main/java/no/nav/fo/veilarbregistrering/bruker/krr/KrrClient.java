@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.common.rest.client.RestClient.baseClient;
-import static org.h2.util.IntIntHashMap.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 class KrrClient {
 
@@ -45,7 +45,7 @@ class KrrClient {
                 .header("Nav-Personidenter", foedselsnummer.stringValue())
                 .build();
         try (Response response = baseClient().newCall(request).execute()) {
-            if (!response.isSuccessful() || response.code() == NOT_FOUND) {
+            if (!response.isSuccessful() || response.code() == NOT_FOUND.value()) {
                 LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret");
                 return Optional.empty();
             }
