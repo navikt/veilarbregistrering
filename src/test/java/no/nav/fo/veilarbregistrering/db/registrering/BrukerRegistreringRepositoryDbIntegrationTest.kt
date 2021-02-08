@@ -7,18 +7,15 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.MigrationUtils
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest
@@ -27,14 +24,7 @@ import org.springframework.test.context.ContextConfiguration
 class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val jdbcTemplate: JdbcTemplate,
-    @Autowired
     private val brukerRegistreringRepository: BrukerRegistreringRepository) {
-
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
 
     @Test
     fun registrerBruker() {

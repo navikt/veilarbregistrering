@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.MigrationUtils
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
@@ -15,14 +14,12 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.DuplicateKeyException
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 
@@ -32,16 +29,9 @@ import java.time.LocalDateTime
 class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Autowired
-    private val jdbcTemplate: JdbcTemplate,
-    @Autowired
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     @Autowired
     private val registreringTilstandRepository: RegistreringTilstandRepository) {
-
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
 
     @Test
     fun `skal kaste DataIntegrityViolationException hvis registreringstilstand lagres uten at registrering er lagret`() {

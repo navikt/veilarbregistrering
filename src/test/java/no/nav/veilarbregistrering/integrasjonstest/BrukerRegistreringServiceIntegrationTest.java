@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
-import no.nav.fo.veilarbregistrering.db.MigrationUtils;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.metrics.MetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
@@ -14,7 +13,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
@@ -64,7 +62,6 @@ class BrukerRegistreringServiceIntegrationTest {
     @BeforeEach
     public void setup() {
         reset(oppfolgingGateway);
-        MigrationUtils.createTables(jdbcTemplate);
     }
 
     @AfterEach
