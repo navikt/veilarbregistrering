@@ -58,15 +58,26 @@ class FilterConfig {
     }
 
     @Bean
+    fun pingFilter(): FilterRegistrationBean<*>? {
+        // Veilarbproxy trenger dette endepunktet for å sjekke at tjenesten lever
+        // /internal kan ikke brukes siden det blir stoppet før det kommer frem
+        val registration = FilterRegistrationBean<PingFilter>()
+        registration.filter = PingFilter()
+        registration.order = 1
+        registration.addUrlPatterns("/api/ping")
+        return registration
+    }
+
+    @Bean
     open fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<OidcAuthenticationFilter>()
         val authenticationFilter = OidcAuthenticationFilter(
-            OidcAuthenticator.fromConfigs(
-                createOpenAmAuthenticatorConfig(),
-                createVeilarbloginAADConfig(),
-                createAzureAdB2CConfig(),
-                createSystemUserAuthenticatorConfig(),
-            )
+                OidcAuthenticator.fromConfigs(
+                        createOpenAmAuthenticatorConfig(),
+                        createVeilarbloginAADConfig(),
+                        createAzureAdB2CConfig(),
+                        createSystemUserAuthenticatorConfig(),
+                )
         )
         registration.setFilter(authenticationFilter)
         registration.order = 2
@@ -78,10 +89,10 @@ class FilterConfig {
     open fun logFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<LogFilter>()
         registration.setFilter(
-            LogFilter(
-                EnvironmentUtils.requireApplicationName(),
-                EnvironmentUtils.isDevelopment().orElse(false)
-            )
+                LogFilter(
+                        EnvironmentUtils.requireApplicationName(),
+                        EnvironmentUtils.isDevelopment().orElse(false)
+                )
         )
         registration.order = 3
         registration.addUrlPatterns("/*")
