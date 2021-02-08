@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.bruker.krr;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -17,9 +20,10 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.common.rest.client.RestClient.baseClient;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-class KrrClient {
+public class KrrClient implements HealthCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(KrrClient.class);
 
@@ -83,5 +87,10 @@ class KrrClient {
             throw new RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.getMelding()));
         }
         throw new RuntimeException("Ukjent feil");
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/ping"), baseClient());
     }
 }

@@ -3,10 +3,14 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.health.HealthCheck
+import no.nav.common.health.HealthCheckResult
+import no.nav.common.health.HealthCheckUtils
 import no.nav.common.log.MDCConstants
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
+import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -17,7 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.io.IOException
 
-internal open class AaregRestClient(private val baseUrl: String, private val systemUserTokenProvider: SystemUserTokenProvider) {
+open class AaregRestClient(private val baseUrl: String, private val systemUserTokenProvider: SystemUserTokenProvider) : HealthCheck {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
@@ -76,5 +80,9 @@ internal open class AaregRestClient(private val baseUrl: String, private val sys
         private fun parse(json: String): List<ArbeidsforholdDto> {
             return GSON.fromJson(json, object : TypeToken<List<ArbeidsforholdDto?>?>() {}.type)
         }
+    }
+
+    override fun checkHealth(): HealthCheckResult {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient())
     }
 }

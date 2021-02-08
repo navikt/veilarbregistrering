@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter;
 import java.util.List;
 import java.util.Objects;
 
-class ArbeidsforholdDto {
+public class ArbeidsforholdDto {
 
     private ArbeidsgiverDto arbeidsgiver;
     private AnsettelsesperiodeDto ansettelsesperiode;
