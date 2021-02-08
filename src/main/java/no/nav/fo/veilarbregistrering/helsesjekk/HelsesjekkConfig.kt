@@ -33,7 +33,7 @@ class HelsesjekkConfig {
             SelfTestCheck("ABAC tilgangskontroll - ping", true, veilarbPep.abacClient),
             SelfTestCheck("Sjekker at feature-toggles kan hentes fra Unleash", false, unleashService),
             SelfTestCheck("Ping Oppfølging", false, healthCheck(oppFolgingPingUrl)),
-            SelfTestCheck("Ping Pdl", false, healthCheck(pdlPingUrl, true)),
+            //TODO: Sjekk om dette fikser SelfTestCheck("Ping Pdl", false, healthCheck(pdlPingUrl, true)),
             SelfTestCheck("Ping FO Infotrygd", false, healthCheck(foInfotrygdPingUrl)),
         )
         return SelfTestChecks(selfTestChecks)
