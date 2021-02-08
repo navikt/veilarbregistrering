@@ -5,15 +5,12 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.MigrationUtils
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -25,14 +22,7 @@ import java.util.*
 class ArbeidssokerRepositoryDbIntegrationTest(
 
     @Autowired
-    private val arbeidssokerRepository: ArbeidssokerRepository,
-    @Autowired
-    private val jdbcTemplate: JdbcTemplate) {
-
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
+    private val arbeidssokerRepository: ArbeidssokerRepository) {
 
     @Test
     fun `skal kun lagre melding en gang`() {

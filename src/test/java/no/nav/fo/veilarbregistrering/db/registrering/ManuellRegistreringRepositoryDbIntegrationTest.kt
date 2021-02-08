@@ -1,18 +1,15 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.MigrationUtils
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest
@@ -21,14 +18,7 @@ import org.springframework.test.context.ContextConfiguration
 class ManuellRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val jdbcTemplate: JdbcTemplate,
-    @Autowired
     private val manuellRegistreringRepository: ManuellRegistreringRepository) {
-
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
 
     @Test
     fun hentManuellRegistrering() {

@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.db
 import no.nav.common.json.JsonUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -21,11 +20,6 @@ open class ViewDbIntegrationTest {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
-
-    @BeforeEach
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
 
     @Test
     fun `database skal ha riktig antall views`() {

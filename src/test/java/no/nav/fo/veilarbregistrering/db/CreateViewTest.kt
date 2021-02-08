@@ -13,7 +13,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandR
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,11 +39,6 @@ class CreateViewTest {
     private val FOEDSELSNUMMER = Foedselsnummer.of("12345678911")
     private val AKTOR_ID_11111 = AktorId.of("11111")
     private val BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111)
-
-    @BeforeAll
-    fun setup() {
-        MigrationUtils.createTables(jdbcTemplate)
-    }
 
     @Test
     fun `Riktig status er hensyntatt i viewene`() {
