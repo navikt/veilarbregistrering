@@ -2,7 +2,7 @@ spring:
   main:
     banner-mode: off
   flyway:
-    enabled: true
+    enabled: false
     table: schema_version
   datasource:
     url: ${VEILARBREGISTRERINGDB_URL}
