@@ -35,4 +35,9 @@ public class DatabaseConfig {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
+
+    @Bean
+    public DatabaseHelsesjekk databaseHelsesjekk(JdbcTemplate jdbcTemplate) {
+        return new DatabaseHelsesjekk(jdbcTemplate);
+    }
 }

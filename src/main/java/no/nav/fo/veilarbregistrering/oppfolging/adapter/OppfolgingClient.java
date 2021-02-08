@@ -1,5 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
@@ -19,9 +22,10 @@ import java.time.Duration;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
 
-public class OppfolgingClient {
+public class OppfolgingClient implements HealthCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppfolgingClient.class);
 
@@ -141,5 +145,10 @@ public class OppfolgingClient {
 
     static AktiverBrukerFeilDto parse(okhttp3.Response response) throws IOException {
         return RestUtils.parseJsonResponseOrThrow(response, AktiverBrukerFeilDto.class);
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/ping"), client);
     }
 }

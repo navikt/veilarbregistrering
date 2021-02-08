@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter;
 
 import no.nav.common.auth.utils.TokenUtils;
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -18,9 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
 import static no.nav.common.auth.Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest;
 
-public class SykmeldtInfoClient {
+public class SykmeldtInfoClient implements HealthCheck {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
@@ -64,5 +68,10 @@ public class SykmeldtInfoClient {
                         .filter(cookie -> cookie.getName().equals(cookieName) && cookie.getValue() != null)
                         .findFirst()
                         .map(Cookie::getValue));
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/rest/internal/isAlive"), client);
     }
 }
