@@ -52,7 +52,7 @@ spec:
     - name: PDL_URL
       value: http://pdl-api.default.svc.nais.local/graphql
     - name: ENHET_URL
-      value: https://modapp.adeo.no/ereg/api
+      value: https://modapp.adeo.no/ereg
     - name: ISSO_ISALIVE_URL
       value: https://isso.adeo.no/isso/isAlive.jsp
     - name: KAFKA_SERVERS

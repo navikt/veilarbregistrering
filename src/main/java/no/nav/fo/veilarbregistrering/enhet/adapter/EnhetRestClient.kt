@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 open class EnhetRestClient(val baseUrl: String) : HealthCheck {
-    private val url: String = "$baseUrl/v1/organisasjon/"
+    private val url: String = "$baseUrl/api/v1/organisasjon/"
 
     open fun hentOrganisasjon(organisasjonsnummer: Organisasjonsnummer): OrganisasjonDetaljerDto? {
         val request = Request.Builder()
