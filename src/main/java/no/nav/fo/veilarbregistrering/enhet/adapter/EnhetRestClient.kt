@@ -6,6 +6,7 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
+import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.OkHttpClient
@@ -62,7 +63,6 @@ open class EnhetRestClient(val baseUrl: String) : HealthCheck {
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(baseUrl, client)
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/internal/isAlive"), client)
     }
-
 }
