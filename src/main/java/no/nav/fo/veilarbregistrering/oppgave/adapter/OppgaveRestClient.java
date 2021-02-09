@@ -6,7 +6,6 @@ import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
-import no.nav.common.utils.UrlUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,7 +31,7 @@ public class OppgaveRestClient implements HealthCheck {
 
     OppgaveResponseDto opprettOppgave(OppgaveDto oppgaveDto) {
         Request request = new Request.Builder()
-                .url(baseUrl + "/oppgaver")
+                .url(baseUrl + "/api/v1/oppgaver")
                 .header("Authorization", "Bearer " + systemUserTokenProvider.getSystemUserToken())
                 .method("POST", RestUtils.toJsonRequestBody(oppgaveDto))
                 .build();
@@ -49,6 +48,6 @@ public class OppgaveRestClient implements HealthCheck {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client);
+        return HealthCheckUtils.pingUrl(baseUrl, client);
     }
 }

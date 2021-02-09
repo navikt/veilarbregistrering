@@ -47,7 +47,7 @@ spec:
     - name: NORG2_URL
       value: https://app-q1.adeo.no/norg2/api
     - name: OPPGAVE_URL
-      value: https://oppgave.nais.preprod.local/api/v1
+      value: https://oppgave.nais.preprod.local
     - name: KRR_BASE_URL
       value: http://dkif.default.svc.nais.local/api/
     - name: PDL_URL
