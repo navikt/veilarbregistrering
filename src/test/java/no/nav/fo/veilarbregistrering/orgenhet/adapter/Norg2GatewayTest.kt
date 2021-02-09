@@ -47,7 +47,7 @@ class Norg2GatewayTest {
                 HttpRequest
                         .request()
                         .withMethod("POST")
-                        .withPath("/v1/arbeidsfordeling/enheter/bestmatch"))
+                        .withPath("/api/v1/arbeidsfordeling/enheter/bestmatch"))
                 .respond(HttpResponse.response()
                         .withStatusCode(200)
                         .withBody(json, MediaType.JSON_UTF_8))
