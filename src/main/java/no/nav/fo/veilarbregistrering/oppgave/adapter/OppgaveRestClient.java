@@ -1,8 +1,12 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter;
 
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
+import no.nav.common.utils.UrlUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -11,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-class OppgaveRestClient {
+public class OppgaveRestClient implements HealthCheck {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
@@ -41,5 +45,10 @@ class OppgaveRestClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client);
     }
 }

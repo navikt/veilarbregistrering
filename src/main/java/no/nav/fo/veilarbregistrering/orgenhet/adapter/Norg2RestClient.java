@@ -1,7 +1,11 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.utils.UrlUtils;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -19,7 +23,7 @@ import static no.nav.fo.veilarbregistrering.orgenhet.adapter.RsArbeidsfordelingC
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-class Norg2RestClient {
+public class Norg2RestClient implements HealthCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(Norg2RestClient.class);
 
@@ -71,5 +75,10 @@ class Norg2RestClient {
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient());
     }
 }

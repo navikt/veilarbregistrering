@@ -10,7 +10,10 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig.PDL_PROPERTY_NAME
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
+import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetRestClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
+import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
+import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2RestClient
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,19 +29,26 @@ class HelsesjekkConfig {
             oppfolgingClient: OppfolgingClient,
             sykmeldtInfoClient: SykmeldtInfoClient,
             krrClient: KrrClient,
-            aaregRestClient: AaregRestClient
+            aaregRestClient: AaregRestClient,
+            oppgaveRestClient: OppgaveRestClient,
+            norg2RestClient: Norg2RestClient,
+            enhetRestClient: EnhetRestClient
     ): SelfTestChecks {
         val pdlPingUrl = getRequiredProperty(PDL_PROPERTY_NAME)
 
         val selfTestChecks = listOf(
-                SelfTestCheck("Enkel spørring mot Databasen til veilarregistrering.", true, dbHelsesjekk),
-                SelfTestCheck("ABAC tilgangskontroll - ping", true, veilarbPep.abacClient),
-                SelfTestCheck("Sjekker at feature-toggles kan hentes fra Unleash", false, unleashService),
-                SelfTestCheck("Ping Oppfølging", false, oppfolgingClient),
+                SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),
+                SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
+                SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashService),
+                SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
                 //TODO: Sjekk om dette fikser SelfTestCheck("Ping Pdl", false, healthCheck(pdlPingUrl, true)),
                 SelfTestCheck("Ping FO Infotrygd", false, sykmeldtInfoClient),
                 SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
-                SelfTestCheck("Ping AaReg", false, aaregRestClient)
+                SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
+                SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),
+                SelfTestCheck("Ping Norg2 API", false, norg2RestClient),
+                SelfTestCheck("Ping Enhet API", false, enhetRestClient)
+
         )
         return SelfTestChecks(selfTestChecks)
     }

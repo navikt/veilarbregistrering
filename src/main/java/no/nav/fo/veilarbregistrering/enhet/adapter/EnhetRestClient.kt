@@ -1,8 +1,12 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter
 
 import com.google.gson.*
+import no.nav.common.health.HealthCheck
+import no.nav.common.health.HealthCheckResult
+import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
+import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.OkHttpClient
@@ -12,7 +16,7 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
-internal open class EnhetRestClient(baseUrl: String) {
+open class EnhetRestClient(val baseUrl: String) : HealthCheck {
     private val url: String = "$baseUrl/v1/organisasjon/"
 
     open fun hentOrganisasjon(organisasjonsnummer: Organisasjonsnummer): OrganisasjonDetaljerDto? {
@@ -56,6 +60,10 @@ internal open class EnhetRestClient(baseUrl: String) {
         fun parse(jsonResponse: String?): OrganisasjonDto {
             return gson.fromJson(jsonResponse, OrganisasjonDto::class.java)
         }
+    }
+
+    override fun checkHealth(): HealthCheckResult {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
     }
 
 }
