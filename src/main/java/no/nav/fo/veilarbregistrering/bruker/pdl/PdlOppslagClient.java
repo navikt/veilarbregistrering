@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import com.google.gson.*;
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -26,8 +29,9 @@ import java.util.Optional;
 import static no.nav.common.rest.client.RestClient.baseClient;
 import static no.nav.common.rest.client.RestUtils.getBodyStr;
 import static no.nav.common.rest.client.RestUtils.toJsonRequestBody;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 
-class PdlOppslagClient {
+public class PdlOppslagClient implements HealthCheck {
     private final String NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token";
     private final String NAV_PERSONIDENT_HEADER = "Nav-Personident";
     private final String TEMA_HEADER = "Tema";
@@ -66,7 +70,7 @@ class PdlOppslagClient {
         String token = this.systemUserTokenProvider.getSystemUserToken();
 
         Request request = new Request.Builder()
-                .url(baseUrl)
+                .url(joinPaths(baseUrl, "/graphql"))
                 .header(NAV_PERSONIDENT_HEADER, personident)
                 .header("Authorization", "Bearer " + token)
                 .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
@@ -93,7 +97,7 @@ class PdlOppslagClient {
         String token = this.systemUserTokenProvider.getSystemUserToken();
 
         Request request = new Request.Builder()
-                .url(baseUrl)
+                .url(joinPaths(baseUrl, "/graphql"))
                 .header(NAV_PERSONIDENT_HEADER, fnr)
                 .header("Authorization", "Bearer " + token)
                 .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
@@ -139,6 +143,11 @@ class PdlOppslagClient {
             return false;
         }
         return "not_found".equals(pdlError.getExtensions().getCode());
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/internal/health/liveness"), baseClient());
     }
 
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {

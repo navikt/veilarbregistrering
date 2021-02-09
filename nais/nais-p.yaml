@@ -50,7 +50,7 @@ spec:
     - name: KRR_BASE_URL
       value: http://dkif.default.svc.nais.local/api/
     - name: PDL_URL
-      value: http://pdl-api.default.svc.nais.local/graphql
+      value: http://pdl-api.default.svc.nais.local
     - name: ENHET_URL
       value: https://modapp.adeo.no/ereg
     - name: ISSO_ISALIVE_URL
