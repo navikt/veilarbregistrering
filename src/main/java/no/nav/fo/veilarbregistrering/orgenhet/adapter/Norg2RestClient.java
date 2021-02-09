@@ -5,7 +5,6 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
-import no.nav.common.utils.UrlUtils;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -40,7 +39,7 @@ public class Norg2RestClient implements HealthCheck {
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 
         Request request = new Request.Builder()
-                .url(baseUrl + "/v1/arbeidsfordeling/enheter/bestmatch")
+                .url(baseUrl + "/api/v1/arbeidsfordeling/enheter/bestmatch")
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .method("POST", RestUtils.toJsonRequestBody(rsArbeidsfordelingCriteriaDto))
                 .build();
@@ -65,7 +64,7 @@ public class Norg2RestClient implements HealthCheck {
     List<RsEnhet> hentAlleEnheter() {
         Request request = new Request.Builder()
                 .url(HttpUrl.parse(baseUrl).newBuilder()
-                        .addPathSegments("v1/enhet")
+                        .addPathSegments("api/v1/enhet")
                         .addQueryParameter("oppgavebehandlerFilter", "UFILTRERT").build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .build();
@@ -79,6 +78,6 @@ public class Norg2RestClient implements HealthCheck {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient());
+        return HealthCheckUtils.pingUrl(baseUrl, RestClient.baseClient());
     }
 }

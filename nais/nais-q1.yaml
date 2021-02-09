@@ -45,7 +45,7 @@ spec:
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL
-      value: https://app-q1.adeo.no/norg2/api
+      value: https://app-q1.adeo.no/norg2
     - name: OPPGAVE_URL
       value: https://oppgave.nais.preprod.local
     - name: KRR_BASE_URL
