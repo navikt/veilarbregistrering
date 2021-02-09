@@ -7,6 +7,7 @@ import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.common.utils.EnvironmentUtils.getRequiredProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig.PDL_PROPERTY_NAME
@@ -30,6 +31,7 @@ class HelsesjekkConfig {
             pdlOppslagClient: PdlOppslagClient,
             oppfolgingClient: OppfolgingClient,
             sykmeldtInfoClient: SykmeldtInfoClient,
+            formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
             krrClient: KrrClient,
             aaregRestClient: AaregRestClient,
             oppgaveRestClient: OppgaveRestClient,
@@ -43,6 +45,7 @@ class HelsesjekkConfig {
                 SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
                 SelfTestCheck("Ping PDL", false, pdlOppslagClient),
                 SelfTestCheck("Ping FO Infotrygd", false, sykmeldtInfoClient),
+                SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
                 SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
                 SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
                 SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),

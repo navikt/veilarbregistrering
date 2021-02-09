@@ -60,7 +60,7 @@ spec:
     - name: KAFKA_SCHEMA
       value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
-      value: https://arena-ords-q0.nais.preprod.local/arena/api
+      value: https://arena-ords-q0.nais.preprod.local/arena
     - name: ARENA_ORDS_TOKEN_PROVIDER
       value: https://arena-ords-q0.nais.preprod.local/arena/api/oauth/token
   leaderElection: true

@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
 
 import com.google.gson.*;
+import no.nav.common.health.HealthCheck;
+import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
@@ -21,9 +24,11 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static no.nav.common.rest.client.RestClient.baseClient;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-class FormidlingsgruppeRestClient {
+public class FormidlingsgruppeRestClient implements HealthCheck {
 
     private static final int HTTP_READ_TIMEOUT = 120000;
 
@@ -31,11 +36,11 @@ class FormidlingsgruppeRestClient {
 
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).create();
 
-    private final String url;
+    private final String baseUrl;
     private final Supplier<String> arenaOrdsTokenProvider;
 
     FormidlingsgruppeRestClient(String baseUrl, Supplier<String> arenaOrdsTokenProvider) {
-        this.url = baseUrl + "/v1/person/arbeidssoeker/formidlingshistorikk";
+        this.baseUrl = baseUrl;
         this.arenaOrdsTokenProvider = arenaOrdsTokenProvider;
     }
 
@@ -57,7 +62,8 @@ class FormidlingsgruppeRestClient {
     @Nullable
     private String utfoerRequest(Foedselsnummer foedselsnummer, Periode periode) {
         Request request = new Request.Builder()
-                .url(HttpUrl.parse(url).newBuilder()
+                .url(HttpUrl.parse(baseUrl).newBuilder()
+                        .addPathSegments("/api/v1/person/arbeidssoeker/formidlingshistorikk")
                         .addQueryParameter("fnr", foedselsnummer.stringValue())
                         .addQueryParameter("fraDato", periode.fraDatoAs_yyyyMMdd())
                         //TODO: null-sjekk på tilDato - skal ikke alltid med
@@ -67,7 +73,7 @@ class FormidlingsgruppeRestClient {
                 .build();
 
         OkHttpClient httpClient = RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
-        try (Response response = httpClient.newCall(request).execute()){
+        try (Response response = httpClient.newCall(request).execute()) {
             if (response.code() == HttpStatus.NOT_FOUND.value()) return null;
             else if (!response.isSuccessful()) throw new RuntimeException("Feilkode: " + response.code());
             return RestUtils.getBodyStr(response).orElseThrow(() -> new RuntimeException("Feil ved uthenting av response body"));
@@ -78,6 +84,11 @@ class FormidlingsgruppeRestClient {
 
     static FormidlingsgruppeResponseDto parse(String jsonResponse) {
         return GSON.fromJson(jsonResponse, FormidlingsgruppeResponseDto.class);
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/api/v1/test/ping"), baseClient());
     }
 
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
