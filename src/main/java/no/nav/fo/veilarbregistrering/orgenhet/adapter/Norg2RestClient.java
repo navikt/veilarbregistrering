@@ -5,6 +5,7 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.utils.UrlUtils;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -78,6 +79,6 @@ public class Norg2RestClient implements HealthCheck {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(baseUrl, RestClient.baseClient());
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/internal/isAlive"), RestClient.baseClient());
     }
 }
