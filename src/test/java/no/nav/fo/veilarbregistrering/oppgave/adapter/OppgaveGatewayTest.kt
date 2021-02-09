@@ -52,7 +52,7 @@ internal class OppgaveGatewayTest {
         mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("POST")
-                        .withPath("/oppgaver")
+                        .withPath("/api/v1/oppgaver")
                         .withBody("{" +
                                 "\"aktoerId\":\"12e1e3\"," +
                                 "\"beskrivelse\":\"" +
