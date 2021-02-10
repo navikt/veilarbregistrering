@@ -5,14 +5,11 @@ import no.nav.common.featuretoggle.UnleashService
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
-import no.nav.common.utils.EnvironmentUtils.getRequiredProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig.PDL_PROPERTY_NAME
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
-import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetRestClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2RestClient
@@ -35,8 +32,7 @@ class HelsesjekkConfig {
             krrClient: KrrClient,
             aaregRestClient: AaregRestClient,
             oppgaveRestClient: OppgaveRestClient,
-            norg2RestClient: Norg2RestClient,
-            enhetRestClient: EnhetRestClient
+            norg2RestClient: Norg2RestClient
     ): SelfTestChecks {
         val selfTestChecks = listOf(
                 SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),
@@ -49,9 +45,7 @@ class HelsesjekkConfig {
                 SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
                 SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
                 SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),
-                SelfTestCheck("Ping Norg2 API", false, norg2RestClient),
-                SelfTestCheck("Ping Enhet API", false, enhetRestClient)
-
+                SelfTestCheck("Ping Norg2 API", false, norg2RestClient)
         )
         return SelfTestChecks(selfTestChecks)
     }
