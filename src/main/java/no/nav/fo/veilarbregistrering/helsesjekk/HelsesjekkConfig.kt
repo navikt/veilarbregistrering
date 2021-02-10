@@ -8,7 +8,6 @@ import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
@@ -25,7 +24,6 @@ class HelsesjekkConfig {
             dbHelsesjekk: DatabaseHelsesjekk,
             veilarbPep: Pep,
             unleashService: UnleashService,
-            pdlOppslagClient: PdlOppslagClient,
             oppfolgingClient: OppfolgingClient,
             sykmeldtInfoClient: SykmeldtInfoClient,
             formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
@@ -39,7 +37,6 @@ class HelsesjekkConfig {
                 SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
                 SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashService),
                 SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
-                SelfTestCheck("Ping PDL", false, pdlOppslagClient),
                 SelfTestCheck("Ping FO Infotrygd", false, sykmeldtInfoClient),
                 SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
                 SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
