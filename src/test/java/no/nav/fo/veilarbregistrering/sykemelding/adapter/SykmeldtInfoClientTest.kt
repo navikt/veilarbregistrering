@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.sykemelding.adapter
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.common.net.MediaType
 import io.mockk.every
 import io.mockk.mockk
@@ -46,7 +48,7 @@ internal class SykmeldtInfoClientTest {
         val metricsService: MetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
-        oppfolgingClient = buildOppfolgingClient()
+        oppfolgingClient = buildOppfolgingClient(metricsService, jacksonObjectMapper().findAndRegisterModules())
         sykeforloepMetadataClient = buildSykeForloepClient()
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
@@ -72,10 +74,10 @@ internal class SykmeldtInfoClientTest {
         return SykmeldtInfoClient(baseUrl)
     }
 
-    private fun buildOppfolgingClient(): OppfolgingClient {
+    private fun buildOppfolgingClient(metricsService: MetricsService, objectMapper: ObjectMapper): OppfolgingClient {
         ConfigBuildClient()()
         val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
-        return OppfolgingClient(baseUrl, null)
+        return OppfolgingClient(metricsService, objectMapper, baseUrl, mockk(relaxed = true))
     }
 
     @Test

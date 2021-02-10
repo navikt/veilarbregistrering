@@ -48,7 +48,8 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
         KrrConfig.class,
         FormidlingsgruppeGatewayConfig.class,
         PubliseringSchedulerConfig.class,
-        HelsesjekkConfig.class
+        HelsesjekkConfig.class,
+        ObjectMapperConfig.class
 })
 @EnableScheduling
 public class ApplicationConfig {

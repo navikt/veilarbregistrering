@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.common.net.MediaType
 import io.mockk.every
 import io.mockk.mockk
@@ -16,17 +18,12 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.InaktivBrukerService
+import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.*
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
@@ -45,13 +42,13 @@ internal class OppfolgingClientTest {
     @BeforeEach
     fun setup() {
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
-        oppfolgingClient = buildClient()
         val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
         val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
         val profileringService: ProfileringService = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         val metricsService: MetricsService = mockk(relaxed = true)
+        oppfolgingClient = buildClient(metricsService, jacksonObjectMapper().findAndRegisterModules())
 
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val brukerTilstandService = BrukerTilstandService(
@@ -78,7 +75,7 @@ internal class OppfolgingClientTest {
 
     }
 
-    private fun buildClient(): OppfolgingClient {
+    private fun buildClient(metricsService: MetricsService, findAndRegisterModules: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
@@ -86,7 +83,7 @@ internal class OppfolgingClientTest {
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
-        return OppfolgingClient(baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
+        return OppfolgingClient(metricsService, findAndRegisterModules, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
     }
 
     @Test
@@ -143,14 +140,27 @@ internal class OppfolgingClientTest {
     }
 
     @Test
-    fun skaL_returnere_ved_manglende_oppholdstillatelse() {
+    fun `skal kaste riktig feil ved manglende oppholdstillatelse`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
         )
-        val actual = oppfolgingClient.aktiverBruker(AktiverBrukerData(FNR, Innsatsgruppe.SITUASJONSBESTEMT_INNSATS))
-        org.assertj.core.api.Assertions.assertThat(actual.feil())
-            .isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.aktiverBruker(AktiverBrukerData(FNR, Innsatsgruppe.SITUASJONSBESTEMT_INNSATS))
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
+    @Test
+    fun `skal kaste riktig feil dersom bruker ikke kan reaktiveres`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
+            HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/kanIkkeReaktiveres.json"))
+                .withStatusCode(403)
+        )
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.aktiverBruker(AktiverBrukerData(FNR, Innsatsgruppe.SITUASJONSBESTEMT_INNSATS))
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES)
     }
 
     //FIXME: Vurder å flytte disse testene til en ny testklasse med mindre kompleksitet hvor vi tester Client eller

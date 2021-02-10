@@ -31,11 +31,7 @@ public class InaktivBrukerService {
         }
 
         brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
-        AktiverBrukerResultat aktiverBrukerResultat = oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
-
-        if (aktiverBrukerResultat.erFeil()) {
-            throw new AktiverBrukerException(aktiverBrukerResultat.feil());
-        }
+        oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
 
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());
     }
