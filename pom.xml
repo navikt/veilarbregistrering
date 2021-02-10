@@ -27,7 +27,6 @@
         <java.version>11</java.version>
         <kotlin.version>1.4.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
         <common.version>2.2020.11.25_13.46-a7ba8251568a</common.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <springfox.version>2.9.2</springfox.version>
@@ -59,13 +58,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <!-- Nav-tjenester -->
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
 
         <!-- Common-avhengigheter -->
@@ -114,12 +106,6 @@
             <artifactId>auth</artifactId>
             <version>${common.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
-            <version>1.2020.01.23-17.30-c6684f7b3098</version>
-        </dependency>
-
 
         <!-- ymse -->
         <dependency>
