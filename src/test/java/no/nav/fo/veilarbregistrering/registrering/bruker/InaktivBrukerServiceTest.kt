@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -12,7 +10,6 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat.Companion.ok
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
@@ -32,7 +29,7 @@ class InaktivBrukerServiceTest {
 
     @BeforeEach
     fun setup() {
-        every { oppfolgingClient.reaktiverBruker(any()) } returns ok()
+        every { oppfolgingClient.reaktiverBruker(any()) } just Runs
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         inaktivBrukerService = InaktivBrukerService(
             BrukerTilstandService(

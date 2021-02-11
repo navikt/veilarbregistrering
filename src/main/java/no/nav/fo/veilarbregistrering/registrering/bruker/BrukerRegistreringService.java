@@ -110,13 +110,12 @@ public class BrukerRegistreringService {
 
         Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
 
-        AktiverBrukerResultat aktiverBrukerResultat = oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+        try {
+            oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
+        } catch (AktiverBrukerException e) {
+            RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.Companion.from(e.getAktiverBrukerFeil()));
 
-        if (aktiverBrukerResultat.erFeil()) {
-
-            RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.Companion.from(aktiverBrukerResultat.feil()));
-
-            LOG.info("Overføring av registrering (id: {}) til Arena feilet med {}", registreringId, aktiverBrukerResultat.feil());
+            LOG.info("Overføring av registrering (id: {}) til Arena feilet med {}", registreringId, e.getAktiverBrukerFeil());
 
             return oppdatertRegistreringTilstand;
         }

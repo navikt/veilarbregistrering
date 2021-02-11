@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerResultat;
 
 public class OppfolgingGatewayImpl implements OppfolgingGateway {
 
@@ -39,13 +38,13 @@ public class OppfolgingGatewayImpl implements OppfolgingGateway {
     }
 
     @Override
-    public AktiverBrukerResultat aktiverBruker(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
-        return oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(foedselsnummer.stringValue()), innsatsgruppe));
+    public void aktiverBruker(Foedselsnummer foedselsnummer, Innsatsgruppe innsatsgruppe) {
+        oppfolgingClient.aktiverBruker(new AktiverBrukerData(new Fnr(foedselsnummer.stringValue()), innsatsgruppe));
     }
 
     @Override
-    public AktiverBrukerResultat reaktiverBruker(Foedselsnummer fodselsnummer) {
-        return oppfolgingClient.reaktiverBruker(fodselsnummer);
+    public void reaktiverBruker(Foedselsnummer fodselsnummer) {
+        oppfolgingClient.reaktiverBruker(fodselsnummer);
     }
 
     @Override

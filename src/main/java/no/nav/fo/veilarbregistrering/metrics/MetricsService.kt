@@ -6,6 +6,8 @@ import no.nav.common.metrics.MetricsClient
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import no.nav.common.metrics.Event as MetricsEvent
 
 open class MetricsService(
@@ -49,6 +51,25 @@ open class MetricsService(
                     failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
                 }
                 .let { metricsClient.report(it) }
+    }
+
+    inline fun <R> timeAndReport(metricName: String, block: () -> R): R {
+        val startTime = startTime()
+        var result: R? = null
+        var throwable: Throwable? = null
+
+        try {
+            result = block()
+        } catch (t: Throwable) {
+            throwable = t
+        } finally {
+            reportTimer(Event.of(metricName), startTime, throwable?.message)
+        }
+
+        when (throwable) {
+            null -> return result ?: throw IllegalStateException("Error in timing block")
+            else -> throw throwable
+        }
     }
 
     fun startTime() = StartTime(System.nanoTime())
