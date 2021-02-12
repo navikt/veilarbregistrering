@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import com.google.common.net.MediaType
-import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder
@@ -16,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse.response
-import org.slf4j.MDC
+import org.mockserver.model.MediaType
 import java.time.LocalDate
 
 

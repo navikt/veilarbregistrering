@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.google.common.net.MediaType
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.*
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
+import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
 
 internal class OppfolgingClientTest {
@@ -104,7 +104,9 @@ internal class OppfolgingClientTest {
     @Test
     fun skal_returnere_response_ved_204() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
-            HttpResponse.response().withStatusCode(204).withBody(okRegistreringBody(), MediaType.JSON_UTF_8)
+            HttpResponse.response()
+                    .withStatusCode(204)
+                    .withBody(okRegistreringBody(), MediaType.JSON_UTF_8)
         )
         Assertions.assertNotNull(
             oppfolgingClient.aktiverBruker(

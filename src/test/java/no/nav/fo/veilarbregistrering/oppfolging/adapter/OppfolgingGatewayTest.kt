@@ -4,26 +4,17 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
-import org.mockserver.integration.ClientAndServer
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayTest
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
-import java.lang.RuntimeException
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
-import org.mockito.Mockito
-import org.mockito.ArgumentMatchers
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
+import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.junit.jupiter.api.*
+import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
-import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
 internal class OppfolgingGatewayTest {

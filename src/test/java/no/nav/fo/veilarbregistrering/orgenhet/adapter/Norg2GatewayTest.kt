@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter
 
-import com.google.common.net.MediaType
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
+import org.mockserver.model.MediaType
 
 class Norg2GatewayTest {
 

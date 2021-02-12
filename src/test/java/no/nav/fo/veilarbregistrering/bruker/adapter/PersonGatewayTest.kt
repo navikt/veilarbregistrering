@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter
 
-import com.google.common.net.MediaType
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
+import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
 
 class PersonGatewayTest {
