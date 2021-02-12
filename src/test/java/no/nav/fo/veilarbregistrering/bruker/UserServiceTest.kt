@@ -13,10 +13,9 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 class UserServiceTest {
+
     private lateinit var userService: UserService
     private lateinit var pdlOppslagGateway: PdlOppslagGateway
-
-
 
     @BeforeEach
     fun setup() {

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
+@Disabled
 class ArbeidsforholdGatewayTest {
 
     @BeforeEach

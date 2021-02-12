@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
+@Disabled
 class HentPersonPdlOppslagGatewayTest {
 
     private static PdlOppslagClient pdlOppslagClient;

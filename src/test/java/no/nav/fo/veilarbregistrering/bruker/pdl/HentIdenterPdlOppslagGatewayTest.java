@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.config.CacheConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
+@Disabled
 class HentIdenterPdlOppslagGatewayTest {
 
     private static PdlOppslagClient pdlOppslagClient;
