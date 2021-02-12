@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler;
 
 
-import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;

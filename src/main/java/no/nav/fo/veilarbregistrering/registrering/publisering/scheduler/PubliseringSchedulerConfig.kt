@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler
 
-import no.nav.common.leaderelection.LeaderElectionClient
-import no.nav.common.leaderelection.LeaderElectionHttpClient
+import no.nav.common.job.leader_election.LeaderElectionClient
+import no.nav.common.job.leader_election.LeaderElectionHttpClient
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler
 
 import io.mockk.mockk
-import no.nav.common.leaderelection.LeaderElectionClient
+import no.nav.common.job.leader_election.LeaderElectionClient
 import org.mockito.Mockito
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
 import no.nav.common.abac.Pep
-import no.nav.common.abac.VeilarbPep
+import no.nav.common.abac.VeilarbPepFactory
 import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier
 import no.nav.common.utils.EnvironmentUtils
 import no.nav.fo.veilarbregistrering.Application
@@ -13,18 +13,18 @@ import java.nio.file.Paths
 
 @Configuration
 class PepConfig {
+
     @Bean
     fun veilarbPep(): Pep {
 
         val username = getVaultSecret("serviceuser_creds/username")
         val password = getVaultSecret("serviceuser_creds/password")
 
-        return VeilarbPep(
+        return VeilarbPepFactory.get(
                 EnvironmentUtils.getRequiredProperty(ABAC_URL_PROPERTY),
                 username,
                 password,
-                SpringAuditRequestInfoSupplier()
-        )
+                SpringAuditRequestInfoSupplier())
     }
 
     private fun getVaultSecret(path: String): String? {
