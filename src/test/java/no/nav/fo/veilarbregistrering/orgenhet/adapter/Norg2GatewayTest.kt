@@ -26,6 +26,7 @@ class Norg2GatewayTest {
     fun setup() {
         leggTilCallId()
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
+
     }
 
     private fun buildClient(): Norg2RestClient {
@@ -33,9 +34,7 @@ class Norg2GatewayTest {
         return Norg2RestClient(baseUrl)
     }
 
-    @BeforeEach
-    fun setUp() {
-    }
+
 
     @Test
     fun skal_hente_enhetsnr_fra_norg2_for_kommunenummer() {

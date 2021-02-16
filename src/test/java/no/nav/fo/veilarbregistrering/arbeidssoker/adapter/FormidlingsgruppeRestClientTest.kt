@@ -8,33 +8,26 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse.response
 import org.mockserver.model.MediaType
 import java.time.LocalDate
 
-
-class FormidlingsgruppeRestClientTest {
-
-    private lateinit var mockServer: ClientAndServer
-
-    @AfterEach
-    fun tearDown() {
-        mockServer.stop()
-    }
+@ExtendWith(MockServerExtension::class)
+class FormidlingsgruppeRestClientTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
         leggTilCallId()
-        mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
     }
 
     private fun buildClient(): FormidlingsgruppeRestClient {
-        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
+        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return FormidlingsgruppeRestClient(baseUrl) { "arenaOrdsTokenProvider" }
     }
 
@@ -101,10 +94,4 @@ class FormidlingsgruppeRestClientTest {
 
         assertThat(arbeidssokerperioder.asList()).isEmpty()
     }
-
-    companion object {
-        private const val MOCKSERVER_URL = "localhost"
-        private const val MOCKSERVER_PORT = 1083
-    }
-
 }
