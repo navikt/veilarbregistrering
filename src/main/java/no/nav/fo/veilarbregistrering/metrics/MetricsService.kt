@@ -6,8 +6,6 @@ import no.nav.common.metrics.MetricsClient
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import no.nav.common.metrics.Event as MetricsEvent
 
 open class MetricsService(
