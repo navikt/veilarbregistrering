@@ -8,10 +8,10 @@ import no.nav.fo.veilarbregistrering.oppgave.Oppgave
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
@@ -19,19 +19,8 @@ import java.time.LocalDate
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
-internal class OppgaveGatewayTest {
-
-    private lateinit var mockServer: ClientAndServer
-
-    @AfterEach
-    fun tearDown() {
-        mockServer.stop()
-    }
-
-    @BeforeEach
-    fun setup() {
-        mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
-    }
+@ExtendWith(MockServerExtension::class)
+internal class OppgaveGatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): OppgaveRestClient {
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
@@ -40,7 +29,7 @@ internal class OppgaveGatewayTest {
         every { httpServletRequestProvider.get() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
-        val baseUrl = "http://" + MOCKSERVER_URL + ":" + MOCKSERVER_PORT
+        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
 
@@ -92,10 +81,5 @@ internal class OppgaveGatewayTest {
             "tildeltEnhetsnr": "3012"
             }
             """.trimIndent()
-    }
-
-    companion object {
-        private const val MOCKSERVER_URL = "localhost"
-        private const val MOCKSERVER_PORT = 1083
     }
 }
