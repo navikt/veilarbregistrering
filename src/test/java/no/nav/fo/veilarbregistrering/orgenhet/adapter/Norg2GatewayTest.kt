@@ -5,36 +5,27 @@ import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 
-class Norg2GatewayTest {
-
-    private lateinit var mockServer: ClientAndServer
-
-    @AfterEach
-    fun tearDown() {
-        mockServer.stop()
-    }
+@ExtendWith(MockServerExtension::class)
+class Norg2GatewayTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
         leggTilCallId()
-        mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
-
     }
 
     private fun buildClient(): Norg2RestClient {
-        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
+        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return Norg2RestClient(baseUrl)
     }
-
-
 
     @Test
     fun skal_hente_enhetsnr_fra_norg2_for_kommunenummer() {
@@ -55,10 +46,5 @@ class Norg2GatewayTest {
 
         Assertions.assertThat(enhetsnr).isNotEmpty
         Assertions.assertThat(enhetsnr).hasValue(of("0393"))
-    }
-
-    companion object {
-        private const val MOCKSERVER_URL = "localhost"
-        private const val MOCKSERVER_PORT = 1083
     }
 }
