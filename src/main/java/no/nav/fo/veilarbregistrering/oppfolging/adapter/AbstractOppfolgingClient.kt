@@ -13,25 +13,16 @@ import java.util.concurrent.TimeUnit
 
 abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) {
 
-    fun <T, R : RuntimeException> get(
-        url: String,
-        headers: List<Pair<String, String>> = emptyList(),
-        responseClass: Class<T>,
-        expectedErrorsHandler: (Exception) -> R?
-    ): T {
-        return executeRequest(buildRequest(url, headers).build(), responseClass, expectedErrorsHandler)
-    }
-
     fun <R : RuntimeException> post(
-        url: String,
-        requestEntity: Any?,
-        headers: List<Pair<String, String>> = emptyList(),
-        expectedErrorsHandler: (Exception) -> R?
+            url: String,
+            requestEntity: Any?,
+            headers: List<Pair<String, String>> = emptyList(),
+            expectedErrorsHandler: (Exception) -> R?
     ) {
         val request: Request.Builder = buildRequest(url, headers)
         request.method(
-            "POST",
-            requestEntity?.let { RequestBody.create(RestUtils.MEDIA_TYPE_JSON, objectMapper.writeValueAsString(it)) }
+                "POST",
+                requestEntity?.let { RequestBody.create(RestUtils.MEDIA_TYPE_JSON, objectMapper.writeValueAsString(it)) }
         )
 
         try {
@@ -47,6 +38,14 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
         }
     }
 
+    fun <T, R : RuntimeException> get(
+        url: String,
+        headers: List<Pair<String, String>> = emptyList(),
+        responseClass: Class<T>,
+        expectedErrorsHandler: (Exception) -> R?
+    ): T {
+        return executeRequest(buildRequest(url, headers).build(), responseClass, expectedErrorsHandler)
+    }
 
     private fun <T, R : RuntimeException> executeRequest(
         request: Request,
@@ -70,6 +69,11 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
         }
     }
 
+    private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
+            Request.Builder().url(url).also { r ->
+                headers.forEach { (k, v) -> r.header(k, v) }
+            }
+
     private fun <R : RuntimeException> runExceptionmapperAndThrow(
         expectedErrorsHandler: (Exception) -> R?,
         e: Exception,
@@ -85,11 +89,6 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
             }
         }
     }
-
-    private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
-        Request.Builder().url(url).also { r ->
-            headers.forEach { (k, v) -> r.header(k, v) }
-        }
 
     companion object {
         val client: OkHttpClient = RestClient.baseClientBuilder().readTimeout(120L, TimeUnit.SECONDS).build()

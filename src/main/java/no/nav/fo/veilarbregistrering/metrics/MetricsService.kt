@@ -25,12 +25,6 @@ open class MetricsService(
                     .also { addAllTags(it, metrics.toList()) }
                     .let { metricsClient.report(it) }
 
-    fun reportTags(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric): Unit =
-            MetricsEvent(event.key)
-                    .also { addAllTags(it, hasMetrics.metrics()) }
-                    .also { addAllTags(it, metrics.toList()) }
-                    .let { metricsClient.report(it) }
-
     fun reportFields(event: Event, vararg metrics: Metric) =
             MetricsEvent(event.key)
                     .also { addAllFields(it, metrics.toList()) }
@@ -51,7 +45,7 @@ open class MetricsService(
                 .let { metricsClient.report(it) }
     }
 
-    inline fun <R> timeAndReport(metricName: String, block: () -> R): R {
+    inline fun <R> timeAndReport(metricName: Events, block: () -> R): R {
         val startTime = startTime()
         var result: R? = null
         var throwable: Throwable? = null
@@ -61,7 +55,7 @@ open class MetricsService(
         } catch (t: Throwable) {
             throwable = t
         } finally {
-            reportTimer(Event.of(metricName), startTime, throwable?.message)
+            reportTimer(metricName, startTime, throwable?.message)
         }
 
         when (throwable) {
@@ -72,6 +66,14 @@ open class MetricsService(
 
     fun startTime() = StartTime(System.nanoTime())
     private val statusVerdier: Map<Status, AtomicInteger> = HashMap()
+
+    private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
+            metrics.filterNotNull()
+                    .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
+
+    private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
+            metrics.filterNotNull()
+                    .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
     fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
         antallPerStatus.forEach {
@@ -87,14 +89,6 @@ open class MetricsService(
             registrertAntall.set(it.value)
         }
     }
-
-    private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
-            metrics.filterNotNull()
-                    .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
-
-    private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
-            metrics.filterNotNull()
-                    .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
     class StartTime internal constructor(val time: Long)
 }

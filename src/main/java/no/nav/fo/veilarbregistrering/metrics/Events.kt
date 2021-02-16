@@ -1,6 +1,10 @@
 package no.nav.fo.veilarbregistrering.metrics
 
 enum class Events(override val key: String) : Event {
+    AKTIVER_BRUKER("rest.client.no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.aktiverBruker"),
+    REAKTIVER_BRUKER("rest.client.no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.settOppfolgingSykmeldt.reaktiverBruker"),
+    OPPFOLGING_SYKMELDT("rest.client.no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.settOppfolgingSykmeldt"),
+    HENT_OPPFOLGING("rest.client.no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient.hentOppfolgingsstatus"),
     OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave"),
     OPPGAVE_ALLEREDE_OPPRETTET_EVENT("arbeid.registrert.oppgave.allerede-opprettet"),
     OPPGAVE_ROUTING_EVENT("arbeid.registrert.oppgave.routing"),

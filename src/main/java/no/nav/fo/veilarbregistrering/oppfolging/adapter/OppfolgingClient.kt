@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
@@ -30,7 +31,7 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
 
-        return metricsService.timeAndReport("$CLIENT_METRIC_PREFIX.reaktiverBruker") {
+        return metricsService.timeAndReport(Events.HENT_OPPFOLGING) {
             get(url, headers, OppfolgingStatusData::class.java) { e ->
                 when (e) {
                     is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
@@ -43,7 +44,7 @@ open class OppfolgingClient(
     open fun reaktiverBruker(fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
 
-        metricsService.timeAndReport("$CLIENT_METRIC_PREFIX.reaktiverBruker") {
+        metricsService.timeAndReport(Events.REAKTIVER_BRUKER) {
             post(url, Fnr(fnr.stringValue()), getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }
@@ -51,7 +52,7 @@ open class OppfolgingClient(
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData?) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
 
-        metricsService.timeAndReport("$CLIENT_METRIC_PREFIX.aktiverBruker") {
+        metricsService.timeAndReport(Events.AKTIVER_BRUKER) {
             post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }
@@ -59,7 +60,7 @@ open class OppfolgingClient(
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType?, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
 
-        metricsService.timeAndReport("$CLIENT_METRIC_PREFIX.settOppfolgingSykmeldt") {
+        metricsService.timeAndReport(Events.OPPFOLGING_SYKMELDT) {
             post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }
@@ -99,6 +100,5 @@ open class OppfolgingClient(
 
     companion object {
         private val LOG = loggerFor<OppfolgingClient>()
-        private const val CLIENT_METRIC_PREFIX = "rest.client.no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient"
     }
 }
