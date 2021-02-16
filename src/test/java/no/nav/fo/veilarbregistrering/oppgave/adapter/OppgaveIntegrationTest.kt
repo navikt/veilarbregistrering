@@ -9,10 +9,11 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.oppgave.*
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
@@ -21,20 +22,14 @@ import java.util.*
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
-class OppgaveIntegrationTest {
-    private lateinit var mockServer: ClientAndServer
+@ExtendWith(MockServerExtension::class)
+class OppgaveIntegrationTest(private val mockServer: ClientAndServer) {
     private lateinit var oppgaveService: OppgaveService
     private lateinit var oppgaveRouter: OppgaveRouter
-
-    @AfterEach
-    fun tearDown() {
-        mockServer.stop()
-    }
 
     @BeforeEach
     fun setup() {
         val oppgaveRepository: OppgaveRepository = mockk(relaxed = true)
-        mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
         val oppgaveGateway: OppgaveGateway = OppgaveGatewayImpl(buildClient())
         oppgaveRouter = mockk()
         oppgaveService = CustomOppgaveService(
@@ -52,7 +47,7 @@ class OppgaveIntegrationTest {
         every { httpServletRequestProvider.get() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
-        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
+        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppgaveRestClient(baseUrl, systemUserTokenProvider)
     }
 
@@ -118,8 +113,6 @@ class OppgaveIntegrationTest {
     }
 
     companion object {
-        private const val MOCKSERVER_URL = "localhost"
-        private const val MOCKSERVER_PORT = 1081
         val BRUKER: Bruker = Bruker.of(Foedselsnummer.of("12345678911"), AktorId.of("12e1e3"))
     }
 }
