@@ -4,7 +4,7 @@ import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class RegistreringResource implements RegistreringApi {
     private final UserService userService;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;
-    private final MetricsService metricsService;
+    private final InfluxMetricsService influxMetricsService;
 
     public RegistreringResource(
             AutorisasjonService autorisasjonsService,
@@ -42,7 +42,7 @@ public class RegistreringResource implements RegistreringApi {
             SykmeldtRegistreringService sykmeldtRegistreringService,
             StartRegistreringStatusService startRegistreringStatusService,
             InaktivBrukerService inaktivBrukerService,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         this.autorisasjonsService = autorisasjonsService;
         this.userService = userService;
         this.brukerRegistreringService = brukerRegistreringService;
@@ -51,7 +51,7 @@ public class RegistreringResource implements RegistreringApi {
         this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
         this.inaktivBrukerService = inaktivBrukerService;
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class RegistreringResource implements RegistreringApi {
 
         autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.getAktorId());
         StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
-        rapporterRegistreringsstatus(metricsService, status);
+        rapporterRegistreringsstatus(influxMetricsService, status);
         return status;
     }
 
@@ -83,7 +83,7 @@ public class RegistreringResource implements RegistreringApi {
 
         brukerRegistreringService.overforArena(opprettetRegistrering.getId(), bruker, veileder);
 
-        AlderMetrikker.rapporterAlder(metricsService, bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
 
         return opprettetRegistrering;
     }
@@ -120,10 +120,10 @@ public class RegistreringResource implements RegistreringApi {
         inaktivBrukerService.reaktiverBruker(bruker);
 
         if (autorisasjonsService.erVeileder()) {
-            metricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
+            influxMetricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
         }
 
-        AlderMetrikker.rapporterAlder(metricsService, bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
     @Override
@@ -142,7 +142,7 @@ public class RegistreringResource implements RegistreringApi {
 
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder);
 
-        metricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
+        influxMetricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
                 sykmeldtRegistrering.getBesvarelse().getUtdanning(),
                 sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
     }

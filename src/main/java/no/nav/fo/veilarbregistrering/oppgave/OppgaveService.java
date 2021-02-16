@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
 
-    private final MetricsService metricsService;
+    private final InfluxMetricsService influxMetricsService;
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
@@ -30,9 +30,9 @@ public class OppgaveService {
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
 
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
@@ -58,7 +58,7 @@ public class OppgaveService {
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgaveResponse.getId());
 
-        metricsService.reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
+        influxMetricsService.reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
 
         return oppgaveResponse;
     }
@@ -71,7 +71,7 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            metricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
+            influxMetricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
 
             throw new OppgaveAlleredeOpprettet(
                     String.format(

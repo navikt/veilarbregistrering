@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.common.abac.Pep;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.health.selftest.SelfTestChecks;
-import no.nav.common.metrics.MetricsClient;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
@@ -19,7 +17,8 @@ import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering;
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.*;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
@@ -49,8 +48,8 @@ public class ServiceBeansConfig {
     SykemeldingService sykemeldingService(
             SykemeldingGateway sykemeldingGateway,
             AutorisasjonService autorisasjonService,
-            MetricsService metricsService) {
-        return new SykemeldingService(sykemeldingGateway, autorisasjonService, metricsService);
+            InfluxMetricsService influxMetricsService) {
+        return new SykemeldingService(sykemeldingGateway, autorisasjonService, influxMetricsService);
     }
 
     @Bean
@@ -84,12 +83,12 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PersonGateway personGateway,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new StartRegistreringStatusService(
                 arbeidsforholdGateway,
                 brukerTilstandService,
                 personGateway,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -109,13 +108,13 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new SykmeldtRegistreringService(
                 brukerTilstandService,
                 oppfolgingGateway,
                 brukerRegistreringRepository,
                 manuellRegistreringRepository,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -127,7 +126,7 @@ public class ServiceBeansConfig {
             RegistreringTilstandRepository registreringTilstandRepository,
             BrukerTilstandService brukerTilstandService,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
@@ -136,7 +135,7 @@ public class ServiceBeansConfig {
                 registreringTilstandRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -149,7 +148,7 @@ public class ServiceBeansConfig {
             StartRegistreringStatusService startRegistreringStatusService,
             SykmeldtRegistreringService sykmeldtRegistreringService,
             InaktivBrukerService inaktivBrukerService,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new RegistreringResource(
                 autorisasjonService,
                 userService,
@@ -159,7 +158,7 @@ public class ServiceBeansConfig {
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
                 inaktivBrukerService,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -195,13 +194,13 @@ public class ServiceBeansConfig {
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
             KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
                 kontaktBrukerHenvendelseProducer,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -211,14 +210,14 @@ public class ServiceBeansConfig {
             Norg2Gateway norg2Gateway,
             PersonGateway personGateway,
             PdlOppslagGateway pdlOppslagGateway,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new OppgaveRouter(
                 arbeidsforholdGateway,
                 enhetGateway,
                 norg2Gateway,
                 personGateway,
                 pdlOppslagGateway,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -234,12 +233,12 @@ public class ServiceBeansConfig {
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
             UnleashService unleashService,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         return new ArbeidssokerService(
                 arbeidssokerRepository,
                 formidlingsgruppeGateway,
                 unleashService,
-                metricsService);
+                influxMetricsService);
     }
 
     @Bean
@@ -257,14 +256,14 @@ public class ServiceBeansConfig {
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-            MetricsService metricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new PubliseringAvEventsService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
                 registreringTilstandRepository,
                 arbeidssokerProfilertProducer,
-                metricsService);
+                prometheusMetricsService);
     }
 
     @Bean
@@ -315,11 +314,6 @@ public class ServiceBeansConfig {
     @Bean
     InternalArbeidssokerServlet internalArbeidssokerServlet(UserService userService, ArbeidssokerService arbeidssokerService) {
         return new InternalArbeidssokerServlet(userService, arbeidssokerService);
-    }
-
-    @Bean
-    MetricsService metricsService(MetricsClient metricsClient, MeterRegistry meterRegistry) {
-        return new MetricsService(metricsClient, meterRegistry);
     }
 
     @Bean

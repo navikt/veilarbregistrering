@@ -1,17 +1,15 @@
 package no.nav.fo.veilarbregistrering.metrics
 
-import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.Tag
 import no.nav.common.metrics.MetricsClient
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 import no.nav.common.metrics.Event as MetricsEvent
 
-open class MetricsService(
-        private val metricsClient: MetricsClient,
-        private val meterRegistry: MeterRegistry
-) {
+/**
+ * InfluxMetrisService fungerer som en abstraksjon mot Influx, og tilbyr funksjoner
+ * for å rapportere ulike Events
+ *
+ * Influx benytter en push-modell, hvor appen pusher data.
+ */
+open class InfluxMetricsService(private val metricsClient: MetricsClient) {
 
     fun reportSimple(event: Event, field: Metric, tag: Metric) {
         val metricsEvent = MetricsEvent(event.key)
@@ -25,6 +23,10 @@ open class MetricsService(
                     .also { addAllTags(it, metrics.toList()) }
                     .let { metricsClient.report(it) }
 
+    private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
+            metrics.filterNotNull()
+                    .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
+
     fun reportFields(event: Event, vararg metrics: Metric) =
             MetricsEvent(event.key)
                     .also { addAllFields(it, metrics.toList()) }
@@ -36,14 +38,9 @@ open class MetricsService(
                     .also { addAllFields(it, metrics.toList()) }
                     .let { metricsClient.report(it) }
 
-    fun reportTimer(event: Event, start: StartTime, failureCause: String? = null) {
-        MetricsEvent("${event.key}.timer")
-                .also { metricsEvent ->
-                    metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
-                    failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
-                }
-                .let { metricsClient.report(it) }
-    }
+    private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
+            metrics.filterNotNull()
+                    .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
     inline fun <R> timeAndReport(metricName: Events, block: () -> R): R {
         val startTime = startTime()
@@ -65,29 +62,14 @@ open class MetricsService(
     }
 
     fun startTime() = StartTime(System.nanoTime())
-    private val statusVerdier: Map<Status, AtomicInteger> = HashMap()
 
-    private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
-            metrics.filterNotNull()
-                    .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
-
-    private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
-            metrics.filterNotNull()
-                    .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
-
-    fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
-        antallPerStatus.forEach {
-            val registrertAntall = statusVerdier.getOrElse(it.key) {
-                val atomiskAntall = AtomicInteger()
-                meterRegistry.gauge(
-                        "veilarbregistrering_registrert_status",
-                        listOf(Tag.of("status", it.key.name)),
-                        atomiskAntall
-                ) { obj: AtomicInteger -> obj.get().toDouble() }
-                atomiskAntall
-            }
-            registrertAntall.set(it.value)
-        }
+    fun reportTimer(event: Event, start: StartTime, failureCause: String? = null) {
+        MetricsEvent("${event.key}.timer")
+                .also { metricsEvent ->
+                    metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
+                    failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
+                }
+                .let { metricsClient.report(it) }
     }
 
     class StartTime internal constructor(val time: Long)

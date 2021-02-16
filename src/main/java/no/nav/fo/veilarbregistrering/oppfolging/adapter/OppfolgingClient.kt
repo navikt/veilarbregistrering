@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
@@ -21,17 +21,17 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
-    private val metricsService: MetricsService,
-    private val objectMapper: ObjectMapper,
-    private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider
+        private val influxMetricsService: InfluxMetricsService,
+        private val objectMapper: ObjectMapper,
+        private val baseUrl: String,
+        private val systemUserTokenProvider: SystemUserTokenProvider
 ) : AbstractOppfolgingClient(objectMapper), HealthCheck {
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
 
-        return metricsService.timeAndReport(Events.HENT_OPPFOLGING) {
+        return influxMetricsService.timeAndReport(Events.HENT_OPPFOLGING) {
             get(url, headers, OppfolgingStatusData::class.java) { e ->
                 when (e) {
                     is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
@@ -44,7 +44,7 @@ open class OppfolgingClient(
     open fun reaktiverBruker(fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
 
-        metricsService.timeAndReport(Events.REAKTIVER_BRUKER) {
+        influxMetricsService.timeAndReport(Events.REAKTIVER_BRUKER) {
             post(url, Fnr(fnr.stringValue()), getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }
@@ -52,7 +52,7 @@ open class OppfolgingClient(
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData?) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
 
-        metricsService.timeAndReport(Events.AKTIVER_BRUKER) {
+        influxMetricsService.timeAndReport(Events.AKTIVER_BRUKER) {
             post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }
@@ -60,7 +60,7 @@ open class OppfolgingClient(
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType?, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
 
-        metricsService.timeAndReport(Events.OPPFOLGING_SYKMELDT) {
+        influxMetricsService.timeAndReport(Events.OPPFOLGING_SYKMELDT) {
             post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
         }
     }

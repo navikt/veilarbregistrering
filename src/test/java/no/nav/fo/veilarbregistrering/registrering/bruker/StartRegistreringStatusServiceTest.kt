@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
@@ -36,18 +36,18 @@ class StartRegistreringStatusServiceTest {
         oppfolgingClient = mockk()
         sykeforloepMetadataClient = mockk()
         personGateway = mockk()
-        val metricsService: MetricsService = mockk(relaxed = true)
+        val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         val unleashService: UnleashService = mockk(relaxed = true)
 
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val sykemeldingService =
-            SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, metricsService)
+            SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService),
             personGateway,
-            metricsService
+            influxMetricsService
         )
     }
 

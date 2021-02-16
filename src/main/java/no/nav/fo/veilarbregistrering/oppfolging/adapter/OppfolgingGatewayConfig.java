@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.common.sts.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +16,11 @@ public class OppfolgingGatewayConfig {
 
     @Bean
     OppfolgingClient oppfolgingClient(
-            MetricsService metricsService,
+            InfluxMetricsService influxMetricsService,
             ObjectMapper objectMapper,
             SystemUserTokenProvider systemUserTokenProvider) {
         return new OppfolgingClient(
-                metricsService,
+                influxMetricsService,
                 objectMapper,
                 getRequiredProperty(OPPFOLGING_API_PROPERTY_NAME),
                 systemUserTokenProvider);

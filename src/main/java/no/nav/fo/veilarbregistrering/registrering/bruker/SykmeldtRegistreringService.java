@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
@@ -21,19 +21,19 @@ public class SykmeldtRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private MetricsService metricsService;
+    private InfluxMetricsService influxMetricsService;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         this.brukerTilstandService = brukerTilstandService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
     }
 
     @Transactional
@@ -76,6 +76,6 @@ public class SykmeldtRegistreringService {
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        metricsService.reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
+        influxMetricsService.reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
     }
 }

@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -166,15 +166,15 @@ class RegistreringResourceTest(
 private class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
-        autorisasjonService: AutorisasjonService,
-        userService: UserService,
-        brukerRegistreringService: BrukerRegistreringService,
-        hentRegistreringService: HentRegistreringService,
-        unleashService: UnleashService,
-        sykmeldtRegistreringService: SykmeldtRegistreringService,
-        startRegistreringStatusService: StartRegistreringStatusService,
-        inaktivBrukerService: InaktivBrukerService,
-        metricsService: MetricsService,
+            autorisasjonService: AutorisasjonService,
+            userService: UserService,
+            brukerRegistreringService: BrukerRegistreringService,
+            hentRegistreringService: HentRegistreringService,
+            unleashService: UnleashService,
+            sykmeldtRegistreringService: SykmeldtRegistreringService,
+            startRegistreringStatusService: StartRegistreringStatusService,
+            inaktivBrukerService: InaktivBrukerService,
+            influxMetricsService: InfluxMetricsService,
     ) = RegistreringResource(
         autorisasjonService,
         userService,
@@ -184,14 +184,14 @@ private class RegistreringResourceConfig {
         sykmeldtRegistreringService,
         startRegistreringStatusService,
         inaktivBrukerService,
-        metricsService,
+        influxMetricsService,
     )
     @Bean
     fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
     @Bean
     fun unleashService(): UnleashService = mockk(relaxed = true)
     @Bean
-    fun metricsService(): MetricsService = mockk(relaxed = true)
+    fun metricsService(): InfluxMetricsService = mockk(relaxed = true)
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
     @Bean

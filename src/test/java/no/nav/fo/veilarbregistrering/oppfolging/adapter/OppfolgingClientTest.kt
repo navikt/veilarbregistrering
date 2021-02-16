@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
@@ -47,13 +47,13 @@ internal class OppfolgingClientTest {
         val profileringService: ProfileringService = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
-        val metricsService: MetricsService = mockk(relaxed = true)
-        oppfolgingClient = buildClient(metricsService, jacksonObjectMapper().findAndRegisterModules())
+        val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
+        oppfolgingClient = buildClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
 
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val brukerTilstandService = BrukerTilstandService(
             oppfolgingGateway,
-            SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, metricsService),
+            SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService),
             unleashService
         )
         inaktivBrukerService = InaktivBrukerService(
@@ -75,7 +75,7 @@ internal class OppfolgingClientTest {
 
     }
 
-    private fun buildClient(metricsService: MetricsService, findAndRegisterModules: ObjectMapper): OppfolgingClient {
+    private fun buildClient(influxMetricsService: InfluxMetricsService, findAndRegisterModules: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
@@ -83,7 +83,7 @@ internal class OppfolgingClientTest {
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
-        return OppfolgingClient(metricsService, findAndRegisterModules, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
+        return OppfolgingClient(influxMetricsService, findAndRegisterModules, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
     }
 
     @Test

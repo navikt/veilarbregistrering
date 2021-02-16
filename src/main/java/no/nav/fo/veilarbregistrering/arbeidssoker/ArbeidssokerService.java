@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.JaNei;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +24,17 @@ public class ArbeidssokerService {
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
     private final UnleashService unleashService;
-    private MetricsService metricsService;
+    private InfluxMetricsService influxMetricsService;
 
     public ArbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
             UnleashService unleashService,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         this.arbeidssokerRepository = arbeidssokerRepository;
         this.formidlingsgruppeGateway = formidlingsgruppeGateway;
         this.unleashService = unleashService;
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
     }
 
     @Transactional
@@ -69,19 +69,19 @@ public class ArbeidssokerService {
         Arbeidssokerperioder overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
 
         boolean lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS);
-        metricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? JaNei.JA : JaNei.NEI);
+        influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? JaNei.JA : JaNei.NEI);
         if (!lokalErLikOrds) {
             LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
                     forespurtPeriode, overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS));
         }
 
         if (dekkerHele && brukLokalCache()) {
-            metricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
+            influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt));
             return overlappendeArbeidssokerperioderLokalt;
         }
 
-        metricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
+        influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
         LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioderORDS));
 
         return overlappendeHistoriskePerioderORDS;

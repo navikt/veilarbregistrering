@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
 import no.nav.fo.veilarbregistrering.metrics.Events;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +23,17 @@ public class StartRegistreringStatusService {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final PersonGateway personGateway;
-    private final MetricsService metricsService;
+    private final InfluxMetricsService influxMetricsService;
 
     public StartRegistreringStatusService(
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PersonGateway personGateway,
-            MetricsService metricsService) {
+            InfluxMetricsService influxMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.brukerTilstandService = brukerTilstandService;
         this.personGateway = personGateway;
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
@@ -42,7 +42,7 @@ public class StartRegistreringStatusService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning ->
-                metricsService.reportFields(Events.START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning));
+                influxMetricsService.reportFields(Events.START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning));
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 

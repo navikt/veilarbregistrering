@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
@@ -45,10 +45,10 @@ internal class SykmeldtInfoClientTest {
         val brukerRegistreringRepository: BrukerRegistreringRepository = mockk()
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
-        val metricsService: MetricsService = mockk(relaxed = true)
+        val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
-        oppfolgingClient = buildOppfolgingClient(metricsService, jacksonObjectMapper().findAndRegisterModules())
+        oppfolgingClient = buildOppfolgingClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
         sykeforloepMetadataClient = buildSykeForloepClient()
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
@@ -57,14 +57,14 @@ internal class SykmeldtInfoClientTest {
                 SykemeldingService(
                     SykemeldingGatewayImpl(sykeforloepMetadataClient),
                     autorisasjonService,
-                    metricsService
+                    influxMetricsService
                 ),
                 unleashService
             ),
             oppfolgingGateway,
             brukerRegistreringRepository,
             manuellRegistreringRepository,
-            metricsService
+            influxMetricsService
         )
     }
 
@@ -74,10 +74,10 @@ internal class SykmeldtInfoClientTest {
         return SykmeldtInfoClient(baseUrl)
     }
 
-    private fun buildOppfolgingClient(metricsService: MetricsService, objectMapper: ObjectMapper): OppfolgingClient {
+    private fun buildOppfolgingClient(influxMetricsService: InfluxMetricsService, objectMapper: ObjectMapper): OppfolgingClient {
         ConfigBuildClient()()
         val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
-        return OppfolgingClient(metricsService, objectMapper, baseUrl, mockk(relaxed = true))
+        return OppfolgingClient(influxMetricsService, objectMapper, baseUrl, mockk(relaxed = true))
     }
 
     @Test

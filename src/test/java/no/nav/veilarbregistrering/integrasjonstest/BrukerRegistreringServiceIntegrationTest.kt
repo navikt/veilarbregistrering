@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
@@ -177,18 +177,18 @@ internal class BrukerRegistreringServiceIntegrationTest {
         }
 
         @Bean
-        fun metricsService(): MetricsService  = mockk(relaxed = true)
+        fun metricsService(): InfluxMetricsService  = mockk(relaxed = true)
 
         @Bean
         fun brukerRegistreringService(
-            brukerRegistreringRepository: BrukerRegistreringRepository?,
-            profileringRepository: ProfileringRepository?,
-            oppfolgingGateway: OppfolgingGateway?,
-            profileringService: ProfileringService?,
-            registreringTilstandRepository: RegistreringTilstandRepository?,
-            brukerTilstandService: BrukerTilstandService?,
-            manuellRegistreringRepository: ManuellRegistreringRepository?,
-            metricsService: MetricsService?
+                brukerRegistreringRepository: BrukerRegistreringRepository?,
+                profileringRepository: ProfileringRepository?,
+                oppfolgingGateway: OppfolgingGateway?,
+                profileringService: ProfileringService?,
+                registreringTilstandRepository: RegistreringTilstandRepository?,
+                brukerTilstandService: BrukerTilstandService?,
+                manuellRegistreringRepository: ManuellRegistreringRepository?,
+                influxMetricsService: InfluxMetricsService?
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -198,7 +198,7 @@ internal class BrukerRegistreringServiceIntegrationTest {
                 registreringTilstandRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
-                metricsService
+                influxMetricsService
             )
         }
 

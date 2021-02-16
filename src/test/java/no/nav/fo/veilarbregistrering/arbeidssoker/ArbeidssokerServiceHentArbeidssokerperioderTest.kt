@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 
 
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ import java.util.*
 class ArbeidssokerServiceHentArbeidssokerperioderTest {
     private val unleashService = mockk<UnleashService>()
     private lateinit var arbeidssokerService: ArbeidssokerService
-    private val metricsService = mockk<MetricsService>(relaxed = true)
+    private val metricsService = mockk<InfluxMetricsService>(relaxed = true)
     @BeforeEach
     fun setup() {
         arbeidssokerService = ArbeidssokerService(

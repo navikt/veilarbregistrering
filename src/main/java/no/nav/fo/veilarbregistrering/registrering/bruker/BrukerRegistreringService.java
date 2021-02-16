@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.metrics.Events;
-import no.nav.fo.veilarbregistrering.metrics.MetricsService;
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -33,7 +33,7 @@ public class BrukerRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final MetricsService metricsService;
+    private final InfluxMetricsService influxMetricsService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -41,7 +41,7 @@ public class BrukerRegistreringService {
                                      ProfileringService profileringService,
                                      RegistreringTilstandRepository registreringTilstandRepository,
                                      BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
-                                     MetricsService metricsService) {
+                                     InfluxMetricsService influxMetricsService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
@@ -50,12 +50,12 @@ public class BrukerRegistreringService {
         this.brukerTilstandService = brukerTilstandService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
 
-        this.metricsService = metricsService;
+        this.influxMetricsService = influxMetricsService;
     }
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        metricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
+        influxMetricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
     }
 
     @Transactional
@@ -69,9 +69,9 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
 
-        metricsService.reportTags(Events.PROFILERING_EVENT, profilering.getInnsatsgruppe());
+        influxMetricsService.reportTags(Events.PROFILERING_EVENT, profilering.getInnsatsgruppe());
 
-        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(metricsService,ordinaerBrukerRegistrering, profilering);
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(influxMetricsService,ordinaerBrukerRegistrering, profilering);
 
         RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
@@ -150,7 +150,7 @@ public class BrukerRegistreringService {
             ValideringUtils.validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
             LOG.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
-            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(metricsService, ordinaerBrukerRegistrering);
+            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(influxMetricsService, ordinaerBrukerRegistrering);
             throw e;
         }
     }
