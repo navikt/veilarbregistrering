@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.*
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
