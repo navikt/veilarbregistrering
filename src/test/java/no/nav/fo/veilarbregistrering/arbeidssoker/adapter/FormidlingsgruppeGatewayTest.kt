@@ -19,7 +19,7 @@ import org.mockserver.model.MediaType
 import java.time.LocalDate
 
 @ExtendWith(MockServerExtension::class)
-class FormidlingsgruppeRestClientTest(private val mockServer: ClientAndServer) {
+class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {

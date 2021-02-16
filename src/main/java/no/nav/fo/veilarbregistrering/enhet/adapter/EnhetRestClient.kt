@@ -53,7 +53,7 @@ open class EnhetRestClient(val baseUrl: String) {
                 RestClient.baseClientBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build()
 
         @JvmStatic
-        fun parse(jsonResponse: String?): OrganisasjonDto {
+        fun parse(jsonResponse: String): OrganisasjonDto {
             return gson.fromJson(jsonResponse, OrganisasjonDto::class.java)
         }
     }

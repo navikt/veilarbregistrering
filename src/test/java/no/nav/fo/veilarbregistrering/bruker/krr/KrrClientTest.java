@@ -3,10 +3,9 @@ package no.nav.fo.veilarbregistrering.bruker.krr;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Optional;
 
+import static no.nav.fo.veilarbregistrering.FileToJson.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -34,14 +33,5 @@ public class KrrClientTest {
         RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> KrrClient.parse(json, foedselsnummer));
         assertThat(runtimeException.getMessage())
                 .isEqualTo("Henting av kontaktinfo fra KRR feilet: fant ikke person");
-    }
-
-    private String toJson(String json_file) {
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(KrrClient.class.getResource(json_file).toURI()));
-            return new String(bytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
