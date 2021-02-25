@@ -21,6 +21,10 @@
             <id>confluent</id>
             <url>http://packages.confluent.io/maven</url>
         </repository>
+        <repository>
+            <id>internal-mirror-github-navikt</id>
+            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
     </repositories>
 
     <properties>
@@ -368,20 +372,20 @@
                 </repository>
             </repositories>
         </profile>
-        <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
-                <repository>
-                    <id>internal-mirror-github-navikt</id>
-                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-                </repository>
-            </repositories>
+<!--        <profile>-->
+<!--            <id>local</id>-->
+<!--            <activation>-->
+<!--                <activeByDefault>true</activeByDefault>-->
+<!--            </activation>-->
+<!--            <repositories>-->
+<!--                &lt;!&ndash; Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) &ndash;&gt;-->
+<!--                <repository>-->
+<!--                    <id>internal-mirror-github-navikt</id>-->
+<!--                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>-->
+<!--                </repository>-->
+<!--            </repositories>-->
 
-        </profile>
+<!--        </profile>-->
     </profiles>
 
 </project>
