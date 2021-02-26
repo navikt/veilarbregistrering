@@ -14,25 +14,26 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
 
-internal class OppfolgingClientTest {
+@ExtendWith(MockServerExtension::class)
+internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     private lateinit var oppfolgingClient: OppfolgingClient
-    private lateinit var mockServer: ClientAndServer
 
-    @AfterEach
-    fun tearDown() {
-        mockServer.stop()
-    }
 
     @BeforeEach
     fun setup() {
-        mockServer = ClientAndServer.startClientAndServer(MOCKSERVER_PORT)
+        mockServer.reset()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         oppfolgingClient = buildClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
     }
@@ -44,7 +45,7 @@ internal class OppfolgingClientTest {
         every { RequestContext.servletRequest() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
-        val baseUrl = "http://$MOCKSERVER_URL:$MOCKSERVER_PORT"
+        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppfolgingClient(influxMetricsService, findAndRegisterModules, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
     }
 
@@ -53,7 +54,7 @@ internal class OppfolgingClientTest {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withStatusCode(404)
         )
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows<RuntimeException> {
             oppfolgingClient.aktiverBruker(
                 AktiverBrukerData(
                     FNR,
@@ -87,7 +88,7 @@ internal class OppfolgingClientTest {
                 HttpResponse.response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows<RuntimeException> {
             oppfolgingClient.reaktiverBruker(Foedselsnummer.of("10108000398")) }
     }
 
@@ -141,8 +142,6 @@ internal class OppfolgingClientTest {
     }
 
     companion object {
-        private const val MOCKSERVER_URL = "localhost"
-        private const val MOCKSERVER_PORT = 1084
         private val FNR = Fnr("10108000398") //Aremark fiktivt fnr.";
     }
 }
