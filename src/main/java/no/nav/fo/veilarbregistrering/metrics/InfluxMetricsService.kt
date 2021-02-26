@@ -14,10 +14,10 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
         report(event, mapOf(field.fieldName() to field.value()), mapOf(tag.fieldName() to tag.value().toString()))
 
     fun reportTags(event: Event, vararg metrics: Metric): Unit =
-            report(event, emptyMap(), metrics.map { it.fieldName() to it.value().toString() }.toMap())
+            report(event, mapOf(), metrics.map { it.fieldName() to it.value().toString() }.toMap())
 
     fun reportFields(event: Event, vararg metrics: Metric) =
-            report(event, metrics.map { it.fieldName() to it.value() }.toMap(), emptyMap())
+            report(event, metrics.map { it.fieldName() to it.value() }.toMap(), mapOf())
 
     fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric) {
         val allFields = hasMetrics.metrics()
@@ -26,7 +26,7 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
 
         allFields.putAll(metrics.map { it.fieldName() to it.value() })
 
-        report(event, allFields, emptyMap())
+        report(event, allFields, mapOf())
     }
 
     inline fun <R> timeAndReport(metricName: Events, block: () -> R): R {
@@ -54,7 +54,7 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
         val fields = mapOf("value" to (System.nanoTime() - start.time).toString()).toMutableMap()
         failureCause?.let { fields.put("aarsak", failureCause) }
 
-        report("${event.key}.timer", fields, emptyMap())
+        report("${event.key}.timer", fields, mutableMapOf())
     }
 
     class StartTime internal constructor(val time: Long)
@@ -64,7 +64,7 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
 
     private fun report(eventKey: String, fields: Map<String, Any>, tags: Map<String, String>) {
         tags.toMutableMap().putIfAbsent("environemt", "q1")
-        metricsClient.report(eventKey, fields, tags, System.currentTimeMillis())
+        metricsClient.report(eventKey, fields.toMutableMap(), tags.toMutableMap(), System.currentTimeMillis())
     }
 }
 
