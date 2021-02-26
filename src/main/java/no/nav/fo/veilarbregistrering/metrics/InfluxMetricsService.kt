@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.metrics
 
 import no.nav.common.metrics.MetricsClient
+import no.nav.common.metrics.Event as MetricsEvent
 
 /**
  * InfluxMetrisService fungerer som en abstraksjon mot Influx, og tilbyr funksjoner
@@ -10,24 +11,36 @@ import no.nav.common.metrics.MetricsClient
  */
 open class InfluxMetricsService(private val metricsClient: MetricsClient) {
 
-    fun reportSimple(event: Event, field: Metric, tag: Metric) =
-        report(event, mapOf(field.fieldName() to field.value()), mapOf(tag.fieldName() to tag.value().toString()))
+    fun reportSimple(event: Event, field: Metric, tag: Metric) {
+        val metricsEvent = MetricsEvent(event.key)
+        metricsEvent.addFieldToReport(field.fieldName(), field.value())
+        metricsEvent.addTagToReport(tag.fieldName(), tag.value().toString())
+        report(metricsEvent)
+    }
 
     fun reportTags(event: Event, vararg metrics: Metric): Unit =
-            report(event, mapOf(), metrics.map { it.fieldName() to it.value().toString() }.toMap())
+        MetricsEvent(event.key)
+            .also { addAllTags(it, metrics.toList()) }
+            .let(::report)
+
+    private fun addAllTags(event: MetricsEvent, metrics: List<Metric?>) =
+        metrics.filterNotNull()
+            .forEach { m -> event.addTagToReport(m.fieldName(), m.value().toString()) }
 
     fun reportFields(event: Event, vararg metrics: Metric) =
-            report(event, metrics.map { it.fieldName() to it.value() }.toMap(), mapOf())
+        MetricsEvent(event.key)
+            .also { addAllFields(it, metrics.toList()) }
+            .let(::report)
 
-    fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric) {
-        val allFields = hasMetrics.metrics()
-            .map { it.fieldName() to it.value() }
-            .toMap().toMutableMap()
+    fun reportFields(event: Event, hasMetrics: HasMetrics, vararg metrics: Metric) =
+        MetricsEvent(event.key)
+            .also { addAllFields(it, hasMetrics.metrics()) }
+            .also { addAllFields(it, metrics.toList()) }
+            .let(::report)
 
-        allFields.putAll(metrics.map { it.fieldName() to it.value() })
-
-        report(event, allFields, mapOf())
-    }
+    private fun addAllFields(event: MetricsEvent, metrics: List<Metric?>) =
+        metrics.filterNotNull()
+            .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
     inline fun <R> timeAndReport(metricName: Events, block: () -> R): R {
         val startTime = startTime()
@@ -51,21 +64,20 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
     fun startTime() = StartTime(System.nanoTime())
 
     fun reportTimer(event: Event, start: StartTime, failureCause: String? = null) {
-        val fields = mapOf("value" to (System.nanoTime() - start.time).toString()).toMutableMap()
-        failureCause?.let { fields.put("aarsak", failureCause) }
+        MetricsEvent("${event.key}.timer")
+            .also { metricsEvent ->
+                metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
+                failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
+            }
+            .let(::report)
+    }
 
-        report("${event.key}.timer", fields, mutableMapOf())
+    private fun report(event: MetricsEvent) {
+        event.addTagToReport("environment", "q1")
+        metricsClient.report(event)
     }
 
     class StartTime internal constructor(val time: Long)
-
-    private fun report(event: Event, fields: Map<String, Any>, tags: Map<String, String>) =
-        report(event.key, fields, tags)
-
-    private fun report(eventKey: String, fields: Map<String, Any>, tags: Map<String, String>) {
-        tags.toMutableMap().putIfAbsent("environemt", "q1")
-        metricsClient.report(eventKey, fields.toMutableMap(), tags.toMutableMap(), System.currentTimeMillis())
-    }
 }
 
 enum class JaNei : Metric {
