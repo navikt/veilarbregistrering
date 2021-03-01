@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.metrics
 
 import no.nav.common.metrics.MetricsClient
+import no.nav.common.metrics.SensuConfig
+import no.nav.common.utils.EnvironmentUtils
 import no.nav.common.metrics.Event as MetricsEvent
 
 /**
@@ -73,7 +75,8 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
     }
 
     private fun report(event: MetricsEvent) {
-        event.addTagToReport("environment", "q1")
+        event.addTagToReport("environment", EnvironmentUtils.getRequiredProperty("APP_ENVIRONMENT_NAME"))
+        event.addTagToReport("host", SensuConfig.defaultConfig().hostname)
         metricsClient.report(event)
     }
 
