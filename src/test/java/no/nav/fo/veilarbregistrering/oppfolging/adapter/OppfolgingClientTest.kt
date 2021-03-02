@@ -5,11 +5,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.common.metrics.MetricsClient
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
@@ -34,11 +34,11 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         mockServer.reset()
-        val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
-        oppfolgingClient = buildClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
+        val metricsClient: MetricsClient = mockk(relaxed = true)
+        oppfolgingClient = buildClient(metricsClient, jacksonObjectMapper().findAndRegisterModules())
     }
 
-    private fun buildClient(influxMetricsService: InfluxMetricsService, findAndRegisterModules: ObjectMapper): OppfolgingClient {
+    private fun buildClient(metricsClient: MetricsClient, objectMapper: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
@@ -46,7 +46,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppfolgingClient(influxMetricsService, findAndRegisterModules, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
+        return OppfolgingClient(objectMapper, metricsClient, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
     }
 
     @Test

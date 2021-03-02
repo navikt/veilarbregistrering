@@ -14,12 +14,11 @@ class MetricsConfig {
         InfluxClient()
 
     @Bean
-    fun influxMetricsService(metricsClient: MetricsClient): InfluxMetricsService {
-        return InfluxMetricsService(metricsClient)
-    }
+    fun influxMetricsService(metricsClient: MetricsClient): InfluxMetricsService =
+        InfluxMetricsService(metricsClient)
 
     @Bean
-    fun prometheusMetricsService(meterRegistry: MeterRegistry): PrometheusMetricsService {
-        return PrometheusMetricsService(meterRegistry)
-    }
+    fun prometheusMetricsService(meterRegistry: MeterRegistry): PrometheusMetricsService =
+        PrometheusMetricsService(meterRegistry)
+
 }
