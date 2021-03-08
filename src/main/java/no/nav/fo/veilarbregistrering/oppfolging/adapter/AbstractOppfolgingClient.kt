@@ -96,11 +96,12 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
     }
 
     companion object {
-        val baseClientBuilder: OkHttpClient.Builder = RestClient.baseClientBuilder()
+        val baseClient: OkHttpClient = RestClient.baseClientBuilder()
             .readTimeout(120L, TimeUnit.SECONDS)
+            .build()
 
 
-        fun clientWithMetricsFilter(metricsClient: MetricsClient, event: Event) = baseClientBuilder
+        fun clientWithMetricsFilter(metricsClient: MetricsClient, event: Event) = baseClient.newBuilder()
             .addInterceptor(InfluxMetricsFilter(metricsClient, event))
             .build()
 

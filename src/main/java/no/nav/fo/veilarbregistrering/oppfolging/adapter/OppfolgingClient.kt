@@ -86,7 +86,7 @@ open class OppfolgingClient(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), baseClientBuilder.build())
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), baseClient)
     }
 
     companion object {
