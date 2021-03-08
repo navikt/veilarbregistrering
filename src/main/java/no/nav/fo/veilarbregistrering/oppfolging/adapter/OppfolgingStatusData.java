@@ -94,20 +94,4 @@ public class OppfolgingStatusData {
         return this.erSykmeldtMedArbeidsgiver == erSykmeldtMedArbeidsgiver ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
     }
 
-    public OppfolgingStatusData withFormidlingsgruppe(String formidlingsgruppe) {
-        return this.formidlingsgruppe == formidlingsgruppe ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
-    public OppfolgingStatusData withServicegruppe(String servicegruppe) {
-        return this.servicegruppe == servicegruppe ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
-    public OppfolgingStatusData withRettighetsgruppe(String rettighetsgruppe) {
-        return this.rettighetsgruppe == rettighetsgruppe ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
-    public OppfolgingStatusData withErIkkeArbeidssokerUtenOppfolging(@Deprecated Boolean erIkkeArbeidssokerUtenOppfolging) {
-        return this.erIkkeArbeidssokerUtenOppfolging == erIkkeArbeidssokerUtenOppfolging ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, erIkkeArbeidssokerUtenOppfolging);
-    }
-
 }

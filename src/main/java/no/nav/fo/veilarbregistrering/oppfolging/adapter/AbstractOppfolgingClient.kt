@@ -17,7 +17,7 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
 
     fun <R : RuntimeException> post(
             url: String,
-            requestEntity: Any?,
+            requestEntity: Any,
             headers: List<Pair<String, String>> = emptyList(),
             event: Event,
             expectedErrorsHandler: (Exception) -> R?
@@ -25,7 +25,7 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
         val request: Request.Builder = buildRequest(url, headers)
         request.method(
                 "POST",
-                requestEntity?.let { RequestBody.create(RestUtils.MEDIA_TYPE_JSON, objectMapper.writeValueAsString(it)) }
+                requestEntity.let { RequestBody.create(RestUtils.MEDIA_TYPE_JSON, objectMapper.writeValueAsString(it)) }
         )
 
         try {

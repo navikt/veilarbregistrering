@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
@@ -40,35 +41,19 @@ open class OppfolgingClient(
         }
     }
 
-    open fun reaktiverBruker(fnr: Foedselsnummer) {
+    open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-
-
-        post(
-            url,
-            Fnr(fnr.stringValue()),
-            getSystemAuthorizationHeaders(),
-            Events.REAKTIVER_BRUKER,
-            ::aktiveringFeilMapper
-        )
+        post(url, fnr, getSystemAuthorizationHeaders(), REAKTIVER_BRUKER, ::aktiveringFeilMapper)
     }
 
-    open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData?) {
+    open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-
-        post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), Events.AKTIVER_BRUKER, ::aktiveringFeilMapper)
+        post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), AKTIVER_BRUKER, ::aktiveringFeilMapper)
     }
 
-    fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType?, fnr: Foedselsnummer) {
+    fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-
-        post(
-            url,
-            sykmeldtBrukerType,
-            getSystemAuthorizationHeaders(),
-            Events.OPPFOLGING_SYKMELDT,
-            ::aktiveringFeilMapper
-        )
+        post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), OPPFOLGING_SYKMELDT, ::aktiveringFeilMapper)
     }
 
     private fun aktiveringFeilMapper(e: Exception): RuntimeException? =

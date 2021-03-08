@@ -20,7 +20,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient) : Op
     }
 
     override fun reaktiverBruker(fodselsnummer: Foedselsnummer) {
-        oppfolgingClient.reaktiverBruker(fodselsnummer)
+        oppfolgingClient.reaktiverBruker(Fnr(fodselsnummer.stringValue()))
     }
 
     override fun settOppfolgingSykmeldt(fodselsnummer: Foedselsnummer, besvarelse: Besvarelse) {

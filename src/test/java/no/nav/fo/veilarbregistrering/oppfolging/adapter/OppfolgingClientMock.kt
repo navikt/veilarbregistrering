@@ -21,14 +21,14 @@ class OppfolgingClientMock internal constructor() : OppfolgingClient(
             .withErSykmeldtMedArbeidsgiver(true)
     }
 
-    override fun aktiverBruker(aktiverBrukerData: AktiverBrukerData?) {
+    override fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         //sendException("BRUKER_ER_UKJENT");
         //sendException("BRUKER_KAN_IKKE_REAKTIVERES");
         //sendException("BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET");
         //sendException("BRUKER_MANGLER_ARBEIDSTILLATELSE");
     }
 
-    override fun reaktiverBruker(fnr: Foedselsnummer) {}
+    override fun reaktiverBruker(fnr: Fnr) {}
     private fun sendException(feilType: String) {
         throw AktiverBrukerException(AktiverBrukerFeil.valueOf(feilType))
     }

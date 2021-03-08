@@ -8,7 +8,6 @@ import io.mockk.mockkStatic
 import no.nav.common.metrics.MetricsClient
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
@@ -89,7 +88,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
                     .withStatusCode(200)
             )
         assertThrows<RuntimeException> {
-            oppfolgingClient.reaktiverBruker(Foedselsnummer.of("10108000398")) }
+            oppfolgingClient.reaktiverBruker(Fnr("10108000398")) }
     }
 
     @Test
@@ -102,7 +101,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
             HttpResponse.response().withStatusCode(204)
         )
-        oppfolgingClient.reaktiverBruker(Foedselsnummer.of("10108000398"))
+        oppfolgingClient.reaktiverBruker(Fnr("10108000398"))
     }
 
     @Test
