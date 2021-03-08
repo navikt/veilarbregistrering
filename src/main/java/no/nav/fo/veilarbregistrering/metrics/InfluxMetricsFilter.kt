@@ -39,7 +39,8 @@ class InfluxMetricsFilter(private val metricsClient: MetricsClient, private val 
         no.nav.common.metrics.Event("${event.key}.timer")
             .also { metricsEvent ->
                 metricsEvent.addFieldToReport("value", (System.nanoTime() - startTime) / 1e6)
-                metricsEvent.addTagToReport("httpStatus", httpStatus.toString())
+                metricsEvent.addFieldToReport("httpStatus", httpStatus.toString())
+                //metricsEvent.addFieldToReport("host", EnvironmentUtils.resolveHostName())
                 metricsEvent.addTagToReport(
                     "environment",
                     EnvironmentUtils.getOptionalProperty("APP_ENVIRONMENT_NAME").orElse("local")
