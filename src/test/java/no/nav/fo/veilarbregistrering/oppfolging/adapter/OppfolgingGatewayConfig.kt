@@ -6,10 +6,11 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class OppfolgingGatewayConfig {
+
     @Bean
     fun oppfolgingClient(): OppfolgingClient = OppfolgingClientMock()
 
     @Bean
-    fun oppfolgingGateway(oppfolgingClient: OppfolgingClient?): OppfolgingGateway =
+    fun oppfolgingGateway(oppfolgingClient: OppfolgingClient): OppfolgingGateway =
         OppfolgingGatewayImpl(oppfolgingClient)
 }
