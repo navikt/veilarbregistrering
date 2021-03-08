@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.metrics
 
 import no.nav.common.metrics.MetricsClient
-import no.nav.common.metrics.SensuConfig
 import no.nav.common.utils.EnvironmentUtils
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -40,8 +39,7 @@ class InfluxMetricsFilter(private val metricsClient: MetricsClient, private val 
         no.nav.common.metrics.Event("${event.key}.timer")
             .also { metricsEvent ->
                 metricsEvent.addFieldToReport("value", (System.nanoTime() - startTime) / 1e6)
-                metricsEvent.addFieldToReport("httpStatus", httpStatus.toString())
-                metricsEvent.addFieldToReport("host", EnvironmentUtils.resolveHostName())
+                metricsEvent.addTagToReport("httpStatus", httpStatus.toString())
                 metricsEvent.addTagToReport(
                     "environment",
                     EnvironmentUtils.getOptionalProperty("APP_ENVIRONMENT_NAME").orElse("local")
