@@ -47,13 +47,13 @@ class InfluxMetricsFilter(private val metricsClient: MetricsClient, private val 
                     EnvironmentUtils.getOptionalProperty("APP_ENVIRONMENT_NAME").orElse("local")
                 )
                 failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
-                logger.debug("Sender timer-rapport: ${event.key} [httpStatus: $httpStatus] [${metricsEvent.fields.map { (k, v) -> "$k: $v" }.joinToString(", ")}]")
+                LOG.info("Sender timer-rapport: ${event.key} [httpStatus: $httpStatus] [${metricsEvent.fields.map { (k, v) -> "$k: $v" }.joinToString(", ")}]")
                 metricsClient.report(metricsEvent)
             }
     }
 
     companion object {
-        val logger = loggerFor<InfluxMetricsFilter>()
+        val LOG = loggerFor<InfluxMetricsFilter>()
     }
 
 }
