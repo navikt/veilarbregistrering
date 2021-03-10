@@ -1,10 +1,12 @@
 package no.nav.fo.veilarbregistrering.metrics
 
+import no.nav.common.metrics.InfluxUtils
 import no.nav.common.metrics.MetricsClient
 import no.nav.common.utils.EnvironmentUtils
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 
 class InfluxMetricsFilter(private val metricsClient: MetricsClient, private val event: Event) : Interceptor {
 
@@ -41,13 +43,14 @@ class InfluxMetricsFilter(private val metricsClient: MetricsClient, private val 
             .also { metricsEvent ->
                 metricsEvent.addFieldToReport("value", (System.nanoTime() - startTime) / 1e6)
                 metricsEvent.addFieldToReport("httpStatus", httpStatus)
-                //metricsEvent.addFieldToReport("host", EnvironmentUtils.resolveHostName())
+                metricsEvent.addFieldToReport("host", EnvironmentUtils.resolveHostName())
                 metricsEvent.addTagToReport(
                     "environment",
                     EnvironmentUtils.getOptionalProperty("APP_ENVIRONMENT_NAME").orElse("local")
                 )
                 failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
                 LOG.info("Sender timer-rapport: ${event.key} [httpStatus: $httpStatus] [${metricsEvent.fields.map { (k, v) -> "$k: $v" }.joinToString(", ")}]")
+                LOG.info("Influx dummy payload:  ${InfluxUtils.createInfluxLineProtocolPayload(event.key, metricsEvent.tags, metricsEvent.fields, TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis()))}")
                 metricsClient.report(metricsEvent)
             }
     }
