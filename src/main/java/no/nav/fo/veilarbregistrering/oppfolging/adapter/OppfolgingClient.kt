@@ -38,6 +38,8 @@ open class OppfolgingClient(
                 is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
                 else -> null
             }
+        }.also {
+            metricsService.reportFields(HENT_OPPFOLGING)
         }
     }
 
