@@ -6,7 +6,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.featuretoggle.UnleashService
-import no.nav.common.metrics.MetricsClient
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -48,9 +47,8 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
-        val metricsClient: MetricsClient = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
-        oppfolgingClient = buildOppfolgingClient(metricsClient, jacksonObjectMapper().findAndRegisterModules())
+        oppfolgingClient = buildOppfolgingClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
         sykeforloepMetadataClient = buildSykeForloepClient()
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
@@ -76,7 +74,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         return SykmeldtInfoClient(baseUrl)
     }
 
-    private fun buildOppfolgingClient(metricsClient: MetricsClient, objectMapper: ObjectMapper): OppfolgingClient {
+    private fun buildOppfolgingClient(metricsClient: InfluxMetricsService, objectMapper: ObjectMapper): OppfolgingClient {
         ConfigBuildClient()()
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppfolgingClient(objectMapper, metricsClient, baseUrl, mockk(relaxed = true))

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import no.nav.common.metrics.MetricsClient
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -13,8 +12,9 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.Events.*
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
+import no.nav.fo.veilarbregistrering.metrics.Metric.Companion.of
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
@@ -23,17 +23,17 @@ import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
-    metricsClient: MetricsClient,
+    private val metricsService: InfluxMetricsService,
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
 
-    ) : AbstractOppfolgingClient(objectMapper, metricsClient), HealthCheck {
+    ) : AbstractOppfolgingClient(objectMapper), HealthCheck {
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
 
-        return get(url, headers, OppfolgingStatusData::class.java, HENT_OPPFOLGING) { e ->
+        return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
                 is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
                 else -> null
@@ -43,17 +43,20 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        post(url, fnr, getSystemAuthorizationHeaders(), REAKTIVER_BRUKER, ::aktiveringFeilMapper)
+        post(url, fnr, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        metricsService.reportFields(REAKTIVER_BRUKER)
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), AKTIVER_BRUKER, ::aktiveringFeilMapper)
+        post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        metricsService.reportFields(AKTIVER_BRUKER)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), OPPFOLGING_SYKMELDT, ::aktiveringFeilMapper)
+        post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        metricsService.reportFields(OPPFOLGING_SYKMELDT)
     }
 
     private fun aktiveringFeilMapper(e: Exception): RuntimeException? =
@@ -61,10 +64,12 @@ open class OppfolgingClient(
             is ForbiddenException -> {
                 val feil = mapper(objectMapper.readValue(e.response!!))
                 LOG.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
+                metricsService.reportFields(AKTIVER_BRUKER_FEIL, of("aarsak", feil.name))
                 AktiverBrukerException(feil)
             }
             else -> {
                 LOG.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
+                metricsService.reportFields(OPPFOLGING_FEIL, of("aarsak", e.message ?: e.toString()))
                 null
             }
         }
@@ -86,7 +91,7 @@ open class OppfolgingClient(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), baseClient)
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
     }
 
     companion object {

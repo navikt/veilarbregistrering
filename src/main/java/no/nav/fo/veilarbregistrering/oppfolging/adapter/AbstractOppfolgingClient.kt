@@ -1,25 +1,22 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.metrics.MetricsClient
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
-import no.nav.fo.veilarbregistrering.metrics.Event
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsFilter
+import no.nav.fo.veilarbregistrering.metrics.RequestTimeFilter
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.util.concurrent.TimeUnit
 
-abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, private val metricsClient: MetricsClient) {
+abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) {
 
     fun <R : RuntimeException> post(
             url: String,
             requestEntity: Any,
             headers: List<Pair<String, String>> = emptyList(),
-            event: Event,
             expectedErrorsHandler: (Exception) -> R?
     ) {
         val request: Request.Builder = buildRequest(url, headers)
@@ -29,7 +26,7 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
         )
 
         try {
-            clientWithMetricsFilter(metricsClient, event).newCall(request.build()).execute().use { response ->
+            client.newCall(request.build()).execute().use { response ->
                 when (val code = response.code()) {
                     204 -> return@use
                     403 -> throw ForbiddenException(response.body()?.string())
@@ -45,20 +42,18 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
         url: String,
         headers: List<Pair<String, String>> = emptyList(),
         responseClass: Class<T>,
-        event: Event,
         expectedErrorsHandler: (Exception) -> R?
     ): T {
-        return executeRequest(buildRequest(url, headers).build(), responseClass, event, expectedErrorsHandler)
+        return executeRequest(buildRequest(url, headers).build(), responseClass, expectedErrorsHandler)
     }
 
     private fun <T, R : RuntimeException> executeRequest(
         request: Request,
         responseClass: Class<T>,
-        event: Event,
         expectedErrorsHandler: (Exception) -> R? = emptyHandler
     ): T {
         try {
-            clientWithMetricsFilter(metricsClient, event).newCall(request).execute().use { response ->
+            client.newCall(request).execute().use { response ->
                 when (response.code()) {
                     in 200..299 -> {
                         response.body()?.string()?.let { bodyString ->
@@ -96,13 +91,9 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper, 
     }
 
     companion object {
-        val baseClient: OkHttpClient = RestClient.baseClientBuilder()
+        val client: OkHttpClient = RestClient.baseClientBuilder()
             .readTimeout(120L, TimeUnit.SECONDS)
-            .build()
-
-
-        fun clientWithMetricsFilter(metricsClient: MetricsClient, event: Event) = baseClient.newBuilder()
-            .addInterceptor(InfluxMetricsFilter(metricsClient, event))
+            .addInterceptor(RequestTimeFilter())
             .build()
 
         val emptyHandler: (Exception) -> Nothing? = { null }
