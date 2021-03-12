@@ -6,10 +6,12 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.metrics.RequestTimeFilter
+import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.util.concurrent.TimeUnit
+import javax.ws.rs.core.HttpHeaders
 
 abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) {
 
@@ -69,10 +71,26 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
         }
     }
 
+
+
     private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
-            Request.Builder().url(url).also { r ->
-                headers.forEach { (k, v) -> r.header(k, v) }
+        Request.Builder().url(url).also { r ->
+            r.headers(buildHeaders(headers))
+        }
+
+    private fun buildHeaders(headers: List<Pair<String, String>>) =
+        Headers.Builder().also { h ->
+            headers.forEach { (k, v) ->
+                if (HttpHeaders.COOKIE.equals(k, ignoreCase = true)) {
+                    // Allow non-ascii characters in cookie values.
+                    // For example, amp_test_cookie is set to a localized timestamp,
+                    // which may include the timezone with non-ascii characters.
+                    h.addUnsafeNonAscii(k, v)
+                } else {
+                    h.set(k, v)
+                }
             }
+        }.build()
 
     private fun <R : RuntimeException> runExceptionmapperAndThrow(
         expectedErrorsHandler: (Exception) -> R?,

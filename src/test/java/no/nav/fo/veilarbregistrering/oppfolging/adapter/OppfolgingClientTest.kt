@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
@@ -24,6 +25,7 @@ import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
+import javax.ws.rs.core.HttpHeaders
 
 @ExtendWith(MockServerExtension::class)
 internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
@@ -42,7 +44,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
         every { RequestContext.servletRequest() } returns httpServletRequest
-        every { httpServletRequest.getHeader(any()) } returns ""
+        every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppfolgingClient(objectMapper, metricsService, baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
@@ -77,6 +79,17 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
                     Innsatsgruppe.SITUASJONSBESTEMT_INNSATS
                 )
             )
+        )
+    }
+    @Test
+    fun `skal returnere respons for hentOppfolgingstatus`() {
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
+            HttpResponse.response()
+                    .withStatusCode(200)
+                    .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
+        )
+        Assertions.assertNotNull(
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
         )
     }
 
@@ -131,6 +144,10 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     private fun settOppfolgingOgReaktivering(oppfolging: Boolean, reaktivering: Boolean): String {
         return "{\"kanReaktiveres\": $reaktivering, \"underOppfolging\": $oppfolging}"
     }
+
+    private fun ikkeUnderOppfolgingBody(): String = """
+        { "underOppfolging": false }
+    """.trimIndent()
 
     private fun okRegistreringBody(): String {
         return """
