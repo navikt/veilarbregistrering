@@ -33,6 +33,7 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
 
+
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
                 is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
