@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import java.time.LocalDateTime
 import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
@@ -88,6 +89,39 @@ class RegistreringResourceTest(
             .andReturn().response.contentAsString
 
         assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `serialiserer tom registrering riktig`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns null
+        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
+
+        val result = mvc.get("/api/registrering")
+            .andExpect {
+                status { isNoContent }
+            }
+            .andReturn().response.contentAsString
+
+        assertThat(result).isEqualTo("")
+    }
+
+    @Test
+    fun `serialiserer registrering riktig`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns GYLDIG_BRUKERREGISTRERING
+        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
+
+        val result = mvc.get("/api/registrering")
+            .andExpect {
+                status { isOk }
+                content { contentType("application/json") }
+            }
+            .andReturn().response.contentAsString
+
+        //assertThat(result).isEqualTo(REGISTRERING_RESPONSE)
     }
 
     @Test
@@ -160,6 +194,9 @@ class RegistreringResourceTest(
             )
         )
         private val START_REGISTRERING_STATUS = StartRegistreringStatusDto()
+        private val now = LocalDateTime.now()
+        private val GYLDIG_BRUKERREGISTRERING = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().also { it.opprettetDato = now }
+        private val REGISTRERING_RESPONSE = "{\"type\":\"ORDINAER\",\"registrering\":{\"manueltRegistrertAv\":null,\"id\":0,\"opprettetDato\":\"${now.toString()}\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":null}}"
     }
 }
 @Configuration
