@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -33,13 +34,16 @@ import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 import javax.inject.Provider
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
+import javax.ws.rs.core.HttpHeaders
 
 @ExtendWith(MockServerExtension::class)
 internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
     private lateinit var sykmeldtRegistreringService: SykmeldtRegistreringService
     private lateinit var oppfolgingClient: OppfolgingClient
     private lateinit var sykeforloepMetadataClient: SykmeldtInfoClient
+    private lateinit var sykmeldingGateway: SykemeldingGateway
 
     @BeforeEach
     fun setup() {
@@ -50,12 +54,14 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         oppfolgingClient = buildOppfolgingClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
         sykeforloepMetadataClient = buildSykeForloepClient()
+        staticMocks()
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
+        sykmeldingGateway = SykemeldingGatewayImpl(sykeforloepMetadataClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
                 oppfolgingGateway,
                 SykemeldingService(
-                    SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                    sykmeldingGateway,
                     autorisasjonService,
                     influxMetricsService
                 ),
@@ -69,15 +75,15 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
     }
 
     private fun buildSykeForloepClient(): SykmeldtInfoClient {
-        ConfigBuildClient()()
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return SykmeldtInfoClient(baseUrl)
     }
 
     private fun buildOppfolgingClient(metricsClient: InfluxMetricsService, objectMapper: ObjectMapper): OppfolgingClient {
-        ConfigBuildClient()()
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppfolgingClient(objectMapper, metricsClient, baseUrl, mockk(relaxed = true))
+        val systemUserTokenProvider: SystemUserTokenProvider = mockk()
+        every { systemUserTokenProvider.systemUserToken } returns "testToken"
+        return OppfolgingClient(objectMapper, metricsClient, baseUrl, systemUserTokenProvider)
     }
 
     @Test
@@ -102,6 +108,17 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
             assertSame(startRegistreringStatus.getRegistreringType(), SYKMELDT_REGISTRERING);
         }
     */
+    @Test
+    fun `hentSykmeldtInfoData feiler ikke ved ikke-ASCII tegn i Cookies `() {
+        val fnr = "11111111111"
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/hentMaksdato")
+            .withQueryStringParameter("fnr", fnr)).respond(
+                HttpResponse.response().withStatusCode(200).withBody(sykmeldtInfoResponse)
+            )
+        sykmeldingGateway.hentReberegnetMaksdato(Foedselsnummer.of(fnr))
+
+    }
+
     @Test
     fun testAtGirInternalServerErrorExceptionDersomRegistreringAvSykmeldtFeiler() {
         mockSykmeldtIArena()
@@ -170,23 +187,18 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
             """.trimIndent()
     }
 
-    private class ConfigBuildClient {
-        operator fun invoke(): Provider<HttpServletRequest> {
-            val systemUserTokenProvider: SystemUserTokenProvider = mockk()
-            val httpServletRequestProvider: Provider<HttpServletRequest> = mockk()
-            val httpServletRequest: HttpServletRequest = mockk()
-
-            mockkStatic(RequestContext::class)
-            every { servletRequest() } returns httpServletRequest
-
-            every { httpServletRequest.getHeader(any()) } returns ""
-            every { systemUserTokenProvider.systemUserToken } returns "testToken"
-            return httpServletRequestProvider
-        }
-    }
 
     companion object {
+        fun staticMocks() {
+            val httpServletRequest: HttpServletRequest = mockk()
+            mockkStatic(RequestContext::class)
+            every { servletRequest() } returns httpServletRequest
+            every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
+            every { httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION) } returns "testToken"
+            every { httpServletRequest.cookies } returns emptyArray()
+        }
         private const val IDENT = "10108000398" //Aremark fiktivt fnr.";;
         private val BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("AKTØRID"))
+        private const val sykmeldtInfoResponse = "{}"
     }
 }

@@ -81,6 +81,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
             )
         )
     }
+
     @Test
     fun `skal returnere respons for hentOppfolgingstatus`() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
