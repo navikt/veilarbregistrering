@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
+import kotlin.Pair;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.http.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -45,8 +48,10 @@ class VeilArbPersonClient {
                         .addPathSegments("person/geografisktilknytning")
                         .addQueryParameter("fnr", foedselsnummer.stringValue())
                         .build())
-                .header(COOKIE, cookies)
-                .header("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                .headers(Headers.buildHeaders(List.of(
+                        new Pair<>(COOKIE, cookies),
+                        new Pair<>("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                )))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
