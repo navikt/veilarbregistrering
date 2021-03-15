@@ -16,18 +16,17 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
 
     fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
         antallPerStatus.forEach {
-            val registrertAntall = statusVerdier.getOrElse(it.key) {
+            val registrertAntall = statusVerdier.computeIfAbsent(it.key) { key ->
                 val atomiskAntall = AtomicInteger()
                 meterRegistry.gauge(
                         "veilarbregistrering_registrert_status",
-                        listOf(Tag.of("status", it.key.name)),
-                        atomiskAntall
-                ) { obj: AtomicInteger -> obj.get().toDouble() }
+                        listOf(Tag.of("status", key.name)),
+                        atomiskAntall)
                 atomiskAntall
             }
             registrertAntall.set(it.value)
         }
     }
-
-    private val statusVerdier: Map<Status, AtomicInteger> = HashMap()
+    
+    private val statusVerdier: MutableMap<Status, AtomicInteger> = HashMap()
 }
