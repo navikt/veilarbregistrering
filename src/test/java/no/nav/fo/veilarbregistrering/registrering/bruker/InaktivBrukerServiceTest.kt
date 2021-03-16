@@ -33,13 +33,13 @@ class InaktivBrukerServiceTest {
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         inaktivBrukerService = InaktivBrukerService(
             BrukerTilstandService(
-                    oppfolgingGateway,
-                    SykemeldingService(
-                        SykemeldingGatewayImpl(sykeforloepMetadataClient),
-                        autorisasjonService,
-                        influxMetricsService
-                    ),
-                    unleashService
+                oppfolgingGateway,
+                SykemeldingService(
+                    SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                    autorisasjonService,
+                    influxMetricsService
+                ),
+                unleashService
             ),
             brukerRegistreringRepository,
             oppfolgingGateway
@@ -50,7 +50,7 @@ class InaktivBrukerServiceTest {
     fun skalReaktivereInaktivBrukerUnder28Dager() {
         mockInaktivBrukerSomSkalReaktiveres()
         inaktivBrukerService.reaktiverBruker(BRUKER_INTERN)
-        verify(exactly = 1) {brukerRegistreringRepository.lagreReaktiveringForBruker(any()) }
+        verify(exactly = 1) { brukerRegistreringRepository.lagreReaktiveringForBruker(any()) }
 
     }
 
@@ -58,27 +58,27 @@ class InaktivBrukerServiceTest {
     fun reaktiveringAvBrukerOver28DagerSkalGiException() {
         mockInaktivBrukerSomSkalReaktiveres()
         mockOppfolgingMedRespons(
-            OppfolgingStatusData()
-                .withUnderOppfolging(false)
-                .withKanReaktiveres(false)
+                OppfolgingStatusData()
+                        .withUnderOppfolging(false)
+                        .withKanReaktiveres(false)
         )
         Assertions.assertThrows(RuntimeException::class.java, { inaktivBrukerService.reaktiverBruker(BRUKER_INTERN) }, "Bruker kan ikke reaktiveres.")
         verify(exactly = 0) { brukerRegistreringRepository.lagreReaktiveringForBruker(any()) }
     }
 
     private fun mockInaktivBrukerSomSkalReaktiveres() =
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData()
-                    .withUnderOppfolging(false)
-                    .withKanReaktiveres(true)
+            every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
+                    OppfolgingStatusData()
+                            .withUnderOppfolging(false)
+                            .withKanReaktiveres(true)
 
     private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) =
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
+            every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
 
 
     companion object {
         private val FNR_OPPFYLLER_KRAV =
-            FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears(LocalDate.now(), 40)
+                FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears(LocalDate.now(), 40)
         private val BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"))
     }
 }
