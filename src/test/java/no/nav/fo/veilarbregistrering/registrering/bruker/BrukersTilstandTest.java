@@ -14,7 +14,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RegistreringTypeTest {
+public class BrukersTilstandTest {
 
     @Test
     public void beregnRegistreringType_gir_SYKMELDT_REGISTRERING_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Null_Og_Toggle_Er_Skrudd_På() {
@@ -28,7 +28,7 @@ public class RegistreringTypeTest {
 
         SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, true);
+        RegistreringType registreringType = BrukersTilstand.beregnRegistreringType(oppfolgingsstatus, sykeforlop, true);
 
         assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
     }
@@ -45,7 +45,7 @@ public class RegistreringTypeTest {
 
         SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
+        RegistreringType registreringType = BrukersTilstand.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SPERRET);
     }
@@ -66,7 +66,7 @@ public class RegistreringTypeTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
+        RegistreringType registreringType = BrukersTilstand.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SPERRET);
     }
@@ -87,7 +87,7 @@ public class RegistreringTypeTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        RegistreringType registreringType = RegistreringType.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
+        RegistreringType registreringType = BrukersTilstand.beregnRegistreringType(oppfolgingsstatus, sykeforlop, false);
 
         assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
     }
