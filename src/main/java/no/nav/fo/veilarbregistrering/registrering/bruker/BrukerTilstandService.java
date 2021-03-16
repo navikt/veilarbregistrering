@@ -31,7 +31,14 @@ public class BrukerTilstandService {
             sykeforloepMetaData = sykemeldingService.hentSykmeldtInfoData(fnr);
         }
 
-        return new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData, maksdatoToggletAv());
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforloepMetaData);
+
+        if (maksdatoToggletAv()) {
+            BrukersTilstandUtenSperret brukersTilstandUtenSperret = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforloepMetaData);
+            return brukersTilstandUtenSperret;
+        }
+
+        return brukersTilstand;
     }
 
     private boolean maksdatoToggletAv() {
