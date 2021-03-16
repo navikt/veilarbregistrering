@@ -57,13 +57,13 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         sykmeldingGateway = SykemeldingGatewayImpl(sykeforloepMetadataClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
-                    oppfolgingGateway,
-                    SykemeldingService(
-                        sykmeldingGateway,
-                        autorisasjonService,
-                        influxMetricsService
-                    ),
-                    unleashService
+                oppfolgingGateway,
+                SykemeldingService(
+                    sykmeldingGateway,
+                    autorisasjonService,
+                    influxMetricsService
+                ),
+                unleashService
             ),
             oppfolgingGateway,
             brukerRegistreringRepository,
