@@ -29,6 +29,35 @@ public class BrukersTilstand implements HasMetrics {
         this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData, maksdatoToggletAv);
     }
 
+    protected static RegistreringType beregnRegistreringType(
+            Oppfolgingsstatus oppfolgingsstatus,
+            SykmeldtInfoData sykeforloepMetaData,
+            boolean maksdatoToggletAv) {
+
+        if (oppfolgingsstatus.isUnderOppfolging() && !oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
+            return ALLEREDE_REGISTRERT;
+
+        } else if (oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
+            return REAKTIVERING;
+
+        } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)) {
+            if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
+                return SYKMELDT_REGISTRERING;
+            } else {
+                if (maksdatoToggletAv) {
+                    return SYKMELDT_REGISTRERING;
+                } else
+                    return SPERRET;
+            }
+        } else {
+            return ORDINAER_REGISTRERING;
+        }
+    }
+
+    private static boolean erSykmeldtMedArbeidsgiverOver39Uker(SykmeldtInfoData sykeforloepMetaData) {
+        return sykeforloepMetaData != null && sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
+    }
+
     public boolean kanReaktiveres() {
         return REAKTIVERING.equals(registreringType);
     }
