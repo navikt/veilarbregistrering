@@ -33,8 +33,6 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
-import javax.inject.Provider
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
 
@@ -59,13 +57,13 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         sykmeldingGateway = SykemeldingGatewayImpl(sykeforloepMetadataClient)
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
-                oppfolgingGateway,
-                SykemeldingService(
-                    sykmeldingGateway,
-                    autorisasjonService,
-                    influxMetricsService
-                ),
-                unleashService
+                    oppfolgingGateway,
+                    SykemeldingService(
+                        sykmeldingGateway,
+                        autorisasjonService,
+                        influxMetricsService
+                    ),
+                    unleashService
             ),
             oppfolgingGateway,
             brukerRegistreringRepository,
