@@ -22,17 +22,15 @@ public class BrukersTilstand implements HasMetrics {
 
     public BrukersTilstand(
             Oppfolgingsstatus Oppfolgingsstatus,
-            SykmeldtInfoData sykmeldtInfoData,
-            boolean maksdatoToggletAv) {
+            SykmeldtInfoData sykmeldtInfoData) {
         this.oppfolgingStatusData = Oppfolgingsstatus;
         this.sykmeldtInfoData = sykmeldtInfoData;
-        this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData, maksdatoToggletAv);
+        this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData);
     }
 
-    protected static RegistreringType beregnRegistreringType(
+    protected RegistreringType beregnRegistreringType(
             Oppfolgingsstatus oppfolgingsstatus,
-            SykmeldtInfoData sykeforloepMetaData,
-            boolean maksdatoToggletAv) {
+            SykmeldtInfoData sykeforloepMetaData) {
 
         if (oppfolgingsstatus.isUnderOppfolging() && !oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
             return ALLEREDE_REGISTRERT;
@@ -44,10 +42,7 @@ public class BrukersTilstand implements HasMetrics {
             if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
                 return SYKMELDT_REGISTRERING;
             } else {
-                if (maksdatoToggletAv) {
-                    return SYKMELDT_REGISTRERING;
-                } else
-                    return SPERRET;
+                return SPERRET;
             }
         } else {
             return ORDINAER_REGISTRERING;

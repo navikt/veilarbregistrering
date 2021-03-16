@@ -10,14 +10,13 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SPERRET;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BrukersTilstandTest {
+public class BrukersTilstandUtenSperretTest {
 
     @Test
-    public void beregnRegistreringType_gir_SPERRET_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Null() {
+    public void beregnRegistreringType_gir_SYKMELDT_REGISTRERING_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Null() {
         Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
                 false,
                 false,
@@ -28,14 +27,14 @@ public class BrukersTilstandTest {
 
         SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforlop);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
-        assertThat(registreringType).isEqualTo(SPERRET);
+        assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
     }
 
     @Test
-    public void beregnRegistreringType_gir_SPERRET_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Under_39_Uker() {
+    public void beregnRegistreringType_gir_SYKMELDT_REGISTRERING_når_bruker_er_sykemeldtMedArbeidsgiver_Og_Maksdato_Er_Under_39_Uker() {
         Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
                 false,
                 false,
@@ -50,10 +49,10 @@ public class BrukersTilstandTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforlop);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
-        assertThat(registreringType).isEqualTo(SPERRET);
+        assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class BrukersTilstandTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforlop);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
         assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);
