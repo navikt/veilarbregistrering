@@ -11,6 +11,8 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -71,6 +73,48 @@ public class BrukerTilstandServiceTest {
         when(unleashService.isEnabled(any())).thenReturn(true);
 
         BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(any());
+
+        assertThat(brukersTilstand.getRegistreringstype()).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING);
+    }
+
+    @Test
+    public void brukersTilstand_hvor_med_og_uten_maksdato_gir_ulike_svar() {
+        Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
+                false,
+                false,
+                true,
+                Formidlingsgruppe.of("IARBS"),
+                Servicegruppe.of("VURDI"),
+                Rettighetsgruppe.of("IYT"));
+        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(oppfolgingsstatus);
+
+        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
+        when(sykemeldingService.hentSykmeldtInfoData(any())).thenReturn(sykeforlop);
+
+        when(unleashService.isEnabled(any())).thenReturn(true);
+
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(any(), true);
+
+        assertThat(brukersTilstand.getRegistreringstype()).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING);
+    }
+
+    @Test
+    public void brukersTilstand_hvor_med_og_uten_maksdato_gir_like_svar() {
+        Oppfolgingsstatus oppfolgingsstatus = new Oppfolgingsstatus(
+                false,
+                false,
+                true,
+                Formidlingsgruppe.of("IARBS"),
+                Servicegruppe.of("VURDI"),
+                Rettighetsgruppe.of("IYT"));
+        when(oppfolgingGateway.hentOppfolgingsstatus(any())).thenReturn(oppfolgingsstatus);
+
+        SykmeldtInfoData sykeforlop = new SykmeldtInfoData(LocalDate.now().minusWeeks(10).toString(), true);
+        when(sykemeldingService.hentSykmeldtInfoData(any())).thenReturn(sykeforlop);
+
+        when(unleashService.isEnabled(any())).thenReturn(true);
+
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(any(), true);
 
         assertThat(brukersTilstand.getRegistreringstype()).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING);
     }
