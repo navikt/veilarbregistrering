@@ -17,11 +17,8 @@ enum class Events(override val key: String) : Event {
     PROFILERING_EVENT("registrering.bruker.profilering.event"),
     INVALID_REGISTRERING_EVENT("registrering.invalid.registrering.event"),
     MAKSDATO_EVENT("registrering.maksdato.event"),
-    OPPHOLDSTILLATELSE_EVENT("registrering.oppholdstillatelse.event"),
     HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde.event"),
-    HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar.event"),
-    GEOGRAFISK_TILKNYTNING_AVSTEMNING("arbeid.registrering.gt.avstemming.event"),
-    FINN_ARBEIDSFORHOLD_AAREG("finn.arbeidsforhold.aareg.event");
+    HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar.event");
 
 }
 
