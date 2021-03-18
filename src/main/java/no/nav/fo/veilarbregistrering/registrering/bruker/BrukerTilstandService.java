@@ -45,13 +45,13 @@ public class BrukerTilstandService {
             return brukersTilstand;
         }
 
-        BrukersTilstandUtenSperret brukersTilstandUtenSperret = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforloepMetaData);
+        BrukersTilstand brukersTilstandUtenSperret = new BrukersTilstandUtenSperret(oppfolgingsstatus, sykeforloepMetaData);
         loggfoerRegistreringstype(sykmeldtRegistrering, brukersTilstand, brukersTilstandUtenSperret);
 
         return brukersTilstandUtenSperret;
     }
 
-    private void loggfoerRegistreringstype(boolean sykmeldtRegistrering, BrukersTilstand brukersTilstand, BrukersTilstandUtenSperret brukersTilstandUtenSperret) {
+    private void loggfoerRegistreringstype(boolean sykmeldtRegistrering, BrukersTilstand brukersTilstand, BrukersTilstand brukersTilstandUtenSperret) {
         if (!sykmeldtRegistrering) {
             LOG.info("Benytter ikke maksdato");
             return;
