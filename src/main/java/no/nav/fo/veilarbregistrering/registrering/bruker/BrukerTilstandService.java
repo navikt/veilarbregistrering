@@ -4,6 +4,7 @@ import no.nav.common.featuretoggle.UnleashService;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
+import no.nav.fo.veilarbregistrering.sykemelding.Maksdato;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.slf4j.Logger;
@@ -57,14 +58,15 @@ public class BrukerTilstandService {
             return;
         }
 
-        if (brukersTilstand.getRegistreringstype().equals(brukersTilstandUtenSperret.getRegistreringstype())) {
-            LOG.info("Registreringstype med og uten maksdato er lik: {}",
-                    brukersTilstand.getRegistreringstype());
-        } else {
-            LOG.info("Registreringstype med og uten maksdato er ulik: {} vs. {}",
-                    brukersTilstand.getRegistreringstype(),
-                    brukersTilstandUtenSperret.getRegistreringstype());
-        }
+        Maksdato maksdato = maksdato(brukersTilstand);
+        LOG.info("Lik registreringstype? {} - når {}",
+                brukersTilstand.getRegistreringstype().equals(brukersTilstandUtenSperret.getRegistreringstype()),
+                maksdato);
+    }
+
+    private Maksdato maksdato(BrukersTilstand brukersTilstand) {
+        String maksDato = brukersTilstand.getMaksDato();
+        return maksDato != null ? Maksdato.of(maksDato) : Maksdato.nullable();
     }
 
     private boolean brukAvMaksdato() {
