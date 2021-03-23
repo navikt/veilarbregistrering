@@ -126,20 +126,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt).firstOrNull()
     }
 
-    override fun lagreReaktiveringForBruker(aktorId: AktorId) {
-        val params = mapOf(
-            "id" to nesteFraSekvens(BRUKER_REAKTIVERING_SEQ),
-            "aktor_id" to aktorId.asString(),
-            "reaktivering_dato" to Timestamp.valueOf(now())
-        )
-
-        val sql = "INSERT INTO $BRUKER_REAKTIVERING" +
-                "($BRUKER_REAKTIVERING_ID, $AKTOR_ID, $REAKTIVERING_DATO)" +
-                "VALUES (:id, :aktor_id, :reaktivering_dato)"
-
-        db.update(sql, params)
-    }
-
     override fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker {
         val sql = "SELECT $FOEDSELSNUMMER, $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID = :id"
 
@@ -160,17 +146,16 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         private const val BRUKER_REGISTRERING = "BRUKER_REGISTRERING"
         private const val SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING"
-        private const val BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING"
         private const val BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ"
         private const val SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ"
-        private const val BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ"
+
         const val SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID"
         private const val FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON"
         private const val TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER"
         const val BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID"
-        private const val BRUKER_REAKTIVERING_ID = "BRUKER_REAKTIVERING_ID"
+
         const val OPPRETTET_DATO = "OPPRETTET_DATO"
-        private const val REAKTIVERING_DATO = "REAKTIVERING_DATO"
+
         const val NUS_KODE = "NUS_KODE"
         const val YRKESPRAKSIS = "YRKESPRAKSIS"
         private const val HAR_HELSEUTFORDRINGER = "HAR_HELSEUTFORDRINGER"
