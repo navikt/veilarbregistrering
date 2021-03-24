@@ -18,7 +18,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime.now
 
 class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) :
-        BrukerRegistreringRepository, SykmeldtRegistreringRepository {
+        BrukerRegistreringRepository {
 
     override fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering {
         val id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ)
@@ -51,32 +51,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         db.update(sql, params)
         return hentBrukerregistreringForId(id)
-    }
-
-    override fun lagreSykmeldtBruker(bruker: SykmeldtRegistrering, aktorId: AktorId): Long {
-        val id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ)
-        val besvarelse = bruker.besvarelse
-        val teksterForBesvarelse = tilJson(bruker.teksterForBesvarelse)
-        val params = mapOf(
-            "id" to id,
-            "aktor_id" to aktorId.asString(),
-            "opprettet" to Timestamp.valueOf(now()),
-            "tekster" to teksterForBesvarelse,
-            "fremtidig_situasjon" to besvarelse.fremtidigSituasjon?.toString(),
-            "tilbake_etter_52_uker" to besvarelse.tilbakeIArbeid?.toString(),
-            "nus_kode" to UtdanningUtils.mapTilNuskode(besvarelse.utdanning),
-            "utdanning_bestatt" to besvarelse.utdanningBestatt?.toString(),
-            "utdanning_godkjent" to besvarelse.utdanningGodkjent?.toString(),
-            "andre_utfordringer" to besvarelse.andreForhold?.toString()
-        )
-
-        val sql = "INSERT INTO $SYKMELDT_REGISTRERING" +
-                " (${allSykmeldtColumns.joinToString(", ")})" +
-                " VALUES (:id, :aktor_id, :opprettet, :tekster, :fremtidig_situasjon, :tilbake_etter_52_uker," +
-                " :nus_kode, :utdanning_bestatt, :utdanning_godkjent, :andre_utfordringer)"
-
-        db.update(sql, params)
-        return id
     }
 
     override fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering {
@@ -114,15 +88,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, mapOf("aktor_id" to aktorId.asString()), registreringMapper).firstOrNull()
     }
 
-    override fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering? {
-        val sql = "SELECT * FROM $SYKMELDT_REGISTRERING" +
-                " WHERE $AKTOR_ID = :aktor_id " +
-                " ORDER BY $SYKMELDT_REGISTRERING_ID DESC" +
-                " FETCH NEXT 1 ROWS ONLY"
-
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt).firstOrNull()
-    }
-
     override fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker {
         val sql = "SELECT $FOEDSELSNUMMER, $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID = :id"
 
@@ -142,13 +107,11 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         private val mapper = jacksonObjectMapper()
 
         private const val BRUKER_REGISTRERING = "BRUKER_REGISTRERING"
-        private const val SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING"
-        private const val BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ"
-        private const val SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ"
 
-        const val SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID"
-        private const val FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON"
-        private const val TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER"
+        private const val BRUKER_REGISTRERING_SEQ = "BRUKER_REGISTRERING_SEQ"
+
+        const val FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON"
+        const val TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER"
         const val BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID"
 
         const val OPPRETTET_DATO = "OPPRETTET_DATO"
@@ -158,14 +121,14 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         private const val HAR_HELSEUTFORDRINGER = "HAR_HELSEUTFORDRINGER"
         const val YRKESBESKRIVELSE = "YRKESBESKRIVELSE"
         const val KONSEPT_ID = "KONSEPT_ID"
-        private const val TEKSTER_FOR_BESVARELSE = "TEKSTER_FOR_BESVARELSE"
+        const val TEKSTER_FOR_BESVARELSE = "TEKSTER_FOR_BESVARELSE"
         const val ANDRE_UTFORDRINGER = "ANDRE_UTFORDRINGER"
         const val BEGRUNNELSE_FOR_REGISTRERING = "BEGRUNNELSE_FOR_REGISTRERING"
         const val UTDANNING_BESTATT = "UTDANNING_BESTATT"
         const val UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE"
         private const val JOBBHISTORIKK = "JOBBHISTORIKK"
         private const val FOEDSELSNUMMER = "FOEDSELSNUMMER"
-        private const val AKTOR_ID = "AKTOR_ID"
+        const val AKTOR_ID = "AKTOR_ID"
 
         private val allColumns = listOf(
             BRUKER_REGISTRERING_ID,
@@ -184,18 +147,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             ANDRE_UTFORDRINGER,
             JOBBHISTORIKK
         )
-        private val allSykmeldtColumns = listOf(
-            SYKMELDT_REGISTRERING_ID,
-            AKTOR_ID,
-            OPPRETTET_DATO,
-            TEKSTER_FOR_BESVARELSE,
-            FREMTIDIG_SITUASJON,
-            TILBAKE_ETTER_52_UKER,
-            NUS_KODE,
-            UTDANNING_BESTATT,
-            UTDANNING_GODKJENT_NORGE,
-            ANDRE_UTFORDRINGER
-        )
+
         private val registreringMapper = RowMapper<OrdinaerBrukerRegistrering> { rs, _ ->
             try {
                 OrdinaerBrukerRegistrering()
@@ -228,26 +180,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                 throw RuntimeException(e)
             }
         }
-
-        private val rowMapperSykmeldt = RowMapper { rs, _ ->
-                try {
-                    SykmeldtRegistrering()
-                        .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
-                        .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
-                        .setTeksterForBesvarelse(readListOf(rs.getString(TEKSTER_FOR_BESVARELSE)))
-                        .setBesvarelse(
-                            Besvarelse()
-                                .setFremtidigSituasjon(rs.getString(FREMTIDIG_SITUASJON)?.let(FremtidigSituasjonSvar::valueOf))
-                                .setTilbakeIArbeid(rs.getString(TILBAKE_ETTER_52_UKER)?.let(TilbakeIArbeidSvar::valueOf))
-                                .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
-                                .setUtdanningBestatt(rs.getString(UTDANNING_BESTATT)?.let(UtdanningBestattSvar::valueOf))
-                                .setUtdanningGodkjent(rs.getString(UTDANNING_GODKJENT_NORGE)?.let(UtdanningGodkjentSvar::valueOf))
-                                .setAndreForhold(rs.getString(ANDRE_UTFORDRINGER)?.let(AndreForholdSvar::valueOf))
-                        )
-                } catch (e: SQLException) {
-                    throw RuntimeException(e)
-                }
-            }
 
         private val noParams = emptyMap<String, Any>()
 

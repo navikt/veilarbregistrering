@@ -55,12 +55,13 @@ public class ServiceBeansConfig {
     @Bean
     HentRegistreringService hentRegistreringService(
             BrukerRegistreringRepository brukerRegistreringRepository,
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ProfileringRepository profileringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             Norg2Gateway norg2Gateway) {
         return new HentRegistreringService(
                 brukerRegistreringRepository,
-                profileringRepository,
+                sykmeldtRegistreringRepository, profileringRepository,
                 manuellRegistreringRepository,
                 norg2Gateway);
     }
@@ -107,13 +108,13 @@ public class ServiceBeansConfig {
     SykmeldtRegistreringService sykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             InfluxMetricsService influxMetricsService) {
         return new SykmeldtRegistreringService(
                 brukerTilstandService,
                 oppfolgingGateway,
-                brukerRegistreringRepository,
+                sykmeldtRegistreringRepository,
                 manuellRegistreringRepository,
                 influxMetricsService);
     }

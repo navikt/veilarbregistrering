@@ -5,10 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl;
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.ReaktiveringRepositoryImpl;
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl;
+import no.nav.fo.veilarbregistrering.db.registrering.*;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
@@ -32,7 +29,7 @@ public class RepositoryConfig {
 
     @Bean
     SykmeldtRegistreringRepository sykmeldtRegistreringRepository(NamedParameterJdbcTemplate template) {
-        return new BrukerRegistreringRepositoryImpl(template);
+        return new SykmeldtRegistreringRepositoryImpl(template);
     }
 
     @Bean
