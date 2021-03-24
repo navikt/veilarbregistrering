@@ -4,6 +4,7 @@ import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.sykemelding.Maksdato
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData
 import org.slf4j.LoggerFactory
@@ -56,19 +57,19 @@ class BrukerTilstandService(
             LOG.info("Benytter ikke maksdato")
             return
         }
-        if (brukersTilstand.registreringstype == brukersTilstandUtenSperret.registreringstype) {
-            LOG.info(
-                "Registreringstype med og uten maksdato er lik: {}",
-                brukersTilstand.registreringstype
-            )
-        } else {
-            LOG.info(
-                "Registreringstype med og uten maksdato er ulik: {} vs. {}",
-                brukersTilstand.registreringstype,
-                brukersTilstandUtenSperret.registreringstype
-            )
-        }
+
+
+        var maksdato = maksdato(brukersTilstand)
+        LOG.info(
+            "Lik registreringstype? {} - når {}",
+            (brukersTilstand.getRegistreringstype() == brukersTilstandUtenSperret.getRegistreringstype()),
+            maksdato
+        )
     }
+
+    private fun maksdato(brukersTilstand: BrukersTilstand): Maksdato =
+        brukersTilstand.maksDato?.let(Maksdato::of) ?: Maksdato.nullable()
+
 
     private fun brukAvMaksdato(): Boolean {
         return !unleashService.isEnabled("veilarbregistrering.maksdatoToggletAv")
