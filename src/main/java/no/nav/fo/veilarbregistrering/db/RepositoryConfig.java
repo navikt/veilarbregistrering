@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository;
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,11 @@ public class RepositoryConfig {
     @Bean
     ReaktiveringRepository reaktiveringRepository(NamedParameterJdbcTemplate template) {
         return new ReaktiveringRepositoryImpl(template);
+    }
+
+    @Bean
+    SykmeldtRegistreringRepository sykmeldtRegistreringRepository(NamedParameterJdbcTemplate template) {
+        return new BrukerRegistreringRepositoryImpl(template);
     }
 
     @Bean

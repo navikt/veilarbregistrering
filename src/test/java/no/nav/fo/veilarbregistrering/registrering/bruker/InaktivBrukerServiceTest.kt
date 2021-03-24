@@ -22,6 +22,7 @@ class InaktivBrukerServiceTest {
     private lateinit var inaktivBrukerService: InaktivBrukerService
     private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
+    private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val unleashService: UnleashService = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()

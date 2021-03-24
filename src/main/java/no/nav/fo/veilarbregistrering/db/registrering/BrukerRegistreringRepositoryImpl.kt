@@ -8,10 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
+import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -20,7 +17,8 @@ import java.sql.SQLException
 import java.sql.Timestamp
 import java.time.LocalDateTime.now
 
-class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : BrukerRegistreringRepository {
+class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) :
+        BrukerRegistreringRepository, SykmeldtRegistreringRepository {
 
     override fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering {
         val id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ)
@@ -54,7 +52,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         db.update(sql, params)
         return hentBrukerregistreringForId(id)
     }
-
 
     override fun lagreSykmeldtBruker(bruker: SykmeldtRegistrering, aktorId: AktorId): Long {
         val id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ)

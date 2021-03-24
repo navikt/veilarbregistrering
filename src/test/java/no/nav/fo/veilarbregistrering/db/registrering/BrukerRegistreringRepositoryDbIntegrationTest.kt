@@ -24,7 +24,9 @@ import org.springframework.test.context.ContextConfiguration
 class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val brukerRegistreringRepository: BrukerRegistreringRepository) {
+    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+    @Autowired
+    private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository) {
 
     @Test
     fun registrerBruker() {
@@ -51,9 +53,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
                 .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING))
         val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
                 .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
-        brukerRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
-        brukerRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
-        val registrering = brukerRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
+        val registrering = sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)
         assertSykmeldtRegistrertBruker(bruker2, registrering!!)
     }
 
@@ -62,7 +64,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
             .setAndreForhold(AndreForholdSvar.NEI))
         brukerRegistreringRepository.lagre(registrering, BRUKER_1)
-        assertThat(brukerRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)).isNull()
+        assertThat(sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)).isNull()
     }
 
     @Test
@@ -109,9 +111,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         private val BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111)
         private val FOEDSELSNUMMER_2 = Foedselsnummer.of("22345678911")
         private val AKTOR_ID_22222 = AktorId.of("22222")
-        private val BRUKER_2 = Bruker.of(FOEDSELSNUMMER_2, AKTOR_ID_22222)
         private val FOEDSELSNUMMER_3 = Foedselsnummer.of("32345678911")
         private val AKTOR_ID_33333 = AktorId.of("33333")
-        private val BRUKER_3 = Bruker.of(FOEDSELSNUMMER_3, AKTOR_ID_33333)
     }
 }
