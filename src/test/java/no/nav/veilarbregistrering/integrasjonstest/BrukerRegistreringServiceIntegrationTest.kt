@@ -38,24 +38,14 @@ import java.util.*
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, BrukerregistreringConfigTest::class])
-internal class BrukerRegistreringServiceIntegrationTest {
-    @Autowired
-    private val brukerRegistreringService: BrukerRegistreringService? = null
-
-    @Autowired
-    private val oppfolgingGateway: OppfolgingGateway? = null
-
-    @Autowired
-    private val brukerRegistreringRepository: BrukerRegistreringRepository? = null
-
-    @Autowired
-    private val registreringTilstandRepository: RegistreringTilstandRepository? = null
-
-    @Autowired
-    private val profileringRepository: ProfileringRepository? = null
-
-    @Autowired
-    private val jdbcTemplate: JdbcTemplate? = null
+internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
+    private val brukerRegistreringService: BrukerRegistreringService,
+    private val oppfolgingGateway: OppfolgingGateway,
+    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+    private val registreringTilstandRepository: RegistreringTilstandRepository,
+    private val profileringRepository: ProfileringRepository,
+    private val jdbcTemplate: JdbcTemplate,
+) {
     @BeforeEach
     fun setup() {
         clearAllMocks()
@@ -63,21 +53,21 @@ internal class BrukerRegistreringServiceIntegrationTest {
 
     @AfterEach
     fun tearDown() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate!!, "BRUKER_PROFILERING")
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_PROFILERING")
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "REGISTRERING_TILSTAND")
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "BRUKER_REGISTRERING")
     }
 
     @Test
-    fun skal_Rulle_Tilbake_Database_Dersom_Overforing_Til_Arena_Feiler() {
-        every { oppfolgingGateway!!.aktiverBruker(any(), any()) } throws RuntimeException()
-        val id = brukerRegistreringRepository!!.lagre(
+    fun `skal rulle tilbake database dersom overforing til arena feiler`() {
+        every { oppfolgingGateway.aktiverBruker(any(), any()) } throws RuntimeException()
+        val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository!!.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
-        profileringRepository!!.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService!!.overforArena(id, BRUKER, null) }
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
+        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause.toString()).isEqualTo(RuntimeException::class.java.name)
         val brukerRegistrering = Optional.ofNullable(
@@ -89,18 +79,18 @@ internal class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
-    fun skal_sette_registreringsstatus_dersom_arenafeil_er_dod_eller_utvandret() {
-        every { oppfolgingGateway!!.aktiverBruker(any(), any()) } throws AktiverBrukerException(
+    fun `skal sette registreringsstatus dersom arenafeil er dod eller utvandret`() {
+        every { oppfolgingGateway.aktiverBruker(any(), any()) } throws AktiverBrukerException(
             AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
         )
 
-        val id = brukerRegistreringRepository!!.lagre(
+        val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository!!.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
-        profileringRepository!!.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService!!.overforArena(id, BRUKER, null) }
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
+        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
         val brukerRegistrering = Optional.ofNullable(
@@ -113,16 +103,16 @@ internal class BrukerRegistreringServiceIntegrationTest {
 
     @Test
     fun skal_sette_registreringsstatus_dersom_arenafeil_er_mangler_opphold() {
-        every { oppfolgingGateway!!.aktiverBruker(any(), any()) } throws
+        every { oppfolgingGateway.aktiverBruker(any(), any()) } throws
             AktiverBrukerException(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
 
-        val id = brukerRegistreringRepository!!.lagre(
+        val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository!!.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
-        profileringRepository!!.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService!!.overforArena(id, BRUKER, null) }
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
+        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
         val brukerRegistrering = Optional.ofNullable(
@@ -134,16 +124,16 @@ internal class BrukerRegistreringServiceIntegrationTest {
     }
 
     @Test
-    fun gitt_at_overforing_til_arena_gikk_bra_skal_status_oppdateres_til_overfort_arena() {
-        every { oppfolgingGateway!!.aktiverBruker(any(), any()) } just Runs
+    fun `gitt at overforing til arena gikk bra skal status oppdateres til overfort arena`() {
+        every { oppfolgingGateway.aktiverBruker(any(), any()) } just Runs
 
-        val id = brukerRegistreringRepository!!.lagre(
+        val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository!!.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
-        profileringRepository!!.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService!!.overforArena(id, BRUKER, null) }
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
+        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isSuccess).isTrue
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
@@ -169,11 +159,12 @@ internal class BrukerRegistreringServiceIntegrationTest {
 
         @Bean
         fun hentBrukerTilstandService(
-            oppfolgingGateway: OppfolgingGateway?,
-            sykemeldingService: SykemeldingService?,
-            unleashService: UnleashService?
+            oppfolgingGateway: OppfolgingGateway,
+            sykemeldingService: SykemeldingService,
+            unleashService: UnleashService,
+            brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService)
+            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository)
         }
 
         @Bean

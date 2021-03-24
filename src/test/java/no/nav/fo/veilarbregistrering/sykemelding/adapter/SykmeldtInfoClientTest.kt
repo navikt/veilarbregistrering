@@ -63,7 +63,8 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService
+                unleashService,
+                brukerRegistreringRepository
             ),
             oppfolgingGateway,
             brukerRegistreringRepository,

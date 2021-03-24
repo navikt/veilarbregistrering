@@ -8,8 +8,8 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 
 public class BrukersTilstandUtenSperret extends BrukersTilstand {
 
-    public BrukersTilstandUtenSperret(Oppfolgingsstatus Oppfolgingsstatus, SykmeldtInfoData sykmeldtInfoData) {
-        super(Oppfolgingsstatus, sykmeldtInfoData);
+    public BrukersTilstandUtenSperret(Oppfolgingsstatus Oppfolgingsstatus, SykmeldtInfoData sykmeldtInfoData, boolean harIgangsattGjenopptagbarRegistrering) {
+        super(Oppfolgingsstatus, sykmeldtInfoData, harIgangsattGjenopptagbarRegistrering);
     }
 
     @Override

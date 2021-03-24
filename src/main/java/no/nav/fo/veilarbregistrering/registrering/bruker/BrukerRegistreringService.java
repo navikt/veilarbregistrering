@@ -136,7 +136,7 @@ public class BrukerRegistreringService {
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker);
 
         if (brukersTilstand.isUnderOppfolging()) {
             throw new RuntimeException("Bruker allerede under oppfølging.");

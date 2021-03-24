@@ -37,7 +37,7 @@ public class StartRegistreringStatusService {
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker);
 
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 

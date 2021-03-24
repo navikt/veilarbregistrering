@@ -48,7 +48,8 @@ class SykmeldtRegistreringServiceTest {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService
+                unleashService,
+                brukerRegistreringRepository
             ),
             oppfolgingGateway,
             brukerRegistreringRepository,

@@ -19,13 +19,21 @@ public class BrukersTilstand implements HasMetrics {
     private final SykmeldtInfoData sykmeldtInfoData;
     private final RegistreringType registreringType;
     private final Oppfolgingsstatus oppfolgingStatusData;
+    private boolean harIgangsattGjenopptagbarRegistrering;
+
+    public boolean isHarIgangsattGjenopptagbarRegistrering() {
+        return harIgangsattGjenopptagbarRegistrering;
+    }
+
 
     public BrukersTilstand(
             Oppfolgingsstatus Oppfolgingsstatus,
-            SykmeldtInfoData sykmeldtInfoData) {
+            SykmeldtInfoData sykmeldtInfoData,
+            boolean harIgangsattGjenopptagbarRegistrering) {
         this.oppfolgingStatusData = Oppfolgingsstatus;
         this.sykmeldtInfoData = sykmeldtInfoData;
         this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData);
+        this.harIgangsattGjenopptagbarRegistrering = registreringType == ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering;
     }
 
     protected RegistreringType beregnRegistreringType(

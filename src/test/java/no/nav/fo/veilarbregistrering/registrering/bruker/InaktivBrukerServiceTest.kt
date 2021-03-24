@@ -39,7 +39,8 @@ class InaktivBrukerServiceTest {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService
+                unleashService,
+                brukerRegistreringRepository
             ),
             brukerRegistreringRepository,
             oppfolgingGateway

@@ -28,7 +28,7 @@ public class BrukersTilstandTest {
 
         SykmeldtInfoData sykeforlop = new SykmeldtInfoData(null, false);
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop, false);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
         assertThat(registreringType).isEqualTo(SPERRET);
@@ -50,7 +50,7 @@ public class BrukersTilstandTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop, false);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
         assertThat(registreringType).isEqualTo(SPERRET);
@@ -72,7 +72,7 @@ public class BrukersTilstandTest {
                 maksdato.asString(),
                 maksdato.beregnSykmeldtMellom39Og52Uker(LocalDate.of(2020, 5, 1)));
 
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykeforlop, false);
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
         assertThat(registreringType).isEqualTo(SYKMELDT_REGISTRERING);

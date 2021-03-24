@@ -74,8 +74,9 @@ public class ServiceBeansConfig {
     BrukerTilstandService brukerTilstandService(
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService,
-            UnleashService unleashService) {
-        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService);
+            UnleashService unleashService,
+            BrukerRegistreringRepository brukerRegistreringRepository) {
+        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository);
     }
 
     @Bean

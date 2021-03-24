@@ -25,7 +25,7 @@ public class InaktivBrukerService {
 
     @Transactional
     public void reaktiverBruker(Bruker bruker) {
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker.getGjeldendeFoedselsnummer());
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker);
         if (!brukersTilstand.kanReaktiveres()) {
             throw new KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.");
         }

@@ -26,7 +26,7 @@ public class StartRegistreringStatusDtoMapperTest {
                 null,
                 null);
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData(null, false);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
@@ -58,7 +58,7 @@ public class StartRegistreringStatusDtoMapperTest {
                 Servicegruppe.of("SERV"),
                 Rettighetsgruppe.of("AAP"));
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData("01122019", true);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
@@ -90,7 +90,7 @@ public class StartRegistreringStatusDtoMapperTest {
                 Servicegruppe.of("SERV"),
                 Rettighetsgruppe.of("AAP"));
         SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData("01122019", true);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,

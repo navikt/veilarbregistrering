@@ -39,19 +39,26 @@ import java.time.LocalDate
 import java.util.*
 
 @JdbcTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 class HentBrukerRegistreringServiceIntegrationTest(
-        @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
-        @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
-        @Autowired val hentRegistreringService: HentRegistreringService,
-        @Autowired var oppfolgingGateway: OppfolgingGateway,
-        @Autowired var profileringService: ProfileringService
+    @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
+    @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
+    @Autowired val hentRegistreringService: HentRegistreringService,
+    @Autowired var oppfolgingGateway: OppfolgingGateway,
+    @Autowired var profileringService: ProfileringService
 ) {
 
     @BeforeEach
     fun setupEach() {
-        every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns Oppfolgingsstatus(false, false, null, null, null, null)
+        every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns Oppfolgingsstatus(
+            false,
+            false,
+            null,
+            null,
+            null,
+            null
+        )
         every { profileringService.profilerBruker(any(), any(), any()) } returns lagProfilering()
     }
 
@@ -69,21 +76,39 @@ class HentBrukerRegistreringServiceIntegrationTest(
     companion object {
         private val ident = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker.of(ident, AktorId.of("AKTØRID"))
-        private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb().setOpprettetDato(LocalDate.of(2014, 12, 8).atStartOfDay())
-        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
+        private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb()
+            .setOpprettetDato(LocalDate.of(2014, 12, 8).atStartOfDay())
+        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
+            .setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
 
         @Configuration
         open class TestContext {
             @Bean
             open fun hentRegistreringService(
-                    db: JdbcTemplate,
-                    brukerRegistreringRepository: BrukerRegistreringRepository,
-                        profileringRepository: ProfileringRepository,
-            manuellRegistreringRepository: ManuellRegistreringRepository) = HentRegistreringService(brukerRegistreringRepository, profileringRepository, manuellRegistreringRepository, norg2Gateway())
+                db: JdbcTemplate,
+                brukerRegistreringRepository: BrukerRegistreringRepository,
+                profileringRepository: ProfileringRepository,
+                manuellRegistreringRepository: ManuellRegistreringRepository
+            ) = HentRegistreringService(
+                brukerRegistreringRepository,
+                profileringRepository,
+                manuellRegistreringRepository,
+                norg2Gateway()
+            )
 
             @Bean
-            open fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway, sykemeldingService: SykemeldingService, unleashService: UnleashService): BrukerTilstandService {
-                return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService)
+            open fun hentBrukerTilstandService(
+                oppfolgingGateway: OppfolgingGateway,
+                sykemeldingService: SykemeldingService,
+                unleashService: UnleashService,
+                brukerRegistreringRepository: BrukerRegistreringRepository,
+            ): BrukerTilstandService {
+                return BrukerTilstandService(
+                    oppfolgingGateway,
+                    sykemeldingService,
+                    unleashService,
+                    brukerRegistreringRepository
+                )
             }
 
             @Bean
