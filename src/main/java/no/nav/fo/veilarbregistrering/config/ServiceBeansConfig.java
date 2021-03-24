@@ -54,13 +54,13 @@ public class ServiceBeansConfig {
 
     @Bean
     HentRegistreringService hentRegistreringService(
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
             SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ProfileringRepository profileringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             Norg2Gateway norg2Gateway) {
         return new HentRegistreringService(
-                brukerRegistreringRepository,
+                ordinaerBrukerRegistreringRepository,
                 sykmeldtRegistreringRepository, profileringRepository,
                 manuellRegistreringRepository,
                 norg2Gateway);
@@ -76,8 +76,12 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService,
             UnleashService unleashService,
-            BrukerRegistreringRepository brukerRegistreringRepository) {
-        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository);
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository) {
+        return new BrukerTilstandService(
+                oppfolgingGateway,
+                sykemeldingService,
+                unleashService,
+                ordinaerBrukerRegistreringRepository);
     }
 
     @Bean
@@ -121,7 +125,7 @@ public class ServiceBeansConfig {
 
     @Bean
     BrukerRegistreringService registrerBrukerService(
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
             ProfileringRepository profileringRepository,
             OppfolgingGateway oppfolgingGateway,
             ProfileringService profileringService,
@@ -130,7 +134,7 @@ public class ServiceBeansConfig {
             ManuellRegistreringRepository manuellRegistreringRepository,
             InfluxMetricsService influxMetricsService) {
         return new BrukerRegistreringService(
-                brukerRegistreringRepository,
+                ordinaerBrukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
@@ -254,14 +258,14 @@ public class ServiceBeansConfig {
     @Bean
     PubliseringAvEventsService publiseringAvEventsService(
             ProfileringRepository profileringRepository,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             PrometheusMetricsService prometheusMetricsService) {
         return new PubliseringAvEventsService(
                 profileringRepository,
-                brukerRegistreringRepository,
+                ordinaerBrukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
                 registreringTilstandRepository,
                 arbeidssokerProfilertProducer,

@@ -12,10 +12,10 @@ import kotlin.jvm.JvmOverloads
 import java.time.LocalDateTime
 
 class BrukerTilstandService(
-    private val oppfolgingGateway: OppfolgingGateway,
-    private val sykemeldingService: SykemeldingService,
-    private val unleashService: UnleashService,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+        private val oppfolgingGateway: OppfolgingGateway,
+        private val sykemeldingService: SykemeldingService,
+        private val unleashService: UnleashService,
+        private val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
 ) {
     @JvmOverloads
     fun hentBrukersTilstand(bruker: Bruker, sykmeldtRegistrering: Boolean = false): BrukersTilstand {
@@ -41,7 +41,7 @@ class BrukerTilstandService(
     }
 
     private fun harIgangsattRegistreringSomKanGjenopptas(bruker: Bruker): Boolean =
-        brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
+        ordinaerBrukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
             bruker.aktorId,
             Status.DOD_UTVANDRET_ELLER_FORSVUNNET,
             Status.MANGLER_ARBEIDSTILLATELSE

@@ -17,8 +17,8 @@ import java.sql.SQLException
 import java.sql.Timestamp
 import java.time.LocalDateTime.now
 
-class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) :
-        BrukerRegistreringRepository {
+class OrdinaerBrukerregistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) :
+        OrdinaerBrukerRegistreringRepository {
 
     override fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering {
         val id = nesteFraSekvens(BRUKER_REGISTRERING_SEQ)

@@ -15,27 +15,25 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import java.time.LocalDate
 
 class BrukerTilstandServiceTest {
     private lateinit var oppfolgingGateway: OppfolgingGateway
     private lateinit var sykemeldingService: SykemeldingService
     private lateinit var unleashService: UnleashService
-    private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
+    private lateinit var ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository
     private lateinit var brukerTilstandService: BrukerTilstandService
     @BeforeEach
     fun setUp() {
         oppfolgingGateway = mockk()
         sykemeldingService = mockk()
         unleashService = mockk()
-        brukerRegistreringRepository = mockk(relaxed = true)
+        ordinaerBrukerRegistreringRepository = mockk(relaxed = true)
         brukerTilstandService = BrukerTilstandService(
             oppfolgingGateway,
             sykemeldingService,
             unleashService,
-            brukerRegistreringRepository
+            ordinaerBrukerRegistreringRepository
         )
     }
 

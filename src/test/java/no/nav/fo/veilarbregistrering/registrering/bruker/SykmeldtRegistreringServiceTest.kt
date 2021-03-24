@@ -27,7 +27,7 @@ import java.time.LocalDate
 class SykmeldtRegistreringServiceTest {
     private lateinit var sykmeldtRegistreringService: SykmeldtRegistreringService
 
-    private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
+    private val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository = mockk(relaxed = true)
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk(relaxed = true)
     private val manuellRegistreringRepository: ManuellRegistreringRepository = mockk(relaxed = true)
     private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
@@ -39,7 +39,7 @@ class SykmeldtRegistreringServiceTest {
     @BeforeEach
     fun setup() {
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
-        brukerRegistreringRepository
+        ordinaerBrukerRegistreringRepository
 
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
@@ -50,7 +50,7 @@ class SykmeldtRegistreringServiceTest {
                     influxMetricsService
                 ),
                 unleashService,
-                brukerRegistreringRepository
+                ordinaerBrukerRegistreringRepository
             ),
             oppfolgingGateway,
             sykmeldtRegistreringRepository,

@@ -26,7 +26,7 @@ public class BrukerRegistreringService {
 
     private static final Logger LOG = LoggerFactory.getLogger(BrukerRegistreringService.class);
 
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository;
     private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ProfileringService profileringService;
     private final ProfileringRepository profileringRepository;
@@ -35,14 +35,15 @@ public class BrukerRegistreringService {
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final InfluxMetricsService influxMetricsService;
 
-    public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
-                                     ProfileringRepository profileringRepository,
-                                     OppfolgingGateway oppfolgingGateway,
-                                     ProfileringService profileringService,
-                                     RegistreringTilstandRepository registreringTilstandRepository,
-                                     BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
-                                     InfluxMetricsService influxMetricsService) {
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
+    public BrukerRegistreringService(
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
+            ProfileringRepository profileringRepository,
+            OppfolgingGateway oppfolgingGateway,
+            ProfileringService profileringService,
+            RegistreringTilstandRepository registreringTilstandRepository,
+            BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
+            InfluxMetricsService influxMetricsService) {
+        this.ordinaerBrukerRegistreringRepository = ordinaerBrukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
         this.profileringService = profileringService;
@@ -62,7 +63,7 @@ public class BrukerRegistreringService {
     public OrdinaerBrukerRegistrering registrerBrukerUtenOverforing(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker, NavVeileder veileder) {
         validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker);
 
-        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
+        OrdinaerBrukerRegistrering opprettetBrukerRegistrering = ordinaerBrukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker);
 
         lagreManuellRegistrering(opprettetBrukerRegistrering, veileder);
 

@@ -42,7 +42,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
-        val brukerRegistreringRepository: BrukerRegistreringRepository = mockk()
+        val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository = mockk()
         val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
@@ -62,7 +62,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
                     influxMetricsService
                 ),
                 unleashService,
-                brukerRegistreringRepository
+                ordinaerBrukerRegistreringRepository
             ),
             oppfolgingGateway,
             sykmeldtRegistreringRepository,

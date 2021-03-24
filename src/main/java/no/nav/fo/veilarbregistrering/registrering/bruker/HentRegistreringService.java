@@ -21,19 +21,19 @@ public class HentRegistreringService {
 
     private static final Logger LOG = LoggerFactory.getLogger(HentRegistreringService.class);
 
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository;
     private final SykmeldtRegistreringRepository sykmeldtRegistreringRepository;
     private final ProfileringRepository profileringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final Norg2Gateway norg2Gateway;
 
     public HentRegistreringService(
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
             SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ProfileringRepository profileringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             Norg2Gateway norg2Gateway) {
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.ordinaerBrukerRegistreringRepository = ordinaerBrukerRegistreringRepository;
         this.sykmeldtRegistreringRepository = sykmeldtRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
@@ -41,7 +41,7 @@ public class HentRegistreringService {
     }
 
     public OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker) {
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = ordinaerBrukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA, Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND);
 
         if (ordinaerBrukerRegistrering == null) {

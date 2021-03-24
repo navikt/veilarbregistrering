@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Autowired
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+    private val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
     @Autowired
     private val registreringTilstandRepository: RegistreringTilstandRepository) {
 
@@ -42,7 +42,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     @Test
     fun `skal lagre og hente registreringTilstand`() {
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        val lagretRegistrering = ordinaerBrukerRegistreringRepository.lagre(registrering, BRUKER_1)
         val registreringTilstand = RegistreringTilstand.medStatus(MOTTATT, lagretRegistrering.id)
         val id = registreringTilstandRepository.lagre(registreringTilstand)
         assertThat(id).isNotNegative()
@@ -56,7 +56,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Test
     fun `finnRegistreringTilstandMed skal returnere alle tilstander med angitt status`() {
-        val lagretRegistrering1 = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
+        val lagretRegistrering1 = ordinaerBrukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
         val tilstand1 = RegistreringTilstandTestdataBuilder.registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering1.id)
                 .opprettet(LocalDateTime.now().minusMinutes(5))
@@ -64,7 +64,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
                 .build()
 
         registreringTilstandRepository.lagre(tilstand1)
-        val lagretRegistrering2 = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
+        val lagretRegistrering2 = ordinaerBrukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
         val tilstand2 = RegistreringTilstandTestdataBuilder.registreringTilstand()
                 .brukerRegistreringId(lagretRegistrering2.id)
                 .opprettet(LocalDateTime.now().minusMinutes(5))
@@ -79,8 +79,8 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     fun `skal returnere neste registrering klar for publisering`() {
         val nyesteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val eldsteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
-        val lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1)
+        val lagretNyesteRegistrering = ordinaerBrukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
+        val lagretEldsteRegistrering = ordinaerBrukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1)
         val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
                 .brukerRegistreringId(lagretNyesteRegistrering.id)
                 .opprettet(LocalDateTime.now().minusMinutes(5))
@@ -101,8 +101,8 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     fun `skal returnere empty naar ingen klare for publisering`() {
         val nyesteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val eldsteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
-        val lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1)
+        val lagretNyesteRegistrering = ordinaerBrukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
+        val lagretEldsteRegistrering = ordinaerBrukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1)
         val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
                 .brukerRegistreringId(lagretNyesteRegistrering.id)
                 .opprettet(LocalDateTime.now().minusMinutes(5))
@@ -142,7 +142,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     @Test
     fun `skal kaste exception ved forsoek paa aa lagre tilstand med brukerregistreringid som allerede finnes`() {
         var registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        registrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        registrering = ordinaerBrukerRegistreringRepository.lagre(registrering, BRUKER_1)
         val registreringTilstandMottatt = RegistreringTilstandTestdataBuilder.registreringTilstand()
                 .brukerRegistreringId(registrering.id)
                 .opprettet(LocalDateTime.now().minusDays(10))
@@ -159,7 +159,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
 
     private fun lagRegistreringMedTilstand(status: Status, antall: Int) {
         for (i in 0 until antall) {
-            val registrering = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
+            val registrering = ordinaerBrukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
             val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
                     .brukerRegistreringId(registrering.id)
                     .opprettet(LocalDateTime.now().minusMinutes(5))

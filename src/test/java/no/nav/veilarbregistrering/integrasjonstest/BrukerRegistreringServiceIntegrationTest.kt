@@ -39,12 +39,12 @@ import java.util.*
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, BrukerregistreringConfigTest::class])
 internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
-    private val brukerRegistreringService: BrukerRegistreringService,
-    private val oppfolgingGateway: OppfolgingGateway,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val registreringTilstandRepository: RegistreringTilstandRepository,
-    private val profileringRepository: ProfileringRepository,
-    private val jdbcTemplate: JdbcTemplate,
+        private val brukerRegistreringService: BrukerRegistreringService,
+        private val oppfolgingGateway: OppfolgingGateway,
+        private val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
+        private val registreringTilstandRepository: RegistreringTilstandRepository,
+        private val profileringRepository: ProfileringRepository,
+        private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
     fun setup() {
@@ -61,7 +61,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     @Test
     fun `skal rulle tilbake database dersom overforing til arena feiler`() {
         every { oppfolgingGateway.aktiverBruker(any(), any()) } throws RuntimeException()
-        val id = brukerRegistreringRepository.lagre(
+        val id = ordinaerBrukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
@@ -71,7 +71,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause.toString()).isEqualTo(RuntimeException::class.java.name)
         val brukerRegistrering = Optional.ofNullable(
-            brukerRegistreringRepository.hentBrukerregistreringForId(id)
+            ordinaerBrukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
         val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
@@ -84,7 +84,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
         )
 
-        val id = brukerRegistreringRepository.lagre(
+        val id = ordinaerBrukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
@@ -94,7 +94,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
         val brukerRegistrering = Optional.ofNullable(
-            brukerRegistreringRepository.hentBrukerregistreringForId(id)
+            ordinaerBrukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
         val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
@@ -106,7 +106,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         every { oppfolgingGateway.aktiverBruker(any(), any()) } throws
             AktiverBrukerException(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
 
-        val id = brukerRegistreringRepository.lagre(
+        val id = ordinaerBrukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
@@ -116,7 +116,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         Assertions.assertThat(run.isFailure).isTrue
         Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
         val brukerRegistrering = Optional.ofNullable(
-            brukerRegistreringRepository.hentBrukerregistreringForId(id)
+            ordinaerBrukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
         val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
@@ -127,7 +127,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     fun `gitt at overforing til arena gikk bra skal status oppdateres til overfort arena`() {
         every { oppfolgingGateway.aktiverBruker(any(), any()) } just Runs
 
-        val id = brukerRegistreringRepository.lagre(
+        val id = ordinaerBrukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
@@ -136,7 +136,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isSuccess).isTrue
         val brukerRegistrering = Optional.ofNullable(
-            brukerRegistreringRepository.hentBrukerregistreringForId(id)
+            ordinaerBrukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
         val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
@@ -159,12 +159,12 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
         @Bean
         fun hentBrukerTilstandService(
-            oppfolgingGateway: OppfolgingGateway,
-            sykemeldingService: SykemeldingService,
-            unleashService: UnleashService,
-            brukerRegistreringRepository: BrukerRegistreringRepository
+                oppfolgingGateway: OppfolgingGateway,
+                sykemeldingService: SykemeldingService,
+                unleashService: UnleashService,
+                ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, ordinaerBrukerRegistreringRepository)
         }
 
         @Bean
@@ -172,7 +172,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
         @Bean
         fun brukerRegistreringService(
-                brukerRegistreringRepository: BrukerRegistreringRepository?,
+                ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository?,
                 profileringRepository: ProfileringRepository?,
                 oppfolgingGateway: OppfolgingGateway?,
                 profileringService: ProfileringService?,
@@ -182,7 +182,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 influxMetricsService: InfluxMetricsService?
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
-                brukerRegistreringRepository,
+                ordinaerBrukerRegistreringRepository,
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,

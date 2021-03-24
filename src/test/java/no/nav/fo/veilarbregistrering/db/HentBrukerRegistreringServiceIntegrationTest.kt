@@ -39,11 +39,11 @@ import java.util.*
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 class HentBrukerRegistreringServiceIntegrationTest(
-    @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
-    @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
-    @Autowired val hentRegistreringService: HentRegistreringService,
-    @Autowired var oppfolgingGateway: OppfolgingGateway,
-    @Autowired var profileringService: ProfileringService
+        @Autowired val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
+        @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
+        @Autowired val hentRegistreringService: HentRegistreringService,
+        @Autowired var oppfolgingGateway: OppfolgingGateway,
+        @Autowired var profileringService: ProfileringService
 ) {
 
     @BeforeEach
@@ -61,10 +61,10 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
     @Test
     fun `henter opp siste brukerregistrering med filtre på tilstand`() {
-        brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
+        ordinaerBrukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
         }
-        brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
+        ordinaerBrukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
         }
         assertEquals(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling, gyldigStilling())
@@ -82,13 +82,13 @@ class HentBrukerRegistreringServiceIntegrationTest(
         open class TestContext {
             @Bean
             open fun hentRegistreringService(
-                db: JdbcTemplate,
-                brukerRegistreringRepository: BrukerRegistreringRepository,
-                sykmeldtRegistreringRepository : SykmeldtRegistreringRepository,
-                profileringRepository: ProfileringRepository,
-                manuellRegistreringRepository: ManuellRegistreringRepository
+                    db: JdbcTemplate,
+                    ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
+                    sykmeldtRegistreringRepository : SykmeldtRegistreringRepository,
+                    profileringRepository: ProfileringRepository,
+                    manuellRegistreringRepository: ManuellRegistreringRepository
             ) = HentRegistreringService(
-                    brukerRegistreringRepository,
+                    ordinaerBrukerRegistreringRepository,
                     sykmeldtRegistreringRepository,
                     profileringRepository,
                     manuellRegistreringRepository,
@@ -97,16 +97,16 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
             @Bean
             open fun hentBrukerTilstandService(
-                oppfolgingGateway: OppfolgingGateway,
-                sykemeldingService: SykemeldingService,
-                unleashService: UnleashService,
-                brukerRegistreringRepository: BrukerRegistreringRepository,
+                    oppfolgingGateway: OppfolgingGateway,
+                    sykemeldingService: SykemeldingService,
+                    unleashService: UnleashService,
+                    ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
                     oppfolgingGateway,
                     sykemeldingService,
                     unleashService,
-                    brukerRegistreringRepository
+                    ordinaerBrukerRegistreringRepository
                 )
             }
 

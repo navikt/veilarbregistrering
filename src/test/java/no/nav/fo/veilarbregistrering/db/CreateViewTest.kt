@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
@@ -30,7 +30,7 @@ class CreateViewTest {
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
     @Autowired
-    private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
+    private lateinit var brukerRegistreringRepository: OrdinaerBrukerRegistreringRepository
     @Autowired
     private lateinit var registreringTilstandRepository: RegistreringTilstandRepository
     @Autowired

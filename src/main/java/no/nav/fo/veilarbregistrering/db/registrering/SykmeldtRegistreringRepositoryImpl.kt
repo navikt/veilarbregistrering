@@ -20,7 +20,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
 
     override fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering? {
         val sql = "SELECT * FROM ${SYKMELDT_REGISTRERING}" +
-                " WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id " +
+                " WHERE ${OrdinaerBrukerregistreringRepositoryImpl.AKTOR_ID} = :aktor_id " +
                 " ORDER BY ${SYKMELDT_REGISTRERING_ID} DESC" +
                 " FETCH NEXT 1 ROWS ONLY"
 
@@ -57,16 +57,16 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         try {
             SykmeldtRegistrering()
                     .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
-                    .setOpprettetDato(rs.getTimestamp(BrukerRegistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime())
-                    .setTeksterForBesvarelse(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE)))
+                    .setOpprettetDato(rs.getTimestamp(OrdinaerBrukerregistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime())
+                    .setTeksterForBesvarelse(readListOf(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE)))
                     .setBesvarelse(
                             Besvarelse()
-                                    .setFremtidigSituasjon(rs.getString(BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON)?.let(FremtidigSituasjonSvar::valueOf))
-                                    .setTilbakeIArbeid(rs.getString(BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER)?.let(TilbakeIArbeidSvar::valueOf))
-                                    .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(BrukerRegistreringRepositoryImpl.NUS_KODE)))
-                                    .setUtdanningBestatt(rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT)?.let(UtdanningBestattSvar::valueOf))
-                                    .setUtdanningGodkjent(rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE)?.let(UtdanningGodkjentSvar::valueOf))
-                                    .setAndreForhold(rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)?.let(AndreForholdSvar::valueOf))
+                                    .setFremtidigSituasjon(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.FREMTIDIG_SITUASJON)?.let(FremtidigSituasjonSvar::valueOf))
+                                    .setTilbakeIArbeid(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.TILBAKE_ETTER_52_UKER)?.let(TilbakeIArbeidSvar::valueOf))
+                                    .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.NUS_KODE)))
+                                    .setUtdanningBestatt(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.UTDANNING_BESTATT)?.let(UtdanningBestattSvar::valueOf))
+                                    .setUtdanningGodkjent(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE)?.let(UtdanningGodkjentSvar::valueOf))
+                                    .setAndreForhold(rs.getString(OrdinaerBrukerregistreringRepositoryImpl.ANDRE_UTFORDRINGER)?.let(AndreForholdSvar::valueOf))
                     )
         } catch (e: SQLException) {
             throw RuntimeException(e)
@@ -86,15 +86,15 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val allSykmeldtColumns = listOf(
                 SYKMELDT_REGISTRERING_ID,
-                BrukerRegistreringRepositoryImpl.AKTOR_ID,
-                BrukerRegistreringRepositoryImpl.OPPRETTET_DATO,
-                BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE,
-                BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON,
-                BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER,
-                BrukerRegistreringRepositoryImpl.NUS_KODE,
-                BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT,
-                BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE,
-                BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER
+                OrdinaerBrukerregistreringRepositoryImpl.AKTOR_ID,
+                OrdinaerBrukerregistreringRepositoryImpl.OPPRETTET_DATO,
+                OrdinaerBrukerregistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE,
+                OrdinaerBrukerregistreringRepositoryImpl.FREMTIDIG_SITUASJON,
+                OrdinaerBrukerregistreringRepositoryImpl.TILBAKE_ETTER_52_UKER,
+                OrdinaerBrukerregistreringRepositoryImpl.NUS_KODE,
+                OrdinaerBrukerregistreringRepositoryImpl.UTDANNING_BESTATT,
+                OrdinaerBrukerregistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE,
+                OrdinaerBrukerregistreringRepositoryImpl.ANDRE_UTFORDRINGER
         )
 
         private val noParams = emptyMap<String, Any>()

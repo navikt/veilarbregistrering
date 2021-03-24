@@ -4,8 +4,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
@@ -23,7 +23,7 @@ public class PubliseringAvEventsService {
     private static final Logger LOG = LoggerFactory.getLogger(PubliseringAvEventsService.class);
 
     private final ProfileringRepository profileringRepository;
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository;
     private final RegistreringTilstandRepository registreringTilstandRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
@@ -31,13 +31,13 @@ public class PubliseringAvEventsService {
 
     public PubliseringAvEventsService(
             ProfileringRepository profileringRepository,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            OrdinaerBrukerRegistreringRepository ordinaerBrukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
             RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             PrometheusMetricsService prometheusMetricsService) {
         this.profileringRepository = profileringRepository;
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.ordinaerBrukerRegistreringRepository = ordinaerBrukerRegistreringRepository;
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
@@ -56,9 +56,9 @@ public class PubliseringAvEventsService {
         RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
         long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
 
-        Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
+        Bruker bruker = ordinaerBrukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
-        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = ordinaerBrukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
         RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA);
         registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand);

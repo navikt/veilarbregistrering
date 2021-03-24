@@ -23,15 +23,15 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
 class BrukerRegistreringRepositoryDbIntegrationTest(
 
-    @Autowired
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    @Autowired
+        @Autowired
+    private val ordinaerBrukerRegistreringRepository: OrdinaerBrukerRegistreringRepository,
+        @Autowired
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository) {
 
     @Test
     fun registrerBruker() {
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        val ordinaerBrukerRegistrering = ordinaerBrukerRegistreringRepository.lagre(registrering, BRUKER_1)
         assertRegistrertBruker(registrering, ordinaerBrukerRegistrering)
     }
 
@@ -41,9 +41,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
                 .setAndreForhold(AndreForholdSvar.JA))
         val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.NEI))
-        brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
-        brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
-        val registrering = brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111)!!
+        ordinaerBrukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        ordinaerBrukerRegistreringRepository.lagre(registrering2, BRUKER_1)
+        val registrering = ordinaerBrukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111)!!
         assertRegistrertBruker(registrering2, registrering)
     }
 
@@ -63,7 +63,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     fun `bruker som har registrering og ingen sykmeldtregistrering skal ikke få feil`() {
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
             .setAndreForhold(AndreForholdSvar.NEI))
-        brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        ordinaerBrukerRegistreringRepository.lagre(registrering, BRUKER_1)
         assertThat(sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)).isNull()
     }
 
@@ -71,9 +71,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     fun hentOrdinaerBrukerRegistreringForAktorId() {
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA))
-        val lagretBruker = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
+        val lagretBruker = ordinaerBrukerRegistreringRepository.lagre(registrering, BRUKER_1)
         registrering.setId(lagretBruker.id).opprettetDato = lagretBruker.opprettetDato
-        val ordinaerBrukerRegistrering = brukerRegistreringRepository
+        val ordinaerBrukerRegistrering = ordinaerBrukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(AKTOR_ID_11111)
         assertEquals(registrering, ordinaerBrukerRegistrering)
     }
@@ -81,7 +81,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     @Test
     fun hentOrdinaerBrukerRegistreringForAktorIdSkalReturnereNullHvisBrukerIkkeErRegistret() {
         val uregistrertAktorId = AktorId.of("9876543")
-        val profilertBrukerRegistrering = brukerRegistreringRepository
+        val profilertBrukerRegistrering = ordinaerBrukerRegistreringRepository
                 .hentOrdinaerBrukerregistreringForAktorId(uregistrertAktorId)
         assertNull(profilertBrukerRegistrering)
     }
@@ -99,8 +99,8 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Test
     fun skal_hente_foedselsnummer_tilknyttet_ordinaerBrukerRegistrering() {
-        val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
-        val bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.id)
+        val ordinaerBrukerRegistrering = ordinaerBrukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
+        val bruker = ordinaerBrukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.id)
         assertThat(bruker.gjeldendeFoedselsnummer).isEqualTo(BRUKER_1.gjeldendeFoedselsnummer)
         assertThat(bruker.aktorId).isEqualTo(BRUKER_1.aktorId)
     }
