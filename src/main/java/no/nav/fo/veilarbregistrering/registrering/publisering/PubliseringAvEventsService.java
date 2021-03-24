@@ -6,9 +6,9 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
+import static no.nav.fo.veilarbregistrering.registrering.formidling.Status.OVERFORT_ARENA;
 
 public class PubliseringAvEventsService {
 
@@ -24,7 +24,7 @@ public class PubliseringAvEventsService {
 
     private final ProfileringRepository profileringRepository;
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final RegistreringTilstandRepository registreringTilstandRepository;
+    private final RegistreringFormidlingRepository registreringFormidlingRepository;
     private final ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer;
     private final ArbeidssokerProfilertProducer arbeidssokerProfilertProducer;
     private final PrometheusMetricsService prometheusMetricsService;
@@ -33,12 +33,12 @@ public class PubliseringAvEventsService {
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            RegistreringTilstandRepository registreringTilstandRepository,
+            RegistreringFormidlingRepository registreringFormidlingRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             PrometheusMetricsService prometheusMetricsService) {
         this.profileringRepository = profileringRepository;
         this.brukerRegistreringRepository = brukerRegistreringRepository;
-        this.registreringTilstandRepository = registreringTilstandRepository;
+        this.registreringFormidlingRepository = registreringFormidlingRepository;
         this.arbeidssokerRegistrertProducer = arbeidssokerRegistrertProducer;
         this.arbeidssokerProfilertProducer = arbeidssokerProfilertProducer;
         this.prometheusMetricsService = prometheusMetricsService;
@@ -47,22 +47,22 @@ public class PubliseringAvEventsService {
     @Transactional
     public void publiserEvents() {
         rapporterRegistreringStatusAntallForPublisering();
-        Optional<RegistreringTilstand> muligRegistreringTilstand = Optional.ofNullable(registreringTilstandRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA));
+        Optional<RegistreringFormidling> muligRegistreringTilstand = Optional.ofNullable(registreringFormidlingRepository.finnNesteRegistreringTilstandMed(OVERFORT_ARENA));
         if (!muligRegistreringTilstand.isPresent()) {
             LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering");
             return;
         }
 
-        RegistreringTilstand registreringTilstand = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
-        long brukerRegistreringId = registreringTilstand.getBrukerRegistreringId();
+        RegistreringFormidling registreringFormidling = muligRegistreringTilstand.orElseThrow(IllegalStateException::new);
+        long brukerRegistreringId = registreringFormidling.getBrukerRegistreringId();
 
         Bruker bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId);
         Profilering profilering = profileringRepository.hentProfileringForId(brukerRegistreringId);
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId);
 
-        RegistreringTilstand oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA);
-        registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand);
-        LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand);
+        RegistreringFormidling oppdatertRegistreringFormidling = registreringFormidling.oppdaterStatus(Status.PUBLISERT_KAFKA);
+        registreringFormidlingRepository.oppdater(oppdatertRegistreringFormidling);
+        LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringFormidling);
 
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
@@ -84,7 +84,7 @@ public class PubliseringAvEventsService {
 
     private void rapporterRegistreringStatusAntallForPublisering() {
         try {
-            Map<Status, Integer> antallPerStatus = registreringTilstandRepository.hentAntallPerStatus();
+            Map<Status, Integer> antallPerStatus = registreringFormidlingRepository.hentAntallPerStatus();
             prometheusMetricsService.rapporterRegistreringStatusAntall(antallPerStatus);
         } catch (Exception e) {
             LOG.error("Feil ved rapportering av antall statuser", e);

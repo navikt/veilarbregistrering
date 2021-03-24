@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import java.lang.IllegalArgumentException
 
 enum class AktiverBrukerFeil {

@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

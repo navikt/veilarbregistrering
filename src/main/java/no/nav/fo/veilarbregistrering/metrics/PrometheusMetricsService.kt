@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.metrics
 
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import java.util.HashMap
 import java.util.concurrent.atomic.AtomicInteger
 

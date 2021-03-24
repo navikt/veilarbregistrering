@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
+package no.nav.fo.veilarbregistrering.registrering.formidling.resources;
 
 import com.google.gson.Gson;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingService;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 
 public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
 
-    private final RegistreringTilstandService registreringTilstandService;
+    private final RegistreringFormidlingService registreringFormidlingService;
 
-    public InternalRegistreringStatusoversiktServlet(RegistreringTilstandService registreringTilstandService) {
-        this.registreringTilstandService = registreringTilstandService;
+    public InternalRegistreringStatusoversiktServlet(RegistreringFormidlingService registreringFormidlingService) {
+        this.registreringFormidlingService = registreringFormidlingService;
     }
 
     public static final String PATH = "/internal/statusoversikt";
@@ -28,8 +28,8 @@ public class InternalRegistreringStatusoversiktServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Status status = Status.parse(req.getParameter("status"));
 
-        String registreringTilstandIderJson = of(registreringTilstandService.finnRegistreringTilstandMed(status).stream()
-                .map(RegistreringTilstand::getId)
+        String registreringTilstandIderJson = of(registreringFormidlingService.finnRegistreringTilstandMed(status).stream()
+                .map(RegistreringFormidling::getId)
                 .collect(toList()))
                 .map(registreringTilstander -> new Gson().toJson(registreringTilstander)).get();
 

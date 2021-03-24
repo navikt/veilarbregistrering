@@ -8,10 +8,10 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -32,7 +32,7 @@ class CreateViewTest {
     @Autowired
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
     @Autowired
-    private lateinit var registreringTilstandRepository: RegistreringTilstandRepository
+    private lateinit var registreringFormidlingRepository: RegistreringFormidlingRepository
     @Autowired
     private lateinit var profileringRepository: ProfileringRepository
 
@@ -47,8 +47,8 @@ class CreateViewTest {
 
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
-        val initiellTilstand = RegistreringTilstand.medStatus(MOTTATT, ordinaerBrukerRegistrering.id)
-        val id: Long = registreringTilstandRepository.lagre(initiellTilstand)
+        val initiellTilstand = RegistreringFormidling.medStatus(MOTTATT, ordinaerBrukerRegistrering.id)
+        val id: Long = registreringFormidlingRepository.lagre(initiellTilstand)
 
         Profilering()
                 .setAlder(42)
@@ -57,8 +57,8 @@ class CreateViewTest {
                 .apply { profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.id, this) }
 
         Status.values().forEach { status ->
-            registreringTilstandRepository.hentRegistreringTilstand(id).oppdaterStatus(status).also { tilstand ->
-                registreringTilstandRepository.oppdater(tilstand)
+            registreringFormidlingRepository.hentRegistreringTilstand(id).oppdaterStatus(status).also { tilstand ->
+                registreringFormidlingRepository.oppdater(tilstand)
             }
 
             val finnesIBrukerRegistrering = jdbcTemplate.queryForObject("SELECT count(*) FROM DVH_BRUKER_REGISTRERING", Int::class.java)!! > 0

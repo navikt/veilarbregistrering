@@ -1,23 +1,22 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import org.springframework.jdbc.core.RowCallbackHandler
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
 
-class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTemplate) : RegistreringTilstandRepository {
+class RegistreringFormidlingRepositoryImpl(private val db: NamedParameterJdbcTemplate) : RegistreringFormidlingRepository {
 
-    override fun lagre(registreringTilstand: RegistreringTilstand): Long {
+    override fun lagre(registreringFormidling: RegistreringFormidling): Long {
         val id = nesteFraSekvens()
         val params = mapOf(
             "id" to id,
-            "bruker_registrering_id" to registreringTilstand.brukerRegistreringId,
-            "opprettet" to Timestamp.valueOf(registreringTilstand.opprettet),
-            "sist_endret" to registreringTilstand.sistEndret?.let(Timestamp::valueOf),
-            "status" to registreringTilstand.status.name
+            "bruker_registrering_id" to registreringFormidling.brukerRegistreringId,
+            "opprettet" to Timestamp.valueOf(registreringFormidling.opprettet),
+            "sist_endret" to registreringFormidling.sistEndret?.let(Timestamp::valueOf),
+            "status" to registreringFormidling.status.name
         )
 
         val sql = "INSERT INTO $REGISTRERING_TILSTAND" +
@@ -30,24 +29,24 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
 
     /**
      * Oppdaterer registreringtilstand, men sjekker samtidig etter oppdateringer som kan ha skjedd i parallell.
-     * @param registreringTilstand
+     * @param registreringFormidling
      * @throws IllegalStateException dersom sistEndret i databasen er nyere enn den vi forsøker å legge inn.
      */
-    override fun oppdater(registreringTilstand: RegistreringTilstand): RegistreringTilstand {
-        val original: RegistreringTilstand = hentRegistreringTilstand(registreringTilstand.id)
+    override fun oppdater(registreringFormidling: RegistreringFormidling): RegistreringFormidling {
+        val original: RegistreringFormidling = hentRegistreringTilstand(registreringFormidling.id)
         if (original.sistEndret != null && original.sistEndret
-                .isAfter(registreringTilstand.sistEndret)
+                .isAfter(registreringFormidling.sistEndret)
         ) {
             throw IllegalStateException(
                 "RegistreringTilstand hadde allerede blitt oppdatert " +
-                        original.sistEndret.toString() + "Detaljer: " + registreringTilstand
+                        original.sistEndret.toString() + "Detaljer: " + registreringFormidling
             )
         }
 
         val params = mapOf(
-            "status" to registreringTilstand.status.name,
-            "sist_endret" to Timestamp.valueOf(registreringTilstand.sistEndret),
-            "id" to registreringTilstand.id
+            "status" to registreringFormidling.status.name,
+            "sist_endret" to Timestamp.valueOf(registreringFormidling.sistEndret),
+            "id" to registreringFormidling.id
         )
 
         val sql = "UPDATE $REGISTRERING_TILSTAND" +
@@ -55,23 +54,23 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
                 " WHERE $ID = :id"
 
         db.update(sql, params)
-        return hentRegistreringTilstand(registreringTilstand.id)
+        return hentRegistreringTilstand(registreringFormidling.id)
     }
 
-    override fun hentRegistreringTilstand(id: Long): RegistreringTilstand {
+    override fun hentRegistreringTilstand(id: Long): RegistreringFormidling {
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND WHERE ID = :id"
 
         return db.queryForObject(sql, mapOf("id" to id), rowMapper())!!
     }
 
-    override fun finnRegistreringTilstanderMed(status: Status): MutableList<RegistreringTilstand> {
+    override fun finnRegistreringTilstanderMed(status: Status): MutableList<RegistreringFormidling> {
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND WHERE STATUS = :status"
 
         return db.query(sql, mapOf("status" to status.name), rowMapper())
     }
 
 
-    override fun finnNesteRegistreringTilstandMed(status: Status): RegistreringTilstand? {
+    override fun finnNesteRegistreringTilstandMed(status: Status): RegistreringFormidling? {
         val params = mapOf("status" to status.name)
 
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
@@ -100,13 +99,13 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
 
-    override fun hentTilstandFor(registreringsId: Long): RegistreringTilstand {
+    override fun hentTilstandFor(registreringsId: Long): RegistreringFormidling {
         val params = mapOf("bruker_registrering_id" to registreringsId)
 
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
                 " WHERE $BRUKER_REGISTRERING_ID = :bruker_registrering_id" +
                 " FETCH NEXT 1 ROWS ONLY"
-        val registreringsTilstander: MutableList<RegistreringTilstand> =
+        val registreringsTilstander: MutableList<RegistreringFormidling> =
             db.query(sql, params, rowMapper())
         return registreringsTilstander.stream().findFirst()
             .orElseThrow { IllegalStateException("Registrering med id $registreringsId mangler tilstand") }
@@ -121,8 +120,8 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     companion object {
-        private fun rowMapper(): RowMapper<RegistreringTilstand> = RowMapper { rs, _ ->
-            RegistreringTilstand.of(
+        private fun rowMapper(): RowMapper<RegistreringFormidling> = RowMapper { rs, _ ->
+            RegistreringFormidling.of(
                 rs.getLong(ID),
                 rs.getLong(BRUKER_REGISTRERING_ID),
                 rs.getTimestamp(OPPRETTET).toLocalDateTime(),

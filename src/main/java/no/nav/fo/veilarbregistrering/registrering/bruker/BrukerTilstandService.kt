@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.sykemelding.Maksdato
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData

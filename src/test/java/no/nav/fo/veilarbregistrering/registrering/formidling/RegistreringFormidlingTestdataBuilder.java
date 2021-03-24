@@ -1,8 +1,8 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand;
+package no.nav.fo.veilarbregistrering.registrering.formidling;
 
 import java.time.LocalDateTime;
 
-public class RegistreringTilstandTestdataBuilder {
+public class RegistreringFormidlingTestdataBuilder {
 
     public static Builder registreringTilstand() {
         return new Builder();
@@ -15,8 +15,8 @@ public class RegistreringTilstandTestdataBuilder {
         private Status status = Status.MOTTATT;
         private LocalDateTime sistEndret = null;
 
-        public RegistreringTilstand build() {
-            return RegistreringTilstand.of(
+        public RegistreringFormidling build() {
+            return RegistreringFormidling.of(
                     -1L,
                     brukerRegistreringId,
                     opprettet,

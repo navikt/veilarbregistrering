@@ -21,9 +21,9 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -42,11 +42,11 @@ import java.util.*
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 class HentBrukerRegistreringServiceIntegrationTest(
-    @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
-    @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
-    @Autowired val hentRegistreringService: HentRegistreringService,
-    @Autowired var oppfolgingGateway: OppfolgingGateway,
-    @Autowired var profileringService: ProfileringService
+        @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
+        @Autowired val registreringFormidlingRepository: RegistreringFormidlingRepository,
+        @Autowired val hentRegistreringService: HentRegistreringService,
+        @Autowired var oppfolgingGateway: OppfolgingGateway,
+        @Autowired var profileringService: ProfileringService
 ) {
 
     @BeforeEach
@@ -65,10 +65,10 @@ class HentBrukerRegistreringServiceIntegrationTest(
     @Test
     fun `henter opp siste brukerregistrering med filtre på tilstand`() {
         brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
-            registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+            registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.OVERFORT_ARENA, id))
         }
         brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
-            registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+            registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.OVERFORT_ARENA, id))
         }
         assertEquals(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling, gyldigStilling())
     }

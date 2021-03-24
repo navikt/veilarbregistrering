@@ -11,9 +11,9 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class BrukerRegistreringService {
     private static final Logger LOG = LoggerFactory.getLogger(BrukerRegistreringService.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
-    private final RegistreringTilstandRepository registreringTilstandRepository;
+    private final RegistreringFormidlingRepository registreringFormidlingRepository;
     private final ProfileringService profileringService;
     private final ProfileringRepository profileringRepository;
     private final OppfolgingGateway oppfolgingGateway;
@@ -39,14 +39,14 @@ public class BrukerRegistreringService {
                                      ProfileringRepository profileringRepository,
                                      OppfolgingGateway oppfolgingGateway,
                                      ProfileringService profileringService,
-                                     RegistreringTilstandRepository registreringTilstandRepository,
+                                     RegistreringFormidlingRepository registreringFormidlingRepository,
                                      BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
                                      InfluxMetricsService influxMetricsService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
         this.profileringService = profileringService;
-        this.registreringTilstandRepository = registreringTilstandRepository;
+        this.registreringFormidlingRepository = registreringFormidlingRepository;
         this.brukerTilstandService = brukerTilstandService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
 
@@ -73,8 +73,8 @@ public class BrukerRegistreringService {
 
         OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(influxMetricsService,ordinaerBrukerRegistrering, profilering);
 
-        RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
-        registreringTilstandRepository.lagre(registreringTilstand);
+        RegistreringFormidling registreringFormidling = RegistreringFormidling.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
+        registreringFormidlingRepository.lagre(registreringFormidling);
 
         LOG.info("Brukerregistrering (id: {}) gjennomført med data {}, Profilering {}", opprettetBrukerRegistrering.getId(), opprettetBrukerRegistrering, profilering);
 
@@ -96,43 +96,43 @@ public class BrukerRegistreringService {
     @Transactional(noRollbackFor = {AktiverBrukerException.class})
     public void overforArena(long registreringId, Bruker bruker, NavVeileder veileder) {
 
-        RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
+        RegistreringFormidling registreringFormidling = overforArena(registreringId, bruker);
 
-        if (registreringTilstand.getStatus() == Status.OVERFORT_ARENA) {
+        if (registreringFormidling.getStatus() == Status.OVERFORT_ARENA) {
             registrerOverfortStatistikk(veileder);
             return;
         }
 
-        throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()));
+        throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringFormidling.getStatus()));
     }
 
-    private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
+    private RegistreringFormidling overforArena(long registreringId, Bruker bruker) {
 
         Profilering profilering = profileringRepository.hentProfileringForId(registreringId);
 
         try {
             oppfolgingGateway.aktiverBruker(bruker.getGjeldendeFoedselsnummer(), profilering.getInnsatsgruppe());
         } catch (AktiverBrukerException e) {
-            RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.Companion.from(e.getAktiverBrukerFeil()));
+            RegistreringFormidling oppdatertRegistreringFormidling = oppdaterRegistreringTilstand(registreringId, Status.Companion.from(e.getAktiverBrukerFeil()));
 
             LOG.info("Overføring av registrering (id: {}) til Arena feilet med {}", registreringId, e.getAktiverBrukerFeil());
 
-            return oppdatertRegistreringTilstand;
+            return oppdatertRegistreringFormidling;
         }
 
-        RegistreringTilstand oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA);
+        RegistreringFormidling oppdatertRegistreringFormidling = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA);
 
         LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId);
 
-        return oppdatertRegistreringTilstand;
+        return oppdatertRegistreringFormidling;
     }
 
-    private RegistreringTilstand oppdaterRegistreringTilstand(long registreringId, Status status) {
-        RegistreringTilstand aktiveringTilstand = registreringTilstandRepository
+    private RegistreringFormidling oppdaterRegistreringTilstand(long registreringId, Status status) {
+        RegistreringFormidling aktiveringTilstand = registreringFormidlingRepository
                 .hentTilstandFor(registreringId)
                 .oppdaterStatus(status);
 
-        return registreringTilstandRepository.oppdater(aktiveringTilstand);
+        return registreringFormidlingRepository.oppdater(aktiveringTilstand);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {

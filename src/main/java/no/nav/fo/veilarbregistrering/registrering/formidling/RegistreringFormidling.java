@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand;
+package no.nav.fo.veilarbregistrering.registrering.formidling;
 
 import java.time.LocalDateTime;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
  * RegistreringTilstand representerer tilstanden til en BrukerRegistrering på vei mot Arena.
  * Status sier noe om hvor langt registreringen har kommet ift. overføring til Arena og evt. response derfra.
  */
-public class RegistreringTilstand {
+public class RegistreringFormidling {
 
     private long id;
     private long brukerRegistreringId;
@@ -14,15 +14,15 @@ public class RegistreringTilstand {
     private LocalDateTime sistEndret;
     private Status status;
 
-    public static RegistreringTilstand of(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
-        return new RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status);
+    public static RegistreringFormidling of(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+        return new RegistreringFormidling(id, brukerRegistreringId, opprettet, sistEndret, status);
     }
 
-    public static RegistreringTilstand medStatus(Status status, long brukerRegistreringId) {
-        return new RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, status);
+    public static RegistreringFormidling medStatus(Status status, long brukerRegistreringId) {
+        return new RegistreringFormidling(-1L, brukerRegistreringId, LocalDateTime.now(), null, status);
     }
 
-    private RegistreringTilstand(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
+    private RegistreringFormidling(long id, long brukerRegistreringId, LocalDateTime opprettet, LocalDateTime sistEndret, Status status) {
         this.id = id;
         this.brukerRegistreringId = brukerRegistreringId;
         this.opprettet = opprettet;
@@ -50,8 +50,8 @@ public class RegistreringTilstand {
         return id;
     }
 
-    public RegistreringTilstand oppdaterStatus(Status status) {
-        return new RegistreringTilstand(this.id, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
+    public RegistreringFormidling oppdaterStatus(Status status) {
+        return new RegistreringFormidling(this.id, this.brukerRegistreringId, this.opprettet, LocalDateTime.now(), status);
     }
 
     @Override

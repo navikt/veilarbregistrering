@@ -7,12 +7,12 @@ import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringFormidlingRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException
@@ -99,9 +99,9 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         val sql = "SELECT * FROM $BRUKER_REGISTRERING" +
                 " LEFT JOIN $REGISTRERING_TILSTAND ON " +
-                " $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.BRUKER_REGISTRERING_ID} = $BRUKER_REGISTRERING.$BRUKER_REGISTRERING_ID" +
+                " $REGISTRERING_TILSTAND.${RegistreringFormidlingRepositoryImpl.BRUKER_REGISTRERING_ID} = $BRUKER_REGISTRERING.$BRUKER_REGISTRERING_ID" +
                 " WHERE $BRUKER_REGISTRERING.$AKTOR_ID = :aktor_id" +
-                " AND $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.STATUS} in (:tilstander)" +
+                " AND $REGISTRERING_TILSTAND.${RegistreringFormidlingRepositoryImpl.STATUS} in (:tilstander)" +
                 " ORDER BY $BRUKER_REGISTRERING.$OPPRETTET_DATO DESC" +
                 " FETCH NEXT 1 ROWS ONLY"
 

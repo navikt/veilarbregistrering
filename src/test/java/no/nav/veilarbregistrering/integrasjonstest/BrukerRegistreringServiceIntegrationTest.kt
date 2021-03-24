@@ -16,9 +16,9 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidling
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringFormidlingRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.veilarbregistrering.integrasjonstest.BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest
 import org.assertj.core.api.Assertions
@@ -39,12 +39,12 @@ import java.util.*
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, BrukerregistreringConfigTest::class])
 internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
-    private val brukerRegistreringService: BrukerRegistreringService,
-    private val oppfolgingGateway: OppfolgingGateway,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val registreringTilstandRepository: RegistreringTilstandRepository,
-    private val profileringRepository: ProfileringRepository,
-    private val jdbcTemplate: JdbcTemplate,
+        private val brukerRegistreringService: BrukerRegistreringService,
+        private val oppfolgingGateway: OppfolgingGateway,
+        private val brukerRegistreringRepository: BrukerRegistreringRepository,
+        private val registreringFormidlingRepository: RegistreringFormidlingRepository,
+        private val profileringRepository: ProfileringRepository,
+        private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
     fun setup() {
@@ -65,7 +65,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
         val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
@@ -73,7 +73,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
-        val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
+        val registreringTilstand = registreringFormidlingRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
         Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.MOTTATT)
     }
@@ -88,7 +88,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
         val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
@@ -96,7 +96,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
-        val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
+        val registreringTilstand = registreringFormidlingRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
         Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.DOD_UTVANDRET_ELLER_FORSVUNNET)
     }
@@ -110,7 +110,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
         val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isFailure).isTrue
@@ -118,7 +118,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
-        val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
+        val registreringTilstand = registreringFormidlingRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
         Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.MANGLER_ARBEIDSTILLATELSE)
     }
@@ -131,14 +131,14 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
             BRUKER
         ).id
-        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
+        registreringFormidlingRepository.lagre(RegistreringFormidling.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
         val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
         Assertions.assertThat(run.isSuccess).isTrue
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
-        val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
+        val registreringTilstand = registreringFormidlingRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
         Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.OVERFORT_ARENA)
     }
@@ -176,7 +176,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 profileringRepository: ProfileringRepository?,
                 oppfolgingGateway: OppfolgingGateway?,
                 profileringService: ProfileringService?,
-                registreringTilstandRepository: RegistreringTilstandRepository?,
+                registreringFormidlingRepository: RegistreringFormidlingRepository?,
                 brukerTilstandService: BrukerTilstandService?,
                 manuellRegistreringRepository: ManuellRegistreringRepository?,
                 influxMetricsService: InfluxMetricsService?
@@ -186,7 +186,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 profileringRepository,
                 oppfolgingGateway,
                 profileringService,
-                registreringTilstandRepository,
+                registreringFormidlingRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
                 influxMetricsService
