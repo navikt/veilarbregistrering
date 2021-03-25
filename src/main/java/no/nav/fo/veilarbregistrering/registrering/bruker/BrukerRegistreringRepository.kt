@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 
 interface BrukerRegistreringRepository {
     fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering
-    fun lagreSykmeldtBruker(bruker: SykmeldtRegistrering, aktorId: AktorId): Long
     fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering
     fun hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
         aktorId: AktorId,
@@ -14,6 +13,5 @@ interface BrukerRegistreringRepository {
     ): OrdinaerBrukerRegistrering?
 
     fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering?
-    fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering?
     fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker
 }

@@ -22,16 +22,19 @@ public class HentRegistreringService {
     private static final Logger LOG = LoggerFactory.getLogger(HentRegistreringService.class);
 
     private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final SykmeldtRegistreringRepository sykmeldtRegistreringRepository;
     private final ProfileringRepository profileringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private final Norg2Gateway norg2Gateway;
 
     public HentRegistreringService(
             BrukerRegistreringRepository brukerRegistreringRepository,
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ProfileringRepository profileringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             Norg2Gateway norg2Gateway) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.sykmeldtRegistreringRepository = sykmeldtRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
         this.norg2Gateway = norg2Gateway;
@@ -57,7 +60,7 @@ public class HentRegistreringService {
     }
 
     public SykmeldtRegistrering hentSykmeldtRegistrering(Bruker bruker) {
-        SykmeldtRegistrering sykmeldtBrukerRegistrering = brukerRegistreringRepository
+        SykmeldtRegistrering sykmeldtBrukerRegistrering = sykmeldtRegistreringRepository
                 .hentSykmeldtregistreringForAktorId(bruker.getAktorId());
 
         if (sykmeldtBrukerRegistrering == null) {
@@ -88,9 +91,7 @@ public class HentRegistreringService {
     Optional<NavEnhet> finnEnhet(Enhetnr enhetId) {
         try {
             Map<Enhetnr, NavEnhet> enhetnrNavEnhetMap = norg2Gateway.hentAlleEnheter();
-
             NavEnhet navEnhet = enhetnrNavEnhetMap.get(enhetId);
-
             return Optional.ofNullable(navEnhet);
         } catch (Exception e) {
             LOG.error("Feil ved henting av NAV-enheter fra den nye Organisasjonsenhet-tjenesten.", e);

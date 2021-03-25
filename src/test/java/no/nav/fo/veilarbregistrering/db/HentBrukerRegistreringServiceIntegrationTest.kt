@@ -16,10 +16,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
@@ -85,15 +82,17 @@ class HentBrukerRegistreringServiceIntegrationTest(
         open class TestContext {
             @Bean
             open fun hentRegistreringService(
-                db: JdbcTemplate,
-                brukerRegistreringRepository: BrukerRegistreringRepository,
-                profileringRepository: ProfileringRepository,
-                manuellRegistreringRepository: ManuellRegistreringRepository
+                    db: JdbcTemplate,
+                    brukerRegistreringRepository: BrukerRegistreringRepository,
+                    sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
+                    profileringRepository: ProfileringRepository,
+                    manuellRegistreringRepository: ManuellRegistreringRepository
             ) = HentRegistreringService(
-                brukerRegistreringRepository,
-                profileringRepository,
-                manuellRegistreringRepository,
-                norg2Gateway()
+                    brukerRegistreringRepository,
+                    sykmeldtRegistreringRepository,
+                    profileringRepository,
+                    manuellRegistreringRepository,
+                    norg2Gateway()
             )
 
             @Bean

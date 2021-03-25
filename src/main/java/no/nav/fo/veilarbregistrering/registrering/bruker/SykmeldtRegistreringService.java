@@ -19,19 +19,19 @@ public class SykmeldtRegistreringService {
 
     private final BrukerTilstandService brukerTilstandService;
     private final OppfolgingGateway oppfolgingGateway;
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final SykmeldtRegistreringRepository sykmeldtRegistreringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
     private InfluxMetricsService influxMetricsService;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
             InfluxMetricsService influxMetricsService) {
         this.brukerTilstandService = brukerTilstandService;
         this.oppfolgingGateway = oppfolgingGateway;
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.sykmeldtRegistreringRepository = sykmeldtRegistreringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
         this.influxMetricsService = influxMetricsService;
     }
@@ -41,7 +41,7 @@ public class SykmeldtRegistreringService {
         validerSykmeldtdRegistrering(sykmeldtRegistrering, bruker);
 
         oppfolgingGateway.settOppfolgingSykmeldt(bruker.getGjeldendeFoedselsnummer(), sykmeldtRegistrering.getBesvarelse());
-        long id = brukerRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
+        long id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.getAktorId());
 
         lagreManuellRegistrering(id, navVeileder);
         registrerOverfortStatistikk(navVeileder);
