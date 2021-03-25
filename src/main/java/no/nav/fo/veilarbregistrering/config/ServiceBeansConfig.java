@@ -95,11 +95,11 @@ public class ServiceBeansConfig {
     @Bean
     InaktivBrukerService inaktivBrukerService(
             BrukerTilstandService brukerTilstandService,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            ReaktiveringRepository reaktiveringRepository,
             OppfolgingGateway oppfolgingGateway) {
         return new InaktivBrukerService(
                 brukerTilstandService,
-                brukerRegistreringRepository,
+                reaktiveringRepository,
                 oppfolgingGateway);
     }
 
