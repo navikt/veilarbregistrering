@@ -16,10 +16,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
@@ -46,6 +43,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         val brukerRegistreringRepository: BrukerRegistreringRepository = mockk()
+        val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
         val unleashService: UnleashService = mockk(relaxed = true)
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
@@ -67,7 +65,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
                 brukerRegistreringRepository
             ),
             oppfolgingGateway,
-            brukerRegistreringRepository,
+            sykmeldtRegistreringRepository,
             manuellRegistreringRepository,
             influxMetricsService
         )

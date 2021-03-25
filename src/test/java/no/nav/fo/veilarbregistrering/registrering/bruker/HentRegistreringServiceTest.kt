@@ -21,7 +21,7 @@ internal class HentRegistreringServiceTest {
         val unleashService: UnleashService = mockk()
         val norg2Gateway: Norg2Gateway = mockk()
         every { unleashService.isEnabled(any()) } returns true
-        hentRegistreringService = HentRegistreringService(null, null, manuellRegistreringRepository, norg2Gateway)
+        hentRegistreringService = HentRegistreringService(null, null, null, manuellRegistreringRepository, norg2Gateway)
         val enheter: Map<Enhetnr, NavEnhet> = mapOf(
             of("1234") to NavEnhet("1234", "TEST1"),
             of("5678") to NavEnhet("5678", "TEST2")
