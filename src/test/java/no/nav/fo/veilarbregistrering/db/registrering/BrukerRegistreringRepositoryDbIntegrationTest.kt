@@ -48,18 +48,6 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun hentSykmeldtregistreringForAktorId() {
-        val bruker1 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
-                .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING))
-        val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse()
-                .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
-        val registrering = sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)
-        assertSykmeldtRegistrertBruker(bruker2, registrering!!)
-    }
-
-    @Test
     fun `bruker som har registrering og ingen sykmeldtregistrering skal ikke få feil`() {
         val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
             .setAndreForhold(AndreForholdSvar.NEI))
@@ -92,17 +80,25 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         assertThat(ordinaerBrukerRegistrering.teksterForBesvarelse).isEqualTo(bruker.teksterForBesvarelse)
     }
 
-    private fun assertSykmeldtRegistrertBruker(bruker: SykmeldtRegistrering, sykmeldtRegistrering: SykmeldtRegistrering) {
-        assertThat(sykmeldtRegistrering.besvarelse).isEqualTo(bruker.besvarelse)
-        assertThat(sykmeldtRegistrering.teksterForBesvarelse).isEqualTo(bruker.teksterForBesvarelse)
-    }
-
     @Test
     fun skal_hente_foedselsnummer_tilknyttet_ordinaerBrukerRegistrering() {
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
         val bruker = brukerRegistreringRepository.hentBrukerTilknyttet(ordinaerBrukerRegistrering.id)
         assertThat(bruker.gjeldendeFoedselsnummer).isEqualTo(BRUKER_1.gjeldendeFoedselsnummer)
         assertThat(bruker.aktorId).isEqualTo(BRUKER_1.aktorId)
+    }
+
+    @Test
+    fun `finn liste med alle ordinaere registreringer for gitt aktørId`() {
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA))
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.NEI))
+        brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
+
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(BRUKER_1.aktorId)
+        assertThat(ordinaerBrukerregistreringer).hasSize(2)
     }
 
     companion object {

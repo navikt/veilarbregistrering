@@ -52,6 +52,13 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt).firstOrNull()
     }
 
+    override fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering> {
+        val sql = "SELECT * FROM ${SYKMELDT_REGISTRERING}" +
+                " WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
+
+        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt)
+    }
+
     private fun nesteFraSekvens(sekvensNavn: String): Long {
         return db.queryForObject("SELECT $sekvensNavn.nextval FROM DUAL", noParams, Long::class.java)!!
     }
