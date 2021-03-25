@@ -11,15 +11,15 @@ public class InaktivBrukerService {
     private static final Logger LOG = LoggerFactory.getLogger(InaktivBrukerService.class);
 
     private final BrukerTilstandService brukerTilstandService;
-    private final BrukerRegistreringRepository brukerRegistreringRepository;
+    private final ReaktiveringRepository reaktiveringRepository;
     private final OppfolgingGateway oppfolgingGateway;
 
     public InaktivBrukerService(
             BrukerTilstandService brukerTilstandService,
-            BrukerRegistreringRepository brukerRegistreringRepository,
+            ReaktiveringRepository reaktiveringRepository,
             OppfolgingGateway oppfolgingGateway) {
         this.brukerTilstandService = brukerTilstandService;
-        this.brukerRegistreringRepository = brukerRegistreringRepository;
+        this.reaktiveringRepository = reaktiveringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
     }
 
@@ -30,7 +30,7 @@ public class InaktivBrukerService {
             throw new KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.");
         }
 
-        brukerRegistreringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
+        reaktiveringRepository.lagreReaktiveringForBruker(bruker.getAktorId());
         oppfolgingGateway.reaktiverBruker(bruker.getGjeldendeFoedselsnummer());
 
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());

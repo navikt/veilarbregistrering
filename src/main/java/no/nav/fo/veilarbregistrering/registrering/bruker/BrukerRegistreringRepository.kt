@@ -15,6 +15,5 @@ interface BrukerRegistreringRepository {
 
     fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering?
     fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering?
-    fun lagreReaktiveringForBruker(aktorId: AktorId)
     fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker
 }

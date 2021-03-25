@@ -22,6 +22,7 @@ class InaktivBrukerServiceTest {
     private lateinit var inaktivBrukerService: InaktivBrukerService
     private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
     private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
+    private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val unleashService: UnleashService = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
@@ -42,7 +43,7 @@ class InaktivBrukerServiceTest {
                 unleashService,
                 brukerRegistreringRepository
             ),
-            brukerRegistreringRepository,
+            reaktiveringRepository,
             oppfolgingGateway
         )
     }
@@ -51,7 +52,7 @@ class InaktivBrukerServiceTest {
     fun skalReaktivereInaktivBrukerUnder28Dager() {
         mockInaktivBrukerSomSkalReaktiveres()
         inaktivBrukerService.reaktiverBruker(BRUKER_INTERN)
-        verify(exactly = 1) { brukerRegistreringRepository.lagreReaktiveringForBruker(any()) }
+        verify(exactly = 1) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
 
     }
 
@@ -64,7 +65,7 @@ class InaktivBrukerServiceTest {
                         .withKanReaktiveres(false)
         )
         Assertions.assertThrows(RuntimeException::class.java, { inaktivBrukerService.reaktiverBruker(BRUKER_INTERN) }, "Bruker kan ikke reaktiveres.")
-        verify(exactly = 0) { brukerRegistreringRepository.lagreReaktiveringForBruker(any()) }
+        verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 
     private fun mockInaktivBrukerSomSkalReaktiveres() =
