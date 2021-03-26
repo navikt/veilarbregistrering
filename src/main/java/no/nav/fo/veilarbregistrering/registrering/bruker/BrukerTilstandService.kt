@@ -58,12 +58,13 @@ class BrukerTilstandService(
             return
         }
 
-
         var maksdato = maksdato(brukersTilstand)
         LOG.info(
-            "Lik registreringstype? {} - når {}",
+            "Lik registreringstype? {} - når {} - med / uten: {} / {}",
             (brukersTilstand.getRegistreringstype() == brukersTilstandUtenSperret.getRegistreringstype()),
-            maksdato
+            maksdato,
+            brukersTilstand.getRegistreringstype(),
+            brukersTilstandUtenSperret.getRegistreringstype()
         )
     }
 
