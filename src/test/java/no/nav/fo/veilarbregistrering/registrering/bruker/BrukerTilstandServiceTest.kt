@@ -15,8 +15,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import java.time.LocalDate
 
 class BrukerTilstandServiceTest {

@@ -108,6 +108,23 @@ public class RegistreringResource implements RegistreringApi {
     }
 
     @Override
+    @GetMapping("/igangsattregistrering")
+    public ResponseEntity<BrukerRegistreringWrapper> hentPaabegyntRegistrering() {
+        final Bruker bruker = userService.finnBrukerGjennomPdl();
+        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.getAktorId());
+
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker);
+
+        BrukerRegistreringWrapper brukerRegistreringWrapper = BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, null);
+        if (brukerRegistreringWrapper == null) {
+            LOG.info("Bruker ble ikke funnet i databasen.");
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(brukerRegistreringWrapper);
+    }
+
+    @Override
     @PostMapping("/startreaktivering")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reaktivering() {

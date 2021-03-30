@@ -14,8 +14,11 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static no.nav.fo.veilarbregistrering.registrering.bruker.Resending.kanResendes;
 
 public class HentRegistreringService {
 
@@ -41,8 +44,19 @@ public class HentRegistreringService {
     }
 
     public OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker) {
+        return hentOrdinaerBrukerRegistrering(bruker,
+                List.of(Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA, Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND));
+    }
+
+    public OrdinaerBrukerRegistrering hentIgangsattOrdinaerBrukerRegistrering(Bruker bruker) {
+        OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker,
+                List.of(Status.DOD_UTVANDRET_ELLER_FORSVUNNET, Status.MANGLER_ARBEIDSTILLATELSE));
+        return kanResendes(ordinaerBrukerRegistrering) ? ordinaerBrukerRegistrering : null;
+    }
+
+    private OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker, List<Status> status) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), Status.OVERFORT_ARENA, Status.PUBLISERT_KAFKA, Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND);
+                .hentOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), status);
 
         if (ordinaerBrukerRegistrering == null) {
             return null;

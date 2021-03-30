@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import no.nav.common.featuretoggle.UnleashService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.registrering.bruker.Resending.kanResendes
 import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
 import no.nav.fo.veilarbregistrering.sykemelding.Maksdato
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
@@ -41,11 +42,15 @@ class BrukerTilstandService(
     }
 
     private fun harIgangsattRegistreringSomKanGjenopptas(bruker: Bruker): Boolean =
-        brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
-            bruker.aktorId,
-            Status.DOD_UTVANDRET_ELLER_FORSVUNNET,
-            Status.MANGLER_ARBEIDSTILLATELSE
-        )?.opprettetDato?.isAfter(LocalDateTime.now().minusDays(30)) ?: false
+        kanResendes(
+            brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                bruker.aktorId,
+                listOf(
+                    Status.DOD_UTVANDRET_ELLER_FORSVUNNET,
+                    Status.MANGLER_ARBEIDSTILLATELSE,
+                )
+            )
+        )
 
 
     private fun loggfoerRegistreringstype(

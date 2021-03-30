@@ -67,7 +67,10 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, params, registreringMapper)
     }
 
-    override fun hentOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId: AktorId, vararg tilstander: Status): OrdinaerBrukerRegistrering? {
+    override fun hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
+        aktorId: AktorId,
+        tilstander: List<Status>
+    ): OrdinaerBrukerRegistrering? {
         val params = mapOf(
             "aktor_id" to aktorId.asString(),
             "tilstander" to tilstander.map { it.name }
