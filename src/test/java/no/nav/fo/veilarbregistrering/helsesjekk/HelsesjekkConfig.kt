@@ -4,6 +4,7 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.health.selftest.SelfTestMeterBinder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -28,5 +29,10 @@ class HelsesjekkConfig {
                 HealthCheckResult.unhealthy("Fikk ikke kontakt med databasen", e)
             }
         }
+    }
+    
+    @Bean
+    fun selfTestMeterBinder(selfTestChecks: SelfTestChecks): SelfTestMeterBinder {
+        return SelfTestMeterBinder(selfTestChecks)
     }
 }
