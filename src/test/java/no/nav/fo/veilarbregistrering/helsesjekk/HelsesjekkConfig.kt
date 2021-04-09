@@ -4,6 +4,7 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.health.selftest.SelfTestMeterBinder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -15,7 +16,8 @@ class HelsesjekkConfig {
         jdbcTemplate: JdbcTemplate,
     ): SelfTestChecks {
         return SelfTestChecks(listOf(
-            SelfTestCheck("Databasesjekk", true, checkDbHealth(jdbcTemplate))
+            SelfTestCheck("Databasesjekk", true, checkDbHealth(jdbcTemplate)),
+            SelfTestCheck("Dummysjekk", false, checkDummy())
         ))
     }
 
@@ -29,4 +31,12 @@ class HelsesjekkConfig {
             }
         }
     }
+
+    private fun checkDummy() = HealthCheck { HealthCheckResult.healthy() }
+
+    @Bean
+    fun selfTestAggregateMeterBinder(selfTestChecks: SelfTestChecks) = SelfTestMeterBinder(selfTestChecks)
+
+    @Bean
+    fun selfTestStatusMeterBinder(selfTestChecks: SelfTestChecks) = SelfTestStatusMeterBinder(selfTestChecks)
 }

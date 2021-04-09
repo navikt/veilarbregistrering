@@ -48,7 +48,8 @@ class HelsesjekkConfig {
     }
 
     @Bean
-    fun selfTestMeterBinder(selfTestChecks: SelfTestChecks): SelfTestMeterBinder {
-        return SelfTestMeterBinder(selfTestChecks)
-    }
+    fun selfTestAggregateMeterBinder(selfTestChecks: SelfTestChecks) = SelfTestMeterBinder(selfTestChecks)
+
+    @Bean
+    fun selfTestStatusMeterBinder(selfTestChecks: SelfTestChecks) = SelfTestStatusMeterBinder(selfTestChecks)
 }
