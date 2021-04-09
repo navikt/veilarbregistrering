@@ -16,7 +16,8 @@ class HelsesjekkConfig {
         jdbcTemplate: JdbcTemplate,
     ): SelfTestChecks {
         return SelfTestChecks(listOf(
-            SelfTestCheck("Databasesjekk", true, checkDbHealth(jdbcTemplate))
+            SelfTestCheck("Databasesjekk", true, checkDbHealth(jdbcTemplate)),
+            SelfTestCheck("Dummysjekk", false, checkDummy())
         ))
     }
 
@@ -30,6 +31,8 @@ class HelsesjekkConfig {
             }
         }
     }
+
+    private fun checkDummy() = HealthCheck { HealthCheckResult.healthy() }
 
     @Bean
     fun selfTestAggregateMeterBinder(selfTestChecks: SelfTestChecks) = SelfTestMeterBinder(selfTestChecks)
