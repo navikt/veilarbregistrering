@@ -1,8 +1,11 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.registrering.bruker.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import java.sql.SQLException
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -26,6 +29,11 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
         return db.queryForObject("SELECT $sekvensNavn.nextval FROM DUAL", noParams, Long::class.java)!!
     }
 
+    override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
+        val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
+        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), reaktiveringMapper)
+    }
+
     companion object {
         private const val BRUKER_REAKTIVERING_SEQ = "BRUKER_REAKTIVERING_SEQ"
         private const val BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING"
@@ -33,5 +41,16 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
         private const val REAKTIVERING_DATO = "REAKTIVERING_DATO"
 
         private val noParams = emptyMap<String, Any>()
+
+        private val reaktiveringMapper = RowMapper<Reaktivering> { rs, _ ->
+            try {
+                Reaktivering(
+                        rs.getLong("BRUKER_REAKTIVERING_ID"),
+                        AktorId.of(rs.getString("AKTOR_ID")),
+                        rs.getTimestamp("reaktivering_dato").toLocalDateTime())
+            } catch (e: SQLException) {
+                throw RuntimeException(e)
+            }
+        }
     }
 }
