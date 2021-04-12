@@ -15,8 +15,8 @@ class OrdinaerRegistreringTidslinje(private var ordinaereBrukerRegistreringer: L
             return Periode.gyldigPeriode(ordinaerBrukerRegistrering.opprettetDato.toLocalDate(), null)
         }
 
-        override fun status(): Status {
-            return Status.ORDINAER_REGISTRERING
+        override fun type(): Type {
+            return Type.ORDINAER_REGISTRERING
         }
 
         override fun kilde(): Kilde {

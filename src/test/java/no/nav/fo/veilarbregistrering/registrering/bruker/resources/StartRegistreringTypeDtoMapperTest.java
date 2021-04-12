@@ -14,7 +14,7 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.SYKMELDT_REGISTRERING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StartRegistreringStatusDtoMapperTest {
+public class StartRegistreringTypeDtoMapperTest {
 
     @Test
     public void map_skal_håndtere_null_verdier() {

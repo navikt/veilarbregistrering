@@ -28,7 +28,7 @@ class TidslinjeResource(
     }
 
     private fun map(element: TidslinjeElement): HistoriskElementDto {
-        return HistoriskElementDto(map(element.periode()), element.kilde(), element.status())
+        return HistoriskElementDto(map(element.periode()), element.kilde(), element.type())
     }
 
     private fun map(periode: Periode): PeriodeDto {

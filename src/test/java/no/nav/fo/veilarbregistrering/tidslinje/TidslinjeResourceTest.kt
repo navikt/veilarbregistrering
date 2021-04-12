@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import java.util.*
 import java.util.Collections.emptyList
 import javax.servlet.http.HttpServletRequest
 
@@ -50,9 +49,11 @@ class TidslinjeResourceTest(
         every { request.getParameter("fnr") } returns aremark().stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { tidslinjeAggregator.tidslinje(any()) } returns emptyList()
+
         val resultat = mvc.get("/api/tidslinje")
                 .andExpect { status { isOk } }
                 .andReturn().response.contentAsString
+
         assertThat(resultat).isEqualTo(TOM_LISTE)
     }
 
@@ -77,7 +78,7 @@ class TidslinjeResourceTest(
                 )
         )
         private val TOM_LISTE = "{\"historiskeElementer\":[]}"
-        private val LISTE = "{\"historiskeElementer\":[{\"periode\":{\"fraOgMedDato\":\"2021-04-11\",\"tilOgMedDato\":null},\"kilde\":\"ARBEIDSSOKERREGISTRERING\",\"status\":\"ORDINAER_REGISTRERING\"}]}"
+        private val LISTE = "{\"historiskeElementer\":[{\"periode\":{\"fraOgMedDato\":\"2021-04-11\",\"tilOgMedDato\":null},\"kilde\":\"ARBEIDSSOKERREGISTRERING\",\"type\":\"ORDINAER_REGISTRERING\"}]}"
     }
 }
 

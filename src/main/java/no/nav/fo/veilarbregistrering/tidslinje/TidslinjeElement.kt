@@ -6,7 +6,7 @@ interface TidslinjeElement {
 
     fun periode() : Periode
 
-    fun status() : Status
+    fun type() : Type
 
     fun kilde() : Kilde
 
