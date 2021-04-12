@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.*
 
-class StartRegistreringStatusServiceTest {
+class StartRegistreringTypeServiceTest {
     private lateinit var brukerRegistreringService: StartRegistreringStatusService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway
     private lateinit var sykeforloepMetadataClient: SykmeldtInfoClient

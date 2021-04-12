@@ -15,8 +15,8 @@ class SykmeldtTidslinje(private var sykmeldtRegistreringer: List<SykmeldtRegistr
             return Periode.gyldigPeriode(sykmeldtRegistrering.opprettetDato.toLocalDate(), null)
         }
 
-        override fun status(): Status {
-            return Status.SYKMELDT_REGISTRERT
+        override fun type(): Type {
+            return Type.SYKMELDT_REGISTRERT
         }
 
         override fun kilde(): Kilde {

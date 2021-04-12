@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 public class OrdinaerBrukerRegistreringTestdataBuilder {
 
     public static OrdinaerBrukerRegistrering gyldigBrukerRegistrering() {
+        return gyldigBrukerRegistrering(LocalDateTime.now());
+    }
+
+    public static OrdinaerBrukerRegistrering gyldigBrukerRegistrering(LocalDateTime opprettetDato) {
         return new OrdinaerBrukerRegistrering()
-                .setOpprettetDato(LocalDateTime.now())
+                .setOpprettetDato(opprettetDato)
                 .setSisteStilling(StillingTestdataBuilder.gyldigStilling())
                 .setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse())
                 .setTeksterForBesvarelse(TekstForSporsmalTestdataBuilder.gyldigeTeksterForBesvarelse());
@@ -25,4 +29,6 @@ public class OrdinaerBrukerRegistreringTestdataBuilder {
                 .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
         );
     }
+
+
 }
