@@ -38,6 +38,8 @@ import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalReg
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
+import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator;
+import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -292,6 +294,21 @@ public class ServiceBeansConfig {
             KontaktinfoService kontaktinfoService,
             AutorisasjonService autorisasjonService) {
         return new KontaktinfoResource(userService, kontaktinfoService, autorisasjonService);
+    }
+
+    @Bean
+    TidslinjeAggregator tidslinjeAggregator(
+            BrukerRegistreringRepository brukerRegistreringRepository,
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository) {
+        return new TidslinjeAggregator(brukerRegistreringRepository, sykmeldtRegistreringRepository);
+    }
+
+    @Bean
+    TidslinjeResource tidslinjeResource(
+            AutorisasjonService autorisasjonService,
+            UserService userService,
+            TidslinjeAggregator tidslinjeAggregator) {
+        return new TidslinjeResource(autorisasjonService, userService, tidslinjeAggregator);
     }
 
     @Bean
