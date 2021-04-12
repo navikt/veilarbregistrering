@@ -6,4 +6,7 @@ import io.swagger.annotations.ApiOperation
 @Api(value = "TidslinjeResource")
 interface TidslinjeApi {
 
+    @ApiOperation(value = "Returnerer en tidslinje over alle historiske hendelser knyttet til arbeidssøkerregistrering")
+    fun tidslinje() : TidslinjeDto
+
 }

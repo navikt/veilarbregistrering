@@ -20,7 +20,7 @@ class TidslinjeResource(
         private val tidslinjeAggregator: TidslinjeAggregator) : TidslinjeApi {
 
     @GetMapping
-    fun tidslinje() : TidslinjeDto {
+    override fun tidslinje() : TidslinjeDto {
         val bruker: Bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangMedAktorId(bruker.aktorId)
 
