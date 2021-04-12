@@ -299,8 +299,12 @@ public class ServiceBeansConfig {
     @Bean
     TidslinjeAggregator tidslinjeAggregator(
             BrukerRegistreringRepository brukerRegistreringRepository,
-            SykmeldtRegistreringRepository sykmeldtRegistreringRepository) {
-        return new TidslinjeAggregator(brukerRegistreringRepository, sykmeldtRegistreringRepository);
+            SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
+            ReaktiveringRepository reaktiveringRepository) {
+        return new TidslinjeAggregator(
+                brukerRegistreringRepository,
+                sykmeldtRegistreringRepository,
+                reaktiveringRepository);
     }
 
     @Bean
