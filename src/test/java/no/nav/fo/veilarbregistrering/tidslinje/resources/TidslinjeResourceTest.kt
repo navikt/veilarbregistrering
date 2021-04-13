@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.tidslinje
+package no.nav.fo.veilarbregistrering.tidslinje.resources
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -8,7 +8,8 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
+import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
+import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeTestdataBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletRequest
 @AutoConfigureMockMvc
 @WebMvcTest
 @ContextConfiguration(classes = [TidslinjeResourceConfig::class])
-
 class TidslinjeResourceTest(
         @Autowired private val mvc: MockMvc,
         @Autowired private val autorisasjonService: AutorisasjonService,
