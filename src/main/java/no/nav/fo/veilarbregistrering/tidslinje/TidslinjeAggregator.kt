@@ -23,7 +23,7 @@ class TidslinjeAggregator(
         return sykmeldtTidslinje.tidslinje()
                 .plus(ordinaerRegistreringTidslinje.tidslinje())
                 .plus(reaktiveringTidslinje.tidslinje())
-                .sortedBy { a -> a.periode() }
+                .sortedBy { e -> e.periode().fra }
     }
 
 }
