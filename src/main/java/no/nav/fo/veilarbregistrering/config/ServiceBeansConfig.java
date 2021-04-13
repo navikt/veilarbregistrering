@@ -31,10 +31,10 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusServlet;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.resources.InternalRegistreringStatusoversiktServlet;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusServlet;
+import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktServlet;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;

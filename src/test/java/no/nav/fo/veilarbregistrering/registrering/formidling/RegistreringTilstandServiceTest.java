@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand;
+package no.nav.fo.veilarbregistrering.registrering.formidling;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

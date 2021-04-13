@@ -1,9 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import org.springframework.jdbc.core.RowCallbackHandler
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp

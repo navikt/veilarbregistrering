@@ -8,10 +8,10 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status.*
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance

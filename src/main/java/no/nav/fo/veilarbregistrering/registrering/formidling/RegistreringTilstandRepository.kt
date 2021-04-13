@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand
+package no.nav.fo.veilarbregistrering.registrering.formidling
 
 interface RegistreringTilstandRepository {
     fun lagre(registreringTilstand: RegistreringTilstand): Long

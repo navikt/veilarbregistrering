@@ -18,9 +18,9 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
