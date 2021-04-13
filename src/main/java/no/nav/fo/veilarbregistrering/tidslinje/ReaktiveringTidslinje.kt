@@ -23,5 +23,4 @@ class ReaktiveringTidslinje(private val reaktiveringer: List<Reaktivering>): Tid
             return Kilde.ARBEIDSSOKERREGISTRERING
         }
     }
-
 }
