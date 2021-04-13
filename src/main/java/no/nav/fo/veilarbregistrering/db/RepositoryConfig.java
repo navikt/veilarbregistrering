@@ -11,7 +11,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

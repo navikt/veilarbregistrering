@@ -11,7 +11,7 @@ import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandReposit
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException

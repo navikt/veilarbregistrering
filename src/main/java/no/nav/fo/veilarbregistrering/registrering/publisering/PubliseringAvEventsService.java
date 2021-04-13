@@ -6,9 +6,9 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandRepository;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.fo.veilarbregistrering.registrering.tilstand.Status.OVERFORT_ARENA;
+import static no.nav.fo.veilarbregistrering.registrering.formidling.Status.OVERFORT_ARENA;
 
 public class PubliseringAvEventsService {
 

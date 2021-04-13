@@ -1,8 +1,8 @@
-package no.nav.fo.veilarbregistrering.registrering.tilstand.resources;
+package no.nav.fo.veilarbregistrering.registrering.formidling.resources;
 
-import no.nav.fo.veilarbregistrering.registrering.tilstand.OppdaterRegistreringTilstandCommand;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.RegistreringTilstandService;
-import no.nav.fo.veilarbregistrering.registrering.tilstand.Status;
+import no.nav.fo.veilarbregistrering.registrering.formidling.OppdaterRegistreringTilstandCommand;
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService;
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
