@@ -11,6 +11,10 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandTestdataBuilder.registreringTilstand
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +27,8 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
 class BrukerRegistreringRepositoryDbIntegrationTest(
 
+    @Autowired
+    private val registreringTilstandRepository: RegistreringTilstandRepository,
     @Autowired
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     @Autowired
@@ -68,6 +74,36 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
         val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(BRUKER_1.aktorId)
         assertThat(ordinaerBrukerregistreringer).hasSize(2)
+    }
+
+    @Test
+    fun `finnOrdinaerBrukerregistreringForAktorIdOgTilstand skal returnere liste med registreringer for angitt tilstand`() {
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA))
+        val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.OVERFORT_ARENA).build())
+
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.NEI))
+        val lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering2.id).status(Status.OVERFORT_ARENA).build())
+
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
+        assertThat(ordinaerBrukerregistreringer).hasSize(2)
+    }
+
+    @Test
+    fun `finnOrdinaerBrukerregistreringForAktorIdOgTilstand skal returnere tom liste når tilstand ikke finnes`() {
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.JA))
+        brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+                .setAndreForhold(AndreForholdSvar.NEI))
+        brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
+
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
+        assertThat(ordinaerBrukerregistreringer).isEmpty()
     }
 
     companion object {
