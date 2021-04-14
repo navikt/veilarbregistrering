@@ -42,13 +42,13 @@ class BrukerTilstandService(
 
     private fun harIgangsattRegistreringSomKanGjenopptas(bruker: Bruker): Boolean =
         kanResendes(
-            brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
+            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
                 bruker.aktorId,
                 listOf(
                     Status.DOD_UTVANDRET_ELLER_FORSVUNNET,
                     Status.MANGLER_ARBEIDSTILLATELSE,
                 )
-            )
+            ).firstOrNull()
         )
 
 

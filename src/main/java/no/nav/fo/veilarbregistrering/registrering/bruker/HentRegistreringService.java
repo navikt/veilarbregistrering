@@ -56,19 +56,22 @@ public class HentRegistreringService {
 
     private OrdinaerBrukerRegistrering hentOrdinaerBrukerRegistrering(Bruker bruker, List<Status> status) {
         OrdinaerBrukerRegistrering ordinaerBrukerRegistrering = brukerRegistreringRepository
-                .hentOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), status);
+                .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.getAktorId(), status)
+                .stream()
+                .findFirst()
+                .orElse(null);
 
         if (ordinaerBrukerRegistrering == null) {
             return null;
         }
 
-        Profilering profilering = profileringRepository.hentProfileringForId(
-                ordinaerBrukerRegistrering.getId());
-        ordinaerBrukerRegistrering.setProfilering(profilering);
-
         Veileder veileder = hentManuellRegistreringVeileder(
                 ordinaerBrukerRegistrering.getId(), ordinaerBrukerRegistrering.hentType());
         ordinaerBrukerRegistrering.setManueltRegistrertAv(veileder);
+
+        Profilering profilering = profileringRepository.hentProfileringForId(
+                ordinaerBrukerRegistrering.getId());
+        ordinaerBrukerRegistrering.setProfilering(profilering);
 
         return ordinaerBrukerRegistrering;
     }
