@@ -86,15 +86,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, params, registreringMapper)
     }
 
-    override fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering? {
-        val sql = "SELECT * FROM $BRUKER_REGISTRERING" +
-                " WHERE $AKTOR_ID = :aktor_id" +
-                " ORDER BY $BRUKER_REGISTRERING_ID DESC" +
-                " FETCH NEXT 1 ROWS ONLY"
-
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), registreringMapper).firstOrNull()
-    }
-
     override fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker {
         val sql = "SELECT $FOEDSELSNUMMER, $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID = :id"
 
