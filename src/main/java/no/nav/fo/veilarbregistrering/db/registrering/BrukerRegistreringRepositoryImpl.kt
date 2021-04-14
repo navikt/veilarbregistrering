@@ -67,10 +67,10 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.query(sql, params, registreringMapper)
     }
 
-    override fun hentOrdinaerBrukerregistreringForAktorIdOgTilstand(
+    override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
         aktorId: AktorId,
         tilstander: List<Status>
-    ): OrdinaerBrukerRegistrering? {
+    ): List<OrdinaerBrukerRegistrering> {
         val params = mapOf(
             "aktor_id" to aktorId.asString(),
             "tilstander" to tilstander.map { it.name }
@@ -81,10 +81,9 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                 " $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.BRUKER_REGISTRERING_ID} = $BRUKER_REGISTRERING.$BRUKER_REGISTRERING_ID" +
                 " WHERE $BRUKER_REGISTRERING.$AKTOR_ID = :aktor_id" +
                 " AND $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.STATUS} in (:tilstander)" +
-                " ORDER BY $BRUKER_REGISTRERING.$OPPRETTET_DATO DESC" +
-                " FETCH NEXT 1 ROWS ONLY"
+                " ORDER BY $BRUKER_REGISTRERING.$OPPRETTET_DATO DESC"
 
-        return db.query(sql, params, registreringMapper).firstOrNull()
+        return db.query(sql, params, registreringMapper)
     }
 
     override fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering? {

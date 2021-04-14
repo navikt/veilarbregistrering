@@ -52,7 +52,7 @@ internal class HentRegistreringServiceTest {
 
     @Test
     fun `returnerer tom registrering hvis igangsatt registrering er for gammel`() {
-        every { brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns GAMMEL_BRUKERREGISTRERING
+        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns listOf(GAMMEL_BRUKERREGISTRERING)
         val igangsattOrdinaerBrukerRegistrering =
             hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
 
@@ -61,7 +61,7 @@ internal class HentRegistreringServiceTest {
 
     @Test
     fun `returnerer registrering hvis igangsatt registrering ikke er for gammel`() {
-        every { brukerRegistreringRepository.hentOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns OK_IGANGSATT_REGISTRERING
+        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns listOf(OK_IGANGSATT_REGISTRERING)
         val igangsattOrdinaerBrukerRegistrering =
             hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
 
