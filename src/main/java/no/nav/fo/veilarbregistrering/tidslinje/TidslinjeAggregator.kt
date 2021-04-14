@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 
 class TidslinjeAggregator(
         private val brukerRegistreringRepository: BrukerRegistreringRepository,
@@ -14,7 +15,7 @@ class TidslinjeAggregator(
 
     fun tidslinje(bruker: Bruker): List<TidslinjeElement> {
 
-        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(bruker.aktorId)
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.aktorId, listOf(Status.OVERFORT_ARENA))
         val sykmeldtRegistreringer = sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(bruker.aktorId)
         val reaktiveringer = reaktiveringRepository.finnReaktiveringer(bruker.aktorId)
         val arbeidssokerperioder = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
