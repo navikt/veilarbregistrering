@@ -9,6 +9,5 @@ interface BrukerRegistreringRepository {
     fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering
     fun finnOrdinaerBrukerregistreringerFor(aktorId: AktorId): List<OrdinaerBrukerRegistrering>
     fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId: AktorId, tilstander: List<Status>): List<OrdinaerBrukerRegistrering>
-    fun hentOrdinaerBrukerregistreringForAktorId(aktorId: AktorId): OrdinaerBrukerRegistrering?
     fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker
 }
