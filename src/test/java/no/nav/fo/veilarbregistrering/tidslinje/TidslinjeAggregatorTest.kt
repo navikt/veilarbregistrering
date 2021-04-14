@@ -50,7 +50,7 @@ class TidslinjeAggregatorTest {
 
     @Test
     fun `tidslinje skal returnere en liste over historiske elementer fra ordinær, sykmeldt og reaktivering`() {
-        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(any()) } returns Arrays.asList(gyldigBrukerRegistrering())
+        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(any(), any()) } returns Arrays.asList(gyldigBrukerRegistrering())
         every { sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(any()) } returns Arrays.asList(gyldigSykmeldtRegistrering())
         every { reaktiveringRepository.finnReaktiveringer(any()) } returns Arrays.asList(gyldigReaktivering(testBruker.aktorId))
 
@@ -62,7 +62,7 @@ class TidslinjeAggregatorTest {
     @Test
     fun `tidslinjen skal være sortert etter perioden sin startdato`() {
         val gyldigBrukerRegistrering = gyldigBrukerRegistrering(LocalDate.of(2016, 1, 1).atStartOfDay())
-        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(any()) } returns Arrays.asList(gyldigBrukerRegistrering)
+        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(any(), any()) } returns Arrays.asList(gyldigBrukerRegistrering)
         val gyldigSykmeldtRegistrering = gyldigSykmeldtRegistrering(LocalDate.of(2019, 1, 1).atStartOfDay())
         every { sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(any()) } returns Arrays.asList(gyldigSykmeldtRegistrering)
         val gyldigReaktivering = gyldigReaktivering(testBruker.aktorId, LocalDate.of(2018, 1, 1).atStartOfDay())

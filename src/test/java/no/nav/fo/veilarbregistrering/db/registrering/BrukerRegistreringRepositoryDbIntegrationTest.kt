@@ -64,19 +64,6 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun `finn liste med alle ordinaere registreringer for gitt aktørId`() {
-        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.JA))
-        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setAndreForhold(AndreForholdSvar.NEI))
-        brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
-        brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
-
-        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringerFor(BRUKER_1.aktorId)
-        assertThat(ordinaerBrukerregistreringer).hasSize(2)
-    }
-
-    @Test
     fun `finnOrdinaerBrukerregistreringForAktorIdOgTilstand skal returnere liste med registreringer for angitt tilstand`() {
         val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
                 .setAndreForhold(AndreForholdSvar.JA))
