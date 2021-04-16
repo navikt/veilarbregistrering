@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -25,12 +25,12 @@ internal class HentRegistreringServiceTest {
     @BeforeEach
     fun setup() {
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
-        val unleashService: UnleashService = mockk()
+        val unleashClient: UnleashClient = mockk()
         val norg2Gateway: Norg2Gateway = mockk()
         val profileringRepository: ProfileringRepository = mockk()
         brukerRegistreringRepository  = mockk()
 
-        every { unleashService.isEnabled(any()) } returns true
+        every { unleashClient.isEnabled(any()) } returns true
         every { profileringRepository.hentProfileringForId(any()) } returns profilering
         every { norg2Gateway.hentAlleEnheter() } returns enheter
         every { manuellRegistreringRepository.hentManuellRegistrering(any(), any()) } returns null

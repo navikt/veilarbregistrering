@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.db
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -97,21 +97,21 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
             @Bean
             open fun hentBrukerTilstandService(
-                oppfolgingGateway: OppfolgingGateway,
-                sykemeldingService: SykemeldingService,
-                unleashService: UnleashService,
-                brukerRegistreringRepository: BrukerRegistreringRepository,
+                    oppfolgingGateway: OppfolgingGateway,
+                    sykemeldingService: SykemeldingService,
+                    unleashClient: UnleashClient,
+                    brukerRegistreringRepository: BrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
                     oppfolgingGateway,
                     sykemeldingService,
-                    unleashService,
+                    unleashClient,
                     brukerRegistreringRepository
                 )
             }
 
             @Bean
-            open fun unleashService(): UnleashService = mockk()
+            open fun unleashService(): UnleashClient = mockk()
 
             @Bean
             open fun sykemeldingService(): SykemeldingService = mockk()

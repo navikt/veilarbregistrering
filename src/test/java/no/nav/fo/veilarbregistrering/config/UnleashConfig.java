@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,8 +10,8 @@ import static org.mockito.Mockito.mock;
 public class UnleashConfig {
 
     @Bean
-    public UnleashService unleashService() {
-        return mock(UnleashService.class);
+    public UnleashClient unleashClient() {
+        return mock(UnleashClient.class);
     }
 
 }

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.bruker.Resending.kanResendes
@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory
 import kotlin.jvm.JvmOverloads
 
 class BrukerTilstandService(
-    private val oppfolgingGateway: OppfolgingGateway,
-    private val sykemeldingService: SykemeldingService,
-    private val unleashService: UnleashService,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+        private val oppfolgingGateway: OppfolgingGateway,
+        private val sykemeldingService: SykemeldingService,
+        private val unleashClient: UnleashClient,
+        private val brukerRegistreringRepository: BrukerRegistreringRepository,
 ) {
     @JvmOverloads
     fun hentBrukersTilstand(bruker: Bruker, sykmeldtRegistrering: Boolean = false): BrukersTilstand {
@@ -77,7 +77,7 @@ class BrukerTilstandService(
 
 
     private fun brukAvMaksdato(): Boolean {
-        return !unleashService.isEnabled("veilarbregistrering.maksdatoToggletAv")
+        return !unleashClient.isEnabled("veilarbregistrering.maksdatoToggletAv")
     }
 
     companion object {

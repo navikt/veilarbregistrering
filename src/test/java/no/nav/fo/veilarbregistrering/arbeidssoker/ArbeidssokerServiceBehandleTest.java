@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
@@ -24,7 +24,7 @@ public class ArbeidssokerServiceBehandleTest {
         arbeidssokerService = new ArbeidssokerService(
                 arbeidssokerRepository,
                 mock(FormidlingsgruppeGateway.class),
-                mock(UnleashService.class),
+                mock(UnleashClient.class),
                 mock(InfluxMetricsService.class)
         );
     }

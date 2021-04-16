@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
@@ -38,7 +38,7 @@ class StartRegistreringStatusServiceTest {
         personGateway = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
-        val unleashService: UnleashService = mockk(relaxed = true)
+        val unleashService: UnleashClient = mockk(relaxed = true)
 
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val sykemeldingService =

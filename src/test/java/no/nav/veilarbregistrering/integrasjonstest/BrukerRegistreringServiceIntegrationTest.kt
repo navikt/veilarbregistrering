@@ -2,7 +2,7 @@ package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
 import io.vavr.control.Try
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -146,7 +146,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     @Configuration
     class BrukerregistreringConfigTest {
         @Bean
-        fun unleashService(): UnleashService  =  mockk(relaxed = true)
+        fun unleashClient(): UnleashClient  =  mockk(relaxed = true)
 
         @Bean
         fun oppfolgingGateway(): OppfolgingGateway  = mockk(relaxed = true)
@@ -159,12 +159,12 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
         @Bean
         fun hentBrukerTilstandService(
-            oppfolgingGateway: OppfolgingGateway,
-            sykemeldingService: SykemeldingService,
-            unleashService: UnleashService,
-            brukerRegistreringRepository: BrukerRegistreringRepository
+                oppfolgingGateway: OppfolgingGateway,
+                sykemeldingService: SykemeldingService,
+                unleashClient: UnleashClient,
+                brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashClient, brukerRegistreringRepository)
         }
 
         @Bean
