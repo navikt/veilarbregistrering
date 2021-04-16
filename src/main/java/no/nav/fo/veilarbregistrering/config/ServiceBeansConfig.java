@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.common.abac.Pep;
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.selftest.SelfTestChecks;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
@@ -78,9 +78,9 @@ public class ServiceBeansConfig {
     BrukerTilstandService brukerTilstandService(
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService,
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             BrukerRegistreringRepository brukerRegistreringRepository) {
-        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, brukerRegistreringRepository);
+        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashClient, brukerRegistreringRepository);
     }
 
     @Bean
@@ -149,7 +149,7 @@ public class ServiceBeansConfig {
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             StartRegistreringStatusService startRegistreringStatusService,
             SykmeldtRegistreringService sykmeldtRegistreringService,
             InaktivBrukerService inaktivBrukerService,
@@ -159,7 +159,7 @@ public class ServiceBeansConfig {
                 userService,
                 brukerRegistreringService,
                 hentRegistreringService,
-                unleashService,
+                unleashClient,
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
                 inaktivBrukerService,
@@ -237,12 +237,12 @@ public class ServiceBeansConfig {
     ArbeidssokerService arbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             InfluxMetricsService influxMetricsService) {
         return new ArbeidssokerService(
                 arbeidssokerRepository,
                 formidlingsgruppeGateway,
-                unleashService,
+                unleashClient,
                 influxMetricsService);
     }
 

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
@@ -24,7 +24,7 @@ public class RegistreringResource implements RegistreringApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistreringResource.class);
 
-    private final UnleashService unleashService;
+    private final UnleashClient unleashClient;
     private final BrukerRegistreringService brukerRegistreringService;
     private final SykmeldtRegistreringService sykmeldtRegistreringService;
     private final HentRegistreringService hentRegistreringService;
@@ -39,7 +39,7 @@ public class RegistreringResource implements RegistreringApi {
             UserService userService,
             BrukerRegistreringService brukerRegistreringService,
             HentRegistreringService hentRegistreringService,
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             SykmeldtRegistreringService sykmeldtRegistreringService,
             StartRegistreringStatusService startRegistreringStatusService,
             InaktivBrukerService inaktivBrukerService,
@@ -48,7 +48,7 @@ public class RegistreringResource implements RegistreringApi {
         this.userService = userService;
         this.brukerRegistreringService = brukerRegistreringService;
         this.hentRegistreringService = hentRegistreringService;
-        this.unleashService = unleashService;
+        this.unleashClient = unleashClient;
         this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
         this.inaktivBrukerService = inaktivBrukerService;
@@ -177,7 +177,7 @@ public class RegistreringResource implements RegistreringApi {
     }
 
     private boolean tjenesteErNede() {
-        return unleashService.isEnabled("arbeidssokerregistrering.nedetid");
+        return unleashClient.isEnabled("arbeidssokerregistrering.nedetid");
     }
 
 }

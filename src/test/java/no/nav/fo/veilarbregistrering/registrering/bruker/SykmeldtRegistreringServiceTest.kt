@@ -4,7 +4,7 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -33,7 +33,7 @@ class SykmeldtRegistreringServiceTest {
     private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
-    private val unleashService: UnleashService = mockk(relaxed = true)
+    private val unleashClient: UnleashClient = mockk(relaxed = true)
     private val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
 
     @BeforeEach
@@ -49,7 +49,7 @@ class SykmeldtRegistreringServiceTest {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService,
+                unleashClient,
                 brukerRegistreringRepository
             ),
             oppfolgingGateway,

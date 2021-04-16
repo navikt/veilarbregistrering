@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker;
 
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
 import no.nav.fo.veilarbregistrering.metrics.Events;
@@ -23,17 +23,17 @@ public class ArbeidssokerService {
 
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
-    private final UnleashService unleashService;
+    private final UnleashClient unleashClient;
     private InfluxMetricsService influxMetricsService;
 
     public ArbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             InfluxMetricsService influxMetricsService) {
         this.arbeidssokerRepository = arbeidssokerRepository;
         this.formidlingsgruppeGateway = formidlingsgruppeGateway;
-        this.unleashService = unleashService;
+        this.unleashClient = unleashClient;
         this.influxMetricsService = influxMetricsService;
     }
 
@@ -88,7 +88,7 @@ public class ArbeidssokerService {
     }
 
     private boolean brukLokalCache() {
-        return unleashService.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE);
+        return unleashClient.isEnabled(VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE);
     }
 
     private enum Kilde implements Metric {

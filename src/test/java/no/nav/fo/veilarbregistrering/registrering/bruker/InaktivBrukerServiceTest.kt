@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.*
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -24,7 +24,7 @@ class InaktivBrukerServiceTest {
     private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
-    private val unleashService: UnleashService = mockk(relaxed = true)
+    private val unleashClient: UnleashClient = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
     private val influxMetricsService: InfluxMetricsService = mockk()
 
@@ -40,7 +40,7 @@ class InaktivBrukerServiceTest {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService,
+                unleashClient,
                 brukerRegistreringRepository
             ),
             reaktiveringRepository,

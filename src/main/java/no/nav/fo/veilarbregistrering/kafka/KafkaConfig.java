@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.kafka;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -68,12 +68,12 @@ public class KafkaConfig {
 
     @Bean
     FormidlingsgruppeKafkaConsumer formidlingsgruppeKafkaConsumer(
-            UnleashService unleashService,
+            UnleashClient unleashClient,
             ArbeidssokerService arbeidssokerService) {
         return new FormidlingsgruppeKafkaConsumer(
                 formidlingsgruppeKafkaConsumerProperties(),
                 "gg-arena-formidlinggruppe-v1" + (getEnvSuffix().equals("-p") ? "-p" : "-q"),
-                arbeidssokerService, unleashService);
+                arbeidssokerService, unleashClient);
     }
 
     @Bean

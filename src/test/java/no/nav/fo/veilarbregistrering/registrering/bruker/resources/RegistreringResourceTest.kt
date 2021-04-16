@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import io.mockk.*
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
@@ -241,7 +241,7 @@ private class RegistreringResourceConfig {
             userService: UserService,
             brukerRegistreringService: BrukerRegistreringService,
             hentRegistreringService: HentRegistreringService,
-            unleashService: UnleashService,
+            unleashClient: UnleashClient,
             sykmeldtRegistreringService: SykmeldtRegistreringService,
             startRegistreringStatusService: StartRegistreringStatusService,
             inaktivBrukerService: InaktivBrukerService,
@@ -251,7 +251,7 @@ private class RegistreringResourceConfig {
         userService,
         brukerRegistreringService,
         hentRegistreringService,
-        unleashService,
+        unleashClient,
         sykmeldtRegistreringService,
         startRegistreringStatusService,
         inaktivBrukerService,
@@ -260,7 +260,7 @@ private class RegistreringResourceConfig {
     @Bean
     fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
     @Bean
-    fun unleashService(): UnleashService = mockk(relaxed = true)
+    fun unleashClient(): UnleashClient = mockk(relaxed = true)
     @Bean
     fun metricsService(): InfluxMetricsService = mockk(relaxed = true)
     @Bean

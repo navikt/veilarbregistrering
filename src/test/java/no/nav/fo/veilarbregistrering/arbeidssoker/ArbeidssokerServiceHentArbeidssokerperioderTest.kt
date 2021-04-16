@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -18,7 +18,7 @@ import java.time.LocalDate
 import java.util.*
 
 class ArbeidssokerServiceHentArbeidssokerperioderTest {
-    private val unleashService = mockk<UnleashService>()
+    private val unleashService = mockk<UnleashClient>()
     private lateinit var arbeidssokerService: ArbeidssokerService
     private val metricsService = mockk<InfluxMetricsService>(relaxed = true)
     @BeforeEach

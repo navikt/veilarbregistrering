@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.config;
 
-import no.nav.common.featuretoggle.UnleashService;
-import no.nav.common.featuretoggle.UnleashServiceConfig;
+import no.nav.common.featuretoggle.UnleashClient;
+import no.nav.common.featuretoggle.UnleashClientImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,10 +13,9 @@ public class UnleashConfig {
     public static final String UNLEASH_API_URL_PROPERTY = "UNLEASH_API_URL";
 
     @Bean
-    public UnleashService unleashService() {
-        return new UnleashService(UnleashServiceConfig.builder()
-                .applicationName(requireApplicationName())
-                .unleashApiUrl(getRequiredProperty(UNLEASH_API_URL_PROPERTY))
-                .build());
+    public UnleashClient unleashService() {
+        return new UnleashClientImpl(
+                requireApplicationName(),
+                getRequiredProperty(UNLEASH_API_URL_PROPERTY));
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper;
 import no.nav.fo.veilarbregistrering.log.CallId;
@@ -31,18 +31,17 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     private final Properties kafkaConsumerProperties;
     private final String topic;
     private final ArbeidssokerService arbeidssokerService;
-    private final UnleashService unleashService;
-
+    private final UnleashClient unleashClient;
 
     FormidlingsgruppeKafkaConsumer(
             Properties kafkaConsumerProperties,
             String topic,
             ArbeidssokerService arbeidssokerService,
-            UnleashService unleashService) {
+            UnleashClient unleashClient) {
         this.kafkaConsumerProperties = kafkaConsumerProperties;
         this.topic = topic;
         this.arbeidssokerService = arbeidssokerService;
-        this.unleashService = unleashService;
+        this.unleashClient = unleashClient;
 
         Executors.newSingleThreadScheduledExecutor()
                 .schedule(this, 5, MINUTES);
@@ -102,6 +101,6 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     }
 
     private boolean stopKonsumeringAvFormidlingsgruppe() {
-        return unleashService.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
+        return unleashClient.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
     }
 }

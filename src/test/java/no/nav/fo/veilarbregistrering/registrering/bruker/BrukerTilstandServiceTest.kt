@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.*
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -20,19 +20,19 @@ import java.time.LocalDate
 class BrukerTilstandServiceTest {
     private lateinit var oppfolgingGateway: OppfolgingGateway
     private lateinit var sykemeldingService: SykemeldingService
-    private lateinit var unleashService: UnleashService
+    private lateinit var unleashClient: UnleashClient
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
     private lateinit var brukerTilstandService: BrukerTilstandService
     @BeforeEach
     fun setUp() {
         oppfolgingGateway = mockk()
         sykemeldingService = mockk()
-        unleashService = mockk()
+        unleashClient = mockk()
         brukerRegistreringRepository = mockk(relaxed = true)
         brukerTilstandService = BrukerTilstandService(
             oppfolgingGateway,
             sykemeldingService,
-            unleashService,
+            unleashClient,
             brukerRegistreringRepository
         )
     }
@@ -50,7 +50,7 @@ class BrukerTilstandServiceTest {
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
         val sykeforlop = SykmeldtInfoData(null, false)
         every { sykemeldingService.hentSykmeldtInfoData(any()) } returns sykeforlop
-        every { unleashService.isEnabled(any()) } returns false
+        every { unleashClient.isEnabled(any()) } returns false
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker)
         Assertions.assertThat(brukersTilstand.registreringstype).isEqualTo(RegistreringType.SPERRET)
     }
@@ -68,7 +68,7 @@ class BrukerTilstandServiceTest {
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
         val sykeforlop = SykmeldtInfoData(null, false)
         every { sykemeldingService.hentSykmeldtInfoData(any()) } returns sykeforlop
-        every { unleashService.isEnabled(any()) } returns true
+        every { unleashClient.isEnabled(any()) } returns true
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker)
         Assertions.assertThat(brukersTilstand.registreringstype).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
@@ -86,7 +86,7 @@ class BrukerTilstandServiceTest {
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
         val sykeforlop = SykmeldtInfoData(null, false)
         every { sykemeldingService.hentSykmeldtInfoData(any()) } returns sykeforlop
-        every { unleashService.isEnabled(any()) } returns true
+        every { unleashClient.isEnabled(any()) } returns true
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker, true)
         Assertions.assertThat(brukersTilstand.registreringstype).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
@@ -104,7 +104,7 @@ class BrukerTilstandServiceTest {
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
         val sykeforlop = SykmeldtInfoData(LocalDate.now().minusWeeks(10).toString(), true)
         every { sykemeldingService.hentSykmeldtInfoData(any()) } returns sykeforlop
-        every { unleashService.isEnabled(any()) } returns true
+        every { unleashClient.isEnabled(any()) } returns true
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker, true)
         Assertions.assertThat(brukersTilstand.registreringstype).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }

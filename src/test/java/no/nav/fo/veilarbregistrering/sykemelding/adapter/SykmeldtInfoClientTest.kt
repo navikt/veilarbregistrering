@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.common.featuretoggle.UnleashService
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -45,7 +45,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         val brukerRegistreringRepository: BrukerRegistreringRepository = mockk()
         val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
-        val unleashService: UnleashService = mockk(relaxed = true)
+        val unleashClient: UnleashClient = mockk(relaxed = true)
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         oppfolgingClient = buildOppfolgingClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
@@ -61,7 +61,7 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashService,
+                unleashClient,
                 brukerRegistreringRepository
             ),
             oppfolgingGateway,
