@@ -13,9 +13,9 @@ public class UnleashConfig {
     public static final String UNLEASH_API_URL_PROPERTY = "UNLEASH_API_URL";
 
     @Bean
-    public UnleashClient unleashService() {
+    public UnleashClient unleashClient() {
         return new UnleashClientImpl(
-                requireApplicationName(),
-                getRequiredProperty(UNLEASH_API_URL_PROPERTY));
+                getRequiredProperty(UNLEASH_API_URL_PROPERTY),
+                requireApplicationName());
     }
 }
