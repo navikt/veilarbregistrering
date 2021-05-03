@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.helsesjekk
 
 import no.nav.common.abac.Pep
-import no.nav.common.featuretoggle.UnleashClientImpl
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
@@ -23,7 +23,7 @@ class HelsesjekkConfig {
     fun selfTestChecks(
             dbHelsesjekk: DatabaseHelsesjekk,
             veilarbPep: Pep,
-            unleashClient: UnleashClientImpl,
+            unleashClient: UnleashClient,
             oppfolgingClient: OppfolgingClient,
             sykmeldtInfoClient: SykmeldtInfoClient,
             formidlingsgruppeRestClient: FormidlingsgruppeRestClient,

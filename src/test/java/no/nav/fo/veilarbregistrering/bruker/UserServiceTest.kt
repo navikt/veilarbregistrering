@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -16,12 +17,14 @@ class UserServiceTest {
 
     private lateinit var userService: UserService
     private lateinit var pdlOppslagGateway: PdlOppslagGateway
+    private lateinit var authContextHolder: AuthContextHolder
 
     @BeforeEach
     fun setup() {
         clearAllMocks()
         pdlOppslagGateway = mockk()
-        userService = UserService(pdlOppslagGateway)
+        authContextHolder = mockk()
+        userService = UserService(pdlOppslagGateway, authContextHolder)
     }
 
     @Test

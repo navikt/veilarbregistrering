@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
@@ -99,7 +100,10 @@ private class TidslinjeResourceConfig {
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
 
     @Bean
-    fun userService(pdlOppslagGateway: PdlOppslagGateway): UserService = UserService(pdlOppslagGateway)
+    fun authContextHolder(): AuthContextHolder = mockk()
+
+    @Bean
+    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService = UserService(pdlOppslagGateway, authContextHolder)
 
     @Bean
     fun tidslinjeAggregator(): TidslinjeAggregator = mockk()

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import io.mockk.*
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
@@ -272,7 +273,9 @@ private class RegistreringResourceConfig {
     @Bean
     fun startRegistreringStatusService(): StartRegistreringStatusService = mockk()
     @Bean
-    fun userService(pdlOppslagGateway: PdlOppslagGateway): UserService = UserService(pdlOppslagGateway)
+    fun authContextHolder(): AuthContextHolder = mockk()
+    @Bean
+    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService = UserService(pdlOppslagGateway, authContextHolder)
     @Bean
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
     @Bean
