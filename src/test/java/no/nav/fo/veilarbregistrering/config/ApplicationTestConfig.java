@@ -25,7 +25,7 @@ public class ApplicationTestConfig extends ApplicationConfig {
     private class StubUserService extends UserService {
 
         public StubUserService() {
-            super(null);
+            super(null, null);
         }
 
         @Override

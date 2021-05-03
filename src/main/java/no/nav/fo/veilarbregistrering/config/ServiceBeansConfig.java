@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.common.abac.Pep;
+import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.selftest.SelfTestChecks;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
@@ -45,6 +47,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ServiceBeansConfig {
+
+    @Bean
+    public AuthContextHolder authContextHolder() {
+        return AuthContextHolderThreadLocal.instance();
+    }
 
     @Bean
     SykemeldingService sykemeldingService(
@@ -277,8 +284,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    UserService userService(PdlOppslagGateway pdlOppslagGateway) {
-        return new UserService(pdlOppslagGateway);
+    UserService userService(PdlOppslagGateway pdlOppslagGateway, AuthContextHolder authContextHolder) {
+        return new UserService(pdlOppslagGateway, authContextHolder);
     }
 
     @Bean
@@ -318,8 +325,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    AutorisasjonService autorisasjonService(Pep veilarbPep) {
-        return new AutorisasjonService(veilarbPep);
+    AutorisasjonService autorisasjonService(Pep veilarbPep, AuthContextHolder authContextHolder) {
+        return new AutorisasjonService(veilarbPep, authContextHolder);
     }
 
     @Bean

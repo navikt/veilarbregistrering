@@ -9,10 +9,10 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
-open class AutorisasjonService(private val veilarbPep: Pep) {
+open class AutorisasjonService(private val veilarbPep: Pep, private val authContextHolder: AuthContextHolder) {
 
     fun erInternBruker(): Boolean {
-        return AuthContextHolder.erInternBruker()
+        return authContextHolder.erInternBruker()
     }
 
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
@@ -32,12 +32,12 @@ open class AutorisasjonService(private val veilarbPep: Pep) {
     }
 
     private val innloggetBrukerToken: String
-        get() = AuthContextHolder.getIdTokenString()
+        get() = authContextHolder.getIdTokenString()
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "Fant ikke token for innlogget bruker") }
 
     // NAV ident, fnr eller annen ID
     val innloggetBrukerIdent: String
-        get() = AuthContextHolder.getSubject()
+        get() = authContextHolder.getSubject()
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "NAV ident is missing") }
 
     val innloggetVeilederIdent: String

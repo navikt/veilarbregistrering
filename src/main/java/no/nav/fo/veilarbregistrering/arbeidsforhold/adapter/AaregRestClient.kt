@@ -21,7 +21,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.io.IOException
 
-open class AaregRestClient(private val baseUrl: String, private val systemUserTokenProvider: SystemUserTokenProvider) : HealthCheck {
+open class AaregRestClient(
+        private val baseUrl: String,
+        private val systemUserTokenProvider: SystemUserTokenProvider,
+        private val authContextHolder: AuthContextHolder) : HealthCheck {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
@@ -37,7 +40,7 @@ open class AaregRestClient(private val baseUrl: String, private val systemUserTo
                         .addQueryParameter("regelverk", "A_ORDNINGEN")
                         .build())
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + AuthContextHolder.requireIdTokenString())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authContextHolder.requireIdTokenString())
                 .header(NAV_CONSUMER_TOKEN, "Bearer " + systemUserTokenProvider.systemUserToken)
                 .header(NAV_PERSONIDENT, fnr.stringValue())
                 .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
