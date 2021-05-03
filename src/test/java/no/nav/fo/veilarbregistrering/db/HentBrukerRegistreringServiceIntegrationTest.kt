@@ -103,10 +103,9 @@ class HentBrukerRegistreringServiceIntegrationTest(
                     brukerRegistreringRepository: BrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
-                    oppfolgingGateway,
-                    sykemeldingService,
-                    unleashClient,
-                    brukerRegistreringRepository
+                        oppfolgingGateway,
+                        sykemeldingService,
+                        brukerRegistreringRepository
                 )
             }
 

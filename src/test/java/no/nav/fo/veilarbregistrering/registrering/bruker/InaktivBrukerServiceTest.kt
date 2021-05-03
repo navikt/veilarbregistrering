@@ -34,14 +34,13 @@ class InaktivBrukerServiceTest {
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         inaktivBrukerService = InaktivBrukerService(
             BrukerTilstandService(
-                oppfolgingGateway,
-                SykemeldingService(
-                    SykemeldingGatewayImpl(sykeforloepMetadataClient),
-                    autorisasjonService,
-                    influxMetricsService
-                ),
-                unleashClient,
-                brukerRegistreringRepository
+                    oppfolgingGateway,
+                    SykemeldingService(
+                        SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                        autorisasjonService,
+                        influxMetricsService
+                    ),
+                    brukerRegistreringRepository
             ),
             reaktiveringRepository,
             oppfolgingGateway

@@ -2,8 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
@@ -38,14 +36,13 @@ class StartRegistreringStatusServiceTest {
         personGateway = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
-        val unleashService: UnleashClient = mockk(relaxed = true)
 
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val sykemeldingService =
             SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
-            BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, mockk(relaxed = true)),
+            BrukerTilstandService(oppfolgingGateway, sykemeldingService, mockk(relaxed = true)),
             personGateway,
             influxMetricsService
         )
@@ -99,11 +96,11 @@ class StartRegistreringStatusServiceTest {
     }
 
     @Test
-    fun skalReturnereSperret() {
+    fun skalReturnereSykmeldtRegistrert() {
         mockSykmeldtBruker()
         mockSykmeldtBrukerUnder39uker()
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
-        Assertions.assertThat(startRegistreringStatus.registreringType).isEqualTo(RegistreringType.SPERRET)
+        Assertions.assertThat(startRegistreringStatus.registreringType).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
 
     @Test
@@ -144,15 +141,6 @@ class StartRegistreringStatusServiceTest {
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ORDINAER_REGISTRERING).isTrue
     }
 
-    @Test
-    fun mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
-        mockSykmeldtBruker()
-        mockSykmeldtBrukerUnder39uker()
-        val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
-        verify(exactly = 1) { sykeforloepMetadataClient.hentSykmeldtInfoData(any()) }
-        Assertions.assertThat(RegistreringType.SYKMELDT_REGISTRERING == startRegistreringStatus.registreringType).isFalse
-    }
-
     private fun getStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         return brukerRegistreringService.hentStartRegistreringStatus(bruker)
     }
@@ -172,8 +160,6 @@ class StartRegistreringStatusServiceTest {
     private fun mockArbeidssokerSomHarAktivOppfolging() =
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
             OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false)
-
-
 
     private fun mockSykmeldtBruker() =
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns

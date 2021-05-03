@@ -164,7 +164,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 unleashClient: UnleashClient,
                 brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashClient, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, brukerRegistreringRepository)
         }
 
         @Bean

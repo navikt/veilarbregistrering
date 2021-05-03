@@ -43,14 +43,13 @@ class SykmeldtRegistreringServiceTest {
 
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
-                oppfolgingGateway,
-                SykemeldingService(
-                    SykemeldingGatewayImpl(sykeforloepMetadataClient),
-                    autorisasjonService,
-                    influxMetricsService
-                ),
-                unleashClient,
-                brukerRegistreringRepository
+                    oppfolgingGateway,
+                    SykemeldingService(
+                        SykemeldingGatewayImpl(sykeforloepMetadataClient),
+                        autorisasjonService,
+                        influxMetricsService
+                    ),
+                    brukerRegistreringRepository
             ),
             oppfolgingGateway,
             sykmeldtRegistreringRepository,
