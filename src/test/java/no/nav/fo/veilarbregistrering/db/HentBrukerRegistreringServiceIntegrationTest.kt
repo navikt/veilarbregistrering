@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.db
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -17,11 +16,10 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -79,9 +77,9 @@ class HentBrukerRegistreringServiceIntegrationTest(
             .setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
 
         @Configuration
-        open class TestContext {
+        class TestContext {
             @Bean
-            open fun hentRegistreringService(
+            fun hentRegistreringService(
                     db: JdbcTemplate,
                     brukerRegistreringRepository: BrukerRegistreringRepository,
                     sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
@@ -96,33 +94,19 @@ class HentBrukerRegistreringServiceIntegrationTest(
             )
 
             @Bean
-            open fun hentBrukerTilstandService(
+            fun hentBrukerTilstandService(
                     oppfolgingGateway: OppfolgingGateway,
-                    sykemeldingService: SykemeldingService,
-                    unleashClient: UnleashClient,
                     brukerRegistreringRepository: BrukerRegistreringRepository,
-            ): BrukerTilstandService {
-                return BrukerTilstandService(
-                        oppfolgingGateway,
-                        sykemeldingService,
-                        brukerRegistreringRepository
-                )
-            }
+            ): BrukerTilstandService = BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository)
 
             @Bean
-            open fun unleashService(): UnleashClient = mockk()
+            fun oppfolgingGateway(): OppfolgingGateway = mockk()
 
             @Bean
-            open fun sykemeldingService(): SykemeldingService = mockk()
+            fun profileringService(): ProfileringService = mockk()
 
             @Bean
-            open fun oppfolgingGateway(): OppfolgingGateway = mockk()
-
-            @Bean
-            open fun profileringService(): ProfileringService = mockk()
-
-            @Bean
-            open fun norg2Gateway() = object : Norg2Gateway {
+            fun norg2Gateway() = object : Norg2Gateway {
                 override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
                     if (Kommunenummer.of("1241") == kommunenummer) {
                         return Optional.of(Enhetnr.of("232"))
@@ -133,7 +117,6 @@ class HentBrukerRegistreringServiceIntegrationTest(
                 }
 
                 override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = emptyMap()
-
             }
         }
     }

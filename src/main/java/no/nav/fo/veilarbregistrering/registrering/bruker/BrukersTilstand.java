@@ -1,12 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.metrics.HasMetrics;
 import no.nav.fo.veilarbregistrering.metrics.Metric;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 
 public class BrukersTilstand implements HasMetrics {
 
-    private final SykmeldtInfoData sykmeldtInfoData;
     private final RegistreringType registreringType;
     private final Oppfolgingsstatus oppfolgingStatusData;
     private boolean harIgangsattGjenopptagbarRegistrering;
@@ -25,20 +23,15 @@ public class BrukersTilstand implements HasMetrics {
         return harIgangsattGjenopptagbarRegistrering;
     }
 
-
     public BrukersTilstand(
             Oppfolgingsstatus Oppfolgingsstatus,
-            SykmeldtInfoData sykmeldtInfoData,
             boolean harIgangsattGjenopptagbarRegistrering) {
         this.oppfolgingStatusData = Oppfolgingsstatus;
-        this.sykmeldtInfoData = sykmeldtInfoData;
-        this.registreringType = beregnRegistreringType(Oppfolgingsstatus, sykmeldtInfoData);
+        this.registreringType = beregnRegistreringType(Oppfolgingsstatus);
         this.harIgangsattGjenopptagbarRegistrering = registreringType == ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering;
     }
 
-    protected RegistreringType beregnRegistreringType(
-            Oppfolgingsstatus oppfolgingsstatus,
-            SykmeldtInfoData sykeforloepMetaData) {
+    protected RegistreringType beregnRegistreringType(Oppfolgingsstatus oppfolgingsstatus) {
 
         if (oppfolgingsstatus.isUnderOppfolging() && !oppfolgingsstatus.getKanReaktiveres().orElse(false)) {
             return ALLEREDE_REGISTRERT;
@@ -47,18 +40,11 @@ public class BrukersTilstand implements HasMetrics {
             return REAKTIVERING;
 
         } else if (oppfolgingsstatus.getErSykmeldtMedArbeidsgiver().orElse(false)) {
-            if (erSykmeldtMedArbeidsgiverOver39Uker(sykeforloepMetaData)) {
-                return SYKMELDT_REGISTRERING;
-            } else {
-                return SPERRET;
-            }
+            return SYKMELDT_REGISTRERING;
+
         } else {
             return ORDINAER_REGISTRERING;
         }
-    }
-
-    private static boolean erSykmeldtMedArbeidsgiverOver39Uker(SykmeldtInfoData sykeforloepMetaData) {
-        return sykeforloepMetaData != null && sykeforloepMetaData.erArbeidsrettetOppfolgingSykmeldtInngangAktiv;
     }
 
     public boolean kanReaktiveres() {
@@ -95,10 +81,6 @@ public class BrukersTilstand implements HasMetrics {
 
     public Optional<Rettighetsgruppe> getRettighetsgruppe() {
         return oppfolgingStatusData.getRettighetsgruppe();
-    }
-
-    public String getMaksDato() {
-        return sykmeldtInfoData != null ? sykmeldtInfoData.maksDato : null;
     }
 
     @Override

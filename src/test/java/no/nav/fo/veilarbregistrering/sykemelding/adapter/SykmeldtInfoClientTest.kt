@@ -19,7 +19,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -56,11 +55,6 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
                     oppfolgingGateway,
-                    SykemeldingService(
-                        sykmeldingGateway,
-                        autorisasjonService,
-                        influxMetricsService
-                    ),
                     brukerRegistreringRepository
             ),
             oppfolgingGateway,

@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukersTilstand;
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +24,7 @@ public class StartRegistreringStatusDtoMapperTest {
                 null,
                 null,
                 null);
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData(null, false);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
@@ -57,8 +55,7 @@ public class StartRegistreringStatusDtoMapperTest {
                 Formidlingsgruppe.of("IARBS"),
                 Servicegruppe.of("SERV"),
                 Rettighetsgruppe.of("AAP"));
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData("01122019", true);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,
@@ -73,7 +70,7 @@ public class StartRegistreringStatusDtoMapperTest {
         softAssertions.assertThat(dto.getErSykmeldtMedArbeidsgiver()).isTrue();
         softAssertions.assertThat(dto.getUnderOppfolging()).isFalse();
         softAssertions.assertThat(dto.getFormidlingsgruppe()).isEqualTo("IARBS");
-        softAssertions.assertThat(dto.getMaksDato()).isEqualTo("01122019");
+        softAssertions.assertThat(dto.getMaksDato()).isNull();
         softAssertions.assertThat(dto.getRettighetsgruppe()).isEqualTo("AAP");
         softAssertions.assertThat(dto.getServicegruppe()).isEqualTo("SERV");
 
@@ -89,8 +86,8 @@ public class StartRegistreringStatusDtoMapperTest {
                 Formidlingsgruppe.of("IARBS"),
                 Servicegruppe.of("SERV"),
                 Rettighetsgruppe.of("AAP"));
-        SykmeldtInfoData sykmeldtInfoData = new SykmeldtInfoData("01122019", true);
-        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, sykmeldtInfoData, false);
+
+        BrukersTilstand brukersTilstand = new BrukersTilstand(oppfolgingsstatus, false);
 
         StartRegistreringStatusDto dto = StartRegistreringStatusDtoMapper.map(
                 brukersTilstand,

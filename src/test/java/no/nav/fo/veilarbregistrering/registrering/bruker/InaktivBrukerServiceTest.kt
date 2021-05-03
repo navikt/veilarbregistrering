@@ -10,8 +10,6 @@ import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -35,11 +33,6 @@ class InaktivBrukerServiceTest {
         inaktivBrukerService = InaktivBrukerService(
             BrukerTilstandService(
                     oppfolgingGateway,
-                    SykemeldingService(
-                        SykemeldingGatewayImpl(sykeforloepMetadataClient),
-                        autorisasjonService,
-                        influxMetricsService
-                    ),
                     brukerRegistreringRepository
             ),
             reaktiveringRepository,
