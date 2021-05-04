@@ -62,6 +62,21 @@ mvn test
 # For lokal test kjøring kjør ApplicationLocal.java
 ```
 
+
+# Manuell tilbakerulling
+
+1. Finn image-tagen du vil rulle tilbake til på [releases]()
+   Eksempel: `20210503204042_5afc1f2f `
+2. Rediger i nais/nais-p.yaml:
+   ```diff
+   - image: {{image}}
+   + image: docker.pkg.github.com/navikt/veilarbregistrering/veilarbregistrering:20210503204042_5afc1f2f 
+   ```
+   
+3. Kjør kommandoen
+   ```
+   kubectl apply -f nais/nais-p.yaml
+   ```
 ---
 
 # Henvendelser
