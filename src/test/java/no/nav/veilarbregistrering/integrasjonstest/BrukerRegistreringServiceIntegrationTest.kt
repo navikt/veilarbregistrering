@@ -160,7 +160,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 sykemeldingService: SykemeldingService,
                 brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository)
         }
 
         @Bean

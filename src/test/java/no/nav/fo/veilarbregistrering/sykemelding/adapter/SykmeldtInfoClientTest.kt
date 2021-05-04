@@ -6,7 +6,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.sts.SystemUserTokenProvider
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -18,7 +17,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -45,7 +43,6 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
-        val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         oppfolgingClient = buildOppfolgingClient(influxMetricsService, jacksonObjectMapper().findAndRegisterModules())
         sykeforloepMetadataClient = buildSykeForloepClient()
         staticMocks()
@@ -54,11 +51,6 @@ internal class SykmeldtInfoClientTest(private val mockServer: ClientAndServer) {
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
                 oppfolgingGateway,
-                SykemeldingService(
-                    sykmeldingGateway,
-                    autorisasjonService,
-                    influxMetricsService
-                ),
                 brukerRegistreringRepository
             ),
             oppfolgingGateway,

@@ -41,7 +41,7 @@ class StartRegistreringStatusServiceTest {
             SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
-            BrukerTilstandService(oppfolgingGateway, sykemeldingService, mockk(relaxed = true)),
+            BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
             personGateway,
             influxMetricsService
         )

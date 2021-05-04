@@ -102,7 +102,6 @@ class HentBrukerRegistreringServiceIntegrationTest(
             ): BrukerTilstandService {
                 return BrukerTilstandService(
                     oppfolgingGateway,
-                    sykemeldingService,
                     brukerRegistreringRepository
                 )
             }
