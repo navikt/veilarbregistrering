@@ -4,7 +4,6 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -18,7 +17,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
 import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,7 +32,6 @@ class SykmeldtRegistreringServiceTest {
     private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
-    private val unleashClient: UnleashClient = mockk(relaxed = true)
     private val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
 
     @BeforeEach
@@ -49,7 +47,6 @@ class SykmeldtRegistreringServiceTest {
                     autorisasjonService,
                     influxMetricsService
                 ),
-                unleashClient,
                 brukerRegistreringRepository
             ),
             oppfolgingGateway,
