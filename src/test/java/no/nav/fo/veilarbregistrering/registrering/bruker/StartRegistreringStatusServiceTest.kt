@@ -2,8 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
@@ -38,14 +36,12 @@ class StartRegistreringStatusServiceTest {
         personGateway = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
-        val unleashService: UnleashClient = mockk(relaxed = true)
-
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         val sykemeldingService =
             SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
-            BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashService, mockk(relaxed = true)),
+            BrukerTilstandService(oppfolgingGateway, sykemeldingService, mockk(relaxed = true)),
             personGateway,
             influxMetricsService
         )
@@ -99,14 +95,6 @@ class StartRegistreringStatusServiceTest {
     }
 
     @Test
-    fun skalReturnereSperret() {
-        mockSykmeldtBruker()
-        mockSykmeldtBrukerUnder39uker()
-        val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
-        Assertions.assertThat(startRegistreringStatus.registreringType).isEqualTo(RegistreringType.SPERRET)
-    }
-
-    @Test
     fun gitt_at_geografiskTilknytning_ikke_ble_funnet_skal_null_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
@@ -144,15 +132,6 @@ class StartRegistreringStatusServiceTest {
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ORDINAER_REGISTRERING).isTrue
     }
 
-    @Test
-    fun mockDataSkalIkkeGjeldeNaarMockToggleErAv() {
-        mockSykmeldtBruker()
-        mockSykmeldtBrukerUnder39uker()
-        val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
-        verify(exactly = 1) { sykeforloepMetadataClient.hentSykmeldtInfoData(any()) }
-        Assertions.assertThat(RegistreringType.SYKMELDT_REGISTRERING == startRegistreringStatus.registreringType).isFalse
-    }
-
     private fun getStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         return brukerRegistreringService.hentStartRegistreringStatus(bruker)
     }
@@ -188,13 +167,6 @@ class StartRegistreringStatusServiceTest {
                 .withUnderOppfolging(false)
                 .withKanReaktiveres(false)
                 .withErSykmeldtMedArbeidsgiver(false)
-
-    private fun mockSykmeldtBrukerUnder39uker() {
-        val dagensDatoMinus14Uker = LocalDate.now().plusWeeks(14).toString()
-        every { sykeforloepMetadataClient.hentSykmeldtInfoData(any()) } returns
-                InfotrygdData()
-                    .withMaksDato(dagensDatoMinus14Uker)
-    }
 
     private fun mockArbeidsforhold(arbeidsforhold: List<Arbeidsforhold>) =
         every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns FlereArbeidsforhold.of(arbeidsforhold)

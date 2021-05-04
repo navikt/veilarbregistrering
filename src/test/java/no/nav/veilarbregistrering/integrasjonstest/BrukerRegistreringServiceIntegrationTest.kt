@@ -2,7 +2,6 @@ package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
 import io.vavr.control.Try
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -15,10 +14,10 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.veilarbregistrering.integrasjonstest.BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest
 import org.assertj.core.api.Assertions
@@ -145,8 +144,6 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
     @Configuration
     class BrukerregistreringConfigTest {
-        @Bean
-        fun unleashClient(): UnleashClient  =  mockk(relaxed = true)
 
         @Bean
         fun oppfolgingGateway(): OppfolgingGateway  = mockk(relaxed = true)
@@ -161,10 +158,9 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         fun hentBrukerTilstandService(
                 oppfolgingGateway: OppfolgingGateway,
                 sykemeldingService: SykemeldingService,
-                unleashClient: UnleashClient,
                 brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, unleashClient, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, brukerRegistreringRepository)
         }
 
         @Bean
