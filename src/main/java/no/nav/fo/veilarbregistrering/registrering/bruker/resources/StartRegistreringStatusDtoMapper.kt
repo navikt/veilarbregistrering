@@ -14,7 +14,7 @@ object StartRegistreringStatusDtoMapper {
         oppfyllerBetingelseOmArbeidserfaring: Boolean?,
         alder: Int
     ): StartRegistreringStatusDto = StartRegistreringStatusDto(
-        brukersTilstand.maksDato,
+        null,
         brukersTilstand.isUnderOppfolging,
         brukersTilstand.isErSykmeldtMedArbeidsgiver,
         oppfyllerBetingelseOmArbeidserfaring,
