@@ -1,17 +1,12 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,12 +14,9 @@ import java.time.LocalDate
 
 class InaktivBrukerServiceTest {
     private lateinit var inaktivBrukerService: InaktivBrukerService
-    private val sykeforloepMetadataClient: SykmeldtInfoClient = mockk()
     private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
-    private val autorisasjonService: AutorisasjonService = mockk()
-    private val influxMetricsService: InfluxMetricsService = mockk()
 
     @BeforeEach
     fun setup() {
@@ -33,11 +25,6 @@ class InaktivBrukerServiceTest {
         inaktivBrukerService = InaktivBrukerService(
             BrukerTilstandService(
                 oppfolgingGateway,
-                SykemeldingService(
-                    SykemeldingGatewayImpl(sykeforloepMetadataClient),
-                    autorisasjonService,
-                    influxMetricsService
-                ),
                 brukerRegistreringRepository
             ),
             reaktiveringRepository,

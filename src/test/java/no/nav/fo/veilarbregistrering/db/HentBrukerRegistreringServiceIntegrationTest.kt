@@ -20,7 +20,6 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -97,18 +96,13 @@ class HentBrukerRegistreringServiceIntegrationTest(
             @Bean
             fun hentBrukerTilstandService(
                     oppfolgingGateway: OppfolgingGateway,
-                    sykemeldingService: SykemeldingService,
                     brukerRegistreringRepository: BrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
                     oppfolgingGateway,
-                    sykemeldingService,
                     brukerRegistreringRepository
                 )
             }
-
-            @Bean
-            fun sykemeldingService(): SykemeldingService = mockk()
 
             @Bean
             fun oppfolgingGateway(): OppfolgingGateway = mockk()

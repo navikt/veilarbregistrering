@@ -5,17 +5,12 @@ import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.InfotrygdData
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayImpl
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,23 +20,18 @@ import java.util.*
 class StartRegistreringStatusServiceTest {
     private lateinit var brukerRegistreringService: StartRegistreringStatusService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway
-    private lateinit var sykeforloepMetadataClient: SykmeldtInfoClient
     private lateinit var oppfolgingClient: OppfolgingClient
     private lateinit var personGateway: PersonGateway
     @BeforeEach
     fun setup() {
         arbeidsforholdGateway = mockk()
         oppfolgingClient = mockk()
-        sykeforloepMetadataClient = mockk()
         personGateway = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
-        val autorisasjonService: AutorisasjonService = mockk(relaxed = true)
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
-        val sykemeldingService =
-            SykemeldingService(SykemeldingGatewayImpl(sykeforloepMetadataClient), autorisasjonService, influxMetricsService)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
-            BrukerTilstandService(oppfolgingGateway, sykemeldingService, mockk(relaxed = true)),
+            BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
             personGateway,
             influxMetricsService
         )
@@ -88,7 +78,6 @@ class StartRegistreringStatusServiceTest {
     @Test
     fun skalReturnereSykmeldtRegistrering() {
         mockSykmeldtBruker()
-        mockSykmeldtBrukerOver39uker()
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus.registreringType)
             .isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
@@ -191,14 +180,6 @@ class StartRegistreringStatusServiceTest {
 
     private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) =
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
-
-    private fun mockSykmeldtBrukerOver39uker() {
-        val dagensDatoMinus13Uker = LocalDate.now().plusWeeks(13).toString()
-        every { sykeforloepMetadataClient.hentSykmeldtInfoData(any()) } returns
-            InfotrygdData()
-                .withMaksDato(dagensDatoMinus13Uker)
-
-    }
 
     companion object {
         private val FNR_OPPFYLLER_KRAV =

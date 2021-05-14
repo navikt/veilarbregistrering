@@ -55,7 +55,7 @@ public class SykmeldtRegistreringService {
         ofNullable(sykmeldtRegistrering.getBesvarelse())
                 .orElseThrow(() -> new RuntimeException("Besvarelse for sykmeldt ugyldig."));
 
-        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker, true);
+        BrukersTilstand brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker);
 
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
             throw new RuntimeException("Bruker kan ikke registreres.");

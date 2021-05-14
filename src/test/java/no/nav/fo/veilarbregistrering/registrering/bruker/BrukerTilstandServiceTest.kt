@@ -10,25 +10,20 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import no.nav.fo.veilarbregistrering.sykemelding.SykmeldtInfoData
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class BrukerTilstandServiceTest {
     private lateinit var oppfolgingGateway: OppfolgingGateway
-    private lateinit var sykemeldingService: SykemeldingService
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
     private lateinit var brukerTilstandService: BrukerTilstandService
     @BeforeEach
     fun setUp() {
         oppfolgingGateway = mockk()
-        sykemeldingService = mockk()
         brukerRegistreringRepository = mockk(relaxed = true)
         brukerTilstandService = BrukerTilstandService(
             oppfolgingGateway,
-            sykemeldingService,
             brukerRegistreringRepository
         )
     }
@@ -44,8 +39,6 @@ class BrukerTilstandServiceTest {
             Rettighetsgruppe.of("IYT")
         )
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
-        val sykeforlop = SykmeldtInfoData(null, false)
-        every { sykemeldingService.hentSykmeldtInfoData(any()) } returns sykeforlop
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker)
         Assertions.assertThat(brukersTilstand.registreringstype).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
