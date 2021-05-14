@@ -18,7 +18,6 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.veilarbregistrering.integrasjonstest.BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -149,18 +148,14 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         fun oppfolgingGateway(): OppfolgingGateway  = mockk(relaxed = true)
 
         @Bean
-        fun sykemeldingService(): SykemeldingService = mockk(relaxed = true)
-
-        @Bean
         fun profileringService(): ProfileringService  = mockk(relaxed = true)
 
         @Bean
         fun hentBrukerTilstandService(
                 oppfolgingGateway: OppfolgingGateway,
-                sykemeldingService: SykemeldingService,
                 brukerRegistreringRepository: BrukerRegistreringRepository
         ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, sykemeldingService, brukerRegistreringRepository)
+            return BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository)
         }
 
         @Bean

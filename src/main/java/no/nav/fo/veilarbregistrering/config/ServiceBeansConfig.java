@@ -86,7 +86,7 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             SykemeldingService sykemeldingService,
             BrukerRegistreringRepository brukerRegistreringRepository) {
-        return new BrukerTilstandService(oppfolgingGateway, sykemeldingService, brukerRegistreringRepository);
+        return new BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository);
     }
 
     @Bean
