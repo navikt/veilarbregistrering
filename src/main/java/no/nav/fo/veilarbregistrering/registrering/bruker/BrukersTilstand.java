@@ -83,10 +83,6 @@ public class BrukersTilstand implements HasMetrics {
         return oppfolgingStatusData.getRettighetsgruppe();
     }
 
-    public String getMaksDato() {
-        return null;
-    }
-
     @Override
     public List<Metric> metrics() {
         return asList(
