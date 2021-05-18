@@ -4,6 +4,7 @@ import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
+import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
@@ -17,25 +18,27 @@ class InaktivBrukerServiceTest {
     private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
+    private val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         every { oppfolgingClient.reaktiverBruker(any()) } just Runs
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         inaktivBrukerService = InaktivBrukerService(
-            BrukerTilstandService(
+                BrukerTilstandService(
+                    oppfolgingGateway,
+                    brukerRegistreringRepository
+                ),
+                reaktiveringRepository,
                 oppfolgingGateway,
-                brukerRegistreringRepository
-            ),
-            reaktiveringRepository,
-            oppfolgingGateway
+                influxMetricsService
         )
     }
 
     @Test
     fun skalReaktivereInaktivBrukerUnder28Dager() {
         mockInaktivBrukerSomSkalReaktiveres()
-        inaktivBrukerService.reaktiverBruker(BRUKER_INTERN)
+        inaktivBrukerService.reaktiverBruker(BRUKER_INTERN, false)
         verify(exactly = 1) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
 
     }
@@ -48,7 +51,7 @@ class InaktivBrukerServiceTest {
                         .withUnderOppfolging(false)
                         .withKanReaktiveres(false)
         )
-        Assertions.assertThrows(RuntimeException::class.java, { inaktivBrukerService.reaktiverBruker(BRUKER_INTERN) }, "Bruker kan ikke reaktiveres.")
+        Assertions.assertThrows(RuntimeException::class.java, { inaktivBrukerService.reaktiverBruker(BRUKER_INTERN, false) }, "Bruker kan ikke reaktiveres.")
         verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 
