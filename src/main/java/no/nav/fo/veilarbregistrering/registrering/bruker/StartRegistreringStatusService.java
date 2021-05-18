@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.ORDINAER_REGISTRERING;
+import static no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDtoMapper.map;
 
 public class StartRegistreringStatusService {
@@ -60,6 +61,8 @@ public class StartRegistreringStatusService {
                 bruker.getGjeldendeFoedselsnummer().alder(now()));
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
+        rapporterRegistreringsstatus(influxMetricsService, startRegistreringStatus);
+
         return startRegistreringStatus;
     }
 

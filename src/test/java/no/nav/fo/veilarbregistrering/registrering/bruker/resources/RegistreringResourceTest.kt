@@ -256,7 +256,6 @@ private class RegistreringResourceConfig {
         sykmeldtRegistreringService,
         startRegistreringStatusService,
         inaktivBrukerService,
-        influxMetricsService,
     )
     @Bean
     fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)

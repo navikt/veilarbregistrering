@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbregistrering.metrics.Events.MANUELL_REGISTRERING_EVENT;
+import static no.nav.fo.veilarbregistrering.metrics.Events.SYKMELDT_BESVARELSE_EVENT;
 import static no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT;
 
 public class SykmeldtRegistreringService {
@@ -21,7 +22,7 @@ public class SykmeldtRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final SykmeldtRegistreringRepository sykmeldtRegistreringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private InfluxMetricsService influxMetricsService;
+    private final InfluxMetricsService influxMetricsService;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
@@ -47,6 +48,9 @@ public class SykmeldtRegistreringService {
         registrerOverfortStatistikk(navVeileder);
 
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
+        influxMetricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
+                sykmeldtRegistrering.getBesvarelse().getUtdanning(),
+                sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
 
         return id;
     }
