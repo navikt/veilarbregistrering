@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -245,9 +244,7 @@ private class RegistreringResourceConfig {
             unleashClient: UnleashClient,
             sykmeldtRegistreringService: SykmeldtRegistreringService,
             startRegistreringStatusService: StartRegistreringStatusService,
-            inaktivBrukerService: InaktivBrukerService,
-            influxMetricsService: InfluxMetricsService,
-    ) = RegistreringResource(
+            inaktivBrukerService: InaktivBrukerService) = RegistreringResource(
         autorisasjonService,
         userService,
         brukerRegistreringService,
@@ -261,8 +258,6 @@ private class RegistreringResourceConfig {
     fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)
-    @Bean
-    fun metricsService(): InfluxMetricsService = mockk(relaxed = true)
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
     @Bean
