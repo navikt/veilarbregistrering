@@ -48,26 +48,6 @@ jobs:
         docker build --tag ${IMAGE} .
         docker push ${IMAGE}
 
-  deploy-q0:
-    name: Deploy to q0 FSS
-    needs: test-build-and-push
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-
-    - name: Lag tag for image
-      run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-    - name: Lag full image referanse
-      run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
-
-    - name: Deploy to Q0
-      uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        RESOURCE: nais/nais-q0.yaml
-
   deploy-q1:
     name: Deploy to q1 FSS
     needs: test-build-and-push
