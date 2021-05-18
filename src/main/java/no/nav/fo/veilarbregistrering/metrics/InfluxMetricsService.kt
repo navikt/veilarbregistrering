@@ -44,43 +44,11 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
         metrics.filterNotNull()
             .forEach { m -> event.addFieldToReport(m.fieldName(), m.value().toString()) }
 
-    inline fun <R> timeAndReport(metricName: Events, block: () -> R): R {
-        val startTime = startTime()
-        var result: R? = null
-        var throwable: Throwable? = null
-
-        try {
-            result = block()
-        } catch (t: Throwable) {
-            throwable = t
-        } finally {
-            reportTimer(metricName, startTime, throwable?.message)
-        }
-
-        when (throwable) {
-            null -> return result ?: throw IllegalStateException("Error in timing block")
-            else -> throw throwable
-        }
-    }
-
-    fun startTime() = StartTime(System.nanoTime())
-
-    fun reportTimer(event: Event, start: StartTime, failureCause: String? = null) {
-        MetricsEvent("${event.key}.timer")
-            .also { metricsEvent ->
-                metricsEvent.addFieldToReport("value", System.nanoTime() - start.time)
-                failureCause?.let { metricsEvent.addFieldToReport("aarsak", failureCause) }
-            }
-            .let(::report)
-    }
-
     private fun report(event: MetricsEvent) {
         event.addTagToReport("environment", EnvironmentUtils.getRequiredProperty("APP_ENVIRONMENT_NAME"))
         event.addTagToReport("host", SensuConfig.defaultConfig().hostname)
         metricsClient.report(event)
     }
-
-    class StartTime internal constructor(val time: Long)
 }
 
 enum class JaNei : Metric {
