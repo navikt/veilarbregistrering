@@ -69,6 +69,27 @@ jobs:
         DRY_RUN: false
         RESOURCE: nais/nais-q1.yaml
 
+  deploy-dev:
+    name: Deploy to dev FSS
+    needs: test-build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Lag tag for image
+        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Lag full image referanse
+        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
+
+      - name: Deploy to Dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          DRY_RUN: false
+          RESOURCE: nais/nais-dev.yaml
+
   deploy-prod:
     name: Deploy to Prod FSS
     needs: deploy-q1
