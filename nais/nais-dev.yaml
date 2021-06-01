@@ -11,6 +11,7 @@ spec:
   image: {{image}}
   ingresses:
     - https://veilarbregistrering.dev.intern.nav.no
+    - https://veilarbregistrering-q1.dev.adeo.no
   env:
     - name: APP_ENVIRONMENT_NAME
       value: dev
