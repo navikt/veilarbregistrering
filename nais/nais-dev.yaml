@@ -9,6 +9,8 @@ spec:
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}
+  ingresses:
+    - https://veilarbregistrering.dev.intern.nav.no
   env:
     - name: APP_ENVIRONMENT_NAME
       value: dev
