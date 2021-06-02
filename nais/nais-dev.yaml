@@ -12,6 +12,7 @@ spec:
   ingresses:
     - https://veilarbregistrering.dev.intern.nav.no
     - https://veilarbregistrering-q1.dev.adeo.no
+    - https://veilarbregistrering-q1.nais.preprod.local
   env:
     - name: APP_ENVIRONMENT_NAME
       value: dev
