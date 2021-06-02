@@ -13,6 +13,7 @@ spec:
     - https://veilarbregistrering.dev.intern.nav.no
     - https://veilarbregistrering-q1.dev.adeo.no
     - https://veilarbregistrering-q1.nais.preprod.local
+    - https://app-q1.adeo.no/veilarbregistrering
   env:
     - name: APP_ENVIRONMENT_NAME
       value: dev
