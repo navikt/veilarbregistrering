@@ -87,6 +87,8 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 consumer.commitSync();
             }
 
+            LOG.info("Stopper lesing av topic etter at toggle `veilarbregistrering.stopKonsumeringAvFormidlingsgruppe` er skrudd på");
+
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
         } finally {
