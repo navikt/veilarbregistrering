@@ -29,21 +29,21 @@ public class KafkaConfig {
     ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(KafkaProducer kafkaProducer) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducer,
-                "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
+                "aapen-arbeid-arbeidssoker-registrert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
     KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(KafkaProducer kafkaProducer) {
         return new KontaktBrukerOpprettetKafkaProducer(
                 kafkaProducer,
-                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
+                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
     ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer) {
         return new ArbeidssokerProfilertKafkaProducer(
                 kafkaProducer,
-                "aapen-arbeid-arbeidssoker-profilert" + getEnvSuffix());
+                "aapen-arbeid-arbeidssoker-profilert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
