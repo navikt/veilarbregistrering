@@ -43,6 +43,8 @@ spec:
       value: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
     - name: ABAC_PDP_ENDPOINT_URL
       value: https://wasapp-q1.adeo.no/asm-pdp/authorize
+    - name: ABAC_PDP_ENDPOINT_URL_OLD
+      value: https://wasapp-q1.adeo.no/asm-pdp/authorize
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL
