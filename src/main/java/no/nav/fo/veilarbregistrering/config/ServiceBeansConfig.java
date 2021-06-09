@@ -1,10 +1,16 @@
 package no.nav.fo.veilarbregistrering.config;
 
 import no.nav.common.abac.Pep;
+import no.nav.common.abac.VeilarbPepFactory;
+import no.nav.common.abac.audit.AuditLogFilterUtils;
+import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
+import no.nav.common.abac.constants.NavAttributter;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.selftest.SelfTestChecks;
+import no.nav.common.sts.SystemUserTokenProvider;
+import no.nav.common.utils.Credentials;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository;
@@ -44,6 +50,9 @@ import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator;
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static no.nav.common.abac.audit.AuditLogFilterUtils.anyResourceAttributeFilter;
+import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class ServiceBeansConfig {
@@ -324,8 +333,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    AutorisasjonService autorisasjonService(Pep veilarbPep, AuthContextHolder authContextHolder) {
-        return new AutorisasjonService(veilarbPep, authContextHolder);
+    AutorisasjonService autorisasjonService(Pep veilarbPep, Pep veilarbPepGammel, AuthContextHolder authContextHolder) {
+        return new AutorisasjonService(veilarbPep, veilarbPepGammel, authContextHolder);
     }
 
     @Bean
