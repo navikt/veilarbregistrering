@@ -9,9 +9,6 @@ spec:
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}
-  ingresses:
-    - https://veilarbregistrering.nais.adeo.no
-    - https://app.adeo.no/veilarbregistrering
   env:
     - name: APP_ENVIRONMENT_NAME
       value: p
