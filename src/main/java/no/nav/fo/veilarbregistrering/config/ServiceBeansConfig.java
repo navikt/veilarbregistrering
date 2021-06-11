@@ -333,8 +333,8 @@ public class ServiceBeansConfig {
     }
 
     @Bean
-    AutorisasjonService autorisasjonService(Pep veilarbPep, Pep veilarbPepGammel, AuthContextHolder authContextHolder) {
-        return new AutorisasjonService(veilarbPep, veilarbPepGammel, authContextHolder);
+    AutorisasjonService autorisasjonService(Pep veilarbPep, AuthContextHolder authContextHolder) {
+        return new AutorisasjonService(veilarbPep, authContextHolder);
     }
 
     @Bean
