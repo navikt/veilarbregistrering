@@ -1,0 +1,98 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: veilarbregistrering
+  namespace: paw
+  labels:
+    team: paw
+spec:
+  envFrom:
+    - configmap: loginservice-idporten
+  image: {{image}}
+  env:
+    - name: APP_ENVIRONMENT_NAME
+      value: p
+    - name: FEATURE_ENDPOINT_URL
+      value: https://feature-fss.nais.adeo.no/feature
+    - name: AAREG_REST_API
+      value: https://modapp.adeo.no/aareg-services/api
+    - name: OPENAM_DISCOVERY_URL
+      value: https://isso.adeo.no/isso/oauth2/.well-known/openid-configuration
+    - name: VEILARBLOGIN_OPENAM_CLIENT_ID
+      value: veilarblogin-p
+    - name: VEILARBLOGIN_OPENAM_REFRESH_URL
+      value: https://app.adeo.no/veilarblogin/api/openam-refresh
+    - name: AAD_DISCOVERY_URL
+      value: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
+    - name: VEILARBLOGIN_AAD_CLIENT_ID
+      value: 109c7064-47c9-4e34-b735-8cdc0d383cc1
+    - name: SECURITYTOKENSERVICE_URL
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
+    - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
+      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
+    - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
+      value: srvdp-arbeidssoker-o
+    - name: VEILARBPERSONAPI_URL
+      value: https://veilarbperson.nais.adeo.no/veilarbperson/api
+    - name: VEILARBOPPFOLGINGAPI_URL
+      value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
+    - name: ABAC_PDP_ENDPOINT_URL
+      value: https://abac-veilarb.intern.nav.no/application/asm-pdp/authorize
+    - name: UNLEASH_API_URL
+      value: https://unleash.nais.io/api/
+    - name: NORG2_URL
+      value: https://app.adeo.no/norg2
+    - name: OPPGAVE_URL
+      value: https://oppgave.nais.adeo.no
+    - name: KRR_BASE_URL
+      value: http://dkif.default.svc.nais.local/api/
+    - name: PDL_URL
+      value: http://pdl-api.default.svc.nais.local
+    - name: ENHET_URL
+      value: https://modapp.adeo.no/ereg
+    - name: ISSO_ISALIVE_URL
+      value: https://isso.adeo.no/isso/isAlive.jsp
+    - name: KAFKA_SERVERS
+      value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
+    - name: KAFKA_SCHEMA
+      value: http://kafka-schema-registry.tpa.svc.nais.local:8081
+    - name: ARENA_ORDS_API
+      value: https://arena-ords.nais.adeo.no/arena
+    - name: ARENA_ORDS_TOKEN_PROVIDER
+      value: https://arena-ords.nais.adeo.no/arena/api/oauth/token
+  leaderElection: true
+  liveness:
+    initialDelay: 60
+    path: veilarbregistrering/internal/isAlive
+    port: 8080
+  port: 8080
+  prometheus:
+    enabled: true
+    path: veilarbregistrering/internal/prometheus
+  readiness:
+    initialDelay: 60
+    path: veilarbregistrering/internal/isReady
+    port: 8080
+  replicas:
+    cpuThresholdPercentage: 85
+    max: 6
+    min: 2
+  resources:
+    limits:
+      cpu: "3"
+      memory: 3048Mi
+    requests:
+      cpu: "1"
+      memory: 2048Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /oracle/data/prod/creds/veilarbregistrering-user
+        mountPath: /var/run/secrets/nais.io/oracle_creds
+      - kvPath: /oracle/data/prod/config/veilarbregistrering
+        mountPath: /var/run/secrets/nais.io/oracle_config
+      - kvPath: /serviceuser/data/prod/srvveilarbregistrering
+        mountPath: /var/run/secrets/nais.io/serviceuser_creds
+      - kvPath: /kv/prod/fss/veilarbregistrering/default
+        mountPath: /var/run/secrets/nais.io/vault
+  webproxy: true
