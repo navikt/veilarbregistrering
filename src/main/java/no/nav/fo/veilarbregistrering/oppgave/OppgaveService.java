@@ -42,8 +42,6 @@ public class OppgaveService {
     public OppgaveResponse opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
         validerNyOppgaveMotAktive(bruker, oppgaveType);
 
-        kontaktBrukerHenvendelseProducer.publiserHenvendelse(bruker.getAktorId(), oppgaveType);
-
         Optional<Enhetnr> enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker);
 
         Oppgave oppgave = Oppgave.opprettOppgave(bruker.getAktorId(),
