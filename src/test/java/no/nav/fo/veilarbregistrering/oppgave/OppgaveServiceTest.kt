@@ -25,12 +25,7 @@ class OppgaveServiceTest {
         oppgaveGateway = mockk()
         oppgaveRepository = mockk(relaxed = true)
         oppgaveRouter = mockk()
-        oppgaveService = CustomOppgaveService(
-            oppgaveGateway,
-            oppgaveRepository,
-            oppgaveRouter,
-            { _: AktorId?, _: OppgaveType? -> }
-        )
+        oppgaveService = CustomOppgaveService(oppgaveGateway, oppgaveRepository, oppgaveRouter)
     }
 
     @Test
@@ -154,12 +149,10 @@ class OppgaveServiceTest {
         oppgaveGateway: OppgaveGateway?,
         oppgaveRepository: OppgaveRepository?,
         oppgaveRouter: OppgaveRouter?,
-        kontaktBrukerHenvendelseProducer: KontaktBrukerHenvendelseProducer?
     ) : OppgaveService(
         oppgaveGateway,
         oppgaveRepository,
         oppgaveRouter,
-        kontaktBrukerHenvendelseProducer,
         mockk(relaxed = true)
     ) {
         override fun idag(): LocalDate {

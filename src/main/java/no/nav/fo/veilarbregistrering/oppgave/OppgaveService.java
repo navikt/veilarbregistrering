@@ -23,20 +23,17 @@ public class OppgaveService {
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
-    private final KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
             InfluxMetricsService influxMetricsService) {
 
         this.influxMetricsService = influxMetricsService;
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
-        this.kontaktBrukerHenvendelseProducer = kontaktBrukerHenvendelseProducer;
     }
 
     public OppgaveResponse opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
