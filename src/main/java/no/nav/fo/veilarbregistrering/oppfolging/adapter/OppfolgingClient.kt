@@ -79,7 +79,6 @@ open class OppfolgingClient(
 
     private fun getSystemAuthorizationHeaders() =
         listOf(
-            "SystemAuthorization" to systemUserTokenProvider.systemUserToken,
             HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
         )
 
