@@ -49,8 +49,7 @@ class VeilArbPersonClient {
                         .addQueryParameter("fnr", foedselsnummer.stringValue())
                         .build())
                 .headers(Headers.buildHeaders(List.of(
-                        new Pair<>(COOKIE, cookies),
-                        new Pair<>("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                        new Pair<>(COOKIE, cookies)
                 )))
                 .build();
 
