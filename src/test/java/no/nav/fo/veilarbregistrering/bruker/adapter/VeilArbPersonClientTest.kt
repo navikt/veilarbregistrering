@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.bruker.adapter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +14,6 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
 
@@ -31,13 +29,11 @@ internal class VeilArbPersonClientTest(private val mockServer: ClientAndServer) 
 
     private fun buildClient(): VeilArbPersonClient {
         mockkStatic(RequestContext::class)
-        val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
         every { RequestContext.servletRequest() } returns httpServletRequest
         every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
-        every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return VeilArbPersonClient(baseUrl, systemUserTokenProvider)
+        return VeilArbPersonClient(baseUrl)
     }
 
     @Test
