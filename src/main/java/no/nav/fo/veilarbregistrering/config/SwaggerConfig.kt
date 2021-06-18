@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @Configuration
 @EnableSwagger2
 open class SwaggerConfig {
-    //  Path to Swagger UI: /veilarboppfolging/swagger-ui.html
+    //  Path to Swagger UI: /veilarbregistrering/swagger-ui.html
     @Bean
     open fun docket(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
