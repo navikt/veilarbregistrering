@@ -69,8 +69,8 @@ jobs:
           DRY_RUN: false
           RESOURCE: nais/nais-dev.yaml
 
-  deploy-prod-paw:
-    name: Deploy to prod-fss/paw
+  deploy-prod:
+    name: Deploy to prod-fss
     needs: deploy-dev
     runs-on: ubuntu-latest
     steps:
@@ -92,7 +92,7 @@ jobs:
 
   release:
     name: Tag and release
-    needs: deploy-prod-paw
+    needs: deploy-prod
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
