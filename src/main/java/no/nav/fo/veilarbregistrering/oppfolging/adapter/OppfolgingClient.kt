@@ -46,19 +46,19 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        post(url, fnr, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        post(url, fnr, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.reportFields(REAKTIVER_BRUKER)
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        post(url, aktiverBrukerData, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.reportFields(AKTIVER_BRUKER)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        post(url, sykmeldtBrukerType, getSystemAuthorizationHeaders(), ::aktiveringFeilMapper)
+        post(url, sykmeldtBrukerType, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.reportFields(OPPFOLGING_SYKMELDT)
     }
 
@@ -77,7 +77,7 @@ open class OppfolgingClient(
             }
         }
 
-    private fun getSystemAuthorizationHeaders() =
+    private fun getSystemAuthorizationHeader() =
         listOf(
             HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
         )
