@@ -29,7 +29,7 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <common.version>2.2021.02.23_11.33-7091f10a35ba</common.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
-        <springfox.version>2.9.2</springfox.version>
+        <springfox.version>2.10.0</springfox.version>
     </properties>
 
     <dependencies>
