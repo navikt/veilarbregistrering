@@ -46,8 +46,9 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         this.unleashClient = unleashClient;
 
         int forsinkelseIMinutterVedOppstart = 5;
+        int forsinkelseIMinutterVedStopp = 5;
         Executors.newSingleThreadScheduledExecutor()
-                .schedule(this, forsinkelseIMinutterVedOppstart, MINUTES);
+                .scheduleWithFixedDelay(this, forsinkelseIMinutterVedOppstart, forsinkelseIMinutterVedStopp, MINUTES);
     }
 
     @Override
