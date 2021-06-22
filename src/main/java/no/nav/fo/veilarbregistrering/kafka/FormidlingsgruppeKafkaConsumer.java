@@ -27,6 +27,8 @@ import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 class FormidlingsgruppeKafkaConsumer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer.class);
+    
+    private static final String KILL_SWITCH_TOGGLE_NAME = "veilarbregistrering.stopKonsumeringAvFormidlingsgruppe";
 
     private final Properties kafkaConsumerProperties;
     private final String topic;
@@ -104,6 +106,6 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     }
 
     private boolean stopKonsumeringAvFormidlingsgruppe() {
-        return unleashClient.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
+        return unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME);
     }
 }
