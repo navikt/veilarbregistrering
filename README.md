@@ -23,6 +23,8 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 | Arbeidssokerregistrering | query (REST/GET) | /sistearbeidsforhold |
 | Arbeidssokerregistrering | query (REST/GET) | /person/kontaktinfo |
 | Arbeidssokerregistrering | command (REST/POST) | /oppgave |
+| Veien til arbeid / Ditt NAV | query (REST/GET) | /registrering |
+| Veien til arbeid / Ditt NAV | query (REST/GET) | /startregistrering |
 | Dagpenger | query (REST/GET) | /arbeidssoker/perioder |
 | Arena | event (Kafka) | FormidlingsgruppeEvent |
 | Helse | query (REST/GET) | /sykmeldtinfodata |
