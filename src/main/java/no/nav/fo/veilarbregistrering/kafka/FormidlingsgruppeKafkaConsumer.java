@@ -57,6 +57,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         final String mdcOffsetKey = "offset";
         final String mdcPartitionKey = "partition";
 
+        if (stopKonsumeringAvFormidlingsgruppe()) {
+            LOG.info("Kill-switch '{}' aktivert. Hopper over lesing fra kafka", KILL_SWITCH_TOGGLE_NAME);
+            return;
+        }
+
         MDC.put(mdcTopicKey, topic);
         LOG.info("Running");
 
