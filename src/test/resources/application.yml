@@ -15,6 +15,10 @@ server:
   servlet:
     context-path: /veilarbregistrering
 
+springdoc:
+  packages-to-scan: no.nav.fo.veilarbregistrering
+  paths-to-match: /api/**
+
 management:
   endpoint:
     metrics:

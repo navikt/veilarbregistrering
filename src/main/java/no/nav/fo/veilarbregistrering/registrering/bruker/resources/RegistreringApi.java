@@ -1,30 +1,30 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Api(value = "RegistreringResource")
+@Tag(name = "RegistreringResource")
 public interface RegistreringApi {
 
-    @ApiOperation(value = "Henter oppfølgingsinformasjon om arbeidssøker.")
+    @Operation(summary = "Henter oppfølgingsinformasjon om arbeidssøker.")
     StartRegistreringStatusDto hentStartRegistreringStatus();
 
-    @ApiOperation(value = "Starter nyregistrering av arbeidssøker.")
+    @Operation(summary = "Starter nyregistrering av arbeidssøker.")
     OrdinaerBrukerRegistrering registrerBruker(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering);
 
-    @ApiOperation(value = "Henter siste registrering av bruker.")
+    @Operation(summary = "Henter siste registrering av bruker.")
     ResponseEntity<BrukerRegistreringWrapper> hentRegistrering();
 
     @GetMapping("/registrering")
     ResponseEntity<BrukerRegistreringWrapper> hentPaabegyntRegistrering();
 
-    @ApiOperation(value = "Starter reaktivering av arbeidssøker.")
+    @Operation(summary = "Starter reaktivering av arbeidssøker.")
     void reaktivering();
 
-    @ApiOperation(value = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
+    @Operation(summary = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
     void registrerSykmeldt(SykmeldtRegistrering sykmeldtRegistrering);
 }
