@@ -27,6 +27,8 @@ import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 class FormidlingsgruppeKafkaConsumer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer.class);
+    
+    private static final String KILL_SWITCH_TOGGLE_NAME = "veilarbregistrering.stopKonsumeringAvFormidlingsgruppe";
 
     private final Properties kafkaConsumerProperties;
     private final String topic;
@@ -43,8 +45,10 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         this.arbeidssokerService = arbeidssokerService;
         this.unleashClient = unleashClient;
 
+        int forsinkelseIMinutterVedOppstart = 5;
+        int forsinkelseIMinutterVedStopp = 5;
         Executors.newSingleThreadScheduledExecutor()
-                .schedule(this, 5, MINUTES);
+                .scheduleWithFixedDelay(this, forsinkelseIMinutterVedOppstart, forsinkelseIMinutterVedStopp, MINUTES);
     }
 
     @Override
@@ -53,6 +57,11 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
         final String mdcTopicKey = "topic";
         final String mdcOffsetKey = "offset";
         final String mdcPartitionKey = "partition";
+
+        if (stopKonsumeringAvFormidlingsgruppe()) {
+            LOG.info("Kill-switch '{}' aktivert. Hopper over lesing fra kafka", KILL_SWITCH_TOGGLE_NAME);
+            return;
+        }
 
         MDC.put(mdcTopicKey, topic);
         LOG.info("Running");
@@ -87,7 +96,7 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
                 consumer.commitSync();
             }
 
-            LOG.info("Stopper lesing av topic etter at toggle `veilarbregistrering.stopKonsumeringAvFormidlingsgruppe` er skrudd på");
+            LOG.info("Stopper lesing av topic etter at toggle `{}` er skrudd på", KILL_SWITCH_TOGGLE_NAME);
 
         } catch (Exception e) {
             LOG.error(String.format("Det oppstod en ukjent feil ifm. konsumering av events fra %s", topic), e);
@@ -103,6 +112,6 @@ class FormidlingsgruppeKafkaConsumer implements Runnable {
     }
 
     private boolean stopKonsumeringAvFormidlingsgruppe() {
-        return unleashClient.isEnabled("veilarbregistrering.stopKonsumeringAvFormidlingsgruppe");
+        return unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME);
     }
 }
