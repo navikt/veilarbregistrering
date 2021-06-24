@@ -49,7 +49,8 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
         FormidlingsgruppeGatewayConfig.class,
         PubliseringSchedulerConfig.class,
         HelsesjekkConfig.class,
-        ObjectMapperConfig.class
+        ObjectMapperConfig.class,
+        SwaggerConfig.class
 })
 @EnableScheduling
 public class ApplicationConfig {

@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.bruker.adapter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway
@@ -32,14 +31,12 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     private fun buildClient(): VeilArbPersonClient {
-        val systemUserTokenProvider = mockk<SystemUserTokenProvider>()
         val httpServletRequest = mockk<HttpServletRequest>()
         mockkStatic(RequestContext::class)
         every { servletRequest() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
-        every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return VeilArbPersonClient(baseUrl, systemUserTokenProvider).also { veilArbPersonClient = it }
+        return VeilArbPersonClient(baseUrl).also { veilArbPersonClient = it }
     }
 
     @Test

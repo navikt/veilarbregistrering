@@ -4,7 +4,6 @@ import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-
-import static no.nav.fo.veilarbregistrering.metrics.Events.MANUELL_REAKTIVERING_EVENT;
-import static no.nav.fo.veilarbregistrering.metrics.Events.SYKMELDT_BESVARELSE_EVENT;
-import static no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus;
 
 @RestController
 @RequestMapping("/api")
@@ -32,7 +27,6 @@ public class RegistreringResource implements RegistreringApi {
     private final UserService userService;
     private final StartRegistreringStatusService startRegistreringStatusService;
     private final InaktivBrukerService inaktivBrukerService;
-    private final InfluxMetricsService influxMetricsService;
 
     public RegistreringResource(
             AutorisasjonService autorisasjonsService,
@@ -42,8 +36,7 @@ public class RegistreringResource implements RegistreringApi {
             UnleashClient unleashClient,
             SykmeldtRegistreringService sykmeldtRegistreringService,
             StartRegistreringStatusService startRegistreringStatusService,
-            InaktivBrukerService inaktivBrukerService,
-            InfluxMetricsService influxMetricsService) {
+            InaktivBrukerService inaktivBrukerService) {
         this.autorisasjonsService = autorisasjonsService;
         this.userService = userService;
         this.brukerRegistreringService = brukerRegistreringService;
@@ -52,7 +45,6 @@ public class RegistreringResource implements RegistreringApi {
         this.sykmeldtRegistreringService = sykmeldtRegistreringService;
         this.startRegistreringStatusService = startRegistreringStatusService;
         this.inaktivBrukerService = inaktivBrukerService;
-        this.influxMetricsService = influxMetricsService;
     }
 
     @Override
@@ -61,9 +53,7 @@ public class RegistreringResource implements RegistreringApi {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
 
         autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.getAktorId());
-        StartRegistreringStatusDto status = startRegistreringStatusService.hentStartRegistreringStatus(bruker);
-        rapporterRegistreringsstatus(influxMetricsService, status);
-        return status;
+        return startRegistreringStatusService.hentStartRegistreringStatus(bruker);
     }
 
     @Override
@@ -83,8 +73,6 @@ public class RegistreringResource implements RegistreringApi {
         OrdinaerBrukerRegistrering opprettetRegistrering = brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder);
 
         brukerRegistreringService.overforArena(opprettetRegistrering.getId(), bruker, veileder);
-
-        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
 
         return opprettetRegistrering;
     }
@@ -136,13 +124,7 @@ public class RegistreringResource implements RegistreringApi {
         final Bruker bruker = userService.finnBrukerGjennomPdl();
         autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.getGjeldendeFoedselsnummer());
 
-        inaktivBrukerService.reaktiverBruker(bruker);
-
-        if (autorisasjonsService.erVeileder()) {
-            influxMetricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
-        }
-
-        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
+        inaktivBrukerService.reaktiverBruker(bruker, autorisasjonsService.erVeileder());
     }
 
     @Override
@@ -160,10 +142,6 @@ public class RegistreringResource implements RegistreringApi {
         NavVeileder veileder = navVeileder();
 
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder);
-
-        influxMetricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
-                sykmeldtRegistrering.getBesvarelse().getUtdanning(),
-                sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
     }
 
     private NavVeileder navVeileder() {

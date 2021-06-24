@@ -2,7 +2,7 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: veilarbregistrering
-  namespace: default
+  namespace: paw
   labels:
     team: paw
 spec:
@@ -40,7 +40,7 @@ spec:
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
     - name: ABAC_PDP_ENDPOINT_URL
-      value: https://wasapp.adeo.no/asm-pdp/authorize
+      value: https://abac-veilarb.intern.nav.no/application/asm-pdp/authorize
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL

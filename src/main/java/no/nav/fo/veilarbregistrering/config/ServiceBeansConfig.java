@@ -105,11 +105,13 @@ public class ServiceBeansConfig {
     InaktivBrukerService inaktivBrukerService(
             BrukerTilstandService brukerTilstandService,
             ReaktiveringRepository reaktiveringRepository,
-            OppfolgingGateway oppfolgingGateway) {
+            OppfolgingGateway oppfolgingGateway,
+            InfluxMetricsService influxMetricsService) {
         return new InaktivBrukerService(
                 brukerTilstandService,
                 reaktiveringRepository,
-                oppfolgingGateway);
+                oppfolgingGateway,
+                influxMetricsService);
     }
 
     @Bean
@@ -157,8 +159,7 @@ public class ServiceBeansConfig {
             UnleashClient unleashClient,
             StartRegistreringStatusService startRegistreringStatusService,
             SykmeldtRegistreringService sykmeldtRegistreringService,
-            InaktivBrukerService inaktivBrukerService,
-            InfluxMetricsService influxMetricsService) {
+            InaktivBrukerService inaktivBrukerService) {
         return new RegistreringResource(
                 autorisasjonService,
                 userService,
@@ -167,8 +168,8 @@ public class ServiceBeansConfig {
                 unleashClient,
                 sykmeldtRegistreringService,
                 startRegistreringStatusService,
-                inaktivBrukerService,
-                influxMetricsService);
+                inaktivBrukerService
+        );
     }
 
     @Bean
@@ -203,13 +204,11 @@ public class ServiceBeansConfig {
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            KontaktBrukerHenvendelseProducer kontaktBrukerHenvendelseProducer,
             InfluxMetricsService influxMetricsService) {
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                kontaktBrukerHenvendelseProducer,
                 influxMetricsService);
     }
 

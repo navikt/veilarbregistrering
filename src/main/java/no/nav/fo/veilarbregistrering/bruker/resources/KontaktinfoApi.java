@@ -1,18 +1,18 @@
 package no.nav.fo.veilarbregistrering.bruker.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(value = "KontaktinfoResource")
+@Tag(name = "KontaktinfoResource")
 public interface KontaktinfoApi {
 
-    @ApiOperation(value = "Henter kontaktinformasjon (telefonnummer) til bruker.")
+    @Operation(summary = "Henter kontaktinformasjon (telefonnummer) til bruker.")
     @ApiResponses({
-            @ApiResponse(code = 403, message = "Ingen tilgang"),
-            @ApiResponse(code = 404, message = "Ikke funnet"),
-            @ApiResponse(code = 500, message = "Ukjent feil")
+            @ApiResponse(responseCode = "403", description = "Ingen tilgang"),
+            @ApiResponse(responseCode = "404", description = "Ikke funnet"),
+            @ApiResponse(responseCode = "500", description = "Ukjent feil")
     })
     KontaktinfoDto hentKontaktinfo();
 }

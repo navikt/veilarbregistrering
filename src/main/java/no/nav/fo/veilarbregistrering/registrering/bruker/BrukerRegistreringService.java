@@ -49,13 +49,7 @@ public class BrukerRegistreringService {
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.brukerTilstandService = brukerTilstandService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-
         this.influxMetricsService = influxMetricsService;
-    }
-
-    private void registrerOverfortStatistikk(NavVeileder veileder) {
-        if (veileder == null) return;
-        influxMetricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
     }
 
     @Transactional
@@ -98,12 +92,12 @@ public class BrukerRegistreringService {
 
         RegistreringTilstand registreringTilstand = overforArena(registreringId, bruker);
 
-        if (registreringTilstand.getStatus() == Status.OVERFORT_ARENA) {
-            registrerOverfortStatistikk(veileder);
-            return;
+        if (registreringTilstand.getStatus() != Status.OVERFORT_ARENA) {
+            throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()));
         }
 
-        throw new AktiverBrukerException(AktiverBrukerFeil.fromStatus(registreringTilstand.getStatus()));
+        registrerOverfortStatistikk(veileder);
+        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
@@ -133,6 +127,11 @@ public class BrukerRegistreringService {
                 .oppdaterStatus(status);
 
         return registreringTilstandRepository.oppdater(aktiveringTilstand);
+    }
+
+    private void registrerOverfortStatistikk(NavVeileder veileder) {
+        if (veileder == null) return;
+        influxMetricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {

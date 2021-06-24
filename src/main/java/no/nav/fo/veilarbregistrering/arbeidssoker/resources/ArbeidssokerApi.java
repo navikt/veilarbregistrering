@@ -1,21 +1,25 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDate;
 
-@Api(value = "ArbeidssokerResource")
+@Tag(name = "ArbeidssokerResource")
 public interface ArbeidssokerApi {
 
-    @ApiOperation(value = "Henter alle perioder hvor bruker er registrert som arbeidssøker.")
+    @Operation(summary = "Henter alle perioder hvor bruker er registrert som arbeidssøker.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Ok"),
-            @ApiResponse(code = 400, message = "Ugyldig periode - fra og med dato må være før til dato"),
-            @ApiResponse(code = 403, message = "Ingen tilgang"),
-            @ApiResponse(code = 500, message = "Ukjent feil")})
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "400", description = "Ugyldig periode - fra og med dato må være før til dato"),
+            @ApiResponse(responseCode = "403", description = "Ingen tilgang"),
+            @ApiResponse(responseCode = "500", description = "Ukjent feil")})
     ArbeidssokerperioderDto hentArbeidssokerperioder(
-            @ApiParam(required = true, value = "Fødselsnummer") String fnr,
-            @ApiParam(required = true, value = "Fra og med dato") LocalDate fraOgMed,
-            @ApiParam(value = "Til og med dato") LocalDate tilOgMed
+            @Parameter(required = true, description = "Fødselsnummer") String fnr,
+            @Parameter(required = true, description = "Fra og med dato") LocalDate fraOgMed,
+            @Parameter(description = "Til og med dato") LocalDate tilOgMed
     );
 }

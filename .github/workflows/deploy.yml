@@ -48,30 +48,30 @@ jobs:
         docker build --tag ${IMAGE} .
         docker push ${IMAGE}
 
-  deploy-q1:
-    name: Deploy to q1 FSS
+  deploy-dev:
+    name: Deploy to dev FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
 
-    - name: Lag tag for image
-      run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      - name: Lag tag for image
+        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-    - name: Lag full image referanse
-      run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
+      - name: Lag full image referanse
+        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
 
-    - name: Deploy to Q1
-      uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        DRY_RUN: false
-        RESOURCE: nais/nais-q1.yaml
+      - name: Deploy to Dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          DRY_RUN: false
+          RESOURCE: nais/nais-dev.yaml
 
   deploy-prod:
-    name: Deploy to Prod FSS
-    needs: deploy-q1
+    name: Deploy to prod-fss
+    needs: deploy-dev
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -88,7 +88,7 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
         DRY_RUN: false
-        RESOURCE: nais/nais-p.yaml
+        RESOURCE: nais/nais-prod.yaml
 
   release:
     name: Tag and release

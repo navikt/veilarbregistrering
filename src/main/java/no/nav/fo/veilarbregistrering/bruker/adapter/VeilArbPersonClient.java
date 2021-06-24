@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.bruker.adapter;
 import kotlin.Pair;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
-import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.http.Headers;
 import okhttp3.HttpUrl;
@@ -31,12 +30,10 @@ class VeilArbPersonClient {
     private static final int HTTP_READ_TIMEOUT = 120000;
 
     private final String baseUrl;
-    private final SystemUserTokenProvider systemUserTokenProvider;
     private final OkHttpClient client;
 
-    VeilArbPersonClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
+    VeilArbPersonClient(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.systemUserTokenProvider = systemUserTokenProvider;
         this.client = RestClient.baseClientBuilder().readTimeout(HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS).build();
     }
 
@@ -49,8 +46,7 @@ class VeilArbPersonClient {
                         .addQueryParameter("fnr", foedselsnummer.stringValue())
                         .build())
                 .headers(Headers.buildHeaders(List.of(
-                        new Pair<>(COOKIE, cookies),
-                        new Pair<>("SystemAuthorization", this.systemUserTokenProvider.getSystemUserToken())
+                        new Pair<>(COOKIE, cookies)
                 )))
                 .build();
 

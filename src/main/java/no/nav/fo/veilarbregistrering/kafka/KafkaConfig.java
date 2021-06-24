@@ -29,21 +29,14 @@ public class KafkaConfig {
     ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(KafkaProducer kafkaProducer) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducer,
-                "aapen-arbeid-arbeidssoker-registrert" + getEnvSuffix());
-    }
-
-    @Bean
-    KontaktBrukerOpprettetKafkaProducer kontaktBrukerOpprettetKafkaProducer(KafkaProducer kafkaProducer) {
-        return new KontaktBrukerOpprettetKafkaProducer(
-                kafkaProducer,
-                "aapen-arbeid-arbeidssoker-kontaktbruker-opprettet" + getEnvSuffix());
+                "aapen-arbeid-arbeidssoker-registrert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
     ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer) {
         return new ArbeidssokerProfilertKafkaProducer(
                 kafkaProducer,
-                "aapen-arbeid-arbeidssoker-profilert" + getEnvSuffix());
+                "aapen-arbeid-arbeidssoker-profilert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
@@ -101,10 +94,6 @@ public class KafkaConfig {
 
     private String getGroupIdForFormidlingsgruppeConsumer() {
         return "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02";
-    }
-    
-    private String getGroupId() {
-        return "veilarbregistrering";
     }
 
     private static Properties getSecurityConfig() {

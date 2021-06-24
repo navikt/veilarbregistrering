@@ -5,7 +5,7 @@ Backend-applikasjon for [Arbeidssøkerregistrering](https://github.com/navikt/ar
 ![](https://github.com/navikt/veilarbregistrering/workflows/Build,%20push,%20deploy%20%F0%9F%92%AA/badge.svg)
 
 ## API
-Se https://veilarbregistrering.nais.adeo.no/veilarbregistrering/internal/swagger/index.html?input_baseurl=/veilarbregistrering/api/swagger.json 
+Se [Swagger-UI](https://veilarbregistrering.dev.intern.nav.no/veilarbregistrering/swagger-ui.html) 
 for beskrivelse av APIet til `veilarbregistrering`.
 
 ## Bounded context Canvas
@@ -23,6 +23,8 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 | Arbeidssokerregistrering | query (REST/GET) | /sistearbeidsforhold |
 | Arbeidssokerregistrering | query (REST/GET) | /person/kontaktinfo |
 | Arbeidssokerregistrering | command (REST/POST) | /oppgave |
+| Veien til arbeid / Ditt NAV | query (REST/GET) | /registrering |
+| Veien til arbeid / Ditt NAV | query (REST/GET) | /startregistrering |
 | Dagpenger | query (REST/GET) | /arbeidssoker/perioder |
 | Arena | event (Kafka) | FormidlingsgruppeEvent |
 | Helse | query (REST/GET) | /sykmeldtinfodata |

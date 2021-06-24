@@ -1,16 +1,19 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(value = "OppgaveResource")
+@Tag(name = "OppgaveResource")
 public interface OppgaveApi {
 
-    @ApiOperation(value = "Oppretter 'kontakt bruker'-oppgave på vegne av bruker.")
+    @Operation(summary = "Oppretter 'kontakt bruker'-oppgave på vegne av bruker.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Oppgave opprettet OK"),
-            @ApiResponse(code = 403, message = "Duplikat - fant tilsvarende oppgave " +
+            @ApiResponse(responseCode = "200", description = "Oppgave opprettet OK"),
+            @ApiResponse(responseCode = "403", description = "Duplikat - fant tilsvarende oppgave " +
                     "som ble opprettet innenfor de siste 2 arbeidsdager"),
-            @ApiResponse(code = 500, message = "Ukjent teknisk feil")
+            @ApiResponse(responseCode = "500", description = "Ukjent teknisk feil")
     })
     OppgaveDto opprettOppgave(OppgaveDto oppgaveDto);
 }

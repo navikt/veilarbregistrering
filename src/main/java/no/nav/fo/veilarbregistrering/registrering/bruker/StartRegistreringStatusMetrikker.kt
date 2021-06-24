@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker.resources
+package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.metrics.Event.Companion.of
 import no.nav.fo.veilarbregistrering.metrics.Metric.Companion.of
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
-import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
+import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 
 internal object StartRegistreringStatusMetrikker {
     @JvmStatic

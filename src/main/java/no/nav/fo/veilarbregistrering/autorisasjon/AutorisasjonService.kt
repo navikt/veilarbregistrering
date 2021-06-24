@@ -32,12 +32,12 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
     }
 
     private val innloggetBrukerToken: String
-        get() = authContextHolder.getIdTokenString()
+        get() = authContextHolder.idTokenString
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "Fant ikke token for innlogget bruker") }
 
     // NAV ident, fnr eller annen ID
-    val innloggetBrukerIdent: String
-        get() = authContextHolder.getSubject()
+    private val innloggetBrukerIdent: String
+        get() = authContextHolder.subject
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "NAV ident is missing") }
 
     val innloggetVeilederIdent: String
