@@ -42,10 +42,12 @@ class ArbeidssokerperioderMapper {
                 int j = 0;
 
                 while (j < formidlingsgruppeendringer.size() - 1) {
-                    if (formidlingsgruppeendringer.get(j).getFormidlingsgruppeEndret().equals(formidlingsgruppeendringer.get(j+1).getFormidlingsgruppeEndret())) {
-                        if (formidlingsgruppeendringer.get(j).erISERV() && formidlingsgruppeendringer.get(j+1).erARBS()) {
+                    Formidlingsgruppeendring endring = formidlingsgruppeendringer.get(j);
+                    Formidlingsgruppeendring nesteEndring = formidlingsgruppeendringer.get(j + 1);
+                    if (endring.getFormidlingsgruppeEndret().equals(nesteEndring.getFormidlingsgruppeEndret())) {
+                        if (endring.erISERV() && nesteEndring.erARBS()) {
                             formidlingsgruppeendringer.remove(j);
-                        } else if (formidlingsgruppeendringer.get(j).erARBS() && formidlingsgruppeendringer.get(j+1).erISERV()) {
+                        } else if (endring.erARBS() && nesteEndring.erISERV()) {
                             formidlingsgruppeendringer.remove(j+1);
                         }
                     } else {
