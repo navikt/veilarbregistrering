@@ -45,9 +45,9 @@ class ArbeidssokerperioderMapper {
                     Formidlingsgruppeendring endring = formidlingsgruppeendringer.get(j);
                     Formidlingsgruppeendring nesteEndring = formidlingsgruppeendringer.get(j + 1);
                     if (erSamtidigeEndringer(endring, nesteEndring)) {
-                        if (endring.erISERV() && nesteEndring.erARBS()) {
+                        if (endring.erISERV() && !nesteEndring.erISERV()) {
                             formidlingsgruppeendringer.remove(j);
-                        } else if (endring.erARBS() && nesteEndring.erISERV()) {
+                        } else if (!endring.erISERV() && nesteEndring.erISERV()) {
                             formidlingsgruppeendringer.remove(j+1);
                         }
                     } else {

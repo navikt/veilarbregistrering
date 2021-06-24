@@ -139,7 +139,7 @@ public class ArbeidssokerperiodeMapperTest {
     }
 
     @Test
-    public void skal_filtrere_bort_tekniske_ISERVendringer() {
+    public void skal_filtrere_bort_tekniske_ISERVendringer_for_ARBS() {
         List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
         formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
         formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
@@ -177,6 +177,25 @@ public class ArbeidssokerperiodeMapperTest {
 
         assertThat(arbeidssokerperioder.asList()).containsExactly(
                 arbs1
+        );
+    }
+
+    @Test
+    public void skal_filtrere_bort_tekniske_ISERVendringer_med_IARBS() {
+        List<Formidlingsgruppeendring> formidlingsgruppeendringer = new ArrayList<>();
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("IARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 8, 14, 22, 7, 15))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("ISERV", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 9, 9, 9, 9, 9))));
+        formidlingsgruppeendringer.add(new Formidlingsgruppeendring("IARBS", 4685858, "AKTIV", Timestamp.valueOf(LocalDateTime.of(2020, 9, 9, 9, 9, 9))));
+
+        Arbeidssokerperioder arbeidssokerperioder = map(formidlingsgruppeendringer);
+
+        Arbeidssokerperiode arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe.of("IARBS"), Periode.of(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8)));
+        Arbeidssokerperiode arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe.of("IARBS"), Periode.of(LocalDate.of(2020, 9, 9), null));
+
+        assertThat(arbeidssokerperioder.asList()).containsExactly(
+                arbs1,
+                arbs2
         );
     }
 }
