@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.tidslinje.resources
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.Operation
 
-@Api(value = "TidslinjeResource")
+@Tag(name = "TidslinjeResource")
 interface TidslinjeApi {
 
-    @ApiOperation(value = "Returnerer en tidslinje over alle historiske hendelser knyttet til arbeidssøkerregistrering")
+    @Operation(summary = "Returnerer en tidslinje over alle historiske hendelser knyttet til arbeidssøkerregistrering")
     fun tidslinje() : TidslinjeDto
 
 }
