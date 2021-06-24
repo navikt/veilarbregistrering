@@ -11,7 +11,6 @@ internal object StartRegistreringStatusMetrikker {
         var fields = listOf(
             of("erAktivIArena", registreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT),
             of("kreverReaktivering", registreringStatus.registreringType == RegistreringType.REAKTIVERING),
-            of("sykmeldUnder39uker", registreringStatus.registreringType == RegistreringType.SPERRET),
             of("sykmeldOver39uker", registreringStatus.registreringType == RegistreringType.SYKMELDT_REGISTRERING)
         )
 
