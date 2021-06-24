@@ -49,6 +49,8 @@ class ArbeidssokerperioderMapper {
                             formidlingsgruppeendringer.remove(j);
                         } else if (!endring.erISERV() && nesteEndring.erISERV()) {
                             formidlingsgruppeendringer.remove(j+1);
+                        } else {
+                            j++;
                         }
                     } else {
                         j++;
