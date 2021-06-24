@@ -44,7 +44,7 @@ class ArbeidssokerperioderMapper {
                 while (j < formidlingsgruppeendringer.size() - 1) {
                     Formidlingsgruppeendring endring = formidlingsgruppeendringer.get(j);
                     Formidlingsgruppeendring nesteEndring = formidlingsgruppeendringer.get(j + 1);
-                    if (endring.getFormidlingsgruppeEndret().equals(nesteEndring.getFormidlingsgruppeEndret())) {
+                    if (erSamtidigeEndringer(endring, nesteEndring)) {
                         if (endring.erISERV() && nesteEndring.erARBS()) {
                             formidlingsgruppeendringer.remove(j);
                         } else if (endring.erARBS() && nesteEndring.erISERV()) {
@@ -57,6 +57,10 @@ class ArbeidssokerperioderMapper {
 
                 return formidlingsgruppeendringer;
             });
+
+    private static boolean erSamtidigeEndringer(Formidlingsgruppeendring endring, Formidlingsgruppeendring nesteEndring) {
+        return endring.getFormidlingsgruppeEndret().equals(nesteEndring.getFormidlingsgruppeEndret());
+    }
 
     private static Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> beholdKunSisteEndringPerDagIListen =
             (formidlingsgruppeendringer) -> {
