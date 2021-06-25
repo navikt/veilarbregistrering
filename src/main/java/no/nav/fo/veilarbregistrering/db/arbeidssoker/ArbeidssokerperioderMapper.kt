@@ -20,7 +20,7 @@ internal object ArbeidssokerperioderMapper {
                                 .sorted(NyesteFoerst.nyesteFoerst())
                                 .collect(Collectors.toList()))
                         .map(beholdKunEndringerForAktiveIdenter)
-                        .map(slettTekniskeISERVEndringer)
+                        .map(::slettTekniskeISERVEndringer)
                         .map(beholdKunSisteEndringPerDagIListen)
                         .map(populerTilDato)
                         .get()
@@ -34,29 +34,9 @@ internal object ArbeidssokerperioderMapper {
                 .filter { obj: Formidlingsgruppeendring -> obj.erAktiv() }
                 .collect(Collectors.toList())
     }
-    private val slettTekniskeISERVEndringer = Function { formidlingsgruppeendringer: MutableList<Formidlingsgruppeendring> ->
-        var j = 0
-        while (j < formidlingsgruppeendringer.size - 1) {
-            val endring = formidlingsgruppeendringer[j]
-            val nesteEndring = formidlingsgruppeendringer[j + 1]
-            if (erSamtidigeEndringer(endring, nesteEndring)) {
-                if (endring.erISERV() && !nesteEndring.erISERV()) {
-                    formidlingsgruppeendringer.removeAt(j)
-                } else if (!endring.erISERV() && nesteEndring.erISERV()) {
-                    formidlingsgruppeendringer.removeAt(j + 1)
-                } else {
-                    j++
-                }
-            } else {
-                j++
-            }
-        }
-        formidlingsgruppeendringer
-    }
-
-    private fun erSamtidigeEndringer(endring: Formidlingsgruppeendring, nesteEndring: Formidlingsgruppeendring): Boolean {
-        return endring.formidlingsgruppeEndret.equals(nesteEndring.formidlingsgruppeEndret)
-    }
+    private fun slettTekniskeISERVEndringer (formidlingsgruppeendringer: MutableList<Formidlingsgruppeendring>) =
+        formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
+            .values.flatMap { samtidigeEndringer -> if(samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
 
     private val beholdKunSisteEndringPerDagIListen = Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> { formidlingsgruppeendringer: List<Formidlingsgruppeendring> ->
         val arbeidssokerperioder: MutableList<Arbeidssokerperiode> = ArrayList(formidlingsgruppeendringer.size)
