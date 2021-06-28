@@ -37,6 +37,7 @@ internal object ArbeidssokerperioderMapper {
     private fun slettTekniskeISERVEndringer (formidlingsgruppeendringer: MutableList<Formidlingsgruppeendring>) =
         formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
             .values.flatMap { samtidigeEndringer -> if(samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
+            .sortedWith(NyesteFoerst.nyesteFoerst())
 
     private val beholdKunSisteEndringPerDagIListen = Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> { formidlingsgruppeendringer: List<Formidlingsgruppeendring> ->
         val arbeidssokerperioder: MutableList<Arbeidssokerperiode> = ArrayList(formidlingsgruppeendringer.size)
