@@ -12,7 +12,6 @@ import java.util.function.Function
 import java.util.stream.Collectors
 
 internal object ArbeidssokerperioderMapper {
-    @JvmStatic
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
         return Arbeidssokerperioder(
                 Optional.of(
@@ -22,7 +21,7 @@ internal object ArbeidssokerperioderMapper {
                         .map(beholdKunEndringerForAktiveIdenter)
                         .map(::slettTekniskeISERVEndringer)
                         .map(beholdKunSisteEndringPerDagIListen)
-                        .map(populerTilDato)
+                        .map(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
                         .get()
                         .stream()
                         .sorted(EldsteFoerst.eldsteFoerst())
@@ -58,13 +57,10 @@ internal object ArbeidssokerperioderMapper {
         }
         arbeidssokerperioder
     }
-    private val populerTilDato = Function<List<Arbeidssokerperiode>, List<Arbeidssokerperiode?>> { arbeidssokerperioder: List<Arbeidssokerperiode> ->
-        val nyListe: MutableList<Arbeidssokerperiode?> = ArrayList<Arbeidssokerperiode?>(arbeidssokerperioder.size)
-        var nyTildato: LocalDate? = null
-        for (arbeidssokerperiode in arbeidssokerperioder) {
-            nyListe.add(arbeidssokerperiode.tilOgMed(nyTildato))
-            nyTildato = arbeidssokerperiode.periode.fra.minusDays(1)
+
+    private fun populerTilDatoMedNestePeriodesFraDatoMinusEn(arbeidssokerperioder: List<Arbeidssokerperiode>) : List<Arbeidssokerperiode> =
+        arbeidssokerperioder.mapIndexed { index, arbeidssokerperiode ->
+            val forrigePeriodesFraDato = if (index > 0) arbeidssokerperioder[index-1].periode?.fra else null
+            arbeidssokerperiode.tilOgMed(forrigePeriodesFraDato?.minusDays(1))
         }
-        nyListe
-    }
 }
