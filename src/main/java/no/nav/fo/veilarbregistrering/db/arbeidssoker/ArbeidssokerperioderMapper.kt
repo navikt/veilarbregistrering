@@ -33,7 +33,7 @@ internal object ArbeidssokerperioderMapper {
                 .filter { obj: Formidlingsgruppeendring -> obj.erAktiv() }
                 .collect(Collectors.toList())
     }
-    private fun slettTekniskeISERVEndringer (formidlingsgruppeendringer: MutableList<Formidlingsgruppeendring>) =
+    private fun slettTekniskeISERVEndringer (formidlingsgruppeendringer: List<Formidlingsgruppeendring>) =
         formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
             .values.flatMap { samtidigeEndringer -> if(samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
             .sortedWith(NyesteFoerst.nyesteFoerst())
