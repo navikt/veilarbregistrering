@@ -15,18 +15,15 @@ internal object ArbeidssokerperioderMapper {
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
         return Arbeidssokerperioder(
             Optional.of(
-                formidlingsgruppeendringer.stream()
-                    .sorted(NyesteFoerst.nyesteFoerst())
-                    .collect(Collectors.toList())
+                formidlingsgruppeendringer
+                    .sortedWith(NyesteFoerst.nyesteFoerst())
             )
                 .map(beholdKunEndringerForAktiveIdenter)
                 .map(::slettTekniskeISERVEndringer)
                 .map(::beholdKunSisteEndringPerDagIListen)
                 .map(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
                 .get()
-                .stream()
-                .sorted(EldsteFoerst.eldsteFoerst())
-                .collect(Collectors.toList())
+                .sortedWith(EldsteFoerst.eldsteFoerst())
         )
     }
 
