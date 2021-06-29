@@ -7,22 +7,17 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.Formidlingsgruppeendring.NyesteFoerst
 import java.time.LocalDate
-import java.util.*
 
 internal object ArbeidssokerperioderMapper {
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
         return Arbeidssokerperioder(
-            Optional.of(
                 formidlingsgruppeendringer
                     .sortedWith(NyesteFoerst.nyesteFoerst())
-            )
-                .map { it.filter(Formidlingsgruppeendring::erAktiv) }
-                .map(::slettTekniskeISERVEndringer)
-                .map(::beholdKunSisteEndringPerDagIListen)
-                .map(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
-                .get()
-                .sortedWith(EldsteFoerst.eldsteFoerst())
-
+                    .filter(Formidlingsgruppeendring::erAktiv)
+                    .run(::slettTekniskeISERVEndringer)
+                    .run(::beholdKunSisteEndringPerDagIListen)
+                    .run(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
+                    .sortedWith(EldsteFoerst.eldsteFoerst())
         )
     }
 
