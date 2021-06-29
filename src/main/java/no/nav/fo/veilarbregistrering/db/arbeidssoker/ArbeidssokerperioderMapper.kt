@@ -8,8 +8,6 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.Formidlingsgruppeendring.NyesteFoerst
 import java.time.LocalDate
 import java.util.*
-import java.util.function.Function
-import java.util.stream.Collectors
 
 internal object ArbeidssokerperioderMapper {
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
@@ -18,21 +16,15 @@ internal object ArbeidssokerperioderMapper {
                 formidlingsgruppeendringer
                     .sortedWith(NyesteFoerst.nyesteFoerst())
             )
-                .map(beholdKunEndringerForAktiveIdenter)
+                .map { it.filter(Formidlingsgruppeendring::erAktiv) }
                 .map(::slettTekniskeISERVEndringer)
                 .map(::beholdKunSisteEndringPerDagIListen)
                 .map(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
                 .get()
                 .sortedWith(EldsteFoerst.eldsteFoerst())
+
         )
     }
-
-    private val beholdKunEndringerForAktiveIdenter =
-        Function { formidlingsgruppeendringer: List<Formidlingsgruppeendring> ->
-            formidlingsgruppeendringer.stream()
-                .filter { obj: Formidlingsgruppeendring -> obj.erAktiv() }
-                .collect(Collectors.toList())
-        }
 
     private fun slettTekniskeISERVEndringer(formidlingsgruppeendringer: List<Formidlingsgruppeendring>) =
         formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
