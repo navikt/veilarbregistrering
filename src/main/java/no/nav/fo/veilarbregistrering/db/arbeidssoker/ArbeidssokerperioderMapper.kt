@@ -21,7 +21,7 @@ internal object ArbeidssokerperioderMapper {
             )
                 .map(beholdKunEndringerForAktiveIdenter)
                 .map(::slettTekniskeISERVEndringer)
-                .map(beholdKunSisteEndringPerDagIListen)
+                .map(::beholdKunSisteEndringPerDagIListen)
                 .map(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
                 .get()
                 .stream()
@@ -42,28 +42,29 @@ internal object ArbeidssokerperioderMapper {
             .values.flatMap { samtidigeEndringer -> if (samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
             .sortedWith(NyesteFoerst.nyesteFoerst())
 
-    private val beholdKunSisteEndringPerDagIListen =
-        Function<List<Formidlingsgruppeendring>, List<Arbeidssokerperiode>> { formidlingsgruppeendringer: List<Formidlingsgruppeendring> ->
-            val arbeidssokerperioder: MutableList<Arbeidssokerperiode> = ArrayList(formidlingsgruppeendringer.size)
-            var forrigeEndretDato: LocalDate? = null
-            for (formidlingsgruppeendring in formidlingsgruppeendringer) {
-                val endretDato = formidlingsgruppeendring.formidlingsgruppeEndret.toLocalDateTime().toLocalDate()
-                if (forrigeEndretDato != null && endretDato.isEqual(forrigeEndretDato)) {
-                    continue
-                }
-                arbeidssokerperioder.add(
-                    Arbeidssokerperiode(
-                        Formidlingsgruppe.of(formidlingsgruppeendring.formidlingsgruppe),
-                        Periode.of(
-                            endretDato,
-                            null
-                        )
+    private fun beholdKunSisteEndringPerDagIListen(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): List<Arbeidssokerperiode> {
+        val arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
+
+        var forrigeEndretDato = LocalDate.MAX
+        for (formidlingsgruppeendring in formidlingsgruppeendringer) {
+            val endretDato = formidlingsgruppeendring.formidlingsgruppeEndret.toLocalDateTime().toLocalDate()
+            if (endretDato.isEqual(forrigeEndretDato)) {
+                continue
+            }
+            arbeidssokerperioder.add(
+                Arbeidssokerperiode(
+                    Formidlingsgruppe.of(formidlingsgruppeendring.formidlingsgruppe),
+                    Periode.of(
+                        endretDato,
+                        null
                     )
                 )
-                forrigeEndretDato = endretDato
-            }
-            arbeidssokerperioder
+            )
+            forrigeEndretDato = endretDato
         }
+
+        return arbeidssokerperioder
+    }
 
     private fun populerTilDatoMedNestePeriodesFraDatoMinusEn(arbeidssokerperioder: List<Arbeidssokerperiode>): List<Arbeidssokerperiode> =
         arbeidssokerperioder.mapIndexed { index, arbeidssokerperiode ->
