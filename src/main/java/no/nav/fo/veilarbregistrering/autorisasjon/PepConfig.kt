@@ -20,6 +20,8 @@ class PepConfig {
         val username = getVaultSecret("serviceuser_creds/username")
         val password = getVaultSecret("serviceuser_creds/password")
 
+        val ABAC_URL_PROPERTY = "ABAC_PDP_ENDPOINT_URL"
+
         return VeilarbPepFactory.get(
                 EnvironmentUtils.getRequiredProperty(ABAC_URL_PROPERTY),
                 username,
@@ -33,9 +35,5 @@ class PepConfig {
         } catch (e: Exception) {
             throw IllegalStateException(String.format("Klarte ikke laste property fra vault for path: %s", path), e)
         }
-    }
-
-    companion object {
-        private const val ABAC_URL_PROPERTY = "ABAC_PDP_ENDPOINT_URL"
     }
 }

@@ -16,6 +16,8 @@ class OppfolgingGatewayConfig {
         objectMapper: ObjectMapper,
         metricsService: InfluxMetricsService,
         systemUserTokenProvider: SystemUserTokenProvider): OppfolgingClient {
+
+        val OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL"
         return OppfolgingClient(
                 objectMapper,
                 metricsService,
@@ -26,9 +28,5 @@ class OppfolgingGatewayConfig {
     @Bean
     fun oppfolgingGateway(oppfolgingClient: OppfolgingClient): OppfolgingGateway {
         return OppfolgingGatewayImpl(oppfolgingClient)
-    }
-
-    companion object {
-        const val OPPFOLGING_API_PROPERTY_NAME = "VEILARBOPPFOLGINGAPI_URL"
     }
 }
