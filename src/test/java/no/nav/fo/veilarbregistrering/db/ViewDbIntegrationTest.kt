@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.db
 
 import no.nav.common.json.JsonUtils
+import org.approvaltests.Approvals
+import org.approvaltests.namer.NamerFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
 import org.junit.jupiter.api.Test
@@ -11,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
-import java.util.*
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -42,8 +43,9 @@ open class ViewDbIntegrationTest {
     @MethodSource("viewsForTest")
     fun `view skal reflektere kolonner i tabell`(viewName: String) {
         val kolonneData = jsonFormatter(JsonUtils.toJson(hentKolonneDataForView(viewName)))
-        val kolonneDataFasit = jsonFormatter(lesInnholdFraFil("view-meta-data/" + viewName.toLowerCase() + ".json"))
-        assertThat(kolonneData).isEqualTo(kolonneDataFasit)
+         NamerFactory.withParameters(viewName).use {
+             Approvals.verify(kolonneData)
+         }
     }
 
     private fun hentKolonneDataForView(view: String): List<Map<String, Any>> {
@@ -76,11 +78,7 @@ open class ViewDbIntegrationTest {
         private val antallViews = viewsForTest().count()
 
         private fun jsonFormatter(jsonArray: String): String {
-            return JSONArray(jsonArray).toString()
-        }
-
-        private fun lesInnholdFraFil(filNavn: String): String {
-            return Scanner(ViewDbIntegrationTest::class.java.classLoader.getResourceAsStream(filNavn)!!, "UTF-8").useDelimiter("\\A").next()
+            return JSONArray(jsonArray).toString(2)
         }
     }
 }
