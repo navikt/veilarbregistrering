@@ -5,6 +5,7 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
+import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -16,20 +17,9 @@ class HelsesjekkConfig {
         jdbcTemplate: JdbcTemplate,
     ): SelfTestChecks {
         return SelfTestChecks(listOf(
-            SelfTestCheck("Databasesjekk", true, checkDbHealth(jdbcTemplate)),
+            SelfTestCheck("Databasesjekk", true, DatabaseHelsesjekk(jdbcTemplate)),
             SelfTestCheck("Dummysjekk", false, checkDummy())
         ))
-    }
-
-    private fun checkDbHealth(jdbcTemplate: JdbcTemplate): HealthCheck {
-        return HealthCheck {
-            try {
-                jdbcTemplate.queryForObject("SELECT 1 FROM DUAL", Long::class.java)
-                HealthCheckResult.healthy()
-            } catch (e: Exception) {
-                HealthCheckResult.unhealthy("Fikk ikke kontakt med databasen", e)
-            }
-        }
     }
 
     private fun checkDummy() = HealthCheck { HealthCheckResult.healthy() }
