@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson
 
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse
 import java.time.LocalDate
 import java.util.*
 
@@ -59,4 +61,11 @@ data class PdlAdressebeskyttelse(val gradering: PdlGradering) : Comparable<PdlAd
 
 
 data class PdlHentPersonRequest(val query: String, val variables: HentPersonVariables)
+
+data class PdlHentPersonResponse(val data: PdlHentPerson, private val errors: MutableList<PdlError>) : PdlResponse {
+    override fun getErrors(): List<PdlError> {
+        return errors!!
+    }
+}
+
 
