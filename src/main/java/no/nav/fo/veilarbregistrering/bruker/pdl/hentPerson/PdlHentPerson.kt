@@ -68,4 +68,5 @@ data class PdlHentPersonResponse(val data: PdlHentPerson, private val errors: Mu
     }
 }
 
+data class HentPersonVariables(val ident: String, val isOppholdHistorikk: Boolean)
 
