@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 
@@ -19,18 +20,14 @@ class PdlPersonTestdataBuilder {
         private LocalDate foedselsdato = LocalDate.of(1970, 3, 23);
 
         PdlPerson build() {
-            PdlPerson pdlPerson = new PdlPerson();
-
             PdlFoedsel pdlFoedsel = new PdlFoedsel();
             pdlFoedsel.setFoedselsdato(foedselsdato);
-            pdlPerson.setFoedsel(singletonList(pdlFoedsel));
 
             PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
             pdlTelefonnummer.setLandskode(landkode_telefonnummer);
             pdlTelefonnummer.setNummer(telefonnummer);
-            pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
 
-            return pdlPerson;
+            return new PdlPerson(singletonList(pdlTelefonnummer), singletonList(pdlFoedsel), Collections.emptyList());
         }
     }
 }

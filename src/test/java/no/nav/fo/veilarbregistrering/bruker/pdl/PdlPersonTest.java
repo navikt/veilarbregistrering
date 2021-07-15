@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +28,7 @@ public class PdlPersonTest {
         List<PdlTelefonnummer> telefonnummer = Arrays.asList(
                 pdlTelefonnummer2, pdlTelefonnummer3, pdlTelefonnummer1);
 
-        PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setTelefonnummer(telefonnummer);
+        PdlPerson pdlPerson = new PdlPerson(telefonnummer, Collections.emptyList(), Collections.emptyList());
 
         Optional<PdlTelefonnummer> pdlTelefonnummer = pdlPerson.hoyestPrioriterteTelefonnummer();
         assertThat(pdlTelefonnummer).hasValue(pdlTelefonnummer1);
@@ -70,8 +70,7 @@ public class PdlPersonTest {
     }
 
     private PdlPerson personMedAdressebeskyttelse(PdlGradering... graderinger) {
-        PdlPerson person = new PdlPerson();
-        person.setAdressebeskyttelse(Arrays.asList(graderinger).stream()
+        PdlPerson person = new PdlPerson(Collections.emptyList(), Collections.emptyList(), Arrays.asList(graderinger).stream()
                 .map(PdlAdressebeskyttelse::new)
                 .collect(Collectors.toList()));
         return person;

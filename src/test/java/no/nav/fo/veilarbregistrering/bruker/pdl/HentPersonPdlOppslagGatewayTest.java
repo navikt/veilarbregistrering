@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
@@ -60,18 +61,13 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     private PdlPerson dummyPdlPerson() {
-
         PdlFoedsel pdlFoedsel = new PdlFoedsel();
         pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
-
-        PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setFoedsel(singletonList(pdlFoedsel));
 
         PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
         pdlTelefonnummer.setLandskode("0047");
         pdlTelefonnummer.setNummer("94242425");
-        pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
 
-        return pdlPerson;
+        return new PdlPerson(singletonList(pdlTelefonnummer), singletonList(pdlFoedsel), Collections.emptyList());
     }
 }
