@@ -64,9 +64,7 @@ class HentPersonPdlOppslagGatewayTest {
         PdlFoedsel pdlFoedsel = new PdlFoedsel();
         pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
 
-        PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
-        pdlTelefonnummer.setLandskode("0047");
-        pdlTelefonnummer.setNummer("94242425");
+        PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer("94242425", "0047", 0);
 
         return new PdlPerson(singletonList(pdlTelefonnummer), singletonList(pdlFoedsel), Collections.emptyList());
     }

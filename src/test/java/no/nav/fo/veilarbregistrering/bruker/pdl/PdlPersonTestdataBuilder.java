@@ -23,9 +23,7 @@ class PdlPersonTestdataBuilder {
             PdlFoedsel pdlFoedsel = new PdlFoedsel();
             pdlFoedsel.setFoedselsdato(foedselsdato);
 
-            PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
-            pdlTelefonnummer.setLandskode(landkode_telefonnummer);
-            pdlTelefonnummer.setNummer(telefonnummer);
+            PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer(telefonnummer, landkode_telefonnummer, 0);
 
             return new PdlPerson(singletonList(pdlTelefonnummer), singletonList(pdlFoedsel), Collections.emptyList());
         }
