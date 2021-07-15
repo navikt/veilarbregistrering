@@ -20,8 +20,7 @@ class PdlPersonTestdataBuilder {
         private LocalDate foedselsdato = LocalDate.of(1970, 3, 23);
 
         PdlPerson build() {
-            PdlFoedsel pdlFoedsel = new PdlFoedsel();
-            pdlFoedsel.setFoedselsdato(foedselsdato);
+            PdlFoedsel pdlFoedsel = new PdlFoedsel(foedselsdato);
 
             PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer(telefonnummer, landkode_telefonnummer, 0);
 

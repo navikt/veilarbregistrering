@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson
 
+import java.time.LocalDate
 import java.util.*
 
 data class PdlHentPerson(val hentPerson: PdlPerson)
@@ -40,3 +41,6 @@ data class PdlTelefonnummer(val nummer: String? = null,
         } else 0
     }
 }
+
+data class PdlFoedsel(val foedselsdato: LocalDate)
+

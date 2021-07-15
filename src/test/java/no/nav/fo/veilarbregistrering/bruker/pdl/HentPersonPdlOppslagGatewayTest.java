@@ -61,8 +61,7 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     private PdlPerson dummyPdlPerson() {
-        PdlFoedsel pdlFoedsel = new PdlFoedsel();
-        pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
+        PdlFoedsel pdlFoedsel = new PdlFoedsel(LocalDate.of(1970, 3, 23));
 
         PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer("94242425", "0047", 0);
 
