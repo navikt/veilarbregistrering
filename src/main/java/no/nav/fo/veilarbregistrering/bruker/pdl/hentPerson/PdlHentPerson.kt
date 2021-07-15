@@ -57,3 +57,6 @@ data class PdlAdressebeskyttelse(val gradering: PdlGradering) : Comparable<PdlAd
     }
 }
 
+
+data class PdlHentPersonRequest(val query: String, val variables: HentPersonVariables)
+
