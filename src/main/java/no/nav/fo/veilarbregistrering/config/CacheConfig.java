@@ -53,4 +53,14 @@ public class CacheConfig {
                 .maximumSize(10_000)
                 .build());
     }
+
+    public static final String HENT_GEOGRAFISK_TILKNYTNING = "hentGeografiskTilknytning";
+
+    @Bean
+    public Cache hentGeografiskTilknytningCache() {
+        return new CaffeineCache(HENT_GEOGRAFISK_TILKNYTNING, Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.HOURS)
+                .maximumSize(10_000)
+                .build());
+    }
 }

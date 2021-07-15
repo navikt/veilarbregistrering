@@ -1,15 +1,38 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 
 class PdlOppslagMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PdlOppslagMapper.class);
+
+    static GeografiskTilknytning map(PdlGeografiskTilknytning pdlGeografiskTilknytning) {
+        if (pdlGeografiskTilknytning == null) {
+            return null;
+        }
+        PdlGtType gtType = pdlGeografiskTilknytning.getGtType();
+        switch (gtType) {
+            case BYDEL:
+                return GeografiskTilknytning.of(pdlGeografiskTilknytning.getGtBydel());
+            case KOMMUNE:
+                return GeografiskTilknytning.of(pdlGeografiskTilknytning.getGtKommune());
+            case UTLAND:
+                String gtLand = pdlGeografiskTilknytning.getGtLand();
+                return gtLand != null ? GeografiskTilknytning.of(gtLand) : GeografiskTilknytning.ukjentBostedsadresse();
+        }
+        return null;
+    }
 
     static Person map(PdlPerson pdlPerson) {
         return Person.of(

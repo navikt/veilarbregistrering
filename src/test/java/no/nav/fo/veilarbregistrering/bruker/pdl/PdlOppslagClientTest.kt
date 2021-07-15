@@ -5,6 +5,8 @@ import no.nav.common.json.JsonUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
@@ -20,6 +22,7 @@ import java.nio.file.Paths
 import java.time.LocalDate
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
+import kotlin.test.assertEquals
 
 class PdlOppslagClientTest {
     private lateinit var requestProvider: Provider<HttpServletRequest>
@@ -112,6 +115,22 @@ class PdlOppslagClientTest {
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk })
     }
 
+    @Test
+    fun `skal hente geografisk tilknytning til person`() {
+        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+            public override fun hentGeografiskTilknytningRequest(
+                fnr: String?,
+                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest?
+            ): String {
+                return toJson(HENT_GEOGRAFISK_TILKNYTNING_OK_JSON)
+            }
+        }
+
+        val geografiskTilknytning = client.hentGeografiskTilknytning(AktorId.of("11123"))
+        assertEquals(PdlGtType.BYDEL, geografiskTilknytning.gtType)
+        assertEquals("030102", geografiskTilknytning.gtBydel)
+    }
+
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
@@ -120,5 +139,6 @@ class PdlOppslagClientTest {
         private const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
         private const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
         private const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
+        private const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
     }
 }

@@ -173,6 +173,8 @@ class OppgaveRouterTest {
             TODO("Not yet implemented")
         }
 
+        override fun hentGeografiskTilknytning(aktorId: AktorId?) = TODO("Not yet implemented")
+
     }
 
     companion object {

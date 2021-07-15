@@ -9,4 +9,6 @@ public interface PdlOppslagGateway {
     Identer hentIdenter(Foedselsnummer fnr);
 
     Identer hentIdenter(AktorId aktorId);
+
+    Optional<GeografiskTilknytning> hentGeografiskTilknytning(AktorId aktorId);
 }
