@@ -27,18 +27,24 @@ class PersonGatewayImpl implements PersonGateway {
 
     @Override
     public Optional<GeografiskTilknytning> hentGeografiskTilknytning(Bruker bruker) {
-
         Optional<GeografiskTilknytning> geografiskTilknytningTPS = client.geografisktilknytning(bruker.getGjeldendeFoedselsnummer()).map(PersonGatewayImpl::map);
 
         if (skalHenteGtFraPdl()) {
             Optional<GeografiskTilknytning> geografiskTilknytningPDL = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
-
             if (!geografiskTilknytningPDL.equals(geografiskTilknytningTPS)) {
                 LOG.warn("Ulikhet i geografisk tilknytning: TPS:{} - PDL:{}", geografiskTilknytningTPS, geografiskTilknytningPDL);
+            }
+
+            if (skalBrukeGtFraPdl()) {
+                return geografiskTilknytningPDL;
             }
         }
 
         return geografiskTilknytningTPS;
+    }
+
+    private boolean skalBrukeGtFraPdl() {
+        return unleashClient.isEnabled("veilarbregistrering.geografiskTilknytningFraPdl.bruk");
     }
 
     private boolean skalHenteGtFraPdl() {
