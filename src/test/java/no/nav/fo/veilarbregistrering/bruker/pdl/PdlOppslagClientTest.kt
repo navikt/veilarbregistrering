@@ -81,14 +81,7 @@ class PdlOppslagClientTest {
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk })
     }
 
-    private fun toJson(json_file: String): String {
-        return try {
-            val bytes = Files.readAllBytes(Paths.get(PdlOppslagClient::class.java.getResource(json_file).toURI()))
-            String(bytes)
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
-    }
+    private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
         private const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
