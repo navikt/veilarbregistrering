@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterReques
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -57,9 +58,9 @@ class PdlOppslagClientTest {
         }
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
         Assertions.assertThat(pdlIdenter.identer).hasSize(2)
-        org.junit.jupiter.api.Assertions.assertTrue(pdlIdenter.identer.stream()
+        assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
-        org.junit.jupiter.api.Assertions.assertTrue(pdlIdenter.identer.stream()
+        assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.isHistorisk })
     }
 
@@ -72,11 +73,11 @@ class PdlOppslagClientTest {
         }
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
         Assertions.assertThat(pdlIdenter.identer).hasSize(3)
-        org.junit.jupiter.api.Assertions.assertTrue(pdlIdenter.identer.stream()
+        assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
-        org.junit.jupiter.api.Assertions.assertTrue(pdlIdenter.identer.stream()
+        assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.isHistorisk })
-        org.junit.jupiter.api.Assertions.assertTrue(pdlIdenter.identer.stream()
+        assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk })
     }
 
