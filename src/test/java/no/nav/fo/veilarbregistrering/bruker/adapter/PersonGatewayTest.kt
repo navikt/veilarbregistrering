@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.adapter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PersonGateway
@@ -42,6 +43,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     @Test
     fun hentGeografiskTilknytning_skal_returnere_kontorid() {
         val foedselsnummer = Foedselsnummer.of("12345678910")
+        val bruker = Bruker.of(foedselsnummer, null)
 
         mockServer.`when`(
                 HttpRequest.request()
@@ -54,13 +56,15 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
                             .withBody("{\"geografiskTilknytning\": " + "1234" + "}", MediaType.JSON_UTF_8)
                             .withStatusCode(200)
             )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer)
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         Assertions.assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of("1234"))
     }
 
     @Test
     fun hentGeografiskTilknytning_skal_returnere_optional_hvis_404() {
         val foedselsnummer = Foedselsnummer.of("12345678911")
+        val bruker = Bruker.of(foedselsnummer, null)
+
         mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("GET")
@@ -71,13 +75,15 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
                     HttpResponse.response()
                             .withStatusCode(404)
             )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer)
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         Assertions.assertThat(geografiskTilknytning).isEmpty
     }
 
     @Test
     fun hentGeografiskTilknytning_skal_returnere_optional_hvis_tom_tekst() {
         val foedselsnummer = Foedselsnummer.of("12345678912")
+        val bruker = Bruker.of(foedselsnummer, null)
+
         mockServer.`when`(
                 HttpRequest.request()
                         .withMethod("GET")
@@ -89,7 +95,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
                             .withBody("{\"geografiskTilknytning\": " + "null" + "}", MediaType.JSON_UTF_8)
                             .withStatusCode(200)
             )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(foedselsnummer)
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         Assertions.assertThat(geografiskTilknytning).isEmpty
     }
 }

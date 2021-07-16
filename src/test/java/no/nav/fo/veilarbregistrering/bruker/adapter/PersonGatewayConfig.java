@@ -11,6 +11,6 @@ public class PersonGatewayConfig {
 
     @Bean
     PersonGateway personGateway() {
-        return foedselsnummer -> Optional.empty();
+        return bruker -> Optional.empty();
     }
 }

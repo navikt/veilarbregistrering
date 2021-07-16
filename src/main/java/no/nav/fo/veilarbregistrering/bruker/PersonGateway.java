@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface PersonGateway {
 
-    Optional<GeografiskTilknytning> hentGeografiskTilknytning(Foedselsnummer foedselsnummer);
+    Optional<GeografiskTilknytning> hentGeografiskTilknytning(Bruker bruker);
 }

@@ -159,7 +159,7 @@ class OppgaveRouterTest {
     }
 
     private class StubPersonGateway : PersonGateway {
-        override fun hentGeografiskTilknytning(foedselsnummer: Foedselsnummer?) = Optional.empty<GeografiskTilknytning>()
+        override fun hentGeografiskTilknytning(bruker: Bruker): Optional<GeografiskTilknytning>? = Optional.empty<GeografiskTilknytning>()
     }
 
     private class StubPdlOppslagGateway(private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
