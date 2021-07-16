@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.adapter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway
+import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import org.assertj.core.api.Assertions
@@ -18,6 +15,7 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 @ExtendWith(MockServerExtension::class)
@@ -28,7 +26,13 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         veilArbPersonClient = buildClient()
-        personGateway = PersonGatewayImpl(veilArbPersonClient)
+        personGateway = PersonGatewayImpl(veilArbPersonClient, lagPdlOppslagGateway())
+    }
+
+    private fun lagPdlOppslagGateway(): PdlOppslagGateway? {
+        val pdlOppslagGatewayMock = mockk<PdlOppslagGateway>()
+        every { pdlOppslagGatewayMock.hentGeografiskTilknytning(any())} returns Optional.empty()
+        return pdlOppslagGatewayMock
     }
 
     private fun buildClient(): VeilArbPersonClient {
