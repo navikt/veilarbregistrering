@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
@@ -42,7 +43,7 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     @Test
-    public void skalCacheVedKallPaaSammeAktorId() throws Exception {
+    public void skalCacheVedKallPaaSammeAktorId() {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
         pdlOppslagGateway.hentPerson(AktorId.of("22222222222"));
@@ -51,7 +52,7 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     @Test
-    public void skalIkkeCacheVedKallPaaForskjelligAktorId() throws Exception {
+    public void skalIkkeCacheVedKallPaaForskjelligAktorId() {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
         pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
@@ -60,18 +61,10 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     private PdlPerson dummyPdlPerson() {
+        PdlFoedsel pdlFoedsel = new PdlFoedsel(LocalDate.of(1970, 3, 23));
 
-        PdlFoedsel pdlFoedsel = new PdlFoedsel();
-        pdlFoedsel.setFoedselsdato(LocalDate.of(1970, 3, 23));
+        PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer("94242425", "0047", 0);
 
-        PdlPerson pdlPerson = new PdlPerson();
-        pdlPerson.setFoedsel(singletonList(pdlFoedsel));
-
-        PdlTelefonnummer pdlTelefonnummer = new PdlTelefonnummer();
-        pdlTelefonnummer.setLandskode("0047");
-        pdlTelefonnummer.setNummer("94242425");
-        pdlPerson.setTelefonnummer(singletonList(pdlTelefonnummer));
-
-        return pdlPerson;
+        return new PdlPerson(singletonList(pdlTelefonnummer), singletonList(pdlFoedsel), Collections.emptyList());
     }
 }

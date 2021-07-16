@@ -1,15 +1,14 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
-import no.nav.fo.veilarbregistrering.bruker.AdressebeskyttelseGradering;
-import no.nav.fo.veilarbregistrering.bruker.Gruppe;
-import no.nav.fo.veilarbregistrering.bruker.Identer;
+import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlGradering;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +42,22 @@ public class PdlOppslagMapperTest {
         }
 
         assertThat(PdlOppslagMapper.map((PdlAdressebeskyttelse) null)).isEqualTo(AdressebeskyttelseGradering.UKJENT);
+    }
+
+    @Test
+    public void skal_mappe_person() {
+        PdlPerson pdlPerson = new PdlPerson(
+                Arrays.asList(
+                        new PdlTelefonnummer("11223344", "0043", 3),
+                        new PdlTelefonnummer("11223344", "0041", 1),
+                        new PdlTelefonnummer("11223344", "0042", 2)),
+                Arrays.asList(new PdlFoedsel(LocalDate.of(1950, 12, 31))),
+                Arrays.asList());
+
+        Person person = PdlOppslagMapper.map(pdlPerson);
+        assertThat(person.harAdressebeskyttelse()).isFalse();
+        assertThat(person.getTelefonnummer()).hasValue(Telefonnummer.of("11223344", "0041"));
+        assertThat(person.getFoedselsdato()).isEqualTo(Foedselsdato.of(LocalDate.of(1950, 12, 31)));
     }
 
 }
