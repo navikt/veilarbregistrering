@@ -43,7 +43,7 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     @Test
-    public void skalCacheVedKallPaaSammeAktorId() throws Exception {
+    public void skalCacheVedKallPaaSammeAktorId() {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
         pdlOppslagGateway.hentPerson(AktorId.of("22222222222"));
@@ -52,7 +52,7 @@ class HentPersonPdlOppslagGatewayTest {
     }
 
     @Test
-    public void skalIkkeCacheVedKallPaaForskjelligAktorId() throws Exception {
+    public void skalIkkeCacheVedKallPaaForskjelligAktorId() {
         PdlOppslagGateway pdlOppslagGateway = context.getBean(PdlOppslagGateway.class);
         when(pdlOppslagClient.hentPerson(any(AktorId.class))).thenReturn(dummyPdlPerson());
         pdlOppslagGateway.hentPerson(AktorId.of("12345678910"));
