@@ -50,20 +50,32 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     fun `hentGeografiskTilknytning skal returnere kontorid`() {
         val foedselsnummer = Foedselsnummer.of("12345678910")
         val bruker = Bruker.of(foedselsnummer, null)
+        val forventetGeografiskTilknytning = "1234"
 
+        konfigurerVeilarbpersonClient(foedselsnummer, forventetGeografiskTilknytning)
+
+        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
+        Assertions.assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of(forventetGeografiskTilknytning))
+    }
+
+    private fun konfigurerVeilarbpersonClient(
+        foedselsnummer: Foedselsnummer,
+        forventetGeografiskTilknytning: String
+    ) {
         mockServer.`when`(
-                HttpRequest.request()
-                        .withMethod("GET")
-                        .withPath("/person/geografisktilknytning")
-                        .withQueryStringParameter("fnr", foedselsnummer.stringValue())
+            HttpRequest.request()
+                .withMethod("GET")
+                .withPath("/person/geografisktilknytning")
+                .withQueryStringParameter("fnr", foedselsnummer.stringValue())
         )
             .respond(
-                    HttpResponse.response()
-                            .withBody("{\"geografiskTilknytning\": " + "1234" + "}", MediaType.JSON_UTF_8)
-                            .withStatusCode(200)
+                HttpResponse.response()
+                    .withBody(
+                        "{\"geografiskTilknytning\": \"" + forventetGeografiskTilknytning + "\"}",
+                        MediaType.JSON_UTF_8
+                    )
+                    .withStatusCode(200)
             )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        Assertions.assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of("1234"))
     }
 
     @Test
