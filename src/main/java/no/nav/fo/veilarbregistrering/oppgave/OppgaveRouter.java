@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 import static java.util.Optional.of;
-import static no.nav.fo.veilarbregistrering.metrics.Events.*;
+import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_ROUTING_EVENT;
 import static no.nav.fo.veilarbregistrering.oppgave.RoutingStep.*;
 
 /**
@@ -64,7 +64,7 @@ public class OppgaveRouter {
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
         try {
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker);
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet", e);
             influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);

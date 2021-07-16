@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
 import no.nav.fo.veilarbregistrering.bruker.feil.HentIdenterException;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
 import org.slf4j.Logger;
@@ -12,8 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import java.util.Optional;
 
 import static no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map;
-import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_PERSONIDENTER;
-import static no.nav.fo.veilarbregistrering.config.CacheConfig.HENT_PERSON_FOR_AKTORID;
+import static no.nav.fo.veilarbregistrering.config.CacheConfig.*;
 
 class PdlOppslagGatewayImpl implements PdlOppslagGateway {
 
@@ -33,6 +33,21 @@ class PdlOppslagGatewayImpl implements PdlOppslagGateway {
             return Optional.of(map(pdlPerson));
         } catch (BrukerIkkeFunnetException e) {
             LOG.warn("Hent person gav ikke treff", e);
+            return Optional.empty();
+        }
+    }
+
+    @Cacheable(HENT_GEOGRAFISK_TILKNYTNING)
+    @Override
+    public Optional<GeografiskTilknytning> hentGeografiskTilknytning(AktorId aktorId) {
+        try {
+            PdlGeografiskTilknytning pdlGeografiskTilknytning = pdlOppslagClient.hentGeografiskTilknytning(aktorId);
+            return Optional.ofNullable(PdlOppslagMapper.map(pdlGeografiskTilknytning));
+        } catch (BrukerIkkeFunnetException e) {
+            LOG.warn("Hent geografisk tilknytning gav ikke treff", e);
+            return Optional.empty();
+        } catch (Exception e) {
+            LOG.warn("Ukjent feil ved henting av geografisk tilknytning", e);
             return Optional.empty();
         }
     }

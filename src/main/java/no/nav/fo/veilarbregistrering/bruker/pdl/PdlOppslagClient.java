@@ -5,6 +5,10 @@ import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.HentGeografiskTilknytningVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.HentIdenterVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterResponse;
@@ -81,6 +85,31 @@ public class PdlOppslagClient {
         }
     }
 
+    PdlGeografiskTilknytning hentGeografiskTilknytning(AktorId aktorId) {
+        PdlHentGeografiskTilknytningRequest request = new PdlHentGeografiskTilknytningRequest(hentGeografisktilknytningQuery(), new HentGeografiskTilknytningVariables(aktorId.asString()));
+        String json = hentGeografiskTilknytningRequest(aktorId.asString(), request);
+        PdlHentGeografiskTilknytningResponse resp = gson.fromJson(json, PdlHentGeografiskTilknytningResponse.class);
+        validateResponse(resp);
+        return resp.getData().getHentGeografiskTilknytning();
+    }
+
+    String hentGeografiskTilknytningRequest(String fnr, PdlHentGeografiskTilknytningRequest pdlHentGeografiskTilknytningRequest) {
+        String token = this.systemUserTokenProvider.getSystemUserToken();
+
+        Request request = new Request.Builder()
+                .url(joinPaths(baseUrl, "/graphql"))
+                .header(NAV_PERSONIDENT_HEADER, fnr)
+                .header("Authorization", "Bearer " + token)
+                .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer " + token)
+                .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
+                .method("POST", toJsonRequestBody(pdlHentGeografiskTilknytningRequest))
+                .build();
+        try (Response response = baseClient().newCall(request).execute()) {
+            return getBodyStr(response).orElseThrow(RuntimeException::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     PdlPerson hentPerson(AktorId aktorId) {
         PdlHentPersonRequest request = new PdlHentPersonRequest(hentPersonQuery(), new HentPersonVariables(aktorId.asString(), false));
@@ -114,6 +143,10 @@ public class PdlOppslagClient {
 
     private String hentPersonQuery() {
        return hentRessursfil("pdl/hentPerson.graphql");
+    }
+
+    private String hentGeografisktilknytningQuery() {
+        return hentRessursfil("pdl/hentGeografiskTilknytning.graphql");
     }
 
     private String hentRessursfil(String sti) {

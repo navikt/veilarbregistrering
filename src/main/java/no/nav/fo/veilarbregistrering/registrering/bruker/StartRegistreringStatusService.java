@@ -70,7 +70,7 @@ public class StartRegistreringStatusService {
         Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
         try {
             long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker.getGjeldendeFoedselsnummer());
+            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker);
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {

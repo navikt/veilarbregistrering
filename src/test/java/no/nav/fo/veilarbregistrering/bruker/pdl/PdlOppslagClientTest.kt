@@ -5,6 +5,8 @@ import no.nav.common.json.JsonUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
@@ -36,8 +38,8 @@ class PdlOppslagClientTest {
     }
 
     @Test
-    fun skalFeileVedError() {
-        val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
+    fun `skal feile ved error`() {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
@@ -46,8 +48,8 @@ class PdlOppslagClientTest {
     }
 
     @Test
-    fun skalFeileVedNotFound() {
-        val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
+    fun `skal feile ved not found`() {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_NOT_FOUND_JSON)
             }
@@ -81,8 +83,8 @@ class PdlOppslagClientTest {
 
 
     @Test
-    fun skalHenteIdenterTilPerson() {
-        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+    fun `skal hente identer til person`() {
+        val client = object : PdlOppslagClient("", null) {
             public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
@@ -96,8 +98,8 @@ class PdlOppslagClientTest {
     }
 
     @Test
-    fun skalHenteIdenterMedHistorikkTilPerson() {
-        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+    fun `skal hente identer med historikk til person`() {
+        val client = object : PdlOppslagClient("", null) {
             public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
@@ -112,6 +114,22 @@ class PdlOppslagClientTest {
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk })
     }
 
+    @Test
+    fun `skal hente geografisk tilknytning til person`() {
+        val client = object : PdlOppslagClient("", null) {
+            public override fun hentGeografiskTilknytningRequest(
+                fnr: String,
+                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
+            ): String {
+                return toJson(HENT_GEOGRAFISK_TILKNYTNING_OK_JSON)
+            }
+        }
+
+        val geografiskTilknytning = client.hentGeografiskTilknytning(AktorId.of("11123"))
+        assertThat(geografiskTilknytning.gtType).isEqualTo(PdlGtType.BYDEL)
+        assertThat(geografiskTilknytning.gtBydel).isEqualTo("030102")
+    }
+
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
@@ -120,5 +138,6 @@ class PdlOppslagClientTest {
         private const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
         private const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
         private const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
+        private const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
     }
 }

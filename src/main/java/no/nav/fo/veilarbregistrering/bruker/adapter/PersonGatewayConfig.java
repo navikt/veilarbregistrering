@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker.adapter;
 
 
+import no.nav.common.featuretoggle.UnleashClient;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +20,7 @@ public class PersonGatewayConfig {
     }
 
     @Bean
-    PersonGatewayImpl personGateway(VeilArbPersonClient client) {
-        return new PersonGatewayImpl(client);
+    PersonGatewayImpl personGateway(VeilArbPersonClient client, PdlOppslagGateway pdlOppslagGateway, UnleashClient unleashClient) {
+        return new PersonGatewayImpl(client, pdlOppslagGateway, unleashClient);
     }
 }
