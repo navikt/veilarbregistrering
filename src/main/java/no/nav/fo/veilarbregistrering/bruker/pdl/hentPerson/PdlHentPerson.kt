@@ -64,5 +64,5 @@ data class PdlHentPersonResponse(val data: PdlHentPerson, private val errors: Mu
     override fun getErrors() = errors
 }
 
-data class HentPersonVariables(val ident: String, val isOppholdHistorikk: Boolean)
+data class HentPersonVariables(val ident: String, val oppholdHistorikk: Boolean)
 
