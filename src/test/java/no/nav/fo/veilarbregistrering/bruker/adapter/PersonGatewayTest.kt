@@ -29,6 +29,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     fun setup() {
         val unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
         personGateway = PersonGatewayImpl(lagVeilArbPersonClient(), lagPdlOppslagGateway(), unleashClient)
+        mockServer.reset()
     }
 
     private fun lagPdlOppslagGateway(gt: GeografiskTilknytning? = null): PdlOppslagGateway {
