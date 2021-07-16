@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -115,6 +116,33 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
             )
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         Assertions.assertThat(geografiskTilknytning).isEmpty
+    }
+
+    @Test
+    fun `uthenting av geografisk tilknytning fra TPS eller PDL avhengig av feature toggles`() {
+        val tpsVerdi = GeografiskTilknytning.of("1234")
+        val pdlVerdi = GeografiskTilknytning.of("5678")
+
+        val foedselsnummer = Foedselsnummer.of("12345678912")
+        val bruker = Bruker.of(foedselsnummer, null)
+
+        val aktiveFeatures = mutableListOf<String>()
+        val unleashClient = StubUnleashClient(aktiveFeatures)
+        val pdlGateway = lagPdlOppslagGateway(pdlVerdi)
+        val tpsClient = lagVeilArbPersonClient()
+        val personGateway = PersonGatewayImpl(tpsClient, pdlGateway, unleashClient)
+        konfigurerVeilarbpersonClient(foedselsnummer, tpsVerdi.stringValue())
+
+        // TPS er default uten feature toggles
+        assertThat(personGateway.hentGeografiskTilknytning(bruker)).hasValue(tpsVerdi)
+
+        aktiveFeatures.addAll(listOf(
+            "veilarbregistrering.geografiskTilknytningFraPdl.sammenligning",
+            "veilarbregistrering.geografiskTilknytningFraPdl.bruk"
+        ))
+
+        // Med features skal vi få GT fra PDL
+        assertThat(personGateway.hentGeografiskTilknytning(bruker)).hasValue(pdlVerdi)
     }
 }
 
