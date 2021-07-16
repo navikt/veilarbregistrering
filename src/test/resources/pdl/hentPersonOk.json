@@ -1,0 +1,23 @@
+{
+  "data": {
+    "hentPerson": {
+      "foedsel": [
+        {
+          "foedselsdato": "2000-01-01"
+        }
+      ],
+      "telefonnummer": [
+        {
+          "landskode": "0047",
+          "nummer": "11223344",
+          "prioritet": 2
+        }
+      ],
+      "adressebeskyttelse": [
+        {
+          "gradering": "STRENGT_FORTROLIG_UTLAND"
+        }
+      ]
+    }
+  }
+}

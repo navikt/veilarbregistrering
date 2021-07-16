@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest
+import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.LocalDate
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
 
@@ -49,6 +50,28 @@ class PdlOppslagClientTest {
             assertThat(pdlPerson).isNull()
         }
     }
+
+    @Test
+    fun `skal hente person`() {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
+            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
+        }
+
+        val (telefonnummer, foedsel, adressebeskyttelse) = pdlOppslagClient.hentPerson(AktorId.of("12345678910"))
+
+        assertThat(foedsel).isEqualTo(listOf(PdlFoedsel(
+            foedselsdato = LocalDate.of(2000, 1, 1))
+        ))
+        assertThat(telefonnummer).isEqualTo(listOf(PdlTelefonnummer(
+            landskode = "0047",
+            nummer = "11223344",
+            prioritet = 2
+        )))
+        assertThat(adressebeskyttelse).isEqualTo(listOf(PdlAdressebeskyttelse(
+            gradering = PdlGradering.STRENGT_FORTROLIG_UTLAND
+        )))
+    }
+
 
     @Test
     fun skalHenteIdenterTilPerson() {
@@ -85,6 +108,7 @@ class PdlOppslagClientTest {
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
+        private const val HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json"
         private const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
         private const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
         private const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
