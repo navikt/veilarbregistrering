@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterReques
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -45,7 +46,7 @@ class PdlOppslagClientTest {
         }
         assertThrows<BrukerIkkeFunnetException> {
             val pdlPerson = pdlOppslagClient.hentPerson(AktorId.of("111lll"))
-            Assertions.assertThat(pdlPerson).isNull()
+            assertThat(pdlPerson).isNull()
         }
     }
 
@@ -57,7 +58,7 @@ class PdlOppslagClientTest {
             }
         }
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
-        Assertions.assertThat(pdlIdenter.identer).hasSize(2)
+        assertThat(pdlIdenter.identer).hasSize(2)
         assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
         assertTrue(pdlIdenter.identer.stream()
@@ -72,7 +73,7 @@ class PdlOppslagClientTest {
             }
         }
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
-        Assertions.assertThat(pdlIdenter.identer).hasSize(3)
+        assertThat(pdlIdenter.identer).hasSize(3)
         assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
         assertTrue(pdlIdenter.identer.stream()
