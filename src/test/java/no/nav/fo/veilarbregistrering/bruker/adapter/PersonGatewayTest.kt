@@ -29,7 +29,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
-        veilArbPersonClient = buildClient()
+        veilArbPersonClient = lagVeilArbPersonClient()
 
         unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
 
@@ -42,7 +42,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         return pdlOppslagGatewayMock
     }
 
-    private fun buildClient(): VeilArbPersonClient {
+    private fun lagVeilArbPersonClient(): VeilArbPersonClient {
         val httpServletRequest = mockk<HttpServletRequest>()
         mockkStatic(RequestContext::class)
         every { servletRequest() } returns httpServletRequest
