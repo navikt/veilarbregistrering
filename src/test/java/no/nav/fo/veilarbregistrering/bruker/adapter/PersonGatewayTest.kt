@@ -3,6 +3,9 @@ package no.nav.fo.veilarbregistrering.bruker.adapter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.finn.unleash.UnleashContext
+import no.nav.common.featuretoggle.UnleashClient
+import no.nav.common.health.HealthCheckResult
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
@@ -22,11 +25,15 @@ import javax.servlet.http.HttpServletRequest
 class PersonGatewayTest(private val mockServer: ClientAndServer) {
     private lateinit var veilArbPersonClient: VeilArbPersonClient
     private lateinit var personGateway: PersonGateway
+    private lateinit var unleashClient: UnleashClient
 
     @BeforeEach
     fun setup() {
         veilArbPersonClient = buildClient()
-        personGateway = PersonGatewayImpl(veilArbPersonClient, lagPdlOppslagGateway())
+
+        unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
+
+        personGateway = PersonGatewayImpl(veilArbPersonClient, lagPdlOppslagGateway(), unleashClient)
     }
 
     private fun lagPdlOppslagGateway(): PdlOppslagGateway? {
@@ -102,4 +109,11 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         Assertions.assertThat(geografiskTilknytning).isEmpty
     }
+}
+
+
+class StubUnleashClient(val aktiveFeatures: List<String>) : UnleashClient {
+    override fun checkHealth() = HealthCheckResult.healthy()!!
+    override fun isEnabled(feature: String) = aktiveFeatures.contains(feature)
+    override fun isEnabled(feature: String, context: UnleashContext) = isEnabled(feature)
 }
