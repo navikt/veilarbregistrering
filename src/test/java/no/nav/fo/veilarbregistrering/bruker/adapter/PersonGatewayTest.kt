@@ -112,7 +112,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
 }
 
 
-class StubUnleashClient(val aktiveFeatures: List<String>) : UnleashClient {
+class StubUnleashClient(private val aktiveFeatures: List<String>) : UnleashClient {
     override fun checkHealth() = HealthCheckResult.healthy()!!
     override fun isEnabled(feature: String) = aktiveFeatures.contains(feature)
     override fun isEnabled(feature: String, context: UnleashContext) = isEnabled(feature)
