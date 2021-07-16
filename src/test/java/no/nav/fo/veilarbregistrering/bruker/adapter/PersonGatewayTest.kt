@@ -23,17 +23,12 @@ import javax.servlet.http.HttpServletRequest
 
 @ExtendWith(MockServerExtension::class)
 class PersonGatewayTest(private val mockServer: ClientAndServer) {
-    private lateinit var veilArbPersonClient: VeilArbPersonClient
     private lateinit var personGateway: PersonGateway
-    private lateinit var unleashClient: UnleashClient
 
     @BeforeEach
     fun setup() {
-        veilArbPersonClient = lagVeilArbPersonClient()
-
-        unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
-
-        personGateway = PersonGatewayImpl(veilArbPersonClient, lagPdlOppslagGateway(), unleashClient)
+        val unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
+        personGateway = PersonGatewayImpl(lagVeilArbPersonClient(), lagPdlOppslagGateway(), unleashClient)
     }
 
     private fun lagPdlOppslagGateway(): PdlOppslagGateway {
@@ -48,7 +43,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         every { servletRequest() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return VeilArbPersonClient(baseUrl).also { veilArbPersonClient = it }
+        return VeilArbPersonClient(baseUrl)
     }
 
     @Test
