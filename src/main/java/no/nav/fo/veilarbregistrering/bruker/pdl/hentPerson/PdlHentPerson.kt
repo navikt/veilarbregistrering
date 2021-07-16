@@ -14,18 +14,18 @@ data class PdlPerson(
     val adressebeskyttelse: List<PdlAdressebeskyttelse>) {
 
     fun hoyestPrioriterteTelefonnummer() =
-        if (telefonnummer!!.isEmpty()) Optional.empty()
-        else telefonnummer!!.stream()
+        if (telefonnummer.isEmpty()) Optional.empty()
+        else telefonnummer.stream()
             .sorted()
             .findFirst()
 
     fun getSistePdlFoedsel() =
-        if (foedsel!!.isEmpty()) Optional.empty()
-        else Optional.of(foedsel!![foedsel!!.size - 1])
+        if (foedsel.isEmpty()) Optional.empty()
+        else Optional.of(foedsel[foedsel.size - 1])
 
     fun strengesteAdressebeskyttelse() =
-        if (adressebeskyttelse == null || adressebeskyttelse!!.isEmpty()) Optional.empty()
-        else adressebeskyttelse!!.stream()
+        if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) Optional.empty()
+        else adressebeskyttelse.stream()
             .sorted()
             .findFirst()
 }
