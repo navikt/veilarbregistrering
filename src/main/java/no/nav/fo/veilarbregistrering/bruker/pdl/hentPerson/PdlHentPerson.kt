@@ -34,11 +34,11 @@ data class PdlTelefonnummer(val nummer: String? = null,
                             val landskode: String? = null,
                             val prioritet: Int = 0) : Comparable<PdlTelefonnummer> {
 
-    override operator fun compareTo(o: PdlTelefonnummer): Int {
-        if (prioritet > o.prioritet) {
+    override operator fun compareTo(other: PdlTelefonnummer): Int {
+        if (prioritet > other.prioritet) {
             return 1
         }
-        return if (prioritet < o.prioritet) {
+        return if (prioritet < other.prioritet) {
             -1
         } else 0
     }
