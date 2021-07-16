@@ -30,7 +30,7 @@ class PersonGatewayImpl implements PersonGateway {
 
         Optional<GeografiskTilknytning> geografiskTilknytningTPS = client.geografisktilknytning(bruker.getGjeldendeFoedselsnummer()).map(PersonGatewayImpl::map);
 
-        if (skalSammenligneMedPdl()) {
+        if (skalHenteGtFraPdl()) {
             Optional<GeografiskTilknytning> geografiskTilknytningPDL = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
 
             if (!geografiskTilknytningPDL.equals(geografiskTilknytningTPS)) {
@@ -41,7 +41,7 @@ class PersonGatewayImpl implements PersonGateway {
         return geografiskTilknytningTPS;
     }
 
-    private boolean skalSammenligneMedPdl() {
+    private boolean skalHenteGtFraPdl() {
         return unleashClient.isEnabled("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning");
     }
 
