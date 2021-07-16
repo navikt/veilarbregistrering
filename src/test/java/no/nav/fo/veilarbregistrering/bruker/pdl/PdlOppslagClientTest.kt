@@ -40,7 +40,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved error`() {
-        val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
@@ -50,7 +50,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved not found`() {
-        val pdlOppslagClient: PdlOppslagClient = object : PdlOppslagClient("", null) {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_NOT_FOUND_JSON)
             }
@@ -85,7 +85,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer til person`() {
-        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+        val client = object : PdlOppslagClient("", null) {
             public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
@@ -100,7 +100,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer med historikk til person`() {
-        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+        val client = object : PdlOppslagClient("", null) {
             public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
@@ -117,7 +117,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente geografisk tilknytning til person`() {
-        val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
+        val client = object : PdlOppslagClient("", null) {
             public override fun hentGeografiskTilknytningRequest(
                 fnr: String,
                 pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
