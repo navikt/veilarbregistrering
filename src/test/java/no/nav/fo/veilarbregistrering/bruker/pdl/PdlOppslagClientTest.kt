@@ -22,7 +22,6 @@ import java.nio.file.Paths
 import java.time.LocalDate
 import javax.inject.Provider
 import javax.servlet.http.HttpServletRequest
-import kotlin.test.assertEquals
 
 class PdlOppslagClientTest {
     private lateinit var requestProvider: Provider<HttpServletRequest>
@@ -127,8 +126,8 @@ class PdlOppslagClientTest {
         }
 
         val geografiskTilknytning = client.hentGeografiskTilknytning(AktorId.of("11123"))
-        assertEquals(PdlGtType.BYDEL, geografiskTilknytning.gtType)
-        assertEquals("030102", geografiskTilknytning.gtBydel)
+        assertThat(geografiskTilknytning.gtType).isEqualTo(PdlGtType.BYDEL)
+        assertThat(geografiskTilknytning.gtBydel).isEqualTo("030102")
     }
 
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
