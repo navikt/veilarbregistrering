@@ -24,7 +24,7 @@ data class PdlPerson(
         else Optional.of(foedsel[foedsel.size - 1])
 
     fun strengesteAdressebeskyttelse() =
-        (if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) Optional.empty()
+        (if (adressebeskyttelse.isEmpty()) Optional.empty()
         else adressebeskyttelse.stream()
             .sorted()
             .findFirst())!!
