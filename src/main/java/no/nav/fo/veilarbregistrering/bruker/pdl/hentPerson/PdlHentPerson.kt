@@ -14,20 +14,20 @@ data class PdlPerson(
     val adressebeskyttelse: List<PdlAdressebeskyttelse>) {
 
     fun hoyestPrioriterteTelefonnummer() =
-        if (telefonnummer.isEmpty()) Optional.empty()
+        (if (telefonnummer.isEmpty()) Optional.empty()
         else telefonnummer.stream()
             .sorted()
-            .findFirst()
+            .findFirst())!!
 
     fun getSistePdlFoedsel() =
         if (foedsel.isEmpty()) Optional.empty()
         else Optional.of(foedsel[foedsel.size - 1])
 
     fun strengesteAdressebeskyttelse() =
-        if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) Optional.empty()
+        (if (adressebeskyttelse == null || adressebeskyttelse.isEmpty()) Optional.empty()
         else adressebeskyttelse.stream()
             .sorted()
-            .findFirst()
+            .findFirst())!!
 }
 
 data class PdlTelefonnummer(val nummer: String? = null,
