@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
 import io.mockk.mockk
+import no.nav.common.json.JsonUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
@@ -8,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*
-import org.assertj.core.api.Assertions
+import org.approvaltests.Approvals
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -26,6 +27,12 @@ class PdlOppslagClientTest {
     @BeforeEach
     fun setUp() {
         requestProvider = mockk()
+    }
+
+    @Test
+    fun `hentPersonVariables skal lage riktig JSON`() {
+        val hentPersonVariables = HentPersonVariables("12345678910", false)
+        Approvals.verify(JsonUtils.toJson(hentPersonVariables))
     }
 
     @Test
