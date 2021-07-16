@@ -119,8 +119,8 @@ class PdlOppslagClientTest {
     fun `skal hente geografisk tilknytning til person`() {
         val client: PdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentGeografiskTilknytningRequest(
-                fnr: String?,
-                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest?
+                fnr: String,
+                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
             ): String {
                 return toJson(HENT_GEOGRAFISK_TILKNYTNING_OK_JSON)
             }
