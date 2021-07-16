@@ -31,9 +31,9 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         personGateway = PersonGatewayImpl(lagVeilArbPersonClient(), lagPdlOppslagGateway(), unleashClient)
     }
 
-    private fun lagPdlOppslagGateway(): PdlOppslagGateway {
+    private fun lagPdlOppslagGateway(gt: GeografiskTilknytning? = null): PdlOppslagGateway {
         val pdlOppslagGatewayMock = mockk<PdlOppslagGateway>()
-        every { pdlOppslagGatewayMock.hentGeografiskTilknytning(any())} returns Optional.empty()
+        every { pdlOppslagGatewayMock.hentGeografiskTilknytning(any())} returns Optional.ofNullable(gt)
         return pdlOppslagGatewayMock
     }
 
