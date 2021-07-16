@@ -54,18 +54,14 @@ enum class PdlGradering(internal val niva: Int) {
 }
 
 data class PdlAdressebeskyttelse(val gradering: PdlGradering) : Comparable<PdlAdressebeskyttelse> {
-    override operator fun compareTo(other: PdlAdressebeskyttelse): Int {
-        return other.gradering.niva - gradering.niva
-    }
+    override operator fun compareTo(other: PdlAdressebeskyttelse) = other.gradering.niva - gradering.niva
 }
 
 
 data class PdlHentPersonRequest(val query: String, val variables: HentPersonVariables)
 
 data class PdlHentPersonResponse(val data: PdlHentPerson, private val errors: MutableList<PdlError>) : PdlResponse {
-    override fun getErrors(): List<PdlError> {
-        return errors!!
-    }
+    override fun getErrors() = errors
 }
 
 data class HentPersonVariables(val ident: String, val isOppholdHistorikk: Boolean)
