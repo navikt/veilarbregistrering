@@ -52,7 +52,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun hentGeografiskTilknytning_skal_returnere_kontorid() {
+    fun `hentGeografiskTilknytning skal returnere kontorid`() {
         val foedselsnummer = Foedselsnummer.of("12345678910")
         val bruker = Bruker.of(foedselsnummer, null)
 
@@ -72,7 +72,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun hentGeografiskTilknytning_skal_returnere_optional_hvis_404() {
+    fun `hentGeografiskTilknytning skal returnere optional hvis 404`() {
         val foedselsnummer = Foedselsnummer.of("12345678911")
         val bruker = Bruker.of(foedselsnummer, null)
 
@@ -91,7 +91,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun hentGeografiskTilknytning_skal_returnere_optional_hvis_tom_tekst() {
+    fun `hentGeografiskTilknytning skal returnere optional hvis tom tekst`() {
         val foedselsnummer = Foedselsnummer.of("12345678912")
         val bruker = Bruker.of(foedselsnummer, null)
 
