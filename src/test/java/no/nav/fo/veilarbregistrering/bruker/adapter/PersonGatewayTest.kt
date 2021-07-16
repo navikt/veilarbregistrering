@@ -9,7 +9,6 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -56,7 +55,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         konfigurerVeilarbpersonClient(foedselsnummer, forventetGeografiskTilknytning)
 
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        Assertions.assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of(forventetGeografiskTilknytning))
+        assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of(forventetGeografiskTilknytning))
     }
 
     private fun konfigurerVeilarbpersonClient(
@@ -95,7 +94,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
                             .withStatusCode(404)
             )
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        Assertions.assertThat(geografiskTilknytning).isEmpty
+        assertThat(geografiskTilknytning).isEmpty
     }
 
     @Test
@@ -115,7 +114,7 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
                             .withStatusCode(200)
             )
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        Assertions.assertThat(geografiskTilknytning).isEmpty
+        assertThat(geografiskTilknytning).isEmpty
     }
 
     @Test
