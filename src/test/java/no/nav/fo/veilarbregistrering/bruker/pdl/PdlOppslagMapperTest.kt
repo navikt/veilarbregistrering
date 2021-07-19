@@ -12,8 +12,8 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel
 import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
 import no.nav.fo.veilarbregistrering.bruker.Foedselsdato
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
