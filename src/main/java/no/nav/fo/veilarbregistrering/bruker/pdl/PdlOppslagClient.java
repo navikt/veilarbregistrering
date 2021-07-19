@@ -5,10 +5,10 @@ import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.HentGeografiskTilknytningVariables;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningRequest;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.HentGeografiskTilknytningVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningResponse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.HentIdenterVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterResponse;
@@ -56,7 +56,7 @@ public class PdlOppslagClient {
         String json = hentIdenterRequest(fnr.stringValue(), request);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
-        return response.getData().getPdlIdenter();
+        return response.getData().getHentIdenter();
     }
 
     PdlIdenter hentIdenter(AktorId aktorId) {
@@ -64,7 +64,7 @@ public class PdlOppslagClient {
         String json = hentIdenterRequest(aktorId.asString(), request);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
-        return response.getData().getPdlIdenter();
+        return response.getData().getHentIdenter();
     }
 
     String hentIdenterRequest(String personident, PdlHentIdenterRequest requestBody) {

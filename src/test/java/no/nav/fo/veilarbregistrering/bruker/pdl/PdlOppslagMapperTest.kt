@@ -12,8 +12,8 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel
 import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
 import no.nav.fo.veilarbregistrering.bruker.Foedselsdato
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -23,12 +23,8 @@ class PdlOppslagMapperTest {
 
     @Test
     fun `skal mappe identer`() {
-        val pdlIdent = PdlIdent()
-        pdlIdent.ident = "12345678910"
-        pdlIdent.isHistorisk = false
-        pdlIdent.gruppe = PdlGruppe.FOLKEREGISTERIDENT
-        val pdlIdenter = PdlIdenter()
-        pdlIdenter.identer = listOf(pdlIdent)
+        val pdlIdent = PdlIdent(ident = "12345678910", historisk = false, gruppe = PdlGruppe.FOLKEREGISTERIDENT)
+        val pdlIdenter = PdlIdenter(listOf(pdlIdent))
         val identer = PdlOppslagMapper.map(pdlIdenter)
         assertThat(identer.identer).hasSize(1)
         assertThat(identer.identer[0].ident).isEqualTo("12345678910")

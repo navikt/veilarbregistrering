@@ -5,8 +5,8 @@ import no.nav.common.json.JsonUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlHentGeografiskTilknytningRequest
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
@@ -92,9 +92,9 @@ class PdlOppslagClientTest {
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
         assertThat(pdlIdenter.identer).hasSize(2)
         assertTrue(pdlIdenter.identer.stream()
-            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
+            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.historisk })
         assertTrue(pdlIdenter.identer.stream()
-            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.isHistorisk })
+            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.historisk })
     }
 
     @Test
@@ -107,11 +107,11 @@ class PdlOppslagClientTest {
         val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
         assertThat(pdlIdenter.identer).hasSize(3)
         assertTrue(pdlIdenter.identer.stream()
-            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.isHistorisk })
+            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.historisk })
         assertTrue(pdlIdenter.identer.stream()
-            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.isHistorisk })
+            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.historisk })
         assertTrue(pdlIdenter.identer.stream()
-            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.isHistorisk })
+            .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && pdlIdent.historisk })
     }
 
     @Test

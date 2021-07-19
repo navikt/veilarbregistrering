@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl;
 
 import no.nav.fo.veilarbregistrering.bruker.*;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentGeografiskTilknytning.PdlGtType;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse;
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel;
@@ -59,7 +59,7 @@ class PdlOppslagMapper {
         return Identer.of(pdlIdenter.getIdenter().stream()
                 .map(pdlIdent -> new Ident(
                         pdlIdent.getIdent(),
-                        pdlIdent.isHistorisk(),
+                        pdlIdent.getHistorisk(),
                         Gruppe.valueOf(pdlIdent.getGruppe().name())
                 ))
                 .collect(toList()));
