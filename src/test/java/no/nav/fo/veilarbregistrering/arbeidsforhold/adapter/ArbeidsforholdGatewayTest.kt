@@ -9,9 +9,9 @@ import no.nav.fo.veilarbregistrering.config.CacheConfig
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
-@Disabled
 class ArbeidsforholdGatewayTest {
 
     @BeforeEach
@@ -21,7 +21,7 @@ class ArbeidsforholdGatewayTest {
             BeanDefinitionBuilder.rootBeanDefinition(ArbeidsforholdGatewayImpl::class.java)
                 .addConstructorArgValue(aaregRestClient).beanDefinition
         context = AnnotationConfigApplicationContext()
-        context.register(CacheConfig::class.java)
+        context.register(CacheConfig::class.java, CacheAutoConfiguration::class.java)
         context.defaultListableBeanFactory.registerBeanDefinition("arbeidsforhold", beanDefinition)
         context.refresh()
         context.start()
