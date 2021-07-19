@@ -9,7 +9,7 @@ class FormidlingsgruppeGatewayConfig {
 
     @Bean
     fun formidlingsgruppeRestClient(): FormidlingsgruppeRestClient {
-        return FormidlingsgruppeRestClientMock()
+        return FormidlingsgruppeRestClient(null, null)
     }
 
     @Bean
