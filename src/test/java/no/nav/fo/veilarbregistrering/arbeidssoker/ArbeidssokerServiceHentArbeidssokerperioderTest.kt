@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
@@ -7,20 +8,17 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
-
-
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import java.time.LocalDate
-import java.util.*
 
 class ArbeidssokerServiceHentArbeidssokerperioderTest {
-    private val unleashService = mockk<UnleashClient>()
     private lateinit var arbeidssokerService: ArbeidssokerService
+    private val unleashService = mockk<UnleashClient>()
     private val metricsService = mockk<InfluxMetricsService>(relaxed = true)
+    
     @BeforeEach
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
@@ -32,7 +30,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     @Test
-    fun hentArbeidssokerperioder_skal_returnere_perioder_sortert_etter_fradato() {
+    fun `hentArbeidssokerperioder skal returnere perioder sortert etter fradato`() {
         every { unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE) } returns true
 
         val forespurtPeriode = Periode.of(
@@ -40,7 +38,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             LocalDate.of(2020, 5, 1)
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
+        assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
@@ -55,7 +53,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             LocalDate.of(2020, 5, 1)
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
+        assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
@@ -65,27 +63,27 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     @Test
-    fun hentArbeidssokerperioder_ingen_treff_paa_fnr_skal_returnere_tom_liste() {
+    fun `hentArbeidssokerperioder ingen treff på fnr skal returnere tom liste`() {
         val forespurtPeriode = Periode.of(
             LocalDate.of(2019, 5, 1),
             LocalDate.of(2019, 11, 30)
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperiodes.asList()).isEmpty()
+        assertThat(arbeidssokerperiodes.asList()).isEmpty()
     }
 
     @Test
-    fun hentArbeidssokerperioder_ingen_treff_paa_bruker_skal_returnere_tom_liste() {
+    fun `hentArbeidssokerperioder ingen treff på bruker skal returnere tom liste`() {
         val forespurtPeriode = Periode.of(
             LocalDate.of(2019, 5, 1),
             LocalDate.of(2019, 11, 30)
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperiodes.asList()).isEmpty()
+        assertThat(arbeidssokerperiodes.asList()).isEmpty()
     }
 
     @Test
-    fun hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_lokalt() {
+    fun `hentArbeidssokerperioder skal returnere alle perioder for person innenfor forespurt periode lokalt`() {
         every {
             unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
         } returns true
@@ -100,7 +98,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             LocalDate.of(2020, 6, 10)
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
+        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
             StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
@@ -110,7 +108,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     @Test
-    fun hentArbeidssokerperioder_skal_returnere_alle_perioder_for_person_innenfor_forespurt_periode_ORDS() {
+    fun `hentArbeidssokerperioder skal returnere alle perioder for person innenfor forespurt periode ords`() {
         every {
             unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
         } returns true
@@ -120,7 +118,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             LocalDate.of(2020, 5, 9)
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode)
-        Assertions.assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
+        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,
