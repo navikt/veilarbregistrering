@@ -10,10 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.junit.jupiter.MockServerExtension
@@ -33,6 +30,11 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
         oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
     }
 
+    @AfterEach
+    fun tearDown() {
+        mockServer.reset()
+    }
+
     private fun buildOppfolgingClient(): OppfolgingClient {
         val httpServletRequest: HttpServletRequest = mockk()
         mockkStatic(RequestContext::class)
@@ -42,7 +44,6 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    @Disabled
     fun testAtRegistreringAvSykmeldtGirOk() {
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(
