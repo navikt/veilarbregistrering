@@ -13,41 +13,34 @@ class FnrUtilsTest {
     }
 
     @Test
-    fun skalVaere20Aar() {
-        val dato = LocalDate.of(1997, 12, 14)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(20)
+    fun `skal være 20 år`() {
+        assertAntallAar(20, LocalDate.of(1997, 12, 14))
+        assertAntallAar(20, LocalDate.of(1997, 1, 1))
     }
 
     @Test
-    fun skalVaere20Aar_2() {
-        val dato = LocalDate.of(1997, 1, 1)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(20)
+    fun `skal være 19 år`() {
+        assertAntallAar(19, LocalDate.of(1997, 12, 15))
+        assertAntallAar(19, LocalDate.of(1998, 12, 14))
     }
 
     @Test
-    fun skalVaere19Aar() {
-        val dato = LocalDate.of(1997, 12, 15)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(19)
+    fun `skal være 1 år`() {
+        assertAntallAar(1,
+            dato = LocalDate.of(2016, 2, 29),
+            dagensDato = LocalDate.of(2018, 2, 28))
     }
 
     @Test
-    fun skalVaere19Aar_2() {
-        val dato = LocalDate.of(1998, 12, 14)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(19)
+    fun `skal være 2 år`() {
+        assertAntallAar(2,
+            dato = LocalDate.of(2016, 2, 29),
+            dagensDato = LocalDate.of(2018, 3, 1)
+            )
     }
 
-    @Test
-    fun skalVaere1Aar() {
-        val dato = LocalDate.of(2016, 2, 29)
-        val dagensDato = LocalDate.of(2018, 2, 28)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(1)
-    }
-
-    @Test
-    fun skalVaere2Aar() {
-        val dato = LocalDate.of(2016, 2, 29)
-        val dagensDato = LocalDate.of(2018, 3, 1)
-        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(2)
+    private fun assertAntallAar(antallAar: Int, dato: LocalDate, dagensDato: LocalDate = FnrUtilsTest.dagensDato) {
+        assertThat(FnrUtils.antallAarSidenDato(dato, dagensDato)).isEqualTo(antallAar)
     }
 
     companion object {
