@@ -56,7 +56,7 @@ public class PdlOppslagClient {
         String json = hentIdenterRequest(fnr.stringValue(), request);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
-        return response.getData().getPdlIdenter();
+        return response.getData().getHentIdenter();
     }
 
     PdlIdenter hentIdenter(AktorId aktorId) {
@@ -64,7 +64,7 @@ public class PdlOppslagClient {
         String json = hentIdenterRequest(aktorId.asString(), request);
         PdlHentIdenterResponse response = gson.fromJson(json, PdlHentIdenterResponse.class);
         validateResponse(response);
-        return response.getData().getPdlIdenter();
+        return response.getData().getHentIdenter();
     }
 
     String hentIdenterRequest(String personident, PdlHentIdenterRequest requestBody) {

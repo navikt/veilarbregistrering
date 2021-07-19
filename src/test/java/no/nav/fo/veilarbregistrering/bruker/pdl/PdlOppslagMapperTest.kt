@@ -23,12 +23,8 @@ class PdlOppslagMapperTest {
 
     @Test
     fun `skal mappe identer`() {
-        val pdlIdent = PdlIdent()
-        pdlIdent.ident = "12345678910"
-        pdlIdent.isHistorisk = false
-        pdlIdent.gruppe = PdlGruppe.FOLKEREGISTERIDENT
-        val pdlIdenter = PdlIdenter()
-        pdlIdenter.identer = listOf(pdlIdent)
+        val pdlIdent = PdlIdent(ident = "12345678910", historisk = false, gruppe = PdlGruppe.FOLKEREGISTERIDENT)
+        val pdlIdenter = PdlIdenter(listOf(pdlIdent))
         val identer = PdlOppslagMapper.map(pdlIdenter)
         assertThat(identer.identer).hasSize(1)
         assertThat(identer.identer[0].ident).isEqualTo("12345678910")

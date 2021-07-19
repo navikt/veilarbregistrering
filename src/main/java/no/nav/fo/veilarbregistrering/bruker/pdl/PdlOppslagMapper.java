@@ -59,7 +59,7 @@ class PdlOppslagMapper {
         return Identer.of(pdlIdenter.getIdenter().stream()
                 .map(pdlIdent -> new Ident(
                         pdlIdent.getIdent(),
-                        pdlIdent.isHistorisk(),
+                        pdlIdent.getHistorisk(),
                         Gruppe.valueOf(pdlIdent.getGruppe().name())
                 ))
                 .collect(toList()));

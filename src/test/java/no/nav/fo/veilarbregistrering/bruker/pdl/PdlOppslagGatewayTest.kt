@@ -67,13 +67,8 @@ internal class PdlOppslagGatewayTest {
     }
 
     private fun dummyPdlIdent(): PdlIdenter {
-        val pdlIdent = PdlIdent()
-        pdlIdent.ident = "12345678910"
-        pdlIdent.isHistorisk = false
-        pdlIdent.gruppe = PdlGruppe.FOLKEREGISTERIDENT
-        val pdlIdenter = PdlIdenter()
-        pdlIdenter.identer = listOf(pdlIdent)
-        return pdlIdenter
+        val pdlIdent = PdlIdent(ident = "12345678910", historisk = false, gruppe = PdlGruppe.FOLKEREGISTERIDENT)
+        return PdlIdenter(listOf(pdlIdent))
     }
 
     @Test
