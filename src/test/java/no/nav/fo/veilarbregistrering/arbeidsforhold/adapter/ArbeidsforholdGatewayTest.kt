@@ -14,6 +14,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 class ArbeidsforholdGatewayTest {
 
+    private lateinit var aaregRestClient: AaregRestClient
+    private lateinit var context: AnnotationConfigApplicationContext
+
     @BeforeEach
     fun setup() {
         aaregRestClient = mockk(relaxed = true)
@@ -56,8 +59,6 @@ class ArbeidsforholdGatewayTest {
     }
 
     companion object {
-        private lateinit var aaregRestClient: AaregRestClient
-        private lateinit var context: AnnotationConfigApplicationContext
         private val IDENT_1 = Foedselsnummer.of("12345678910")
         private val IDENT_2 = Foedselsnummer.of("109987654321")
     }
