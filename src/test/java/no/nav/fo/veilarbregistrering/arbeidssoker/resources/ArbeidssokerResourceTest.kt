@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.medArbs
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.Companion.medArbs
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
