@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
