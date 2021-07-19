@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.bruker
 
 import no.nav.fo.veilarbregistrering.bruker.Identer.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -18,7 +18,7 @@ class IdenterTest {
             )
         )
         val fnr = identer.finnGjeldendeFnr()
-        Assertions.assertThat(fnr.stringValue()).isEqualTo("11111111111")
+        assertThat(fnr.stringValue()).isEqualTo("11111111111")
     }
 
     @Test
@@ -32,7 +32,7 @@ class IdenterTest {
             )
         )
         val aktorId = identer.finnGjeldendeAktorId()
-        Assertions.assertThat(aktorId.asString()).isEqualTo("22222222222")
+        assertThat(aktorId.asString()).isEqualTo("22222222222")
     }
 
     @Test
@@ -77,12 +77,9 @@ class IdenterTest {
             )
         )
         val historiskeFnr = identer.finnHistoriskeFoedselsnummer()
-        Assertions.assertThat(historiskeFnr.size).isEqualTo(2)
-        org.junit.jupiter.api.Assertions.assertTrue(
-            historiskeFnr.stream()
-                .anyMatch { foedselsnummer: Foedselsnummer -> foedselsnummer == Foedselsnummer.of("44444444444") })
-        org.junit.jupiter.api.Assertions.assertTrue(
-            historiskeFnr.stream()
-                .anyMatch { foedselsnummer: Foedselsnummer -> foedselsnummer == Foedselsnummer.of("55555555555") })
+        assertThat(historiskeFnr.size).isEqualTo(2)
+        assertThat(historiskeFnr).containsAll(listOf(
+            Foedselsnummer.of("55555555555"),
+            Foedselsnummer.of("44444444444")))
     }
 }
