@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.config.CacheConfig;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
-@Disabled
 class HentPersonPdlOppslagGatewayTest {
 
     private static PdlOppslagClient pdlOppslagClient;
@@ -31,7 +31,7 @@ class HentPersonPdlOppslagGatewayTest {
                 .getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();
-        context.register(CacheConfig.class);
+        context.register(CacheConfig.class, CacheAutoConfiguration.class);
         context.getDefaultListableBeanFactory().registerBeanDefinition("pdlOppslagClient", beanDefinition);
         context.refresh();
         context.start();

@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
-@Disabled
 class HentIdenterPdlOppslagGatewayTest {
 
     private static PdlOppslagClient pdlOppslagClient;
@@ -34,7 +34,7 @@ class HentIdenterPdlOppslagGatewayTest {
                 .getBeanDefinition();
 
         context = new AnnotationConfigApplicationContext();
-        context.register(CacheConfig.class);
+        context.register(CacheConfig.class, CacheAutoConfiguration.class);
         context.getDefaultListableBeanFactory().registerBeanDefinition("pdlOppslagClient", beanDefinition);
         context.refresh();
         context.start();
