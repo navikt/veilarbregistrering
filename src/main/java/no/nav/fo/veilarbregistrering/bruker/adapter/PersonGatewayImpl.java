@@ -21,8 +21,4 @@ class PersonGatewayImpl implements PersonGateway {
         Optional<GeografiskTilknytning> geografiskTilknytningPDL = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
         return geografiskTilknytningPDL;
     }
-
-    private static GeografiskTilknytning map(GeografiskTilknytningDto dto) {
-        return GeografiskTilknytning.of(dto.getGeografiskTilknytning());
-    }
 }
