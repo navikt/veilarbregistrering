@@ -21,18 +21,18 @@ class StartRegistreringStatusServiceTest {
     private lateinit var brukerRegistreringService: StartRegistreringStatusService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway
     private lateinit var oppfolgingClient: OppfolgingClient
-    private lateinit var personGateway: PersonGateway
+    private lateinit var pdlOppslagGateway: PdlOppslagGateway
     @BeforeEach
     fun setup() {
         arbeidsforholdGateway = mockk()
         oppfolgingClient = mockk()
-        personGateway = mockk()
+        pdlOppslagGateway = mockk()
         val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
-            personGateway,
+            pdlOppslagGateway,
             influxMetricsService
         )
     }
@@ -96,7 +96,7 @@ class StartRegistreringStatusServiceTest {
     fun gitt_at_geografiskTilknytning_er_1234_skal_1234_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
-        every { personGateway.hentGeografiskTilknytning(any()) } returns
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns
                 Optional.of(GeografiskTilknytning.of("1234"))
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus).isNotNull
@@ -107,7 +107,7 @@ class StartRegistreringStatusServiceTest {
     fun gitt_at_geografiskTilknytning_kaster_exception_skal_null_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
-        every { personGateway.hentGeografiskTilknytning(any()) } throws RuntimeException("Ikke tilgang")
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } throws RuntimeException("Ikke tilgang")
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isNull()
