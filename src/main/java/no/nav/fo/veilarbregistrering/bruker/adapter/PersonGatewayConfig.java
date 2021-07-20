@@ -20,7 +20,7 @@ public class PersonGatewayConfig {
     }
 
     @Bean
-    PersonGatewayImpl personGateway(VeilArbPersonClient client, PdlOppslagGateway pdlOppslagGateway, UnleashClient unleashClient) {
-        return new PersonGatewayImpl(client, pdlOppslagGateway, unleashClient);
+    PersonGatewayImpl personGateway(PdlOppslagGateway pdlOppslagGateway) {
+        return new PersonGatewayImpl(pdlOppslagGateway);
     }
 }

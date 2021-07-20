@@ -21,16 +21,7 @@ import org.mockserver.model.MediaType
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 
-@ExtendWith(MockServerExtension::class)
-class PersonGatewayTest(private val mockServer: ClientAndServer) {
-    private lateinit var personGateway: PersonGateway
-
-    @BeforeEach
-    fun setup() {
-        val unleashClient = StubUnleashClient(listOf("veilarbregistrering.geografiskTilknytningFraPdl.sammenligning"))
-        personGateway = PersonGatewayImpl(lagVeilArbPersonClient(), lagPdlOppslagGateway(), unleashClient)
-        mockServer.reset()
-    }
+class PersonGatewayTest {
 
     private fun lagPdlOppslagGateway(gt: GeografiskTilknytning? = null): PdlOppslagGateway {
         val pdlOppslagGatewayMock = mockk<PdlOppslagGateway>()
@@ -38,117 +29,15 @@ class PersonGatewayTest(private val mockServer: ClientAndServer) {
         return pdlOppslagGatewayMock
     }
 
-    private fun lagVeilArbPersonClient(): VeilArbPersonClient {
-        val httpServletRequest = mockk<HttpServletRequest>()
-        mockkStatic(RequestContext::class)
-        every { servletRequest() } returns httpServletRequest
-        every { httpServletRequest.getHeader(any()) } returns ""
-        val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return VeilArbPersonClient(baseUrl)
-    }
-
     @Test
-    fun `hentGeografiskTilknytning skal returnere kontorid`() {
+    fun `hentGeografiskTilknytning skal returnere geografisk tilknytning fra PDL`() {
         val foedselsnummer = Foedselsnummer.of("12345678910")
         val bruker = Bruker.of(foedselsnummer, null)
         val forventetGeografiskTilknytning = "1234"
 
-        konfigurerVeilarbpersonClient(foedselsnummer, forventetGeografiskTilknytning)
+        val personGateway = PersonGatewayImpl(lagPdlOppslagGateway(GeografiskTilknytning.of(forventetGeografiskTilknytning)))
 
         val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
         assertThat(geografiskTilknytning).hasValue(GeografiskTilknytning.of(forventetGeografiskTilknytning))
     }
-
-    private fun konfigurerVeilarbpersonClient(
-        foedselsnummer: Foedselsnummer,
-        forventetGeografiskTilknytning: String
-    ) {
-        mockServer.`when`(
-            HttpRequest.request()
-                .withMethod("GET")
-                .withPath("/person/geografisktilknytning")
-                .withQueryStringParameter("fnr", foedselsnummer.stringValue())
-        )
-            .respond(
-                HttpResponse.response()
-                    .withBody(
-                        "{\"geografiskTilknytning\": \"" + forventetGeografiskTilknytning + "\"}",
-                        MediaType.JSON_UTF_8
-                    )
-                    .withStatusCode(200)
-            )
-    }
-
-    @Test
-    fun `hentGeografiskTilknytning skal returnere optional hvis 404`() {
-        val foedselsnummer = Foedselsnummer.of("12345678911")
-        val bruker = Bruker.of(foedselsnummer, null)
-
-        mockServer.`when`(
-                HttpRequest.request()
-                        .withMethod("GET")
-                        .withPath("/person/geografisktilknytning")
-                        .withQueryStringParameter("fnr", foedselsnummer.stringValue())
-        )
-            .respond(
-                    HttpResponse.response()
-                            .withStatusCode(404)
-            )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        assertThat(geografiskTilknytning).isEmpty
-    }
-
-    @Test
-    fun `hentGeografiskTilknytning skal returnere optional hvis tom tekst`() {
-        val foedselsnummer = Foedselsnummer.of("12345678912")
-        val bruker = Bruker.of(foedselsnummer, null)
-
-        mockServer.`when`(
-                HttpRequest.request()
-                        .withMethod("GET")
-                        .withPath("/person/geografisktilknytning")
-                        .withQueryStringParameter("fnr", foedselsnummer.stringValue())
-        )
-            .respond(
-                    HttpResponse.response()
-                            .withBody("{\"geografiskTilknytning\": " + "null" + "}", MediaType.JSON_UTF_8)
-                            .withStatusCode(200)
-            )
-        val geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker)
-        assertThat(geografiskTilknytning).isEmpty
-    }
-
-    @Test
-    fun `uthenting av geografisk tilknytning fra TPS eller PDL avhengig av feature toggles`() {
-        val tpsVerdi = GeografiskTilknytning.of("1234")
-        val pdlVerdi = GeografiskTilknytning.of("5678")
-
-        val foedselsnummer = Foedselsnummer.of("12345678912")
-        val bruker = Bruker.of(foedselsnummer, null)
-
-        val aktiveFeatures = mutableListOf<String>()
-        val unleashClient = StubUnleashClient(aktiveFeatures)
-        val pdlGateway = lagPdlOppslagGateway(pdlVerdi)
-        val tpsClient = lagVeilArbPersonClient()
-        val personGateway = PersonGatewayImpl(tpsClient, pdlGateway, unleashClient)
-        konfigurerVeilarbpersonClient(foedselsnummer, tpsVerdi.stringValue())
-
-        // TPS er default uten feature toggles
-        assertThat(personGateway.hentGeografiskTilknytning(bruker)).hasValue(tpsVerdi)
-
-        aktiveFeatures.addAll(listOf(
-            "veilarbregistrering.geografiskTilknytningFraPdl.sammenligning",
-            "veilarbregistrering.geografiskTilknytningFraPdl.bruk"
-        ))
-
-        // Med features skal vi få GT fra PDL
-        assertThat(personGateway.hentGeografiskTilknytning(bruker)).hasValue(pdlVerdi)
-    }
-}
-
-
-class StubUnleashClient(private val aktiveFeatures: List<String>) : UnleashClient {
-    override fun checkHealth() = HealthCheckResult.healthy()!!
-    override fun isEnabled(feature: String) = aktiveFeatures.contains(feature)
-    override fun isEnabled(feature: String, context: UnleashContext) = isEnabled(feature)
 }
