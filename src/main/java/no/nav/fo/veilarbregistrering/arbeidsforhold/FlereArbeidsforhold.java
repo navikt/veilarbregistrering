@@ -10,7 +10,6 @@ public class FlereArbeidsforhold {
 
     static int antallMnd = 12;
     static int minAntallMndSammenhengendeJobb = 6;
-    static int dagIMnd = 1;
 
     private final List<Arbeidsforhold> flereArbeidsforhold;
 
@@ -29,6 +28,7 @@ public class FlereArbeidsforhold {
 
         int antallSammenhengendeMandeder = 0;
         int mndFraDagensMnd = 0;
+        final int dagIMnd = 1;
         LocalDate innevaerendeMnd = LocalDate.of(dagensDato.getYear(), dagensDato.getMonthValue(), dagIMnd);
 
         while (antallSammenhengendeMandeder < minAntallMndSammenhengendeJobb && mndFraDagensMnd < antallMnd) {
