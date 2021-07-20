@@ -4,14 +4,14 @@ import no.nav.fo.veilarbregistrering.FileToJson.toJson
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer.Companion.of
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 
 class EnhetGatewayTest {
     private lateinit var enhetGateway: EnhetGatewayImpl
+
     @BeforeEach
     fun setUp() {
         val enhetStubClient: EnhetRestClient = EnhetStubClient()
@@ -19,22 +19,22 @@ class EnhetGatewayTest {
     }
 
     @Test
-    fun hentOrganisasjonsdetaljer_skal_kunne_hente_ut_kommunenummer_fra_enhetsregisteret() {
+    fun `hentOrganisasjonsdetaljer skal kunne hente ut kommunenummer fra enhetsregisteret`() {
         val organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(of("995298775"))
-        Assertions.assertThat(organisasjonsdetaljer).isNotNull
-        Assertions.assertThat(organisasjonsdetaljer!!.kommunenummer()).hasValue(Kommunenummer.of("0301"))
+        assertThat(organisasjonsdetaljer).isNotNull
+        assertThat(organisasjonsdetaljer!!.kommunenummer()).hasValue(Kommunenummer.of("0301"))
     }
 
     @Test
-    fun hentOrganisasjonsdetaljer_skal_gi_empty_result_ved_ukjent_org_nr() {
+    fun `hentOrganisasjonsdetaljer skal gi empty result ved ukjent org nr`() {
         val organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(of("123456789"))
-        Assertions.assertThat(organisasjonsdetaljer).isNull()
+        assertThat(organisasjonsdetaljer).isNull()
     }
 
     @Test
-    fun hentOrganisasjonsdetaljer_skal_kaste_runtimeException_ved_feil() {
+    fun `hentOrganisasjonsdetaljer skal kaste runtimeException ved feil`() {
         val runtimeException = assertThrows<RuntimeException> { enhetGateway.hentOrganisasjonsdetaljer(FEILENDE_ORG) }
-        Assertions.assertThat(runtimeException.message).isEqualTo("Hent organisasjon feilet")
+        assertThat(runtimeException.message).isEqualTo("Hent organisasjon feilet")
     }
 
     companion object {
