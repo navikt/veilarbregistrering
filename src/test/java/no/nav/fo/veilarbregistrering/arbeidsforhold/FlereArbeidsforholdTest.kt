@@ -134,8 +134,8 @@ class FlereArbeidsforholdTest {
 
     @Test
     fun `skal være i jobb 2 av 4 mnd`() {
-        FlereArbeidsforhold.antallMnd = 4
-        FlereArbeidsforhold.minAntallMndSammenhengendeJobb = 2
+        val antallMnd = 4
+        val minAntallMndSammenhengendeJobb = 2
         val dagensDato = LocalDate.of(2017, 12, 20)
         val fom1 = LocalDate.of(2017, 10, 1)
         val tom1 = LocalDate.of(2017, 10, 31)
@@ -145,14 +145,14 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
         assertThat(
-            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)
+            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
         ).isTrue
     }
 
     @Test
     fun `skal ikke være i jobb 2 av 4 mnd`() {
-        FlereArbeidsforhold.antallMnd = 4
-        FlereArbeidsforhold.minAntallMndSammenhengendeJobb = 2
+        val antallMnd = 4
+        val minAntallMndSammenhengendeJobb = 2
         val dagensDato = LocalDate.of(2017, 12, 20)
         val fom1 = LocalDate.of(2017, 11, 1)
         val tom1 = LocalDate.of(2017, 11, 30)
@@ -162,7 +162,7 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
         assertThat(
-            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato)
+            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
         ).isFalse
     }
 
