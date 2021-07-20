@@ -5,13 +5,12 @@ import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig;
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig;
 import no.nav.fo.veilarbregistrering.autorisasjon.PepConfig;
-import no.nav.fo.veilarbregistrering.bruker.adapter.PersonGatewayConfig;
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig;
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig;
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig;
-import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig;
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig;
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig;
+import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig;
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig;
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig;
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig;
@@ -38,7 +37,6 @@ import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
         CacheConfig.class,
         UnleashConfig.class,
         MetricsConfig.class,
-        PersonGatewayConfig.class,
         ArbeidsforholdGatewayConfig.class,
         OppfolgingGatewayConfig.class,
         OppgaveGatewayConfig.class,

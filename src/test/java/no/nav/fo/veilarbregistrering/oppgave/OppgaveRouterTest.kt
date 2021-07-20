@@ -61,18 +61,17 @@ class OppgaveRouterTest {
 
     @Test
     fun `geografisk tilknytning med by med bydel skal gi intern brukerstotte`() {
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
-
-        val oppgaveRouter = oppgaveRouter(personGateway = personGateway)
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("0301"))
+        val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
 
     @Test
     fun `geografisk tilknytning med unntak av landkode skal gi empty enhetsnummer`() {
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("030106")) }
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("030106"))
 
-        val oppgaveRouter = oppgaveRouter(personGateway = personGateway)
+        val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).isEmpty
     }
@@ -83,9 +82,9 @@ class OppgaveRouterTest {
                 Kommunenummer.of("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("DNK")) }
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 
-        val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, personGateway = personGateway)
+        val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
     }
@@ -96,9 +95,9 @@ class OppgaveRouterTest {
                 Kommunenummer.of(KommuneMedBydel.STAVANGER),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("DNK")) }
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 
-        val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, personGateway = personGateway)
+        val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
     }
@@ -122,10 +121,10 @@ class OppgaveRouterTest {
     }
 
     private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
-        val personGateway = PersonGateway { Optional.of(GeografiskTilknytning.of("0301")) }
         val person = Person.of(null, null, adressebeskyttelseGradering)
-        val pdlOppslagGateway = StubPdlOppslagGateway(users = mapOf(BRUKER.aktorId to person))
-        val oppgaveRouter = oppgaveRouter(personGateway = personGateway, pdlOppslagGateway = pdlOppslagGateway)
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("0301"),
+                                                      users = mapOf(BRUKER.aktorId to person))
+        val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
 
         return oppgaveRouter.hentEnhetsnummerFor(BRUKER)
     }
@@ -134,11 +133,10 @@ class OppgaveRouterTest {
             arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
             enhetGateway: EnhetGateway = EnhetGateway { null },
             norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
-            personGateway: PersonGateway = StubPersonGateway(),
             pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
             influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
     ) =
-            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, personGateway, pdlOppslagGateway, influxMetricsService)
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, influxMetricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
@@ -158,11 +156,7 @@ class OppgaveRouterTest {
             FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()!!
     }
 
-    private class StubPersonGateway : PersonGateway {
-        override fun hentGeografiskTilknytning(bruker: Bruker): Optional<GeografiskTilknytning>? = Optional.empty<GeografiskTilknytning>()
-    }
-
-    private class StubPdlOppslagGateway(private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
+    private class StubPdlOppslagGateway(private val geografiskTilknytning: GeografiskTilknytning? = null ,private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
         override fun hentPerson(aktorId: AktorId?) = Optional.ofNullable(users[aktorId])
 
         override fun hentIdenter(fnr: Foedselsnummer?): Identer {
@@ -173,7 +167,7 @@ class OppgaveRouterTest {
             TODO("Not yet implemented")
         }
 
-        override fun hentGeografiskTilknytning(aktorId: AktorId?) = TODO("Not yet implemented")
+        override fun hentGeografiskTilknytning(aktorId: AktorId?) = Optional.ofNullable(geografiskTilknytning)
 
     }
 

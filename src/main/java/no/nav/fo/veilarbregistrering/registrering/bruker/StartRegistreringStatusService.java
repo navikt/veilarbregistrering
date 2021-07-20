@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
-import no.nav.fo.veilarbregistrering.bruker.PersonGateway;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto;
@@ -23,17 +23,17 @@ public class StartRegistreringStatusService {
 
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final BrukerTilstandService brukerTilstandService;
-    private final PersonGateway personGateway;
+    private final PdlOppslagGateway pdlOppslagGateway;
     private final InfluxMetricsService influxMetricsService;
 
     public StartRegistreringStatusService(
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
-            PersonGateway personGateway,
+            PdlOppslagGateway pdlOppslagGateway,
             InfluxMetricsService influxMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.brukerTilstandService = brukerTilstandService;
-        this.personGateway = personGateway;
+        this.pdlOppslagGateway = pdlOppslagGateway;
         this.influxMetricsService = influxMetricsService;
     }
 
@@ -70,7 +70,7 @@ public class StartRegistreringStatusService {
         Optional<GeografiskTilknytning> geografiskTilknytning = Optional.empty();
         try {
             long t1 = System.currentTimeMillis();
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker);
+            geografiskTilknytning = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {

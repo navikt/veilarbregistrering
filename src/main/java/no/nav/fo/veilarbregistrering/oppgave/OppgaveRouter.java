@@ -37,7 +37,6 @@ public class OppgaveRouter {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
-    private final PersonGateway personGateway;
     private final PdlOppslagGateway pdlOppslagGateway;
     private final InfluxMetricsService influxMetricsService;
 
@@ -45,13 +44,11 @@ public class OppgaveRouter {
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway,
             PdlOppslagGateway pdlOppslagGateway,
             InfluxMetricsService influxMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
-        this.personGateway = personGateway;
         this.pdlOppslagGateway = pdlOppslagGateway;
         this.influxMetricsService = influxMetricsService;
     }
@@ -64,7 +61,7 @@ public class OppgaveRouter {
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
         try {
-            geografiskTilknytning = personGateway.hentGeografiskTilknytning(bruker);
+            geografiskTilknytning = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet", e);
             influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);

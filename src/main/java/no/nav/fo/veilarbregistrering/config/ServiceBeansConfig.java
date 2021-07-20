@@ -13,7 +13,10 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource;
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet;
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService;
-import no.nav.fo.veilarbregistrering.bruker.*;
+import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService;
+import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
+import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
@@ -22,21 +25,24 @@ import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
-import no.nav.fo.veilarbregistrering.oppgave.*;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveRouter;
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveService;
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.*;
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource;
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
-import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository;
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService;
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusServlet;
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktServlet;
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
+import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway;
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
@@ -92,12 +98,12 @@ public class ServiceBeansConfig {
     StartRegistreringStatusService startRegistreringStatusService(
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
-            PersonGateway personGateway,
+            PdlOppslagGateway pdlOppslagGateway,
             InfluxMetricsService influxMetricsService) {
         return new StartRegistreringStatusService(
                 arbeidsforholdGateway,
                 brukerTilstandService,
-                personGateway,
+                pdlOppslagGateway,
                 influxMetricsService);
     }
 
@@ -217,14 +223,12 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
-            PersonGateway personGateway,
             PdlOppslagGateway pdlOppslagGateway,
             InfluxMetricsService influxMetricsService) {
         return new OppgaveRouter(
                 arbeidsforholdGateway,
                 enhetGateway,
                 norg2Gateway,
-                personGateway,
                 pdlOppslagGateway,
                 influxMetricsService);
     }
