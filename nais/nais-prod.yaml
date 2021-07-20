@@ -35,8 +35,6 @@ spec:
       value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
     - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
       value: srvdp-arbeidssoker-o
-    - name: VEILARBPERSONAPI_URL
-      value: https://veilarbperson.nais.adeo.no/veilarbperson/api
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
     - name: ABAC_PDP_ENDPOINT_URL
