@@ -17,3 +17,9 @@ data class PdlErrorExtension(
     val classification: String? = null,
     val details: PdlErrorDetails? = null
 )
+
+data class PdlErrorDetails(
+    val type: String? = null,
+    val cause: String? = null,
+    val policy: String? = null
+)
