@@ -17,6 +17,4 @@ data class PdlHentIdenterRequest(val query: String, val variables: HentIdenterVa
 
 class HentIdenterVariables(val ident: String)
 
-class PdlHentIdenterResponse(val data: PdlHentIdenter, private val errors: MutableList<PdlError>) : PdlResponse {
-    override fun getErrors() = errors
-}
+class PdlHentIdenterResponse(val data: PdlHentIdenter, override val errors: List<PdlError>?) : PdlResponse

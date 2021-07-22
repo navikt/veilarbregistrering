@@ -19,11 +19,8 @@ data class PdlGeografiskTilknytning(
 
 data class PdlHentGeografiskTilknytningResponse(
     val data: PdlHentGeografiskTilknytning,
-    private val errors: MutableList<PdlError>
-) :
-    PdlResponse {
-    override fun getErrors() = errors
-}
+    override val errors: List<PdlError>?
+) : PdlResponse
 
 data class PdlHentGeografiskTilknytningRequest(val query: String, val variables: HentGeografiskTilknytningVariables)
 

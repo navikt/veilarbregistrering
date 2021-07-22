@@ -60,9 +60,7 @@ data class PdlAdressebeskyttelse(val gradering: PdlGradering) : Comparable<PdlAd
 
 data class PdlHentPersonRequest(val query: String, val variables: HentPersonVariables)
 
-data class PdlHentPersonResponse(val data: PdlHentPerson, private val errors: MutableList<PdlError>) : PdlResponse {
-    override fun getErrors() = errors
-}
+data class PdlHentPersonResponse(val data: PdlHentPerson, override val errors: List<PdlError>) : PdlResponse
 
 data class HentPersonVariables(val ident: String, val oppholdHistorikk: Boolean)
 
