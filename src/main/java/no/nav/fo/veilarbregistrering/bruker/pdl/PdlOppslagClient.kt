@@ -135,7 +135,7 @@ open class PdlOppslagClient(
 
     private fun validateResponse(response: PdlResponse) {
         if (response.errors != null && response.errors!!.isNotEmpty()) {
-            if (response.errors!!.stream().anyMatch { pdlError: PdlError? -> pdlError?.extensions?.code == "not_found" }) {
+            if (response.errors!!.any { pdlError: PdlError? -> pdlError?.extensions?.code == "not_found" }) {
                 throw BrukerIkkeFunnetException("Fant ikke person i PDL")
             }
             throw PdlException("Integrasjon mot PDL feilet", response.errors!!)
