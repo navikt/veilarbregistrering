@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 public class PdlErrorExtension {
     private String code;
     private String classification;
+    private PdlErrorDetails details;
 
     public PdlErrorExtension() {
     }
@@ -21,5 +22,13 @@ public class PdlErrorExtension {
 
     public void setClassification(String classification) {
         this.classification = classification;
+    }
+
+    public PdlErrorDetails getDetails() {
+        return details;
+    }
+
+    public void setDetails(PdlErrorDetails details) {
+        this.details = details;
     }
 }

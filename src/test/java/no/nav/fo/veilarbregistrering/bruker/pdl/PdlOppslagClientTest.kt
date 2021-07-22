@@ -48,6 +48,26 @@ class PdlOppslagClientTest {
     }
 
     @Test
+    fun `skal kunne hente ut detaljer om feil`() {
+        val pdlOppslagClient = object : PdlOppslagClient("", null) {
+            override fun hentGeografiskTilknytningRequest(
+                fnr: String?,
+                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest?
+            ) = toJson(HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON)
+        }
+
+        val feil = assertThrows<RuntimeException> { pdlOppslagClient.hentGeografiskTilknytning(AktorId.of("111lll")) }
+
+        assertThat(feil.toString()).contains(
+            "Feilmelding fra PDL",
+            "hentGeografiskTilknytning",
+            "1234",
+            "cause-0001-manglerrolle",
+            "feilkode_fra_pdl"
+        )
+    }
+
+    @Test
     fun `skal feile ved not found`() {
         val pdlOppslagClient = object : PdlOppslagClient("", null) {
             public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
@@ -139,5 +159,6 @@ class PdlOppslagClientTest {
         private const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
         private const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
         private const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
+        private const val HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON = "/pdl/hentGeografiskTilknytningError.json"
     }
 }

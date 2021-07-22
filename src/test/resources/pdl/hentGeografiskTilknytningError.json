@@ -1,0 +1,28 @@
+{
+  "errors": [
+    {
+      "message": "Feilmelding fra PDL",
+      "locations": [
+        {
+          "line": 1234,
+          "column": 5678
+        }
+      ],
+      "path": [
+        "hentGeografiskTilknytning"
+      ],
+      "extensions": {
+        "code": "unauthorized",
+        "details": {
+          "type": "abac-deny",
+          "cause": "cause-0001-manglerrolle",
+          "policy": "feilkode_fra_pdl"
+        },
+        "classification": "ExecutionAborted"
+      }
+    }
+  ],
+  "data": {
+    "hentGeografiskTilknytning": null
+  }
+}
