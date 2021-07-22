@@ -5,6 +5,7 @@ import no.nav.common.json.JsonUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
+import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest
 import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
@@ -44,7 +45,7 @@ class PdlOppslagClientTest {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
         }
-        assertThrows<RuntimeException> { pdlOppslagClient.hentPerson(AktorId.of("111lll")) }
+        assertThrows<PdlException> { pdlOppslagClient.hentPerson(AktorId.of("111lll")) }
     }
 
     @Test
@@ -56,7 +57,7 @@ class PdlOppslagClientTest {
             ) = toJson(HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON)
         }
 
-        val feil = assertThrows<RuntimeException> { pdlOppslagClient.hentGeografiskTilknytning(AktorId.of("111lll")) }
+        val feil = assertThrows<PdlException> { pdlOppslagClient.hentGeografiskTilknytning(AktorId.of("111lll")) }
 
         assertThat(feil.toString()).contains(
             "Feilmelding fra PDL",

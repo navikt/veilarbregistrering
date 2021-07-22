@@ -5,6 +5,7 @@ import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.fo.veilarbregistrering.bruker.AktorId;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException;
+import no.nav.fo.veilarbregistrering.bruker.feil.PdlException;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.HentGeografiskTilknytningVariables;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest;
@@ -164,7 +165,7 @@ public class PdlOppslagClient {
                 throw new BrukerIkkeFunnetException("Fant ikke person i PDL");
             }
 
-            throw new RuntimeException("Integrasjon mot PDL feilet: " + gson.toJson(response.getErrors()));
+            throw new PdlException("Integrasjon mot PDL feilet", response.getErrors());
         }
     }
 
