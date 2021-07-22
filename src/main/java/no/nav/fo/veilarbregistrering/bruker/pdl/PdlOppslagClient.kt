@@ -43,14 +43,10 @@ open class PdlOppslagClient(
 
     open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentIdenterRequest)
-        val token = systemUserTokenProvider.systemUserToken
         val ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to personident,
         )
-        val authHeaders = mapOf(
-            NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
-            "Authorization" to "Bearer $token",
-        )
+        val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .headers(Headers.of(authHeaders + ekstraHeaders))
@@ -80,15 +76,11 @@ open class PdlOppslagClient(
         pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
     ): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentGeografiskTilknytningRequest)
-        val token = systemUserTokenProvider.systemUserToken
         val ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         )
-        val authHeaders = mapOf(
-            "Authorization" to "Bearer $token",
-            NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
-        )
+        val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .headers(Headers.of(authHeaders + ekstraHeaders))
@@ -112,15 +104,11 @@ open class PdlOppslagClient(
 
     open fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentPersonRequest)
-        val token = systemUserTokenProvider.systemUserToken
         val ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         )
-        val authHeaders = mapOf(
-            "Authorization" to "Bearer $token",
-            NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
-        )
+        val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .headers(Headers.of(authHeaders + ekstraHeaders))
@@ -132,6 +120,15 @@ open class PdlOppslagClient(
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
+    }
+
+    private fun lagAuthHeaders(): Map<String, String> {
+        val token = systemUserTokenProvider.systemUserToken
+        val authHeaders = mapOf(
+            "Authorization" to "Bearer $token",
+            NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
+        )
+        return authHeaders
     }
 
     private fun hentIdenterQuery() = hentRessursfil("pdl/hentIdenter.graphql")
