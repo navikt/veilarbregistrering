@@ -41,13 +41,14 @@ open class PdlOppslagClient(
     }
 
     open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
+        val requestBody = RestUtils.toJsonRequestBody(pdlHentIdenterRequest)
         val token = systemUserTokenProvider.systemUserToken
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .header(NAV_PERSONIDENT_HEADER, personident)
             .header("Authorization", "Bearer $token")
             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer $token")
-            .method("POST", RestUtils.toJsonRequestBody(pdlHentIdenterRequest))
+            .method("POST", requestBody)
             .build()
         try {
             RestClient.baseClient().newCall(request).execute()
@@ -72,6 +73,7 @@ open class PdlOppslagClient(
         fnr: String,
         pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
     ): String {
+        val requestBody = RestUtils.toJsonRequestBody(pdlHentGeografiskTilknytningRequest)
         val token = systemUserTokenProvider.systemUserToken
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
@@ -79,7 +81,7 @@ open class PdlOppslagClient(
             .header("Authorization", "Bearer $token")
             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer $token")
             .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-            .method("POST", RestUtils.toJsonRequestBody(pdlHentGeografiskTilknytningRequest))
+            .method("POST", requestBody)
             .build()
         try {
             RestClient.baseClient().newCall(request).execute()
@@ -98,6 +100,7 @@ open class PdlOppslagClient(
     }
 
     open fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
+        val requestBody = RestUtils.toJsonRequestBody(pdlHentPersonRequest)
         val token = systemUserTokenProvider.systemUserToken
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
@@ -105,7 +108,7 @@ open class PdlOppslagClient(
             .header("Authorization", "Bearer $token")
             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer $token")
             .header(TEMA_HEADER, OPPFOLGING_TEMA_HEADERVERDI)
-            .method("POST", RestUtils.toJsonRequestBody(pdlHentPersonRequest))
+            .method("POST", requestBody)
             .build()
         try {
             RestClient.baseClient().newCall(request).execute()
