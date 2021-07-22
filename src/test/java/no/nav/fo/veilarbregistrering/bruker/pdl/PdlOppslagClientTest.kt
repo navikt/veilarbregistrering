@@ -149,12 +149,12 @@ class PdlOppslagClientTest {
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
-        private const val HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json"
-        private const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
-        private const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
-        private const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
-        private const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
-        private const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
-        private const val HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON = "/pdl/hentGeografiskTilknytningError.json"
+        internal const val HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json"
+        internal const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
+        internal const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
+        internal const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
+        internal const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
+        internal const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
+        internal const val HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON = "/pdl/hentGeografiskTilknytningError.json"
     }
 }
