@@ -35,8 +35,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved error`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", null) {
-            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
+        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+            override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
         }
@@ -45,10 +45,10 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal kunne hente ut detaljer om feil`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", null) {
+        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
             override fun hentGeografiskTilknytningRequest(
-                fnr: String?,
-                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest?
+                fnr: String,
+                pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
             ) = toJson(HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON)
         }
 
@@ -65,8 +65,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved not found`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", null) {
-            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
+        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+            override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_NOT_FOUND_JSON)
             }
         }
@@ -78,8 +78,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente person`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", null) {
-            public override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
+        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+            override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
         }
 
         val (telefonnummer, foedsel, adressebeskyttelse) = pdlOppslagClient.hentPerson(AktorId.of("12345678910"))
@@ -100,8 +100,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer til person`() {
-        val client = object : PdlOppslagClient("", null) {
-            public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
+        val client = object : PdlOppslagClient("", { null }) {
+            override fun hentIdenterRequest(personident: String, requestBody: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
         }
@@ -115,8 +115,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer med historikk til person`() {
-        val client = object : PdlOppslagClient("", null) {
-            public override fun hentIdenterRequest(personident: String, request: PdlHentIdenterRequest): String {
+        val client = object : PdlOppslagClient("", { null }) {
+            override fun hentIdenterRequest(personident: String, requestBody: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
         }
@@ -132,8 +132,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente geografisk tilknytning til person`() {
-        val client = object : PdlOppslagClient("", null) {
-            public override fun hentGeografiskTilknytningRequest(
+        val client = object : PdlOppslagClient("", { null }) {
+            override fun hentGeografiskTilknytningRequest(
                 fnr: String,
                 pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
             ): String {

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class PdlOppslagConfig {
     @Bean
-    fun pdlOppslagClient() = PdlOppslagClient(null, null)
+    fun pdlOppslagClient() = PdlOppslagClient("http://localhost/pdl") { null }
 
     @Bean
     fun pdlOppslagGateway(pdlOppslagClient: PdlOppslagClient): PdlOppslagGateway = PdlOppslagGatewayImpl(pdlOppslagClient)
