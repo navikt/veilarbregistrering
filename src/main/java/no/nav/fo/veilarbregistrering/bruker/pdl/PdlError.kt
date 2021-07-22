@@ -11,3 +11,9 @@ data class PdlErrorLocation(
     val line: Int? = null,
     val column: Int? = null
 )
+
+data class PdlErrorExtension(
+    val code: String? = null,
+    val classification: String? = null,
+    val details: PdlErrorDetails? = null
+)
