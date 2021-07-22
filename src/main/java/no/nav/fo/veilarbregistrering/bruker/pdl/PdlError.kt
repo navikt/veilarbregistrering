@@ -6,3 +6,8 @@ data class PdlError(
     val path: List<String>? = null,
     val extensions: PdlErrorExtension? = null
 )
+
+data class PdlErrorLocation(
+    val line: Int? = null,
+    val column: Int? = null
+)
