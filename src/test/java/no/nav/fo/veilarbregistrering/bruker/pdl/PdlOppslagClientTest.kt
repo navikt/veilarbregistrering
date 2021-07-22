@@ -101,7 +101,7 @@ class PdlOppslagClientTest {
     @Test
     fun `skal hente identer til person`() {
         val client = object : PdlOppslagClient("", { null }) {
-            override fun hentIdenterRequest(personident: String, requestBody: PdlHentIdenterRequest): String {
+            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
         }
@@ -116,7 +116,7 @@ class PdlOppslagClientTest {
     @Test
     fun `skal hente identer med historikk til person`() {
         val client = object : PdlOppslagClient("", { null }) {
-            override fun hentIdenterRequest(personident: String, requestBody: PdlHentIdenterRequest): String {
+            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
         }

@@ -40,14 +40,14 @@ open class PdlOppslagClient(
         return response.data.hentIdenter
     }
 
-    open fun hentIdenterRequest(personident: String, requestBody: PdlHentIdenterRequest): String {
+    open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
         val token = systemUserTokenProvider.systemUserToken
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .header(NAV_PERSONIDENT_HEADER, personident)
             .header("Authorization", "Bearer $token")
             .header(NAV_CONSUMER_TOKEN_HEADER, "Bearer $token")
-            .method("POST", RestUtils.toJsonRequestBody(requestBody))
+            .method("POST", RestUtils.toJsonRequestBody(pdlHentIdenterRequest))
             .build()
         try {
             RestClient.baseClient().newCall(request).execute()
