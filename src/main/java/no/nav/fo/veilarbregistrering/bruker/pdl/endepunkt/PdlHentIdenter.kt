@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter
+package no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt
 
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse

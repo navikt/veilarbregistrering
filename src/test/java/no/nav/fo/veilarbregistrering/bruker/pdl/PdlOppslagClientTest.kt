@@ -6,12 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.*
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import org.approvaltests.Approvals
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*

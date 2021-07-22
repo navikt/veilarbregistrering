@@ -1,15 +1,15 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdent
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlGruppe
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdent
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGruppe
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdenter
 import no.nav.fo.veilarbregistrering.bruker.Gruppe
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlGradering
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGradering
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlAdressebeskyttelse
 import no.nav.fo.veilarbregistrering.bruker.AdressebeskyttelseGradering
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlPerson
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlTelefonnummer
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlFoedsel
 import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
 import no.nav.fo.veilarbregistrering.bruker.Foedselsdato
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning

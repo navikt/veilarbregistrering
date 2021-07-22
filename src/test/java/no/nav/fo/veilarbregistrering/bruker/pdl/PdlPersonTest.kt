@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlGradering
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlTelefonnummer
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlPerson
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlAdressebeskyttelse
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGradering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

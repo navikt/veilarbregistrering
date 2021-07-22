@@ -10,14 +10,14 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.HentGeografiskTilknytn
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningRequest;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentGeografiskTilknytningResponse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.HentIdenterVariables;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterRequest;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlHentIdenterResponse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.HentPersonVariables;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonRequest;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlHentPersonResponse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.HentIdenterVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentIdenterRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentIdenterResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdenter;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.HentPersonVariables;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentPersonRequest;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlHentPersonResponse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlPerson;
 import okhttp3.Request;
 import okhttp3.Response;
 

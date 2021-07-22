@@ -3,11 +3,11 @@ package no.nav.fo.veilarbregistrering.bruker.pdl;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentIdenter.PdlIdenter;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlAdressebeskyttelse;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlFoedsel;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlPerson;
-import no.nav.fo.veilarbregistrering.bruker.pdl.hentPerson.PdlTelefonnummer;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdenter;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlAdressebeskyttelse;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlFoedsel;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlPerson;
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlTelefonnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
