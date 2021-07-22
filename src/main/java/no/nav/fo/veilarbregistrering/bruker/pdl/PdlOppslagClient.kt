@@ -43,16 +43,16 @@ open class PdlOppslagClient(
     }
 
     open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
-        val requestBody = RestUtils.toJsonRequestBody(pdlHentIdenterRequest)
-        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
+        return hentFraPdl(pdlHentIdenterRequest, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to personident,
         ))
     }
 
     private fun hentFraPdl(
-        requestBody: RequestBody,
+        graphqlRequest: Any,
         ekstraHeaders: Map<String, String>
     ): String {
+        val requestBody = RestUtils.toJsonRequestBody(graphqlRequest)
         val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
@@ -82,8 +82,7 @@ open class PdlOppslagClient(
         fnr: String,
         pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
     ): String {
-        val requestBody = RestUtils.toJsonRequestBody(pdlHentGeografiskTilknytningRequest)
-        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
+        return hentFraPdl(pdlHentGeografiskTilknytningRequest, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         ))
@@ -98,8 +97,7 @@ open class PdlOppslagClient(
     }
 
     open fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
-        val requestBody = RestUtils.toJsonRequestBody(pdlHentPersonRequest)
-        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
+        return hentFraPdl(pdlHentPersonRequest, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         ))
