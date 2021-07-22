@@ -157,10 +157,6 @@ open class PdlOppslagClient(
         private const val TEMA_HEADER = "Tema"
         private const val OPPFOLGING_TEMA_HEADERVERDI = "OPP"
 
-        private fun not_found(pdlError: PdlError?): Boolean {
-            return if (pdlError?.extensions == null) {
-                false
-            } else "not_found" == pdlError.extensions.code
-        }
+        private fun not_found(pdlError: PdlError?) = pdlError?.extensions?.code == "not_found"
     }
 }
