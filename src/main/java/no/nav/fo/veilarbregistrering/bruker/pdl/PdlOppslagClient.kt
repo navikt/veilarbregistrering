@@ -126,7 +126,7 @@ open class PdlOppslagClient(
                 return String(
                     resourceStream.readAllBytes(),
                     StandardCharsets.UTF_8
-                ).replace("[\n\r]]".toRegex(), "")
+                ).replace("[\n\r]".toRegex(), "")
             }
         } catch (e: IOException) {
             throw RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e)
