@@ -44,10 +44,9 @@ open class PdlOppslagClient(
 
     open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentIdenterRequest)
-        val ekstraHeaders = mapOf(
+        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to personident,
-        )
-        return hentFraPdl(requestBody, ekstraHeaders)
+        ))
     }
 
     private fun hentFraPdl(
@@ -84,11 +83,10 @@ open class PdlOppslagClient(
         pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
     ): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentGeografiskTilknytningRequest)
-        val ekstraHeaders = mapOf(
+        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
-        )
-        return hentFraPdl(requestBody, ekstraHeaders)
+        ))
     }
 
     fun hentPerson(aktorId: AktorId): PdlPerson {
@@ -101,11 +99,10 @@ open class PdlOppslagClient(
 
     open fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
         val requestBody = RestUtils.toJsonRequestBody(pdlHentPersonRequest)
-        val ekstraHeaders = mapOf(
+        return hentFraPdl(requestBody, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
-        )
-        return hentFraPdl(requestBody, ekstraHeaders)
+        ))
     }
 
     private fun lagAuthHeaders(): Map<String, String> {
