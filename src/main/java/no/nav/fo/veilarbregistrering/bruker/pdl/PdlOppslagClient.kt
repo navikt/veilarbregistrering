@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import okhttp3.Headers
 import okhttp3.Request
+import okhttp3.RequestBody
 import java.io.IOException
 import java.lang.reflect.Type
 import java.nio.charset.StandardCharsets
@@ -46,6 +47,13 @@ open class PdlOppslagClient(
         val ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to personident,
         )
+        return hentFraPdl(requestBody, ekstraHeaders)
+    }
+
+    private fun hentFraPdl(
+        requestBody: RequestBody,
+        ekstraHeaders: Map<String, String>
+    ): String {
         val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
@@ -80,18 +88,7 @@ open class PdlOppslagClient(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         )
-        val authHeaders = lagAuthHeaders()
-        val request = Request.Builder()
-            .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(Headers.of(authHeaders + ekstraHeaders))
-            .method("POST", requestBody)
-            .build()
-        try {
-            RestClient.baseClient().newCall(request).execute()
-                .use { response -> return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() } }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        return hentFraPdl(requestBody, ekstraHeaders)
     }
 
     fun hentPerson(aktorId: AktorId): PdlPerson {
@@ -108,18 +105,7 @@ open class PdlOppslagClient(
             NAV_PERSONIDENT_HEADER to fnr,
             TEMA_HEADER to OPPFOLGING_TEMA_HEADERVERDI,
         )
-        val authHeaders = lagAuthHeaders()
-        val request = Request.Builder()
-            .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(Headers.of(authHeaders + ekstraHeaders))
-            .method("POST", requestBody)
-            .build()
-        try {
-            RestClient.baseClient().newCall(request).execute()
-                .use { response -> return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() } }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        return hentFraPdl(requestBody, ekstraHeaders)
     }
 
     private fun lagAuthHeaders(): Map<String, String> {
