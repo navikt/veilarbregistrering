@@ -39,8 +39,6 @@ class PdlOppslagMapperTest {
             val mappedGradering = PdlOppslagMapper.map(pdlAdressebeskyttelse)
             assertThat(gradering.name).isEqualTo(mappedGradering.name)
         }
-        assertThat(PdlOppslagMapper.map(null as PdlAdressebeskyttelse?))
-            .isEqualTo(AdressebeskyttelseGradering.UKJENT)
     }
 
     @Test
@@ -58,6 +56,18 @@ class PdlOppslagMapperTest {
         assertThat(person.harAdressebeskyttelse()).isFalse
         assertThat(person.telefonnummer).hasValue(Telefonnummer.of("11223344", "0041"))
         assertThat(person.foedselsdato).isEqualTo(Foedselsdato.of(LocalDate.of(1950, 12, 31)))
+    }
+
+    @Test
+    fun `skal mappe person med adressebeskyttelse`() {
+        val pdlPerson = PdlPerson(
+            emptyList(),
+            emptyList(),
+            listOf(PdlAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG))
+        )
+        val person = PdlOppslagMapper.map(pdlPerson)
+        assertThat(person.harAdressebeskyttelse()).isTrue
+        assertThat(person.adressebeskyttelseGradering.erGradert()).isTrue
     }
 
     @Test
