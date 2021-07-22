@@ -135,7 +135,7 @@ open class PdlOppslagClient(
 
     private fun validateResponse(response: PdlResponse) {
         if (response.errors != null && response.errors!!.isNotEmpty()) {
-            if (response.errors!!.stream().anyMatch { pdlError: PdlError? -> not_found(pdlError) }) {
+            if (response.errors!!.stream().anyMatch { pdlError: PdlError? -> pdlError?.extensions?.code == "not_found" }) {
                 throw BrukerIkkeFunnetException("Fant ikke person i PDL")
             }
             throw PdlException("Integrasjon mot PDL feilet", response.errors!!)
@@ -156,7 +156,5 @@ open class PdlOppslagClient(
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
         private const val OPPFOLGING_TEMA_HEADERVERDI = "OPP"
-
-        private fun not_found(pdlError: PdlError?) = pdlError?.extensions?.code == "not_found"
     }
 }
