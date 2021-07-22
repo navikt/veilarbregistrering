@@ -51,10 +51,9 @@ open class PdlOppslagClient(
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
             "Authorization" to "Bearer $token",
         )
-        val headers = Headers.of(authHeaders + ekstraHeaders)
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(headers)
+            .headers(Headers.of(authHeaders + ekstraHeaders))
             .method("POST", requestBody)
             .build()
         try {
@@ -90,10 +89,9 @@ open class PdlOppslagClient(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
         )
-        val headers = Headers.of(authHeaders + ekstraHeaders)
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(headers)
+            .headers(Headers.of(authHeaders + ekstraHeaders))
             .method("POST", requestBody)
             .build()
         try {
@@ -123,10 +121,9 @@ open class PdlOppslagClient(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
         )
-        val headers = Headers.of(authHeaders + ekstraHeaders)
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(headers)
+            .headers(Headers.of(authHeaders + ekstraHeaders))
             .method("POST", requestBody)
             .build()
         try {
