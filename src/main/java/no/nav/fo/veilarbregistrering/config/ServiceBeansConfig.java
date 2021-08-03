@@ -19,6 +19,8 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.bruker.UserService;
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet;
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource;
+import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringPostgressResource;
+import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringRepositoryImpl;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering;
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
@@ -352,4 +354,9 @@ public class ServiceBeansConfig {
 
     @Bean
     FeilHandtering feilHandtering() { return new FeilHandtering(); }
+
+    @Bean
+    MigreringPostgressResource migreringPostgressResource(MigreringRepositoryImpl migreringRepository, BrukerRegistreringRepository brukerRegistreringRepository) {
+        return new MigreringPostgressResource(migreringRepository, brukerRegistreringRepository);
+    }
 }
