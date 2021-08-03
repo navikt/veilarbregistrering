@@ -27,7 +27,7 @@ class MigreringPostgressResource(
 
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
-        val secret = getVaultSecret("MIGRATION-TOKEN")
+        val secret = getVaultSecret("vault/migration-token")
 
         if (!secret.equals(token)) {
             throw ForbiddenException("Ugydlig token")
