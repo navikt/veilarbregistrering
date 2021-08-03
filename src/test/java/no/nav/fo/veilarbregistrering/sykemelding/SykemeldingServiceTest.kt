@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class SykemeldingServiceTest {
@@ -32,10 +32,10 @@ class SykemeldingServiceTest {
 
     @Test
     fun `hentSykmeldtInfoData skal håndtere maksdato`() {
-
-        every { sykemeldingGateway.hentReberegnetMaksdato(any()) } returns Maksdato.of("2021-11-01")
+        val datoUtenforAktivInngang = LocalDate.now().plusWeeks(20)
+        every { sykemeldingGateway.hentReberegnetMaksdato(any()) } returns Maksdato.of(datoUtenforAktivInngang.toString())
         val sykmeldtInfoData = sykemeldingService.hentSykmeldtInfoData(FNR)
-        Assertions.assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo("2021-11-01")
+        Assertions.assertThat(sykmeldtInfoData.getMaksDato()).isEqualTo(datoUtenforAktivInngang.toString())
         Assertions.assertThat(sykmeldtInfoData.isErArbeidsrettetOppfolgingSykmeldtInngangAktiv).isFalse
     }
 
