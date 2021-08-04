@@ -64,7 +64,7 @@ class FilterConfig {
         val registration = FilterRegistrationBean<PingFilter>()
         registration.filter = PingFilter()
         registration.order = 1
-        registration.addUrlPatterns("/api/ping")
+        registration.addUrlPatterns("/api/ping", "/api/migrering")
         return registration
     }
 
