@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
-import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
 import no.nav.common.log.LogFilter
@@ -70,8 +69,8 @@ class FilterConfig {
 
     @Bean
     open fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
-        val registration = FilterRegistrationBean<OidcAuthenticationFilter>()
-        val authenticationFilter = OidcAuthenticationFilter(
+        val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
+        val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
                 OidcAuthenticator.fromConfigs(
                         createOpenAmAuthenticatorConfig(),
                         createVeilarbloginAADConfig(),
