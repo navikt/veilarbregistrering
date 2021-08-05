@@ -21,7 +21,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
                     "FROM ${tabellNavn.name} " +
                     "WHERE ${tabellNavn.idKolonneNavn} > :id " +
                     "ORDER BY ${tabellNavn.idKolonneNavn} " +
-                    "FETCH NEXT 1000 ROWS ONLY;"
+                    "FETCH NEXT 1000 ROWS ONLY"
             return db.queryForList(sql, mapOf("id" to id))
     }
 }
