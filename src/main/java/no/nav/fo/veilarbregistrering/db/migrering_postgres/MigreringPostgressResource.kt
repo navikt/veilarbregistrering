@@ -27,6 +27,7 @@ class MigreringPostgressResource(
 
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
+        return emptyList()
         val secret = getVaultSecret("vault/migration-token")
 
         if (!secret.equals(token)) {

@@ -1,22 +1,20 @@
 package no.nav.fo.veilarbregistrering.config
 
-import no.nav.fo.veilarbregistrering.config.OidcAuthenticationFilterMigreringBypass.Companion.MIGRERING_PATTERN
 import org.junit.Test
-import org.springframework.util.AntPathMatcher
 import kotlin.test.assertTrue
 
-class AntPathMatherTest {
+class OidcAuthenticationFilterMigreringBypassTest {
 
     @Test
-    fun `AntPathMatcher matcher det vi forventer og ikke mer`() {
-        val ok = listOf("/api/migrering")
+    fun `matcher bare de patterns vi forventer og ikke mer`() {
+        val ok = listOf("/api/migrering", "/api/migrering/tjohei")
         val ikkeOk = listOf("/api", "api", "/api/registrering", "/api/sistearbeidsforhold")
 
         assertTrue {
-            ok.all { AntPathMatcher().match(MIGRERING_PATTERN, it) }
+            ok.all { OidcAuthenticationFilterMigreringBypass.mathcerMigrering(it) }
         }
         assertTrue {
-            ikkeOk.none { AntPathMatcher().match(MIGRERING_PATTERN, it) }
+            ikkeOk.none { OidcAuthenticationFilterMigreringBypass.mathcerMigrering(it) }
         }
     }
 }

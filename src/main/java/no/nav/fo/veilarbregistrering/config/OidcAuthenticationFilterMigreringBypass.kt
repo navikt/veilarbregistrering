@@ -12,17 +12,20 @@ import javax.servlet.http.HttpServletRequest
 class OidcAuthenticationFilterMigreringBypass(oidcAuthenticators: List<OidcAuthenticator>) : OidcAuthenticationFilter(oidcAuthenticators) {
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val servletPath = (servletRequest as HttpServletRequest).servletPath
-        if (!AntPathMatcher().match(MIGRERING_PATTERN, servletPath)) {
-            log.info("Gjør autentisering for request til [${servletPath}")
-            super.doFilter(servletRequest, servletResponse, chain)
-        } else {
+        if (mathcerMigrering(servletPath)) {
             log.info("OMGÅR autentisering for request til [${servletPath}")
             chain.doFilter(servletRequest, servletResponse)
+        } else {
+            log.info("Gjør autentisering for request til [${servletPath}")
+            super.doFilter(servletRequest, servletResponse, chain)
         }
     }
 
     companion object {
-        const val MIGRERING_PATTERN = "/api/migrering"
+        fun mathcerMigrering(servletPath: String) = MIGRERING_PATTERNS.any { pathMatcher.match(it, servletPath) }
+
+        private val pathMatcher = AntPathMatcher()
+        private val MIGRERING_PATTERNS = listOf("/api/migrering", "/api/migrering/*")
         private val log = loggerFor<OidcAuthenticationFilterMigreringBypass>()
     }
 }
