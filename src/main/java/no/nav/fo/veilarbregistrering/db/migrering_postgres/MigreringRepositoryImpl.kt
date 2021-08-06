@@ -24,5 +24,23 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
                     "FETCH NEXT 1000 ROWS ONLY"
             return db.queryForList(sql, mapOf("id" to id))
     }
+
+    fun hentStatus(): List<Map<String, Any>> {
+        val sql = "select 'registrering_tilstand' as table_name, max(id), count(*) as row_count from registrering_tilstand" +
+                "union" +
+                "select 'bruker_registrering', max(bruker_registrering_id), count(*) as row_count from bruker_registrering" +
+                "union" +
+                "select 'bruker_profilering', max(bruker_registrering_id), count(*) as row_count from bruker_profilering" +
+                "union" +
+                "select 'bruker_reaktivering', max(bruker_reaktivering_id), count(*) as row_count from bruker_reaktivering" +
+                "union" +
+                "select 'sykmeldt_registrering', max(sykmeldt_registrering_id), count(*) as row_count from sykmeldt_registrering" +
+                "union" +
+                "select 'manuell_registrering', max(manuell_registrering_id), count(*) as row_count from manuell_registrering" +
+                "union" +
+                "select 'oppgave', max(id), count(*) as row_count from oppgave;"
+
+        return db.queryForList(sql, emptyMap<String, Any>())
+    }
 }
 
