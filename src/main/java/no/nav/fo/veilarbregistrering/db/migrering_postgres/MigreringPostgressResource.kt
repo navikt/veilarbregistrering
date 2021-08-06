@@ -32,6 +32,12 @@ class MigreringPostgressResource(
         return migreringRepositoryImpl.nesteFraTabell(tabellNavn, idSisthentet)
     }
 
+    @GetMapping("/status")
+    fun hentStatus(@RequestHeader("x-token") token: String): List<Map<String, Any>> {
+        sjekkToken(token)
+        return migreringRepositoryImpl.hentStatus()
+    }
+
     private fun sjekkToken(token: String) {
         val secret = getVaultSecret("vault/migration-token")
 
