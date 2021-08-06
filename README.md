@@ -71,7 +71,7 @@ mvn test
 2. Rediger i nais/nais-p.yaml:
    ```diff
    - image: {{image}}
-   + image: docker.pkg.github.com/navikt/veilarbregistrering/veilarbregistrering:20210503204042_5afc1f2f 
+   + image: ghcr.io/navikt/veilarbregistrering/veilarbregistrering:20210503204042_5afc1f2f 
    ```
    
 3. Kjør kommandoen
