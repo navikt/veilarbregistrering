@@ -27,13 +27,16 @@ class MigreringPostgressResource(
 
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
+        sjekkToken(token)
+
+        return migreringRepositoryImpl.nesteFraTabell(tabellNavn, idSisthentet)
+    }
+
+    private fun sjekkToken(token: String) {
         val secret = getVaultSecret("vault/migration-token")
 
         if (!secret.equals(token)) {
             throw ForbiddenException("Ugydlig token")
         }
-
-        return migreringRepositoryImpl.nesteFraTabell(tabellNavn, idSisthentet)
     }
-
 }
