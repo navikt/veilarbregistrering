@@ -10,8 +10,6 @@ enum class TabellNavn(val idKolonneNavn: String) {
     MANUELL_REGISTRERING("MANUELL_REGISTRERING_ID"),
     REGISTRERING_TILSTAND("ID"),
     OPPGAVE("ID"),
-    FORMIDLINGSGRUPPE("ID"),
-    BEGRUNNELSE_KODEVERK("BEGRUNNELSE_ID")
 }
 
 class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
