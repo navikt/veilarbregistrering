@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.migrering_postgres
 
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.BRUKER_PROFILERING
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.BRUKER_REGISTRERING
+import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 enum class TabellNavn(val idKolonneNavn: String) {
@@ -47,6 +46,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         val sql = when (tabellNavn) {
             BRUKER_PROFILERING -> profileringSjekkSql
             BRUKER_REGISTRERING -> brukerRegistreringSjekkSql
+            SYKMELDT_REGISTRERING -> sykmeldtRegistreringSjekkSql
             else -> "select 1"
         }
         return db.queryForList(sql, emptyMap<String, Any>())
@@ -66,6 +66,15 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         count(distinct yrkespraksis) as unike_yrkespraksis, 
         floor(avg(konsept_id)) as gjsnitt_konsept_id 
         from bruker_registrering
+        """
+
+        private const val sykmeldtRegistreringSjekkSql = """
+        select count(*) as antall_rader,
+        count(distinct fremtidig_situasjon) as unike_fremtidig_situasjon,
+        count(distinct aktor_id) as unike_aktorer,
+        count(distinct utdanning_bestatt) as unike_utdanning_bestatt,
+        count(distinct andre_utfordringer) as unike_andre_utfordringer,
+        round(avg(cast(nus_kode as int)), 2) as gjsnitt_nus from sykmeldt_registrering
         """
     }
 }
