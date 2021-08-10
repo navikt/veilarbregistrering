@@ -38,6 +38,12 @@ class MigreringPostgressResource(
         return migreringRepositoryImpl.hentStatus()
     }
 
+    @GetMapping("/sjekksum")
+    fun hentSjekksumForTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn): List<Map<String, Any>> {
+        sjekkToken(token)
+        return migreringRepositoryImpl.hentSjekksumFor(tabellNavn)
+    }
+
     private fun sjekkToken(token: String) {
         val secret = getVaultSecret("vault/migration-token")
 

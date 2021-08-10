@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.migrering_postgres
 
+import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.BRUKER_PROFILERING
+import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.BRUKER_REGISTRERING
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 enum class TabellNavn(val idKolonneNavn: String) {
@@ -35,10 +37,36 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
             select 'bruker_reaktivering', max(bruker_reaktivering_id), count(*) as row_count from bruker_reaktivering union
             select 'sykmeldt_registrering', max(sykmeldt_registrering_id), count(*) as row_count from sykmeldt_registrering union
             select 'manuell_registrering', max(manuell_registrering_id), count(*) as row_count from manuell_registrering union
-            select 'oppgave', max(id), count(*) as row_count from oppgave;
+            select 'oppgave', max(id), count(*) as row_count from oppgave
             """
 
         return db.queryForList(sql, emptyMap<String, Any>())
+    }
+
+    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> {
+        val sql = when (tabellNavn) {
+            BRUKER_PROFILERING -> profileringSjekkSql
+            BRUKER_REGISTRERING -> brukerRegistreringSjekkSql
+            else -> "select 1"
+        }
+        return db.queryForList(sql, emptyMap<String, Any>())
+    }
+
+    companion object {
+        private const val profileringSjekkSql = """
+        select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
+        from bruker_profilering"            
+        """
+
+        private const val brukerRegistreringSjekkSql = """
+        select count(*) as antall_rader, 
+        count(distinct foedselsnummer) as unike_foedselsnummer, 
+        count(distinct aktor_id) as unike_aktorer, 
+        count(distinct jobbhistorikk) as unike_jobbhistorikk, 
+        count(distinct yrkespraksis) as unike_yrkespraksis, 
+        floor(avg(konsept_id)) as gjsnitt_konsept_id 
+        from bruker_registrering
+        """
     }
 }
 
