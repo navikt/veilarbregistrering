@@ -48,6 +48,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
             BRUKER_REGISTRERING -> brukerRegistreringSjekkSql
             SYKMELDT_REGISTRERING -> sykmeldtRegistreringSjekkSql
             MANUELL_REGISTRERING -> manuellRegistreringSjekkSql
+            OPPGAVE -> oppgaveSjekkSql
             else -> "select 1"
         }
         return db.queryForList(sql, emptyMap<String, Any>())
@@ -84,6 +85,14 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         count(distinct veileder_enhet_id) as unike_enheter,
         count(distinct registrering_id) as unike_registreringer, 
         count(distinct bruker_registrering_type) as unike_reg_typer from manuell_registrering
+        """
+
+        private const val oppgaveSjekkSql = """
+        select count(*) as antall_rader,
+        count(distinct aktor_id) as unike_aktorer,
+        count(distinct oppgavetype) as unike_oppgavetyper,
+        count(distinct ekstern_oppgave_id) as unike_oppgave_id,
+        floor(avg(ekstern_oppgave_id)) as gjsnitt_oppgave_id from oppgave
         """
     }
 }
