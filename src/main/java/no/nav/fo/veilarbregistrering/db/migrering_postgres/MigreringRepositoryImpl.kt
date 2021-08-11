@@ -55,7 +55,12 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
     }
 
     companion object {
-        private const val profileringSjekkSql = """
+        val registreringstilstandSjekkSql = """
+        select count(*) as antall_rader,
+        count(distinct bruker_registrering_id) as unike_brukerregistrering_id
+        from registrering_tilstand
+        """
+        val profileringSjekkSql = """
         select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
         from bruker_profilering"            
         """
