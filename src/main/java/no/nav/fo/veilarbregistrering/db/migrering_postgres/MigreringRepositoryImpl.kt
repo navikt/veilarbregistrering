@@ -42,27 +42,33 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         return db.queryForList(sql, emptyMap<String, Any>())
     }
 
-    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> {
-        val sql = when (tabellNavn) {
-            BRUKER_PROFILERING -> profileringSjekkSql
-            BRUKER_REGISTRERING -> brukerRegistreringSjekkSql
-            SYKMELDT_REGISTRERING -> sykmeldtRegistreringSjekkSql
-            MANUELL_REGISTRERING -> manuellRegistreringSjekkSql
-            OPPGAVE -> oppgaveSjekkSql
-            else -> "select 1"
+    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> =
+        when (tabellNavn) {
+            BRUKER_PROFILERING -> db.queryForList(profileringSjekkSql, emptyMap<String,Any>())
+            BRUKER_REGISTRERING -> db.queryForList(brukerRegistreringSjekkSql, emptyMap<String,Any>())
+            SYKMELDT_REGISTRERING -> db.queryForList(sykmeldtRegistreringSjekkSql, emptyMap<String,Any>())
+            MANUELL_REGISTRERING -> db.queryForList(manuellRegistreringSjekkSql, emptyMap<String,Any>())
+            OPPGAVE -> db.queryForList(oppgaveSjekkSql, emptyMap<String,Any>())
+            REGISTRERING_TILSTAND -> db.queryForList(registreringstilstandSjekkSql, emptyMap<String,Any>())
+            BRUKER_REAKTIVERING -> db.queryForList(brukerReaktiveringSjekkSql, emptyMap<String,Any>())
         }
-        return db.queryForList(sql, emptyMap<String, Any>())
-    }
+
 
     companion object {
-        val registreringstilstandSjekkSql = """
+        private const val brukerReaktiveringSjekkSql = """
+        select count(*) as antall_rader,
+        count(distinct aktor_id) as unike_aktor_id
+        from registrering_tilstand
+        """
+
+        private const val registreringstilstandSjekkSql = """
         select count(*) as antall_rader,
         count(distinct bruker_registrering_id) as unike_brukerregistrering_id
         from registrering_tilstand
         """
-        val profileringSjekkSql = """
+        private const val profileringSjekkSql = """
         select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
-        from bruker_profilering"            
+        from bruker_profilering          
         """
 
         private const val brukerRegistreringSjekkSql = """
@@ -100,5 +106,6 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         floor(avg(ekstern_oppgave_id)) as gjsnitt_oppgave_id from oppgave
         """
     }
+
 }
 
