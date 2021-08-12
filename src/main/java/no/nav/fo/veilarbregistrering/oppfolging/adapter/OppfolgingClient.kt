@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.micrometer.core.instrument.Tag
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -13,8 +14,7 @@ import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events.*
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
-import no.nav.fo.veilarbregistrering.metrics.Metric.Companion.of
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
@@ -23,7 +23,7 @@ import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
-    private val metricsService: InfluxMetricsService,
+    private val metricsService: PrometheusMetricsService,
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
 
@@ -33,33 +33,32 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
 
-
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
                 is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
                 else -> null
             }
         }.also {
-            metricsService.reportFields(HENT_OPPFOLGING)
+            metricsService.registrer(HENT_OPPFOLGING)
         }
     }
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
         post(url, fnr, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
-        metricsService.reportFields(REAKTIVER_BRUKER)
+        metricsService.registrer(REAKTIVER_BRUKER)
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
         post(url, aktiverBrukerData, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
-        metricsService.reportFields(AKTIVER_BRUKER)
+        metricsService.registrer(AKTIVER_BRUKER)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
         post(url, sykmeldtBrukerType, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
-        metricsService.reportFields(OPPFOLGING_SYKMELDT)
+        metricsService.registrer(OPPFOLGING_SYKMELDT)
     }
 
     private fun aktiveringFeilMapper(e: Exception): RuntimeException? =
@@ -67,12 +66,12 @@ open class OppfolgingClient(
             is ForbiddenException -> {
                 val feil = mapper(objectMapper.readValue(e.response!!))
                 LOG.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
-                metricsService.reportFields(AKTIVER_BRUKER_FEIL, of("aarsak", feil.name))
+                metricsService.registrer(AKTIVER_BRUKER_FEIL, Tag.of("aarsak", feil.name))
                 AktiverBrukerException(feil)
             }
             else -> {
                 LOG.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
-                metricsService.reportFields(OPPFOLGING_FEIL, of("aarsak", e.message ?: e.toString()))
+                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
                 null
             }
         }

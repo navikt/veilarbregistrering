@@ -40,7 +40,12 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
         mockkStatic(RequestContext::class)
         every { RequestContext.servletRequest() } returns httpServletRequest
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppfolgingClient(jacksonObjectMapper().findAndRegisterModules(), mockk(relaxed = true), baseUrl, mockk(relaxed = true)).also { oppfolgingClient = it }
+        return OppfolgingClient(
+            jacksonObjectMapper().findAndRegisterModules(),
+            mockk(relaxed = true),
+            baseUrl,
+            mockk(relaxed = true)
+        ).also { oppfolgingClient = it }
     }
 
     @Test

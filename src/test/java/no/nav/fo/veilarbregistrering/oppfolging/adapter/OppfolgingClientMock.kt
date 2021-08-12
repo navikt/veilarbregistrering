@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import io.mockk.mockk
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerData
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
 
