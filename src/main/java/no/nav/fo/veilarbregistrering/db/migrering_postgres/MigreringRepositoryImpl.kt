@@ -58,7 +58,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         private const val brukerReaktiveringSjekkSql = """
         select count(*) as antall_rader,
         count(distinct aktor_id) as unike_aktor_id
-        from registrering_tilstand
+        from bruker_reaktivering
         """
 
         private const val registreringstilstandSjekkSql = """
