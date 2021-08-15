@@ -16,7 +16,6 @@ enum class Events(override val key: String) : Event {
     SYKMELDT_BESVARELSE_EVENT("registrering.sykmeldt.besvarelse.event"),
     PROFILERING_EVENT("registrering.bruker.profilering.event"),
     INVALID_REGISTRERING_EVENT("registrering.invalid.registrering.event"),
-    MAKSDATO_EVENT("registrering.maksdato.event"),
     HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde.event"),
     HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar.event");
 

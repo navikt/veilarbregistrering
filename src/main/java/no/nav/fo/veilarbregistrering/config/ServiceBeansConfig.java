@@ -64,9 +64,8 @@ public class ServiceBeansConfig {
     @Bean
     SykemeldingService sykemeldingService(
             SykemeldingGateway sykemeldingGateway,
-            AutorisasjonService autorisasjonService,
-            InfluxMetricsService influxMetricsService) {
-        return new SykemeldingService(sykemeldingGateway, autorisasjonService, influxMetricsService);
+            AutorisasjonService autorisasjonService) {
+        return new SykemeldingService(sykemeldingGateway, autorisasjonService);
     }
 
     @Bean

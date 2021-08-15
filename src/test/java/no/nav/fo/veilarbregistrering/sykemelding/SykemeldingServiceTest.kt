@@ -17,7 +17,6 @@ class SykemeldingServiceTest {
         sykemeldingGateway = mockk()
         sykemeldingService = SykemeldingService(
             sykemeldingGateway,
-            mockk(relaxed = true),
             mockk(relaxed = true)
         )
     }
