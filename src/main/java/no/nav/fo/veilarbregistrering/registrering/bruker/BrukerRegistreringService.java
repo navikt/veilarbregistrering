@@ -1,10 +1,12 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
+import io.micrometer.core.instrument.Tag;
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
@@ -33,7 +35,7 @@ public class BrukerRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final InfluxMetricsService influxMetricsService;
+    private final PrometheusMetricsService prometheusMetricsService;
 
     public BrukerRegistreringService(BrukerRegistreringRepository brukerRegistreringRepository,
                                      ProfileringRepository profileringRepository,
@@ -41,7 +43,7 @@ public class BrukerRegistreringService {
                                      ProfileringService profileringService,
                                      RegistreringTilstandRepository registreringTilstandRepository,
                                      BrukerTilstandService brukerTilstandService, ManuellRegistreringRepository manuellRegistreringRepository,
-                                     InfluxMetricsService influxMetricsService) {
+                                     PrometheusMetricsService prometheusMetricsService) {
         this.brukerRegistreringRepository = brukerRegistreringRepository;
         this.profileringRepository = profileringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
@@ -49,7 +51,7 @@ public class BrukerRegistreringService {
         this.registreringTilstandRepository = registreringTilstandRepository;
         this.brukerTilstandService = brukerTilstandService;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.influxMetricsService = influxMetricsService;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     @Transactional
@@ -63,9 +65,8 @@ public class BrukerRegistreringService {
         Profilering profilering = profilerBrukerTilInnsatsgruppe(bruker.getGjeldendeFoedselsnummer(), opprettetBrukerRegistrering.getBesvarelse());
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.getId(), profilering);
 
-        influxMetricsService.reportTags(Events.PROFILERING_EVENT, profilering.getInnsatsgruppe());
-
-        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(influxMetricsService,ordinaerBrukerRegistrering, profilering);
+        prometheusMetricsService.registrer(Events.PROFILERING_EVENT, Tag.of("innsatsgruppe", profilering.getInnsatsgruppe().getArenakode()));
+        OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse(prometheusMetricsService, ordinaerBrukerRegistrering, profilering);
 
         RegistreringTilstand registreringTilstand = RegistreringTilstand.medStatus(Status.MOTTATT, opprettetBrukerRegistrering.getId());
         registreringTilstandRepository.lagre(registreringTilstand);
@@ -97,7 +98,7 @@ public class BrukerRegistreringService {
         }
 
         registrerOverfortStatistikk(veileder);
-        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(prometheusMetricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
@@ -131,7 +132,7 @@ public class BrukerRegistreringService {
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        influxMetricsService.reportFields(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
+        prometheusMetricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, ORDINAER);
     }
 
     private void validerBrukerRegistrering(OrdinaerBrukerRegistrering ordinaerBrukerRegistrering, Bruker bruker) {
@@ -149,7 +150,7 @@ public class BrukerRegistreringService {
             ValideringUtils.validerBrukerRegistrering(ordinaerBrukerRegistrering);
         } catch (RuntimeException e) {
             LOG.warn("Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}", ordinaerBrukerRegistrering.getBesvarelse(), ordinaerBrukerRegistrering.getSisteStilling());
-            OrdinaerBrukerRegistreringMetrikker.rapporterInvalidRegistrering(influxMetricsService, ordinaerBrukerRegistrering);
+            prometheusMetricsService.registrer(Events.INVALID_REGISTRERING_EVENT);
             throw e;
         }
     }

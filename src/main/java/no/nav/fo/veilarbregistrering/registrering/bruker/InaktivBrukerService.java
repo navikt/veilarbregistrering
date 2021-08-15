@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +17,18 @@ public class InaktivBrukerService {
     private final BrukerTilstandService brukerTilstandService;
     private final ReaktiveringRepository reaktiveringRepository;
     private final OppfolgingGateway oppfolgingGateway;
-    private final InfluxMetricsService influxMetricsService;
+    private final PrometheusMetricsService prometheusMetricsService;
 
     public InaktivBrukerService(
             BrukerTilstandService brukerTilstandService,
             ReaktiveringRepository reaktiveringRepository,
-            OppfolgingGateway oppfolgingGateway, InfluxMetricsService influxMetricsService) {
+            OppfolgingGateway oppfolgingGateway,
+            PrometheusMetricsService prometheusMetricsService) {
         this.brukerTilstandService = brukerTilstandService;
         this.reaktiveringRepository = reaktiveringRepository;
         this.oppfolgingGateway = oppfolgingGateway;
-        this.influxMetricsService = influxMetricsService;
+
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     @Transactional
@@ -41,9 +44,9 @@ public class InaktivBrukerService {
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.getAktorId());
 
         if (erVeileder) {
-            influxMetricsService.reportFields(MANUELL_REAKTIVERING_EVENT);
+            prometheusMetricsService.registrer(MANUELL_REAKTIVERING_EVENT);
         }
 
-        AlderMetrikker.rapporterAlder(influxMetricsService, bruker.getGjeldendeFoedselsnummer());
+        AlderMetrikker.rapporterAlder(prometheusMetricsService, bruker.getGjeldendeFoedselsnummer());
     }
 }

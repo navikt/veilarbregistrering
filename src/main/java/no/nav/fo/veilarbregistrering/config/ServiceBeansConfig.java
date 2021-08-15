@@ -113,12 +113,12 @@ public class ServiceBeansConfig {
             BrukerTilstandService brukerTilstandService,
             ReaktiveringRepository reaktiveringRepository,
             OppfolgingGateway oppfolgingGateway,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new InaktivBrukerService(
                 brukerTilstandService,
                 reaktiveringRepository,
                 oppfolgingGateway,
-                influxMetricsService);
+                prometheusMetricsService);
     }
 
     @Bean
@@ -145,7 +145,7 @@ public class ServiceBeansConfig {
             RegistreringTilstandRepository registreringTilstandRepository,
             BrukerTilstandService brukerTilstandService,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new BrukerRegistreringService(
                 brukerRegistreringRepository,
                 profileringRepository,
@@ -154,7 +154,8 @@ public class ServiceBeansConfig {
                 registreringTilstandRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
-                influxMetricsService);
+                prometheusMetricsService
+        );
     }
 
     @Bean

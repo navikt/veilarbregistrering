@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
@@ -159,7 +159,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         }
 
         @Bean
-        fun metricsService(): InfluxMetricsService  = mockk(relaxed = true)
+        fun metricsService(): PrometheusMetricsService  = mockk(relaxed = true)
 
         @Bean
         fun brukerRegistreringService(
@@ -170,7 +170,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 registreringTilstandRepository: RegistreringTilstandRepository?,
                 brukerTilstandService: BrukerTilstandService?,
                 manuellRegistreringRepository: ManuellRegistreringRepository?,
-                influxMetricsService: InfluxMetricsService?
+                prometheusMetricsService: PrometheusMetricsService?
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -180,7 +180,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 registreringTilstandRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
-                influxMetricsService
+                prometheusMetricsService
             )
         }
 

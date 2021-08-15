@@ -37,4 +37,8 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
     fun registrer(event: Event) {
         meterRegistry.counter(event.key)
     }
+
+    fun registrer(event: Event, metrikk: Metric) {
+        registrer(event, Tag.of(metrikk.fieldName(), metrikk.value().toString()))
+    }
 }
