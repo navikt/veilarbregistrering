@@ -39,21 +39,18 @@ public class OppgaveRouter {
     private final EnhetGateway enhetGateway;
     private final Norg2Gateway norg2Gateway;
     private final PdlOppslagGateway pdlOppslagGateway;
-    private final InfluxMetricsService influxMetricsService;
-    private PrometheusMetricsService prometheusMetricsService;
+    private final PrometheusMetricsService prometheusMetricsService;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PdlOppslagGateway pdlOppslagGateway,
-            InfluxMetricsService influxMetricsService,
             PrometheusMetricsService prometheusMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.pdlOppslagGateway = pdlOppslagGateway;
-        this.influxMetricsService = influxMetricsService;
         this.prometheusMetricsService = prometheusMetricsService;
     }
 
@@ -68,7 +65,7 @@ public class OppgaveRouter {
             geografiskTilknytning = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
         } catch (RuntimeException e) {
             LOG.warn("Henting av geografisk tilknytning feilet", e);
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);
             geografiskTilknytning = Optional.empty();
         }
 
@@ -78,30 +75,30 @@ public class OppgaveRouter {
 
             if (gk.byMedBydeler()) {
                 LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
-                influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
+                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
                 return Optional.of(Enhetnr.Companion.internBrukerstotte());
             }
 
             if (!gk.utland()) {
                 LOG.info("Fant {} -> overlater til oppgave-api å route selv", gk);
-                influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
+                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
                 return Optional.empty();
             }
 
             LOG.info("Fant {} -> forsøker å finne enhetsnr via arbeidsforhold", gk);
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Utland);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Utland);
         }
 
         try {
             Optional<Enhetnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
             if (enhetsnr.isPresent()) {
-                influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
+                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
                 return enhetsnr;
             }
             return of(Enhetnr.Companion.internBrukerstotte());
         } catch (RuntimeException e) {
             LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
             return Optional.empty();
         }
     }
@@ -122,7 +119,7 @@ public class OppgaveRouter {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
         if (flereArbeidsforhold.sisteUtenNoeEkstra().isEmpty()) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
             return Optional.empty();
         }
         Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
@@ -130,14 +127,14 @@ public class OppgaveRouter {
                 .orElseThrow(IllegalStateException::new);
         if (organisasjonsnummer.isEmpty()) {
             LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, OrgNummer_ikkeFunnet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, OrgNummer_ikkeFunnet);
             return Optional.empty();
         }
 
         Optional<Organisasjonsdetaljer> organisasjonsdetaljer = Optional.ofNullable(enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get()));
         if (organisasjonsdetaljer.isEmpty()) {
             LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}", organisasjonsnummer.get().asString());
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, OrgDetaljer_IkkeFunnet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, OrgDetaljer_IkkeFunnet);
             return Optional.empty();
         }
 
@@ -146,7 +143,7 @@ public class OppgaveRouter {
                 .orElseThrow(IllegalStateException::new);
         if (muligKommunenummer.isEmpty()) {
             LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
             return Optional.empty();
         }
 
@@ -159,7 +156,7 @@ public class OppgaveRouter {
         Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
         if (enhetsnr.isEmpty()) {
             LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
-            influxMetricsService.reportTags(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
+            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }
         return enhetsnr;
     }

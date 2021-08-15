@@ -138,7 +138,7 @@ class OppgaveRouterTest {
             influxMetricsService: InfluxMetricsService = mockk(relaxed = true),
             prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     ) =
-            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, influxMetricsService, prometheusMetricsService)
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, prometheusMetricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
