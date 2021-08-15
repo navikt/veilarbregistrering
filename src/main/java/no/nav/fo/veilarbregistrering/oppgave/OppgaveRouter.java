@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
 import org.slf4j.Logger;
@@ -39,18 +40,21 @@ public class OppgaveRouter {
     private final Norg2Gateway norg2Gateway;
     private final PdlOppslagGateway pdlOppslagGateway;
     private final InfluxMetricsService influxMetricsService;
+    private PrometheusMetricsService prometheusMetricsService;
 
     public OppgaveRouter(
             ArbeidsforholdGateway arbeidsforholdGateway,
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PdlOppslagGateway pdlOppslagGateway,
-            InfluxMetricsService influxMetricsService) {
+            InfluxMetricsService influxMetricsService,
+            PrometheusMetricsService prometheusMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.enhetGateway = enhetGateway;
         this.norg2Gateway = norg2Gateway;
         this.pdlOppslagGateway = pdlOppslagGateway;
         this.influxMetricsService = influxMetricsService;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {

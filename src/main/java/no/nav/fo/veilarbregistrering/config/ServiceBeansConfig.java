@@ -226,13 +226,15 @@ public class ServiceBeansConfig {
             EnhetGateway enhetGateway,
             Norg2Gateway norg2Gateway,
             PdlOppslagGateway pdlOppslagGateway,
-            InfluxMetricsService influxMetricsService) {
+            InfluxMetricsService influxMetricsService,
+            PrometheusMetricsService prometheusMetricsService) {
         return new OppgaveRouter(
                 arbeidsforholdGateway,
                 enhetGateway,
                 norg2Gateway,
                 pdlOppslagGateway,
-                influxMetricsService);
+                influxMetricsService,
+                prometheusMetricsService);
     }
 
     @Bean
