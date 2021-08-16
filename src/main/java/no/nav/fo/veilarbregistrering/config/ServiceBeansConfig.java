@@ -248,12 +248,12 @@ public class ServiceBeansConfig {
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
             UnleashClient unleashClient,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new ArbeidssokerService(
                 arbeidssokerRepository,
                 formidlingsgruppeGateway,
                 unleashClient,
-                influxMetricsService);
+                prometheusMetricsService);
     }
 
     @Bean

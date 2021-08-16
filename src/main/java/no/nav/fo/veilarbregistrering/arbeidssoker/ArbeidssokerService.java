@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.metrics.Events;
-import no.nav.fo.veilarbregistrering.metrics.JaNei;
-import no.nav.fo.veilarbregistrering.metrics.Metric;
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +21,18 @@ public class ArbeidssokerService {
     private final ArbeidssokerRepository arbeidssokerRepository;
     private final FormidlingsgruppeGateway formidlingsgruppeGateway;
     private final UnleashClient unleashClient;
-    private InfluxMetricsService influxMetricsService;
+    private final PrometheusMetricsService prometheusMetricsService;
+
 
     public ArbeidssokerService(
             ArbeidssokerRepository arbeidssokerRepository,
             FormidlingsgruppeGateway formidlingsgruppeGateway,
             UnleashClient unleashClient,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         this.arbeidssokerRepository = arbeidssokerRepository;
         this.formidlingsgruppeGateway = formidlingsgruppeGateway;
         this.unleashClient = unleashClient;
-        this.influxMetricsService = influxMetricsService;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     @Transactional
@@ -69,19 +67,19 @@ public class ArbeidssokerService {
         Arbeidssokerperioder overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode);
 
         boolean lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS);
-        influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? JaNei.JA : JaNei.NEI);
+        prometheusMetricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, lokalErLikOrds ? JaNei.JA : JaNei.NEI);
         if (!lokalErLikOrds) {
             LOG.warn(String.format("Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
                     forespurtPeriode, overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS));
         }
 
         if (dekkerHele && brukLokalCache()) {
-            influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
+            prometheusMetricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL);
             LOG.info(String.format("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s", overlappendeArbeidssokerperioderLokalt));
             return overlappendeArbeidssokerperioderLokalt;
         }
 
-        influxMetricsService.reportTags(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
+        prometheusMetricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS);
         LOG.info(String.format("Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s", overlappendeHistoriskePerioderORDS));
 
         return overlappendeHistoriskePerioderORDS;

@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,15 +18,15 @@ import java.time.LocalDate
 class ArbeidssokerServiceHentArbeidssokerperioderTest {
     private lateinit var arbeidssokerService: ArbeidssokerService
     private val unleashService = mockk<UnleashClient>()
-    private val metricsService = mockk<InfluxMetricsService>(relaxed = true)
-    
+    private val prometheusMetricsService = mockk<PrometheusMetricsService>(relaxed = true)
+
     @BeforeEach
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
             StubArbeidssokerRepository(),
             StubFormidlingsgruppeGateway(),
             unleashService,
-            metricsService
+            prometheusMetricsService,
         )
     }
 

@@ -6,7 +6,6 @@ import io.mockk.verify
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -23,7 +22,7 @@ class ArbeidssokerServiceBehandleTest {
             arbeidssokerRepository,
             mockk<FormidlingsgruppeGateway>(),
             mockk<UnleashClient>(),
-            mockk<InfluxMetricsService>()
+            mockk()
         )
     }
 
