@@ -212,12 +212,13 @@ public class ServiceBeansConfig {
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new OppgaveService(
                 oppgaveGateway,
                 oppgaveRepository,
                 oppgaveRouter,
-                influxMetricsService);
+                prometheusMetricsService
+        );
     }
 
     @Bean

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,21 +20,21 @@ public class OppgaveService {
 
     private final Logger LOG = LoggerFactory.getLogger(OppgaveService.class);
 
-    private final InfluxMetricsService influxMetricsService;
     private final OppgaveGateway oppgaveGateway;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveRouter oppgaveRouter;
+    private final PrometheusMetricsService prometheusMetricsService;
 
     public OppgaveService(
             OppgaveGateway oppgaveGateway,
             OppgaveRepository oppgaveRepository,
             OppgaveRouter oppgaveRouter,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
 
-        this.influxMetricsService = influxMetricsService;
         this.oppgaveGateway = oppgaveGateway;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveRouter = oppgaveRouter;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     public OppgaveResponse opprettOppgave(Bruker bruker, OppgaveType oppgaveType) {
@@ -53,7 +54,7 @@ public class OppgaveService {
 
         oppgaveRepository.opprettOppgave(bruker.getAktorId(), oppgaveType, oppgaveResponse.getId());
 
-        influxMetricsService.reportSimple(OPPGAVE_OPPRETTET_EVENT, TildeltEnhetsnr.of(oppgaveResponse.getTildeltEnhetsnr()), oppgaveType);
+        prometheusMetricsService.registrer(OPPGAVE_OPPRETTET_EVENT, oppgaveType);
 
         return oppgaveResponse;
     }
@@ -66,7 +67,7 @@ public class OppgaveService {
                 .findFirst();
 
         muligOppgave.ifPresent(oppgave -> {
-            influxMetricsService.reportSimple(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgave.getOpprettet(), oppgaveType);
+            prometheusMetricsService.registrer(OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgaveType);
 
             throw new OppgaveAlleredeOpprettet(
                     String.format(
