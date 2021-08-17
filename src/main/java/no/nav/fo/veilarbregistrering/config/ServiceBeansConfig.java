@@ -100,12 +100,13 @@ public class ServiceBeansConfig {
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PdlOppslagGateway pdlOppslagGateway,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new StartRegistreringStatusService(
                 arbeidsforholdGateway,
                 brukerTilstandService,
                 pdlOppslagGateway,
-                influxMetricsService);
+                prometheusMetricsService
+        );
     }
 
     @Bean

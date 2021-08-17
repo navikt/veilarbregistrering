@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
@@ -27,13 +28,13 @@ class StartRegistreringStatusServiceTest {
         arbeidsforholdGateway = mockk()
         oppfolgingClient = mockk()
         pdlOppslagGateway = mockk()
-        val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
+        val metricsService: PrometheusMetricsService = mockk(relaxed = true)
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
             pdlOppslagGateway,
-            influxMetricsService
+            metricsService
         )
     }
 

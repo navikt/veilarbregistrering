@@ -30,8 +30,8 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
     
     private val statusVerdier: MutableMap<Status, AtomicInteger> = HashMap()
 
-    fun registrer(event: Event, tag: Tag) {
-        meterRegistry.counter(event.key, mutableListOf(tag))
+    fun registrer(event: Event, vararg tags: Tag) {
+        meterRegistry.counter(event.key, tags.asIterable())
     }
 
     fun registrer(event: Event) {

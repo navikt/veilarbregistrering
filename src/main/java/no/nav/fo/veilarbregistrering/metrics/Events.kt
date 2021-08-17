@@ -10,7 +10,7 @@ enum class Events(override val key: String) : Event {
     OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave.event"),
     OPPGAVE_ALLEREDE_OPPRETTET_EVENT("arbeid.registrert.oppgave.allerede-opprettet.event"),
     OPPGAVE_ROUTING_EVENT("arbeid.registrert.oppgave.routing.event"),
-    START_REGISTRERING_EVENT("arbeid.registrering.start.event"),
+    START_REGISTRERING_EVENT("start.registrering.event"),
     MANUELL_REGISTRERING_EVENT("registrering.manuell-registrering.event"),
     MANUELL_REAKTIVERING_EVENT("registrering.manuell-reaktivering.event"),
     SYKMELDT_BESVARELSE_EVENT("registrering.sykmeldt.besvarelse.event"),

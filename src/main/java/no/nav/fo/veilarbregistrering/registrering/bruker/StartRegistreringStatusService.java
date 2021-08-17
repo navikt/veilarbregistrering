@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning;
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +25,17 @@ public class StartRegistreringStatusService {
     private final ArbeidsforholdGateway arbeidsforholdGateway;
     private final BrukerTilstandService brukerTilstandService;
     private final PdlOppslagGateway pdlOppslagGateway;
-    private final InfluxMetricsService influxMetricsService;
+    private final PrometheusMetricsService prometheusMetricsService;
 
     public StartRegistreringStatusService(
             ArbeidsforholdGateway arbeidsforholdGateway,
             BrukerTilstandService brukerTilstandService,
             PdlOppslagGateway pdlOppslagGateway,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         this.arbeidsforholdGateway = arbeidsforholdGateway;
         this.brukerTilstandService = brukerTilstandService;
         this.pdlOppslagGateway = pdlOppslagGateway;
-        this.influxMetricsService = influxMetricsService;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     public StartRegistreringStatusDto hentStartRegistreringStatus(Bruker bruker) {
@@ -43,7 +44,7 @@ public class StartRegistreringStatusService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning ->
-                influxMetricsService.reportFields(Events.START_REGISTRERING_EVENT, brukersTilstand, geografiskTilknytning));
+                LOG.info("Bruker startet registrering med geografisk tilknytning [BrukersTilstant], [GeografiskTilknytning] [{}] [{}]", brukersTilstand, geografiskTilknytning));
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
@@ -61,7 +62,7 @@ public class StartRegistreringStatusService {
                 bruker.getGjeldendeFoedselsnummer().alder(now()));
 
         LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
-        rapporterRegistreringsstatus(influxMetricsService, startRegistreringStatus);
+        rapporterRegistreringsstatus(prometheusMetricsService,  startRegistreringStatus);
 
         return startRegistreringStatus;
     }
