@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
 import no.nav.fo.veilarbregistrering.enhet.Kommunenummer.KommuneMedBydel
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
@@ -131,12 +130,11 @@ class OppgaveRouterTest {
     }
 
     private fun oppgaveRouter(
-            arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
-            enhetGateway: EnhetGateway = EnhetGateway { null },
-            norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
-            pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
-            influxMetricsService: InfluxMetricsService = mockk(relaxed = true),
-            prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+        arbeidsforholdGateway: ArbeidsforholdGateway = StubArbeidsforholdGateway(),
+        enhetGateway: EnhetGateway = EnhetGateway { null },
+        norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
+        pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
+        prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     ) =
             OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, prometheusMetricsService)
 
@@ -155,11 +153,11 @@ class OppgaveRouterTest {
 
     private class StubArbeidsforholdGateway : ArbeidsforholdGateway {
         override fun hentArbeidsforhold(fnr: Foedselsnummer?) =
-            FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()!!
+            FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()
     }
 
     private class StubPdlOppslagGateway(private val geografiskTilknytning: GeografiskTilknytning? = null ,private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
-        override fun hentPerson(aktorId: AktorId) = Optional.ofNullable(users[aktorId])
+        override fun hentPerson(aktorid: AktorId) = Optional.ofNullable(users[aktorid])
 
         override fun hentIdenter(fnr: Foedselsnummer): Identer {
             TODO("Not yet implemented")

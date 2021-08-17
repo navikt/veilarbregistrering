@@ -9,7 +9,6 @@ class BrukerTilstandService(
         private val oppfolgingGateway: OppfolgingGateway,
         private val brukerRegistreringRepository: BrukerRegistreringRepository) {
 
-    @JvmOverloads
     fun hentBrukersTilstand(bruker: Bruker): BrukersTilstand {
         val oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(bruker.gjeldendeFoedselsnummer)
         val harIgangsattRegistreringSomKanGjenopptas = harIgangsattRegistreringSomKanGjenopptas(bruker)

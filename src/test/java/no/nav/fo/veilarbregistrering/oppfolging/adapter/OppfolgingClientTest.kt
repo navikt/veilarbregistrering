@@ -36,10 +36,10 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     fun setup() {
         mockServer.reset()
         val metricsService: InfluxMetricsService = mockk(relaxed = true)
-        oppfolgingClient = buildClient(metricsService, jacksonObjectMapper().findAndRegisterModules())
+        oppfolgingClient = buildClient(jacksonObjectMapper().findAndRegisterModules())
     }
 
-    private fun buildClient(metricsService: InfluxMetricsService, objectMapper: ObjectMapper): OppfolgingClient {
+    private fun buildClient(objectMapper: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
         val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
