@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
@@ -27,7 +28,7 @@ class SykmeldtRegistreringServiceTest {
     private val manuellRegistreringRepository: ManuellRegistreringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
-    private val influxMetricsService: InfluxMetricsService = mockk(relaxed = true)
+    private val metricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
@@ -42,7 +43,7 @@ class SykmeldtRegistreringServiceTest {
             oppfolgingGateway,
             sykmeldtRegistreringRepository,
             manuellRegistreringRepository,
-            influxMetricsService
+            metricsService
         )
     }
 

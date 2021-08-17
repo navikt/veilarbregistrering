@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering;
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository;
@@ -22,19 +23,19 @@ public class SykmeldtRegistreringService {
     private final OppfolgingGateway oppfolgingGateway;
     private final SykmeldtRegistreringRepository sykmeldtRegistreringRepository;
     private final ManuellRegistreringRepository manuellRegistreringRepository;
-    private final InfluxMetricsService influxMetricsService;
+    private PrometheusMetricsService prometheusMetricsService;
 
     public SykmeldtRegistreringService(
             BrukerTilstandService brukerTilstandService,
             OppfolgingGateway oppfolgingGateway,
             SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         this.brukerTilstandService = brukerTilstandService;
         this.oppfolgingGateway = oppfolgingGateway;
         this.sykmeldtRegistreringRepository = sykmeldtRegistreringRepository;
         this.manuellRegistreringRepository = manuellRegistreringRepository;
-        this.influxMetricsService = influxMetricsService;
+        this.prometheusMetricsService = prometheusMetricsService;
     }
 
     @Transactional
@@ -48,10 +49,7 @@ public class SykmeldtRegistreringService {
         registrerOverfortStatistikk(navVeileder);
 
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering);
-        influxMetricsService.reportFields(SYKMELDT_BESVARELSE_EVENT,
-                sykmeldtRegistrering.getBesvarelse().getUtdanning(),
-                sykmeldtRegistrering.getBesvarelse().getFremtidigSituasjon());
-
+        prometheusMetricsService.registrer(SYKMELDT_BESVARELSE_EVENT);
         return id;
     }
 
@@ -80,6 +78,6 @@ public class SykmeldtRegistreringService {
 
     private void registrerOverfortStatistikk(NavVeileder veileder) {
         if (veileder == null) return;
-        influxMetricsService.reportFields(MANUELL_REGISTRERING_EVENT, SYKMELDT);
+        prometheusMetricsService.registrer(MANUELL_REGISTRERING_EVENT, SYKMELDT);
     }
 }

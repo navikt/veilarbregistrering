@@ -24,7 +24,6 @@ import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringRepositoryIm
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering;
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource;
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService;
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway;
@@ -128,13 +127,14 @@ public class ServiceBeansConfig {
             OppfolgingGateway oppfolgingGateway,
             SykmeldtRegistreringRepository sykmeldtRegistreringRepository,
             ManuellRegistreringRepository manuellRegistreringRepository,
-            InfluxMetricsService influxMetricsService) {
+            PrometheusMetricsService prometheusMetricsService) {
         return new SykmeldtRegistreringService(
                 brukerTilstandService,
                 oppfolgingGateway,
                 sykmeldtRegistreringRepository,
                 manuellRegistreringRepository,
-                influxMetricsService);
+                prometheusMetricsService
+        );
     }
 
     @Bean
