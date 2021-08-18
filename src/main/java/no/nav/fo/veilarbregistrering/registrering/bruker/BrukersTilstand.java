@@ -1,19 +1,15 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker;
 
-import no.nav.fo.veilarbregistrering.metrics.HasMetrics;
-import no.nav.fo.veilarbregistrering.metrics.Metric;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus;
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe;
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe;
 
-import java.util.List;
 import java.util.Optional;
 
-import static java.util.Arrays.asList;
 import static no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType.*;
 
-public class BrukersTilstand implements HasMetrics {
+public class BrukersTilstand {
 
     private final RegistreringType registreringType;
     private final Oppfolgingsstatus oppfolgingStatusData;
@@ -83,12 +79,4 @@ public class BrukersTilstand implements HasMetrics {
         return oppfolgingStatusData.getRettighetsgruppe();
     }
 
-    @Override
-    public List<Metric> metrics() {
-        return asList(
-                getFormidlingsgruppe().orElse(Formidlingsgruppe.nullable()),
-                getRettighetsgruppe().orElse(Rettighetsgruppe.nullable()),
-                getServicegruppe().orElse(Servicegruppe.nullable()),
-                registreringType);
-    }
 }

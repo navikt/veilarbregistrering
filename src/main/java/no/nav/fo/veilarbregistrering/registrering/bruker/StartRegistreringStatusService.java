@@ -73,7 +73,7 @@ public class StartRegistreringStatusService {
             LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1);
 
         } catch (RuntimeException e) {
-            LOG.warn("Hent geografisk tilknytning fra TPS feilet. Skal ikke påvirke annen bruk.", e);
+            LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e);
         }
 
         return geografiskTilknytning;
