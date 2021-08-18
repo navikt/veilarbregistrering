@@ -51,15 +51,5 @@ open class InfluxMetricsService(private val metricsClient: MetricsClient) {
     }
 }
 
-enum class JaNei : Metric {
-    JA, NEI;
 
-    override fun fieldName(): String {
-        return "svar"
-    }
-
-    override fun value(): Any {
-        return this.toString()
-    }
-}
 
