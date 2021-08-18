@@ -9,7 +9,6 @@ import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.metrics.InfluxMetricsService
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
@@ -35,7 +34,6 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         mockServer.reset()
-        val metricsService: InfluxMetricsService = mockk(relaxed = true)
         oppfolgingClient = buildClient(jacksonObjectMapper().findAndRegisterModules())
     }
 
