@@ -13,7 +13,7 @@ public class BrukersTilstand {
 
     private final RegistreringType registreringType;
     private final Oppfolgingsstatus oppfolgingStatusData;
-    private boolean harIgangsattGjenopptagbarRegistrering;
+    private final boolean harIgangsattGjenopptagbarRegistrering;
 
     public boolean isHarIgangsattGjenopptagbarRegistrering() {
         return harIgangsattGjenopptagbarRegistrering;
