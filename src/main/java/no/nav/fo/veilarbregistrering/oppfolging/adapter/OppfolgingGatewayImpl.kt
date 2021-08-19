@@ -31,11 +31,12 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient) : Op
         private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {
             return Oppfolgingsstatus(
                     oppfolgingStatusData.isUnderOppfolging,
-                    oppfolgingStatusData.getKanReaktiveres(),
-                    oppfolgingStatusData.getErSykmeldtMedArbeidsgiver(),
-                    if (oppfolgingStatusData.getFormidlingsgruppe() != null) Formidlingsgruppe.of(oppfolgingStatusData.getFormidlingsgruppe()) else null,
-                    if (oppfolgingStatusData.getServicegruppe() != null) Servicegruppe.of(oppfolgingStatusData.getServicegruppe()) else null,
-                    if (oppfolgingStatusData.getRettighetsgruppe() != null) Rettighetsgruppe.of(oppfolgingStatusData.getRettighetsgruppe()) else null)
+                    oppfolgingStatusData.kanReaktiveres,
+                    oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
+                    oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
+                    oppfolgingStatusData.servicegruppe?.let(Servicegruppe::of),
+                    oppfolgingStatusData.rettighetsgruppe?.let(Rettighetsgruppe::of)
+            )
         }
     }
 }
