@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class UnleashConfig {
     @Bean
-    fun unleashClient(): UnleashClient = mockk()
+    fun unleashClient(): UnleashClient = mockk(relaxed = true)
 }
