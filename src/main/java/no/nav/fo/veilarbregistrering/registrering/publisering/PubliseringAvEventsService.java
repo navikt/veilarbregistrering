@@ -90,4 +90,8 @@ public class PubliseringAvEventsService {
             LOG.error("Feil ved rapportering av antall statuser", e);
         }
     }
+
+    public boolean harVentendeEvents() {
+        return registreringTilstandRepository.hentAntallPerStatus().get(OVERFORT_ARENA) != 0;
+    }
 }
