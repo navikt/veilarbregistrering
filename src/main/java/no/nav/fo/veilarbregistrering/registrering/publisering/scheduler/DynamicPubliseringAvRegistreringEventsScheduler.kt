@@ -2,10 +2,8 @@ package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.job.leader_election.LeaderElectionClient
-import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
-import org.slf4j.MDC
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.TriggerContext
@@ -29,20 +27,16 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
     }
 
     override fun run() {
-        println("Task executed")
+        if (!leaderElectionClient.isLeader) return
+        LOG.info("Dynamic task triggered on leader")
     }
 
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
-        if (!leaderElectionClient.isLeader) {
-            LOG.info("I am not the leader, not scheduling task")
-            return
-        }
         taskRegistrar.setScheduler(taskExecutor())
         taskRegistrar.addTriggerTask(
             this
         ) { triggerContext: TriggerContext ->
             val rate = if (publiseringAvEventsService.harVentendeEvents()) 1000 else 10000
-            LOG.info("Next run set to {}s from now", rate/1000)
             val nextExecutionTime: Calendar = GregorianCalendar()
             val lastActualExecutionTime = triggerContext.lastActualExecutionTime()
             nextExecutionTime.time = lastActualExecutionTime ?: Date()
