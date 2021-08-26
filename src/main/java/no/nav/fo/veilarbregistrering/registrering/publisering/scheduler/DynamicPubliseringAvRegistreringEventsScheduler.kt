@@ -36,7 +36,11 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
         taskRegistrar.addTriggerTask(
             this
         ) { triggerContext: TriggerContext ->
-            val rate = if (publiseringAvEventsService.harVentendeEvents()) 1000 else 10000
+            val rate = when {
+                !leaderElectionClient.isLeader -> NON_LEADER_RATE
+                !publiseringAvEventsService.harVentendeEvents() -> QUEUE_EMPTY_RATE
+                else -> QUICKEST_RATE
+            }
             val nextExecutionTime: Calendar = GregorianCalendar()
             val lastActualExecutionTime = triggerContext.lastActualExecutionTime()
             nextExecutionTime.time = lastActualExecutionTime ?: Date()
@@ -47,5 +51,8 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
 
     companion object {
         private val LOG = loggerFor<DynamicPubliseringAvRegistreringEventsScheduler>()
+        private const val NON_LEADER_RATE = 20000
+        private const val QUEUE_EMPTY_RATE = 10000
+        private const val QUICKEST_RATE = 1000
     }
 }
