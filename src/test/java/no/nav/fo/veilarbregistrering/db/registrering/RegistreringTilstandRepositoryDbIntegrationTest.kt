@@ -45,7 +45,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
         val lagretRegistrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)
         val registreringTilstand = RegistreringTilstand.medStatus(MOTTATT, lagretRegistrering.id)
         val id = registreringTilstandRepository.lagre(registreringTilstand)
-        assertThat(id).isNotNegative()
+        assertThat(id).isNotNegative
         val lagretTilstand = registreringTilstandRepository.hentRegistreringTilstand(id)
         assertThat(lagretTilstand.id).isEqualTo(id)
         assertThat(lagretTilstand.brukerRegistreringId).isEqualTo(lagretRegistrering.id)
