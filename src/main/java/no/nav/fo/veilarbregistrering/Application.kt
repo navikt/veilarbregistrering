@@ -32,20 +32,13 @@ class Application {
             System.setProperty(DatabaseConfig.VEILARBREGISTRERINGDB_URL, getVaultSecret("oracle_config/jdbc_url"))
         }
 
-        private fun getVaultSecret(path: String): String? {
+        private fun getVaultSecret(path: String): String {
             return try {
                 String(Files.readAllBytes(Paths.get(SECRETS_PATH, path)), StandardCharsets.UTF_8)
             } catch (e: Exception) {
                 throw IllegalStateException(String.format("Klarte ikke laste property fra vault for path: %s", path), e)
             }
         }
-
-        /*
-        private fun setOtherProperties () {
-            setProperty(STS_URL_KEY, getRequiredProperty("SECURITYTOKENSERVICE_URL"))
-            setProperty(SENSU_BATCHES_PER_SECOND_PROPERTY_NAME, "3")
-        }
-        */
     }
 }
 
