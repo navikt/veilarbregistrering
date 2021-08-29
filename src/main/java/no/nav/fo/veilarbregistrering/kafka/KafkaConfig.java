@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka;
 
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
@@ -11,6 +12,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +58,45 @@ public class KafkaConfig {
         if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
             properties.putAll(getSecurityConfig());
         }
+        return properties;
+    }
+
+    @Bean
+    Properties kafkaPropertiesAiven() {
+        Properties properties = new Properties();
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getenv("KAFKA_BROKERS"));
+        properties.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, getenv("KAFKA_SCHEMA_REGISTRY"));
+
+        String basicAuth = getenv("KAFKA_SCHEMA_REGISTRY_USER") + ":" + getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
+        properties.put(SchemaRegistryClientConfig.BASIC_AUTH_CREDENTIALS_SOURCE,  "USER_INFO"); // magic constant, yay!
+        properties.put(SchemaRegistryClientConfig.USER_INFO_CONFIG,  basicAuth);
+
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, "paw-veilarbregistrering");
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        properties.put(ProducerConfig.RETRIES_CONFIG, 0);
+
+
+        properties.putAll(getAivenSecurityConfig());
+
+        return properties;
+    }
+
+    private static Properties getAivenSecurityConfig() {
+        Properties properties = new Properties();
+
+        String credstorePassword = getenv("KAFKA_CREDSTORE_PASSWORD");
+
+        properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SSL.name);
+        properties.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "jks");
+        properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, getenv("KAFKA_TRUSTSTORE_PATH"));
+        properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, credstorePassword);
+
+        properties.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PKCS12");
+        properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, getenv("KAFKA_KEYSTORE_PATH"));
+        properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, credstorePassword);
+
         return properties;
     }
 
