@@ -62,6 +62,8 @@ spec:
     - name: ARENA_ORDS_TOKEN_PROVIDER
       value: https://arena-ords.nais.adeo.no/arena/api/oauth/token
   leaderElection: true
+  kafka:
+    pool: nav-prod
   liveness:
     initialDelay: 60
     path: veilarbregistrering/internal/isAlive
