@@ -15,6 +15,7 @@ class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val arbeidssokerRegistrertProducer: ArbeidssokerRegistrertProducer,
+    private val arbeidssokerRegistrertProducerAiven: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val arbeidssokerProfilertProducer: ArbeidssokerProfilertProducer,
     private val prometheusMetricsService: PrometheusMetricsService

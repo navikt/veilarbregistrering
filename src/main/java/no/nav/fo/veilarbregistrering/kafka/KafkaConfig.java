@@ -6,6 +6,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -15,6 +16,7 @@ import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,22 +30,34 @@ import static java.lang.System.getenv;
 public class KafkaConfig {
 
     @Bean
-    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(KafkaProducer kafkaProducer) {
+    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducer(@Qualifier("producerOnprem") KafkaProducer kafkaProducer) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducer,
                 "aapen-arbeid-arbeidssoker-registrert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
-    ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer) {
+    ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducer(@Qualifier("producerOnprem") KafkaProducer kafkaProducer) {
         return new ArbeidssokerProfilertKafkaProducer(
                 kafkaProducer,
                 "aapen-arbeid-arbeidssoker-profilert" + (getEnvSuffix().equals("-p") ? "-p" : "-q1"));
     }
 
     @Bean
+    ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducerAiven(@Qualifier("producerAiven") KafkaProducer kafkaProducerAiven) {
+        return new ArbeidssokerRegistrertKafkaProducer(
+                kafkaProducerAiven,
+                "paw.paw-test-topic");
+    }
+
+    @Bean("producerOnprem")
     KafkaProducer kafkaProducer() {
         return new KafkaProducer(kafkaProperties());
+    }
+
+    @Bean("producerAiven")
+    KafkaProducer kafkaProducerAiven() {
+        return new KafkaProducer(kafkaPropertiesAiven());
     }
 
     @Bean
