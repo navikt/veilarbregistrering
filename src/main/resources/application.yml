@@ -1,6 +1,7 @@
 spring:
   main:
     banner-mode: off
+    allow-bean-definition-overriding: true
   flyway:
     enabled: false
     table: schema_version

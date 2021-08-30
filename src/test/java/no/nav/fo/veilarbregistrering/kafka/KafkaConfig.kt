@@ -12,5 +12,8 @@ class KafkaConfig {
     fun arbeidssokerRegistrertKafkaProducer(): ArbeidssokerRegistrertProducer = mockk()
 
     @Bean
+    fun arbeidssokerRegistrertKafkaProducerAiven(): ArbeidssokerRegistrertProducer = mockk()
+
+    @Bean
     fun arbeidssokerProfilertProducer(): ArbeidssokerProfilertProducer = mockk()
 }

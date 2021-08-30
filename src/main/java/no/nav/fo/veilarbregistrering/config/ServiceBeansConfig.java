@@ -49,6 +49,7 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService;
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource;
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator;
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -270,7 +271,10 @@ public class ServiceBeansConfig {
     PubliseringAvEventsService publiseringAvEventsService(
             ProfileringRepository profileringRepository,
             BrukerRegistreringRepository brukerRegistreringRepository,
+            @Qualifier("arbeidssokerRegistrertKafkaProducer")
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
+            @Qualifier("arbeidssokerRegistrertKafkaProducerAiven")
+            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducerAiven,
             RegistreringTilstandRepository registreringTilstandRepository,
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
             PrometheusMetricsService prometheusMetricsService) {
@@ -278,6 +282,7 @@ public class ServiceBeansConfig {
                 profileringRepository,
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
+                arbeidssokerRegistrertProducerAiven,
                 registreringTilstandRepository,
                 arbeidssokerProfilertProducer,
                 prometheusMetricsService);
