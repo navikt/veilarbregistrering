@@ -43,21 +43,28 @@ class PubliseringAvEventsService(
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
         // Dette skjer pga. compaction-innstillingen definert i paw-iac repoet på github.
         // Så hvis førstnevnte feiler forhindrer vi at duplikate meldinger skrives til sistnevnte.
-        arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(
-            ArbeidssokerRegistrertInternalEvent(
-                bruker.aktorId,
-                ordinaerBrukerRegistrering.besvarelse,
-                ordinaerBrukerRegistrering.opprettetDato
-            )
-        )
+        ArbeidssokerRegistrertInternalEvent(
+            bruker.aktorId,
+            ordinaerBrukerRegistrering.besvarelse,
+            ordinaerBrukerRegistrering.opprettetDato
+        ).also {
+            arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(it)
+            if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
+                try {
+                    LOG.info("Producing message on aiven topic")
+                    arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
+                } catch (e: Exception) {
+                    LOG.warn("Producing message on aiven topic FAILED with error {}", e)
+                }
+            }
+        }
+
         arbeidssokerProfilertProducer.publiserProfilering(
             bruker.aktorId,
             profilering.innsatsgruppe,
             ordinaerBrukerRegistrering.opprettetDato
         )
     }
-
-
 
     private fun rapporterRegistreringStatusAntallForPublisering() {
         try {
