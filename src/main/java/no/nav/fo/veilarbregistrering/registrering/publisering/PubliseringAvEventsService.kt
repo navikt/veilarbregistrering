@@ -50,7 +50,9 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         ).also {
             arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(it)
-            //arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
+            if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
+                arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
+            }
         }
 
         arbeidssokerProfilertProducer.publiserProfilering(

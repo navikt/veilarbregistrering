@@ -54,7 +54,7 @@ public class KafkaConfig {
     ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducerAiven(@Qualifier("producerAiven") KafkaProducer kafkaProducerAiven) {
         return new ArbeidssokerProfilertKafkaProducer(
                 kafkaProducerAiven,
-                "paw.paw-test-topic");
+                "paw.arbeidssoker-profilert-v1");
     }
 
     @Bean("producerOnprem")
