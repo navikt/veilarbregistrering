@@ -24,7 +24,7 @@ import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
  * 2. Den skal kjøre i evig løkka
  * 3. Den skal kalle på et internt API for å lagre formidlingsgruppe knyttet til person
  */
-class FormidlingsgruppeKafkaConsumer implements Runnable {
+public class FormidlingsgruppeKafkaConsumer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer.class);
     
