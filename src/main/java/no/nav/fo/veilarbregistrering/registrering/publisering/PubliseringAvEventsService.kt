@@ -18,6 +18,7 @@ class PubliseringAvEventsService(
     private val arbeidssokerRegistrertProducerAiven: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val arbeidssokerProfilertProducer: ArbeidssokerProfilertProducer,
+    private val arbeidssokerProfilertProducerAiven: ArbeidssokerProfilertProducer,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
@@ -49,14 +50,7 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         ).also {
             arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(it)
-            if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
-                try {
-                    LOG.info("Producing message on aiven topic")
-                    arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
-                } catch (e: Exception) {
-                    LOG.warn("Producing message on aiven topic FAILED with error {}", e)
-                }
-            }
+            //arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
         }
 
         arbeidssokerProfilertProducer.publiserProfilering(
@@ -64,6 +58,14 @@ class PubliseringAvEventsService(
             profilering.innsatsgruppe,
             ordinaerBrukerRegistrering.opprettetDato
         )
+
+        if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
+            arbeidssokerProfilertProducerAiven.publiserProfilering(
+                bruker.aktorId,
+                profilering.innsatsgruppe,
+                ordinaerBrukerRegistrering.opprettetDato
+            )
+        }
     }
 
     private fun rapporterRegistreringStatusAntallForPublisering() {

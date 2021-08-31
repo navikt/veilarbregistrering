@@ -47,6 +47,13 @@ public class KafkaConfig {
     ArbeidssokerRegistrertKafkaProducer arbeidssokerRegistrertKafkaProducerAiven(@Qualifier("producerAiven") KafkaProducer kafkaProducerAiven) {
         return new ArbeidssokerRegistrertKafkaProducer(
                 kafkaProducerAiven,
+                "paw.arbeidssoker-registrert-v1");
+    }
+
+    @Bean
+    ArbeidssokerProfilertKafkaProducer arbeidssokerProfilertKafkaProducerAiven(@Qualifier("producerAiven") KafkaProducer kafkaProducerAiven) {
+        return new ArbeidssokerProfilertKafkaProducer(
+                kafkaProducerAiven,
                 "paw.paw-test-topic");
     }
 
