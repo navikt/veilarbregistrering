@@ -94,7 +94,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun `finnOrdinaer`() {
+    fun `hent flere returnerer alle forespurte registreringer`() {
         val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
             .setAndreForhold(AndreForholdSvar.JA))
         val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
