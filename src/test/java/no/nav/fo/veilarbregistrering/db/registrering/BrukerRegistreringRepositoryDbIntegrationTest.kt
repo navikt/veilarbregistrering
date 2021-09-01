@@ -93,6 +93,22 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         assertThat(ordinaerBrukerregistreringer).isEmpty()
     }
 
+    @Test
+    fun `finnOrdinaer`() {
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+            .setAndreForhold(AndreForholdSvar.JA))
+        val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.OVERFORT_ARENA).build())
+
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
+            .setAndreForhold(AndreForholdSvar.NEI))
+        val lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering2.id).status(Status.OVERFORT_ARENA).build())
+
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.hentBrukerregistreringerForIder(listOf(lagretRegistrering1.id, lagretRegistrering2.id))
+        assertThat(ordinaerBrukerregistreringer).hasSize(2)
+    }
+
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer.of("12345678911")
         private val AKTOR_ID_11111 = AktorId.of("11111")

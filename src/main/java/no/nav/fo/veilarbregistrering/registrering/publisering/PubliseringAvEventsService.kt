@@ -69,9 +69,10 @@ class PubliseringAvEventsService(
 
     /*@Transactional
     fun publiserEventsForFlereRegistreringer() {
-        val nesteRegistreringer = registreringTilstandRepository
+        val nesteRegTilstander = registreringTilstandRepository
             .finnXNesteRegistreringTilstanderMed(0, Status.OVERFORT_ARENA)
-            .associateBy { brukerRegistreringRepository.hentBrukerTilknyttet(it.brukerRegistreringId).aktorId }
+
+        val nesteReg = brukerRegistreringRepository.hentBrukerregistreringerForIder(nesteRegTilstander.map{ it.brukerRegistreringId })
 
         val nesteProfileringer = nesteRegistreringer
             .map { (aktorId, regTilstand) -> aktorId to profileringRepository.hentProfileringForId(regTilstand.brukerRegistreringId) }

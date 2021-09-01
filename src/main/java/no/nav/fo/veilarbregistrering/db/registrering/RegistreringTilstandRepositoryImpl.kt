@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTemplate) : RegistreringTilstandRepository {
 
@@ -81,10 +82,10 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, params, rowMapper()).firstOrNull()
     }
 
-    override fun finnXNesteRegistreringTilstanderMed(x: Int, status: Status): List<RegistreringTilstand> {
+    override fun finnFlereRegistreringTilstanderMed(antall: Int, status: Status): List<RegistreringTilstand> {
         val params = mapOf(
             "status" to status.name,
-            "x" to x
+            "x" to antall
         )
 
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
@@ -126,12 +127,22 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     override fun oppdaterFlereTilstander(nyStatus: Status, registreringTilstandIder: List<Long>) {
+        val params = mapOf(
+            "ny_status" to nyStatus,
+            "sist_endret" to Timestamp.valueOf(LocalDateTime.now())
+        )
+
         val sql = """
             UPDATE $REGISTRERING_TILSTAND SET 
-            $STATUS = $nyStatus, 
+            $STATUS = :ny_status, 
             $SIST_ENDRET = :sist_endret  
             WHERE $ID in (${registreringTilstandIder.joinToString(",")})            
         """.trimIndent()
+
+        db.update(
+            sql,
+            params
+        )
     }
 
     private fun nesteFraSekvens(): Long {

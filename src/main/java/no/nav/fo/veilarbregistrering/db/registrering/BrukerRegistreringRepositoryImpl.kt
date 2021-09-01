@@ -60,10 +60,10 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.queryForObject(sql, mapOf("id" to brukerregistreringId), registreringMapper)!!
     }
 
-    override fun hentBrukerregistreringerForIder(brukerregistreringIder: List<Long>): List<OrdinaerBrukerRegistrering> {
-        val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID in :ider"
+    override fun hentBrukerregistreringerForIder(brukerRegistreringIder: List<Long>): List<OrdinaerBrukerRegistrering> {
+        val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID in (:ider)"
 
-        return db.query(sql, mapOf("ider" to brukerregistreringIder), registreringMapper)!!
+        return db.query(sql, mapOf("ider" to brukerRegistreringIder), registreringMapper)
     }
 
     override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
