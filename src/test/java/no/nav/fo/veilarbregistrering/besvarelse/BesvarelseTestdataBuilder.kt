@@ -17,6 +17,7 @@ object BesvarelseTestdataBuilder {
         return Besvarelse()
             .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
             .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING)
+            .setUtdanning(UtdanningSvar.INGEN_UTDANNING)
     }
 
     @JvmStatic
