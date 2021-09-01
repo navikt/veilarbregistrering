@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.besvarelse;
+package no.nav.fo.veilarbregistrering.besvarelse
 
-public enum DinSituasjonSvar {
+enum class DinSituasjonSvar {
     MISTET_JOBBEN,
     ALDRI_HATT_JOBB,
     HAR_SAGT_OPP,
@@ -10,5 +10,5 @@ public enum DinSituasjonSvar {
     JOBB_OVER_2_AAR,
     VIL_FORTSETTE_I_JOBB,
     AKKURAT_FULLFORT_UTDANNING,
-    DELTIDSJOBB_VIL_MER,
+    DELTIDSJOBB_VIL_MER
 }
