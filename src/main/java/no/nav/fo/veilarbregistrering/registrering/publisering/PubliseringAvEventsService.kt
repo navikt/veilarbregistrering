@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
@@ -50,9 +51,7 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         ).also {
             arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(it)
-            if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
-                arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
-            }
+            arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
         }
 
         arbeidssokerProfilertProducer.publiserProfilering(
@@ -61,13 +60,11 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        if (System.getenv("APP_ENVIRONMENT_NAME") == "dev") {
-            arbeidssokerProfilertProducerAiven.publiserProfilering(
-                bruker.aktorId,
-                profilering.innsatsgruppe,
-                ordinaerBrukerRegistrering.opprettetDato
-            )
-        }
+        arbeidssokerProfilertProducerAiven.publiserProfilering(
+            bruker.aktorId,
+            profilering.innsatsgruppe,
+            ordinaerBrukerRegistrering.opprettetDato
+        )
     }
 
     private fun rapporterRegistreringStatusAntallForPublisering() {
