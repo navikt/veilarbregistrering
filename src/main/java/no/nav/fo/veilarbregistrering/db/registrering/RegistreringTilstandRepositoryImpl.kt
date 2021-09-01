@@ -125,6 +125,15 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             .orElseThrow { IllegalStateException("Registrering med id $registreringsId mangler tilstand") }
     }
 
+    override fun oppdaterFlereTilstander(nyStatus: Status, registreringTilstandIder: List<Long>) {
+        val sql = """
+            UPDATE $REGISTRERING_TILSTAND SET 
+            $STATUS = $nyStatus, 
+            $SIST_ENDRET = :sist_endret  
+            WHERE $ID in (${registreringTilstandIder.joinToString(",")})            
+        """.trimIndent()
+    }
+
     private fun nesteFraSekvens(): Long {
         return db.queryForObject(
             "select $SEQ_TABLE_NAME.nextval from dual",

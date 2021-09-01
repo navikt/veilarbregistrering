@@ -67,6 +67,28 @@ class PubliseringAvEventsService(
         )
     }
 
+    /*@Transactional
+    fun publiserEventsForFlereRegistreringer() {
+        val nesteRegistreringer = registreringTilstandRepository
+            .finnXNesteRegistreringTilstanderMed(0, Status.OVERFORT_ARENA)
+            .associateBy { brukerRegistreringRepository.hentBrukerTilknyttet(it.brukerRegistreringId).aktorId }
+
+        val nesteProfileringer = nesteRegistreringer
+            .map { (aktorId, regTilstand) -> aktorId to profileringRepository.hentProfileringForId(regTilstand.brukerRegistreringId) }
+            .toMap()
+
+        registreringTilstandRepository.oppdaterFlereTilstander(Status.PUBLISERT_KAFKA, nesteRegistreringer.values.map { it.id })
+
+        nesteRegistreringer.map { (aktorId, registreringTilstand) ->
+            arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(ArbeidssokerRegistrertInternalEvent(
+                aktorId,
+                ordinaerBrukerRegistrering.besvarelse,
+                ordinaerBrukerRegistrering.opprettetDato
+            ))
+        }
+
+    }*/
+
     private fun rapporterRegistreringStatusAntallForPublisering() {
         try {
             val antallPerStatus = registreringTilstandRepository.hentAntallPerStatus()
