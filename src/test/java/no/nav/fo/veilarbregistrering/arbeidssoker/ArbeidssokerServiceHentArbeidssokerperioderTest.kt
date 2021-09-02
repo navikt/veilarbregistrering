@@ -132,33 +132,6 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             return 0
         }
 
-        override fun finnFormidlingsgrupper(foedselsnummer: Foedselsnummer): Arbeidssokerperioder {
-            val map = mutableMapOf(
-            FOEDSELSNUMMER_1 to Arbeidssokerperioder(
-                listOf(
-                    ARBEIDSSOKERPERIODE_3,
-                    ARBEIDSSOKERPERIODE_1,
-                    ARBEIDSSOKERPERIODE_4,
-                    ARBEIDSSOKERPERIODE_2
-                )
-            ),
-            FOEDSELSNUMMER_2 to Arbeidssokerperioder(
-                listOf(
-                    ARBEIDSSOKERPERIODE_6,
-                    ARBEIDSSOKERPERIODE_5
-                )
-            ),
-            FOEDSELSNUMMER_3 to Arbeidssokerperioder(
-                listOf(
-                    ARBEIDSSOKERPERIODE_7,
-                    ARBEIDSSOKERPERIODE_8
-                )
-            ),
-            FOEDSELSNUMMER_4 to Arbeidssokerperioder(null)
-            )
-            return map[foedselsnummer]!!
-        }
-
         override fun finnFormidlingsgrupper(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
             return Arbeidssokerperioder(
                 listOf(

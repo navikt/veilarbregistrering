@@ -38,7 +38,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
         val id = arbeidssokerRepository.lagre(command)
         Assertions.assertThat(id).isNotNull()
-        val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(FOEDSELSNUMMER)
+        val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
         val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }

@@ -72,14 +72,6 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
         return db.queryForObject("SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL", emptyMap<String, Any>(), Long::class.java)!!
     }
 
-    override fun finnFormidlingsgrupper(foedselsnummer: Foedselsnummer): Arbeidssokerperioder {
-        val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER = :fnr"
-
-        val formidlingsgruppeendringer = db.query(sql, mapOf("fnr" to foedselsnummer.stringValue()), fgruppeMapper)
-
-        return ArbeidssokerperioderMapper.map(formidlingsgruppeendringer)
-    }
-
     override fun finnFormidlingsgrupper(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
         val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
         val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
