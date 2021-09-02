@@ -42,7 +42,7 @@ public class StartRegistreringStatusService {
         Optional<GeografiskTilknytning> muligGeografiskTilknytning = hentGeografiskTilknytning(bruker);
 
         muligGeografiskTilknytning.ifPresent(geografiskTilknytning ->
-                LOG.info("Bruker startet registrering med geografisk tilknytning [BrukersTilstant], [GeografiskTilknytning] [{}] [{}]", brukersTilstand, geografiskTilknytning));
+                LOG.info("Bruker {} startet registrering med geografisk tilknytning [BrukersTilstand], [GeografiskTilknytning] [{}] [{}]", bruker.getAktorId(), brukersTilstand, geografiskTilknytning));
 
         RegistreringType registreringType = brukersTilstand.getRegistreringstype();
 
@@ -59,7 +59,7 @@ public class StartRegistreringStatusService {
                 oppfyllerBetingelseOmArbeidserfaring,
                 bruker.getGjeldendeFoedselsnummer().alder(now()));
 
-        LOG.info("Returnerer startregistreringsstatus {}", startRegistreringStatus);
+        LOG.info("Startreg.status for {}: {}", bruker.getAktorId(), startRegistreringStatus);
         rapporterRegistreringsstatus(prometheusMetricsService,  startRegistreringStatus);
 
         return startRegistreringStatus;
