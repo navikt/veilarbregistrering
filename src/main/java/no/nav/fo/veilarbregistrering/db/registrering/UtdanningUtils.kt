@@ -14,7 +14,7 @@ internal object UtdanningUtils {
         UtdanningSvar.INGEN_SVAR to "9",
     )
 
-    fun mapTilNuskode(utdanning: UtdanningSvar): String? = nuskodeMap[utdanning]
+    fun mapTilNuskode(utdanning: UtdanningSvar?): String? = nuskodeMap[utdanning]
 
     fun mapTilUtdanning(nuskode: String?): UtdanningSvar? =
         nuskodeMap.filterValues { it == nuskode }.keys.firstOrNull()
