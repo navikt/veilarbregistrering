@@ -69,25 +69,47 @@ class PubliseringAvEventsService(
 
     /*@Transactional
     fun publiserEventsForFlereRegistreringer() {
-        val nesteRegTilstander = registreringTilstandRepository
-            .finnXNesteRegistreringTilstanderMed(0, Status.OVERFORT_ARENA)
+        val nesteRegistreringTilstander = registreringTilstandRepository
+            .finnFlereRegistreringTilstanderMed(1, Status.OVERFORT_ARENA)
 
-        val nesteReg = brukerRegistreringRepository.hentBrukerregistreringerForIder(nesteRegTilstander.map{ it.brukerRegistreringId })
+        LOG.info("{} registreringer klare for publisering", nesteRegistreringTilstander.size)
 
-        val nesteProfileringer = nesteRegistreringer
-            .map { (aktorId, regTilstand) -> aktorId to profileringRepository.hentProfileringForId(regTilstand.brukerRegistreringId) }
-            .toMap()
+        val nesteRegistreringer = brukerRegistreringRepository.hentBrukerregistreringerForIder(
+            nesteRegistreringTilstander.map { it.brukerRegistreringId }
+        )
 
-        registreringTilstandRepository.oppdaterFlereTilstander(Status.PUBLISERT_KAFKA, nesteRegistreringer.values.map { it.id })
+        val nesteProfileringer = profileringRepository.hentProfileringerForIder(
+            nesteRegistreringTilstander.map { it.brukerRegistreringId }
+        )
 
-        nesteRegistreringer.map { (aktorId, registreringTilstand) ->
-            arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(ArbeidssokerRegistrertInternalEvent(
+        registreringTilstandRepository.oppdaterFlereTilstander(
+            Status.PUBLISERT_KAFKA,
+            nesteRegistreringTilstander.map { it.id })
+
+        val resultatFraRegistrertProducer = nesteRegistreringer.map { (brukerRegistreringId, aktorOgReg) ->
+            val (aktorId, ordinaerBrukerRegistrering) = aktorOgReg
+
+            brukerRegistreringId to ArbeidssokerRegistrertInternalEvent(
                 aktorId,
                 ordinaerBrukerRegistrering.besvarelse,
                 ordinaerBrukerRegistrering.opprettetDato
-            ))
+            )
+        }.associate { (id, event) ->
+            id to arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(event)
         }
 
+        nesteProfileringer
+            .filter { (id, _) -> resultatFraRegistrertProducer[id] ?: false }
+            .forEach { (brukerRegistreringId, profilering) ->
+                val (aktorId, ordinaerBrukerRegistrering) = nesteRegistreringer[brukerRegistreringId]
+                    ?: throw IllegalStateException()
+
+                arbeidssokerProfilertProducerAiven.publiserProfilering(
+                    aktorId,
+                    profilering.innsatsgruppe,
+                    ordinaerBrukerRegistrering.opprettetDato
+                )
+            }
     }*/
 
     private fun rapporterRegistreringStatusAntallForPublisering() {

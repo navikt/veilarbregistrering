@@ -39,7 +39,7 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
                 " FETCH NEXT 3 ROWS ONLY",
             mapOf("id" to brukerregistreringId), mapper)!!
 
-    override fun hentProfileringerForIder(brukerregistreringIder: List<Long>): List<Profilering> =
+    override fun hentProfileringerForIder(brukerregistreringIder: List<Long>): Map<Long, Profilering> =
         db.query(
             "SELECT * FROM $BRUKER_PROFILERING WHERE $BRUKER_REGISTRERING_ID in (:id) order by $BRUKER_REGISTRERING_ID asc",
             mapOf("id" to brukerregistreringIder), manyMapper)!!
@@ -55,15 +55,15 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
         const val ARB_6_AV_SISTE_12_MND = "ARB_6_AV_SISTE_12_MND"
         const val RESULTAT_PROFILERING = "RESULTAT_PROFILERING"
 
-        private val manyMapper: (ResultSet) -> List<Profilering> = { rs: ResultSet ->
-            val result = mutableMapOf<Int, Profilering>()
+        private val manyMapper: (ResultSet) -> Map<Long, Profilering> = { rs: ResultSet ->
+            val result = mutableMapOf<Long, Profilering>()
 
             while (rs.next()) {
-                val profilering = result.getOrPut(rs.getInt(BRUKER_REGISTRERING_ID)) { Profilering() }
+                val profilering = result.getOrPut(rs.getLong(BRUKER_REGISTRERING_ID)) { Profilering() }
 
                 lesRadTilProfilering(profilering, rs)
             }
-            result.values.toList()
+            result
         }
 
         private val mapper: (ResultSet) -> Profilering = { rs ->

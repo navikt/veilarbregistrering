@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl.Companion.registreringMapper
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
@@ -15,6 +16,7 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Timestamp
 import java.time.LocalDateTime.now
@@ -60,10 +62,10 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         return db.queryForObject(sql, mapOf("id" to brukerregistreringId), registreringMapper)!!
     }
 
-    override fun hentBrukerregistreringerForIder(brukerRegistreringIder: List<Long>): List<OrdinaerBrukerRegistrering> {
+    override fun hentBrukerregistreringerForIder(brukerRegistreringIder: List<Long>): Map<Long, Pair<AktorId, OrdinaerBrukerRegistrering>> {
         val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID in (:ider)"
 
-        return db.query(sql, mapOf("ider" to brukerRegistreringIder), registreringMapper)
+        return db.query(sql, mapOf("ider" to brukerRegistreringIder), registreringManyMapper)!!
     }
 
     override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
@@ -140,6 +142,15 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             ANDRE_UTFORDRINGER,
             JOBBHISTORIKK
         )
+        private val registreringManyMapper: (ResultSet) -> Map<Long, Pair<AktorId, OrdinaerBrukerRegistrering>> = { rs: ResultSet ->
+            val result = mutableMapOf<Long, Pair<AktorId, OrdinaerBrukerRegistrering>>()
+
+            while (rs.next()) {
+                result[rs.getLong(BRUKER_REGISTRERING_ID)] = AktorId.of(rs.getString(AKTOR_ID)!!) to registreringMapper.mapRow(rs, rs.row)!!
+            }
+            result
+        }
+
         private val registreringMapper = RowMapper<OrdinaerBrukerRegistrering> { rs, _ ->
             try {
                 OrdinaerBrukerRegistrering()

@@ -43,6 +43,6 @@ class ProfileringRepositoryDbIntegrationTest(
 
         val profileringFraDb = profileringRepository.hentProfileringerForIder(listOf(9))
         assertThat(profileringFraDb.size).isEqualTo(1)
-        assertThat(profileringFraDb[0].toString()).isEqualTo(profilering.toString())
+        assertThat(profileringFraDb[9].toString()).isEqualTo(profilering.toString())
     }
 }
