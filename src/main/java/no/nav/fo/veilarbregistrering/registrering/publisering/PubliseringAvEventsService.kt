@@ -37,30 +37,35 @@ class PubliseringAvEventsService(
         val bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId)
         val profilering = profileringRepository.hentProfileringForId(brukerRegistreringId)
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForId(brukerRegistreringId)
-        val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
-        registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
-        LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
 
         // Det er viktig at publiserArbeidssokerRegistrert kjører før publiserProfilering fordi
         // førstnevnte sin producer håndterer at melding med samme id overskrives hvis den er publisert fra før.
         // Dette skjer pga. compaction-innstillingen definert i paw-iac repoet på github.
         // Så hvis førstnevnte feiler forhindrer vi at duplikate meldinger skrives til sistnevnte.
-        ArbeidssokerRegistrertInternalEvent(
+        val arbeidssokerRegistrertInternalEvent = ArbeidssokerRegistrertInternalEvent(
             bruker.aktorId,
             ordinaerBrukerRegistrering.besvarelse,
             ordinaerBrukerRegistrering.opprettetDato
-        ).also {
-            arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(it)
-            arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(it)
+        )
+
+        val registrertOnprem =
+            arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)
+        val registrertAiven =
+            arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)
+
+        if (registrertOnprem && registrertAiven) {
+            val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
+            registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
+            LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
         }
 
-        arbeidssokerProfilertProducer.publiserProfilering(
+        if (registrertOnprem) arbeidssokerProfilertProducer.publiserProfilering(
             bruker.aktorId,
             profilering.innsatsgruppe,
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        arbeidssokerProfilertProducerAiven.publiserProfilering(
+        if (registrertAiven) arbeidssokerProfilertProducerAiven.publiserProfilering(
             bruker.aktorId,
             profilering.innsatsgruppe,
             ordinaerBrukerRegistrering.opprettetDato

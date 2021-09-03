@@ -9,6 +9,8 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
 import static no.nav.fo.veilarbregistrering.kafka.ArbeidssokerRegistrertMapper.map;
 import static no.nav.fo.veilarbregistrering.log.CallId.getCorrelationIdAsBytes;
@@ -26,24 +28,28 @@ class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProdu
     }
 
     @Override
-    public void publiserArbeidssokerRegistrert(
+    public boolean publiserArbeidssokerRegistrert(
             ArbeidssokerRegistrertInternalEvent arbeidssokerRegistrertInternalEvent) {
 
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(arbeidssokerRegistrertInternalEvent);
             ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, arbeidssokerRegistrertInternalEvent.getAktorId().asString(), arbeidssokerRegistrertEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, getCorrelationIdAsBytes()));
+            AtomicBoolean resultat = new AtomicBoolean(false);
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {
                     LOG.error(String.format("ArbeidssokerRegistrertEvent publisert på topic, %s", topic), e);
-
+                    resultat.set(false);
                 } else {
                     LOG.info("ArbeidssokerRegistrertEvent publisert: {}", recordMetadata);
+                    resultat.set(true);
                 }
-            });
+            }).get();
+            return resultat.get();
 
         } catch (Exception e) {
             LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e);
+            return false;
         }
     }
 }
