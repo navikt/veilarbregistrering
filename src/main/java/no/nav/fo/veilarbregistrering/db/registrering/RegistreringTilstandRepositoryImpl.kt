@@ -129,14 +129,15 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     override fun oppdaterFlereTilstander(nyStatus: Status, registreringTilstandIder: List<Long>) {
         val params = mapOf(
             "ny_status" to nyStatus,
-            "sist_endret" to Timestamp.valueOf(LocalDateTime.now())
+            "sist_endret" to Timestamp.valueOf(LocalDateTime.now()),
+            "ider" to registreringTilstandIder
         )
 
         val sql = """
             UPDATE $REGISTRERING_TILSTAND SET 
             $STATUS = :ny_status, 
             $SIST_ENDRET = :sist_endret  
-            WHERE $ID in (${registreringTilstandIder.joinToString(",")})            
+            WHERE $ID in (:ider)            
         """.trimIndent()
 
         db.update(
