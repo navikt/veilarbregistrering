@@ -1,8 +1,12 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering
 
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.slf4j.LoggerFactory
@@ -72,10 +76,14 @@ class PubliseringAvEventsService(
         )
     }
 
-    /*@Transactional
-    fun publiserEventsForFlereRegistreringer() {
+    fun harVentendeEvents(): Boolean {
+        return registreringTilstandRepository.hentAntallPerStatus()[Status.OVERFORT_ARENA] != 0
+    }
+
+    @Transactional
+    fun publiserMeldingerForRegistreringer() {
         val nesteRegistreringTilstander = registreringTilstandRepository
-            .finnFlereRegistreringTilstanderMed(1, Status.OVERFORT_ARENA)
+            .finnNesteRegistreringTilstanderMed(0, Status.OVERFORT_ARENA)
 
         LOG.info("{} registreringer klare for publisering", nesteRegistreringTilstander.size)
 
@@ -87,11 +95,34 @@ class PubliseringAvEventsService(
             nesteRegistreringTilstander.map { it.brukerRegistreringId }
         )
 
-        registreringTilstandRepository.oppdaterFlereTilstander(
-            Status.PUBLISERT_KAFKA,
-            nesteRegistreringTilstander.map { it.id })
+        val registrertMeldingBleSendt = publiserArbeidssokerRegistrertMeldinger(nesteRegistreringer)
 
-        val resultatFraRegistrertProducer = nesteRegistreringer.map { (brukerRegistreringId, aktorOgReg) ->
+        oppdaterLokalStatusForUtsendteMeldinger(nesteRegistreringTilstander, registrertMeldingBleSendt)
+
+        publiserArbeidssokerProfilertMeldinger(nesteProfileringer, registrertMeldingBleSendt, nesteRegistreringer)
+    }
+
+    private fun publiserArbeidssokerProfilertMeldinger(
+        nesteProfileringer: Map<Long, Profilering>,
+        registrertMeldingBleSendt: Map<Long, Boolean>,
+        nesteRegistreringer: Map<Long, Pair<AktorId, OrdinaerBrukerRegistrering>>
+    ) {
+        nesteProfileringer
+            .filter { (id, _) -> registrertMeldingBleSendt[id] ?: false }
+            .forEach { (brukerRegistreringId, profilering) ->
+                val (aktorId, ordinaerBrukerRegistrering) = nesteRegistreringer[brukerRegistreringId]
+                    ?: throw IllegalStateException()
+
+                arbeidssokerProfilertProducerAiven.publiserProfilering(
+                    aktorId,
+                    profilering.innsatsgruppe,
+                    ordinaerBrukerRegistrering.opprettetDato
+                )
+            }
+    }
+
+    private fun publiserArbeidssokerRegistrertMeldinger(nesteRegistreringer: Map<Long, Pair<AktorId, OrdinaerBrukerRegistrering>>) =
+        nesteRegistreringer.map { (brukerRegistreringId, aktorOgReg) ->
             val (aktorId, ordinaerBrukerRegistrering) = aktorOgReg
 
             brukerRegistreringId to ArbeidssokerRegistrertInternalEvent(
@@ -103,19 +134,13 @@ class PubliseringAvEventsService(
             id to arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(event)
         }
 
-        nesteProfileringer
-            .filter { (id, _) -> resultatFraRegistrertProducer[id] ?: false }
-            .forEach { (brukerRegistreringId, profilering) ->
-                val (aktorId, ordinaerBrukerRegistrering) = nesteRegistreringer[brukerRegistreringId]
-                    ?: throw IllegalStateException()
-
-                arbeidssokerProfilertProducerAiven.publiserProfilering(
-                    aktorId,
-                    profilering.innsatsgruppe,
-                    ordinaerBrukerRegistrering.opprettetDato
-                )
-            }
-    }*/
+    private fun oppdaterLokalStatusForUtsendteMeldinger(
+        nesteRegistreringTilstander: List<RegistreringTilstand>,
+        registrertMeldingBleSendt: Map<Long, Boolean>
+    ) =
+        registreringTilstandRepository.oppdaterFlereTilstander(
+        Status.PUBLISERT_KAFKA,
+        nesteRegistreringTilstander.filter { it.id in registrertMeldingBleSendt }.map { it.id })
 
     private fun rapporterRegistreringStatusAntallForPublisering() {
         try {
@@ -126,9 +151,6 @@ class PubliseringAvEventsService(
         }
     }
 
-    fun harVentendeEvents(): Boolean {
-        return registreringTilstandRepository.hentAntallPerStatus()[Status.OVERFORT_ARENA] != 0
-    }
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PubliseringAvEventsService::class.java)
