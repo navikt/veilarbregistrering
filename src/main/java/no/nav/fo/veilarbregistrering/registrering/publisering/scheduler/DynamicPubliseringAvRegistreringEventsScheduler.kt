@@ -28,9 +28,9 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
     override fun run() {
         val startTime = System.currentTimeMillis()
         if (!leaderElectionClient.isLeader) return
-        //perform
+        publiseringAvEventsService.publiserMeldingerForRegistreringer()
         val taskDuration = System.currentTimeMillis() - startTime
-        LOG.info("Dynamic task triggered on leader took {}ms", taskDuration)
+        LOG.info("Dynamic task [on leader] finished in {}ms", taskDuration)
     }
 
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {

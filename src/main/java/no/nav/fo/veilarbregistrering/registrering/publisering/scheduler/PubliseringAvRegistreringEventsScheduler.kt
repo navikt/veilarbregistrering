@@ -25,7 +25,7 @@ class PubliseringAvRegistreringEventsScheduler(
             if (!leaderElectionClient.isLeader) {
                 return
             }
-            publiseringAvEventsService.publiserEvents()
+            //publiseringAvEventsService.publiserEvents()
         } finally {
             MDC.clear()
         }

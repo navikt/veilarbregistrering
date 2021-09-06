@@ -83,7 +83,7 @@ class PubliseringAvEventsService(
     @Transactional
     fun publiserMeldingerForRegistreringer() {
         val nesteRegistreringTilstander = registreringTilstandRepository
-            .finnNesteRegistreringTilstanderMed(0, Status.OVERFORT_ARENA)
+            .finnNesteRegistreringTilstanderMed(1, Status.OVERFORT_ARENA)
 
         LOG.info("{} registreringer klare for publisering", nesteRegistreringTilstander.size)
 
@@ -118,6 +118,12 @@ class PubliseringAvEventsService(
                     profilering.innsatsgruppe,
                     ordinaerBrukerRegistrering.opprettetDato
                 )
+
+                arbeidssokerProfilertProducer.publiserProfilering(
+                    aktorId,
+                    profilering.innsatsgruppe,
+                    ordinaerBrukerRegistrering.opprettetDato
+                )
             }
     }
 
@@ -131,7 +137,8 @@ class PubliseringAvEventsService(
                 ordinaerBrukerRegistrering.opprettetDato
             )
         }.associate { (id, event) ->
-            id to arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(event)
+            id to (arbeidssokerRegistrertProducerAiven.publiserArbeidssokerRegistrert(event) &&
+                    arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(event))
         }
 
     private fun oppdaterLokalStatusForUtsendteMeldinger(
