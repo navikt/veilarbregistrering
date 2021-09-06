@@ -147,7 +147,7 @@ class PubliseringAvEventsService(
     ) =
         registreringTilstandRepository.oppdaterFlereTilstander(
         Status.PUBLISERT_KAFKA,
-        nesteRegistreringTilstander.filter { it.id in registrertMeldingBleSendt }.map { it.id })
+        nesteRegistreringTilstander.filter { it.brukerRegistreringId in registrertMeldingBleSendt }.map { it.id })
 
     private fun rapporterRegistreringStatusAntallForPublisering() {
         try {
