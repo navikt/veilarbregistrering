@@ -196,16 +196,27 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
         assertThrows(DuplicateKeyException::class.java) { registreringTilstandRepository.lagre(registreringTilstandOverfort) }
     }
 
-    private fun lagRegistreringMedTilstand(status: Status, antall: Int) {
-        for (i in 0 until antall) {
-            val registrering = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
-            val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
-                    .brukerRegistreringId(registrering.id)
-                    .opprettet(LocalDateTime.now().minusMinutes(5))
-                    .status(status)
-                    .build()
-            registreringTilstandRepository.lagre(nyesteRegistreringTilstand)
+    @Test
+    fun `Kan oppdatere tilstand på flere objekter`() {
+        val overforteTilstander = lagRegistreringMedTilstand(OVERFORT_ARENA, 2)
+        registreringTilstandRepository.oppdaterFlereTilstander(PUBLISERT_KAFKA, overforteTilstander)
+        with(registreringTilstandRepository.hentAntallPerStatus()) {
+            assertThat(this[OVERFORT_ARENA]).isEqualTo(0)
+            assertThat(this[PUBLISERT_KAFKA]).isEqualTo(2)
         }
+    }
+
+    private fun lagRegistreringMedTilstand(status: Status, antall: Int) =
+        mutableListOf<Long>().apply {
+            for (i in 0 until antall) {
+                val registrering = brukerRegistreringRepository.lagre(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(), BRUKER_1)
+                val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
+                        .brukerRegistreringId(registrering.id)
+                        .opprettet(LocalDateTime.now().minusMinutes(5))
+                        .status(status)
+                        .build()
+                add(registreringTilstandRepository.lagre(nyesteRegistreringTilstand))
+            }
     }
 
     companion object {

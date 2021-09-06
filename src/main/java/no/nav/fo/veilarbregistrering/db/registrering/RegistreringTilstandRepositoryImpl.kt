@@ -128,7 +128,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
 
     override fun oppdaterFlereTilstander(nyStatus: Status, registreringTilstandIder: List<Long>) {
         val params = mapOf(
-            "ny_status" to nyStatus,
+            "ny_status" to nyStatus.name,
             "sist_endret" to Timestamp.valueOf(LocalDateTime.now()),
             "ider" to registreringTilstandIder
         )
