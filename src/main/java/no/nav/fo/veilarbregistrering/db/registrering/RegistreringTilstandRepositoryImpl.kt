@@ -82,16 +82,16 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, params, rowMapper()).firstOrNull()
     }
 
-    override fun finnFlereRegistreringTilstanderMed(antall: Int, status: Status): List<RegistreringTilstand> {
+    override fun finnNesteRegistreringTilstanderMed(antall: Int, status: Status): List<RegistreringTilstand> {
         val params = mapOf(
             "status" to status.name,
-            "x" to antall
+            "antall" to antall
         )
 
         val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
                 " WHERE $STATUS = :status" +
                 " ORDER BY $OPPRETTET" +
-                " FETCH NEXT :x ROWS ONLY"
+                " FETCH NEXT :antall ROWS ONLY"
 
         return db.query(sql, params, rowMapper())
     }

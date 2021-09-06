@@ -137,7 +137,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
             .status(OVERFORT_ARENA)
             .build()
         val eldsteRegistreringTilstandId = registreringTilstandRepository.lagre(eldsteRegistreringTilstand)
-        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnFlereRegistreringTilstanderMed(2, OVERFORT_ARENA)
+        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstanderMed(2, OVERFORT_ARENA)
         assertThat(nesteRegistreringerKlareForPublisering.size).isEqualTo(2)
         assertThat(nesteRegistreringerKlareForPublisering.map(RegistreringTilstand::getId)
             .containsAll(listOf(eldsteRegistreringTilstandId, nyesteRegistreringTilstand.id)))
@@ -154,7 +154,7 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
             .build()
         registreringTilstandRepository.lagre(nyesteRegistreringTilstand)
 
-        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnFlereRegistreringTilstanderMed(2, OVERFORT_ARENA)
+        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstanderMed(2, OVERFORT_ARENA)
         assertThat(nesteRegistreringerKlareForPublisering.size).isEqualTo(0)
     }
 
