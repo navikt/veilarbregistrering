@@ -63,6 +63,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
     }
 
     override fun hentBrukerregistreringerForIder(brukerRegistreringIder: List<Long>): Map<Long, Pair<AktorId, OrdinaerBrukerRegistrering>> {
+        if (brukerRegistreringIder.isEmpty()) return emptyMap()
         val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID in (:ider)"
 
         return db.query(sql, mapOf("ider" to brukerRegistreringIder), registreringManyMapper)!!

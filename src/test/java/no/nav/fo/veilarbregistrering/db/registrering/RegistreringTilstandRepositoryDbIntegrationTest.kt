@@ -206,6 +206,12 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
         }
     }
 
+    @Test
+    fun `oppdatere tilstand på flere objekter feiler ikke ved tom liste`() {
+        registreringTilstandRepository.oppdaterFlereTilstander(PUBLISERT_KAFKA, emptyList())
+        assertThat(registreringTilstandRepository.hentAntallPerStatus()[PUBLISERT_KAFKA]).isEqualTo(0)
+    }
+
     private fun lagRegistreringMedTilstand(status: Status, antall: Int) =
         mutableListOf<Long>().apply {
             for (i in 0 until antall) {

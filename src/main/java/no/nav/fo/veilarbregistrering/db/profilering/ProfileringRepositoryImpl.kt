@@ -40,7 +40,8 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
             mapOf("id" to brukerregistreringId), mapper)!!
 
     override fun hentProfileringerForIder(brukerregistreringIder: List<Long>): Map<Long, Profilering> =
-        db.query(
+        if (brukerregistreringIder.isEmpty()) emptyMap()
+        else db.query(
             "SELECT * FROM $BRUKER_PROFILERING WHERE $BRUKER_REGISTRERING_ID in (:id) order by $BRUKER_REGISTRERING_ID asc",
             mapOf("id" to brukerregistreringIder), manyMapper)!!
 

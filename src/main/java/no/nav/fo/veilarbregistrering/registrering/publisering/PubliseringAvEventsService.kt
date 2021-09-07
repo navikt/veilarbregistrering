@@ -86,6 +86,7 @@ class PubliseringAvEventsService(
             .finnNesteRegistreringTilstanderMed(1, Status.OVERFORT_ARENA)
 
         LOG.info("{} registreringer klare for publisering", nesteRegistreringTilstander.size)
+        if (nesteRegistreringTilstander.isEmpty()) return
 
         val nesteRegistreringer = brukerRegistreringRepository.hentBrukerregistreringerForIder(
             nesteRegistreringTilstander.map { it.brukerRegistreringId }
