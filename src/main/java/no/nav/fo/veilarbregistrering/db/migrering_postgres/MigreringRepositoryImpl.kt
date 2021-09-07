@@ -63,11 +63,14 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
 
         private const val registreringstilstandSjekkSql = """
         select count(*) as antall_rader,
-        count(distinct bruker_registrering_id) as unike_brukerregistrering_id
+        count(distinct bruker_registrering_id) as unike_brukerregistrering_id,
+        floor(avg(bruker_registrering_id)) as gjsnitt_bruker_registrering_id 
         from registrering_tilstand
         """
         private const val profileringSjekkSql = """
-        select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
+        select count(*) as antall_rader,
+        count(distinct verdi) as unike_verdier, 
+        count(distinct profilering_type) as unike_typer 
         from bruker_profilering          
         """
 
