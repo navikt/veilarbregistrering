@@ -32,17 +32,4 @@ class ProfileringRepositoryDbIntegrationTest(
         val profileringFraDb = profileringRepository.hentProfileringForId(9)
         assertThat(profileringFraDb.toString()).isEqualTo(profilering.toString())
     }
-
-    @Test
-    fun `profiler bruker og hent som liste`() {
-        val profilering = Profilering()
-            .setAlder(39)
-            .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
-            .setInnsatsgruppe(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING)
-        profileringRepository.lagreProfilering(9, profilering)
-
-        val profileringFraDb = profileringRepository.hentProfileringerForIder(listOf(9))
-        assertThat(profileringFraDb.size).isEqualTo(1)
-        assertThat(profileringFraDb[9].toString()).isEqualTo(profilering.toString())
-    }
 }

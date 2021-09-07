@@ -82,20 +82,6 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql, params, rowMapper()).firstOrNull()
     }
 
-    override fun finnNesteRegistreringTilstanderMed(antall: Int, status: Status): List<RegistreringTilstand> {
-        val params = mapOf(
-            "status" to status.name,
-            "antall" to antall
-        )
-
-        val sql = "SELECT * FROM $REGISTRERING_TILSTAND" +
-                " WHERE $STATUS = :status" +
-                " ORDER BY $OPPRETTET" +
-                " FETCH NEXT :antall ROWS ONLY"
-
-        return db.query(sql, params, rowMapper())
-    }
-
     override fun hentAntallPerStatus(): Map<Status, Int> {
         val statusAntall = mutableMapOf<Status, Int>()
         Status.values().forEach { statusAntall[it] = 0 }
@@ -124,27 +110,6 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             db.query(sql, params, rowMapper())
         return registreringsTilstander.stream().findFirst()
             .orElseThrow { IllegalStateException("Registrering med id $registreringsId mangler tilstand") }
-    }
-
-    override fun oppdaterFlereTilstander(nyStatus: Status, registreringTilstandIder: List<Long>) {
-        if (registreringTilstandIder.isEmpty()) return
-        val params = mapOf(
-            "ny_status" to nyStatus.name,
-            "sist_endret" to Timestamp.valueOf(LocalDateTime.now()),
-            "ider" to registreringTilstandIder
-        )
-
-        val sql = """
-            UPDATE $REGISTRERING_TILSTAND SET 
-            $STATUS = :ny_status, 
-            $SIST_ENDRET = :sist_endret  
-            WHERE $ID in (:ider)            
-        """.trimIndent()
-
-        db.update(
-            sql,
-            params
-        )
     }
 
     private fun nesteFraSekvens(): Long {

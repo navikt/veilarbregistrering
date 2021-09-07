@@ -13,7 +13,7 @@ import java.util.concurrent.Executors
 
 @Configuration
 @EnableScheduling
-class DynamicPubliseringAvRegistreringEventsScheduler(
+class KafkaStreamScheduler(
     private val publiseringAvEventsService: PubliseringAvEventsService,
     private val leaderElectionClient: LeaderElectionClient,
 ) : SchedulingConfigurer, Runnable {
@@ -28,7 +28,7 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
     override fun run() {
         val startTime = System.currentTimeMillis()
         if (!leaderElectionClient.isLeader) return
-        publiseringAvEventsService.publiserMeldingerForRegistreringer()
+
         val taskDuration = System.currentTimeMillis() - startTime
         LOG.info("Dynamic task [on leader] finished in {}ms", taskDuration)
     }
@@ -42,6 +42,6 @@ class DynamicPubliseringAvRegistreringEventsScheduler(
     }
 
     companion object {
-        private val LOG = loggerFor<DynamicPubliseringAvRegistreringEventsScheduler>()
+        private val LOG = loggerFor<KafkaStreamScheduler>()
     }
 }

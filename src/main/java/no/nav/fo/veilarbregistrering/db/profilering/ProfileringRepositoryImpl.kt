@@ -39,12 +39,6 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
                 " FETCH NEXT 3 ROWS ONLY",
             mapOf("id" to brukerregistreringId), mapper)!!
 
-    override fun hentProfileringerForIder(brukerregistreringIder: List<Long>): Map<Long, Profilering> =
-        if (brukerregistreringIder.isEmpty()) emptyMap()
-        else db.query(
-            "SELECT * FROM $BRUKER_PROFILERING WHERE $BRUKER_REGISTRERING_ID in (:id) order by $BRUKER_REGISTRERING_ID asc",
-            mapOf("id" to brukerregistreringIder), manyMapper)!!
-
 
     companion object {
         private const val BRUKER_REGISTRERING_ID = "BRUKER_REGISTRERING_ID"
@@ -56,37 +50,22 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
         const val ARB_6_AV_SISTE_12_MND = "ARB_6_AV_SISTE_12_MND"
         const val RESULTAT_PROFILERING = "RESULTAT_PROFILERING"
 
-        private val manyMapper: (ResultSet) -> Map<Long, Profilering> = { rs: ResultSet ->
-            val result = mutableMapOf<Long, Profilering>()
-
-            while (rs.next()) {
-                val profilering = result.getOrPut(rs.getLong(BRUKER_REGISTRERING_ID)) { Profilering() }
-
-                lesRadTilProfilering(profilering, rs)
-            }
-            result
-        }
-
         private val mapper: (ResultSet) -> Profilering = { rs ->
             try {
                 Profilering().also {
                     while (rs.next()) {
-                        lesRadTilProfilering(it, rs)
+                        when (rs.getString(PROFILERING_TYPE)) {
+                            ALDER -> it.alder = rs.getInt(VERDI)
+
+                            ARB_6_AV_SISTE_12_MND -> it.isJobbetSammenhengendeSeksAvTolvSisteManeder =
+                                rs.getBoolean(VERDI)
+
+                            RESULTAT_PROFILERING -> it.innsatsgruppe = Innsatsgruppe.of(rs.getString(VERDI))
+                        }
                     }
                 }
             } catch (e: SQLException) {
                 throw RuntimeException(e)
-            }
-        }
-
-        private fun lesRadTilProfilering(it: Profilering, rs: ResultSet) {
-            when (rs.getString(PROFILERING_TYPE)) {
-                ALDER -> it.alder = rs.getInt(VERDI)
-
-                ARB_6_AV_SISTE_12_MND -> it.isJobbetSammenhengendeSeksAvTolvSisteManeder =
-                    rs.getBoolean(VERDI)
-
-                RESULTAT_PROFILERING -> it.innsatsgruppe = Innsatsgruppe.of(rs.getString(VERDI))
             }
         }
     }

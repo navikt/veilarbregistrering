@@ -273,22 +273,20 @@ public class ServiceBeansConfig {
             BrukerRegistreringRepository brukerRegistreringRepository,
             @Qualifier("arbeidssokerRegistrertKafkaProducer")
             ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducer,
-            @Qualifier("arbeidssokerRegistrertKafkaProducerAiven")
-            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducerAiven,
+//            @Qualifier("arbeidssokerRegistrertKafkaProducerAiven")
+//            ArbeidssokerRegistrertProducer arbeidssokerRegistrertProducerAiven,
             RegistreringTilstandRepository registreringTilstandRepository,
             @Qualifier("arbeidssokerProfilertKafkaProducer")
             ArbeidssokerProfilertProducer arbeidssokerProfilertProducer,
-            @Qualifier("arbeidssokerProfilertKafkaProducerAiven")
-            ArbeidssokerProfilertProducer arbeidssokerProfilertProducerAiven,
+//            @Qualifier("arbeidssokerProfilertKafkaProducerAiven")
+//            ArbeidssokerProfilertProducer arbeidssokerProfilertProducerAiven,
             PrometheusMetricsService prometheusMetricsService) {
         return new PubliseringAvEventsService(
                 profileringRepository,
                 brukerRegistreringRepository,
                 arbeidssokerRegistrertProducer,
-                arbeidssokerRegistrertProducerAiven,
                 registreringTilstandRepository,
                 arbeidssokerProfilertProducer,
-                arbeidssokerProfilertProducerAiven,
                 prometheusMetricsService);
     }
 

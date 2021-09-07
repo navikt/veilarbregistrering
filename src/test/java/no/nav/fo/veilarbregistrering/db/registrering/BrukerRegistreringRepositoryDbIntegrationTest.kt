@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrer
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandTestdataBuilder.registreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.assertj.core.api.Assertions.assertThat
@@ -91,22 +90,6 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
         val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
         assertThat(ordinaerBrukerregistreringer).isEmpty()
-    }
-
-    @Test
-    fun `hent flere returnerer alle forespurte registreringer`() {
-        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-            .setAndreForhold(AndreForholdSvar.JA))
-        val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
-        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.OVERFORT_ARENA).build())
-
-        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-            .setAndreForhold(AndreForholdSvar.NEI))
-        val lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
-        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering2.id).status(Status.OVERFORT_ARENA).build())
-
-        val ordinaerBrukerregistreringer = brukerRegistreringRepository.hentBrukerregistreringerForIder(listOf(lagretRegistrering1.id, lagretRegistrering2.id))
-        assertThat(ordinaerBrukerregistreringer).hasSize(2)
     }
 
     companion object {

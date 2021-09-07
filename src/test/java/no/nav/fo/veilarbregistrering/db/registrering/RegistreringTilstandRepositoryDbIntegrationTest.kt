@@ -120,45 +120,6 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun `skal returnere neste 2 registreringer klare for publisering`() {
-        val nyesteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val eldsteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
-        val lagretEldsteRegistrering = brukerRegistreringRepository.lagre(eldsteRegistrering, BRUKER_1)
-        val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
-            .brukerRegistreringId(lagretNyesteRegistrering.id)
-            .opprettet(LocalDateTime.now().minusMinutes(5))
-            .status(OVERFORT_ARENA)
-            .build()
-        registreringTilstandRepository.lagre(nyesteRegistreringTilstand)
-        val eldsteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
-            .brukerRegistreringId(lagretEldsteRegistrering.id)
-            .opprettet(LocalDateTime.now().minusMinutes(10))
-            .status(OVERFORT_ARENA)
-            .build()
-        val eldsteRegistreringTilstandId = registreringTilstandRepository.lagre(eldsteRegistreringTilstand)
-        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstanderMed(2, OVERFORT_ARENA)
-        assertThat(nesteRegistreringerKlareForPublisering.size).isEqualTo(2)
-        assertThat(nesteRegistreringerKlareForPublisering.map(RegistreringTilstand::getId)
-            .containsAll(listOf(eldsteRegistreringTilstandId, nyesteRegistreringTilstand.id)))
-    }
-
-    @Test
-    fun `skal returnere tom liste dersom ingen klare for publisering`() {
-        val nyesteRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-        val lagretNyesteRegistrering = brukerRegistreringRepository.lagre(nyesteRegistrering, BRUKER_1)
-        val nyesteRegistreringTilstand = RegistreringTilstandTestdataBuilder.registreringTilstand()
-            .brukerRegistreringId(lagretNyesteRegistrering.id)
-            .opprettet(LocalDateTime.now().minusMinutes(5))
-            .status(PUBLISERT_KAFKA)
-            .build()
-        registreringTilstandRepository.lagre(nyesteRegistreringTilstand)
-
-        val nesteRegistreringerKlareForPublisering = registreringTilstandRepository.finnNesteRegistreringTilstanderMed(2, OVERFORT_ARENA)
-        assertThat(nesteRegistreringerKlareForPublisering.size).isEqualTo(0)
-    }
-
-    @Test
     fun `telling av registreringstatus uten verdier i databasen`() {
         val statuser = registreringTilstandRepository.hentAntallPerStatus()
         assertThat(statuser.size).isGreaterThan(0)
@@ -194,22 +155,6 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
                 .build()
         registreringTilstandRepository.lagre(registreringTilstandMottatt)
         assertThrows(DuplicateKeyException::class.java) { registreringTilstandRepository.lagre(registreringTilstandOverfort) }
-    }
-
-    @Test
-    fun `Kan oppdatere tilstand på flere objekter`() {
-        val overforteTilstander = lagRegistreringMedTilstand(OVERFORT_ARENA, 2)
-        registreringTilstandRepository.oppdaterFlereTilstander(PUBLISERT_KAFKA, overforteTilstander)
-        with(registreringTilstandRepository.hentAntallPerStatus()) {
-            assertThat(this[OVERFORT_ARENA]).isEqualTo(0)
-            assertThat(this[PUBLISERT_KAFKA]).isEqualTo(2)
-        }
-    }
-
-    @Test
-    fun `oppdatere tilstand på flere objekter feiler ikke ved tom liste`() {
-        registreringTilstandRepository.oppdaterFlereTilstander(PUBLISERT_KAFKA, emptyList())
-        assertThat(registreringTilstandRepository.hentAntallPerStatus()[PUBLISERT_KAFKA]).isEqualTo(0)
     }
 
     private fun lagRegistreringMedTilstand(status: Status, antall: Int) =
