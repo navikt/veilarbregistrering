@@ -152,6 +152,7 @@ class KafkaConfig {
 
     private val onPremConsumerProps = Properties().also {
         it[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
+        it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 100
         it[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
         it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
             StringDeserializer::class.java
