@@ -110,6 +110,15 @@ class KafkaConfig {
             "paw.arbeidssoker-registrert-v1",
         )
 
+    @Bean
+    fun arbeidssokerProfilertKafkaConsumer() =
+        ArbeidssokerProfilertKafkaConsumer(
+            arbeidssokerProfilertKafkaConsumerProperties(),
+            kafkaPropertiesAiven(),
+            "aapen-arbeid-arbeidssoker-profilert" + if (envSuffix == "-p") "-p" else "-q1",
+            "paw.arbeidssoker-profilert-v1",
+        )
+
 
 
     @Bean
@@ -150,6 +159,13 @@ class KafkaConfig {
             it[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerRegistrertConsumer
         }
 
+    @Bean
+    fun arbeidssokerProfilertKafkaConsumerProperties(): Properties =
+        Properties().also {
+            it.putAll(onPremConsumerProps)
+            it[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerProfilertConsumer
+        }
+
     private val onPremConsumerProps = Properties().also {
         it[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
         it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 100
@@ -171,6 +187,7 @@ class KafkaConfig {
         companion object {
         private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
         private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-01"
+        private const val groupIdForArbeidssokerProfilertConsumer: String = "veilarbregistrering-ArbeidssokerProfilertConsumer-01"
         private const val autoOffsetResetStrategy: String = "earliest"
 
         private val aivenSecurityConfig: Properties = Properties().apply {
