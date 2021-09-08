@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka
 
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
+import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
@@ -154,9 +155,8 @@ class KafkaConfig {
         it[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
         it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
             StringDeserializer::class.java
-        it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] =
-            StringDeserializer::class.java
-        it[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
+
+        it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = KafkaAvroDeserializer::class.java
         it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
         it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
         if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
