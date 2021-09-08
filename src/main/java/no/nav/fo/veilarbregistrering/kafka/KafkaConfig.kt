@@ -101,6 +101,17 @@ class KafkaConfig {
     }
 
     @Bean
+    fun arbeidssokerRegistrertKafkaConsumer() =
+        ArbeidssokerRegistrertKafkaConsumer(
+            arbeidssokerRegistertKafkaConsumerProperties(),
+            kafkaPropertiesAiven(),
+            "aapen-arbeid-arbeidssoker-registrert" + if (envSuffix == "-p") "-p" else "-q1",
+            "paw.arbeidssoker-registrert-v1",
+        )
+
+
+
+    @Bean
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient?,
         arbeidssokerService: ArbeidssokerService?
@@ -131,11 +142,34 @@ class KafkaConfig {
         return properties
     }
 
-    // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
-    // vil dette gi oss «eventual consistency».
+    @Bean
+    fun arbeidssokerRegistertKafkaConsumerProperties(): Properties =
+        Properties().also { properties ->
+            properties.putAll(onPremConsumerProps)
+            properties[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerRegistrertConsumer
+        }
 
-    companion object {
+    private val onPremConsumerProps = Properties().also {
+        it[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
+        it[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
+        it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
+            StringDeserializer::class.java
+        it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] =
+            StringDeserializer::class.java
+        it[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
+        it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
+        it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
+        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+            it.putAll(securityConfig)
+        }
+    }
+
+        // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
+        // vil dette gi oss «eventual consistency».
+
+        companion object {
         private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
+        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-01"
         private const val autoOffsetResetStrategy: String = "earliest"
 
         private val aivenSecurityConfig: Properties = Properties().apply {
@@ -166,8 +200,8 @@ class KafkaConfig {
 
         private val envSuffix: String =
             System.getenv("APP_ENVIRONMENT_NAME")?.let {
-                    "-" + it.toLowerCase()
-                } ?: ""
+                "-" + it.toLowerCase()
+            } ?: ""
 
     }
-}
+    }
