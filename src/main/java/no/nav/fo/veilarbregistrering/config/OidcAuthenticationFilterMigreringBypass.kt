@@ -13,10 +13,9 @@ class OidcAuthenticationFilterMigreringBypass(oidcAuthenticators: List<OidcAuthe
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val servletPath = (servletRequest as HttpServletRequest).servletPath
         if (mathcerMigrering(servletPath)) {
-            log.info("OMGÅR autentisering for request til [${servletPath}")
+            log.info("Omgår autentisering for request til [${servletPath}")
             chain.doFilter(servletRequest, servletResponse)
         } else {
-            log.info("Gjør autentisering for request til [${servletPath}")
             super.doFilter(servletRequest, servletResponse, chain)
         }
     }
