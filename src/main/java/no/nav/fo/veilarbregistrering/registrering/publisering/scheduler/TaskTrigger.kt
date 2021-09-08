@@ -32,8 +32,8 @@ class TaskTrigger(private val leaderElectionClient: LeaderElectionClient, privat
     }
 
     companion object {
-        private const val NON_LEADER_RATE = 20000
-        private const val QUEUE_EMPTY_RATE = 10000
-        private const val QUICKEST_RATE = 1000
+        private const val NON_LEADER_RATE = 60000
+        private const val QUEUE_EMPTY_RATE = 20000
+        private const val QUICKEST_RATE = 5000
     }
 }

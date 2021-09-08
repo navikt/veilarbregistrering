@@ -30,7 +30,7 @@ class KafkaStreamScheduler(
         if (!leaderElectionClient.isLeader) return
 
         val taskDuration = System.currentTimeMillis() - startTime
-        LOG.info("Dynamic task [on leader] finished in {}ms", taskDuration)
+        LOG.info("Kafka stream task finished in {}ms", taskDuration)
     }
 
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
