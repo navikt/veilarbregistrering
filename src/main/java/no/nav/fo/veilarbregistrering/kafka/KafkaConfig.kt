@@ -145,9 +145,9 @@ class KafkaConfig {
 
     @Bean
     fun arbeidssokerRegistertKafkaConsumerProperties(): Properties =
-        Properties().also { properties ->
-            properties.putAll(onPremConsumerProps)
-            properties[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerRegistrertConsumer
+        Properties().also {
+            it.putAll(onPremConsumerProps)
+            it[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerRegistrertConsumer
         }
 
     private val onPremConsumerProps = Properties().also {
