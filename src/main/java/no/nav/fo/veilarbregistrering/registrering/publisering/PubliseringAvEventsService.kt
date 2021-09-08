@@ -1,12 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
-import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.slf4j.LoggerFactory
@@ -30,8 +26,11 @@ class PubliseringAvEventsService(
         val muligRegistreringTilstand = Optional.ofNullable(
             registreringTilstandRepository.finnNesteRegistreringTilstandMed(Status.OVERFORT_ARENA)
         )
+        LOG.info(
+            "{} registrering klar (status = OVERFORT_ARENA) for publisering",
+            if (muligRegistreringTilstand.isPresent) "1" else "Ingen")
+
         if (!muligRegistreringTilstand.isPresent) {
-            LOG.info("Ingen registreringer klare (status = OVERFORT_ARENA) for publisering")
             return
         }
         val registreringTilstand = muligRegistreringTilstand.orElseThrow { IllegalStateException() }
