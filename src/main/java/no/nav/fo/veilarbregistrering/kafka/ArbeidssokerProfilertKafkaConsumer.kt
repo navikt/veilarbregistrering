@@ -60,6 +60,7 @@ class ArbeidssokerProfilertKafkaConsumer  internal constructor(
                         MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
                             record.value()?.let { republiserMelding(it) } ?: LOG.error("Fant melding for {} uten verdi/body", record.key())
+                            Thread.sleep(100)
                         } catch (e: RuntimeException) {
                             LOG.error(String.format("Behandling av record feilet: %s", record.value()), e)
                             throw e
