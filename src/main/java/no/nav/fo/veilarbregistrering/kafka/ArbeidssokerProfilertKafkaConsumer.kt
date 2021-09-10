@@ -73,7 +73,9 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
                             MDC.remove(mdcPartitionKey)
                         }
                     })
+                    LOG.info("Offset before commit: {}", consumerRecords.partitions().map { consumer.position(it) })
                     consumer.commitSync()
+                    LOG.info("Offset after commit: {}", consumerRecords.partitions().map { consumer.position(it) })
                 }
             }
         } catch (e: Exception) {
