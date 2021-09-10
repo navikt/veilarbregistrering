@@ -10,6 +10,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.clients.producer.RecordMetadata
+import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.header.internals.RecordHeader
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -54,6 +55,9 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
                 consumer.subscribe(listOf(konsumentTopic))
                 LOG.info("Subscribing to {}", konsumentTopic)
                 while (true) {
+                    LOG.info("Offset before poll: {}", listOf(0,1,2).map { consumer.position(
+                        TopicPartition(konsumentTopic, it)
+                    ) })
                     val consumerRecords = consumer.poll(Duration.ofMinutes(2))
                     LOG.info("Leser {} events fra topic {}", consumerRecords.count(), konsumentTopic)
                     consumerRecords.forEach(Consumer { record: ConsumerRecord<String?, ArbeidssokerProfilertEvent?> ->
