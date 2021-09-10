@@ -15,6 +15,7 @@ import java.time.Duration
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 /**
@@ -83,34 +84,34 @@ class ArbeidssokerRegistrertKafkaConsumer  internal constructor(
     private fun republiserMelding(event: ArbeidssokerRegistrertEvent) {
         LOG.info("Republiserer registrert melding til Aiven for {} {}", event.getAktorid(), event.getRegistreringOpprettet())
 
-        try {
-            KafkaProducer<String, ArbeidssokerRegistrertEvent>(kafkaProducerProperties).use {
+        KafkaProducer<String, ArbeidssokerRegistrertEvent>(kafkaProducerProperties).use {
 
-                val record = ProducerRecord(
-                    produsentTopic,
-                    event.getAktorid(),
-                    event
-                )
-                record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, CallId.getCorrelationIdAsBytes()))
+            val record = ProducerRecord(
+                produsentTopic,
+                event.getAktorid(),
+                event
+            )
+            record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, CallId.getCorrelationIdAsBytes()))
 
-                it.send(record) { recordMetadata: RecordMetadata?, e: Exception? ->
-                    if (e != null) {
-                        LOG.error(
-                            String.format(
-                                "ArbeidssokerRegistrertEvent publisert på topic, %s",
-                                produsentTopic
-                            ), e
-                        )
-                    } else {
-                        LOG.info(
-                            "ArbeidssokerRegistrertEvent publisert: {}",
-                            recordMetadata
-                        )
-                    }
+            val resultat = AtomicBoolean(false)
+            it.send(record) { recordMetadata: RecordMetadata?, e: Exception? ->
+                if (e != null) {
+                    LOG.error(
+                        String.format(
+                            "ArbeidssokerRegistrertEvent publisert på topic, %s",
+                            produsentTopic
+                        ), e
+                    )
+                    resultat.set(false)
+                } else {
+                    LOG.info(
+                        "ArbeidssokerRegistrertEvent publisert: {}",
+                        recordMetadata
+                    )
+                    resultat.set(true)
                 }
-            }
-        } catch (e: Exception) {
-            LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka aiven feilet", e)
+            }.get()
+            if (!resultat.get()) throw RuntimeException("En feil oppsto under publisering av melding på topic $produsentTopic")
         }
     }
 

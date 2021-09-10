@@ -4,6 +4,7 @@ import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.CallId
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -16,6 +17,7 @@ import java.time.Duration
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 /**
@@ -23,7 +25,7 @@ import java.util.function.Consumer
  * 2. Kjører i evig løkka
  * 3. Produserer hver melding på nytt med producer konfigurert for Aiven
  */
-class ArbeidssokerProfilertKafkaConsumer  internal constructor(
+class ArbeidssokerProfilertKafkaConsumer internal constructor(
     private val kafkaConsumerProperties: Properties,
     private val kafkaProducerProperties: Properties,
     private val konsumentTopic: String,
@@ -59,7 +61,8 @@ class ArbeidssokerProfilertKafkaConsumer  internal constructor(
                         MDC.put(mdcOffsetKey, record.offset().toString())
                         MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
-                            record.value()?.let { republiserMelding(it) } ?: LOG.error("Fant melding for {} uten verdi/body", record.key())
+                            record.value()?.let { republiserMelding(it) }
+                                ?: LOG.error("Fant melding for {} uten verdi/body", record.key())
                             Thread.sleep(100)
                         } catch (e: RuntimeException) {
                             LOG.error(String.format("Behandling av record feilet: %s", record.value()), e)
@@ -82,40 +85,44 @@ class ArbeidssokerProfilertKafkaConsumer  internal constructor(
     }
 
     private fun republiserMelding(event: ArbeidssokerProfilertEvent) {
-        LOG.info("Republiserer profilert-melding til Aiven for {} {}", event.getAktorid(), event.getProfileringGjennomfort())
+        LOG.info(
+            "Republiserer profilert-melding til Aiven for {} {}",
+            event.getAktorid(),
+            event.getProfileringGjennomfort()
+        )
 
-        try {
-            KafkaProducer<String, ArbeidssokerProfilertEvent>(kafkaProducerProperties).use {
+        KafkaProducer<String, ArbeidssokerProfilertEvent>(kafkaProducerProperties).use {
 
-                val record = ProducerRecord(
-                    produsentTopic,
-                    event.getAktorid(),
-                    event
-                )
-                record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, CallId.getCorrelationIdAsBytes()))
-
-                it.send(record) { recordMetadata: RecordMetadata?, e: Exception? ->
-                    if (e != null) {
-                        LOG.error(
-                            String.format(
-                                "ArbeidssokerProfilertEvent publisert på topic, %s",
-                                produsentTopic
-                            ), e
-                        )
-                    } else {
-                        LOG.info(
-                            "ArbeidssokerProfilertEvent publisert: {}",
-                            recordMetadata
-                        )
-                    }
+            val record = ProducerRecord(
+                produsentTopic,
+                event.getAktorid(),
+                event
+            )
+            record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, CallId.getCorrelationIdAsBytes()))
+            val resultat = AtomicBoolean(false)
+            it.send(record) { recordMetadata: RecordMetadata?, e: Exception? ->
+                if (e != null) {
+                    LOG.error(
+                        String.format(
+                            "ArbeidssokerProfilertEvent kunne ikke publiseres på topic, %s",
+                            produsentTopic
+                        ), e
+                    )
+                    resultat.set(false)
+                } else {
+                    LOG.info(
+                        "ArbeidssokerProfilertEvent publisert: {}",
+                        recordMetadata
+                    )
+                    resultat.set(true)
                 }
-            }
-        } catch (e: Exception) {
-            LOG.error("Sending av arbeidssokerProfilertEvent til Kafka aiven feilet", e)
+            }.get()
+            if (!resultat.get()) throw RuntimeException("En feil oppsto under publisering av melding på topic $produsentTopic")
         }
+
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ArbeidssokerProfilertKafkaConsumer::class.java)
+        private val LOG = loggerFor<ArbeidssokerProfilertKafkaConsumer>()
     }
 }
