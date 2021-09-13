@@ -53,9 +53,7 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
                 consumer.subscribe(listOf(konsumentTopic))
                 LOG.info("Subscribing to {}", konsumentTopic)
                 while (true) {
-                    LOG.info("Offset before poll: {}", assignmentOffsets(consumer, konsumentTopic))
                     val consumerRecords = consumer.poll(Duration.ofMinutes(2))
-                    LOG.info("Leser {} events fra topic {}", consumerRecords.count(), konsumentTopic)
                     consumerRecords.forEach(Consumer { record: ConsumerRecord<String?, ArbeidssokerProfilertEvent?> ->
                         CallId.leggTilCallId()
                         MDC.put(mdcOffsetKey, record.offset().toString())
@@ -73,9 +71,7 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
                             MDC.remove(mdcPartitionKey)
                         }
                     })
-                    LOG.info("Offset before commit: {}", assignmentOffsets(consumer, konsumentTopic))
                     consumer.commitSync()
-                    LOG.info("Offset after commit: {}", assignmentOffsets(consumer, konsumentTopic))
                 }
             }
         } catch (e: Exception) {
@@ -84,12 +80,6 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
             MDC.remove(MDCConstants.MDC_CALL_ID)
             MDC.remove(mdcTopicKey)
         }
-    }
-
-    private fun assignmentOffsets(consumer: KafkaConsumer<*, *>, topic: String) = consumer.assignment().map {
-        it.partition() to consumer.position(
-            TopicPartition(topic, it.partition())
-        )
     }
 
     private fun republiserMelding(event: ArbeidssokerProfilertEvent) {

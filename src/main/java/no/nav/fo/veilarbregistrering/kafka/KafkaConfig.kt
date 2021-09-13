@@ -186,7 +186,7 @@ class KafkaConfig {
 
         companion object {
         private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
-        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-01"
+        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-02"
         private const val groupIdForArbeidssokerProfilertConsumer: String = "veilarbregistrering-ArbeidssokerProfilertConsumer-02"
         private const val autoOffsetResetStrategy: String = "earliest"
 
