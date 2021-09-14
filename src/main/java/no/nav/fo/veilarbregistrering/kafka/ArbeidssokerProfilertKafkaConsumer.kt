@@ -35,9 +35,9 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
         Executors.newSingleThreadScheduledExecutor()
             .scheduleWithFixedDelay(
                 this,
-                5,
-                5,
-                TimeUnit.MINUTES
+                180000,
+                500,
+                TimeUnit.MILLISECONDS
             )
     }
 
@@ -61,7 +61,6 @@ class ArbeidssokerProfilertKafkaConsumer internal constructor(
                         try {
                             record.value()?.let { republiserMelding(it) }
                                 ?: LOG.error("Fant melding for {} uten verdi/body", record.key())
-                            Thread.sleep(100)
                         } catch (e: RuntimeException) {
                             LOG.error(String.format("Behandling av record feilet: %s", record.value()), e)
                             throw e

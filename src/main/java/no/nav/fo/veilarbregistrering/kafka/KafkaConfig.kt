@@ -168,7 +168,7 @@ class KafkaConfig {
 
     private val onPremConsumerProps = Properties().also {
         it[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
-        it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 100
+        it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
         it[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
         it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
             StringDeserializer::class.java
@@ -186,8 +186,8 @@ class KafkaConfig {
 
         companion object {
         private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
-        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-01"
-        private const val groupIdForArbeidssokerProfilertConsumer: String = "veilarbregistrering-ArbeidssokerProfilertConsumer-01"
+        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-02"
+        private const val groupIdForArbeidssokerProfilertConsumer: String = "veilarbregistrering-ArbeidssokerProfilertConsumer-02"
         private const val autoOffsetResetStrategy: String = "earliest"
 
         private val aivenSecurityConfig: Properties = Properties().apply {
