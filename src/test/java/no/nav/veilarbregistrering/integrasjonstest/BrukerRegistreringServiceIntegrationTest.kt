@@ -1,7 +1,6 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
-import io.vavr.control.Try
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -20,9 +19,7 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.veilarbregistrering.integrasjonstest.BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
@@ -65,9 +62,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         ).id
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
-        Assertions.assertThat(run.isFailure).isTrue
-        Assertions.assertThat(run.cause.toString()).isEqualTo(RuntimeException::class.java.name)
+        assertThrows<RuntimeException> { brukerRegistreringService.overforArena(id, BRUKER, null) }
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
@@ -88,9 +83,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         ).id
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
-        Assertions.assertThat(run.isFailure).isTrue
-        Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
+        assertThrows<AktiverBrukerException> { brukerRegistreringService.overforArena(id, BRUKER, null) }
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
@@ -110,9 +103,8 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         ).id
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
-        Assertions.assertThat(run.isFailure).isTrue
-        Assertions.assertThat(run.cause).isInstanceOf(AktiverBrukerException::class.java)
+        assertThrows<AktiverBrukerException> { brukerRegistreringService.overforArena(id, BRUKER, null) }
+
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
@@ -131,8 +123,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         ).id
         registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.MOTTATT, id))
         profileringRepository.lagreProfilering(id, ProfileringTestdataBuilder.lagProfilering())
-        val run = Try.run { brukerRegistreringService.overforArena(id, BRUKER, null) }
-        Assertions.assertThat(run.isSuccess).isTrue
+        assertDoesNotThrow { brukerRegistreringService.overforArena(id, BRUKER, null) }
         val brukerRegistrering = Optional.ofNullable(
             brukerRegistreringRepository.hentBrukerregistreringForId(id)
         )
