@@ -101,3 +101,5 @@ spec:
       - kvPath: /kv/preprod/fss/veilarbregistrering/q1
         mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
+  secureLogs:
+    enabled: true
