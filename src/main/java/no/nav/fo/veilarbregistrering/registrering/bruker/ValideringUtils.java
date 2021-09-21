@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.fo.veilarbregistrering.besvarelse.StillingKt.tomStilling;
+
 public class ValideringUtils {
 
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenHarHattJobb = Arrays.asList(
@@ -27,7 +29,7 @@ public class ValideringUtils {
 
         assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
         assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
-        assertFalse(bruker.getSisteStilling().equals(Stilling.tomStilling()));
+        assertFalse(bruker.getSisteStilling().equals(StillingKt.tomStilling()));
 
         DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
         UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
@@ -91,7 +93,7 @@ public class ValideringUtils {
     }
 
     private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
-        return !bruker.getSisteStilling().equals(Stilling.ingenYrkesbakgrunn());
+        return !bruker.getSisteStilling().equals(StillingKt.ingenYrkesbakgrunn());
     }
 
     private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
