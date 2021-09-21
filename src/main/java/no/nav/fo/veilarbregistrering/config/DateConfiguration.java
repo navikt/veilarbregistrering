@@ -2,21 +2,16 @@ package no.nav.fo.veilarbregistrering.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.time.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -28,46 +23,47 @@ public class DateConfiguration {
 
     private static final ZonedDateTime _1800 = ZonedDateTime.of(1800,1,1,0,0, 0, 0, systemDefault());
 
-    private static final Map<Class, BaseProvider<?>> converters = new HashMap<>();
     public static final ZoneId DEFAULT_ZONE = ZoneId.of("Europe/Paris");
-
-    static {
-        add(new LocalDateProvider());
-        add(new LocalDateTimeProvider());
-        add(new ZonedDateTimeProvider());
-        add(new DateProvider());
-        add(new TimestampProvider());
-        add(new SqlDateProvider());
-    }
-
-    private static <T> void add(BaseProvider<T> paramConverter) {
-        converters.put(paramConverter.targetClass, paramConverter);
-    }
+    private static SimpleModule module = null;
 
     public static Module dateModule() {
-        SimpleModule module = new SimpleModule();
-        converters.values().forEach((v) -> {
-            module.addSerializer(v.serializer);
-            module.addDeserializer(v.targetClass, v.deSerializer);
-        });
-        return module;
-    }
+        if (module != null) return module;
+        module = new SimpleModule();
 
-    public static ParamConverterProvider parameterConverterProvider() {
-        return new ParamConverterProvider() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
-                return (ParamConverter<T>) converters.get(rawType);
-            }
-        };
+        LocalDateProvider localDateProvider = new LocalDateProvider();
+
+        LocalDateTimeProvider localDateTimeProvider = new LocalDateTimeProvider();
+        ZonedDateTimeProvider zonedDateTimeProvider = new ZonedDateTimeProvider();
+        DateProvider dateProvider = new DateProvider();
+        TimestampProvider timestampProvider = new TimestampProvider();
+        SqlDateProvider sqlDateProvider = new SqlDateProvider();
+
+        module.addSerializer(localDateProvider.serializer);
+        module.addDeserializer(localDateProvider.targetClass, localDateProvider.deSerializer);
+
+        module.addSerializer(localDateTimeProvider.serializer);
+        module.addDeserializer(localDateTimeProvider.targetClass, localDateTimeProvider.deSerializer);
+
+        module.addSerializer(zonedDateTimeProvider.serializer);
+        module.addDeserializer(zonedDateTimeProvider.targetClass, zonedDateTimeProvider.deSerializer);
+
+        module.addSerializer(dateProvider.serializer);
+        module.addDeserializer(dateProvider.targetClass, dateProvider.deSerializer);
+
+        module.addSerializer(timestampProvider.serializer);
+        module.addDeserializer(timestampProvider.targetClass, timestampProvider.deSerializer);
+
+        module.addSerializer(sqlDateProvider.serializer);
+        module.addDeserializer(sqlDateProvider.targetClass, sqlDateProvider.deSerializer);
+
+        return module;
     }
 
     private abstract static class BaseProvider<T> implements ParamConverter<T> {
 
-        private final Class targetClass;
-        private final JsonSerializer<T> serializer;
-        private final JsonDeserializer<T> deSerializer;
+        protected final Class<T> targetClass;
+        protected final JsonSerializer<T> serializer;
+        protected final JsonDeserializer<T> deSerializer;
 
         protected abstract T toValue(ZonedDateTime zonedDateTime);
 
@@ -75,13 +71,13 @@ public class DateConfiguration {
 
         public BaseProvider(Class<T> targetClass) {
             this.targetClass = targetClass;
-            this.serializer = new StdScalarSerializer<T>(targetClass) {
+            this.serializer = new StdScalarSerializer<>(targetClass) {
                 @Override
                 public void serialize(T value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
                     jgen.writeString(BaseProvider.this.toString(value));
                 }
             };
-            this.deSerializer = new StdScalarDeserializer<T>(targetClass) {
+            this.deSerializer = new StdScalarDeserializer<>(targetClass) {
 
                 @Override
                 public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
@@ -110,7 +106,7 @@ public class DateConfiguration {
 
     }
 
-    public static Optional<String> of(String string) {
+    private static Optional<String> of(String string) {
         return Optional.ofNullable(string).filter(DateConfiguration::notNullOrEmpty);
     }
 
@@ -205,7 +201,7 @@ public class DateConfiguration {
     }
 
     private static class SqlDateProvider extends BaseProvider<java.sql.Date> {
-        private DateProvider dateProvider = new DateProvider();
+        private final DateProvider dateProvider = new DateProvider();
 
         public SqlDateProvider() {
             super(java.sql.Date.class);
@@ -222,9 +218,8 @@ public class DateConfiguration {
         }
     }
 
-
     private static class TimestampProvider extends BaseProvider<java.sql.Timestamp> {
-        private DateProvider dateProvider = new DateProvider();
+        private final DateProvider dateProvider = new DateProvider();
 
         public TimestampProvider() {
             super(java.sql.Timestamp.class);
@@ -240,5 +235,4 @@ public class DateConfiguration {
             return dateProvider.from(value);
         }
     }
-
 }
