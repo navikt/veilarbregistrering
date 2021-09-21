@@ -23,14 +23,14 @@ internal object OrdinaerBrukerBesvarelseMetrikker {
 
         prometheusMetricsService.registrer(Events.ORDINAER_BESVARELSE)
 
-        if (helseHinderSvar != HelseHinderSvar.INGEN_SVAR) {
+        if (helseHinderSvar != null && helseHinderSvar != HelseHinderSvar.INGEN_SVAR) {
             prometheusMetricsService.registrer(
                 Events.BESVARELSE_HELSEHINDER,
-                Tag.of("helsehinder", helseHinderSvar.name)
+                Tag.of("helsehinder", helseHinderSvar.name )
             )
         }
 
-        if (andreForholdSvar != AndreForholdSvar.INGEN_SVAR) {
+        if (andreForholdSvar != null && andreForholdSvar != AndreForholdSvar.INGEN_SVAR) {
             prometheusMetricsService.registrer(
                 Events.BESVARELSE_ANDRE_FORHOLD,
                 Tag.of("andre_forhold", andreForholdSvar.name)

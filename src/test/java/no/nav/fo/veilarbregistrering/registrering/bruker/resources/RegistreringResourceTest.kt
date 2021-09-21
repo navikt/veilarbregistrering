@@ -192,9 +192,10 @@ class RegistreringResourceTest(
     fun skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
         val sykmeldtRegistrering = SykmeldtRegistrering()
             .setBesvarelse(
-                Besvarelse()
-                    .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
-                    .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING)
+                Besvarelse(
+                    fremtidigSituasjon = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
+                    tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING,
+                )
             )
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
@@ -205,7 +206,7 @@ class RegistreringResourceTest(
     @Test
     fun skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         val ordinaerBrukerRegistrering = OrdinaerBrukerRegistrering()
-            .setBesvarelse(Besvarelse().setHelseHinder(HelseHinderSvar.NEI)).setId(2L)
+            .setBesvarelse(Besvarelse(helseHinder = HelseHinderSvar.NEI)).setId(2L)
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every {

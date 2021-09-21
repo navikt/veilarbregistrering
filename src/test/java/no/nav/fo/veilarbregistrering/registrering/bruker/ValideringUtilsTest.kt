@@ -14,14 +14,15 @@ class ValideringUtilsTest {
     @Test
     fun `hvis mistet jobben så skal man ha svart på utdanning`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse()
-                .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
-                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
-                .setUtdanning(UtdanningSvar.INGEN_SVAR)
-                .setUtdanningGodkjent(UtdanningGodkjentSvar.NEI)
-                .setUtdanningBestatt(UtdanningBestattSvar.NEI)
-                .setHelseHinder(HelseHinderSvar.NEI)
-                .setAndreForhold(AndreForholdSvar.NEI)
+            gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.MISTET_JOBBEN,
+                sisteStilling = SisteStillingSvar.INGEN_SVAR,
+                utdanning = UtdanningSvar.INGEN_SVAR,
+                utdanningGodkjent = UtdanningGodkjentSvar.NEI,
+                utdanningBestatt = UtdanningBestattSvar.NEI,
+                helseHinder = HelseHinderSvar.NEI,
+                andreForhold = AndreForholdSvar.NEI,
+            )
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -33,9 +34,10 @@ class ValideringUtilsTest {
     @Test
     fun `hvis siste stilling spm ikke er besvart skal man vite hvorvidt bruker er i jobb`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse()
-                .setDinSituasjon(DinSituasjonSvar.USIKKER_JOBBSITUASJON)
-                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
+            gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.USIKKER_JOBBSITUASJON,
+                sisteStilling = SisteStillingSvar.INGEN_SVAR,
+            )
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -47,12 +49,13 @@ class ValideringUtilsTest {
     @Test
     fun `skal ha svart på utdanningsspørsmal hvis din situasjon ikke er vil fortsette i jobb`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse()
-                .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
-                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
-                .setUtdanning(UtdanningSvar.INGEN_SVAR)
-                .setUtdanningBestatt(UtdanningBestattSvar.INGEN_SVAR)
-                .setUtdanningGodkjent(UtdanningGodkjentSvar.INGEN_SVAR)
+            gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.MISTET_JOBBEN,
+                sisteStilling = SisteStillingSvar.INGEN_SVAR,
+                utdanning = UtdanningSvar.INGEN_SVAR,
+                utdanningBestatt = UtdanningBestattSvar.INGEN_SVAR,
+                utdanningGodkjent = UtdanningGodkjentSvar.INGEN_SVAR,
+            )
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -65,8 +68,9 @@ class ValideringUtilsTest {
     fun `stilling skal samsvaret med svaret pa siste stilling spm`() {
         val ordinaerBrukerRegistrering1 = gyldigBrukerRegistrering()
             .setBesvarelse(
-                gyldigBesvarelse()
-                    .setSisteStilling(SisteStillingSvar.HAR_IKKE_HATT_JOBB)
+                gyldigBesvarelse(
+                    sisteStilling = SisteStillingSvar.HAR_IKKE_HATT_JOBB,
+                )
             )
             .setSisteStilling(gyldigStilling())
         assertThrows<RuntimeException> {
@@ -76,8 +80,9 @@ class ValideringUtilsTest {
         }
         val ordinaerBrukerRegistrering2 = gyldigBrukerRegistrering()
             .setBesvarelse(
-                gyldigBesvarelse()
-                    .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+                gyldigBesvarelse(
+                    sisteStilling = SisteStillingSvar.HAR_HATT_JOBB,
+                )
             )
             .setSisteStilling(ingenYrkesbakgrunn())
         assertThrows<RuntimeException> {
@@ -90,7 +95,7 @@ class ValideringUtilsTest {
     @Test
     fun `spørsmal skal ikke være null`() {
         val ordinaerBrukerRegistrering =
-            gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse().setAndreForhold(null))
+            gyldigBrukerRegistrering().setBesvarelse(gyldigBesvarelse(andreForhold = null))
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
                 ordinaerBrukerRegistrering
@@ -111,7 +116,7 @@ class ValideringUtilsTest {
     @Test
     fun `skal svare på sporsmal om andre forhold`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse().setAndreForhold(AndreForholdSvar.INGEN_SVAR)
+            gyldigBesvarelse(andreForhold = AndreForholdSvar.INGEN_SVAR)
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -123,7 +128,7 @@ class ValideringUtilsTest {
     @Test
     fun `skal svare på spørsmal om helse`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse().setHelseHinder(HelseHinderSvar.INGEN_SVAR)
+            gyldigBesvarelse(helseHinder = HelseHinderSvar.INGEN_SVAR)
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -145,7 +150,10 @@ class ValideringUtilsTest {
     @Test
     fun `skal ikke svare på spm om siste stilling hvis vi vet at bruker ikke har hatt jobb`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistreringUtenJobb().setBesvarelse(
-            gyldigBesvarelseUtenJobb().setSisteStilling(SisteStillingSvar.HAR_IKKE_HATT_JOBB)
+            gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
+                sisteStilling = SisteStillingSvar.HAR_IKKE_HATT_JOBB,
+            )
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -157,14 +165,17 @@ class ValideringUtilsTest {
     @Test
     fun `skal ikke svare på spm om siste stilling hvis vi allerede vet at bruker har hatt jobb`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse()
-                .setDinSituasjon(DinSituasjonSvar.MISTET_JOBBEN)
-                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
+            gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.MISTET_JOBBEN,
+                sisteStilling = SisteStillingSvar.INGEN_SVAR,
+            )
         )
         ValideringUtils.validerBrukerRegistrering(ordinaerBrukerRegistrering)
         ordinaerBrukerRegistrering.setBesvarelse(
-            ordinaerBrukerRegistrering.getBesvarelse()
-                .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
+            gyldigBesvarelse(
+                sisteStilling = SisteStillingSvar.HAR_HATT_JOBB,
+                dinSituasjon = DinSituasjonSvar.MISTET_JOBBEN,
+            )
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -182,7 +193,7 @@ class ValideringUtilsTest {
     @Test
     fun `validering skal feile hvis besvarelse har nullfelt`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setBesvarelse(
-            gyldigBesvarelse().setAndreForhold(null)
+            gyldigBesvarelse(andreForhold = null)
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(

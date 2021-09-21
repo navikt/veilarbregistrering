@@ -73,14 +73,15 @@ internal class ProfileringServiceTest {
                                                     listOf(*AndreForholdSvar.values()).forEach(
                                                         Consumer { andreForholdSvar: AndreForholdSvar? ->
                                                             besvarelser.add(
-                                                                Besvarelse()
-                                                                    .setDinSituasjon(dinSituasjonSvar)
-                                                                    .setSisteStilling(sisteStillingSvar)
-                                                                    .setUtdanning(utdanningSvar)
-                                                                    .setUtdanningGodkjent(utdanningGodkjentSvar)
-                                                                    .setUtdanningBestatt(utdanningBestattSvar)
-                                                                    .setHelseHinder(helseHinderSvar)
-                                                                    .setAndreForhold(andreForholdSvar)
+                                                                Besvarelse(
+                                                                    dinSituasjon = dinSituasjonSvar,
+                                                                    sisteStilling = sisteStillingSvar,
+                                                                    utdanning = utdanningSvar,
+                                                                    utdanningGodkjent = utdanningGodkjentSvar,
+                                                                    utdanningBestatt = utdanningBestattSvar,
+                                                                    helseHinder = helseHinderSvar,
+                                                                    andreForhold = andreForholdSvar,
+                                                                )
                                                             )
                                                         })
                                                 })
@@ -148,22 +149,11 @@ internal class ProfileringServiceTest {
         assertEquals(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING, innsatsgruppe)
     }
 
-    private fun hentStandardInnsatsBesvarelse(): Besvarelse {
-        return Besvarelse()
-            .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
-            .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
-            .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
-            .setUtdanningBestatt(UtdanningBestattSvar.JA)
-            .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
-            .setHelseHinder(HelseHinderSvar.NEI)
-            .setAndreForhold(AndreForholdSvar.NEI)
-    }
+    private fun hentStandardInnsatsBesvarelse(): Besvarelse =
+        BesvarelseTestdataBuilder.gyldigBesvarelse()
 
-    private fun hentArbeidsEvneVurderingBesvarelse(): Besvarelse {
-        val besvarelse = hentStandardInnsatsBesvarelse()
-        besvarelse.helseHinder = HelseHinderSvar.JA
-        return besvarelse
-    }
+    private fun hentArbeidsEvneVurderingBesvarelse(): Besvarelse =
+        BesvarelseTestdataBuilder.gyldigBesvarelse(helseHinder = HelseHinderSvar.JA)
 
     companion object {
         private val FOEDSELSNUMMER_MINUS_10_MND = Foedselsnummer.of("12345678911")

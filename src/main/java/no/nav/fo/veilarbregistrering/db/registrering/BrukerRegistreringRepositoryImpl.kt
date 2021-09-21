@@ -149,14 +149,15 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                         )
                     )
                     .setBesvarelse(
-                        Besvarelse()
-                            .setDinSituasjon(DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)))
-                            .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)))
-                            .setUtdanningBestatt(UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)))
-                            .setUtdanningGodkjent(UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)))
-                            .setHelseHinder(HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)))
-                            .setAndreForhold(AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)))
-                            .setSisteStilling(SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)))
+                        Besvarelse(
+                            dinSituasjon = DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)),
+                            utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)),
+                            utdanningBestatt = UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)),
+                            utdanningGodkjent = UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)),
+                            helseHinder = HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)),
+                            andreForhold = AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)),
+                            sisteStilling = SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)),
+                        )
                     )
             } catch (e: SQLException) {
                 throw RuntimeException(e)

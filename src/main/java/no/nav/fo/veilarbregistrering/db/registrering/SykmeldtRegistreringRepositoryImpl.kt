@@ -86,18 +86,26 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         val rowMapperSykmeldt = RowMapper { rs, _ ->
             try {
                 SykmeldtRegistrering()
-                        .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
-                        .setOpprettetDato(rs.getTimestamp(BrukerRegistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime())
-                        .setTeksterForBesvarelse(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE)))
-                        .setBesvarelse(
-                                Besvarelse()
-                                        .setFremtidigSituasjon(rs.getString(BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON)?.let(FremtidigSituasjonSvar::valueOf))
-                                        .setTilbakeIArbeid(rs.getString(BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER)?.let(TilbakeIArbeidSvar::valueOf))
-                                        .setUtdanning(UtdanningUtils.mapTilUtdanning(rs.getString(BrukerRegistreringRepositoryImpl.NUS_KODE)))
-                                        .setUtdanningBestatt(rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT)?.let(UtdanningBestattSvar::valueOf))
-                                        .setUtdanningGodkjent(rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE)?.let(UtdanningGodkjentSvar::valueOf))
-                                        .setAndreForhold(rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)?.let(AndreForholdSvar::valueOf))
+                    .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
+                    .setOpprettetDato(
+                        rs.getTimestamp(BrukerRegistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime()
+                    )
+                    .setTeksterForBesvarelse(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE)))
+                    .setBesvarelse(
+                        Besvarelse(
+                            fremtidigSituasjon = rs.getString(BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON)
+                                ?.let(FremtidigSituasjonSvar::valueOf),
+                            tilbakeIArbeid = rs.getString(BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER)
+                                ?.let(TilbakeIArbeidSvar::valueOf),
+                            utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(BrukerRegistreringRepositoryImpl.NUS_KODE)),
+                            utdanningBestatt = rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT)
+                                ?.let(UtdanningBestattSvar::valueOf),
+                            utdanningGodkjent = rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE)
+                                ?.let(UtdanningGodkjentSvar::valueOf),
+                            andreForhold = rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)
+                                ?.let(AndreForholdSvar::valueOf),
                         )
+                    )
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }

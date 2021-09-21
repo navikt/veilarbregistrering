@@ -26,9 +26,11 @@ object OrdinaerBrukerRegistreringTestdataBuilder {
     fun gyldigBrukerRegistreringUtenJobb(): OrdinaerBrukerRegistrering {
         return gyldigBrukerRegistrering().setSisteStilling(
                 StillingTestdataBuilder.ingenYrkesbakgrunn()
-        ).setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse()
-                .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
-                .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
+        ).setBesvarelse(
+            BesvarelseTestdataBuilder.gyldigBesvarelse(
+                dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
+                sisteStilling = SisteStillingSvar.INGEN_SVAR,
+            )
         )
     }
 }

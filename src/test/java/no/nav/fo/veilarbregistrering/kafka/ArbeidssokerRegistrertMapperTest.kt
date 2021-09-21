@@ -17,7 +17,7 @@ class ArbeidssokerRegistrertMapperTest {
         val arbeidssokerRegistrertEvent = ArbeidssokerRegistrertMapper.map(
             ArbeidssokerRegistrertInternalEvent(
                 AktorId.of("123"),
-                gyldigBesvarelse().setDinSituasjon(DinSituasjonSvar.ER_PERMITTERT),
+                gyldigBesvarelse(dinSituasjon = DinSituasjonSvar.ER_PERMITTERT),
                 LocalDateTime.now()
             )
         )

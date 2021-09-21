@@ -1,29 +1,34 @@
 package no.nav.fo.veilarbregistrering.besvarelse
 
 object BesvarelseTestdataBuilder {
-    @JvmStatic
-    fun gyldigBesvarelse(): Besvarelse {
-        return Besvarelse()
-            .setDinSituasjon(DinSituasjonSvar.JOBB_OVER_2_AAR)
-            .setSisteStilling(SisteStillingSvar.HAR_HATT_JOBB)
-            .setUtdanning(UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER)
-            .setUtdanningGodkjent(UtdanningGodkjentSvar.JA)
-            .setUtdanningBestatt(UtdanningBestattSvar.JA)
-            .setHelseHinder(HelseHinderSvar.NEI)
-            .setAndreForhold(AndreForholdSvar.NEI)
-    }
+    fun gyldigBesvarelse(
+        dinSituasjon: DinSituasjonSvar = DinSituasjonSvar.JOBB_OVER_2_AAR,
+        sisteStilling: SisteStillingSvar = SisteStillingSvar.HAR_HATT_JOBB,
+        utdanning: UtdanningSvar = UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER,
+        utdanningGodkjent: UtdanningGodkjentSvar = UtdanningGodkjentSvar.JA,
+        utdanningBestatt: UtdanningBestattSvar = UtdanningBestattSvar.JA,
+        helseHinder: HelseHinderSvar = HelseHinderSvar.NEI,
+        andreForhold: AndreForholdSvar? = AndreForholdSvar.NEI,
+    ): Besvarelse =
+        Besvarelse(
+            utdanning, utdanningBestatt, utdanningGodkjent, helseHinder, andreForhold, sisteStilling, dinSituasjon
+        )
 
-    fun gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(): Besvarelse {
-        return Besvarelse()
-            .setFremtidigSituasjon(FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER)
-            .setTilbakeIArbeid(TilbakeIArbeidSvar.JA_FULL_STILLING)
-            .setUtdanning(UtdanningSvar.INGEN_UTDANNING)
-    }
+    fun gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
+        fremtidigSituasjon: FremtidigSituasjonSvar = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
+        tilbakeIArbeid: TilbakeIArbeidSvar = TilbakeIArbeidSvar.JA_FULL_STILLING,
+        utdanning: UtdanningSvar = UtdanningSvar.INGEN_UTDANNING,
+    ): Besvarelse =
+        Besvarelse(
+            utdanning = utdanning,
+            fremtidigSituasjon = fremtidigSituasjon,
+            tilbakeIArbeid = tilbakeIArbeid
+        )
 
-    @JvmStatic
-    fun gyldigBesvarelseUtenJobb(): Besvarelse {
-        return gyldigBesvarelse()
-            .setDinSituasjon(DinSituasjonSvar.ALDRI_HATT_JOBB)
-            .setSisteStilling(SisteStillingSvar.INGEN_SVAR)
-    }
+    fun gyldigBesvarelseUtenJobb(): Besvarelse =
+        gyldigBesvarelse(
+            dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
+            sisteStilling = SisteStillingSvar.INGEN_SVAR,
+        )
+
 }

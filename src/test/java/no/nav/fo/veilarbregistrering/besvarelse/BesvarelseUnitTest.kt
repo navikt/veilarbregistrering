@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class BesvarelseUnitTest {
     private val toLikeA = gyldigBesvarelse()
     private val toLikeB = gyldigBesvarelse()
-    private val annerledes = gyldigBesvarelse().setAndreForhold(AndreForholdSvar.JA)
+    private val annerledes = gyldigBesvarelse(andreForhold = AndreForholdSvar.JA)
 
     @Test
     fun `toString fungerer som forventet`() {
