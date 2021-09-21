@@ -103,7 +103,7 @@ class ArbeidssokerperioderMapperTest {
     }
 
     private fun funnetTilDatoForSistePeriode(arbeidssokerperioder: Arbeidssokerperioder): LocalDate? =
-        arbeidssokerperioder.asList().last()?.periode?.til
+        arbeidssokerperioder.asList().last().periode?.til
 
 
     private fun funnetTilDatoForIndeks(indeks: Int, arbeidssokerperioder: Arbeidssokerperioder): LocalDate {

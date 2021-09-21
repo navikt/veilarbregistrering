@@ -1,13 +1,11 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import java.util.*
 import java.util.stream.Collectors
 
 class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
-    private val arbeidssokerperioder: List<Arbeidssokerperiode>
+    private val arbeidssokerperioder: List<Arbeidssokerperiode> = arbeidssokerperioder ?: emptyList()
     fun overlapperMed(forespurtPeriode: Periode?): Arbeidssokerperioder {
         return Arbeidssokerperioder(arbeidssokerperioder.stream()
             .filter { p: Arbeidssokerperiode -> p.periode.overlapperMed(forespurtPeriode) }
@@ -39,10 +37,10 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
                 '}'
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as Arbeidssokerperioder
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as Arbeidssokerperioder
         return arbeidssokerperioder == that.arbeidssokerperioder
     }
 
@@ -56,7 +54,4 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
         }
     }
 
-    init {
-        this.arbeidssokerperioder = arbeidssokerperioder ?: emptyList()
-    }
 }
