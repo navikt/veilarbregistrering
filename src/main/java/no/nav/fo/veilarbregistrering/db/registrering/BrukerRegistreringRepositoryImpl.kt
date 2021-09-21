@@ -142,10 +142,11 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                     .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
                     .setTeksterForBesvarelse(readListOf(rs.getString(TEKSTER_FOR_BESVARELSE)))
                     .setSisteStilling(
-                        Stilling()
-                            .setStyrk08(rs.getString(YRKESPRAKSIS))
-                            .setKonseptId(rs.getLong(KONSEPT_ID))
-                            .setLabel(rs.getString(YRKESBESKRIVELSE))
+                        Stilling(
+                            styrk08 = rs.getString(YRKESPRAKSIS),
+                            konseptId = rs.getLong(KONSEPT_ID),
+                            label = rs.getString(YRKESBESKRIVELSE)
+                        )
                     )
                     .setBesvarelse(
                         Besvarelse()

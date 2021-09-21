@@ -2,12 +2,12 @@ package no.nav.fo.veilarbregistrering.besvarelse
 
 object StillingTestdataBuilder {
     @JvmStatic
-    fun gyldigStilling(): Stilling {
-        return Stilling()
-            .setStyrk08("12345")
-            .setLabel("yrkesbeskrivelse")
-            .setKonseptId(1246345L)
-    }
+    fun gyldigStilling(
+        styrk08: String = "12345",
+        label: String? = "yrkesbeskrivelse",
+        konseptId: Long = 1246345L,
+    ): Stilling =
+        Stilling(styrk08 = styrk08, label = label, konseptId = konseptId)
 
     @JvmStatic
     fun ingenYrkesbakgrunn(): Stilling {

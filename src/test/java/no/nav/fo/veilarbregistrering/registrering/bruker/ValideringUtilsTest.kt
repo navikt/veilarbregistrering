@@ -194,7 +194,7 @@ class ValideringUtilsTest {
     @Test
     fun `validering skal feile hvis stilling har nullfelt`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering().setSisteStilling(
-            gyldigStilling().setLabel(null)
+            gyldigStilling(label = null)
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
