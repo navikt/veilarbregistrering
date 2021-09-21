@@ -6,9 +6,9 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.Resending.kanResendes
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 
 class BrukerTilstandService(
-        private val oppfolgingGateway: OppfolgingGateway,
-        private val brukerRegistreringRepository: BrukerRegistreringRepository) {
-
+    private val oppfolgingGateway: OppfolgingGateway,
+    private val brukerRegistreringRepository: BrukerRegistreringRepository
+) {
     fun hentBrukersTilstand(bruker: Bruker): BrukersTilstand {
         val oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(bruker.gjeldendeFoedselsnummer)
         val harIgangsattRegistreringSomKanGjenopptas = harIgangsattRegistreringSomKanGjenopptas(bruker)
