@@ -2,13 +2,11 @@ package no.nav.fo.veilarbregistrering.tidslinje
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import kotlin.streams.toList
 
 class ArbeidssokerperiodeTidslinje(private val arbeidssokerperioder: List<Arbeidssokerperiode>) : Tidslinje {
 
-    override fun tidslinje(): List<TidslinjeElement> {
-        return arbeidssokerperioder.stream().map(::ArbeidssokerperiodeTidslinjeElement).toList()
-    }
+    override fun tidslinje(): List<TidslinjeElement> =
+        arbeidssokerperioder.map(::ArbeidssokerperiodeTidslinjeElement)
 
     private class ArbeidssokerperiodeTidslinjeElement(private var arbeidssokerperiode: Arbeidssokerperiode) : TidslinjeElement {
         override fun periode(): Periode {
