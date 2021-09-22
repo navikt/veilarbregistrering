@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -50,9 +50,9 @@ internal class ArbeidsforholdResourceTest {
         val tom2 = LocalDate.of(2017, 11, 30)
         val fom1 = LocalDate.of(2017, 11, 1)
         val tom1 = LocalDate.of(2017, 11, 30)
-        val sisteArbeidsforholdVarighet3 = ArbeidsforholdTestdataBuilder.medDato(fom3, tom3)
-        val sisteArbeidsforholdvarighet2 = ArbeidsforholdTestdataBuilder.medDato(fom2, tom2)
-        val sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdataBuilder.medDato(fom1, tom1)
+        val sisteArbeidsforholdVarighet3 = ArbeidsforholdTestdata.medDato(fom3, tom3)
+        val sisteArbeidsforholdvarighet2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
+        val sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdata.medDato(fom1, tom1)
         return FlereArbeidsforhold.of(
             Arrays.asList(
                 sisteArbeidsforholdVarighet1,

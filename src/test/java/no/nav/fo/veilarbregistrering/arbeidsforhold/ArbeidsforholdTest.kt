@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder.Companion.medDato
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata.medDato
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

@@ -8,25 +8,23 @@ object FlereArbeidsforholdTestdataBuilder {
 
         // Skal hente sistearbeidsforhold
         val tilfeldigSortertListe = listOf(
-            ArbeidsforholdTestdataBuilder.eldre(),
-            ArbeidsforholdTestdataBuilder.siste(),
-            ArbeidsforholdTestdataBuilder.nestSiste()
+            ArbeidsforholdTestdata.eldre(),
+            ArbeidsforholdTestdata.siste(),
+            ArbeidsforholdTestdata.nestSiste()
         )
         return FlereArbeidsforhold.of(tilfeldigSortertListe)
     }
 
     @JvmStatic
-    fun somJson(): FlereArbeidsforhold {
-
-        // Skal hente sistearbeidsforhold
-        val tilfeldigSortertListe = listOf(
-            ArbeidsforholdTestdataBuilder()
-                .organisasjonsnummer("981129687")
-                .styrk("2130123")
-                .periode(LocalDate.of(2014, 7, 1), LocalDate.of(2015, 12, 31))
-                .navArbeidsforholdId("123456")
-                .build()
+    fun somJson(): FlereArbeidsforhold = FlereArbeidsforhold.of(
+        listOf(
+            Arbeidsforhold(
+                arbeidsgiverOrgnummer = "981129687",
+                styrk = "2130123",
+                fom = LocalDate.of(2014, 7, 1),
+                tom = LocalDate.of(2015, 12, 31),
+                navArbeidsforholdId = "123456",
+            )
         )
-        return FlereArbeidsforhold.of(tilfeldigSortertListe)
-    }
+    )
 }

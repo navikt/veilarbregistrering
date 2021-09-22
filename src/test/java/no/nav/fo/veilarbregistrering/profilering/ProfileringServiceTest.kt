@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.profilering
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdataBuilder.Companion.medDato
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata.medDato
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
