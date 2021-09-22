@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold.Companion.DEFAULT_STYRK
 import java.time.LocalDate
 
 class ArbeidsforholdTestdataBuilder {
@@ -31,7 +32,13 @@ class ArbeidsforholdTestdataBuilder {
     }
 
     fun build(): Arbeidsforhold {
-        return Arbeidsforhold(organisasjonsnummer, styrk, fom, tom, navArbeidsforholdId)
+        return Arbeidsforhold(
+            arbeidsgiverOrgnummer = organisasjonsnummer,
+            styrk = styrk ?: DEFAULT_STYRK,
+            fom = fom,
+            tom = tom,
+            navArbeidsforholdId = navArbeidsforholdId
+        )
     }
 
     companion object {
