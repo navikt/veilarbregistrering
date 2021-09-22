@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold.Companion.utenStyrkkode
 import java.time.LocalDate
-import java.util.*
 
 data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforhold>) {
     /**
@@ -45,11 +44,7 @@ data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforh
             it.erDatoInnenforPeriode(innevaerendeMnd)
         }
 
-    override fun toString(): String {
-        return "FlereArbeidsforhold{" +
-                "flereArbeidsforhold=" + flereArbeidsforhold +
-                '}'
-    }
+    override fun toString(): String = "FlereArbeidsforhold{flereArbeidsforhold=$flereArbeidsforhold}"
 
     fun erLik(arbeidsforholdFraRest: FlereArbeidsforhold): Boolean {
         val inneholderInternListeAlleInnkommende =
