@@ -158,7 +158,7 @@ class StartRegistreringStatusServiceTest {
                 .withErSykmeldtMedArbeidsgiver(false)
 
     private fun mockArbeidsforhold(arbeidsforhold: List<Arbeidsforhold>) =
-        every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns FlereArbeidsforhold.of(arbeidsforhold)
+        every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns FlereArbeidsforhold(arbeidsforhold)
 
     private fun mockInaktivBrukerUtenReaktivering() =
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
@@ -166,7 +166,7 @@ class StartRegistreringStatusServiceTest {
 
     private fun mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() =
         every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns
-            FlereArbeidsforhold.of(
+            FlereArbeidsforhold(
                 listOf(
                     Arbeidsforhold(
                         "orgnummer",

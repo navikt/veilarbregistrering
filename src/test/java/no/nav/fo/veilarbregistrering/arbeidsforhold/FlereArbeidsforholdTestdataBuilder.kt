@@ -12,11 +12,11 @@ object FlereArbeidsforholdTestdataBuilder {
             ArbeidsforholdTestdata.siste(),
             ArbeidsforholdTestdata.nestSiste()
         )
-        return FlereArbeidsforhold.of(tilfeldigSortertListe)
+        return FlereArbeidsforhold(tilfeldigSortertListe)
     }
 
     @JvmStatic
-    fun somJson(): FlereArbeidsforhold = FlereArbeidsforhold.of(
+    fun somJson(): FlereArbeidsforhold = FlereArbeidsforhold(
         listOf(
             Arbeidsforhold(
                 arbeidsgiverOrgnummer = "981129687",

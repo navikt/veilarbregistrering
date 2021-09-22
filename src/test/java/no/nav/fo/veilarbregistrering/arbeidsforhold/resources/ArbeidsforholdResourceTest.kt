@@ -53,8 +53,8 @@ internal class ArbeidsforholdResourceTest {
         val sisteArbeidsforholdVarighet3 = ArbeidsforholdTestdata.medDato(fom3, tom3)
         val sisteArbeidsforholdvarighet2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
         val sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdata.medDato(fom1, tom1)
-        return FlereArbeidsforhold.of(
-            Arrays.asList(
+        return FlereArbeidsforhold(
+            listOf(
                 sisteArbeidsforholdVarighet1,
                 sisteArbeidsforholdvarighet2,
                 sisteArbeidsforholdVarighet3

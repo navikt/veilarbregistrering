@@ -22,7 +22,7 @@ public class ArbeidsforholdGatewayImpl implements ArbeidsforholdGateway {
     @Cacheable(HENT_ARBEIDSFORHOLD)
     public FlereArbeidsforhold hentArbeidsforhold(Foedselsnummer fnr) {
         List<ArbeidsforholdDto> arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(fnr);
-        return FlereArbeidsforhold.of(arbeidsforholdDtos.stream()
+        return new FlereArbeidsforhold(arbeidsforholdDtos.stream()
                 .map(ArbeidsforholdMapperV2::map)
                 .collect(Collectors.toList()));
     }

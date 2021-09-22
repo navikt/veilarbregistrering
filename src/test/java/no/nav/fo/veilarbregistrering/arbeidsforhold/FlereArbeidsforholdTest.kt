@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataB
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.*
 
 class FlereArbeidsforholdTest {
     @Test
@@ -16,14 +15,14 @@ class FlereArbeidsforholdTest {
             ArbeidsforholdTestdata.nestSiste(),
             ArbeidsforholdTestdata.siste()
         )
-        assertThat(FlereArbeidsforhold.of(stigendeSortertListe).siste())
+        assertThat(FlereArbeidsforhold(stigendeSortertListe).siste())
             .isEqualTo(ArbeidsforholdTestdata.siste())
         val synkendeSortertListe = listOf(
             ArbeidsforholdTestdata.siste(),
             ArbeidsforholdTestdata.nestSiste(),
             ArbeidsforholdTestdata.eldre()
         )
-        assertThat(FlereArbeidsforhold.of(synkendeSortertListe).siste())
+        assertThat(FlereArbeidsforhold(synkendeSortertListe).siste())
             .isEqualTo(ArbeidsforholdTestdata.siste())
 
         // Skal hente paagendeArbeidsforhold
@@ -33,7 +32,7 @@ class FlereArbeidsforholdTest {
             ArbeidsforholdTestdata.siste(),
             ArbeidsforholdTestdata.nestSiste()
         )
-        assertThat(FlereArbeidsforhold.of(tilfeldigSortertListeMedPaagaaende).siste())
+        assertThat(FlereArbeidsforhold(tilfeldigSortertListeMedPaagaaende).siste())
             .isEqualTo(ArbeidsforholdTestdata.paagaaende())
         val stigendeSortertListePaagaande = listOf(
             ArbeidsforholdTestdata.eldre(),
@@ -41,7 +40,7 @@ class FlereArbeidsforholdTest {
             ArbeidsforholdTestdata.siste(),
             ArbeidsforholdTestdata.paagaaende()
         )
-        assertThat(FlereArbeidsforhold.of(stigendeSortertListePaagaande).siste())
+        assertThat(FlereArbeidsforhold(stigendeSortertListePaagaande).siste())
             .isEqualTo(ArbeidsforholdTestdata.paagaaende())
         val synkendeSortertListePaagaande = listOf(
             ArbeidsforholdTestdata.paagaaende(),
@@ -49,7 +48,7 @@ class FlereArbeidsforholdTest {
             ArbeidsforholdTestdata.nestSiste(),
             ArbeidsforholdTestdata.eldre()
         )
-        assertThat(FlereArbeidsforhold.of(synkendeSortertListePaagaande).siste())
+        assertThat(FlereArbeidsforhold(synkendeSortertListePaagaande).siste())
             .isEqualTo(ArbeidsforholdTestdata.paagaaende())
     }
 
@@ -69,7 +68,7 @@ class FlereArbeidsforholdTest {
             paagaaendeArbeidsforholdVarighet1,
             paagaaendeArbeidsforholdVarighet3
         )
-        assertThat(FlereArbeidsforhold.of(flerePaagendeArbeidsforhold).siste())
+        assertThat(FlereArbeidsforhold(flerePaagendeArbeidsforhold).siste())
             .isEqualTo(paagaaendeArbeidsforholdVarighet3)
     }
 
@@ -86,20 +85,14 @@ class FlereArbeidsforholdTest {
         val sisteArbeidsforholdVarighet1 = ArbeidsforholdTestdata.medDato(fom1, tom1)
         val flereSisteArbeidsforhold =
             listOf(sisteArbeidsforholdVarighet1, sisteArbeidsforholdvarighet2, sisteArbeidsforholdVarighet3)
-        assertThat(FlereArbeidsforhold.of(flereSisteArbeidsforhold).siste())
+        assertThat(FlereArbeidsforhold(flereSisteArbeidsforhold).siste())
             .isEqualTo(sisteArbeidsforholdVarighet3)
     }
 
     @Test
     fun `skal default arbeidsforhold`() {
         val arbeidsforhold = Arbeidsforhold(null, "utenstyrkkode", null, null, null)
-        assertThat(FlereArbeidsforhold.of(emptyList()).siste()).isEqualTo(arbeidsforhold)
-    }
-
-    @Test
-    fun `null arbeidsforhold skal håndteres som tom liste`() {
-        assertThat(FlereArbeidsforhold.of(null).siste())
-            .isEqualTo(FlereArbeidsforhold.of(emptyList()).siste())
+        assertThat(FlereArbeidsforhold(emptyList()).siste()).isEqualTo(arbeidsforhold)
     }
 
     @Test
@@ -112,7 +105,7 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold1 = ArbeidsforholdTestdata.medDato(fom1, tom1)
         val arbeidsforhold2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
-        assertThat(FlereArbeidsforhold.of(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isTrue
+        assertThat(FlereArbeidsforhold(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isTrue
     }
 
     @Test
@@ -125,7 +118,7 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold1 = ArbeidsforholdTestdata.medDato(fom1, tom1)
         val arbeidsforhold2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
-        assertThat(FlereArbeidsforhold.of(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isFalse
+        assertThat(FlereArbeidsforhold(arbeidsforhold).harArbeidsforholdPaaDato(mnd)).isFalse
     }
 
     @Test
@@ -141,7 +134,7 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
         assertThat(
-            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
+            FlereArbeidsforhold(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
         ).isTrue
     }
 
@@ -158,14 +151,14 @@ class FlereArbeidsforholdTest {
         val arbeidsforhold2 = ArbeidsforholdTestdata.medDato(fom2, tom2)
         val arbeidsforhold = listOf(arbeidsforhold1, arbeidsforhold2)
         assertThat(
-            FlereArbeidsforhold.of(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
+            FlereArbeidsforhold(arbeidsforhold).harJobbetSammenhengendeSisteManeder(dagensDato, minAntallMndSammenhengendeJobb, antallMnd)
         ).isFalse
     }
 
     @Test
     fun `to tomme arbeidsforhold skal være like`() {
-        val arbeidsforholdFraSoap = FlereArbeidsforhold.of(null)
-        val arbeidsforholdFraRest = FlereArbeidsforhold.of(null)
+        val arbeidsforholdFraSoap = FlereArbeidsforhold(emptyList())
+        val arbeidsforholdFraRest = FlereArbeidsforhold(emptyList())
         assertThat(arbeidsforholdFraSoap.erLik(arbeidsforholdFraRest)).isTrue
     }
 
@@ -178,14 +171,14 @@ class FlereArbeidsforholdTest {
 
     @Test
     fun `to lister med samme innhold men ulikt sortert skal være like`() {
-        val arbeidsforholdFraSoap = FlereArbeidsforhold.of(
+        val arbeidsforholdFraSoap = FlereArbeidsforhold(
             listOf(
                 ArbeidsforholdTestdata.eldre(),
                 ArbeidsforholdTestdata.siste(),
                 ArbeidsforholdTestdata.nestSiste()
             )
         )
-        val arbeidsforholdFraRest = FlereArbeidsforhold.of(
+        val arbeidsforholdFraRest = FlereArbeidsforhold(
             listOf(
                 ArbeidsforholdTestdata.nestSiste(),
                 ArbeidsforholdTestdata.eldre(),
@@ -197,8 +190,8 @@ class FlereArbeidsforholdTest {
 
     @Test
     fun `to ulike lister skal være ulike`() {
-        val arbeidsforholdFraSoap = FlereArbeidsforhold.of(null)
-        val arbeidsforholdFraRest = FlereArbeidsforhold.of(
+        val arbeidsforholdFraSoap = FlereArbeidsforhold(emptyList())
+        val arbeidsforholdFraRest = FlereArbeidsforhold(
             listOf(
                 ArbeidsforholdTestdata.nestSiste(),
                 ArbeidsforholdTestdata.eldre(),

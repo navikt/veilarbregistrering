@@ -21,9 +21,9 @@ internal class ProfileringServiceTest {
     @BeforeEach
     fun setUp() {
         arbeidsforholdGateway = StubArbeidsforholdGateway(mapOf(
-            FOEDSELSNUMMER_MINUS_10_MND to FlereArbeidsforhold.of(listOf(
+            FOEDSELSNUMMER_MINUS_10_MND to FlereArbeidsforhold(listOf(
                 medDato(LocalDate.now().minusMonths(10), LocalDate.now())
-        )), FOEDSELSNUMMER_MINUS_2_MND to FlereArbeidsforhold.of(listOf(
+        )), FOEDSELSNUMMER_MINUS_2_MND to FlereArbeidsforhold(listOf(
                 medDato(LocalDate.now().minusMonths(2), LocalDate.now())
         ))))
         profileringService = ProfileringService(arbeidsforholdGateway)

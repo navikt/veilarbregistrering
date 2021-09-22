@@ -23,7 +23,7 @@ class OppgaveRouterTest {
 
     @Test
     fun `ingen arbeidsforhold skal gi intern brukerstotte`() {
-        val arbeidsforholdGateway = ArbeidsforholdGateway { FlereArbeidsforhold.of(emptyList()) }
+        val arbeidsforholdGateway = ArbeidsforholdGateway { FlereArbeidsforhold(emptyList()) }
         val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway = arbeidsforholdGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
