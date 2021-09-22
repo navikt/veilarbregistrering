@@ -116,12 +116,12 @@ public class OppgaveRouter {
 
     public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
-        if (flereArbeidsforhold.sisteUtenNoeEkstra().isEmpty()) {
+        if (flereArbeidsforhold.sisteUtenDefault() == null) {
             LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
             prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
             return Optional.empty();
         }
-        Optional<Organisasjonsnummer> organisasjonsnummer = flereArbeidsforhold.sisteUtenNoeEkstra()
+        Optional<Organisasjonsnummer> organisasjonsnummer = Optional.ofNullable(flereArbeidsforhold.sisteUtenDefault())
                 .map(Arbeidsforhold::getOrganisasjonsnummer)
                 .orElseThrow(IllegalStateException::new);
         if (organisasjonsnummer.isEmpty()) {

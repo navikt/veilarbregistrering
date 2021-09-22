@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 class FlereArbeidsforholdTest {
     @Test
-    fun `skal hente siste eller paagende arbeidsforhold`() {
+    fun `skal hente siste eller paagaaende arbeidsforhold`() {
         assertThat(flereArbeidsforholdTilfeldigSortert().siste())
             .isEqualTo(ArbeidsforholdTestdata.siste())
         val stigendeSortertListe = listOf(

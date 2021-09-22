@@ -32,16 +32,13 @@ data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforh
         return antallSammenhengendeMandeder >= minAntallMndSammenhengendeJobb
     }
 
-    fun sisteUtenNoeEkstra(): Optional<Arbeidsforhold> {
-        return flereArbeidsforhold.stream()
-            .min(sorterArbeidsforholdEtterTilDato().thenComparing(Arbeidsforhold::fom))
+    fun sisteUtenDefault(): Arbeidsforhold? {
+        return flereArbeidsforhold.minWithOrNull(
+            sorterArbeidsforholdEtterTilDato().thenBy(Arbeidsforhold::fom))
     }
 
-    fun siste(): Arbeidsforhold {
-        return flereArbeidsforhold.stream()
-            .min(sorterArbeidsforholdEtterTilDato().thenComparing(Arbeidsforhold::fom))
-            .orElse(utenStyrkkode())
-    }
+    fun siste(): Arbeidsforhold = sisteUtenDefault()
+        ?: utenStyrkkode()
 
     fun harArbeidsforholdPaaDato(innevaerendeMnd: LocalDate?): Boolean {
         return flereArbeidsforhold.stream()
