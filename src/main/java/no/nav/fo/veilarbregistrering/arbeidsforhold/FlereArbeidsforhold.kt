@@ -40,16 +40,10 @@ data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforh
     fun siste(): Arbeidsforhold = sisteUtenDefault()
         ?: utenStyrkkode()
 
-    fun harArbeidsforholdPaaDato(innevaerendeMnd: LocalDate?): Boolean {
-        return flereArbeidsforhold.stream()
-            .map { arbeidsforhold: Arbeidsforhold ->
-                arbeidsforhold.erDatoInnenforPeriode(
-                    innevaerendeMnd!!
-                )
-            }
-            .filter { b: Boolean? -> b!! }
-            .findAny().orElse(false)
-    }
+    fun harArbeidsforholdPaaDato(innevaerendeMnd: LocalDate): Boolean =
+        flereArbeidsforhold.any {
+            it.erDatoInnenforPeriode(innevaerendeMnd)
+        }
 
     override fun toString(): String {
         return "FlereArbeidsforhold{" +
