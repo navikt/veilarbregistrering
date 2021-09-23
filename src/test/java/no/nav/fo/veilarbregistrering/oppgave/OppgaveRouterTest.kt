@@ -23,7 +23,11 @@ class OppgaveRouterTest {
 
     @Test
     fun `ingen arbeidsforhold skal gi intern brukerstotte`() {
-        val arbeidsforholdGateway = ArbeidsforholdGateway { FlereArbeidsforhold(emptyList()) }
+        val arbeidsforholdGateway = object : ArbeidsforholdGateway {
+            override fun hentArbeidsforhold(fnr: Foedselsnummer): FlereArbeidsforhold {
+                return FlereArbeidsforhold(emptyList())
+            }
+        }
         val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway = arbeidsforholdGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
@@ -152,7 +156,7 @@ class OppgaveRouterTest {
     }
 
     private class StubArbeidsforholdGateway : ArbeidsforholdGateway {
-        override fun hentArbeidsforhold(fnr: Foedselsnummer?) =
+        override fun hentArbeidsforhold(fnr: Foedselsnummer) =
             FlereArbeidsforholdTestdataBuilder.flereArbeidsforholdTilfeldigSortert()
     }
 
