@@ -12,7 +12,7 @@ class ArbeidsforholdMapperTest {
         val fom = LocalDate.of(2017, 12, 1)
         val tom = LocalDate.of(2017, 12, 30)
         val arbeidsforhold = Arbeidsforhold("453542352", "STK", fom, tom, null)
-        val arbeidsforholdDto = ArbeidsforholdMapper.map(arbeidsforhold)
+        val arbeidsforholdDto = ArbeidsforholdDto.fra(arbeidsforhold)
         val softAssertions = SoftAssertions()
         softAssertions.assertThat(arbeidsforholdDto.arbeidsgiverOrgnummer).isEqualTo("453542352")
         softAssertions.assertThat(arbeidsforholdDto.styrk).isEqualTo("STK")
