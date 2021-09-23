@@ -201,3 +201,7 @@ class FlereArbeidsforholdTest {
         assertThat(arbeidsforholdFraSoap.erLik(arbeidsforholdFraRest)).isFalse
     }
 }
+
+fun FlereArbeidsforhold.erLik(other: FlereArbeidsforhold): Boolean =
+    this.flereArbeidsforhold.containsAll(other.flereArbeidsforhold)
+            && other.flereArbeidsforhold.containsAll(this.flereArbeidsforhold)

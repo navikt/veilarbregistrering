@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold.Companion.utenStyrkkode
 import java.time.LocalDate
 
-data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforhold>) {
+data class FlereArbeidsforhold(val flereArbeidsforhold: List<Arbeidsforhold>) {
     /**
      * En bruker som har jobbet sammenhengende i seks av de siste tolv månedene oppfyller betingelsen om arbeidserfaring
      */
@@ -45,15 +45,6 @@ data class FlereArbeidsforhold(private val flereArbeidsforhold: List<Arbeidsforh
         }
 
     override fun toString(): String = "FlereArbeidsforhold{flereArbeidsforhold=$flereArbeidsforhold}"
-
-    fun erLik(arbeidsforholdFraRest: FlereArbeidsforhold): Boolean {
-        val inneholderInternListeAlleInnkommende =
-            flereArbeidsforhold.containsAll(arbeidsforholdFraRest.flereArbeidsforhold)
-        val inneholderInnkommendeAlleInternListe = arbeidsforholdFraRest.flereArbeidsforhold.containsAll(
-            flereArbeidsforhold
-        )
-        return inneholderInternListeAlleInnkommende && inneholderInnkommendeAlleInternListe
-    }
 
     companion object {
 
