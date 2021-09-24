@@ -19,6 +19,6 @@ interface ArbeidssokerApi {
     fun hentArbeidssokerperioder(
         @Parameter(required = true, description = "Fødselsnummer") fnr: String,
         @Parameter(required = true, description = "Fra og med dato") fraOgMed: LocalDate,
-        @Parameter(description = "Til og med dato") tilOgMed: LocalDate
+        @Parameter(description = "Til og med dato") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto
 }

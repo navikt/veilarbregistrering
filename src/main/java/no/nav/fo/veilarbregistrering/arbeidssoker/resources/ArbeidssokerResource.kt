@@ -25,7 +25,7 @@ class ArbeidssokerResource(
     override fun hentArbeidssokerperioder(
         @RequestParam("fnr") fnr: String,
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
-        @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate
+        @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
