@@ -5,6 +5,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder;
 import no.nav.fo.veilarbregistrering.bruker.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +25,8 @@ public class InternalArbeidssokerServlet extends HttpServlet {
 
     public static final String PATH = "/internal/arbeidssoker";
 
+    private static final Logger LOG = LoggerFactory.getLogger(InternalArbeidssokerServlet.class);
+
     private UserService userService;
     private ArbeidssokerService arbeidssokerService;
 
@@ -33,6 +37,7 @@ public class InternalArbeidssokerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        LOG.info("InternalArbeidssokerServlet invoked");
         LocalDate fraOgMed = LocalDate.parse(req.getParameter("fraOgMed"));
         LocalDate tilOgMed = ofNullable(req.getParameter("tilOgMed")).map(LocalDate::parse).orElse(null);
 
