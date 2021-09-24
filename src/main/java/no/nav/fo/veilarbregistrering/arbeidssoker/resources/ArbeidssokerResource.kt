@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import org.slf4j.LoggerFactory
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -49,6 +49,6 @@ class ArbeidssokerResource(
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ArbeidssokerResource::class.java)
+        private val LOG = loggerFor<ArbeidssokerResource>()
     }
 }
