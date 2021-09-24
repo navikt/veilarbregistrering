@@ -33,6 +33,26 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
 
         assertThat(responseBody).isNotNull
     }
+
+    @Test
+    fun `Gir ikke feil dersom optional felt droppes`() {
+        val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER&fraOgMed=2010-01-01")
+            .andExpect {
+                status { isOk }
+            }
+
+        assertThat(responseBody).isNotNull
+    }
+
+    @Test
+    fun `Gir feil dersom påkrevd felt mangler`() {
+        val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER")
+            .andExpect {
+                status { isBadRequest }
+            }
+
+        assertThat(responseBody).isNotNull
+    }
 }
 
 @Configuration
