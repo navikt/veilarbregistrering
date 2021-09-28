@@ -79,7 +79,7 @@ class FilterConfig {
                 )
         )
         registration.setFilter(authenticationFilter)
-        registration.order = 2
+        registration.order = 3
         registration.addUrlPatterns("/api/*")
         return registration
     }
@@ -93,7 +93,7 @@ class FilterConfig {
                         EnvironmentUtils.isDevelopment().orElse(false)
                 )
         )
-        registration.order = 3
+        registration.order = 2
         registration.addUrlPatterns("/*")
         return registration
     }
