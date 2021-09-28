@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
-import no.nav.fo.veilarbregistrering.arbeidssoker.resources.InternalArbeidssokerServlet
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
@@ -377,14 +376,6 @@ class ServiceBeansConfig {
     @Bean
     fun internalIdentServlet(userService: UserService): InternalIdentServlet {
         return InternalIdentServlet(userService)
-    }
-
-    @Bean
-    fun internalArbeidssokerServlet(
-        userService: UserService,
-        arbeidssokerService: ArbeidssokerService
-    ): InternalArbeidssokerServlet {
-        return InternalArbeidssokerServlet(userService, arbeidssokerService)
     }
 
     @Bean
