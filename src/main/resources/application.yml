@@ -17,6 +17,7 @@ spring:
 server:
   servlet:
     context-path: /veilarbregistrering
+  shutdown: graceful
 
 springdoc:
   packages-to-scan: no.nav.fo.veilarbregistrering
