@@ -55,8 +55,8 @@ class ApplicationConfig {
     fun systemUserTokenProvider(): SystemUserTokenProvider? {
         return NaisSystemUserTokenProvider(
             EnvironmentUtils.getRequiredProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL"),
-            EnvironmentUtils.getRequiredProperty("SRVVEILARBREGISTRERING_USERNAME"),
-            EnvironmentUtils.getRequiredProperty("SRVVEILARBREGISTRERING_PASSWORD")
+            EnvironmentUtils.getRequiredProperty("SERVICEUSER_USERNAME"),
+            EnvironmentUtils.getRequiredProperty("SERVICEUSER_PASSWORD")
         )
     }
 }

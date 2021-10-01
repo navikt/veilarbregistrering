@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering;
 
+import no.nav.common.utils.EnvironmentUtils
 import no.nav.common.utils.SslUtils
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
@@ -24,8 +25,9 @@ class Application {
         internal const val SECRETS_PATH = "/var/run/secrets/nais.io/"
 
         internal fun readVaultSecrets() {
-            System.setProperty("SRVVEILARBREGISTRERING_USERNAME", getVaultSecret("serviceuser_creds/username"))
-            System.setProperty("SRVVEILARBREGISTRERING_PASSWORD", getVaultSecret("serviceuser_creds/password"))
+            if (EnvironmentUtils.getClusterName().map { it.endsWith("gcp") }.orElse(false)) return
+            System.setProperty("SERVICEUSER_USERNAME", getVaultSecret("serviceuser_creds/username"))
+            System.setProperty("SERVICEUSER_PASSWORD", getVaultSecret("serviceuser_creds/password"))
 
             System.setProperty(DatabaseConfig.VEILARBREGISTRERINGDB_USERNAME, getVaultSecret("oracle_creds/username"))
             System.setProperty(DatabaseConfig.VEILARBREGISTRERINGDB_PASSWORD, getVaultSecret("oracle_creds/password"))
