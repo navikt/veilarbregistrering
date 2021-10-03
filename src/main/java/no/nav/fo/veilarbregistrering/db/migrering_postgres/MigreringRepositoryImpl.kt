@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.migrering_postgres
 
 import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.*
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 enum class TabellNavn(val idKolonneNavn: String) {
@@ -42,19 +43,26 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         return db.queryForList(sql, emptyMap<String, Any>())
     }
 
-    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> =
-        when (tabellNavn) {
-            BRUKER_PROFILERING -> db.queryForList(profileringSjekkSql, emptyMap<String,Any>())
-            BRUKER_REGISTRERING -> db.queryForList(brukerRegistreringSjekkSql, emptyMap<String,Any>())
-            SYKMELDT_REGISTRERING -> db.queryForList(sykmeldtRegistreringSjekkSql, emptyMap<String,Any>())
-            MANUELL_REGISTRERING -> db.queryForList(manuellRegistreringSjekkSql, emptyMap<String,Any>())
-            OPPGAVE -> db.queryForList(oppgaveSjekkSql, emptyMap<String,Any>())
-            REGISTRERING_TILSTAND -> db.queryForList(registreringstilstandSjekkSql, emptyMap<String,Any>())
-            BRUKER_REAKTIVERING -> db.queryForList(brukerReaktiveringSjekkSql, emptyMap<String,Any>())
+    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> {
+        val startTime = System.currentTimeMillis()
+
+        val result = when (tabellNavn) {
+            BRUKER_PROFILERING -> db.queryForList(profileringSjekkSql, emptyMap<String, Any>())
+            BRUKER_REGISTRERING -> db.queryForList(brukerRegistreringSjekkSql, emptyMap<String, Any>())
+            SYKMELDT_REGISTRERING -> db.queryForList(sykmeldtRegistreringSjekkSql, emptyMap<String, Any>())
+            MANUELL_REGISTRERING -> db.queryForList(manuellRegistreringSjekkSql, emptyMap<String, Any>())
+            OPPGAVE -> db.queryForList(oppgaveSjekkSql, emptyMap<String, Any>())
+            REGISTRERING_TILSTAND -> db.queryForList(registreringstilstandSjekkSql, emptyMap<String, Any>())
+            BRUKER_REAKTIVERING -> db.queryForList(brukerReaktiveringSjekkSql, emptyMap<String, Any>())
         }
+        log.info("Sjekksum for {} hentet på {} ms", tabellNavn.name, startTime - System.currentTimeMillis() )
+        return result
+    }
 
 
     companion object {
+        private val log = loggerFor<MigreringRepositoryImpl>()
+
         private const val brukerReaktiveringSjekkSql = """
         select count(*) as antall_rader,
         count(distinct aktor_id) as unike_aktor_id

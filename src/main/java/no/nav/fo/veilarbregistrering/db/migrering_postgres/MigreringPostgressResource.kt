@@ -38,10 +38,10 @@ class MigreringPostgressResource(
         return migreringRepositoryImpl.hentStatus()
     }
 
-    @GetMapping("/sjekksum")
-    fun hentSjekksumForTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn): List<Map<String, Any>> {
+    @GetMapping("/sjekksum/{tabellnavn}")
+    fun hentSjekksumForTabell(@RequestHeader("x-token") token: String, @PathVariable tabellnavn: TabellNavn): List<Map<String, Any>> {
         sjekkToken(token)
-        return migreringRepositoryImpl.hentSjekksumFor(tabellNavn)
+        return migreringRepositoryImpl.hentSjekksumFor(tabellnavn)
     }
 
     private fun sjekkToken(token: String) {
