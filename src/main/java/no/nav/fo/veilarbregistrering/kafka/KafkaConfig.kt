@@ -77,7 +77,7 @@ class KafkaConfig {
         properties[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = KafkaAvroSerializer::class.java
         properties[ProducerConfig.CLIENT_ID_CONFIG] = "paw-veilarbregistrering"
         properties[ProducerConfig.ACKS_CONFIG] = "1"
-        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
             properties.putAll(securityConfig)
         }
         return properties
@@ -146,7 +146,7 @@ class KafkaConfig {
         properties[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
         properties[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
         properties[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
             properties.putAll(securityConfig)
         }
         return properties
@@ -176,7 +176,7 @@ class KafkaConfig {
         it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = KafkaAvroDeserializer::class.java
         it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
         it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        if (System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") != null) {
+        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
             it.putAll(securityConfig)
         }
     }
@@ -206,8 +206,8 @@ class KafkaConfig {
             this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_PLAINTEXT"
             this[SaslConfigs.SASL_JAAS_CONFIG] =
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" +
-                        System.getProperty("SRVVEILARBREGISTRERING_USERNAME") + "\" password=\"" +
-                        System.getProperty("SRVVEILARBREGISTRERING_PASSWORD") + "\";"
+                        System.getProperty("SERVICEUSER_USERNAME") + "\" password=\"" +
+                        System.getProperty("SERVICEUSER_PASSWORD") + "\";"
             if (System.getenv("NAV_TRUSTSTORE_PATH") != null) {
                 this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_SSL"
                 this[SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG] =
