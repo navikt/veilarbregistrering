@@ -77,11 +77,11 @@ class FilterConfig {
     }
 
     @Bean
-    fun loginStatsFilter(prometheusMetricsService: PrometheusMetricsService): FilterRegistrationBean<*> {
+    fun loginStatsFilter(): FilterRegistrationBean<*> {
         return FilterRegistrationBean<Filter>().apply {
-            filter = AuthStatsFilter(prometheusMetricsService)
+            filter = AuthStatsFilter()
             order = 2
-            addUrlPatterns("/api/ping")
+            addUrlPatterns("/*")
         }
     }
 
