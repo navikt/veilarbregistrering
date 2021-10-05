@@ -16,7 +16,7 @@ import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.bruker.resources.InternalIdentServlet
+import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
 import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringPostgressResource
 import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringRepositoryImpl
@@ -359,6 +359,9 @@ class ServiceBeansConfig {
     }
 
     @Bean
+    fun internalUserResource(userService: UserService) = InternalUserResource(userService)
+
+    @Bean
     fun autorisasjonService(veilarbPep: Pep, authContextHolder: AuthContextHolder): AutorisasjonService {
         return AutorisasjonService(veilarbPep, authContextHolder)
     }
@@ -371,11 +374,6 @@ class ServiceBeansConfig {
     @Bean
     fun internalRegistreringResendingServlet(registreringTilstandService: RegistreringTilstandService): InternalRegistreringStatusServlet {
         return InternalRegistreringStatusServlet(registreringTilstandService)
-    }
-
-    @Bean
-    fun internalIdentServlet(userService: UserService): InternalIdentServlet {
-        return InternalIdentServlet(userService)
     }
 
     @Bean
