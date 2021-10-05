@@ -38,7 +38,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringR
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusServlet
-import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktServlet
+import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
@@ -367,8 +367,8 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun internalRegistreringTilstandServlet(registreringTilstandService: RegistreringTilstandService): InternalRegistreringStatusoversiktServlet {
-        return InternalRegistreringStatusoversiktServlet(registreringTilstandService)
+    fun internalRegistreringTilstandServlet(registreringTilstandService: RegistreringTilstandService): InternalRegistreringStatusoversiktResource {
+        return InternalRegistreringStatusoversiktResource(registreringTilstandService)
     }
 
     @Bean
