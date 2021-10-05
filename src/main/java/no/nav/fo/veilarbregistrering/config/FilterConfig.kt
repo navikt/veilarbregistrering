@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.config
 
+import com.nimbusds.oauth2.sdk.token.AccessTokenType.BEARER
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
@@ -7,9 +8,17 @@ import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
 import no.nav.common.log.LogFilter
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
 import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders.AUTHORIZATION
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import javax.servlet.http.HttpServletRequest
 
 @Configuration
 class FilterConfig {
@@ -68,6 +77,15 @@ class FilterConfig {
     }
 
     @Bean
+    fun loginStatsFilter(prometheusMetricsService: PrometheusMetricsService): FilterRegistrationBean<*> {
+        return FilterRegistrationBean<Filter>().apply {
+            filter = AuthStatsFilter(prometheusMetricsService)
+            order = 2
+            addUrlPatterns("/api/ping")
+        }
+    }
+
+    @Bean
     open fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
         val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
@@ -79,7 +97,7 @@ class FilterConfig {
                 )
         )
         registration.setFilter(authenticationFilter)
-        registration.order = 3
+        registration.order = 4
         registration.addUrlPatterns("/api/*")
         return registration
     }
@@ -93,7 +111,7 @@ class FilterConfig {
                         EnvironmentUtils.isDevelopment().orElse(false)
                 )
         )
-        registration.order = 2
+        registration.order = 3
         registration.addUrlPatterns("/*")
         return registration
     }
@@ -102,7 +120,7 @@ class FilterConfig {
     open fun setStandardHeadersFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<SetStandardHttpHeadersFilter>()
         registration.setFilter(SetStandardHttpHeadersFilter())
-        registration.order = 4
+        registration.order = 5
         registration.addUrlPatterns("/*")
         return registration
     }
