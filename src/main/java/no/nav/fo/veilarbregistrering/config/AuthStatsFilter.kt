@@ -13,14 +13,17 @@ class AuthStatsFilter : Filter {
 
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request: HttpServletRequest = servletRequest as HttpServletRequest
+
         val cookieNames = request.cookies?.map { it.name } ?: emptyList()
         val sts = request.getHeader(HttpHeaders.AUTHORIZATION)?.startsWith("Bearer") ?: false
-        when {
-            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> log.info("Authentication with: [AADB2C]")
-            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> log.info("Authentication with: [AAD]")
-            Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME in cookieNames -> log.info("Authentication with: [OPENAM]")
-            sts -> log.info("Authentication with: [STS]")
+        val type = when {
+            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "AADB2C"
+            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> "AAD"
+            Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME in cookieNames -> "OPENAM"
+            sts -> "STS"
+            else -> null
         }
+        type?.let { log.info("Authentication with: [$it] request path: [${request.servletPath}]") }
         chain.doFilter(servletRequest, servletResponse)
     }
 
