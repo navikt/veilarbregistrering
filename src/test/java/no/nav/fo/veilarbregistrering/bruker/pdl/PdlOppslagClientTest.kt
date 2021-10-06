@@ -40,7 +40,7 @@ class PdlOppslagClientTest {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
         }
-        assertThrows<PdlException> { pdlOppslagClient.hentPerson(AktorId.of("111lll")) }
+        assertThrows<PdlException> { pdlOppslagClient.hentPerson(AktorId("111lll")) }
     }
 
     @Test
@@ -52,7 +52,7 @@ class PdlOppslagClientTest {
             ) = toJson(HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON)
         }
 
-        val feil = assertThrows<PdlException> { pdlOppslagClient.hentGeografiskTilknytning(AktorId.of("111lll")) }
+        val feil = assertThrows<PdlException> { pdlOppslagClient.hentGeografiskTilknytning(AktorId("111lll")) }
 
         assertThat(feil.toString()).contains(
             "Feilmelding fra PDL",
@@ -71,7 +71,7 @@ class PdlOppslagClientTest {
             }
         }
         assertThrows<BrukerIkkeFunnetException> {
-            val pdlPerson = pdlOppslagClient.hentPerson(AktorId.of("111lll"))
+            val pdlPerson = pdlOppslagClient.hentPerson(AktorId("111lll"))
             assertThat(pdlPerson).isNull()
         }
     }
@@ -82,7 +82,7 @@ class PdlOppslagClientTest {
             override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
         }
 
-        val (telefonnummer, foedsel, adressebeskyttelse) = pdlOppslagClient.hentPerson(AktorId.of("12345678910"))
+        val (telefonnummer, foedsel, adressebeskyttelse) = pdlOppslagClient.hentPerson(AktorId("12345678910"))
 
         assertThat(foedsel).isEqualTo(listOf(PdlFoedsel(
             foedselsdato = LocalDate.of(2000, 1, 1))
@@ -141,7 +141,7 @@ class PdlOppslagClientTest {
             }
         }
 
-        val geografiskTilknytning = client.hentGeografiskTilknytning(AktorId.of("11123"))
+        val geografiskTilknytning = client.hentGeografiskTilknytning(AktorId("11123"))
         assertThat(geografiskTilknytning.gtType).isEqualTo(PdlGtType.BYDEL)
         assertThat(geografiskTilknytning.gtBydel).isEqualTo("030102")
     }

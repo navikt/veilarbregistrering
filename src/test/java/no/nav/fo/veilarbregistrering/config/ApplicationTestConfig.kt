@@ -21,6 +21,6 @@ class ApplicationTestConfig : ApplicationConfig() {
     public override fun systemUserTokenProvider(): SystemUserTokenProvider = mockk()
 
     private inner class StubUserService : UserService(null, null) {
-        override fun finnBrukerGjennomPdl(): Bruker = Bruker.of(aremark(), AktorId.of("232SA"))
+        override fun finnBrukerGjennomPdl(): Bruker = Bruker.of(aremark(), AktorId("232SA"))
     }
 }

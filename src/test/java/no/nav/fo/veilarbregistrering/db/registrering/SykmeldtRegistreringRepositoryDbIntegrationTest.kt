@@ -54,7 +54,7 @@ class SykmeldtRegistreringRepositoryDbIntegrationTest(
     }
 
     companion object {
-        private val AKTOR_ID_11111 = AktorId.of("11111")
+        private val AKTOR_ID_11111 = AktorId("11111")
     }
 
 }

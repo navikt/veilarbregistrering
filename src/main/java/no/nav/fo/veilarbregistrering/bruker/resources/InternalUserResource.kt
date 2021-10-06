@@ -18,7 +18,7 @@ class InternalUserResource(private val userService: UserService) {
         fnr?.let {
             User(it, userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr)).aktorId.asString())
         } ?: aktorid?.let {
-            User(userService.hentBruker(AktorId.of(aktorid)).gjeldendeFoedselsnummer.stringValue(), it)
+            User(userService.hentBruker(AktorId(aktorid)).gjeldendeFoedselsnummer.stringValue(), it)
         } ?: throw IllegalArgumentException("Må ha enten fnr=X eller aktorid=Y")
 }
 

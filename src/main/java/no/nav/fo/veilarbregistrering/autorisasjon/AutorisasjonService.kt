@@ -20,13 +20,13 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
     fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId.of(aktorId.asString()))) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
 
     fun sjekkSkrivetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId.of(aktorId.asString()))) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }

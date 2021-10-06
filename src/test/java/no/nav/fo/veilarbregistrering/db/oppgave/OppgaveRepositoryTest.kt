@@ -23,7 +23,7 @@ class OppgaveRepositoryTest(
     @Test
     fun opprettOppgave() {
         val id = oppgaveRepository.opprettOppgave(
-                AktorId.of("12353"),
+                AktorId("12353"),
                 OPPHOLDSTILLATELSE,
                 3242L)
         assertThat(id).isNotEqualTo(0)
@@ -32,11 +32,11 @@ class OppgaveRepositoryTest(
     @Test
     fun hentOppgaveForAktorId() {
         val id = oppgaveRepository.opprettOppgave(
-                AktorId.of("12353"),
+                AktorId("12353"),
                 OPPHOLDSTILLATELSE,
                 3242L)
         assertThat(id).isNotEqualTo(0)
-        val oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.of("12353"))
+        val oppgaver = oppgaveRepository.hentOppgaverFor(AktorId("12353"))
         val oppgave = oppgaver[0]
         assertThat(oppgave.id).isEqualTo(id)
         assertThat(oppgave.oppgavetype).isEqualTo(OPPHOLDSTILLATELSE)
@@ -45,7 +45,7 @@ class OppgaveRepositoryTest(
 
     @Test
     fun hentOppgaveForUkjentAktorId() {
-        val oppgaver = oppgaveRepository.hentOppgaverFor(AktorId.of("12353"))
+        val oppgaver = oppgaveRepository.hentOppgaverFor(AktorId("12353"))
         assertThat(oppgaver).isEmpty()
     }
 }

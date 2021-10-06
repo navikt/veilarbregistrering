@@ -16,7 +16,7 @@ class ArbeidssokerRegistrertMapperTest {
     fun `skal mappe opp alle verdier`() {
         val arbeidssokerRegistrertEvent = ArbeidssokerRegistrertMapper.map(
             ArbeidssokerRegistrertInternalEvent(
-                AktorId.of("123"),
+                AktorId("123"),
                 gyldigBesvarelse(dinSituasjon = DinSituasjonSvar.ER_PERMITTERT),
                 LocalDateTime.now()
             )

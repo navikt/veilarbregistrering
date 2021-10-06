@@ -90,7 +90,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
         val bruker = Bruker.of(
             FOEDSELSNUMMER_3,
-            AktorId.of("100002345678"),
+            AktorId("100002345678"),
             listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
         )
         val forespurtPeriode = Periode.of(
@@ -239,12 +239,12 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         private val FOEDSELSNUMMER_4 = Foedselsnummer.of("99887766554")
         private val BRUKER_1 = Bruker.of(
             FOEDSELSNUMMER_3,
-            AktorId.of("100002345678"),
+            AktorId("100002345678"),
             listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
         )
         private val BRUKER_3 = Bruker.of(
             FOEDSELSNUMMER_3,
-            AktorId.of("100002345678"), emptyList()
+            AktorId("100002345678"), emptyList()
         )
     }
 }

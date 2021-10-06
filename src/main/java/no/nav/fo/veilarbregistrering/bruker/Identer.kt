@@ -16,7 +16,7 @@ class Identer(val identer: List<Ident>) {
             .filter { it.gruppe == Gruppe.AKTORID }
             .firstOrNull { !it.isHistorisk }
             ?: throw ManglendeBrukerInfoException("Kunne ikke finne en gjeldende aktørId")
-        return AktorId.of(gjeldendeAktorId.ident)
+        return AktorId(gjeldendeAktorId.ident)
     }
 
     fun finnHistoriskeFoedselsnummer(): List<Foedselsnummer> =

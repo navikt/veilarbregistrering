@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
@@ -51,7 +52,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
         arbeidssokerRepository.lagre(command2)
         val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
         arbeidssokerRepository.lagre(command3)
-        val bruker = Bruker.of(FOEDSELSNUMMER, null, Arrays.asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
+        val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, Arrays.asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
         val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
@@ -94,6 +95,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
 
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer.of("01234567890")
+        private val AKTORID = AktorId("1000010000100")
         private val FOEDSELSNUMMER_2 = Foedselsnummer.of("01234567892")
         private val FOEDSELSNUMMER_3 = Foedselsnummer.of("01234567895")
     }

@@ -40,7 +40,7 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
             .withBody(toJson(PdlOppslagClientTest.HENT_PERSON_OK_JSON), MediaType.JSON_UTF_8)
         )
 
-        val pdlPerson = client.hentPerson(AktorId.of(fnr))
+        val pdlPerson = client.hentPerson(AktorId(fnr))
         assertThat(pdlPerson).isNotNull
     }
 
@@ -63,7 +63,7 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
             .withBody(toJson(PdlOppslagClientTest.HENT_GEOGRAFISK_TILKNYTNING_OK_JSON), MediaType.JSON_UTF_8)
         )
 
-        val pdlGeografiskTilknytning = client.hentGeografiskTilknytning(AktorId.of(fnr))
+        val pdlGeografiskTilknytning = client.hentGeografiskTilknytning(AktorId(fnr))
         assertThat(pdlGeografiskTilknytning).isNotNull
     }
 

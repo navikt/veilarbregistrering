@@ -52,7 +52,7 @@ class OppgaveRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Oppgav
         private val rowMapper = RowMapper { rs, _ ->
             OppgaveImpl(
                 rs.getLong(ID),
-                AktorId.of(rs.getString(AKTOR_ID)),
+                AktorId(rs.getString(AKTOR_ID)),
                 OppgaveType.valueOf(rs.getString(OPPGAVETYPE)),
                 rs.getLong(EKSTERN_OPPGAVE_ID),
                 rs.getTimestamp(OPPRETTET).toLocalDateTime()

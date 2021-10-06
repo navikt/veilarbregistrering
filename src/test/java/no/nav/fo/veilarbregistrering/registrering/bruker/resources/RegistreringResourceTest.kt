@@ -212,7 +212,7 @@ class RegistreringResourceTest(
         every {
             brukerRegistreringService.registrerBrukerUtenOverforing(
                 ordinaerBrukerRegistrering,
-                Bruker.of(FoedselsnummerTestdataBuilder.aremark(), AktorId.of("1234")),
+                Bruker.of(FoedselsnummerTestdataBuilder.aremark(), AktorId("1234")),
                 null
             )
         } returns ordinaerBrukerRegistrering

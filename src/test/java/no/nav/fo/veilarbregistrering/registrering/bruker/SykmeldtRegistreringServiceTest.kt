@@ -120,6 +120,6 @@ class SykmeldtRegistreringServiceTest {
     companion object {
         private val FNR_OPPFYLLER_KRAV =
             FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears(LocalDate.now(), 40)
-        private val BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId.of("AKTØRID"))
+        private val BRUKER_INTERN = Bruker.of(FNR_OPPFYLLER_KRAV, AktorId("AKTØRID"))
     }
 }

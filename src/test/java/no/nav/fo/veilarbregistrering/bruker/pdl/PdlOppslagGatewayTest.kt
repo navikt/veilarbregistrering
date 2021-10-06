@@ -76,8 +76,8 @@ internal class PdlOppslagGatewayTest {
         val pdlOppslagGateway = context.getBean(PdlOppslagGateway::class.java)
         every { pdlOppslagClient.hentPerson(any<AktorId>())} returns dummyPdlPerson()
 
-        pdlOppslagGateway.hentPerson(AktorId.of("22222222222"))
-        pdlOppslagGateway.hentPerson(AktorId.of("22222222222"))
+        pdlOppslagGateway.hentPerson(AktorId("22222222222"))
+        pdlOppslagGateway.hentPerson(AktorId("22222222222"))
 
         verify(exactly = 1) { pdlOppslagClient.hentPerson(any<AktorId>()) }
     }
@@ -87,8 +87,8 @@ internal class PdlOppslagGatewayTest {
         val pdlOppslagGateway = context.getBean(PdlOppslagGateway::class.java)
         every { pdlOppslagClient.hentPerson(any<AktorId>())} returns dummyPdlPerson()
 
-        pdlOppslagGateway.hentPerson(AktorId.of("12345678910"))
-        pdlOppslagGateway.hentPerson(AktorId.of("109987654321"))
+        pdlOppslagGateway.hentPerson(AktorId("12345678910"))
+        pdlOppslagGateway.hentPerson(AktorId("109987654321"))
 
         verify(exactly = 2) { pdlOppslagClient.hentPerson(any<AktorId>()) }
     }

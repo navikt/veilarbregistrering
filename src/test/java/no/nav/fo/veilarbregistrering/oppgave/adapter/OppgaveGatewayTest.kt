@@ -65,7 +65,7 @@ internal class OppgaveGatewayTest(private val mockServer: ClientAndServer) {
                         .withStatusCode(201)
                         .withBody(okRegistreringBody(), MediaType.JSON_UTF_8))
         val oppgave = Oppgave.opprettOppgave(
-                AktorId.of("12e1e3"),
+                AktorId("12e1e3"),
                 null, OppgaveType.OPPHOLDSTILLATELSE,
                 dagensdato)
         val oppgaveResponse = oppgaveGateway.opprett(oppgave) //TODO provide subject somehow

@@ -46,7 +46,7 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
             try {
                 Reaktivering(
                         rs.getLong("BRUKER_REAKTIVERING_ID"),
-                        AktorId.of(rs.getString("AKTOR_ID")),
+                        AktorId(rs.getString("AKTOR_ID")),
                         rs.getTimestamp("reaktivering_dato").toLocalDateTime())
             } catch (e: SQLException) {
                 throw RuntimeException(e)

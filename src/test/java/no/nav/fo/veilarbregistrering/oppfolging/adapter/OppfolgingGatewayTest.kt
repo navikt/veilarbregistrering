@@ -80,6 +80,6 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
 
     companion object {
         private const val IDENT = "10108000398" //Aremark fiktivt fnr.";;
-        private val BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId.of("AKTØRID"))
+        private val BRUKER = Bruker.of(Foedselsnummer.of(IDENT), AktorId("AKTØRID"))
     }
 }

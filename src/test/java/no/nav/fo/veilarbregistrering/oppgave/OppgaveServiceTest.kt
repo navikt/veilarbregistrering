@@ -163,7 +163,7 @@ class OppgaveServiceTest {
     companion object {
         private val BRUKER = Bruker.of(
             Foedselsnummer.of("12345678911"),
-            AktorId.of("2134")
+            AktorId("2134")
         )
     }
 }
