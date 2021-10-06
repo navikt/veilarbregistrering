@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 class InternalUserResource(private val userService: UserService) {
 
     @GetMapping("/bruker")
-    fun fnrOgAktorIdOppslag(@RequestParam(required = false) fnr: String?, @RequestParam(required=false) aktorid: String?): Bruker =
+    fun fnrOgAktorIdOppslag(@RequestParam(required = false) fnr: String?, @RequestParam(required=false) aktorid: String?): User =
         fnr?.let {
-            userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr))
+            User(it, userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr)).aktorId.asString())
         } ?: aktorid?.let {
-            userService.hentBruker(AktorId.of(aktorid))
+            User(userService.hentBruker(AktorId.of(aktorid)).gjeldendeFoedselsnummer.stringValue(), it)
         } ?: throw IllegalArgumentException("Må ha enten fnr=X eller aktorid=Y")
 }
+
+data class User(val fnr: String, val aktorid: String)
