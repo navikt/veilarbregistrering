@@ -80,7 +80,7 @@ class FilterConfig {
     fun loginStatsFilter(): FilterRegistrationBean<*> {
         return FilterRegistrationBean<Filter>().apply {
             filter = AuthStatsFilter()
-            order = 2
+            order = 3
             addUrlPatterns("/*")
         }
     }
@@ -111,7 +111,7 @@ class FilterConfig {
                         EnvironmentUtils.isDevelopment().orElse(false)
                 )
         )
-        registration.order = 3
+        registration.order = 2
         registration.addUrlPatterns("/*")
         return registration
     }
