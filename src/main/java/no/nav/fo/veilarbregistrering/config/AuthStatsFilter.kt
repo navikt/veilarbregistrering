@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import javax.servlet.Filter
 import javax.servlet.FilterChain
@@ -24,11 +25,20 @@ class AuthStatsFilter : Filter {
             sts -> "STS"
             else -> null
         }
-        type?.let { log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]") }
-        chain.doFilter(servletRequest, servletResponse)
+
+        try {
+            type?.let {
+                MDC.put(TOKEN_TYPE, type)
+                log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
+            }
+            chain.doFilter(servletRequest, servletResponse)
+        } finally {
+            MDC.remove(TOKEN_TYPE)
+        }
     }
 
     companion object {
+        private const val TOKEN_TYPE = "tokenType"
         private val log = loggerFor<AuthStatsFilter>()
 
         private fun getConsumerId(request: HttpServletRequest) = request.getHeader("Nav-Consumer-Id")
