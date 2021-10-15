@@ -13,6 +13,7 @@ class AuthStatsFilter : Filter {
 
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request: HttpServletRequest = servletRequest as HttpServletRequest
+        val consumerId = getConsumerId(request)
 
         val cookieNames = request.cookies?.map { it.name } ?: emptyList()
         val sts = request.getHeader(HttpHeaders.AUTHORIZATION)?.startsWith("Bearer") ?: false
@@ -23,11 +24,13 @@ class AuthStatsFilter : Filter {
             sts -> "STS"
             else -> null
         }
-        type?.let { log.info("Authentication with: [$it] request path: [${request.servletPath}]") }
+        type?.let { log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]") }
         chain.doFilter(servletRequest, servletResponse)
     }
 
     companion object {
         private val log = loggerFor<AuthStatsFilter>()
+
+        private fun getConsumerId(request: HttpServletRequest) = request.getHeader("Nav-Consumer-Id")
     }
 }
