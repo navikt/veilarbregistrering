@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.config
 
-import com.nimbusds.oauth2.sdk.token.AccessTokenType.BEARER
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
@@ -8,17 +7,10 @@ import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
 import no.nav.common.log.LogFilter
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
 import no.nav.common.utils.EnvironmentUtils
-import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpHeaders.AUTHORIZATION
 import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
 
 @Configuration
 class FilterConfig {
@@ -44,6 +36,17 @@ class FilterConfig {
             .withClientId(clientId)
             .withIdTokenCookieName(Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME)
             .withUserRole(UserRole.INTERN)
+    }
+
+    private fun createAADSystemTokenConfig(): OidcAuthenticatorConfig? {
+        val discoveryUrl = EnvironmentUtils.getRequiredProperty("AAD_DISCOVERY_URL")
+        val allowedAudience = listOf(
+            EnvironmentUtils.getRequiredProperty("VEILARBPERSON_AAD_CLIENT_ID"),
+        )
+        return OidcAuthenticatorConfig()
+            .withDiscoveryUrl(discoveryUrl)
+            .withClientIds(allowedAudience)
+            .withUserRole(UserRole.SYSTEM)
     }
 
     private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig? {
@@ -94,6 +97,7 @@ class FilterConfig {
                         createVeilarbloginAADConfig(),
                         createAzureAdB2CConfig(),
                         createSystemUserAuthenticatorConfig(),
+                        createAADSystemTokenConfig(),
                 )
         )
         registration.setFilter(authenticationFilter)
