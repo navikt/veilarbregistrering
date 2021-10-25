@@ -105,3 +105,8 @@ spec:
   webproxy: true
   secureLogs:
     enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: veilarbperson
+          namespace: pto
