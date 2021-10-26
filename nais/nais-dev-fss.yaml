@@ -35,7 +35,7 @@ spec:
     - name: VEILARBLOGIN_AAD_CLIENT_ID
       value: 2edd96a2-fb5a-4dfa-8f36-848ae306f9b1
     - name: VEILARBPERSON_AAD_CLIENT_ID
-      value: 2edd96a2-fb5a-4dfa-8f36-848ae306f9b1
+      value: e3a111b4-acc0-465e-a666-5e47120d5ea4
     - name: SECURITYTOKENSERVICE_URL
       value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
     - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
