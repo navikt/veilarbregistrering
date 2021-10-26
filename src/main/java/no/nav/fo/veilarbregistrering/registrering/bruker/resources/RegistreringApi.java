@@ -19,7 +19,7 @@ public interface RegistreringApi {
     @Operation(summary = "Henter siste registrering av bruker.")
     ResponseEntity<BrukerRegistreringWrapper> hentRegistrering();
 
-    @GetMapping("/registrering")
+    @Operation(summary = "Henter siste påbegynte registrering")
     ResponseEntity<BrukerRegistreringWrapper> hentPaabegyntRegistrering();
 
     @Operation(summary = "Starter reaktivering av arbeidssøker.")
