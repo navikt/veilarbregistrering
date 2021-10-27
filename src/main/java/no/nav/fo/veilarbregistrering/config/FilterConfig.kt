@@ -96,8 +96,8 @@ class FilterConfig {
                         createOpenAmAuthenticatorConfig(),
                         createVeilarbloginAADConfig(),
                         createAzureAdB2CConfig(),
-                        createSystemUserAuthenticatorConfig(),
                         createAADSystemTokenConfig(),
+                        createSystemUserAuthenticatorConfig(),
                 )
         )
         registration.setFilter(authenticationFilter)
