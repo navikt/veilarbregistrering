@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.*
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
@@ -231,11 +233,11 @@ class RegistreringResourceTest(
         private val START_REGISTRERING_STATUS = StartRegistreringStatusDto()
         private val time = LocalDateTime.of(2020,1,11,15,50, 20)
         private val GYLDIG_BRUKERREGISTRERING = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().also { it.opprettetDato = time }
-        private val REGISTRERING_RESPONSE = "{\"type\":\"ORDINAER\",\"registrering\":{\"manueltRegistrertAv\":null,\"id\":0,\"opprettetDato\":\"$time\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":null}}"
+        private val REGISTRERING_RESPONSE = "{\"registrering\":{\"manueltRegistrertAv\":null,\"id\":0,\"opprettetDato\":\"$time\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":null},\"type\":\"ORDINAER\"}"
     }
 }
 @Configuration
-private class RegistreringResourceConfig {
+private open class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
             autorisasjonService: AutorisasjonService,

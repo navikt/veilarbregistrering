@@ -11,8 +11,10 @@ object BrukerRegistreringWrapperFactory {
     ): BrukerRegistreringWrapper? {
         if (ordinaerBrukerRegistrering == null && sykmeldtBrukerRegistrering == null) {
             return null
-        } else if (ordinaerBrukerRegistrering == null) {
-            return BrukerRegistreringWrapper(sykmeldtBrukerRegistrering)
+        }
+
+        if (ordinaerBrukerRegistrering == null) {
+            return BrukerRegistreringWrapper(sykmeldtBrukerRegistrering!!)
         } else if (sykmeldtBrukerRegistrering == null) {
             return BrukerRegistreringWrapper(ordinaerBrukerRegistrering)
         }
