@@ -1,29 +1,14 @@
-package no.nav.fo.veilarbregistrering.registrering.formidling;
+package no.nav.fo.veilarbregistrering.registrering.formidling
 
-public class OppdaterRegistreringTilstandCommand {
+class OppdaterRegistreringTilstandCommand private constructor(val id: Long, val status: Status) {
 
-    private final long id;
-    private final Status status;
+    companion object {
+        fun of(id: Long, status: Status): OppdaterRegistreringTilstandCommand {
+            return OppdaterRegistreringTilstandCommand(id, status)
+        }
 
-    public static OppdaterRegistreringTilstandCommand of(long id, Status status) {
-        return new OppdaterRegistreringTilstandCommand(id, status);
+        fun of(id: String, status: Status): OppdaterRegistreringTilstandCommand {
+            return OppdaterRegistreringTilstandCommand(id.toLong(), status)
+        }
     }
-
-    public static OppdaterRegistreringTilstandCommand of(String id, Status status) {
-        return new OppdaterRegistreringTilstandCommand(Long.parseLong(id), status);
-    }
-
-    private OppdaterRegistreringTilstandCommand(long id, Status status)  {
-        this.id = id;
-        this.status = status;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public Status getStatus() {
-        return this.status;
-    }
-
 }
