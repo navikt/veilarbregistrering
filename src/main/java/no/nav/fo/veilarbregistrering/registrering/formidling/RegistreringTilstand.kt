@@ -17,14 +17,8 @@ class RegistreringTilstand private constructor(
     fun oppdaterStatus(status: Status): RegistreringTilstand =
         RegistreringTilstand(id, brukerRegistreringId, opprettet, LocalDateTime.now(), status)
 
-    override fun toString(): String {
-        return "RegistreringTilstand{, " +
-                "id=$id, " +
-                "brukerRegistreringId=$brukerRegistreringId, " +
-                "opprettet=$opprettet, " +
-                "sistEndret=$sistEndret, " +
-                "status=$status}"
-    }
+    override fun toString(): String =
+        "RegistreringTilstand{, id=$id, brukerRegistreringId=$brukerRegistreringId, opprettet=$opprettet, sistEndret=$sistEndret, status=$status}"
 
     companion object {
         fun of(
@@ -33,13 +27,10 @@ class RegistreringTilstand private constructor(
             opprettet: LocalDateTime,
             sistEndret: LocalDateTime?,
             status: Status
-        ): RegistreringTilstand {
-            return RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status)
-        }
+        ): RegistreringTilstand = RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status)
 
         @JvmStatic
-        fun medStatus(status: Status, brukerRegistreringId: Long): RegistreringTilstand {
-            return RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, status)
-        }
+        fun medStatus(status: Status, brukerRegistreringId: Long): RegistreringTilstand =
+            RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, status)
     }
 }
