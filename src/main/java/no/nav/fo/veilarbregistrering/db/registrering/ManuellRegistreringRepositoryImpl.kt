@@ -58,12 +58,13 @@ class ManuellRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempla
 
         private val rowMapper = RowMapper<ManuellRegistrering> { rs, _ ->
             try {
-                ManuellRegistrering()
-                    .setId(rs.getLong(MANUELL_REGISTRERING_ID))
-                    .setRegistreringId(rs.getLong(REGISTRERING_ID))
-                    .setBrukerRegistreringType(BrukerRegistreringType.valueOf(rs.getString(BRUKER_REGISTRERING_TYPE)))
-                    .setVeilederIdent(rs.getString(VEILEDER_IDENT))
-                    .setVeilederEnhetId(rs.getString(VEILEDER_ENHET_ID))
+                ManuellRegistrering(
+                    rs.getLong(MANUELL_REGISTRERING_ID),
+                    rs.getLong(REGISTRERING_ID),
+                    BrukerRegistreringType.valueOf(rs.getString(BRUKER_REGISTRERING_TYPE)),
+                    rs.getString(VEILEDER_IDENT),
+                    rs.getString(VEILEDER_ENHET_ID),
+                )
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }

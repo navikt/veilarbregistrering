@@ -13,12 +13,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class])
 class ManuellRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val manuellRegistreringRepository: ManuellRegistreringRepository) {
+    private val manuellRegistreringRepository: ManuellRegistreringRepository
+) {
 
     @Test
     fun hentManuellRegistrering() {
@@ -26,14 +27,21 @@ class ManuellRegistreringRepositoryDbIntegrationTest(
         val veilederEnhetId = "1234"
         val registreringId: Long = 1
         val registreringType = BrukerRegistreringType.ORDINAER
-        val manuellRegistrering = ManuellRegistrering()
-                .setRegistreringId(registreringId)
-                .setBrukerRegistreringType(registreringType)
-                .setVeilederIdent(veilederIdent)
-                .setVeilederEnhetId(veilederEnhetId)
+        val manuellRegistrering = ManuellRegistrering(
+            registreringId,
+            registreringType,
+            veilederIdent,
+            veilederEnhetId,
+        )
         val id = manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
-        manuellRegistrering.id = id
+        val manuellRegistrering2 = ManuellRegistrering(
+            id,
+            manuellRegistrering.registreringId,
+            manuellRegistrering.brukerRegistreringType,
+            manuellRegistrering.veilederIdent,
+            manuellRegistrering.veilederEnhetId
+        )
         val hentetRegistrering = manuellRegistreringRepository.hentManuellRegistrering(registreringId, registreringType)
-        assertEquals(manuellRegistrering, hentetRegistrering)
+        assertEquals(manuellRegistrering2, hentetRegistrering)
     }
 }

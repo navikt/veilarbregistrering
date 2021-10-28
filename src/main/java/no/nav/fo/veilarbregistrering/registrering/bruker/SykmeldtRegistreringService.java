@@ -66,11 +66,12 @@ public class SykmeldtRegistreringService {
     private void lagreManuellRegistrering(long id, NavVeileder veileder) {
         if (veileder == null) return;
 
-        ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setRegistreringId(id)
-                .setBrukerRegistreringType(SYKMELDT)
-                .setVeilederIdent(veileder.getVeilederIdent())
-                .setVeilederEnhetId(veileder.getEnhetsId());
+        ManuellRegistrering manuellRegistrering = new ManuellRegistrering(
+                id,
+                SYKMELDT,
+                veileder.getVeilederIdent(),
+                veileder.getEnhetsId()
+        );
 
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
     }

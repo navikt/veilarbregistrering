@@ -78,11 +78,12 @@ public class BrukerRegistreringService {
     private void lagreManuellRegistrering(OrdinaerBrukerRegistrering brukerRegistrering, NavVeileder veileder) {
         if (veileder == null) return;
 
-        ManuellRegistrering manuellRegistrering = new ManuellRegistrering()
-                .setRegistreringId(brukerRegistrering.id)
-                .setBrukerRegistreringType(brukerRegistrering.hentType())
-                .setVeilederIdent(veileder.getVeilederIdent())
-                .setVeilederEnhetId(veileder.getEnhetsId());
+        ManuellRegistrering manuellRegistrering = new ManuellRegistrering(
+                brukerRegistrering.id,
+                brukerRegistrering.hentType(),
+                veileder.getVeilederIdent(),
+                veileder.getEnhetsId()
+        );
 
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering);
     }
