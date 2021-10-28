@@ -100,9 +100,10 @@ public class HentRegistreringService {
 
         Optional<NavEnhet> enhet = finnEnhet(Enhetnr.Companion.of(registrering.getVeilederEnhetId()));
 
-        return new Veileder()
-                .setEnhet(enhet.orElse(null))
-                .setIdent(registrering.getVeilederIdent());
+        return new Veileder(
+                registrering.getVeilederIdent(),
+                enhet.orElse(null)
+            );
     }
 
     Optional<NavEnhet> finnEnhet(Enhetnr enhetId) {
