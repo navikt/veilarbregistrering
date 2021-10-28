@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.sts.NaisSystemUserTokenProvider
+import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
+import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
 import no.nav.common.utils.EnvironmentUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
@@ -58,5 +60,12 @@ class ApplicationConfig {
             EnvironmentUtils.getRequiredProperty("SERVICEUSER_USERNAME"),
             EnvironmentUtils.getRequiredProperty("SERVICEUSER_PASSWORD")
         )
+    }
+    
+    @Bean
+    fun serviceToServiceTokenProvider(): ServiceToServiceTokenProvider {
+        return AzureAdServiceTokenProviderBuilder.builder()
+            .withEnvironmentDefaults()
+            .build()
     }
 }

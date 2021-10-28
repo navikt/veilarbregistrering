@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.config
 
 import io.mockk.mockk
+import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -18,7 +19,10 @@ class ApplicationTestConfig : ApplicationConfig() {
     }
 
     @Bean
-    public override fun systemUserTokenProvider(): SystemUserTokenProvider = mockk()
+    override fun systemUserTokenProvider(): SystemUserTokenProvider = mockk()
+
+    @Bean
+    override fun serviceToServiceTokenProvider(): ServiceToServiceTokenProvider = mockk()
 
     private inner class StubUserService : UserService(null, null) {
         override fun finnBrukerGjennomPdl(): Bruker = Bruker.of(aremark(), AktorId("232SA"))
