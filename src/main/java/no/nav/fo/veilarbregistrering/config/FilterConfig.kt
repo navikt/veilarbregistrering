@@ -40,12 +40,12 @@ class FilterConfig {
 
     private fun createAADSystemTokenConfig(): OidcAuthenticatorConfig? {
         val discoveryUrl = EnvironmentUtils.getRequiredProperty("AAD_DISCOVERY_URL")
-        val allowedAudience = listOf(
-            EnvironmentUtils.getRequiredProperty("VEILARBPERSON_AAD_CLIENT_ID"),
-        )
+        val allowedAudience =
+            EnvironmentUtils.getRequiredProperty("AZURE_APP_CLIENT_ID")
+
         return OidcAuthenticatorConfig()
             .withDiscoveryUrl(discoveryUrl)
-            .withClientIds(allowedAudience)
+            .withClientId(allowedAudience)
             .withUserRole(UserRole.SYSTEM)
     }
 
@@ -92,13 +92,13 @@ class FilterConfig {
     open fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
         val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
-                OidcAuthenticator.fromConfigs(
-                        createOpenAmAuthenticatorConfig(),
-                        createVeilarbloginAADConfig(),
-                        createAzureAdB2CConfig(),
-                        createAADSystemTokenConfig(),
-                        createSystemUserAuthenticatorConfig(),
-                )
+            OidcAuthenticator.fromConfigs(
+                createOpenAmAuthenticatorConfig(),
+                createVeilarbloginAADConfig(),
+                createAzureAdB2CConfig(),
+                createAADSystemTokenConfig(),
+                createSystemUserAuthenticatorConfig(),
+            )
         )
         registration.setFilter(authenticationFilter)
         registration.order = 4
@@ -110,10 +110,10 @@ class FilterConfig {
     open fun logFilterRegistrationBean(): FilterRegistrationBean<*> {
         val registration = FilterRegistrationBean<LogFilter>()
         registration.setFilter(
-                LogFilter(
-                        EnvironmentUtils.requireApplicationName(),
-                        EnvironmentUtils.isDevelopment().orElse(false)
-                )
+            LogFilter(
+                EnvironmentUtils.requireApplicationName(),
+                EnvironmentUtils.isDevelopment().orElse(false)
+            )
         )
         registration.order = 2
         registration.addUrlPatterns("/*")
