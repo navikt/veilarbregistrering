@@ -5,6 +5,7 @@ import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
+import java.text.ParseException
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -18,14 +19,13 @@ class AuthStatsFilter : Filter {
         val consumerId = getConsumerId(request)
 
         val cookieNames = request.cookies?.map { it.name } ?: emptyList()
-        val headerValue = request.getHeader(HttpHeaders.AUTHORIZATION)
-        val bearer = headerValue?.startsWith("Bearer") ?: false
-        val token = headerValue?.substring("Bearer ".length)
+        val headerValue = request.getHeader(HttpHeaders.AUTHORIZATION)        
+        val bearerToken = headerValue?.substring("Bearer ".length)
         val type = when {
             Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "AADB2C"
             Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> "AAD"
             Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME in cookieNames -> "OPENAM"
-            !token.isNullOrBlank() -> checkBearerTokenForType(token)
+            !bearerToken.isNullOrBlank() -> checkBearerTokenForType(bearerToken)
             else -> null
         }
 
@@ -40,11 +40,15 @@ class AuthStatsFilter : Filter {
         }
     }
 
-    private fun checkBearerTokenForType(token: String): String {
-        val jwt = JWTParser.parse(token)
-        log.info("Bearer token claims ${jwt.jwtClaimsSet}")
-        return if (jwt.jwtClaimsSet.issuer.contains("microsoftonline.com")) "AAD" else "STS"
-    }
+    private fun checkBearerTokenForType(token: String): String =
+        try {
+            val jwt = JWTParser.parse(token)
+            log.info("Bearer token claims ${jwt.jwtClaimsSet}")
+            if (jwt.jwtClaimsSet.issuer.contains("microsoftonline.com")) "AAD" else "STS"
+        } catch (e: ParseException) {
+            log.warn("Couldnt parse token $token")
+            if (token.contains("microsoftonline.com")) "AAD" else "STS"
+        }
 
     companion object {
         private const val TOKEN_TYPE = "tokenType"
