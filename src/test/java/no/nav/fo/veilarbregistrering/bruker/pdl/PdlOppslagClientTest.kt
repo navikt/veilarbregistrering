@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import org.approvaltests.Approvals
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -35,7 +35,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved error`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+        val pdlOppslagClient = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_FEIL_JSON)
             }
@@ -45,7 +45,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal kunne hente ut detaljer om feil`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+        val pdlOppslagClient = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentGeografiskTilknytningRequest(
                 fnr: String,
                 pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
@@ -65,7 +65,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal feile ved not found`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+        val pdlOppslagClient = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest): String {
                 return toJson(HENT_PERSON_NOT_FOUND_JSON)
             }
@@ -78,7 +78,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente person`() {
-        val pdlOppslagClient = object : PdlOppslagClient("", { null }) {
+        val pdlOppslagClient = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
         }
 
@@ -100,7 +100,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer til person`() {
-        val client = object : PdlOppslagClient("", { null }) {
+        val client = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
@@ -115,7 +115,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer med historikk til person`() {
-        val client = object : PdlOppslagClient("", { null }) {
+        val client = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
@@ -132,7 +132,7 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente geografisk tilknytning til person`() {
-        val client = object : PdlOppslagClient("", { null }) {
+        val client = object : PdlOppslagClient("", { TOKEN }) {
             override fun hentGeografiskTilknytningRequest(
                 fnr: String,
                 pdlHentGeografiskTilknytningRequest: PdlHentGeografiskTilknytningRequest
@@ -149,6 +149,7 @@ class PdlOppslagClientTest {
     private fun toJson(jsonFile: String) = Files.readString(Paths.get(PdlOppslagClient::class.java.getResource(jsonFile).toURI()), Charsets.UTF_8)
 
     companion object {
+        private const val TOKEN = "token"
         internal const val HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json"
         internal const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
         internal const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
