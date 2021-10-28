@@ -21,7 +21,8 @@ import java.util.*
 
 open class PdlOppslagClient(
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider
+    private val systemUserTokenProvider: SystemUserTokenProvider,
+    tokenProvider: () -> String = { "" }
 ) {
 
     private val gson = GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer()).create()

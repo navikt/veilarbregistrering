@@ -54,6 +54,8 @@ spec:
       value: http://dkif.default.svc.nais.local/api/
     - name: PDL_URL
       value: http://pdl-api.default.svc.nais.local
+    - name: PDL_CLUSTER
+      value: dev-fss
     - name: ENHET_URL
       value: https://modapp-q1.adeo.no/ereg
     - name: ISSO_ISALIVE_URL
