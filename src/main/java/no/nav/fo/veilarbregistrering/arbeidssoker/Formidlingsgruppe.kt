@@ -1,8 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker;
+package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.metrics.Metric;
-
-import java.util.Objects;
+import no.nav.fo.veilarbregistrering.metrics.Metric
 
 /**
  * Formidlingsgruppe:
@@ -11,81 +9,22 @@ import java.util.Objects;
  * IARBS - Ikke arbeidssøker
  * ISERV - Ikke servicebruker
  */
-public class Formidlingsgruppe implements Metric {
+data class Formidlingsgruppe (private val formidlingsgruppe: String) : Metric {
+    override fun fieldName(): String = "formidlingsgruppe"
 
-    private final String formidlingsgruppe;
+    override fun value(): String = formidlingsgruppe
 
-    public static Formidlingsgruppe of(String formidlingsgruppe) {
-        return new Formidlingsgruppe(formidlingsgruppe);
+    fun stringValue(): String = formidlingsgruppe
+
+    override fun toString(): String = "{kode='$formidlingsgruppe'}"
+
+    fun erArbeidssoker(): Boolean {
+        return "ARBS" == formidlingsgruppe
     }
 
-    private Formidlingsgruppe(String formidlingsgruppe) {
-        if (formidlingsgruppe == null) {
-            throw new IllegalArgumentException("Formidlingsgruppe skal ikke kunne være null. " +
-                    "Hvis null, kan NullableFormdlingsgruppe brukes i stedet.");
-        }
-        this.formidlingsgruppe = formidlingsgruppe;
-    }
-
-    @Override
-    public String fieldName() {
-        return "formidlingsgruppe";
-    }
-
-    @Override
-    public String value() {
-        return formidlingsgruppe;
-    }
-
-    public String stringValue() {
-        return formidlingsgruppe;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "kode='" + formidlingsgruppe + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Formidlingsgruppe that = (Formidlingsgruppe) o;
-        return Objects.equals(formidlingsgruppe, that.formidlingsgruppe);
-    }
-
-    public static NullableFormidlingsgruppe nullable() {
-        return new NullableFormidlingsgruppe();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(formidlingsgruppe);
-    }
-
-    public boolean erArbeidssoker() {
-        return "ARBS".equals(formidlingsgruppe);
-    }
-
-    /**
-     * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
-     */
-    public static class NullableFormidlingsgruppe extends Formidlingsgruppe {
-
-        private NullableFormidlingsgruppe() {
-            super("INGEN_VERDI");
-        }
-
-        @Override
-        public String stringValue() {
-            return null;
-        }
-
-        @Override
-        public String value() {
-            return "INGEN_VERDI";
-        }
+    companion object {
+        @JvmStatic
+        fun of(formidlingsgruppe: String) : Formidlingsgruppe =
+            Formidlingsgruppe(formidlingsgruppe)
     }
 }
