@@ -113,5 +113,7 @@ spec:
       rules:
         - application: veilarbperson
           namespace: pto
+        - application: veilarbdirigent
+          namespace: pto
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
