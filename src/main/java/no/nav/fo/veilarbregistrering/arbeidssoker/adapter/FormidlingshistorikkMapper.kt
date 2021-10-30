@@ -1,27 +1,27 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
+package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode;
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe;
-import no.nav.fo.veilarbregistrering.bruker.Periode;
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe.Companion.of
+import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeResponseDto
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingshistorikkDto
+import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingshistorikkMapper
+import java.util.stream.Collectors
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.bruker.Periode
 
-import java.util.List;
+internal object FormidlingshistorikkMapper {
+    @JvmStatic
+    fun map(response: FormidlingsgruppeResponseDto): List<Arbeidssokerperiode> =
+        response.formidlingshistorikk
+            .map(::map)
 
-import static java.util.stream.Collectors.toList;
-
-class FormidlingshistorikkMapper {
-
-    static List<Arbeidssokerperiode> map(FormidlingsgruppeResponseDto response) {
-        return response.getFormidlingshistorikk()
-                .stream()
-                .map(FormidlingshistorikkMapper::map)
-                .collect(toList());
-    }
-
-    private static Arbeidssokerperiode map(FormidlingshistorikkDto formidlingshistorikkDto) {
-        return new Arbeidssokerperiode(
-                Formidlingsgruppe.of(formidlingshistorikkDto.getFormidlingsgruppeKode()),
-                Periode.of(
-                        formidlingshistorikkDto.getFraDato(),
-                        formidlingshistorikkDto.getTilDato()));
+    private fun map(formidlingshistorikkDto: FormidlingshistorikkDto): Arbeidssokerperiode {
+        return Arbeidssokerperiode(
+            of(formidlingshistorikkDto.formidlingsgruppeKode),
+            Periode.of(
+                formidlingshistorikkDto.fraDato,
+                formidlingshistorikkDto.tilDato
+            )
+        )
     }
 }
