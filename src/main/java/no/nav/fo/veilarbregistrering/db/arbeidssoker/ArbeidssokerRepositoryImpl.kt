@@ -16,9 +16,9 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
 
     override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
         val personId = command.personId
-        val fnr = command.foedselsnummer
-            .orElseThrow { IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!") }
-            .stringValue()
+        val fnr = command.foedselsnummer?.stringValue()
+            ?: throw IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!")
+
         val formidlingsgruppe = command.formidlingsgruppe.stringValue()
         val formidlingsgruppeEndret = Timestamp.valueOf(command.formidlingsgruppeEndret)
 
@@ -38,8 +38,8 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
             "operasjon" to command.operation.name,
             "formidlingsgruppe" to formidlingsgruppe,
             "formidlingsgruppe_endret" to formidlingsgruppeEndret,
-            "forrige_formidlingsgruppe" to command.forrigeFormidlingsgruppe.orElse(null)?.let(Formidlingsgruppe::stringValue),
-            "forrige_formidlingsgruppe_endret" to command.forrigeFormidlingsgruppeEndret.orElse(null)?.let(Timestamp::valueOf),
+            "forrige_formidlingsgruppe" to command.forrigeFormidlingsgruppe?.let(Formidlingsgruppe::stringValue),
+            "forrige_formidlingsgruppe_endret" to command.forrigeFormidlingsgruppeEndret?.let(Timestamp::valueOf),
             "formidlingsgruppe_lest" to Timestamp.valueOf(LocalDateTime.now())
         )
         val sql = "INSERT INTO $FORMIDLINGSGRUPPE ($ID, $FOEDSELSNUMMER, $PERSON_ID, $PERSON_ID_STATUS, $OPERASJON," +

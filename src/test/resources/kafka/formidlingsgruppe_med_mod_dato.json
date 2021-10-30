@@ -8,12 +8,14 @@
     "PERSON_ID": 3226568,
     "FODSELSNR": "***********",
     "FORMIDLINGSGRUPPEKODE": "ISERV",
-    "MOD_DATO": "2020-06-18 11:13:01"
+    "MOD_DATO": "2020-06-18 11:13:01",
+    "PERSON_ID_STATUS": "AKTIV"
   },
   "after": {
     "PERSON_ID": 3226568,
     "FODSELSNR": "***********",
     "FORMIDLINGSGRUPPEKODE": "ARBS",
-    "MOD_DATO": "2020-06-19 09:31:50"
+    "MOD_DATO": "2020-06-19 09:31:50",
+    "PERSON_ID_STATUS": "AKTIV"
   }
 }

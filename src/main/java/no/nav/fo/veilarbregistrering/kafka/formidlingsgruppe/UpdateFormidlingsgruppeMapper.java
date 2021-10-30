@@ -18,6 +18,6 @@ class UpdateFormidlingsgruppeMapper extends FormidlingsgruppeMapper {
                 Formidlingsgruppe.of(after.getFORMIDLINGSGRUPPEKODE()),
                 modDato(after.getMOD_DATO()),
                 before != null ? Formidlingsgruppe.of(before.getFORMIDLINGSGRUPPEKODE()) : null,
-                before != null ? modDato(before.getMOD_DATO()) : null);
+                    before != null ? modDato(before.getMOD_DATO()) : null);
     }
 }

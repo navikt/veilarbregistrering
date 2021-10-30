@@ -7,6 +7,7 @@
   "after": {
     "PERSON_ID": 13919,
     "FODSELSNR": "***********",
-    "FORMIDLINGSGRUPPEKODE": "ISERV"
+    "FORMIDLINGSGRUPPEKODE": "ISERV",
+    "PERSON_ID_STATUS": "AKTIV"
   }
 }

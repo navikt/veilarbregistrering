@@ -59,37 +59,14 @@ class ArbeidssokerRepositoryDbIntegrationTest(
 
     private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): EndretFormidlingsgruppeCommand {
         return object : EndretFormidlingsgruppeCommand {
-            override fun getFoedselsnummer(): Optional<Foedselsnummer> {
-                return Optional.of(foedselsnummer)
-            }
-
-            override fun getPersonId(): String {
-                return "123456"
-            }
-
-            override fun getPersonIdStatus(): String {
-                return "AKTIV"
-            }
-
-            override fun getOperation(): Operation {
-                return Operation.UPDATE
-            }
-
-            override fun getFormidlingsgruppe(): Formidlingsgruppe {
-                return Formidlingsgruppe.of("ARBS")
-            }
-
-            override fun getFormidlingsgruppeEndret(): LocalDateTime {
-                return tidspunkt
-            }
-
-            override fun getForrigeFormidlingsgruppe(): Optional<Formidlingsgruppe> {
-                return Optional.empty()
-            }
-
-            override fun getForrigeFormidlingsgruppeEndret(): Optional<LocalDateTime> {
-                return Optional.empty()
-            }
+            override val foedselsnummer = foedselsnummer
+            override val personId = "123456"
+            override val personIdStatus = "AKTIV"
+            override val operation = Operation.UPDATE
+            override val formidlingsgruppe = Formidlingsgruppe.of("ARBS")
+            override val formidlingsgruppeEndret = tidspunkt
+            override val forrigeFormidlingsgruppe: Formidlingsgruppe? = null
+            override val forrigeFormidlingsgruppeEndret: LocalDateTime? = null
         }
     }
 
