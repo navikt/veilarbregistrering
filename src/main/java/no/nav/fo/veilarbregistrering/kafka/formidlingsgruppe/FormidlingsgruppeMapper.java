@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,10 +14,13 @@ import static java.util.Optional.ofNullable;
 
 public abstract class FormidlingsgruppeMapper {
 
+    private static Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeMapper.class);
+
     private static final Gson GSON = new Gson();
 
     public static FormidlingsgruppeEvent map(String record) {
         GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = GSON.fromJson(record, GgArenaFormidlinggruppeDto.class);
+        LOG.info("Formidlingsgruppe record: {}", record);
         return Factory.getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto);
     }
 
