@@ -8,17 +8,19 @@ import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-open class ArbeidssokerService(
+@Service
+class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
-    open fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
+    fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
         if (endretFormidlingsgruppeCommand.foedselsnummer == null) {
             LOG.warn(
                 String.format(
