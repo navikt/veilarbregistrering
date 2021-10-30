@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode.EldsteFoerst
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.arbeidssoker.EldsteFoerst
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.Formidlingsgruppeendring.NyesteFoerst
@@ -17,7 +17,7 @@ internal object ArbeidssokerperioderMapper {
                     .run(::slettTekniskeISERVEndringer)
                     .run(::beholdKunSisteEndringPerDagIListen)
                     .run(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
-                    .sortedWith(EldsteFoerst.eldsteFoerst())
+                    .sortedWith(EldsteFoerst())
         )
     }
 
@@ -52,7 +52,7 @@ internal object ArbeidssokerperioderMapper {
 
     private fun populerTilDatoMedNestePeriodesFraDatoMinusEn(arbeidssokerperioder: List<Arbeidssokerperiode>): List<Arbeidssokerperiode> =
         arbeidssokerperioder.mapIndexed { index, arbeidssokerperiode ->
-            val forrigePeriodesFraDato = if (index > 0) arbeidssokerperioder[index - 1].periode?.fra else null
+            val forrigePeriodesFraDato = if (index > 0) arbeidssokerperioder[index - 1].periode.fra else null
             arbeidssokerperiode.tilOgMed(forrigePeriodesFraDato?.minusDays(1))
         }
 }
