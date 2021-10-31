@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
@@ -10,17 +12,20 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static com.fasterxml.jackson.module.kotlin.ExtensionsKt.jacksonObjectMapper;
 import static java.util.Optional.ofNullable;
 
 public abstract class FormidlingsgruppeMapper {
+    
+    private static final ObjectMapper json = jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    private static Logger LOG = LoggerFactory.getLogger(FormidlingsgruppeMapper.class);
-
-    private static final Gson GSON = new Gson();
-
-    public static FormidlingsgruppeEvent map(String record) {
-        GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto = GSON.fromJson(record, GgArenaFormidlinggruppeDto.class);
-        LOG.info("Formidlingsgruppe record: {}", record);
+    public static FormidlingsgruppeEvent map(String record) throws RuntimeException {
+        GgArenaFormidlinggruppeDto ggArenaFormidlinggruppeDto;
+        try {
+            ggArenaFormidlinggruppeDto = json.readValue(record, GgArenaFormidlinggruppeDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return Factory.getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto);
     }
 
