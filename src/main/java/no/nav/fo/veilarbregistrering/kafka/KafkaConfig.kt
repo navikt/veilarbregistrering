@@ -26,21 +26,6 @@ import java.util.*
 
 @Configuration
 class KafkaConfig {
-    @Bean
-    fun arbeidssokerRegistrertKafkaProducer(@Qualifier("producerOnprem") kafkaProducer: KafkaProducer<*, *>?): ArbeidssokerRegistrertProducer {
-        return ArbeidssokerRegistrertKafkaProducer(
-            kafkaProducer,
-            "aapen-arbeid-arbeidssoker-registrert" + if (envSuffix == "-p") "-p" else "-q1"
-        )
-    }
-
-    @Bean
-    fun arbeidssokerProfilertKafkaProducer(@Qualifier("producerOnprem") kafkaProducer: KafkaProducer<*, *>?): ArbeidssokerProfilertProducer {
-        return ArbeidssokerProfilertKafkaProducer(
-            kafkaProducer,
-            "aapen-arbeid-arbeidssoker-profilert" + if (envSuffix == "-p") "-p" else "-q1"
-        )
-    }
 
     @Bean
     fun arbeidssokerRegistrertKafkaProducerAiven(@Qualifier("producerAiven") kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerRegistrertProducer {

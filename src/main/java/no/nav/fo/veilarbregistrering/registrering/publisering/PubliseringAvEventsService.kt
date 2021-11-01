@@ -15,10 +15,8 @@ import java.util.*
 class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val arbeidssokerRegistrertProducer: ArbeidssokerRegistrertProducer,
     private val arbeidssokerRegistrertKafkaProducerAiven: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
-    private val arbeidssokerProfilertProducer: ArbeidssokerProfilertProducer,
     private val arbeidssokerProfilertProducerAiven: ArbeidssokerProfilertProducer,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
@@ -51,12 +49,12 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        if (false && arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent) ) {
+        if (arbeidssokerRegistrertKafkaProducerAiven.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent) ) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
             registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
             LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
 
-            arbeidssokerProfilertProducer.publiserProfilering(
+            arbeidssokerProfilertProducerAiven.publiserProfilering(
                 bruker.aktorId,
                 profilering.innsatsgruppe,
                 ordinaerBrukerRegistrering.opprettetDato
