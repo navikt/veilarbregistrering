@@ -102,26 +102,6 @@ class KafkaConfig {
     }
 
     @Bean
-    fun arbeidssokerRegistrertKafkaConsumer() =
-        ArbeidssokerRegistrertKafkaConsumer(
-            arbeidssokerRegistertKafkaConsumerProperties(),
-            kafkaPropertiesAiven(),
-            "aapen-arbeid-arbeidssoker-registrert" + if (envSuffix == "-p") "-p" else "-q1",
-            "paw.arbeidssoker-registrert-v1",
-        )
-
-    @Bean
-    fun arbeidssokerProfilertKafkaConsumer() =
-        ArbeidssokerProfilertKafkaConsumer(
-            arbeidssokerProfilertKafkaConsumerProperties(),
-            kafkaPropertiesAiven(),
-            "aapen-arbeid-arbeidssoker-profilert" + if (envSuffix == "-p") "-p" else "-q1",
-            "paw.arbeidssoker-profilert-v1",
-        )
-
-
-
-    @Bean
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient?,
         arbeidssokerService: ArbeidssokerService?
