@@ -3,14 +3,13 @@ package no.nav.fo.veilarbregistrering.registrering.publisering
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
-//@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
@@ -23,17 +22,16 @@ class PubliseringAvEventsService(
     @Transactional
     fun publiserEvents() {
         rapporterRegistreringStatusAntallForPublisering()
-        val muligRegistreringTilstand = Optional.ofNullable(
+        val registreringTilstand: RegistreringTilstand? =
             registreringTilstandRepository.finnNesteRegistreringTilstandMed(Status.OVERFORT_ARENA)
-        )
+
         LOG.info(
             "{} registrering klar (status = OVERFORT_ARENA) for publisering",
-            if (muligRegistreringTilstand.isPresent) "1" else "Ingen")
+            registreringTilstand?.let { "1" } ?: "Ingen")
 
-        if (!muligRegistreringTilstand.isPresent) {
+        if (registreringTilstand == null) {
             return
         }
-        val registreringTilstand = muligRegistreringTilstand.orElseThrow { IllegalStateException() }
         val brukerRegistreringId = registreringTilstand.brukerRegistreringId
         val bruker = brukerRegistreringRepository.hentBrukerTilknyttet(brukerRegistreringId)
         val profilering = profileringRepository.hentProfileringForId(brukerRegistreringId)
@@ -49,7 +47,7 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        if (arbeidssokerRegistrertKafkaProducerAiven.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent) ) {
+        if (arbeidssokerRegistrertKafkaProducerAiven.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
             registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
             LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
@@ -60,10 +58,6 @@ class PubliseringAvEventsService(
                 ordinaerBrukerRegistrering.opprettetDato
             )
         }
-    }
-
-    fun harVentendeEvents(): Boolean {
-        return registreringTilstandRepository.hentAntallPerStatus()[Status.OVERFORT_ARENA] != 0
     }
 
     private fun rapporterRegistreringStatusAntallForPublisering() {
