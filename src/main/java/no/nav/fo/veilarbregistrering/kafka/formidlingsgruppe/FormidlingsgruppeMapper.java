@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -66,7 +64,7 @@ public abstract class FormidlingsgruppeMapper {
             } else if ("I".equals(ggArenaFormidlinggruppeDto.getOp_type())) {
                 return insertFormidlingsgruppeMapper;
             }
-            throw new IllegalArgumentException(String.format("Ukjent op_type fra Arena: ", ggArenaFormidlinggruppeDto.getOp_type()));
+            throw new IllegalArgumentException("Ukjent op_type fra Arena: " + ggArenaFormidlinggruppeDto.getOp_type());
         }
     }
 }
