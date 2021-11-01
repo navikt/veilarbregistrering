@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 class KafkaConfig {
     @Bean
     fun arbeidssokerRegistrertKafkaProducer(): ArbeidssokerRegistrertProducer = mockk()
-    
+
     @Bean
     fun arbeidssokerProfilertKafkaProducer(): ArbeidssokerProfilertProducer = mockk()
 }

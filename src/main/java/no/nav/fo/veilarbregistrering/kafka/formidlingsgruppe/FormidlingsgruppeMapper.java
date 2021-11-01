@@ -14,7 +14,7 @@ import static com.fasterxml.jackson.module.kotlin.ExtensionsKt.jacksonObjectMapp
 import static java.util.Optional.ofNullable;
 
 public abstract class FormidlingsgruppeMapper {
-    
+
     private static final ObjectMapper json = jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static FormidlingsgruppeEvent map(String record) throws RuntimeException {
