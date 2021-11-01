@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional
 class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val arbeidssokerRegistrertKafkaProducerAiven: ArbeidssokerRegistrertProducer,
+    private val registrertProducer: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
-    private val arbeidssokerProfilertProducerAiven: ArbeidssokerProfilertProducer,
+    private val profilertProducer: ArbeidssokerProfilertProducer,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
@@ -47,12 +47,12 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        if (arbeidssokerRegistrertKafkaProducerAiven.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)) {
+        if (registrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
             registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
             LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
 
-            arbeidssokerProfilertProducerAiven.publiserProfilering(
+            profilertProducer.publiserProfilering(
                 bruker.aktorId,
                 profilering.innsatsgruppe,
                 ordinaerBrukerRegistrering.opprettetDato
@@ -68,7 +68,6 @@ class PubliseringAvEventsService(
             LOG.error("Feil ved rapportering av antall statuser", e)
         }
     }
-
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PubliseringAvEventsService::class.java)

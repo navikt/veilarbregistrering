@@ -47,7 +47,6 @@ import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -289,17 +288,17 @@ class ServiceBeansConfig {
     fun publiseringAvEventsService(
         profileringRepository: ProfileringRepository,
         brukerRegistreringRepository: BrukerRegistreringRepository,
-        @Qualifier("arbeidssokerRegistrertKafkaProducerAiven") arbeidssokerRegistrertProducerAiven: ArbeidssokerRegistrertProducer,
+        registrertProducer: ArbeidssokerRegistrertProducer,
         registreringTilstandRepository: RegistreringTilstandRepository,
-        @Qualifier("arbeidssokerProfilertKafkaProducerAiven") arbeidssokerProfilertProducerAiven: ArbeidssokerProfilertProducer,
+        profilertProducer: ArbeidssokerProfilertProducer,
         prometheusMetricsService: PrometheusMetricsService
     ): PubliseringAvEventsService {
         return PubliseringAvEventsService(
             profileringRepository,
             brukerRegistreringRepository,
-            arbeidssokerRegistrertProducerAiven,
+            registrertProducer,
             registreringTilstandRepository,
-            arbeidssokerProfilertProducerAiven,
+            profilertProducer,
             prometheusMetricsService
         )
     }
