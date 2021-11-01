@@ -51,7 +51,7 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
-        if (arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent) ) {
+        if (false && arbeidssokerRegistrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent) ) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
             registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
             LOG.info("Ny tilstand for registrering: {}", oppdatertRegistreringTilstand)
