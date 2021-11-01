@@ -10,14 +10,16 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+//@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val arbeidssokerRegistrertProducer: ArbeidssokerRegistrertProducer,
+    private val arbeidssokerRegistrertKafkaProducerAiven: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val arbeidssokerProfilertProducer: ArbeidssokerProfilertProducer,
+    private val arbeidssokerProfilertProducerAiven: ArbeidssokerProfilertProducer,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
