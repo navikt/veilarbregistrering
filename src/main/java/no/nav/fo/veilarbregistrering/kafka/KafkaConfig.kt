@@ -28,7 +28,7 @@ import java.util.*
 class KafkaConfig {
 
     @Bean
-    fun arbeidssokerRegistrertKafkaProducerAiven(@Qualifier("producerAiven") kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerRegistrertProducer {
+    fun arbeidssokerRegistrertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerRegistrertProducer {
         return ArbeidssokerRegistrertKafkaProducer(
             kafkaProducerAiven,
             "paw.arbeidssoker-registrert-v1"
@@ -36,36 +36,16 @@ class KafkaConfig {
     }
 
     @Bean
-    fun arbeidssokerProfilertKafkaProducerAiven(@Qualifier("producerAiven") kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerProfilertProducer {
+    fun arbeidssokerProfilertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerProfilertProducer {
         return ArbeidssokerProfilertKafkaProducer(
             kafkaProducerAiven,
             "paw.arbeidssoker-profilert-v1"
         )
     }
 
-    @Bean("producerOnprem")
-    fun kafkaProducer(): KafkaProducer<*, *> {
-        return KafkaProducer<Any?, Any?>(kafkaProperties())
-    }
-
-    @Bean("producerAiven")
+    @Bean
     fun kafkaProducerAiven(): KafkaProducer<*, *> {
         return KafkaProducer<Any?, Any?>(kafkaPropertiesAiven())
-    }
-
-    @Bean
-    fun kafkaProperties(): Properties {
-        val properties = Properties()
-        properties[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
-        properties[KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
-        properties[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        properties[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = KafkaAvroSerializer::class.java
-        properties[ProducerConfig.CLIENT_ID_CONFIG] = "paw-veilarbregistrering"
-        properties[ProducerConfig.ACKS_CONFIG] = "1"
-        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
-            properties.putAll(securityConfig)
-        }
-        return properties
     }
 
     @Bean
@@ -117,43 +97,11 @@ class KafkaConfig {
         return properties
     }
 
-    @Bean
-    fun arbeidssokerRegistertKafkaConsumerProperties(): Properties =
-        Properties().also {
-            it.putAll(onPremConsumerProps)
-            it[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerRegistrertConsumer
-        }
-
-    @Bean
-    fun arbeidssokerProfilertKafkaConsumerProperties(): Properties =
-        Properties().also {
-            it.putAll(onPremConsumerProps)
-            it[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForArbeidssokerProfilertConsumer
-        }
-
-    private val onPremConsumerProps = Properties().also {
-        it[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
-        it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
-        it[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
-        it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
-            StringDeserializer::class.java
-        it[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
-        it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = KafkaAvroDeserializer::class.java
-        it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
-        it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
-            it.putAll(securityConfig)
-        }
-    }
-
+    companion object {
         // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
         // vil dette gi oss «eventual consistency».
-
-        companion object {
-        private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
-        private const val groupIdForArbeidssokerRegistrertConsumer: String = "veilarbregistrering-ArbeidssokerRegistrertConsumer-01"
-        private const val groupIdForArbeidssokerProfilertConsumer: String = "veilarbregistrering-ArbeidssokerProfilertConsumer-01"
         private const val autoOffsetResetStrategy: String = "earliest"
+        private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
 
         private val aivenSecurityConfig: Properties = Properties().apply {
             val credstorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD")
