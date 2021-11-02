@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
 import com.google.gson.*
+import com.nimbusds.jwt.JWTParser
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
@@ -104,7 +105,8 @@ open class PdlOppslagClient(
 
     private fun lagAuthHeaders(): Map<String, String> {
         val token = tokenProvider()
-        logger.info("Gjør request mot PDL med token: $token")
+        val jwt = JWTParser.parse(token)
+        logger.info("Gjør request mot PDL med token: ${jwt.jwtClaimsSet}")
         return mapOf(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
