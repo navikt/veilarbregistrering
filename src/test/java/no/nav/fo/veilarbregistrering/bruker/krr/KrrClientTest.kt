@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.lang.RuntimeException
+import kotlin.test.assertNotNull
 
 class KrrClientTest {
 
@@ -14,8 +15,8 @@ class KrrClientTest {
         val json = toJson(OK_JSON)
         val foedselsnummer = Foedselsnummer.of("23067844532")
         val kontaktinfoDto = KrrClient.parse(json, foedselsnummer)
-        assertThat(kontaktinfoDto).isNotEmpty
-        assertThat(kontaktinfoDto.get().mobiltelefonnummer).isEqualTo("11111111")
+        assertNotNull(kontaktinfoDto)
+        assertThat(kontaktinfoDto.mobiltelefonnummer).isEqualTo("11111111")
     }
 
     @Test

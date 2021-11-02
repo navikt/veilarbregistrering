@@ -40,7 +40,7 @@ public class KontaktinfoService {
 
         Optional<Telefonnummer> telefonnummer;
         try {
-            telefonnummer = krrGateway.hentKontaktinfo(bruker);
+            telefonnummer = Optional.ofNullable(krrGateway.hentKontaktinfo(bruker));
 
         } catch (NotAuthorizedException | ForbiddenException e) {
             LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet pga manglende tilgang", e);

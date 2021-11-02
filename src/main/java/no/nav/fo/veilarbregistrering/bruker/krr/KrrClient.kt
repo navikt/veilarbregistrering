@@ -1,96 +1,87 @@
-package no.nav.fo.veilarbregistrering.bruker.krr;
+package no.nav.fo.veilarbregistrering.bruker.krr
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import no.nav.common.health.HealthCheck;
-import no.nav.common.health.HealthCheckResult;
-import no.nav.common.health.HealthCheckUtils;
-import no.nav.common.rest.client.RestUtils;
-import no.nav.common.sts.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.nav.common.sts.SystemUserTokenProvider
+import no.nav.common.health.HealthCheck
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.krr.KrrKontaktinfoDto
+import okhttp3.HttpUrl
+import no.nav.common.rest.client.RestClient
+import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
+import no.nav.common.rest.client.RestUtils
+import java.lang.RuntimeException
+import java.io.IOException
+import no.nav.common.health.HealthCheckResult
+import no.nav.common.health.HealthCheckUtils
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.bruker.krr.KrrFeilDto
+import okhttp3.Request
+import org.json.JSONObject
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import java.util.*
+import javax.ws.rs.core.HttpHeaders
 
-import java.io.IOException;
-import java.util.Optional;
-
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static no.nav.common.rest.client.RestClient.baseClient;
-import static no.nav.common.utils.UrlUtils.joinPaths;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
-public class KrrClient implements HealthCheck {
-
-    private static final Logger LOG = LoggerFactory.getLogger(KrrClient.class);
-
-    private final SystemUserTokenProvider systemUserTokenProvider;
-    private final String baseUrl;
-
-    private static final Gson gson = new GsonBuilder().create();
-
-    KrrClient(String baseUrl, SystemUserTokenProvider systemUserTokenProvider) {
-        this.baseUrl = baseUrl;
-        this.systemUserTokenProvider = systemUserTokenProvider;
-    }
-
-    Optional<KrrKontaktinfoDto> hentKontaktinfo(Foedselsnummer foedselsnummer) {
-        Request request = new Request.Builder()
-                .url(
-                        HttpUrl.parse(baseUrl).newBuilder()
-                                .addPathSegments("v1/personer/kontaktinformasjon")
-                                .addQueryParameter("inkluderSikkerDigitalPost", "false")
-                                .build())
-                .header(AUTHORIZATION, "Bearer " + systemUserTokenProvider.getSystemUserToken())
-                .header("Nav-Consumer-Id", "srvveilarbregistrering")
-                .header("Nav-Personidenter", foedselsnummer.stringValue())
-                .build();
-        try (Response response = baseClient().newCall(request).execute()) {
-            if (!response.isSuccessful() || response.code() == NOT_FOUND.value()) {
-                LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret");
-                return Optional.empty();
+class KrrClient internal constructor(
+    private val baseUrl: String,
+    private val systemUserTokenProvider: SystemUserTokenProvider
+) : HealthCheck {
+    internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
+        val request = Request.Builder()
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("v1/personer/kontaktinformasjon")
+                    .addQueryParameter("inkluderSikkerDigitalPost", "false")
+                    .build()
+            )
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemUserTokenProvider.systemUserToken)
+            .header("Nav-Consumer-Id", "srvveilarbregistrering")
+            .header("Nav-Personidenter", foedselsnummer.stringValue())
+            .build()
+        try {
+            RestClient.baseClient().newCall(request).execute().use { response ->
+                if (!response.isSuccessful || response.code() == HttpStatus.NOT_FOUND.value()) {
+                    LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret")
+                    return null
+                }
+                return parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
             }
-
-            return parse(RestUtils.getBodyStr(response).orElseThrow(RuntimeException::new), foedselsnummer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
     }
 
-    /**
-     * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
-     * @return
-     */
-    static Optional<KrrKontaktinfoDto> parse(String jsonResponse, Foedselsnummer foedselsnummer) {
-        if (new JSONObject(jsonResponse).has("kontaktinfo")) {
-            JSONObject kontaktinfo = new JSONObject(jsonResponse)
+    override fun checkHealth(): HealthCheckResult {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient())
+    }
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(KrrClient::class.java)
+        private val gson = GsonBuilder().create()
+
+        /**
+         * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
+         * @return
+         */
+        internal fun parse(jsonResponse: String?, foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
+            if (JSONObject(jsonResponse).has("kontaktinfo")) {
+                val kontaktinfo = JSONObject(jsonResponse)
                     .getJSONObject("kontaktinfo")
-                    .getJSONObject(foedselsnummer.stringValue());
-
-            return Optional.of(gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto.class));
-        }
-
-        if (new JSONObject(jsonResponse).has("feil")) {
-            JSONObject response = new JSONObject(jsonResponse)
-                    .getJSONObject("feil")
-                    .getJSONObject(foedselsnummer.stringValue());
-
-            KrrFeilDto feil = gson.fromJson(response.toString(), KrrFeilDto.class);
-
-            if ("Ingen kontaktinformasjon er registrert på personen".equals(feil.getMelding())) {
-                return Optional.empty();
+                    .getJSONObject(foedselsnummer.stringValue())
+                return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto::class.java)
             }
-
-            throw new RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.getMelding()));
+            if (JSONObject(jsonResponse).has("feil")) {
+                val response = JSONObject(jsonResponse)
+                    .getJSONObject("feil")
+                    .getJSONObject(foedselsnummer.stringValue())
+                val feil = gson.fromJson(response.toString(), KrrFeilDto::class.java)
+                if ("Ingen kontaktinformasjon er registrert på personen" == feil.melding) {
+                    return null
+                }
+                throw RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.melding))
+            }
+            throw RuntimeException("Ukjent feil")
         }
-        throw new RuntimeException("Ukjent feil");
-    }
-
-    @Override
-    public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(joinPaths(baseUrl, "/ping"), baseClient());
     }
 }
