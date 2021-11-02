@@ -104,7 +104,7 @@ public class OppgaveRouter {
 
     private AdressebeskyttelseGradering hentAdressebeskyttelse(Bruker bruker) {
         try {
-            Optional<Person> person = pdlOppslagGateway.hentPerson(bruker.getAktorId());
+            Optional<Person> person = Optional.ofNullable(pdlOppslagGateway.hentPerson(bruker.getAktorId()));
             return person.map(Person::getAdressebeskyttelseGradering)
                     .orElse(AdressebeskyttelseGradering.UKJENT);
 

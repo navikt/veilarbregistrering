@@ -12,13 +12,13 @@ import java.util.*
 open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient) : PdlOppslagGateway {
 
     @Cacheable(CacheConfig.HENT_PERSON_FOR_AKTORID)
-    override fun hentPerson(aktorid: AktorId): Optional<Person> {
+    override fun hentPerson(aktorid: AktorId): Person? {
         return try {
             val pdlPerson = pdlOppslagClient.hentPerson(aktorid)
-            Optional.of(map(pdlPerson))
+            map(pdlPerson)
         } catch (e: BrukerIkkeFunnetException) {
             LOG.warn("Hent person gav ikke treff", e)
-            Optional.empty()
+            null
         }
     }
 
