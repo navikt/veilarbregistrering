@@ -6,7 +6,6 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import okhttp3.HttpUrl
@@ -19,7 +18,6 @@ import javax.ws.rs.core.HttpHeaders
 
 class KrrClient internal constructor(
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider,
     private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
@@ -30,7 +28,7 @@ class KrrClient internal constructor(
                     .addQueryParameter("inkluderSikkerDigitalPost", "false")
                     .build()
             )
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemUserTokenProvider.systemUserToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenProvider())
             .header("Nav-Consumer-Id", "srvveilarbregistrering")
             .header("Nav-Personidenter", foedselsnummer.stringValue())
             .build()
