@@ -16,7 +16,7 @@ class PdlOppslagConfig {
 
         return PdlOppslagClient(baseUrl) {
             serviceToServiceTokenProvider
-                .getServiceToken("pdl", "pdl", pdlCluster)
+                .getServiceToken("pdl-api", "pdl", pdlCluster)
         }
     }
 
