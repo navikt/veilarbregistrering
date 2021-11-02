@@ -52,6 +52,8 @@ spec:
       value: https://oppgave.nais.preprod.local
     - name: KRR_BASE_URL
       value: http://dkif.default.svc.nais.local/api/
+    - name: KRR_CLUSTER
+      value: dev-fss
     - name: PDL_URL
       value: http://pdl-api.default.svc.nais.local
     - name: PDL_CLUSTER

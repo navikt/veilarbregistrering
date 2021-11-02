@@ -1,24 +1,32 @@
-package no.nav.fo.veilarbregistrering.bruker.krr;
+package no.nav.fo.veilarbregistrering.bruker.krr
 
-import no.nav.common.sts.SystemUserTokenProvider;
-import no.nav.fo.veilarbregistrering.bruker.KrrGateway;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+import no.nav.common.sts.ServiceToServiceTokenProvider
+import no.nav.common.sts.SystemUserTokenProvider
+import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.bruker.KrrGateway
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-public class KrrConfig {
-
-    private static final String KRR_PROPERTY_NAME = "KRR_BASE_URL";
-
+class KrrConfig {
     @Bean
-    KrrClient krrClient(SystemUserTokenProvider systemUserTokenProvider) {
-        return new KrrClient(getRequiredProperty(KRR_PROPERTY_NAME), systemUserTokenProvider);
+    fun krrClient(systemUserTokenProvider: SystemUserTokenProvider, serviceToServiceTokenProvider: ServiceToServiceTokenProvider): KrrClient {
+        val baseUrl = EnvironmentUtils.getRequiredProperty(KRR_URL_PROPERTY_NAME)
+        val cluster = EnvironmentUtils.getRequiredProperty(KRR_CLUSTER_PROPERTY_NAME)
+
+        return KrrClient(baseUrl, systemUserTokenProvider) {
+            serviceToServiceTokenProvider
+                .getServiceToken("dkif", "team-rocket", cluster)
+        }
     }
 
     @Bean
-    KrrGateway krrGateway(KrrClient krrClient) {
-        return new KrrGatewayImpl(krrClient);
+    fun krrGateway(krrClient: KrrClient?): KrrGateway {
+        return KrrGatewayImpl(krrClient!!)
+    }
+
+    companion object {
+        private const val KRR_URL_PROPERTY_NAME = "KRR_BASE_URL"
+        private const val KRR_CLUSTER_PROPERTY_NAME = "KRR_BASE_URL"
     }
 }

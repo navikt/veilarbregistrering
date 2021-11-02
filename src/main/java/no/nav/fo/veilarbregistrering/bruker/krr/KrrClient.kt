@@ -1,31 +1,26 @@
 package no.nav.fo.veilarbregistrering.bruker.krr
 
-import no.nav.common.sts.SystemUserTokenProvider
+import com.google.gson.GsonBuilder
 import no.nav.common.health.HealthCheck
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.krr.KrrKontaktinfoDto
-import okhttp3.HttpUrl
-import no.nav.common.rest.client.RestClient
-import no.nav.fo.veilarbregistrering.bruker.krr.KrrClient
-import no.nav.common.rest.client.RestUtils
-import java.lang.RuntimeException
-import java.io.IOException
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import no.nav.common.rest.client.RestClient
+import no.nav.common.rest.client.RestUtils
+import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
-import no.nav.fo.veilarbregistrering.bruker.krr.KrrFeilDto
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import okhttp3.HttpUrl
 import okhttp3.Request
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
-import java.util.*
+import java.io.IOException
 import javax.ws.rs.core.HttpHeaders
 
 class KrrClient internal constructor(
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider
+    private val systemUserTokenProvider: SystemUserTokenProvider,
+    private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
         val request = Request.Builder()
