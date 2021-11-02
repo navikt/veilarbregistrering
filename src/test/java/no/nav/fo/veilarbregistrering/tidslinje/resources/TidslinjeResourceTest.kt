@@ -84,7 +84,7 @@ class TidslinjeResourceTest(
 }
 
 @Configuration
-private class TidslinjeResourceConfig {
+private open class TidslinjeResourceConfig {
 
     @Bean
     fun tidslinjeResource(
