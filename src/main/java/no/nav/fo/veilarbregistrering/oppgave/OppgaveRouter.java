@@ -56,7 +56,7 @@ public class OppgaveRouter {
     public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {
         AdressebeskyttelseGradering adressebeskyttelseGradering = hentAdressebeskyttelse(bruker);
         if (adressebeskyttelseGradering.erGradert()) {
-            return adressebeskyttelseGradering.getEksplisittRoutingEnhet();
+            return Optional.ofNullable(adressebeskyttelseGradering.getEksplisittRoutingEnhet());
         }
 
         Optional<GeografiskTilknytning> geografiskTilknytning;
