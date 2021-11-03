@@ -1,10 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
 import com.google.gson.*
-import com.nimbusds.jwt.JWT
-import com.nimbusds.jwt.JWTParser
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
+import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -22,7 +21,8 @@ import java.util.*
 
 open class PdlOppslagClient(
     private val baseUrl: String,
-    private val tokenProvider: () -> String
+    private val systemUserTokenProvider: SystemUserTokenProvider,
+    tokenProvider: () -> String = { "" }
 ) {
 
     private val gson = GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer()).create()
@@ -105,13 +105,12 @@ open class PdlOppslagClient(
     }
 
     private fun lagAuthHeaders(): Map<String, String> {
-        val token = tokenProvider()
-        val jwt = try { JWTParser.parse(token) } catch (e: java.text.ParseException) { null }
-        logger.info("Gjør request mot PDL med token: ${jwt?.jwtClaimsSet}")
-        return mapOf(
+        val token = systemUserTokenProvider.systemUserToken
+        val authHeaders = mapOf(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
         )
+        return authHeaders
     }
 
     private fun hentIdenterQuery() = hentRessursfil("pdl/hentIdenter.graphql")
