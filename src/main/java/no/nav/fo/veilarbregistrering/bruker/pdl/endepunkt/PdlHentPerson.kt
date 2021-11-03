@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt
 
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse
 import java.time.LocalDate
 import java.util.*
 
@@ -10,8 +9,8 @@ data class PdlHentPerson(val hentPerson: PdlPerson)
 
 data class PdlPerson(
     val telefonnummer: List<PdlTelefonnummer>,
-    val foedsel: List<PdlFoedsel>,
-    val adressebeskyttelse: List<PdlAdressebeskyttelse>) {
+    val foedsel: List<PdlFoedsel> = emptyList(),
+    val adressebeskyttelse: List<PdlAdressebeskyttelse> = emptyList()) {
 
     fun hoyestPrioriterteTelefonnummer() =
         (if (telefonnummer.isEmpty()) Optional.empty()
@@ -43,7 +42,6 @@ data class PdlTelefonnummer(val nummer: String? = null,
         } else 0
     }
 }
-
 data class PdlFoedsel(val foedselsdato: LocalDate)
 
 enum class PdlGradering(internal val niva: Int) {
@@ -60,7 +58,10 @@ data class PdlAdressebeskyttelse(val gradering: PdlGradering) : Comparable<PdlAd
 
 data class PdlHentPersonRequest(val query: String, val variables: HentPersonVariables)
 
-data class PdlHentPersonResponse(val data: PdlHentPerson, override val errors: List<PdlError>) : PdlResponse
+data class PdlHentPersonResponse(val data: PdlHentPerson)
 
 data class HentPersonVariables(val ident: String, val oppholdHistorikk: Boolean)
+
+data class PdlErrorResponse(val errors: List<PdlError> = emptyList())
+
 

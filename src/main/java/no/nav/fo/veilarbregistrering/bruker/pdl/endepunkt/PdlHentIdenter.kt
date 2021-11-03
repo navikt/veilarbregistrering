@@ -1,8 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError
-import no.nav.fo.veilarbregistrering.bruker.pdl.PdlResponse
-
 data class PdlHentIdenter(val hentIdenter: PdlIdenter)
 
 data class PdlIdenter(val identer: List<PdlIdent>)
@@ -17,4 +14,4 @@ data class PdlHentIdenterRequest(val query: String, val variables: HentIdenterVa
 
 class HentIdenterVariables(val ident: String)
 
-class PdlHentIdenterResponse(val data: PdlHentIdenter, override val errors: List<PdlError>?) : PdlResponse
+class PdlHentIdenterResponse(val data: PdlHentIdenter)

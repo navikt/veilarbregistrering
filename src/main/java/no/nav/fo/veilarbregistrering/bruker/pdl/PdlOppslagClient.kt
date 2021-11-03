@@ -1,6 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
-import com.google.gson.*
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
@@ -10,14 +14,10 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
-import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.Headers
 import okhttp3.Request
 import java.io.IOException
-import java.lang.reflect.Type
 import java.nio.charset.StandardCharsets
-import java.time.LocalDate
-import java.util.*
 
 open class PdlOppslagClient(
     private val baseUrl: String,
@@ -25,21 +25,20 @@ open class PdlOppslagClient(
     tokenProvider: () -> String = { "" }
 ) {
 
-    private val gson = GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer()).create()
+    private val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     fun hentIdenter(fnr: Foedselsnummer): PdlIdenter {
         val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(fnr.stringValue()))
         val json = hentIdenterRequest(fnr.stringValue(), request)
-        val response = gson.fromJson(json, PdlHentIdenterResponse::class.java)
-        validateResponse(response)
+        val response = mapAndValidateResponse<PdlHentIdenterResponse>(json)
         return response.data.hentIdenter
     }
 
     fun hentIdenter(aktorId: AktorId): PdlIdenter {
         val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(aktorId.asString()))
         val json = hentIdenterRequest(aktorId.asString(), request)
-        val response = gson.fromJson(json, PdlHentIdenterResponse::class.java)
-        validateResponse(response)
+        val response = mapAndValidateResponse<PdlHentIdenterResponse>(json)
         return response.data.hentIdenter
     }
 
@@ -74,8 +73,7 @@ open class PdlOppslagClient(
             HentGeografiskTilknytningVariables(aktorId.asString())
         )
         val json = hentGeografiskTilknytningRequest(aktorId.asString(), request)
-        val resp = gson.fromJson(json, PdlHentGeografiskTilknytningResponse::class.java)
-        validateResponse(resp)
+        val resp = mapAndValidateResponse<PdlHentGeografiskTilknytningResponse>(json)
         return resp.data.hentGeografiskTilknytning
     }
 
@@ -92,8 +90,7 @@ open class PdlOppslagClient(
     fun hentPerson(aktorId: AktorId): PdlPerson {
         val request = PdlHentPersonRequest(hentPersonQuery(), HentPersonVariables(aktorId.asString(), false))
         val json = hentPersonRequest(aktorId.asString(), request)
-        val resp = gson.fromJson(json, PdlHentPersonResponse::class.java)
-        validateResponse(resp)
+        val resp = mapAndValidateResponse<PdlHentPersonResponse>(json)
         return resp.data.hentPerson
     }
 
@@ -106,11 +103,10 @@ open class PdlOppslagClient(
 
     private fun lagAuthHeaders(): Map<String, String> {
         val token = systemUserTokenProvider.systemUserToken
-        val authHeaders = mapOf(
+        return mapOf(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
         )
-        return authHeaders
     }
 
     private fun hentIdenterQuery() = hentRessursfil("pdl/hentIdenter.graphql")
@@ -119,38 +115,41 @@ open class PdlOppslagClient(
 
     private fun hentRessursfil(sti: String): String {
         val classLoader = PdlOppslagClient::class.java.classLoader
-        try {
-            classLoader.getResourceAsStream(sti).use { resourceStream ->
-                return String(
+        return try {
+            classLoader.getResourceAsStream(sti)?.use { resourceStream ->
+                String(
                     resourceStream.readAllBytes(),
                     StandardCharsets.UTF_8
                 ).replace("[\n\r]".toRegex(), "")
-            }
+            } ?: throw RuntimeException("File input stream var null")
         } catch (e: IOException) {
             throw RuntimeException("Integrasjon mot PDL ble ikke gjennomført pga. feil ved lesing av query", e)
         }
     }
 
-    private fun validateResponse(response: PdlResponse) {
-        if (response.errors != null && response.errors!!.isNotEmpty()) {
-            if (response.errors!!.any { pdlError -> pdlError.extensions?.code == "not_found" }) {
+    private inline fun <reified T> mapAndValidateResponse(response: String): T {
+        return try {
+            mapper.readValue(response)
+        } catch (e: JsonProcessingException) {
+            val pdlError = mapPdlErrorResponse(response)
+            val errorCodes = pdlError.errors.mapNotNull { it.extensions?.code }
+            if ("not_found" in errorCodes) {
                 throw BrukerIkkeFunnetException("Fant ikke person i PDL")
+            } else {
+                throw PdlException("Integrasjon mot PDL feilet", pdlError.errors)
             }
-            throw PdlException("Integrasjon mot PDL feilet", response.errors!!)
         }
     }
 
-    private class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
-        @Throws(JsonParseException::class)
-        override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LocalDate? {
-            return Optional.ofNullable(json.asJsonPrimitive.asString)
-                .map { text: String? -> LocalDate.parse(text) }
-                .orElse(null)
+    private fun mapPdlErrorResponse(response: String) : PdlErrorResponse {
+        return try {
+            mapper.readValue(response)
+        } catch(e: JsonProcessingException) {
+            throw PdlException("Integrasjon mot PDL feilet", emptyList())
         }
     }
 
     companion object {
-        private val logger = loggerFor<PdlOppslagClient>()
         private const val NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token"
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
