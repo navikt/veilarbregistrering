@@ -82,7 +82,11 @@ public class FormidlingsgruppeKafkaConsumer implements Runnable {
 
                     try {
                         behandleRecord(record);
-                    } catch (RuntimeException e) {
+                    }
+                    catch (IllegalArgumentException e) {
+                        LOG.warn(String.format("Behandling av record feilet: %s", record.value()), e);
+                    }
+                    catch (RuntimeException e) {
                         LOG.error(String.format("Behandling av record feilet: %s", record.value()), e);
                         throw e;
 

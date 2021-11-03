@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
@@ -43,14 +44,15 @@ abstract class FormidlingsgruppeMapper {
     internal class InvalidFormidlingsgruppeEvent(s: String) : RuntimeException(s)
 
     companion object {
-        private val json = jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        private val json = jacksonObjectMapper().findAndRegisterModules()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
         @JvmStatic
         fun map(record: String?): FormidlingsgruppeEvent {
             val ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto = try {
-                json.readValue(record, GgArenaFormidlinggruppeDto::class.java)
+                record?.let { json.readValue<GgArenaFormidlinggruppeDto>(record) } ?: throw IllegalArgumentException("Missing required fields from record")
             } catch (e: JsonProcessingException) {
-                throw RuntimeException(e)
+                throw IllegalArgumentException("Manglende påkrevde felter i record", e)
             }
             return Factory.getInstance(ggArenaFormidlinggruppeDto).map(ggArenaFormidlinggruppeDto)
         }

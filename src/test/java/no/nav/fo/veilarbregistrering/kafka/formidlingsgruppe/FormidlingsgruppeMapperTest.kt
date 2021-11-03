@@ -13,14 +13,19 @@ class FormidlingsgruppeMapperTest {
     @Test
     fun `Kaster exception ved manglende mod dato`() {
         val json = toJson("/kafka/formidlingsgruppe_uten_mod_dato.json")
-        assertThrows<RuntimeException> { FormidlingsgruppeMapper.map(json) }
+        assertThrows<IllegalArgumentException> { FormidlingsgruppeMapper.map(json) }
+    }
 
+    @Test
+    fun `Kaster exception ved manglende op_type`() {
+        val json = toJson("/kafka/formidlingsgruppe_uten_op_type_I.json")
+        assertThrows<IllegalArgumentException> { FormidlingsgruppeMapper.map(json) }
     }
 
     @Test
     fun `Kaster exception ved manglende person_id_status`() {
         val json = toJson("/kafka/formidlingsgruppe_uten_person_id_status.json")
-        assertThrows<RuntimeException> { FormidlingsgruppeMapper.map(json) }
+        assertThrows<IllegalArgumentException> { FormidlingsgruppeMapper.map(json) }
     }
 
     @Test
