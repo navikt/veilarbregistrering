@@ -15,6 +15,7 @@ import org.mockserver.model.MediaType
 
 @ExtendWith(MockServerExtension::class)
 class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
+    private val authToken = "AuthToken"
 
     @BeforeEach
     fun setup() {
@@ -23,9 +24,8 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentPerson skal lage en gyldig graphql-request`() {
-        val authToken = "AuthToken"
         val fnr = "12345678910"
-        val client = buildClient(authToken)
+        val client = buildClient()
 
         mockServer.`when`(
             HttpRequest.request("/graphql")
@@ -45,9 +45,8 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentGeografiskTilknytning skal lage en gyldig graphql-request`() {
-        val authToken = "AuthToken"
         val fnr = "12345678910"
-        val client = buildClient(authToken)
+        val client = buildClient()
 
         mockServer.`when`(
             HttpRequest.request("/graphql")
@@ -67,9 +66,8 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentIdenter skal lage en gyldig graphql-request`() {
-        val authToken = "AuthToken"
         val fnr = "12345678910"
-        val client = buildClient(authToken)
+        val client = buildClient()
 
         mockServer.`when`(
             HttpRequest.request("/graphql")
@@ -86,8 +84,8 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
         assertThat(pdlIdenter).isNotNull
     }
 
-    private fun buildClient(authToken: String = "AuthToken" ): PdlOppslagClient {
+    private fun buildClient(): PdlOppslagClient {
         val baseUrl = "http://${mockServer.remoteAddress().address.hostName}:${mockServer.remoteAddress().port}"
-        return PdlOppslagClient(baseUrl, { authToken }, { authToken })
+        return PdlOppslagClient(baseUrl) { authToken }
     }
 }
