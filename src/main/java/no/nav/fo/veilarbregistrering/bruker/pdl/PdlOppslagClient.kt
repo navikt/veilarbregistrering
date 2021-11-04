@@ -106,7 +106,6 @@ open class PdlOppslagClient(
         val aadToken = tokenProvider()
         return mapOf(
             "Authorization" to "Bearer $aadToken",
-            NAV_CONSUMER_TOKEN_HEADER to "Bearer $aadToken",
         )
     }
 
