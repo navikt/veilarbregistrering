@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.Headers
 import okhttp3.Request
 import java.io.IOException
@@ -22,7 +23,7 @@ import java.nio.charset.StandardCharsets
 open class PdlOppslagClient(
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
-    tokenProvider: () -> String = { "" }
+    private val tokenProvider: () -> String = { "" }
 ) {
 
     private val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
@@ -103,6 +104,8 @@ open class PdlOppslagClient(
 
     private fun lagAuthHeaders(): Map<String, String> {
         val token = systemUserTokenProvider.systemUserToken
+        val aadToken = tokenProvider()
+        logger.info("AAD token: ", aadToken)
         return mapOf(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
@@ -150,6 +153,7 @@ open class PdlOppslagClient(
     }
 
     companion object {
+        private val logger = loggerFor<PdlOppslagClient>()
         private const val NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token"
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
