@@ -105,7 +105,7 @@ open class PdlOppslagClient(
     private fun lagAuthHeaders(): Map<String, String> {
         val token = systemUserTokenProvider.systemUserToken
         val aadToken = tokenProvider()
-        logger.info("AAD token: ", aadToken)
+        logger.info("AAD token: {}", aadToken)
         return mapOf(
             "Authorization" to "Bearer $token",
             NAV_CONSUMER_TOKEN_HEADER to "Bearer $token",
