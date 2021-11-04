@@ -91,6 +91,6 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(authToken: String = "AuthToken" ): PdlOppslagClient {
         val baseUrl = "http://${mockServer.remoteAddress().address.hostName}:${mockServer.remoteAddress().port}"
-        return PdlOppslagClient(baseUrl, { authToken })
+        return PdlOppslagClient(baseUrl, { authToken }, { authToken })
     }
 }
