@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets
 open class PdlOppslagClient(
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
-    private val tokenProvider: () -> String = { "" }
+    private val tokenProvider: () -> String = { "default" }
 ) {
 
     private val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
