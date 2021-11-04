@@ -27,6 +27,6 @@ class KrrConfig {
 
     companion object {
         private const val KRR_URL_PROPERTY_NAME = "KRR_BASE_URL"
-        private const val KRR_CLUSTER_PROPERTY_NAME = "KRR_BASE_URL"
+        private const val KRR_CLUSTER_PROPERTY_NAME = "KRR_CLUSTER"
     }
 }
