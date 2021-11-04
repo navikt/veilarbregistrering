@@ -35,8 +35,8 @@ class KrrClient internal constructor(
                 val kontaktinfoDto = parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
                 LOG.info("Fant kontaktinfo i krr ved kall med AADtoken: {}", kontaktinfoDto)
             }
-        } catch (e: IOException) {
-            LOG.warn("Feil oppsto ved kall mot krr ved bruk av AADtoken")
+        } catch (e: Exception) {
+            LOG.warn("Feil oppsto ved kall mot krr ved bruk av AADtoken", e)
         }
 
         try {
