@@ -30,10 +30,12 @@ class KrrClient internal constructor(
         try {
             RestClient.baseClient().newCall(aadRequest).execute().use { response ->
                 if (!response.isSuccessful || response.code() == HttpStatus.NOT_FOUND.value()) {
-                    LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret med bruk av AADtoken")
+                    LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret med bruk av AADtoken: {}", response)
+                }else {
+                    val kontaktinfoDto =
+                        parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
+                    LOG.info("Fant kontaktinfo i krr ved kall med AADtoken: {}", kontaktinfoDto)
                 }
-                val kontaktinfoDto = parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
-                LOG.info("Fant kontaktinfo i krr ved kall med AADtoken: {}", kontaktinfoDto)
             }
         } catch (e: Exception) {
             LOG.warn("Feil oppsto ved kall mot krr ved bruk av AADtoken", e)
