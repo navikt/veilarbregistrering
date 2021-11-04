@@ -75,7 +75,6 @@ class KrrClient internal constructor(
                     .build()
             )
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenProvider())
-            .header("Nav-Consumer-Id", "srvveilarbregistrering")
             .header("Nav-Personidenter", foedselsnummer.stringValue())
             .build()
     }
