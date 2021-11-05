@@ -1,5 +1,5 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker
 
-public enum Gruppe {
+enum class Gruppe {
     FOLKEREGISTERIDENT, AKTORID, NPID
 }
