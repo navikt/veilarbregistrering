@@ -20,7 +20,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykemeldingGatewayConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -41,7 +40,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
     ArbeidsforholdGatewayConfig::class,
     OppfolgingGatewayConfig::class,
     OppgaveGatewayConfig::class,
-    SykemeldingGatewayConfig::class,
     PdlOppslagConfig::class,
     EnhetGatewayConfig::class,
     KrrConfig::class,
