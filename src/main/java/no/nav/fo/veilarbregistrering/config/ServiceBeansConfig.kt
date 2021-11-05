@@ -44,7 +44,6 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegist
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
 import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
-import no.nav.fo.veilarbregistrering.sykemelding.resources.SykemeldingResource
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean
@@ -203,19 +202,6 @@ class ServiceBeansConfig {
             autorisasjonService,
             userService,
             arbeidsforholdGateway
-        )
-    }
-
-    @Bean
-    fun sykemeldingResource(
-        userService: UserService,
-        sykemeldingService: SykemeldingService,
-        autorisasjonsService: AutorisasjonService
-    ): SykemeldingResource {
-        return SykemeldingResource(
-            userService,
-            sykemeldingService,
-            autorisasjonsService
         )
     }
 
