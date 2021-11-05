@@ -19,12 +19,10 @@ import javax.ws.rs.core.HttpHeaders
 
 class KrrClient internal constructor(
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider,
     private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
         val kontaktinfoPath = "v1/personer/kontaktinformasjon"
-        val request = buildRequest(kontaktinfoPath, foedselsnummer)
         val aadRequest = buildAADRequest(kontaktinfoPath, foedselsnummer)
 
         try {
@@ -42,32 +40,6 @@ class KrrClient internal constructor(
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-
-        try {
-            RestClient.baseClient().newCall(request).execute().use { response ->
-                if (!response.isSuccessful || response.code() == HttpStatus.NOT_FOUND.value()) {
-                    LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret")
-                    return null
-                }
-                return parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
-            }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
-    }
-
-    private fun buildRequest(path: String, foedselsnummer: Foedselsnummer): Request {
-        return Request.Builder()
-            .url(
-                HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments(path)
-                    .addQueryParameter("inkluderSikkerDigitalPost", "false")
-                    .build()
-            )
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemUserTokenProvider.systemUserToken)
-            .header("Nav-Consumer-Id", "srvveilarbregistrering")
-            .header("Nav-Personidenter", foedselsnummer.stringValue())
-            .build()
     }
 
     private fun buildAADRequest(path: String, foedselsnummer: Foedselsnummer): Request {

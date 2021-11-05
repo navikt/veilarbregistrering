@@ -14,7 +14,7 @@ class KrrConfig {
         val baseUrl = EnvironmentUtils.getRequiredProperty(KRR_URL_PROPERTY_NAME)
         val cluster = EnvironmentUtils.getRequiredProperty(KRR_CLUSTER_PROPERTY_NAME)
 
-        return KrrClient(baseUrl, systemUserTokenProvider) {
+        return KrrClient(baseUrl) {
             serviceToServiceTokenProvider
                 .getServiceToken("dkif", "team-rocket", cluster)
         }
