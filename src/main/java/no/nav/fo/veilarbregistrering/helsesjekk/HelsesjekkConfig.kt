@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2RestClient
-import no.nav.fo.veilarbregistrering.sykemelding.adapter.SykmeldtInfoClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -25,7 +24,6 @@ class HelsesjekkConfig {
             veilarbPep: Pep,
             unleashClient: UnleashClient,
             oppfolgingClient: OppfolgingClient,
-            sykmeldtInfoClient: SykmeldtInfoClient,
             formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
             krrClient: KrrClient,
             aaregRestClient: AaregRestClient,
@@ -37,7 +35,6 @@ class HelsesjekkConfig {
                 SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
                 SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashClient),
                 SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
-                SelfTestCheck("Ping FO Infotrygd", false, sykmeldtInfoClient),
                 SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
                 SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
                 SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
