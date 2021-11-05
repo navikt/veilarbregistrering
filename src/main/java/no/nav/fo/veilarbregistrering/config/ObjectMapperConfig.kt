@@ -13,10 +13,12 @@ import org.springframework.context.annotation.Configuration
 class ObjectMapperConfig {
 
     @Bean
-    fun objectMapper(): ObjectMapper =
-            jacksonObjectMapper()
-                    .findAndRegisterModules()
-                    .registerModule(KotlinModule())
-                    .registerModule(dateModule())
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    fun objectMapper(): ObjectMapper = objectMapper
+
 }
+
+val objectMapper: ObjectMapper = jacksonObjectMapper()
+    .findAndRegisterModules()
+    .registerModule(KotlinModule())
+    .registerModule(dateModule())
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

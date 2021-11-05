@@ -1,17 +1,16 @@
 package no.nav.fo.veilarbregistrering.bruker.krr
 
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import okhttp3.HttpUrl
 import okhttp3.Request
-import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import java.io.IOException
@@ -21,20 +20,18 @@ class KrrClient internal constructor(
     private val baseUrl: String,
     private val tokenProvider: () -> String
 ) : HealthCheck {
-    internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
+    internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktInfo? {
         val kontaktinfoPath = "v1/personer/kontaktinformasjon"
-        val aadRequest = buildAADRequest(kontaktinfoPath, foedselsnummer)
+        val request = buildRequest(kontaktinfoPath, foedselsnummer)
 
         try {
-            RestClient.baseClient().newCall(aadRequest).execute().use { response ->
+            RestClient.baseClient().newCall(request).execute().use { response ->
                 if (!response.isSuccessful || response.code() == HttpStatus.NOT_FOUND.value()) {
                     LOG.warn("Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret med bruk av AADtoken: {}", response)
                     return null
                 }else {
-                    val kontaktinfoDto =
-                        parse(RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }, foedselsnummer)
-                    LOG.info("Fant kontaktinfo i krr ved kall med AADtoken: {}", kontaktinfoDto)
-                    return kontaktinfoDto
+                    val body = RestUtils.getBodyStr(response).orElseThrow(::RuntimeException)
+                    return parse(body)
                 }
             }
         } catch (e: IOException) {
@@ -42,7 +39,7 @@ class KrrClient internal constructor(
         }
     }
 
-    private fun buildAADRequest(path: String, foedselsnummer: Foedselsnummer): Request {
+    private fun buildRequest(path: String, foedselsnummer: Foedselsnummer): Request {
         return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
@@ -62,30 +59,15 @@ class KrrClient internal constructor(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(KrrClient::class.java)
-        private val gson = GsonBuilder().create()
 
-        /**
-         * Benytter JSONObject til parsing i parallell med GSON pga. dynamisk json.
-         * @return
-         */
-        internal fun parse(jsonResponse: String?, foedselsnummer: Foedselsnummer): KrrKontaktinfoDto? {
-            if (JSONObject(jsonResponse).has("kontaktinfo")) {
-                val kontaktinfo = JSONObject(jsonResponse)
-                    .getJSONObject("kontaktinfo")
-                    .getJSONObject(foedselsnummer.stringValue())
-                return gson.fromJson(kontaktinfo.toString(), KrrKontaktinfoDto::class.java)
-            }
-            if (JSONObject(jsonResponse).has("feil")) {
-                val response = JSONObject(jsonResponse)
-                    .getJSONObject("feil")
-                    .getJSONObject(foedselsnummer.stringValue())
-                val feil = gson.fromJson(response.toString(), KrrFeilDto::class.java)
-                if ("Ingen kontaktinformasjon er registrert på personen" == feil.melding) {
-                    return null
+        internal fun parse(body: String): KrrKontaktInfo? =
+            objectMapper.readValue<KrrKontaktInfoResponse>(body).let { kontaktInfo ->
+                kontaktInfo.feil?.values?.any { feil ->
+                    if (feil.melding == "Ingen kontaktinformasjon er registrert på personen") return@let null else
+                        throw RuntimeException("Henting av kontaktinfo fra KRR feilet: ${feil.melding}")
                 }
-                throw RuntimeException(String.format("Henting av kontaktinfo fra KRR feilet: %s", feil.melding))
+                kontaktInfo.kontaktinfo?.values?.firstOrNull()
             }
-            throw RuntimeException("Ukjent feil")
-        }
+
     }
 }

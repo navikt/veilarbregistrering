@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.krr
 
 import no.nav.fo.veilarbregistrering.FileToJson.toJson
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -11,10 +10,9 @@ import kotlin.test.assertNotNull
 class KrrClientTest {
 
     @Test
-    fun `skal mappe kontaktinfo med mobiltelefonnummer`() {
+    fun `skal mappe kontaktinfo med mobiltelefonnummer med ny jsonparser`() {
         val json = toJson(OK_JSON)
-        val foedselsnummer = Foedselsnummer.of("23067844532")
-        val kontaktinfoDto = KrrClient.parse(json, foedselsnummer)
+        val kontaktinfoDto = KrrClient.parse(json)
         assertNotNull(kontaktinfoDto)
         assertThat(kontaktinfoDto.mobiltelefonnummer).isEqualTo("11111111")
     }
@@ -22,10 +20,9 @@ class KrrClientTest {
     @Test
     fun `skal mappe feil til runtimeException`() {
         val json = toJson(FEIL_JSON)
-        val foedselsnummer = Foedselsnummer.of("23067844539")
         val runtimeException = assertThrows(
             RuntimeException::class.java
-        ) { KrrClient.parse(json, foedselsnummer) }
+        ) { KrrClient.parse(json) }
         assertThat(runtimeException.message)
             .isEqualTo("Henting av kontaktinfo fra KRR feilet: fant ikke person")
     }
