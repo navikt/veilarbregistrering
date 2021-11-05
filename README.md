@@ -27,7 +27,6 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 | Veien til arbeid / Ditt NAV | query (REST/GET) | /startregistrering |
 | Dagpenger | query (REST/GET) | /arbeidssoker/perioder |
 | Arena | event (Kafka) | FormidlingsgruppeEvent |
-| Helse | query (REST/GET) | /sykmeldtinfodata |
 
 ## Utgående kommunikasjon (outbound communication)
 | Melding | Query/Command/Event | Collaborator |
@@ -39,7 +38,6 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 | Siste arbeidsforhold | Query (REST/GET) | [Aareg](src/main/java/no/nav/fo/veilarbregistrering/arbeidsforhold/adapter/README.md) |
 | --- | Query (REST/GET) | [Enhetsregisteret](src/main/java/no/nav/fo/veilarbregistrering/enhet/adapter/README.md) |
 | --- | query (REST/GET) | [NAV Organisasjon (for veileder pr ident)](src/main/java/no/nav/fo/veilarbregistrering/orgenhet/adapter/README.md) |
-| maksdato | Query (REST/GET) | Infotrygd |
 | feature toggle | Query (REST/GET) | Unleash |
 | "kontakt bruker"-oppgave | --- | [Oppgave](src/main/java/no/nav/fo/veilarbregistrering/oppgave/adapter/README.md) |
 | Personopplysninger, geografisk tilknytning og identer | Query (Graphql) | [PDL](src/main/java/no/nav/fo/veilarbregistrering/bruker/pdl/README.md) |
