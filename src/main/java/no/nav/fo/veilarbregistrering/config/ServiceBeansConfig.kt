@@ -42,8 +42,6 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingGateway
-import no.nav.fo.veilarbregistrering.sykemelding.SykemeldingService
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean
@@ -54,14 +52,6 @@ class ServiceBeansConfig {
     @Bean
     fun authContextHolder(): AuthContextHolder {
         return AuthContextHolderThreadLocal.instance()
-    }
-
-    @Bean
-    fun sykemeldingService(
-        sykemeldingGateway: SykemeldingGateway,
-        autorisasjonService: AutorisasjonService
-    ): SykemeldingService {
-        return SykemeldingService(sykemeldingGateway, autorisasjonService)
     }
 
     @Bean
