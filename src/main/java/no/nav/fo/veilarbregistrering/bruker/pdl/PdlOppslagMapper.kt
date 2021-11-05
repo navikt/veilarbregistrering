@@ -38,7 +38,7 @@ internal object PdlOppslagMapper {
     }
 
     private fun map(pdlFoedsel: PdlFoedsel): Foedselsdato {
-        return Foedselsdato.of(pdlFoedsel.foedselsdato)
+        return Foedselsdato(pdlFoedsel.foedselsdato)
     }
 
     private fun map(pdlTelefonnummer: PdlTelefonnummer): Telefonnummer {

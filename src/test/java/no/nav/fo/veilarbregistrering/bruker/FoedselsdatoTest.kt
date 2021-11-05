@@ -8,21 +8,15 @@ class FoedselsdatoTest {
 
     @Test
     fun `alder øker ikke for fødselsdag`() {
-        val foedselsdato: Foedselsdato = object : Foedselsdato(LocalDate.of(1978, 6, 23)) {
-            override fun dagensDato(): LocalDate {
-                return LocalDate.of(2020, 2, 20)
-            }
-        }
-        assertThat(foedselsdato.alder()).isEqualTo(41)
+        val foedselsdato = Foedselsdato(LocalDate.of(1978, 6, 23))
+
+        assertThat(foedselsdato.alderPaa(LocalDate.of(2020, 2, 20))).isEqualTo(41)
     }
 
     @Test
     fun `fødselsdag øker alder`() {
-        val foedselsdato: Foedselsdato = object : Foedselsdato(LocalDate.of(1978, 6, 23)) {
-            override fun dagensDato(): LocalDate {
-                return LocalDate.of(2020, 6, 23)
-            }
-        }
-        assertThat(foedselsdato.alder()).isEqualTo(42)
+        val foedselsdato = Foedselsdato(LocalDate.of(1978, 6, 23))
+
+        assertThat(foedselsdato.alderPaa(LocalDate.of(2020, 6, 23))).isEqualTo(42)
     }
 }
