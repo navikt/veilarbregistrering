@@ -45,13 +45,6 @@ class OppgaveRestClient(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        val aadToken = try {
-            tokenProvider()
-        } catch (e: Exception) {
-            loggerFor<OppgaveRestClient>().warn("Unable to fetch AAD token for oppgave service", e)
-            null
-        }
-        loggerFor<OppgaveRestClient>().info("Fetched AAD token for oppgave, ${aadToken?.take(10)}")
         return HealthCheckUtils.pingUrl(baseUrl, client)
     }
 
