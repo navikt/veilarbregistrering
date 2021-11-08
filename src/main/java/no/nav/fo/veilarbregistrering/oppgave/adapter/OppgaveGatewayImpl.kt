@@ -14,9 +14,7 @@ class OppgaveGatewayImpl(private val restClient: OppgaveRestClient) : OppgaveGat
             oppgave.fristFerdigstillelse.toString(),
             oppgave.aktivDato.toString(),
             PRIORITET_NORM,
-            oppgave.enhetnr
-                .map { obj: Enhetnr -> obj.asString() }
-                .orElse(null)
+            oppgave.enhetnr?.asString()
         )
         return restClient.opprettOppgave(oppgaveDto)
     }
