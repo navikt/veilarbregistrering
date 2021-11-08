@@ -37,7 +37,9 @@ class OppgaveRestClient(
                 if (it.code() != HttpStatus.CREATED.value()) {
                     log.warn("Opprett oppgave (AAD-token) feilet med statuskode: ${it.code()} - $it")
                 } else {
-                    return RestUtils.parseJsonResponseOrThrow(it, OppgaveResponseDto::class.java)
+                    val oppgave = RestUtils.parseJsonResponseOrThrow(it, OppgaveResponseDto::class.java)
+                    log.info("Opprettet oppgave (med AAD-token) OK : $oppgave")
+                    return oppgave
                 }
             }
         }
