@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class OppgaveGatewayConfig {
     @Bean
-    fun oppgaveRestClient(systemUserTokenProvider: SystemUserTokenProvider?): OppgaveRestClient =
-        OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider!!)
+    fun oppgaveRestClient(systemUserTokenProvider: SystemUserTokenProvider): OppgaveRestClient =
+        OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider)
 
     @Bean
-    fun oppgaveGateway(oppgaveRestClient: OppgaveRestClient?): OppgaveGateway = OppgaveGatewayImpl(oppgaveRestClient!!)
+    fun oppgaveGateway(oppgaveRestClient: OppgaveRestClient): OppgaveGateway = OppgaveGatewayImpl(oppgaveRestClient)
 
     companion object {
         const val OPPGAVE_PROPERTY_NAME = "OPPGAVE_URL"
