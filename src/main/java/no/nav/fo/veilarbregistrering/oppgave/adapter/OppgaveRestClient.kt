@@ -19,19 +19,31 @@ class OppgaveRestClient(
     private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun opprettOppgave(oppgaveDto: OppgaveDto): OppgaveResponseDto {
-        val aadToken = try {
-             tokenProvider()
-        } catch (e: Exception) {
-            loggerFor<OppgaveRestClient>().warn("Unable to fetch AAD token for oppgave service", e)
-            null
-        }
-        loggerFor<OppgaveRestClient>().info("Fetched AAD token for oppgave, ${aadToken?.take(10)}")
+        val aadToken = tokenProvider()
 
         val request = Request.Builder()
             .url("$baseUrl/api/v1/oppgaver")
             .header("Authorization", "Bearer " + systemUserTokenProvider.systemUserToken)
             .method("POST", RestUtils.toJsonRequestBody(oppgaveDto))
             .build()
+
+        val aadrequest = Request.Builder()
+            .url("$baseUrl/api/v1/oppgaver")
+            .header("Authorization", "Bearer $aadToken")
+            .method("POST", RestUtils.toJsonRequestBody(oppgaveDto))
+            .build()
+        try {
+            client.newCall(aadrequest).execute().use {
+                if (it.code() != HttpStatus.CREATED.value()) {
+                    log.warn("Opprett oppgave (AAD-token) feilet med statuskode: ${it.code()} - $it")
+                } else {
+                    return RestUtils.parseJsonResponseOrThrow(it, OppgaveResponseDto::class.java)
+                }
+            }
+        }
+        catch (e: IOException) {
+            log.warn("Opprett oppgave (AAD-token) feilet med exception: ", e)
+        }
         try {
             client.newCall(request).execute().use { response ->
                 if (response.code() != HttpStatus.CREATED.value()) {
@@ -53,5 +65,7 @@ class OppgaveRestClient(
 
         private val client: OkHttpClient = RestClient.baseClientBuilder()
             .readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS).build()
+
+        private val log = loggerFor<OppgaveRestClient>()
     }
 }
