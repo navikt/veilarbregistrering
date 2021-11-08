@@ -141,9 +141,9 @@ class OppgaveServiceTest {
     }
 
     private class CustomOppgaveService(
-        oppgaveGateway: OppgaveGateway?,
-        oppgaveRepository: OppgaveRepository?,
-        oppgaveRouter: OppgaveRouter?,
+        oppgaveGateway: OppgaveGateway,
+        oppgaveRepository: OppgaveRepository,
+        oppgaveRouter: OppgaveRouter,
     ) : OppgaveService(
         oppgaveGateway,
         oppgaveRepository,
