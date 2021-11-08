@@ -10,9 +10,16 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class OppgaveGatewayConfig {
     @Bean
-    fun oppgaveRestClient(systemUserTokenProvider: SystemUserTokenProvider, tokenProvider: ServiceToServiceTokenProvider): OppgaveRestClient =
+    fun oppgaveRestClient(
+        systemUserTokenProvider: SystemUserTokenProvider,
+        tokenProvider: ServiceToServiceTokenProvider
+    ): OppgaveRestClient =
         OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider) {
-            tokenProvider.getServiceToken(EnvironmentUtils.getRequiredProperty(OPPGAVE_CLUSTER), "oppgavehandtering", "oppgave-q1")
+            tokenProvider.getServiceToken(
+                "oppgave-q1",
+                "oppgavehandtering",
+                EnvironmentUtils.getRequiredProperty(OPPGAVE_CLUSTER)
+            )
         }
 
     @Bean
