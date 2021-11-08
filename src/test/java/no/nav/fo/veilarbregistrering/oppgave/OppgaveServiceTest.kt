@@ -136,13 +136,8 @@ class OppgaveServiceTest {
     }
 
     private class DummyOppgaveResponse : OppgaveResponse {
-        override fun getId(): Long {
-            return 234L
-        }
-
-        override fun getTildeltEnhetsnr(): String {
-            return "0393"
-        }
+        override val id: Long = 234L
+        override val tildeltEnhetsnr: String = "0393"
     }
 
     private class CustomOppgaveService(

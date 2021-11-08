@@ -1,9 +1,6 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-public interface OppgaveResponse {
-
-    long getId();
-
-    String getTildeltEnhetsnr();
-
+interface OppgaveResponse {
+    val id: Long
+    val tildeltEnhetsnr: String?
 }

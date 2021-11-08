@@ -69,9 +69,9 @@ class OppgaveResourceConfig {
     fun oppgaveService(): OppgaveService {
         val oppgaveService = mockk<OppgaveService>()
 
-        every { oppgaveService.opprettOppgave(any(), OppgaveType.UTVANDRET) } returns object:OppgaveResponse {
-            override fun getId(): Long = 12313
-            override fun getTildeltEnhetsnr(): String = "3215"
+        every { oppgaveService.opprettOppgave(any(), OppgaveType.UTVANDRET) } returns object: OppgaveResponse {
+            override val id: Long = 12313
+            override val tildeltEnhetsnr: String = "3215"
         }
 
         every { oppgaveService.opprettOppgave(any(), OppgaveType.OPPHOLDSTILLATELSE) } throws OppgaveAlleredeOpprettet("test")
