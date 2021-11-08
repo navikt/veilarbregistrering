@@ -6,6 +6,7 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.http.HttpStatus
@@ -18,6 +19,14 @@ class OppgaveRestClient(
     private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun opprettOppgave(oppgaveDto: OppgaveDto): OppgaveResponseDto {
+        val aadToken = try {
+             tokenProvider()
+        } catch (e: Exception) {
+            loggerFor<OppgaveRestClient>().error("Unable to fetch AAD token for oppgave service", e)
+            null
+        }
+        loggerFor<OppgaveRestClient>().info("Fetched AAD token for oppgave, ${aadToken?.take(10)}")
+
         val request = Request.Builder()
             .url("$baseUrl/api/v1/oppgaver")
             .header("Authorization", "Bearer " + systemUserTokenProvider.systemUserToken)
