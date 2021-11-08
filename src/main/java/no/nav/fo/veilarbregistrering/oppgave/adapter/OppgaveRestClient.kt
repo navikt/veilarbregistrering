@@ -22,7 +22,7 @@ class OppgaveRestClient(
         val aadToken = try {
              tokenProvider()
         } catch (e: Exception) {
-            loggerFor<OppgaveRestClient>().error("Unable to fetch AAD token for oppgave service", e)
+            loggerFor<OppgaveRestClient>().warn("Unable to fetch AAD token for oppgave service", e)
             null
         }
         loggerFor<OppgaveRestClient>().info("Fetched AAD token for oppgave, ${aadToken?.take(10)}")
@@ -48,7 +48,7 @@ class OppgaveRestClient(
         val aadToken = try {
             tokenProvider()
         } catch (e: Exception) {
-            loggerFor<OppgaveRestClient>().error("Unable to fetch AAD token for oppgave service", e)
+            loggerFor<OppgaveRestClient>().warn("Unable to fetch AAD token for oppgave service", e)
             null
         }
         loggerFor<OppgaveRestClient>().info("Fetched AAD token for oppgave, ${aadToken?.take(10)}")
