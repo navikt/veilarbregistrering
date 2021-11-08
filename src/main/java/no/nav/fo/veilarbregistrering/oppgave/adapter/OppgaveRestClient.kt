@@ -12,9 +12,10 @@ import org.springframework.http.HttpStatus
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class OppgaveRestClient constructor(
+class OppgaveRestClient(
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider
+    private val systemUserTokenProvider: SystemUserTokenProvider,
+    private val tokenProvider: () -> String
 ) : HealthCheck {
     internal fun opprettOppgave(oppgaveDto: OppgaveDto): OppgaveResponseDto {
         val request = Request.Builder()
