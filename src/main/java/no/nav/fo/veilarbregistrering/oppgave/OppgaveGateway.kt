@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-public interface OppgaveGateway {
-
-    OppgaveResponse opprett(Oppgave oppgave);
+interface OppgaveGateway {
+    fun opprett(oppgave: Oppgave): OppgaveResponse
 }
