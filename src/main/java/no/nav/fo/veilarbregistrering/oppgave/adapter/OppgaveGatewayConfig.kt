@@ -13,14 +13,19 @@ class OppgaveGatewayConfig {
     fun oppgaveRestClient(
         systemUserTokenProvider: SystemUserTokenProvider,
         tokenProvider: ServiceToServiceTokenProvider
-    ): OppgaveRestClient =
-        OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider) {
+    ): OppgaveRestClient {
+        val cluster = EnvironmentUtils.getRequiredProperty(OPPGAVE_CLUSTER)
+        val env = EnvironmentUtils.getRequiredProperty("APP_ENVIRONMENT_NAME")
+        val serviceName = if (env == "p") "oppgave" else "oppgave-q1"
+
+        return OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider) {
             tokenProvider.getServiceToken(
-                "oppgave-q1",
+                serviceName,
                 "oppgavehandtering",
-                EnvironmentUtils.getRequiredProperty(OPPGAVE_CLUSTER)
+                cluster
             )
         }
+    }
 
     @Bean
     fun oppgaveGateway(oppgaveRestClient: OppgaveRestClient): OppgaveGateway = OppgaveGatewayImpl(oppgaveRestClient)
