@@ -49,6 +49,8 @@ spec:
       value: https://app.adeo.no/norg2
     - name: OPPGAVE_URL
       value: https://oppgave.nais.adeo.no
+    - name: OPPGAVE_CLUSTER
+      value: prod-fss
     - name: KRR_BASE_URL
       value: http://dkif.default.svc.nais.local/api/
     - name: KRR_CLUSTER
