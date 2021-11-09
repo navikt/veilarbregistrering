@@ -18,7 +18,7 @@ class OppgaveGatewayConfig {
         val env = EnvironmentUtils.getRequiredProperty("APP_ENVIRONMENT_NAME")
         val serviceName = if (env == "p") "oppgave" else "oppgave-q1"
 
-        return OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME), systemUserTokenProvider) {
+        return OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME)) {
             tokenProvider.getServiceToken(
                 serviceName,
                 "oppgavehandtering",
