@@ -30,6 +30,11 @@ class RegistreringResource(
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
 
+    @PostMapping("/startregistrering-test")
+    fun registrerBruker() {
+        throw AktiverBrukerException(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
     @PostMapping("/startregistrering")
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
         if (tjenesteErNede()) {
