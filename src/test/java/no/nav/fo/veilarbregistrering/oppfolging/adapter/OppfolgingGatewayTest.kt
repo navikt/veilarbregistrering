@@ -45,7 +45,7 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
             mockk(relaxed = true),
             baseUrl,
             mockk(relaxed = true)
-        ).also { oppfolgingClient = it }
+        ) { "TOKEN" }.also { oppfolgingClient = it }
     }
 
     @Test

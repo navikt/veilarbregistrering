@@ -26,6 +26,7 @@ open class OppfolgingClient(
     private val metricsService: PrometheusMetricsService,
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
+    private val tokenProvider: () -> String,
 
     ) : AbstractOppfolgingClient(objectMapper), HealthCheck {
 
@@ -79,6 +80,11 @@ open class OppfolgingClient(
     private fun getSystemAuthorizationHeader() =
         listOf(
             HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
+        )
+
+    private fun getAadServiceAuthorizationHeader() =
+        listOf(
+            HttpHeaders.AUTHORIZATION to "Bearer ${tokenProvider()}"
         )
 
     private fun mapper(aktiverBrukerFeilDto: AktiverBrukerFeilDto): AktiverBrukerFeil {

@@ -45,7 +45,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl, systemUserTokenProvider).also { oppfolgingClient = it }
+        return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl, systemUserTokenProvider) { "TOKEN" }.also { oppfolgingClient = it }
     }
 
     @Test
