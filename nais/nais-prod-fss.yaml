@@ -41,6 +41,8 @@ spec:
       value: srvdp-arbeidssoker-o
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
+    - name: VEILARBOPPFOLGINGAPI_CLUSTER
+      value: prod-fss
     - name: ABAC_PDP_ENDPOINT_URL
       value: https://abac-veilarb.intern.nav.no/application/asm-pdp/authorize
     - name: UNLEASH_API_URL
