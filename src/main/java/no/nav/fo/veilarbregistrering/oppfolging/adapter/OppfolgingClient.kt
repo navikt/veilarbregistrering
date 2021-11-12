@@ -77,10 +77,16 @@ open class OppfolgingClient(
             }
         }
 
-    private fun getSystemAuthorizationHeader() =
-        listOf(
-            HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
+    private fun getSystemAuthorizationHeader(): List<Pair<String, String>> {
+        try {
+            LOG.info("Got aad token for oppfolging: {} ", getAadServiceAuthorizationHeader())
+        } catch (e: Exception) {
+            LOG.warn("Could not get aad token for veilarboppfolging", e)
+        }
+        return listOf(
+        HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
         )
+    }
 
     private fun getAadServiceAuthorizationHeader() =
         listOf(
