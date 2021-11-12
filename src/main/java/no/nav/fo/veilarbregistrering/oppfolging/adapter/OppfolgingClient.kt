@@ -52,7 +52,7 @@ open class OppfolgingClient(
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
+        post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(AKTIVER_BRUKER)
     }
 
