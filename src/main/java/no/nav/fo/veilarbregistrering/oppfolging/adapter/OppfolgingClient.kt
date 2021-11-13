@@ -52,8 +52,17 @@ open class OppfolgingClient(
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        try {
+            post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        } catch (e: Exception) {
+            LOG.warn("Feil ved aktivering av bruker med aad-token", e);
+            aktiverBrukerSTS(aktiverBrukerData)
+        }
         metricsService.registrer(AKTIVER_BRUKER)
+    }
+    open fun aktiverBrukerSTS(aktiverBrukerData: AktiverBrukerData) {
+        val url = "$baseUrl/oppfolging/aktiverbruker"
+        post(url, aktiverBrukerData, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
