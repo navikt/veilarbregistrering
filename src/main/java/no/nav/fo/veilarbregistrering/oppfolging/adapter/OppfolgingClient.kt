@@ -99,7 +99,7 @@ open class OppfolgingClient(
             ArenaFeilType.BRUKER_MANGLER_ARBEIDSTILLATELSE -> AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
             ArenaFeilType.BRUKER_KAN_IKKE_REAKTIVERES -> AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES
             ArenaFeilType.BRUKER_ER_UKJENT -> AktiverBrukerFeil.BRUKER_ER_UKJENT
-            else -> throw IllegalStateException("Ukjent feil fra Arena: " + aktiverBrukerFeilDto.type)
+            else -> throw IllegalStateException("Ukjent feil fra Arena: $aktiverBrukerFeilDto")
         }
     }
 
