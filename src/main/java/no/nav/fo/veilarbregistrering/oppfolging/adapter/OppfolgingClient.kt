@@ -46,7 +46,12 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        post(url, fnr, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
+        try{
+            post(url, fnr, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        } catch (e: Exception) {
+            LOG.warn("Feil ved reaktivering av bruker med aad-token", e);
+            post(url, fnr, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
+        }
         metricsService.registrer(REAKTIVER_BRUKER)
     }
 
