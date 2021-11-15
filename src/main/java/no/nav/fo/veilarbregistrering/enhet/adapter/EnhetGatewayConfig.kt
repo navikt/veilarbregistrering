@@ -1,23 +1,23 @@
-package no.nav.fo.veilarbregistrering.enhet.adapter;
+package no.nav.fo.veilarbregistrering.enhet.adapter
 
-import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-public class EnhetGatewayConfig {
-
-    private static final String ENHET_PROPERTY_NAME = "ENHET_URL";
-
+class EnhetGatewayConfig {
     @Bean
-    EnhetRestClient enhetClient() {
-        return new EnhetRestClient(getRequiredProperty(ENHET_PROPERTY_NAME));
+    fun enhetClient(): EnhetRestClient {
+        return EnhetRestClient(requireProperty(ENHET_PROPERTY_NAME))
     }
 
     @Bean
-    EnhetGateway enhetGateway(EnhetRestClient enhetRestClient) {
-        return new EnhetGatewayImpl(enhetRestClient);
+    fun enhetGateway(enhetRestClient: EnhetRestClient?): EnhetGateway {
+        return EnhetGatewayImpl(enhetRestClient!!)
+    }
+
+    companion object {
+        private const val ENHET_PROPERTY_NAME = "ENHET_URL"
     }
 }

@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.sts.SystemUserTokenProvider
-import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,7 @@ class ArbeidsforholdGatewayConfig {
         authContextHolder: AuthContextHolder
     ): AaregRestClient {
         return AaregRestClient(
-            EnvironmentUtils.getRequiredProperty(REST_URL),
+            requireProperty(REST_URL),
             systemUserTokenProvider,
             authContextHolder
         )

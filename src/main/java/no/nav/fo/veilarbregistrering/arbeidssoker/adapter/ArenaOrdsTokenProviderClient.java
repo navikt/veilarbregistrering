@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
-import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+import static no.nav.fo.veilarbregistrering.config.EnvironmentKt.requireProperty;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 
@@ -45,8 +45,8 @@ public class ArenaOrdsTokenProviderClient {
 
     private void refreshToken() {
         String basicAuth = basicCredentials(
-                getRequiredProperty(ARENA_ORDS_CLIENT_ID_PROPERTY),
-                getRequiredProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY));
+                requireProperty(ARENA_ORDS_CLIENT_ID_PROPERTY),
+                requireProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY));
 
         Request request = new Request.Builder()
                 .url(arenaOrdsUrl)
@@ -104,7 +104,7 @@ public class ArenaOrdsTokenProviderClient {
 
         public OrdsToken() {
             //default constructor for `com.fasterxml.jackson.databind` som benyttes for å deserialisere.
-        };
+        }
 
         public OrdsToken(String accessToken, String tokenType, int expiresIn) {
             this.accessToken = accessToken;

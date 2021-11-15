@@ -1,34 +1,30 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.adapter;
+package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
-
+import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.config.requireProperty
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-public class FormidlingsgruppeGatewayConfig {
-
-    private static final String ARENA_ORDS_TOKEN_PROVIDER = "ARENA_ORDS_TOKEN_PROVIDER";
-    private static final String ARENA_ORDS_API = "ARENA_ORDS_API";
+class FormidlingsgruppeGatewayConfig {
+    @Bean
+    fun arenaOrdsTokenProviderClient(): ArenaOrdsTokenProviderClient =
+        ArenaOrdsTokenProviderClient(requireProperty(ARENA_ORDS_TOKEN_PROVIDER))
 
     @Bean
-    ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient() {
-        return new ArenaOrdsTokenProviderClient(getRequiredProperty(ARENA_ORDS_TOKEN_PROVIDER));
-    }
+    fun formidlingsgruppeRestClient(arenaOrdsTokenProviderClient: ArenaOrdsTokenProviderClient) =
+        FormidlingsgruppeRestClient(
+            requireProperty(ARENA_ORDS_API)
+        ) { arenaOrdsTokenProviderClient.token }
 
     @Bean
-    FormidlingsgruppeRestClient formidlingsgruppeRestClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
-        return new FormidlingsgruppeRestClient(
-                getRequiredProperty(ARENA_ORDS_API),
-                arenaOrdsTokenProviderClient::getToken);
+    fun formidlingsgruppeGateway(formidlingsgruppeRestClient: FormidlingsgruppeRestClient?): FormidlingsgruppeGateway {
+        return FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient!!)
     }
 
-    @Bean
-    FormidlingsgruppeGateway formidlingsgruppeGateway(FormidlingsgruppeRestClient formidlingsgruppeRestClient) {
-        return new FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient);
+    companion object {
+        private const val ARENA_ORDS_TOKEN_PROVIDER = "ARENA_ORDS_TOKEN_PROVIDER"
+        private const val ARENA_ORDS_API = "ARENA_ORDS_API"
     }
-
-
 }

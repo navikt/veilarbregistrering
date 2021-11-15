@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.autorisasjon
 import no.nav.common.abac.Pep
 import no.nav.common.abac.VeilarbPepFactory
 import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier
-import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.Application
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,7 +23,7 @@ class PepConfig {
         val ABAC_URL_PROPERTY = "ABAC_PDP_ENDPOINT_URL"
 
         return VeilarbPepFactory.get(
-                EnvironmentUtils.getRequiredProperty(ABAC_URL_PROPERTY),
+                requireProperty(ABAC_URL_PROPERTY),
                 username,
                 password,
                 SpringAuditRequestInfoSupplier())

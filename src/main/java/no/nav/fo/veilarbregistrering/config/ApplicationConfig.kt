@@ -4,7 +4,7 @@ import no.nav.common.sts.NaisSystemUserTokenProvider
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
-import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.PepConfig
@@ -54,9 +54,9 @@ class ApplicationConfig {
     @Bean
     fun systemUserTokenProvider(): SystemUserTokenProvider? {
         return NaisSystemUserTokenProvider(
-            EnvironmentUtils.getRequiredProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL"),
-            EnvironmentUtils.getRequiredProperty("SERVICEUSER_USERNAME"),
-            EnvironmentUtils.getRequiredProperty("SERVICEUSER_PASSWORD")
+            requireProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL"),
+            requireProperty("SERVICEUSER_USERNAME"),
+            requireProperty("SERVICEUSER_PASSWORD")
         )
     }
     

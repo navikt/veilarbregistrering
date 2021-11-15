@@ -1,24 +1,23 @@
-package no.nav.fo.veilarbregistrering.orgenhet.adapter;
+package no.nav.fo.veilarbregistrering.orgenhet.adapter
 
-import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
-
+import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-public class Norg2GatewayConfig {
-
-    private static final String NORG2_PROPERTY_NAME = "NORG2_URL";
-
+class Norg2GatewayConfig {
     @Bean
-    public Norg2RestClient norgRestClient() {
-        return new Norg2RestClient(getRequiredProperty(NORG2_PROPERTY_NAME));
+    fun norgRestClient(): Norg2RestClient {
+        return Norg2RestClient(requireProperty(NORG2_PROPERTY_NAME))
     }
 
     @Bean
-    public Norg2Gateway norgGateway(Norg2RestClient norg2RestClient) {
-        return new Norg2GatewayImpl(norg2RestClient);
+    fun norgGateway(norg2RestClient: Norg2RestClient?): Norg2Gateway {
+        return Norg2GatewayImpl(norg2RestClient)
+    }
+
+    companion object {
+        private const val NORG2_PROPERTY_NAME = "NORG2_URL"
     }
 }

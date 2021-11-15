@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
-import no.nav.common.utils.EnvironmentUtils
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,11 +14,11 @@ class OppgaveGatewayConfig {
         systemUserTokenProvider: SystemUserTokenProvider,
         tokenProvider: ServiceToServiceTokenProvider
     ): OppgaveRestClient {
-        val cluster = EnvironmentUtils.getRequiredProperty(OPPGAVE_CLUSTER)
-        val env = EnvironmentUtils.getRequiredProperty("APP_ENVIRONMENT_NAME")
+        val cluster = requireProperty(OPPGAVE_CLUSTER)
+        val env = requireProperty("APP_ENVIRONMENT_NAME")
         val serviceName = if (env == "p") "oppgave" else "oppgave-q1"
 
-        return OppgaveRestClient(EnvironmentUtils.getRequiredProperty(OPPGAVE_PROPERTY_NAME)) {
+        return OppgaveRestClient(requireProperty(OPPGAVE_PROPERTY_NAME)) {
             tokenProvider.getServiceToken(
                 serviceName,
                 "oppgavehandtering",
