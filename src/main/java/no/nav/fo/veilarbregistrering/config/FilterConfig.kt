@@ -59,15 +59,6 @@ class FilterConfig {
             .withUserRole(UserRole.EKSTERN)
     }
 
-    private fun createSystemUserAuthenticatorConfig(): OidcAuthenticatorConfig? {
-        val discoveryUrl = EnvironmentUtils.getRequiredProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL")
-        val clientId = EnvironmentUtils.getRequiredProperty("SECURITY_TOKEN_SERVICE_CLIENT_ID")
-        return OidcAuthenticatorConfig()
-            .withDiscoveryUrl(discoveryUrl)
-            .withClientId(clientId)
-            .withUserRole(UserRole.SYSTEM)
-    }
-
     @Bean
     fun pingFilter(): FilterRegistrationBean<*>? {
         // Veilarbproxy trenger dette endepunktet for å sjekke at tjenesten lever
@@ -97,7 +88,6 @@ class FilterConfig {
                 createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
                 createAADSystemTokenConfig(),
-                createSystemUserAuthenticatorConfig(),
             )
         )
         registration.setFilter(authenticationFilter)
