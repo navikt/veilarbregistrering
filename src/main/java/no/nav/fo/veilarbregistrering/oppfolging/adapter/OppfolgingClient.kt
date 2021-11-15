@@ -67,7 +67,12 @@ open class OppfolgingClient(
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        post(url, sykmeldtBrukerType, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
+        try {
+            post(url, sykmeldtBrukerType, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        } catch (e: Exception){
+            LOG.warn("Feil ved sett oppfølging sykemeldtbruker med aad-token", e);
+            post(url, sykmeldtBrukerType, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
+        }
         metricsService.registrer(OPPFOLGING_SYKMELDT)
     }
 
