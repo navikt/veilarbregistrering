@@ -86,21 +86,22 @@ open class OppfolgingClient(
             }
         }
 
-    private fun getSystemAuthorizationHeader(): List<Pair<String, String>> {
-        try {
-            LOG.info("Got aad token for oppfolging: {} ", getAadServiceAuthorizationHeader())
+    private fun getSystemAuthorizationHeader(): List<Pair<String, String>> =
+        listOf(
+            HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
+        )
+
+    private fun getAadServiceAuthorizationHeader(): List<Pair<String, String>> {
+        val token = try {
+            tokenProvider()
         } catch (e: Exception) {
             LOG.warn("Could not get aad token for veilarboppfolging", e)
         }
+        LOG.info("Got aad token for oppfolging: $token")
         return listOf(
-        HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
+            HttpHeaders.AUTHORIZATION to "Bearer $token"
         )
     }
-
-    private fun getAadServiceAuthorizationHeader() =
-        listOf(
-            HttpHeaders.AUTHORIZATION to "Bearer ${tokenProvider()}"
-        )
 
     private fun mapper(aktiverBrukerFeilDto: AktiverBrukerFeilDto): AktiverBrukerFeil {
         return when (aktiverBrukerFeilDto.type) {
