@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class KrrConfig {
     @Bean
-    fun krrClient(systemUserTokenProvider: SystemUserTokenProvider, serviceToServiceTokenProvider: ServiceToServiceTokenProvider): KrrClient {
+    fun krrClient(serviceToServiceTokenProvider: ServiceToServiceTokenProvider): KrrClient {
         val baseUrl = EnvironmentUtils.getRequiredProperty(KRR_URL_PROPERTY_NAME)
         val cluster = EnvironmentUtils.getRequiredProperty(KRR_CLUSTER_PROPERTY_NAME)
 
