@@ -46,38 +46,19 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        try{
-            post(url, fnr, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        } catch (e: Exception) {
-            LOG.warn("Feil ved reaktivering av bruker med aad-token", e);
-            post(url, fnr, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
-        }
+        post(url, fnr, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(REAKTIVER_BRUKER)
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        try {
-            post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        } catch (e: Exception) {
-            LOG.warn("Feil ved aktivering av bruker med aad-token", e);
-            aktiverBrukerSTS(aktiverBrukerData)
-        }
+        post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(AKTIVER_BRUKER)
-    }
-    open fun aktiverBrukerSTS(aktiverBrukerData: AktiverBrukerData) {
-        val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        try {
-            post(url, sykmeldtBrukerType, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        } catch (e: Exception){
-            LOG.warn("Feil ved sett oppfølging sykemeldtbruker med aad-token", e);
-            post(url, sykmeldtBrukerType, getSystemAuthorizationHeader(), ::aktiveringFeilMapper)
-        }
+        post(url, sykmeldtBrukerType, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(OPPFOLGING_SYKMELDT)
     }
 
@@ -95,11 +76,6 @@ open class OppfolgingClient(
                 null
             }
         }
-
-    private fun getSystemAuthorizationHeader(): List<Pair<String, String>> =
-        listOf(
-            HttpHeaders.AUTHORIZATION to "Bearer " + systemUserTokenProvider.systemUserToken
-        )
 
     private fun getAadServiceAuthorizationHeader(): List<Pair<String, String>> {
         val token = try {
