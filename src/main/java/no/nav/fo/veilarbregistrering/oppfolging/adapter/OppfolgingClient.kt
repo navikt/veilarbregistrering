@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.Tag
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
@@ -25,7 +24,6 @@ open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
     private val metricsService: PrometheusMetricsService,
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider,
     private val tokenProvider: () -> String,
 
     ) : AbstractOppfolgingClient(objectMapper), HealthCheck {
@@ -77,17 +75,8 @@ open class OppfolgingClient(
             }
         }
 
-    private fun getServiceAuthorizationHeader(): List<Pair<String, String>> {
-        val token = try {
-            tokenProvider()
-        } catch (e: Exception) {
-            LOG.warn("Could not get aad token for veilarboppfolging", e)
-        }
-        LOG.info("Got aad token for oppfolging: $token")
-        return listOf(
-            HttpHeaders.AUTHORIZATION to "Bearer $token"
-        )
-    }
+    private fun getServiceAuthorizationHeader(): List<Pair<String, String>> =
+        listOf(HttpHeaders.AUTHORIZATION to "Bearer ${ tokenProvider()}")
 
     private fun mapper(aktiverBrukerFeilDto: AktiverBrukerFeilDto): AktiverBrukerFeil {
         return when (aktiverBrukerFeilDto.type) {

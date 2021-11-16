@@ -44,7 +44,6 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
             jacksonObjectMapper().findAndRegisterModules(),
             mockk(relaxed = true),
             baseUrl,
-            mockk(relaxed = true)
         ) { "TOKEN" }.also { oppfolgingClient = it }
     }
 

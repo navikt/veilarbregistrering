@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -16,18 +15,16 @@ class OppfolgingGatewayConfig {
     fun oppfolgingClient(
         objectMapper: ObjectMapper,
         prometheusMetricsService: PrometheusMetricsService,
-        systemUserTokenProvider: SystemUserTokenProvider,
         tokenProvider: ServiceToServiceTokenProvider,
     ): OppfolgingClient {
         val propertyName = "VEILARBOPPFOLGINGAPI_URL"
         val clusterPropertyName = "VEILARBOPPFOLGINGAPI_CLUSTER"
-        val cluster =             requireProperty(clusterPropertyName)
+        val cluster = requireProperty(clusterPropertyName)
 
         return OppfolgingClient(
             objectMapper,
             prometheusMetricsService,
             requireProperty(propertyName),
-            systemUserTokenProvider
         ) {
             tokenProvider.getServiceToken(
                 "veilarboppfolging",
