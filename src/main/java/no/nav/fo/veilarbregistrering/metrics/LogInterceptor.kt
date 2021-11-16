@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.metrics
 import no.nav.common.log.LogFilter
 import no.nav.common.log.MDCConstants
 import no.nav.common.utils.IdUtils
-import no.nav.fo.veilarbregistrering.config.requireApplicationName
+import no.nav.fo.veilarbregistrering.config.applicationNameOrNull
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -45,10 +45,12 @@ class LogInterceptor : Interceptor {
         val LOG = loggerFor<LogInterceptor>()
 
         private fun addConsumerId(requestBuilder: Request.Builder) {
-            requestBuilder.header(
-                LogFilter.CONSUMER_ID_HEADER_NAME,
-                requireApplicationName()
-            )
+            applicationNameOrNull()?.let { applicationName: String ->
+                requestBuilder.header(
+                    LogFilter.CONSUMER_ID_HEADER_NAME,
+                    applicationName
+                )
+            }
         }
 
         private fun addCallIdHeaders(requestBuilder: Request.Builder) {

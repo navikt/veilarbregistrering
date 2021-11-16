@@ -12,5 +12,8 @@ fun requireClusterName() =
 fun requireApplicationName() =
     requireProperty("NAIS_APP_NAME")
 
+fun applicationNameOrNull() =
+    getPropertyOrNull("NAIS_APP_NAME")
+
 fun isDevelopment(): Boolean =
     requireClusterName().startsWith("dev")
