@@ -49,7 +49,7 @@ jobs:
     name: Deploy to dev FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/pdl-aad-token'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/httpklient'
     steps:
       - uses: actions/checkout@v1
 
