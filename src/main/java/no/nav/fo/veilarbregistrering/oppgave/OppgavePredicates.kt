@@ -1,15 +1,14 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-import java.time.LocalDate;
-import java.util.function.Predicate;
+import java.time.LocalDate
+import java.util.function.Predicate
 
-public class OppgavePredicates {
-
-    public static Predicate<OppgaveImpl> oppgaveAvType(OppgaveType oppgaveType) {
-        return o -> o.getOppgavetype().equals(oppgaveType);
+object OppgavePredicates {
+    fun oppgaveAvType(oppgaveType: OppgaveType): Predicate<OppgaveImpl> {
+        return Predicate { o: OppgaveImpl -> o.oppgavetype == oppgaveType }
     }
 
-    public static Predicate<OppgaveImpl> oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(LocalDate dagensDato) {
-        return o -> o.getOpprettet().erMindreEnnToArbeidsdagerSiden(dagensDato);
+    fun oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(dagensDato: LocalDate?): Predicate<OppgaveImpl> {
+        return Predicate { o: OppgaveImpl -> o.opprettet.erMindreEnnToArbeidsdagerSiden(dagensDato) }
     }
 }
