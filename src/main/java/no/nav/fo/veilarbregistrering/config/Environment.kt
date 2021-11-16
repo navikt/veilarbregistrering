@@ -4,7 +4,7 @@ fun requireProperty(property: String) =
     getPropertyOrNull(property) ?: throw IllegalStateException("Missing required property $property")
 
 fun getPropertyOrNull(property: String): String? =
-    System.getProperty(property)
+    System.getProperty(property, System.getenv(property))
 
 fun clusterName() =
     getPropertyOrNull("NAIS_CLUSTER_NAME")
