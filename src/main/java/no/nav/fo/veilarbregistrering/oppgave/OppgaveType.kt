@@ -1,18 +1,15 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.Metric
 
-public enum OppgaveType implements Metric {
+enum class OppgaveType : Metric {
     OPPHOLDSTILLATELSE, UTVANDRET;
 
-    @Override
-    public String fieldName() {
-        return "oppgavetype";
+    override fun fieldName(): String {
+        return "oppgavetype"
     }
 
-    @Override
-    public String value() {
-        return this.toString();
+    override fun value(): String {
+        return this.toString()
     }
-
 }

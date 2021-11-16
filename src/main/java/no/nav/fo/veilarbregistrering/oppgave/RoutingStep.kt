@@ -1,9 +1,9 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-import no.nav.fo.veilarbregistrering.metrics.Metric;
+import no.nav.fo.veilarbregistrering.metrics.Metric
 
-public enum  RoutingStep implements Metric {
-
+@Suppress("EnumEntryName")
+enum class RoutingStep : Metric {
     GeografiskTilknytning_Feilet,
     GeografiskTilknytning_Funnet,
     GeografiskTilknytning_ByMedBydel_Funnet,
@@ -16,13 +16,11 @@ public enum  RoutingStep implements Metric {
     Enhetsnummer_IkkeFunnet,
     Enhetsnummer_Funnet;
 
-    @Override
-    public String fieldName() {
-        return "routingStep";
+    override fun fieldName(): String {
+        return "routingStep"
     }
 
-    @Override
-    public Object value() {
-        return this.toString();
+    override fun value(): Any {
+        return this.toString()
     }
 }

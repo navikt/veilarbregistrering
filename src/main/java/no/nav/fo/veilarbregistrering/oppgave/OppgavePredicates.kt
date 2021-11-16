@@ -8,7 +8,7 @@ object OppgavePredicates {
         return Predicate { o: OppgaveImpl -> o.oppgavetype == oppgaveType }
     }
 
-    fun oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(dagensDato: LocalDate?): Predicate<OppgaveImpl> {
+    fun oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(dagensDato: LocalDate): Predicate<OppgaveImpl> {
         return Predicate { o: OppgaveImpl -> o.opprettet.erMindreEnnToArbeidsdagerSiden(dagensDato) }
     }
 }

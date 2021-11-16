@@ -41,7 +41,7 @@ open class OppgaveService(
             prometheusMetricsService.registrer(Events.OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgaveType)
             throw OppgaveAlleredeOpprettet(
                 "Fant en oppgave av samme type ${oppgave.oppgavetype} " +
-                        "som ble opprettet ${oppgave.opprettet.tidspunkt()} - " +
+                        "som ble opprettet ${oppgave.opprettet.tidspunkt} - " +
                         "${oppgave.opprettet.antallTimerSiden()} timer siden."
             )
         }
