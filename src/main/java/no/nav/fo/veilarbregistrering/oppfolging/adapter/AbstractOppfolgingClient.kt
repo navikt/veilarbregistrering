@@ -6,7 +6,6 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.http.Headers.buildHeaders
-import no.nav.fo.veilarbregistrering.metrics.RequestTimeFilter
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -94,7 +93,6 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
     companion object {
         val client: OkHttpClient = RestClient.baseClientBuilder()
             .readTimeout(120L, TimeUnit.SECONDS)
-            .addInterceptor(RequestTimeFilter())
             .build()
 
         val emptyHandler: (Exception) -> Nothing? = { null }
