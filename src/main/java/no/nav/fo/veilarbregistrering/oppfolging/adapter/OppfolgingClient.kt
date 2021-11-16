@@ -46,19 +46,19 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        post(url, fnr, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        post(url, fnr, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(REAKTIVER_BRUKER)
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        post(url, aktiverBrukerData, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        post(url, aktiverBrukerData, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(AKTIVER_BRUKER)
     }
 
     fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        post(url, sykmeldtBrukerType, getAadServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(OPPFOLGING_SYKMELDT)
     }
 
@@ -77,7 +77,7 @@ open class OppfolgingClient(
             }
         }
 
-    private fun getAadServiceAuthorizationHeader(): List<Pair<String, String>> {
+    private fun getServiceAuthorizationHeader(): List<Pair<String, String>> {
         val token = try {
             tokenProvider()
         } catch (e: Exception) {
