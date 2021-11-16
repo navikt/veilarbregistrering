@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering
 
 import no.nav.common.utils.SslUtils
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig
-import no.nav.fo.veilarbregistrering.config.clusterName
+import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.runApplication
@@ -25,7 +25,7 @@ class Application {
         internal const val SECRETS_PATH = "/var/run/secrets/nais.io/"
 
         internal fun readVaultSecrets() {
-            if (clusterName()?.endsWith("gcp") == true) return
+            if (requireClusterName().endsWith("gcp")) return
             System.setProperty("SERVICEUSER_USERNAME", getVaultSecret("serviceuser_creds/username"))
             System.setProperty("SERVICEUSER_PASSWORD", getVaultSecret("serviceuser_creds/password"))
 

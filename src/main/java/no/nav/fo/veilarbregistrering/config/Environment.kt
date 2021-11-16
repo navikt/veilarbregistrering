@@ -6,11 +6,11 @@ fun requireProperty(property: String) =
 fun getPropertyOrNull(property: String): String? =
     System.getProperty(property, System.getenv(property))
 
-fun clusterName() =
-    getPropertyOrNull("NAIS_CLUSTER_NAME")
+fun requireClusterName() =
+    requireProperty("NAIS_CLUSTER_NAME")
 
 fun requireApplicationName() =
     requireProperty("NAIS_APP_NAME")
 
 fun isDevelopment(): Boolean =
-    clusterName()?.startsWith("dev") == true
+    requireClusterName().startsWith("dev")
