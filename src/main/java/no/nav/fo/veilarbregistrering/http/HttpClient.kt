@@ -9,9 +9,7 @@ fun defaultHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
         .readTimeout(120L, TimeUnit.SECONDS)
         .addInterceptor(LogInterceptor())
-        .addInterceptor(LogInterceptor())
         .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
         .followRedirects(false)
         .build()
 }
