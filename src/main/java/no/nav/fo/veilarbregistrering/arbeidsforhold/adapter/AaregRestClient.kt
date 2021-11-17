@@ -6,12 +6,12 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import no.nav.common.log.MDCConstants
-import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import no.nav.fo.veilarbregistrering.log.MDCConstants
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -46,7 +46,7 @@ open class AaregRestClient(
                 .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
                 .build()
         try {
-            RestClient.baseClient().newCall(request).execute().use { response -> return behandleResponse(response) }
+            defaultHttpClient().newCall(request).execute().use { response -> return behandleResponse(response) }
         } catch (e: IOException) {
             throw RuntimeException("Noe gikk galt mot Aareg", e)
         }
@@ -86,6 +86,6 @@ open class AaregRestClient(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient())
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), defaultHttpClient())
     }
 }
