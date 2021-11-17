@@ -9,6 +9,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.slf4j.MDC
+import kotlin.math.roundToInt
 
 class LogInterceptor : Interceptor {
 
@@ -26,7 +27,8 @@ class LogInterceptor : Interceptor {
 
         try {
             response = chain.proceed(request)
-            LOG.info("${response.code()} ${request.method()} ${request.url()} ${System.nanoTime() - startTime / 1e6}mS.")
+            val delta = (System.nanoTime() - startTime / 1e6).roundToInt()
+            LOG.info("${response.code()} ${request.method()} ${request.url()} ${delta}mS.")
         } catch (t: Throwable) {
             throwable = t
         }
