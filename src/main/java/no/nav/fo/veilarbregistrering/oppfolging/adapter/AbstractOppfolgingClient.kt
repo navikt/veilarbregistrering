@@ -1,13 +1,11 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.rest.client.RestClient
-import no.nav.common.rest.client.RestUtils
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.http.Headers.buildHeaders
+import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
-import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -24,7 +22,7 @@ abstract class AbstractOppfolgingClient(private val objectMapper: ObjectMapper) 
         val request: Request.Builder = buildRequest(url, headers)
         request.method(
                 "POST",
-                requestEntity.let { RequestBody.create(RestUtils.MEDIA_TYPE_JSON, objectMapper.writeValueAsString(it)) }
+                requestEntity.let { RequestBody.create(Json, objectMapper.writeValueAsString(it)) }
         )
 
         try {
