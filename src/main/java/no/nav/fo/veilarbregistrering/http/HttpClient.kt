@@ -13,7 +13,7 @@ fun buildHttpClient(block: OkHttpClient.Builder.() -> Unit): OkHttpClient =
 
 private fun defaultHttpClientBuilder() =
     OkHttpClient.Builder()
-        .readTimeout(120L, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
         .addInterceptor(LogInterceptor())
         .connectTimeout(10, TimeUnit.SECONDS)
         .followRedirects(false)
