@@ -131,7 +131,7 @@ class KafkaConfig {
 
         private val envSuffix: String =
             System.getenv("APP_ENVIRONMENT_NAME")?.let {
-                "-" + it.toLowerCase(Locale.getDefault())
+                "-" + it.lowercase(Locale.getDefault())
             } ?: ""
 
     }
