@@ -20,14 +20,4 @@ class Organisasjonsdetaljer (
             .findFirst()
             .map(Adresse::kommunenummer)
     }
-
-    companion object {
-        fun of(
-            forretningsadresser: List<Forretningsadresse> = emptyList(),
-            postadresser: List<Postadresse> = emptyList()
-        ): Organisasjonsdetaljer {
-            return Organisasjonsdetaljer(forretningsadresser, postadresser)
-        }
-    }
-
 }
