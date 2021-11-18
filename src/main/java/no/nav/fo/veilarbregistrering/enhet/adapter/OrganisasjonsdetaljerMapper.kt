@@ -1,54 +1,41 @@
-package no.nav.fo.veilarbregistrering.enhet.adapter;
+package no.nav.fo.veilarbregistrering.enhet.adapter
 
-import no.nav.fo.veilarbregistrering.bruker.Periode;
-import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse;
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
-import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import no.nav.fo.veilarbregistrering.enhet.Postadresse;
+import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
+import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
+import no.nav.fo.veilarbregistrering.enhet.Postadresse
 
-import java.util.List;
+internal object OrganisasjonsdetaljerMapper {
+    fun map(organisasjonDetaljerDto: OrganisasjonDetaljerDto): Organisasjonsdetaljer =
+        Organisasjonsdetaljer.of(
+            mapForretningsadresse(organisasjonDetaljerDto.forretningsadresser),
+            mapPostadresse(organisasjonDetaljerDto.postadresser)
+        )
 
-import static java.util.stream.Collectors.toList;
+    private fun mapForretningsadresse(forretningsadresser: List<ForretningsAdresseDto>): List<Forretningsadresse> =
+        forretningsadresser
+            .map(::map)
 
-class OrganisasjonsdetaljerMapper {
+    private fun mapPostadresse(postadresser: List<PostadresseDto>): List<Postadresse> =
+        postadresser
+            .map(::map)
 
-    private OrganisasjonsdetaljerMapper() {
-    }
+    private fun map(adresse: ForretningsAdresseDto): Forretningsadresse =
+        Forretningsadresse(
+            Kommunenummer.of(adresse.kommunenummer),
+            map(adresse.gyldighetsperiode)
+        )
 
-    static Organisasjonsdetaljer map(OrganisasjonDetaljerDto organisasjonDetaljerDto) {
-        return Organisasjonsdetaljer.of(
-                mapForretningsadresse(organisasjonDetaljerDto.getForretningsadresser()),
-                mapPostadresse(organisasjonDetaljerDto.getPostadresser()));
-    }
+    private fun map(adresse: PostadresseDto): Postadresse =
+        Postadresse(
+            Kommunenummer.of(adresse.kommunenummer),
+            map(adresse.gyldighetsperiode)
+        )
 
-    private static List<Forretningsadresse> mapForretningsadresse(List<ForretningsAdresseDto> forretningsadresser) {
-        return forretningsadresser.stream()
-                .map(OrganisasjonsdetaljerMapper::map)
-                .collect(toList());
-    }
-
-    private static Forretningsadresse map(ForretningsAdresseDto adresse) {
-        return new Forretningsadresse(
-                Kommunenummer.of(adresse.getKommunenummer()),
-                map(adresse.getGyldighetsperiode()));
-    }
-
-    private static List<Postadresse> mapPostadresse(List<PostadresseDto> postadresser) {
-        return postadresser.stream()
-                .map(OrganisasjonsdetaljerMapper::map)
-                .collect(toList());
-    }
-
-    private static Postadresse map(PostadresseDto adresse) {
-        return new Postadresse(
-                Kommunenummer.of(adresse.getKommunenummer()),
-                map(adresse.getGyldighetsperiode()));
-    }
-
-    private static Periode map(GyldighetsperiodeDto gyldighetsperiodeDto) {
-        return Periode.of(
-                gyldighetsperiodeDto.getFom(),
-                gyldighetsperiodeDto.getTom());
-    }
-
+    private fun map(gyldighetsperiodeDto: GyldighetsperiodeDto): Periode =
+        Periode.of(
+            gyldighetsperiodeDto.fom,
+            gyldighetsperiodeDto.tom
+        )
 }
