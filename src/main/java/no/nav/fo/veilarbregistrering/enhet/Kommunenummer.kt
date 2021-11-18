@@ -1,12 +1,8 @@
 package no.nav.fo.veilarbregistrering.enhet
 
-import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel.Companion.contains
-
 data class Kommunenummer (val kommunenummer: String) {
 
-    fun kommuneMedBydeler(): Boolean {
-        return contains(kommunenummer)
-    }
+    fun kommuneMedBydeler(): Boolean = kommunenummer in KommuneMedBydel
 
     companion object {
         fun of(kommunenummer: String): Kommunenummer {
