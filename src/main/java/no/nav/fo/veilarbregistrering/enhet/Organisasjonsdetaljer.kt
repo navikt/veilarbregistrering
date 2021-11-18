@@ -1,23 +1,13 @@
 package no.nav.fo.veilarbregistrering.enhet
 
-import java.util.*
-
-class Organisasjonsdetaljer (
-    val forretningsadresser: List<Forretningsadresse> = emptyList(),
-    val postadresser: List<Postadresse> = emptyList()
+class Organisasjonsdetaljer(
+    private val forretningsadresser: List<Forretningsadresse> = emptyList(),
+    private val postadresser: List<Postadresse> = emptyList()
 ) {
-
-    fun kommunenummer(): Optional<Kommune> {
-        val kommunenummerFraForretningsadresse = kommunenummerFraFoersteGyldigeAdresse(forretningsadresser)
-        return if (kommunenummerFraForretningsadresse.isPresent) {
-            kommunenummerFraForretningsadresse
-        } else kommunenummerFraFoersteGyldigeAdresse(postadresser)
-    }
-
-    private fun kommunenummerFraFoersteGyldigeAdresse(adresse: List<Adresse>): Optional<Kommune> {
-        return adresse.stream()
-            .filter { obj: Adresse -> obj.erGyldig() }
-            .findFirst()
-            .map(Adresse::kommunenummer)
-    }
+    fun kommunenummer(): Kommune? =
+        kommunenummerFraFoersteGyldigeAdresse(forretningsadresser)
+            ?: kommunenummerFraFoersteGyldigeAdresse(postadresser)
 }
+
+private fun kommunenummerFraFoersteGyldigeAdresse(adresse: List<Adresse>): Kommune? =
+    adresse.firstOrNull(Adresse::erGyldig)?.kommunenummer

@@ -137,9 +137,9 @@ public class OppgaveRouter {
             return Optional.empty();
         }
 
-        Optional<Kommune> muligKommunenummer = organisasjonsdetaljer
+        Optional<Kommune> muligKommunenummer = Optional.ofNullable(organisasjonsdetaljer
                 .map(Organisasjonsdetaljer::kommunenummer)
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(IllegalStateException::new));
         if (muligKommunenummer.isEmpty()) {
             LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");
             prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);

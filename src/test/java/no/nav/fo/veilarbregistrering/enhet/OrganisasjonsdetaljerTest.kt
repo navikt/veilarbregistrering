@@ -10,13 +10,13 @@ class OrganisasjonsdetaljerTest {
     @Test
     fun `organisasjonsdetaljer med tomme lister gir ingen kommunenummer`() {
         val organisasjonsdetaljer = Organisasjonsdetaljer()
-        assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
+        assertThat(organisasjonsdetaljer.kommunenummer()).isNull()
     }
 
     @Test
     fun `organisasjonsdetaljer med null skal handteres som tom liste`() {
         val organisasjonsdetaljer = Organisasjonsdetaljer()
-        assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
+        assertThat(organisasjonsdetaljer.kommunenummer()).isNull()
     }
 
     @Test
@@ -32,7 +32,7 @@ class OrganisasjonsdetaljerTest {
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
+        assertThat(organisasjonsdetaljer.kommunenummer()).isNull()
     }
 
     @Test
@@ -48,7 +48,7 @@ class OrganisasjonsdetaljerTest {
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1235"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).isEqualTo(Kommune("1235"))
     }
 
     @Test
@@ -64,7 +64,7 @@ class OrganisasjonsdetaljerTest {
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1234"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).isEqualTo(Kommune("1234"))
     }
 
     @Test
@@ -80,6 +80,6 @@ class OrganisasjonsdetaljerTest {
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1234"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).isEqualTo(Kommune("1234"))
     }
 }

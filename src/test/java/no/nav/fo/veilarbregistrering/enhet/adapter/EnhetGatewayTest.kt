@@ -40,7 +40,7 @@ class EnhetGatewayTest(private val mockServer: ClientAndServer) {
 
         val organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(org)
         assertThat(organisasjonsdetaljer).isNotNull
-        assertThat(organisasjonsdetaljer!!.kommunenummer()).hasValue(Kommune("0301"))
+        assertThat(organisasjonsdetaljer!!.kommunenummer()).isEqualTo(Kommune("0301"))
     }
 
     @Test
