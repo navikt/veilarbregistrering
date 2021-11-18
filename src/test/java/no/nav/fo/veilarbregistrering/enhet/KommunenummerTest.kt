@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.enhet
 
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer.KommuneMedBydel
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
