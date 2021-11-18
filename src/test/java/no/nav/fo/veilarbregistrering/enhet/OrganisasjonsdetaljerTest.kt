@@ -9,13 +9,13 @@ class OrganisasjonsdetaljerTest {
 
     @Test
     fun `organisasjonsdetaljer med tomme lister gir ingen kommunenummer`() {
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(null, null)
+        val organisasjonsdetaljer = Organisasjonsdetaljer()
         assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
     }
 
     @Test
     fun `organisasjonsdetaljer med null skal handteres som tom liste`() {
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(null, null)
+        val organisasjonsdetaljer = Organisasjonsdetaljer()
         assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
     }
 
