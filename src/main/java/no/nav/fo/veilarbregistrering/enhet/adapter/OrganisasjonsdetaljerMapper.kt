@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.enhet.Postadresse
 
 internal object OrganisasjonsdetaljerMapper {
     fun map(organisasjonDetaljerDto: OrganisasjonDetaljerDto): Organisasjonsdetaljer =
-        Organisasjonsdetaljer.of(
+        Organisasjonsdetaljer(
             mapForretningsadresse(organisasjonDetaljerDto.forretningsadresser),
             mapPostadresse(organisasjonDetaljerDto.postadresser)
         )

@@ -31,7 +31,7 @@ class OrganisasjonsdetaljerTest {
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val postadresser = listOf(postadresse)
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
+        val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
         assertThat(organisasjonsdetaljer.kommunenummer()).isEmpty
     }
 
@@ -47,7 +47,7 @@ class OrganisasjonsdetaljerTest {
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val postadresser = listOf(postadresse)
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
+        val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
         assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1235"))
     }
 
@@ -63,7 +63,7 @@ class OrganisasjonsdetaljerTest {
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val postadresser = listOf(postadresse)
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
+        val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
         assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1234"))
     }
 
@@ -79,7 +79,7 @@ class OrganisasjonsdetaljerTest {
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val postadresser = listOf(postadresse)
-        val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
+        val organisasjonsdetaljer = Organisasjonsdetaljer(forretningsadresser, postadresser)
         assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommune("1234"))
     }
 }

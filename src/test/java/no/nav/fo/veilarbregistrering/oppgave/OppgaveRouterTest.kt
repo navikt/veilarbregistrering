@@ -45,7 +45,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1240"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
@@ -57,7 +57,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
@@ -85,7 +85,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
@@ -98,7 +98,7 @@ class OppgaveRouterTest {
         val forretningsadresse = Forretningsadresse(
                 Kommune.of(KommuneMedBydel.STAVANGER),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
-        val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
+        val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
