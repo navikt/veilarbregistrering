@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 data class OrdinaerBrukerRegistrering(
     override val id: Long = 0,
-    val opprettetDato: LocalDateTime,
+    val opprettetDato: LocalDateTime = LocalDateTime.now(),
     val besvarelse: Besvarelse,
     val teksterForBesvarelse: List<TekstForSporsmal>,
     val sisteStilling: Stilling,
