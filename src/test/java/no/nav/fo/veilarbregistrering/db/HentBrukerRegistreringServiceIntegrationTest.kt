@@ -66,16 +66,17 @@ class HentBrukerRegistreringServiceIntegrationTest(
         brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
         }
-        assertEquals(hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling, gyldigStilling())
+        assertEquals(gyldigStilling(), hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling)
     }
 
     companion object {
         private val ident = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker.of(ident, AktorId("AKTØRID"))
-        private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb()
-            .setOpprettetDato(LocalDate.of(2014, 12, 8).atStartOfDay())
-        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
-            .setOpprettetDato(LocalDate.of(2018, 12, 8).atStartOfDay())
+        private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb(opprettetDato =
+            LocalDate.of(2014, 12, 8).atStartOfDay())
+        private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+            opprettetDato = LocalDate.of(2018, 12, 8).atStartOfDay()
+        )
 
         @Configuration
         class TestContext {

@@ -44,7 +44,6 @@ class RegistreringResource(
         autorisasjonsService.sjekkSkrivetilgangMedAktorId(bruker.aktorId)
 
         val veileder = navVeileder()
-        ordinaerBrukerRegistrering.opprettetDato = LocalDateTime.now()
         val opprettetRegistrering =
             brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder)
         brukerRegistreringService.overforArena(opprettetRegistrering.id, bruker, veileder)

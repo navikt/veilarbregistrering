@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
@@ -45,7 +46,9 @@ internal class ProfileringServiceTest {
             tilfredsstillerKravTilArbeidList.forEach(Consumer { tilfredsstillerKrav: Foedselsnummer ->
                 aldre.forEach(
                     Consumer { alder: Int ->
-                        val bruker = OrdinaerBrukerRegistrering().setBesvarelse(besvarelse)
+                        val bruker = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+                            besvarelse = besvarelse
+                        )
                         validerProfilering(
                             bruker,
                             alder,

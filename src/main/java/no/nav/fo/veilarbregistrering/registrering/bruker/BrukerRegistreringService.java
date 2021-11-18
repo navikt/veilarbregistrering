@@ -79,7 +79,7 @@ public class BrukerRegistreringService {
         if (veileder == null) return;
 
         ManuellRegistrering manuellRegistrering = new ManuellRegistrering(
-                brukerRegistrering.id,
+                brukerRegistrering.getId(),
                 brukerRegistrering.hentType(),
                 veileder.getVeilederIdent(),
                 veileder.getEnhetsId()

@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.registrering.bruker;
 
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType;
+import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +13,7 @@ public class SykmeldtRegistrering extends BrukerRegistrering {
     LocalDateTime opprettetDato;
     Besvarelse besvarelse;
     List<TekstForSporsmal> teksterForBesvarelse;
+    Veileder manueltRegistrertAv;
 
     public SykmeldtRegistrering() {
     }
@@ -97,5 +100,16 @@ public class SykmeldtRegistrering extends BrukerRegistrering {
 
     public String toString() {
         return "SykmeldtRegistrering(id=" + this.getId() + ", opprettetDato=" + this.getOpprettetDato() + ", besvarelse=" + this.getBesvarelse() + ", teksterForBesvarelse=" + this.getTeksterForBesvarelse() + ")";
+    }
+
+    @Nullable
+    @Override
+    public Veileder getManueltRegistrertAv() {
+        return manueltRegistrertAv;
+    }
+
+    @Override
+    public void setManueltRegistrertAv(@Nullable Veileder manueltRegistrertAv) {
+        this.manueltRegistrertAv = manueltRegistrertAv;
     }
 }

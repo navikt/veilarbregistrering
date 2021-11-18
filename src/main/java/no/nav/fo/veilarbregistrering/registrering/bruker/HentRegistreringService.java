@@ -71,7 +71,7 @@ public class HentRegistreringService {
 
         Profilering profilering = profileringRepository.hentProfileringForId(
                 ordinaerBrukerRegistrering.getId());
-        ordinaerBrukerRegistrering.setProfilering(profilering);
+        OrdinaerBrukerRegistrering.medProfilering(ordinaerBrukerRegistrering, profilering);
 
         return ordinaerBrukerRegistrering;
     }

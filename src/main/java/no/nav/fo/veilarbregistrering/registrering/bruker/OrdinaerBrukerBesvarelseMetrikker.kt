@@ -16,8 +16,8 @@ internal object OrdinaerBrukerBesvarelseMetrikker {
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering,
         profilering: Profilering
     ) {
-        val helseHinderSvar = ordinaerBrukerRegistrering.getBesvarelse().helseHinder
-        val andreForholdSvar = ordinaerBrukerRegistrering.getBesvarelse().andreForhold
+        val helseHinderSvar = ordinaerBrukerRegistrering.besvarelse.helseHinder
+        val andreForholdSvar = ordinaerBrukerRegistrering.besvarelse.andreForhold
         val samsvarermedinfofraaareg =
             samsvarerBesvarelseMedAaregVedrArbeidSisteTolvMaaneder(ordinaerBrukerRegistrering, profilering)
 
@@ -48,8 +48,8 @@ internal object OrdinaerBrukerBesvarelseMetrikker {
     private fun samsvarerBesvarelseMedAaregVedrArbeidSisteTolvMaaneder(
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering,
         profilering: Profilering
-    ) = ((svarSomIndikererArbeidSisteManeder.contains(ordinaerBrukerRegistrering.getBesvarelse().dinSituasjon) ||
-            ordinaerBrukerRegistrering.getBesvarelse().sisteStilling == SisteStillingSvar.HAR_HATT_JOBB)
+    ) = ((svarSomIndikererArbeidSisteManeder.contains(ordinaerBrukerRegistrering.besvarelse.dinSituasjon) ||
+            ordinaerBrukerRegistrering.besvarelse.sisteStilling == SisteStillingSvar.HAR_HATT_JOBB)
             == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder)
 
     private val svarSomIndikererArbeidSisteManeder = listOf(

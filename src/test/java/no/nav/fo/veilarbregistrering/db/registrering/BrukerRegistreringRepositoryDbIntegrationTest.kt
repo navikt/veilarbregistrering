@@ -42,7 +42,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Test
     fun `bruker som har registrering og ingen sykmeldtregistrering skal ikke få feil`() {
-        val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse(andreForhold = AndreForholdSvar.NEI))
+        val registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+            besvarelse = BesvarelseTestdataBuilder.gyldigBesvarelse(andreForhold = AndreForholdSvar.NEI)
+        )
         brukerRegistreringRepository.lagre(registrering, BRUKER_1)
         assertThat(sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)).isNull()
     }
@@ -63,13 +65,13 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Test
     fun `finnOrdinaerBrukerregistreringForAktorIdOgTilstand skal returnere liste med registreringer for angitt tilstand`() {
-        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse(
-                andreForhold = AndreForholdSvar.JA))
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(besvarelse=(BesvarelseTestdataBuilder.gyldigBesvarelse(
+                andreForhold = AndreForholdSvar.JA)))
         val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
         registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.OVERFORT_ARENA).build())
 
-        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse(
-                andreForhold = AndreForholdSvar.NEI))
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(besvarelse=(BesvarelseTestdataBuilder.gyldigBesvarelse(
+                andreForhold = AndreForholdSvar.NEI)))
         val lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
         registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering2.id).status(Status.OVERFORT_ARENA).build())
 
@@ -79,12 +81,12 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
 
     @Test
     fun `finnOrdinaerBrukerregistreringForAktorIdOgTilstand skal returnere tom liste når tilstand ikke finnes`() {
-        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse(
-                andreForhold = AndreForholdSvar.JA))
+        val registrering1 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(besvarelse=(BesvarelseTestdataBuilder.gyldigBesvarelse(
+                andreForhold = AndreForholdSvar.JA)))
         brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
 
-        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse(
-                andreForhold = AndreForholdSvar.NEI))
+        val registrering2 = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(besvarelse=(BesvarelseTestdataBuilder.gyldigBesvarelse(
+                andreForhold = AndreForholdSvar.NEI)))
         brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
 
         val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))

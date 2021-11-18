@@ -31,7 +31,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             "id" to id,
             "aktor_id" to bruker.aktorId.asString(),
             "fnr" to bruker.gjeldendeFoedselsnummer.stringValue(),
-            "opprettet" to Timestamp.valueOf(registrering.opprettetDato ?: now()),
+            "opprettet" to Timestamp.valueOf(registrering.opprettetDato),
             "tekster" to teksterForBesvarelse,
             "yrkespraksis" to stilling.styrk08,
             "yrkesbeskrivelse" to stilling.label,
@@ -137,18 +137,17 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         private val registreringMapper = RowMapper<OrdinaerBrukerRegistrering> { rs, _ ->
             try {
-                OrdinaerBrukerRegistrering()
-                    .setId(rs.getLong(BRUKER_REGISTRERING_ID))
-                    .setOpprettetDato(rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime())
-                    .setTeksterForBesvarelse(readListOf(rs.getString(TEKSTER_FOR_BESVARELSE)))
-                    .setSisteStilling(
+                OrdinaerBrukerRegistrering(
+                    id = rs.getLong(BRUKER_REGISTRERING_ID),
+                    opprettetDato = rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime(),
+                    teksterForBesvarelse = readListOf(rs.getString(TEKSTER_FOR_BESVARELSE)),
+                    sisteStilling =
                         Stilling(
                             styrk08 = rs.getString(YRKESPRAKSIS),
                             konseptId = rs.getLong(KONSEPT_ID),
                             label = rs.getString(YRKESBESKRIVELSE)
-                        )
-                    )
-                    .setBesvarelse(
+                        ),
+                    besvarelse = (
                         Besvarelse(
                             dinSituasjon = DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)),
                             utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)),
@@ -158,7 +157,8 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                             andreForhold = AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)),
                             sisteStilling = SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)),
                         )
-                    )
+                    ),
+                )
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }

@@ -1,33 +1,31 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
-import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar
-import no.nav.fo.veilarbregistrering.besvarelse.SisteStillingSvar
-import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder
+import no.nav.fo.veilarbregistrering.besvarelse.*
 import java.time.LocalDateTime
 
 object OrdinaerBrukerRegistreringTestdataBuilder {
 
     @JvmStatic
-    fun gyldigBrukerRegistrering(): OrdinaerBrukerRegistrering {
-        return gyldigBrukerRegistrering(LocalDateTime.now())
+    fun gyldigBrukerRegistrering(
+        opprettetDato: LocalDateTime = LocalDateTime.now(),
+        stilling: Stilling = StillingTestdataBuilder.gyldigStilling(),
+        besvarelse: Besvarelse = BesvarelseTestdataBuilder.gyldigBesvarelse(),
+        teksterForBesvarelse: List<TekstForSporsmal> = TekstForSporsmalTestdataBuilder.gyldigeTeksterForBesvarelse(),
+    ): OrdinaerBrukerRegistrering {
+        return OrdinaerBrukerRegistrering(
+                opprettetDato = opprettetDato,
+                sisteStilling = stilling,
+                besvarelse = besvarelse,
+                teksterForBesvarelse = teksterForBesvarelse,
+        )
     }
 
     @JvmStatic
-    fun gyldigBrukerRegistrering(opprettetDato: LocalDateTime): OrdinaerBrukerRegistrering {
-        return OrdinaerBrukerRegistrering()
-                .setOpprettetDato(opprettetDato)
-                .setSisteStilling(StillingTestdataBuilder.gyldigStilling())
-                .setBesvarelse(BesvarelseTestdataBuilder.gyldigBesvarelse())
-                .setTeksterForBesvarelse(TekstForSporsmalTestdataBuilder.gyldigeTeksterForBesvarelse())
-    }
-
-    @JvmStatic
-    fun gyldigBrukerRegistreringUtenJobb(): OrdinaerBrukerRegistrering {
-        return gyldigBrukerRegistrering().setSisteStilling(
-                StillingTestdataBuilder.ingenYrkesbakgrunn()
-        ).setBesvarelse(
-            BesvarelseTestdataBuilder.gyldigBesvarelse(
+    fun gyldigBrukerRegistreringUtenJobb(opprettetDato: LocalDateTime = LocalDateTime.now()): OrdinaerBrukerRegistrering {
+        return gyldigBrukerRegistrering(
+            opprettetDato = opprettetDato,
+            stilling = StillingTestdataBuilder.ingenYrkesbakgrunn(),
+            besvarelse = BesvarelseTestdataBuilder.gyldigBesvarelse(
                 dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
                 sisteStilling = SisteStillingSvar.INGEN_SVAR,
             )

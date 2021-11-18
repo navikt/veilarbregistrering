@@ -76,12 +76,12 @@ internal class HentRegistreringServiceTest {
         private val gammelDato = LocalDateTime.of(2020,1,11,15,50, 20)
         private val igaar = LocalDateTime.now().minusDays(1)
         private val GAMMEL_BRUKERREGISTRERING =
-            OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().also {
-                it.opprettetDato = gammelDato
-            }
-        private val OK_IGANGSATT_REGISTRERING = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering().also {
-            it.opprettetDato = igaar
-        }
+            OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+                opprettetDato = gammelDato)
+
+        private val OK_IGANGSATT_REGISTRERING = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+            opprettetDato = igaar
+        )
 
         private val profilering = ProfileringTestdataBuilder.lagProfilering()
 
