@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -68,6 +69,19 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
         LOG.error(r.message ?: "Uventet feil", r)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
     }
+
+    @ExceptionHandler(BindException::class)
+    fun handleBindException(e: BindException): ResponseEntity<Any> {
+        LOG.error("Requestbody matchet ikke endepunktets forventning", e)
+        return ResponseEntity.badRequest().build()
+    }
+
+    @ExceptionHandler(Throwable::class)
+    fun handleThrowable(t: Throwable): ResponseEntity<Any> {
+        LOG.error("Uhåndtert feil oppsto", t)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
+    }
+
 
     companion object {
         private val LOG = loggerFor<FeilHandtering>()
