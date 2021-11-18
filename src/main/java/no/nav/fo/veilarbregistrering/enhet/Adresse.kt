@@ -1,8 +1,6 @@
-package no.nav.fo.veilarbregistrering.enhet;
+package no.nav.fo.veilarbregistrering.enhet
 
-public interface Adresse {
-
-    Kommune getKommunenummer();
-
-    boolean erGyldig();
+interface Adresse {
+    val kommunenummer: Kommune?
+    fun erGyldig(): Boolean
 }
