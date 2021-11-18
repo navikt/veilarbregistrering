@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -113,11 +113,11 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
             @Bean
             fun norg2Gateway() = object : Norg2Gateway {
-                override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
-                    if (Kommunenummer("1241") == kommunenummer) {
+                override fun hentEnhetFor(kommune: Kommune): Optional<Enhetnr> {
+                    if (Kommune("1241") == kommune) {
                         return Optional.of(Enhetnr.of("232"))
                     }
-                    return if (Kommunenummer.of(KommuneMedBydel.STAVANGER) == kommunenummer) {
+                    return if (Kommune.of(KommuneMedBydel.STAVANGER) == kommune) {
                         Optional.of(Enhetnr.of("1103"))
                     } else Optional.empty()
                 }

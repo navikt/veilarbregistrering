@@ -4,17 +4,17 @@ import no.nav.fo.veilarbregistrering.bruker.Periode;
 
 public class Forretningsadresse implements Adresse {
 
-    private final Kommunenummer kommunenummer;
+    private final Kommune kommune;
     private final Periode periode;
 
-    public Forretningsadresse(Kommunenummer kommunenummer, Periode periode) {
-        this.kommunenummer = kommunenummer;
+    public Forretningsadresse(Kommune kommune, Periode periode) {
+        this.kommune = kommune;
         this.periode = periode;
     }
 
     @Override
-    public Kommunenummer getKommunenummer() {
-        return kommunenummer;
+    public Kommune getKommunenummer() {
+        return kommune;
     }
 
     @Override

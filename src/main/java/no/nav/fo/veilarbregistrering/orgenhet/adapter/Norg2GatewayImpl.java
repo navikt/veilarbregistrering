@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter;
 
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
+import no.nav.fo.veilarbregistrering.enhet.Kommune;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet;
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
@@ -22,8 +22,8 @@ class Norg2GatewayImpl implements Norg2Gateway {
     }
 
     @Override
-    public Optional<Enhetnr> hentEnhetFor(Kommunenummer kommunenummer) {
-        List<RsNavKontorDto> listeMedRsNavKontorDtos = norg2RestClient.hentEnhetFor(kommunenummer);
+    public Optional<Enhetnr> hentEnhetFor(Kommune kommune) {
+        List<RsNavKontorDto> listeMedRsNavKontorDtos = norg2RestClient.hentEnhetFor(kommune);
 
         return listeMedRsNavKontorDtos.stream()
                 .filter(rsNavKontorDtos -> "Aktiv".equals(rsNavKontorDtos.getStatus()))

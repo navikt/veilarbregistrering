@@ -25,8 +25,8 @@ public class Organisasjonsdetaljer {
         this.postadresser = postadresser != null ? postadresser : emptyList();
     }
 
-    public Optional<Kommunenummer> kommunenummer() {
-        Optional<Kommunenummer> kommunenummerFraForretningsadresse = kommunenummerFraFoersteGyldigeAdresse(forretningsadresser);
+    public Optional<Kommune> kommunenummer() {
+        Optional<Kommune> kommunenummerFraForretningsadresse = kommunenummerFraFoersteGyldigeAdresse(forretningsadresser);
         if (kommunenummerFraForretningsadresse.isPresent()) {
             return kommunenummerFraForretningsadresse;
         }
@@ -34,7 +34,7 @@ public class Organisasjonsdetaljer {
         return kommunenummerFraFoersteGyldigeAdresse(postadresser);
     }
 
-    private Optional<Kommunenummer> kommunenummerFraFoersteGyldigeAdresse(List<? extends Adresse> adresse) {
+    private Optional<Kommune> kommunenummerFraFoersteGyldigeAdresse(List<? extends Adresse> adresse) {
         return adresse.stream()
                 .filter(Adresse::erGyldig)
                 .findFirst()

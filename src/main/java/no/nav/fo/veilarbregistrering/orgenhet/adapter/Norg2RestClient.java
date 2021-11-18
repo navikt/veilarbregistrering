@@ -6,7 +6,7 @@ import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.utils.UrlUtils;
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
+import no.nav.fo.veilarbregistrering.enhet.Kommune;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,9 +33,9 @@ public class Norg2RestClient implements HealthCheck {
         this.baseUrl = baseUrl;
     }
 
-    List<RsNavKontorDto> hentEnhetFor(Kommunenummer kommunenummer) {
+    List<RsNavKontorDto> hentEnhetFor(Kommune kommune) {
         RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto = new RsArbeidsfordelingCriteriaDto();
-        rsArbeidsfordelingCriteriaDto.setGeografiskOmraade(kommunenummer.getKommunenummer());
+        rsArbeidsfordelingCriteriaDto.setGeografiskOmraade(kommune.getKommunenummer());
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 

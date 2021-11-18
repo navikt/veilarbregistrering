@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.enhet.adapter
 
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.enhet.Postadresse
 
@@ -23,13 +23,13 @@ internal object OrganisasjonsdetaljerMapper {
 
     private fun map(adresse: ForretningsAdresseDto): Forretningsadresse =
         Forretningsadresse(
-            Kommunenummer(adresse.kommunenummer),
+            Kommune(adresse.kommunenummer),
             map(adresse.gyldighetsperiode)
         )
 
     private fun map(adresse: PostadresseDto): Postadresse =
         Postadresse(
-            Kommunenummer(adresse.kommunenummer),
+            Kommune(adresse.kommunenummer),
             map(adresse.gyldighetsperiode)
         )
 

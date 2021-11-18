@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.enhet.adapter
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer.Companion.of
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Kommune
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ class EnhetGatewayTest(private val mockServer: ClientAndServer) {
 
         val organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(org)
         assertThat(organisasjonsdetaljer).isNotNull
-        assertThat(organisasjonsdetaljer!!.kommunenummer()).hasValue(Kommunenummer("0301"))
+        assertThat(organisasjonsdetaljer!!.kommunenummer()).hasValue(Kommune("0301"))
     }
 
     @Test

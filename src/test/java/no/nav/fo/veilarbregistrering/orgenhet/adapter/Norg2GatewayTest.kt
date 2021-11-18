@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
 import org.assertj.core.api.Assertions
@@ -42,7 +42,7 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
                         .withStatusCode(200)
                         .withBody(json, MediaType.JSON_UTF_8))
 
-        val enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer("0302"))
+        val enhetsnr = norg2Gateway.hentEnhetFor(Kommune("0302"))
 
         Assertions.assertThat(enhetsnr).isNotEmpty
         Assertions.assertThat(enhetsnr).hasValue(of("0393"))

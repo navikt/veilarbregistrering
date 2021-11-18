@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
 import no.nav.fo.veilarbregistrering.bruker.*;
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer;
+import no.nav.fo.veilarbregistrering.enhet.Kommune;
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
@@ -137,7 +137,7 @@ public class OppgaveRouter {
             return Optional.empty();
         }
 
-        Optional<Kommunenummer> muligKommunenummer = organisasjonsdetaljer
+        Optional<Kommune> muligKommunenummer = organisasjonsdetaljer
                 .map(Organisasjonsdetaljer::kommunenummer)
                 .orElseThrow(IllegalStateException::new);
         if (muligKommunenummer.isEmpty()) {
@@ -146,15 +146,15 @@ public class OppgaveRouter {
             return Optional.empty();
         }
 
-        Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
-        if (kommunenummer.kommuneMedBydeler()) {
-            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.getKommunenummer());
+        Kommune kommune = muligKommunenummer.orElseThrow(IllegalStateException::new);
+        if (kommune.kommuneMedBydeler()) {
+            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommune.getKommunenummer());
             return of(Enhetnr.Companion.internBrukerstotte());
         }
 
-        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
+        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommune);
         if (enhetsnr.isEmpty()) {
-            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.getKommunenummer());
+            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommune.getKommunenummer());
             prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }
         return enhetsnr;

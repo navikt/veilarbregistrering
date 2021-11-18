@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforholdTestdataB
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
-import no.nav.fo.veilarbregistrering.enhet.Kommunenummer
+import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
@@ -43,7 +43,7 @@ class OppgaveRouterTest {
     @Test
     fun `ingen navenhet for organisasjon skal gi intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer("1240"),
+                Kommune("1240"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
 
@@ -55,7 +55,7 @@ class OppgaveRouterTest {
     @Test
     fun `enhetsnummer skal returneres nar alle koblingen til arbeidsforhold er komplett`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer("1241"),
+                Kommune("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
@@ -83,7 +83,7 @@ class OppgaveRouterTest {
     @Test
     fun `geografisk tilknytning med landkode skal bruke arbeidsforhold til routing`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer("1241"),
+                Kommune("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
@@ -96,7 +96,7 @@ class OppgaveRouterTest {
     @Test
     fun `kommunenummer tilhorende kommune med bydeler skal tildeles intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer.of(KommuneMedBydel.STAVANGER),
+                Kommune.of(KommuneMedBydel.STAVANGER),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
@@ -143,11 +143,11 @@ class OppgaveRouterTest {
             OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, prometheusMetricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
-        override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
-            if (Kommunenummer("1241") == kommunenummer) {
+        override fun hentEnhetFor(kommune: Kommune): Optional<Enhetnr> {
+            if (Kommune("1241") == kommune) {
                 return Optional.of(Enhetnr.of("232"))
             }
-            return if (Kommunenummer.of(KommuneMedBydel.STAVANGER) == kommunenummer) {
+            return if (Kommune.of(KommuneMedBydel.STAVANGER) == kommune) {
                 Optional.of(Enhetnr.of("1103"))
             } else Optional.empty()
         }
