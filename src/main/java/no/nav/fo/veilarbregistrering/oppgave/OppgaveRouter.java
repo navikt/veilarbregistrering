@@ -148,13 +148,13 @@ public class OppgaveRouter {
 
         Kommunenummer kommunenummer = muligKommunenummer.orElseThrow(IllegalStateException::new);
         if (kommunenummer.kommuneMedBydeler()) {
-            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.asString());
+            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommunenummer.getKommunenummer());
             return of(Enhetnr.Companion.internBrukerstotte());
         }
 
         Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommunenummer);
         if (enhetsnr.isEmpty()) {
-            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.asString());
+            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommunenummer.getKommunenummer());
             prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
         }
         return enhetsnr;

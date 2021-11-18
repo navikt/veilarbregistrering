@@ -35,7 +35,7 @@ public class Norg2RestClient implements HealthCheck {
 
     List<RsNavKontorDto> hentEnhetFor(Kommunenummer kommunenummer) {
         RsArbeidsfordelingCriteriaDto rsArbeidsfordelingCriteriaDto = new RsArbeidsfordelingCriteriaDto();
-        rsArbeidsfordelingCriteriaDto.setGeografiskOmraade(kommunenummer.asString());
+        rsArbeidsfordelingCriteriaDto.setGeografiskOmraade(kommunenummer.getKommunenummer());
         rsArbeidsfordelingCriteriaDto.setOppgavetype(KONTAKT_BRUKER);
         rsArbeidsfordelingCriteriaDto.setTema(OPPFOLGING);
 
