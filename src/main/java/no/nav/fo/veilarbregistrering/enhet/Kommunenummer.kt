@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.enhet
 
 import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel.Companion.contains
 
-data class Kommunenummer (private val kommunenummer: String) {
+data class Kommunenummer (val kommunenummer: String) {
     fun asString(): String {
         return kommunenummer
     }
