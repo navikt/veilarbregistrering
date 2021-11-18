@@ -1,42 +1,23 @@
-package no.nav.fo.veilarbregistrering.enhet;
+package no.nav.fo.veilarbregistrering.enhet
 
-import java.util.Objects;
+import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel.Companion.contains
 
-public class Kommunenummer {
-
-    private final String kommunenummer;
-
-    public static Kommunenummer of(String kommunenummer) {
-        return new Kommunenummer(kommunenummer);
+data class Kommunenummer (private val kommunenummer: String) {
+    fun asString(): String {
+        return kommunenummer
     }
 
-    public static Kommunenummer of(KommuneMedBydel kommuneMedBydel) {
-        return new Kommunenummer(kommuneMedBydel.getKommenummer());
+    fun kommuneMedBydeler(): Boolean {
+        return contains(kommunenummer)
     }
 
-    private Kommunenummer(String kommunenummer) {
-        this.kommunenummer = kommunenummer;
-    }
+    companion object {
+        fun of(kommunenummer: String): Kommunenummer {
+            return Kommunenummer(kommunenummer)
+        }
 
-    public String asString() {
-        return kommunenummer;
+        internal fun of(kommuneMedBydel: KommuneMedBydel): Kommunenummer {
+            return Kommunenummer(kommuneMedBydel.kommenummer)
+        }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Kommunenummer that = (Kommunenummer) o;
-        return Objects.equals(kommunenummer, that.kommunenummer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(kommunenummer);
-    }
-
-    public boolean kommuneMedBydeler() {
-        return KommuneMedBydel.contains(kommunenummer);
-    }
-
 }
