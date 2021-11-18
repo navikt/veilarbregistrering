@@ -114,7 +114,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
             @Bean
             fun norg2Gateway() = object : Norg2Gateway {
                 override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
-                    if (Kommunenummer.of("1241") == kommunenummer) {
+                    if (Kommunenummer("1241") == kommunenummer) {
                         return Optional.of(Enhetnr.of("232"))
                     }
                     return if (Kommunenummer.of(KommuneMedBydel.STAVANGER) == kommunenummer) {

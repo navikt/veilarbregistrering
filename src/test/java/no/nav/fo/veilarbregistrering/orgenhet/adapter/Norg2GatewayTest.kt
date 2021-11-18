@@ -42,7 +42,7 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
                         .withStatusCode(200)
                         .withBody(json, MediaType.JSON_UTF_8))
 
-        val enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer.of("0302"))
+        val enhetsnr = norg2Gateway.hentEnhetFor(Kommunenummer("0302"))
 
         Assertions.assertThat(enhetsnr).isNotEmpty
         Assertions.assertThat(enhetsnr).hasValue(of("0393"))

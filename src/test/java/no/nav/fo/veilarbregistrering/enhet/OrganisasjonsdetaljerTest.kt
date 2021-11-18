@@ -22,12 +22,12 @@ class OrganisasjonsdetaljerTest {
     @Test
     fun `organisasjonsdetaljer uten åpne adresser gir ingen kommunenummer`() {
         val forretningsadresse = Forretningsadresse(
-            Kommunenummer.of("1234"),
+            Kommunenummer("1234"),
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val forretningsadresser = listOf(forretningsadresse)
         val postadresse = Postadresse(
-            Kommunenummer.of("1235"),
+            Kommunenummer("1235"),
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val postadresser = listOf(postadresse)
@@ -38,48 +38,48 @@ class OrganisasjonsdetaljerTest {
     @Test
     fun `organisasjonsdetaljer med åpen postadresse skal gi kommunenummer fra postadresse`() {
         val forretningsadresse = Forretningsadresse(
-            Kommunenummer.of("1234"),
+            Kommunenummer("1234"),
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val forretningsadresser = listOf(forretningsadresse)
         val postadresse = Postadresse(
-            Kommunenummer.of("1235"),
+            Kommunenummer("1235"),
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer.of("1235"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer("1235"))
     }
 
     @Test
     fun `organisasjonsdetaljer med åpen forretningsadresse skal gi kommunenummer fra forretningsadresse`() {
         val forretningsadresse = Forretningsadresse(
-            Kommunenummer.of("1234"),
+            Kommunenummer("1234"),
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val forretningsadresser = listOf(forretningsadresse)
         val postadresse = Postadresse(
-            Kommunenummer.of("1235"),
+            Kommunenummer("1235"),
             Periode.of(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 28))
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer.of("1234"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer("1234"))
     }
 
     @Test
     fun `organisasjonsdetaljer med apne adresser skal prioritere kommunenummer fra forretningsadresse`() {
         val forretningsadresse = Forretningsadresse(
-            Kommunenummer.of("1234"),
+            Kommunenummer("1234"),
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val forretningsadresser = listOf(forretningsadresse)
         val postadresse = Postadresse(
-            Kommunenummer.of("1235"),
+            Kommunenummer("1235"),
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
         val postadresser = listOf(postadresse)
         val organisasjonsdetaljer = Organisasjonsdetaljer.of(forretningsadresser, postadresser)
-        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer.of("1234"))
+        assertThat(organisasjonsdetaljer.kommunenummer()).hasValue(Kommunenummer("1234"))
     }
 }

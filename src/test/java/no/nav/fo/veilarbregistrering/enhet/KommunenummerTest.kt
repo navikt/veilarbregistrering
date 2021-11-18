@@ -31,7 +31,7 @@ class KommunenummerTest {
 
     @Test
     fun `horten er ikke en kommune med flere bydeler`() {
-        val hortenKommune = Kommunenummer.of("3801")
+        val hortenKommune = Kommunenummer("3801")
         assertThat(hortenKommune.kommuneMedBydeler()).isFalse
     }
 }

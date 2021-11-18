@@ -23,13 +23,13 @@ internal object OrganisasjonsdetaljerMapper {
 
     private fun map(adresse: ForretningsAdresseDto): Forretningsadresse =
         Forretningsadresse(
-            Kommunenummer.of(adresse.kommunenummer),
+            Kommunenummer(adresse.kommunenummer),
             map(adresse.gyldighetsperiode)
         )
 
     private fun map(adresse: PostadresseDto): Postadresse =
         Postadresse(
-            Kommunenummer.of(adresse.kommunenummer),
+            Kommunenummer(adresse.kommunenummer),
             map(adresse.gyldighetsperiode)
         )
 

@@ -43,7 +43,7 @@ class OppgaveRouterTest {
     @Test
     fun `ingen navenhet for organisasjon skal gi intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer.of("1240"),
+                Kommunenummer("1240"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
 
@@ -55,7 +55,7 @@ class OppgaveRouterTest {
     @Test
     fun `enhetsnummer skal returneres nar alle koblingen til arbeidsforhold er komplett`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer.of("1241"),
+                Kommunenummer("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
@@ -83,7 +83,7 @@ class OppgaveRouterTest {
     @Test
     fun `geografisk tilknytning med landkode skal bruke arbeidsforhold til routing`() {
         val forretningsadresse = Forretningsadresse(
-                Kommunenummer.of("1241"),
+                Kommunenummer("1241"),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer.of(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
@@ -144,7 +144,7 @@ class OppgaveRouterTest {
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommunenummer: Kommunenummer): Optional<Enhetnr> {
-            if (Kommunenummer.of("1241") == kommunenummer) {
+            if (Kommunenummer("1241") == kommunenummer) {
                 return Optional.of(Enhetnr.of("232"))
             }
             return if (Kommunenummer.of(KommuneMedBydel.STAVANGER) == kommunenummer) {
