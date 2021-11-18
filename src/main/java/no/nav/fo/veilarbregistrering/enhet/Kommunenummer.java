@@ -11,7 +11,7 @@ public class Kommunenummer {
     }
 
     public static Kommunenummer of(KommuneMedBydel kommuneMedBydel) {
-        return new Kommunenummer(kommuneMedBydel.kommenummer);
+        return new Kommunenummer(kommuneMedBydel.getKommenummer());
     }
 
     private Kommunenummer(String kommunenummer) {

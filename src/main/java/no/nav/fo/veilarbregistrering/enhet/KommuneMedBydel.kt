@@ -1,22 +1,15 @@
-package no.nav.fo.veilarbregistrering.enhet;
+package no.nav.fo.veilarbregistrering.enhet
 
-import java.util.Arrays;
+import java.util.*
 
-public enum KommuneMedBydel {
+internal enum class KommuneMedBydel(val kommenummer: String) {
+    OSLO("0301"), BERGEN("4601"), STAVANGER("1103"), TRONDHEIM("5001");
 
-    OSLO("0301"),
-    BERGEN("4601"),
-    STAVANGER("1103"),
-    TRONDHEIM("5001");
-
-    final String kommenummer;
-
-    KommuneMedBydel(String kommenummer) {
-        this.kommenummer = kommenummer;
-    }
-
-    static boolean contains(String kommenummer) {
-        return Arrays.stream(KommuneMedBydel.values())
-                .anyMatch(k -> k.kommenummer.equals(kommenummer));
+    companion object {
+        @JvmStatic
+        operator fun contains(kommenummer: String): Boolean {
+            return Arrays.stream(values())
+                .anyMatch { k: KommuneMedBydel -> k.kommenummer == kommenummer }
+        }
     }
 }
