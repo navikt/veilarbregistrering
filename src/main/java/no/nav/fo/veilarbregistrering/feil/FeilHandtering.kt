@@ -70,8 +70,8 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
     }
 
-    @ExceptionHandler(BindException::class)
-    fun handleBindException(e: BindException): ResponseEntity<Any> {
+    @ExceptionHandler(Exception::class)
+    fun handleBindException(e: Exception): ResponseEntity<Any> {
         LOG.error("Requestbody matchet ikke endepunktets forventning", e)
         return ResponseEntity.badRequest().build()
     }
