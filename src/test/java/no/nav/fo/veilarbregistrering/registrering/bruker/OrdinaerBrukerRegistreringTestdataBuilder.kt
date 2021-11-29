@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.besvarelse.*
+import no.nav.fo.veilarbregistrering.profilering.Profilering
+import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
 import java.time.LocalDateTime
 
 object OrdinaerBrukerRegistreringTestdataBuilder {
@@ -11,12 +13,14 @@ object OrdinaerBrukerRegistreringTestdataBuilder {
         stilling: Stilling = StillingTestdataBuilder.gyldigStilling(),
         besvarelse: Besvarelse = BesvarelseTestdataBuilder.gyldigBesvarelse(),
         teksterForBesvarelse: List<TekstForSporsmal> = TekstForSporsmalTestdataBuilder.gyldigeTeksterForBesvarelse(),
+        profilering: Profilering? = null,
     ): OrdinaerBrukerRegistrering {
         return OrdinaerBrukerRegistrering(
                 opprettetDato = opprettetDato,
                 sisteStilling = stilling,
                 besvarelse = besvarelse,
                 teksterForBesvarelse = teksterForBesvarelse,
+                profilering = profilering,
         )
     }
 
