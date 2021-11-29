@@ -11,10 +11,8 @@ import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringMedProfilering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
