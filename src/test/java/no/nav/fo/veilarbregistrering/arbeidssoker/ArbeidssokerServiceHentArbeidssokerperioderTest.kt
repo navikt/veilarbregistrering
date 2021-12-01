@@ -127,24 +127,49 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
     }
 
+    @Test
+    fun `returnerer alle perioder (uten datocutoff) for person som berører forespurt periode`() {
+        every {
+            unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
+        } returns true
+
+        val forespurtPeriode = Periode.of(
+            LocalDate.of(2021, 10, 1),
+            LocalDate.of(2021, 10, 31)
+        )
+        val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_2, forespurtPeriode)
+        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
+            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_9,
+            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_10,
+        )
+    }
+
     private class StubArbeidssokerRepository : ArbeidssokerRepository {
         override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
             return 0
         }
 
         override fun finnFormidlingsgrupper(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
-            return Arbeidssokerperioder(
-                listOf(
-                    ARBEIDSSOKERPERIODE_3,
-                    ARBEIDSSOKERPERIODE_1,
-                    ARBEIDSSOKERPERIODE_4,
-                    ARBEIDSSOKERPERIODE_2,
-                    ARBEIDSSOKERPERIODE_6,
-                    ARBEIDSSOKERPERIODE_5,
-                    ARBEIDSSOKERPERIODE_7,
-                    ARBEIDSSOKERPERIODE_8
+            return mapOf(
+                FOEDSELSNUMMER_3 to Arbeidssokerperioder(
+                    listOf(
+                        ARBEIDSSOKERPERIODE_3,
+                        ARBEIDSSOKERPERIODE_1,
+                        ARBEIDSSOKERPERIODE_4,
+                        ARBEIDSSOKERPERIODE_2,
+                        ARBEIDSSOKERPERIODE_6,
+                        ARBEIDSSOKERPERIODE_5,
+                        ARBEIDSSOKERPERIODE_7,
+                        ARBEIDSSOKERPERIODE_8,
+                    )
+                ),
+                FOEDSELSNUMMER_4 to Arbeidssokerperioder(
+                    listOf(
+                        ARBEIDSSOKERPERIODE_9,
+                        ARBEIDSSOKERPERIODE_10,
+                    ),
                 )
-            )
+            ).entries.first { (fnr, _) -> fnr in foedselsnummerList }.value
         }
 
         companion object {
@@ -180,22 +205,32 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
                 Formidlingsgruppe.of("ARBS"),
                 Periode.of(LocalDate.of(2020, 7, 1), null)
             )
+            val ARBEIDSSOKERPERIODE_9 = Arbeidssokerperiode(
+                Formidlingsgruppe.of("ARBS"),
+                Periode.of(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 10, 5))
+            )
+            val ARBEIDSSOKERPERIODE_10 = Arbeidssokerperiode(
+                Formidlingsgruppe.of("ARBS"),
+                Periode.of(LocalDate.of(2021, 10, 17), null)
+            )
         }
     }
 
     private class StubFormidlingsgruppeGateway : FormidlingsgruppeGateway {
         override fun finnArbeissokerperioder(foedselsnummer: Foedselsnummer, periode: Periode): Arbeidssokerperioder {
-            val map: MutableMap<Foedselsnummer, Arbeidssokerperioder> = HashMap()
-            map[FOEDSELSNUMMER_3] = Arbeidssokerperioder(
-                listOf(
-                    ARBEIDSSOKERPERIODE_2,
-                    ARBEIDSSOKERPERIODE_4,
-                    ARBEIDSSOKERPERIODE_3,
-                    ARBEIDSSOKERPERIODE_0,
-                    ARBEIDSSOKERPERIODE_1,
-                    ARBEIDSSOKERPERIODE_5,
-                    ARBEIDSSOKERPERIODE_6
-                )
+            val map: Map<Foedselsnummer, Arbeidssokerperioder> = mapOf(
+                FOEDSELSNUMMER_3 to Arbeidssokerperioder(
+                    listOf(
+                        ARBEIDSSOKERPERIODE_2,
+                        ARBEIDSSOKERPERIODE_4,
+                        ARBEIDSSOKERPERIODE_3,
+                        ARBEIDSSOKERPERIODE_0,
+                        ARBEIDSSOKERPERIODE_1,
+                        ARBEIDSSOKERPERIODE_5,
+                        ARBEIDSSOKERPERIODE_6
+                    )
+                ),
+                FOEDSELSNUMMER_4 to Arbeidssokerperioder(emptyList())
             )
             return map[foedselsnummer]!!
         }
@@ -245,6 +280,11 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         private val BRUKER_3 = Bruker.of(
             FOEDSELSNUMMER_3,
             AktorId("100002345678"), emptyList()
+        )
+        private val BRUKER_2 = Bruker.of(
+            FOEDSELSNUMMER_4,
+            AktorId("100002339391"),
+            emptyList()
         )
     }
 }
