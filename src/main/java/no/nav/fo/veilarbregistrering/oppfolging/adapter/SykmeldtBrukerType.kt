@@ -1,22 +1,22 @@
-package no.nav.fo.veilarbregistrering.oppfolging.adapter;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar;
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
+import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
+import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar.*
 
-public enum SykmeldtBrukerType {
-    SKAL_TIL_NY_ARBEIDSGIVER,
-    SKAL_TIL_SAMME_ARBEIDSGIVER;
+enum class SykmeldtBrukerType {
+    SKAL_TIL_NY_ARBEIDSGIVER, SKAL_TIL_SAMME_ARBEIDSGIVER;
 
-    static SykmeldtBrukerType of(Besvarelse besvarelse) {
-        FremtidigSituasjonSvar fremtidigSituasjon = besvarelse.getFremtidigSituasjon();
-        if  (fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER
-                || fremtidigSituasjon == FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER_NY_STILLING
-                || fremtidigSituasjon == FremtidigSituasjonSvar.INGEN_PASSER
-        ) {
-            return SKAL_TIL_SAMME_ARBEIDSGIVER;
-        } else {
-            return SKAL_TIL_NY_ARBEIDSGIVER;
-        }
-
+    companion object {
+        private val tilSammeArbeidsgiverStatuser = listOf(
+            SAMME_ARBEIDSGIVER,
+            SAMME_ARBEIDSGIVER_NY_STILLING,
+            INGEN_PASSER
+        )
+        fun of(besvarelse: Besvarelse): SykmeldtBrukerType =
+            when (besvarelse.fremtidigSituasjon) {
+                in tilSammeArbeidsgiverStatuser -> SKAL_TIL_SAMME_ARBEIDSGIVER
+                else -> SKAL_TIL_NY_ARBEIDSGIVER
+            }
     }
 }
