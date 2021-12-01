@@ -7,7 +7,6 @@ data class OppfolgingStatusData(
     val formidlingsgruppe: String? = null,
     val servicegruppe: String? = null,
     val rettighetsgruppe: String? = null,
-    @Deprecated("") val erIkkeArbeidssokerUtenOppfolging: Boolean? = null
 ) {
 
     fun withUnderOppfolging(underOppfolging: Boolean): OppfolgingStatusData {
@@ -18,7 +17,6 @@ data class OppfolgingStatusData(
             formidlingsgruppe,
             servicegruppe,
             rettighetsgruppe,
-            erIkkeArbeidssokerUtenOppfolging
         )
     }
 
@@ -30,7 +28,6 @@ data class OppfolgingStatusData(
             formidlingsgruppe,
             servicegruppe,
             rettighetsgruppe,
-            erIkkeArbeidssokerUtenOppfolging
         )
     }
 
@@ -42,7 +39,6 @@ data class OppfolgingStatusData(
             formidlingsgruppe,
             servicegruppe,
             rettighetsgruppe,
-            erIkkeArbeidssokerUtenOppfolging
         )
     }
 }
