@@ -30,7 +30,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient) : Op
     companion object {
         private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {
             return Oppfolgingsstatus(
-                    oppfolgingStatusData.isUnderOppfolging,
+                    oppfolgingStatusData.underOppfolging,
                     oppfolgingStatusData.kanReaktiveres,
                     oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
                     oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),

@@ -1,97 +1,48 @@
-package no.nav.fo.veilarbregistrering.oppfolging.adapter;
+package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
-public class OppfolgingStatusData {
-    public boolean underOppfolging;
-    public Boolean kanReaktiveres;
-    public Boolean erSykmeldtMedArbeidsgiver;
-    public String formidlingsgruppe;
-    public String servicegruppe;
-    public String rettighetsgruppe;
+data class OppfolgingStatusData(
+    val underOppfolging: Boolean = false,
+    val kanReaktiveres: Boolean? = null,
+    val erSykmeldtMedArbeidsgiver: Boolean? = null,
+    val formidlingsgruppe: String? = null,
+    val servicegruppe: String? = null,
+    val rettighetsgruppe: String? = null,
+    @Deprecated("") val erIkkeArbeidssokerUtenOppfolging: Boolean? = null
+) {
 
-    @Deprecated
-    public Boolean erIkkeArbeidssokerUtenOppfolging;
-
-    public OppfolgingStatusData(boolean underOppfolging, Boolean kanReaktiveres, Boolean erSykmeldtMedArbeidsgiver, String formidlingsgruppe, String servicegruppe, String rettighetsgruppe, Boolean erIkkeArbeidssokerUtenOppfolging) {
-        this.underOppfolging = underOppfolging;
-        this.kanReaktiveres = kanReaktiveres;
-        this.erSykmeldtMedArbeidsgiver = erSykmeldtMedArbeidsgiver;
-        this.formidlingsgruppe = formidlingsgruppe;
-        this.servicegruppe = servicegruppe;
-        this.rettighetsgruppe = rettighetsgruppe;
-        this.erIkkeArbeidssokerUtenOppfolging = erIkkeArbeidssokerUtenOppfolging;
+    fun withUnderOppfolging(underOppfolging: Boolean): OppfolgingStatusData {
+        return if (this.underOppfolging == underOppfolging) this else OppfolgingStatusData(
+            underOppfolging,
+            kanReaktiveres,
+            erSykmeldtMedArbeidsgiver,
+            formidlingsgruppe,
+            servicegruppe,
+            rettighetsgruppe,
+            erIkkeArbeidssokerUtenOppfolging
+        )
     }
 
-    public OppfolgingStatusData() {
+    fun withKanReaktiveres(kanReaktiveres: Boolean): OppfolgingStatusData {
+        return if (this.kanReaktiveres == kanReaktiveres) this else OppfolgingStatusData(
+            underOppfolging,
+            kanReaktiveres,
+            erSykmeldtMedArbeidsgiver,
+            formidlingsgruppe,
+            servicegruppe,
+            rettighetsgruppe,
+            erIkkeArbeidssokerUtenOppfolging
+        )
     }
 
-    public boolean isUnderOppfolging() {
-        return this.underOppfolging;
+    fun withErSykmeldtMedArbeidsgiver(erSykmeldtMedArbeidsgiver: Boolean): OppfolgingStatusData {
+        return if (this.erSykmeldtMedArbeidsgiver == erSykmeldtMedArbeidsgiver) this else OppfolgingStatusData(
+            underOppfolging,
+            kanReaktiveres,
+            erSykmeldtMedArbeidsgiver,
+            formidlingsgruppe,
+            servicegruppe,
+            rettighetsgruppe,
+            erIkkeArbeidssokerUtenOppfolging
+        )
     }
-
-    public Boolean getKanReaktiveres() {
-        return this.kanReaktiveres;
-    }
-
-    public Boolean getErSykmeldtMedArbeidsgiver() {
-        return this.erSykmeldtMedArbeidsgiver;
-    }
-
-    public String getFormidlingsgruppe() {
-        return this.formidlingsgruppe;
-    }
-
-    public String getServicegruppe() {
-        return this.servicegruppe;
-    }
-
-    public String getRettighetsgruppe() {
-        return this.rettighetsgruppe;
-    }
-
-    @Deprecated
-    public Boolean getErIkkeArbeidssokerUtenOppfolging() {
-        return this.erIkkeArbeidssokerUtenOppfolging;
-    }
-
-    public void setUnderOppfolging(boolean underOppfolging) {
-        this.underOppfolging = underOppfolging;
-    }
-
-    public void setKanReaktiveres(Boolean kanReaktiveres) {
-        this.kanReaktiveres = kanReaktiveres;
-    }
-
-    public void setErSykmeldtMedArbeidsgiver(Boolean erSykmeldtMedArbeidsgiver) {
-        this.erSykmeldtMedArbeidsgiver = erSykmeldtMedArbeidsgiver;
-    }
-
-    public void setFormidlingsgruppe(String formidlingsgruppe) {
-        this.formidlingsgruppe = formidlingsgruppe;
-    }
-
-    public void setServicegruppe(String servicegruppe) {
-        this.servicegruppe = servicegruppe;
-    }
-
-    public void setRettighetsgruppe(String rettighetsgruppe) {
-        this.rettighetsgruppe = rettighetsgruppe;
-    }
-
-    @Deprecated
-    public void setErIkkeArbeidssokerUtenOppfolging(Boolean erIkkeArbeidssokerUtenOppfolging) {
-        this.erIkkeArbeidssokerUtenOppfolging = erIkkeArbeidssokerUtenOppfolging;
-    }
-
-    public OppfolgingStatusData withUnderOppfolging(boolean underOppfolging) {
-        return this.underOppfolging == underOppfolging ? this : new OppfolgingStatusData(underOppfolging, this.kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
-    public OppfolgingStatusData withKanReaktiveres(Boolean kanReaktiveres) {
-        return this.kanReaktiveres == kanReaktiveres ? this : new OppfolgingStatusData(this.underOppfolging, kanReaktiveres, this.erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
-    public OppfolgingStatusData withErSykmeldtMedArbeidsgiver(Boolean erSykmeldtMedArbeidsgiver) {
-        return this.erSykmeldtMedArbeidsgiver == erSykmeldtMedArbeidsgiver ? this : new OppfolgingStatusData(this.underOppfolging, this.kanReaktiveres, erSykmeldtMedArbeidsgiver, this.formidlingsgruppe, this.servicegruppe, this.rettighetsgruppe, this.erIkkeArbeidssokerUtenOppfolging);
-    }
-
 }
