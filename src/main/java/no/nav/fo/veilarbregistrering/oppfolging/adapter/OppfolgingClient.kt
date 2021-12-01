@@ -15,7 +15,6 @@ import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.AktiverBrukerFeilDto.ArenaFeilType
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
 import javax.ws.rs.core.HttpHeaders
