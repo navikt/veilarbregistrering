@@ -72,3 +72,5 @@ class ArbeidssokerResource(
         private val LOG = loggerFor<ArbeidssokerResource>()
     }
 }
+
+data class Fnr(val fnr: String)
