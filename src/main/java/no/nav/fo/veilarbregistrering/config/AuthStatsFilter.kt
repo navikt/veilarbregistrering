@@ -43,7 +43,6 @@ class AuthStatsFilter : Filter {
     private fun checkBearerTokenForType(token: String): String =
         try {
             val jwt = JWTParser.parse(token)
-            log.info("Bearer token claims ${jwt.jwtClaimsSet}")
             if (jwt.jwtClaimsSet.issuer.contains("microsoftonline.com")) "AAD" else "STS"
         } catch (e: ParseException) {
             log.warn("Couldnt parse token $token")
