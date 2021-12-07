@@ -1,6 +1,5 @@
-package no.nav.fo.veilarbregistrering.registrering.publisering;
+package no.nav.fo.veilarbregistrering.registrering.publisering
 
-public interface ArbeidssokerRegistrertProducer {
-
-    boolean publiserArbeidssokerRegistrert(ArbeidssokerRegistrertInternalEvent event);
+interface ArbeidssokerRegistrertProducer {
+    fun publiserArbeidssokerRegistrert(event: ArbeidssokerRegistrertInternalEvent?): Boolean
 }
