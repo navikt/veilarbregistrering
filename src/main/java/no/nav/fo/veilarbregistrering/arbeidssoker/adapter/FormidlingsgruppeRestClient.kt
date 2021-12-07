@@ -1,29 +1,20 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import com.google.gson.*
 import no.nav.common.health.HealthCheck
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeResponseDto
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
-import java.lang.RuntimeException
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import no.nav.common.rest.client.RestClient
-import no.nav.common.rest.client.RestUtils
-import java.io.IOException
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
+import no.nav.common.rest.client.RestClient
+import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.config.parse
+import okhttp3.HttpUrl
 import okhttp3.Request
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import kotlin.Throws
-import org.springframework.lang.Nullable
-import java.lang.reflect.Type
-import java.time.LocalDate
-import java.util.*
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.function.Supplier
 
@@ -82,21 +73,8 @@ class FormidlingsgruppeRestClient internal constructor(
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/v1/test/ping"), RestClient.baseClient())
     }
 
-    private class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
-        @Throws(JsonParseException::class)
-        override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LocalDate? {
-            return Optional.ofNullable(json.asJsonPrimitive.asString)
-                .map { text: String? -> LocalDate.parse(text) }
-                .orElse(null)
-        }
-    }
-
     companion object {
         private const val HTTP_READ_TIMEOUT = 120000
         private val LOG = LoggerFactory.getLogger(FormidlingsgruppeRestClient::class.java)
-        private val GSON = GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer()).create()
-        fun parse(jsonResponse: String?): FormidlingsgruppeResponseDto {
-            return GSON.fromJson(jsonResponse, FormidlingsgruppeResponseDto::class.java)
-        }
     }
 }

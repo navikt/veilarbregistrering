@@ -24,6 +24,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         leggTilCallId()
+        mockServer.reset()
     }
 
     private fun buildClient(): FormidlingsgruppeRestClient {
@@ -71,6 +72,56 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                                 .fra(LocalDate.of(2020, 3, 12))
                                 .til(null))
                         .build())
+    }
+
+    @Test
+    fun `skal parse formidlingsgruppe for person uten historikk`() {
+        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
+
+        val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk_missing.json")
+
+        mockServer.`when`(
+            HttpRequest
+                .request()
+                .withMethod("GET")
+                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+        )
+            .respond(
+                response()
+                    .withStatusCode(200)
+                    .withBody(json, MediaType.JSON_UTF_8)
+            )
+
+        formidlingsgruppeGateway.finnArbeissokerperioder(
+            Foedselsnummer.of("12345612345"),
+            Periode.of(
+                LocalDate.of(2020, 1, 10),
+                LocalDate.of(2020, 1, 11)))
+    }
+
+    @Test
+    fun `skal parse formidlingsgruppe for person med null historikk`() {
+        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
+
+        val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk_null.json")
+
+        mockServer.`when`(
+            HttpRequest
+                .request()
+                .withMethod("GET")
+                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+        )
+            .respond(
+                response()
+                    .withStatusCode(200)
+                    .withBody(json, MediaType.JSON_UTF_8)
+            )
+
+        formidlingsgruppeGateway.finnArbeissokerperioder(
+            Foedselsnummer.of("12345612345"),
+            Periode.of(
+                LocalDate.of(2020, 1, 10),
+                LocalDate.of(2020, 1, 11)))
     }
 
     @Test
