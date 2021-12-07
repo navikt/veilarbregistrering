@@ -1,46 +1,21 @@
-package no.nav.fo.veilarbregistrering.registrering.publisering;
+package no.nav.fo.veilarbregistrering.registrering.publisering
 
-import no.nav.fo.veilarbregistrering.besvarelse.*;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
+import no.nav.fo.veilarbregistrering.besvarelse.*
+import no.nav.fo.veilarbregistrering.bruker.AktorId
+import java.time.LocalDateTime
+import java.util.*
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
-
-public class ArbeidssokerRegistrertInternalEvent {
-
-    private final AktorId aktorId;
-    private final Besvarelse besvarelse;
-    private final LocalDateTime opprettetDato;
-
-    public ArbeidssokerRegistrertInternalEvent(AktorId aktorId, Besvarelse besvarelse, LocalDateTime opprettetDato) {
-        this.aktorId = aktorId;
-        this.besvarelse = besvarelse;
-        this.opprettetDato = opprettetDato;
-    }
-
-    public AktorId getAktorId() {
-        return aktorId;
-    }
-
-    public Optional<DinSituasjonSvar> getBrukersSituasjon() {
-        return ofNullable(besvarelse.getDinSituasjon());
-    }
-
-    public Optional<UtdanningSvar> getUtdanningSvar() {
-        return ofNullable(besvarelse.getUtdanning());
-    }
-
-    public Optional<UtdanningBestattSvar> getUtdanningBestattSvar() {
-        return ofNullable(besvarelse.getUtdanningBestatt());
-    }
-
-    public Optional<UtdanningGodkjentSvar> getUtdanningGodkjentSvar() {
-        return ofNullable(besvarelse.getUtdanningGodkjent());
-    }
-
-    public LocalDateTime getOpprettetDato() {
-        return opprettetDato;
-    }
+class ArbeidssokerRegistrertInternalEvent(
+    val aktorId: AktorId,
+    private val besvarelse: Besvarelse,
+    val opprettetDato: LocalDateTime
+) {
+    val brukersSituasjon: Optional<DinSituasjonSvar>
+        get() = Optional.ofNullable(besvarelse.dinSituasjon)
+    val utdanningSvar: Optional<UtdanningSvar>
+        get() = Optional.ofNullable(besvarelse.utdanning)
+    val utdanningBestattSvar: Optional<UtdanningBestattSvar>
+        get() = Optional.ofNullable(besvarelse.utdanningBestatt)
+    val utdanningGodkjentSvar: Optional<UtdanningGodkjentSvar>
+        get() = Optional.ofNullable(besvarelse.utdanningGodkjent)
 }
