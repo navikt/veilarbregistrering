@@ -1,11 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.publisering;
+package no.nav.fo.veilarbregistrering.registrering.publisering
 
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
+import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-
-public interface ArbeidssokerProfilertProducer {
-
-    void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato);
+interface ArbeidssokerProfilertProducer {
+    fun publiserProfilering(aktorId: AktorId?, innsatsgruppe: Innsatsgruppe?, profilertDato: LocalDateTime?)
 }
