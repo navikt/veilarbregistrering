@@ -39,9 +39,9 @@ class MigreringPostgressResource(
     }
 
     @GetMapping("/registrering-tilstand/antall-potensielt-oppdaterte")
-    fun hentAntallPotensieltOppdaterte(@RequestHeader("x-token") token: String) {
+    fun hentAntallPotensieltOppdaterte(@RequestHeader("x-token") token: String): Map<String, Int> {
         sjekkToken(token)
-        return migreringRepositoryImpl.hentAntallPotensieltOppdaterte()
+        return mapOf("antall" to migreringRepositoryImpl.hentAntallPotensieltOppdaterte())
     }
 
     @GetMapping("/sjekksum/{tabellnavn}")
