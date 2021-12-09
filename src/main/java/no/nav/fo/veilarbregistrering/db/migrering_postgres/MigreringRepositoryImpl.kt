@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.migrering_postgres
 import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import java.sql.ResultSet
 
 enum class TabellNavn(val idKolonneNavn: String) {
     BRUKER_REGISTRERING("BRUKER_REGISTRERING_ID"),
@@ -57,6 +58,17 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         }
         log.info("Sjekksum for {} hentet på {} ms", tabellNavn.name, startTime - System.currentTimeMillis() )
         return result
+    }
+
+    fun hentAntallPotensieltOppdaterte(): Int {
+        val sql = "select count(*) as antall from registrering_tilstand " +
+                "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND')"
+        return db.queryForObject(
+            sql,
+            emptyMap<String, Any>()
+        ) { rs: ResultSet, _ ->
+            rs.getInt("antall")
+        }!!
     }
 
 
