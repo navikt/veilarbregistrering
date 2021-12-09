@@ -24,7 +24,7 @@ class OidcAuthenticationFilterMigreringBypass(oidcAuthenticators: List<OidcAuthe
         fun mathcerMigrering(servletPath: String) = MIGRERING_PATTERNS.any { pathMatcher.match(it, servletPath) }
 
         private val pathMatcher = AntPathMatcher()
-        private val MIGRERING_PATTERNS = listOf("/api/migrering", "/api/migrering/*", "/api/migrering/sjekksum/*", "/api/migrering/registrering-tilstand")
+        private val MIGRERING_PATTERNS = listOf("/api/migrering", "/api/migrering/*", "/api/migrering/sjekksum/*", "/api/migrering/registrering-tilstand/*")
         private val log = loggerFor<OidcAuthenticationFilterMigreringBypass>()
     }
 }
