@@ -48,8 +48,8 @@ class MigreringPostgressResource(
         return mapOf("antall" to migreringRepositoryImpl.hentAntallPotensieltOppdaterte())
     }
 
-    @GetMapping("/registrering-tilstand/hent-oppdaterte-statuser")
-    fun hentAntallPotensieltOppdaterte(
+    @PostMapping("/registrering-tilstand/hent-oppdaterte-statuser")
+    fun hentOppdatertStatusFor(
         @RequestHeader("x-token") token: String,
         @RequestBody sjekkDisse: Map<String, Status>): Map<String, Int> {
         sjekkToken(token)
