@@ -1,7 +1,10 @@
 package no.nav.fo.veilarbregistrering.db.migrering_postgres
 
 import no.nav.fo.veilarbregistrering.Application
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.web.bind.annotation.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -12,9 +15,10 @@ import javax.ws.rs.ForbiddenException
 @RestController
 @RequestMapping("/api/migrering")
 class MigreringPostgressResource(
-                                 val migreringRepositoryImpl: MigreringRepositoryImpl,
-                                 val brukerRegistreringRepository: BrukerRegistreringRepository
-                                 ) {
+    val migreringRepositoryImpl: MigreringRepositoryImpl,
+    val brukerRegistreringRepository: BrukerRegistreringRepository,
+    val registreringTilstandRepository: RegistreringTilstandRepository,
+) {
     companion object {
         private fun getVaultSecret(path: String): String? {
             return try {
@@ -42,6 +46,26 @@ class MigreringPostgressResource(
     fun hentAntallPotensieltOppdaterte(@RequestHeader("x-token") token: String): Map<String, Int> {
         sjekkToken(token)
         return mapOf("antall" to migreringRepositoryImpl.hentAntallPotensieltOppdaterte())
+    }
+
+    @GetMapping("/registrering-tilstand/hent-oppdaterte-statuser")
+    fun hentAntallPotensieltOppdaterte(
+        @RequestHeader("x-token") token: String,
+        @RequestBody sjekkDisse: Map<String, Status>): Map<String, Int> {
+        sjekkToken(token)
+
+        val tilstander =
+            registreringTilstandRepository.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
+
+        val resultMap = tilstander.map { it.status }.distinct().associateWith { mutableListOf<Long>() }
+
+        tilstander.forEach {
+            if (it.status != sjekkDisse[it.id.toString()]) {
+                resultMap[it.status]?.add(it.id)
+            }
+        }
+        logger.info("RegistreringTilstander som er oppdatert", resultMap)
+        return emptyMap()
     }
 
     @GetMapping("/sjekksum/{tabellnavn}")

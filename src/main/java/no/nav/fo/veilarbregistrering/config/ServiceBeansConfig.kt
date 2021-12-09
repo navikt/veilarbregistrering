@@ -351,8 +351,13 @@ class ServiceBeansConfig {
     @Bean
     fun migreringPostgressResource(
         migreringRepository: MigreringRepositoryImpl,
-        brukerRegistreringRepository: BrukerRegistreringRepository
+        brukerRegistreringRepository: BrukerRegistreringRepository,
+        registreringTilstandRepository: RegistreringTilstandRepository,
     ): MigreringPostgressResource {
-        return MigreringPostgressResource(migreringRepository, brukerRegistreringRepository)
+        return MigreringPostgressResource(
+            migreringRepository,
+            brukerRegistreringRepository,
+            registreringTilstandRepository
+        )
     }
 }
