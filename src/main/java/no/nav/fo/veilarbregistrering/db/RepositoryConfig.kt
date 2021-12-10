@@ -17,7 +17,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

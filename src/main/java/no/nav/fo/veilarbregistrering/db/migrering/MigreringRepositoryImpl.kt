@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.db.migrering_postgres
+package no.nav.fo.veilarbregistrering.db.migrering
 
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.TabellNavn.*
+import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet

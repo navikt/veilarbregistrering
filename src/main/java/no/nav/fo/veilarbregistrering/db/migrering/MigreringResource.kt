@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.migrering_postgres
+package no.nav.fo.veilarbregistrering.db.migrering
 
 import no.nav.fo.veilarbregistrering.Application
 import no.nav.fo.veilarbregistrering.log.logger
@@ -14,7 +14,7 @@ import javax.ws.rs.ForbiddenException
 
 @RestController
 @RequestMapping("/api/migrering")
-class MigreringPostgressResource(
+class MigreringResource(
     val migreringRepositoryImpl: MigreringRepositoryImpl,
     val brukerRegistreringRepository: BrukerRegistreringRepository,
     val registreringTilstandRepository: RegistreringTilstandRepository,

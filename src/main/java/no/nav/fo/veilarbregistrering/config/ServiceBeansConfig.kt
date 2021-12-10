@@ -18,8 +18,8 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringPostgressResource
-import no.nav.fo.veilarbregistrering.db.migrering_postgres.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
+import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
@@ -353,8 +353,8 @@ class ServiceBeansConfig {
         migreringRepository: MigreringRepositoryImpl,
         brukerRegistreringRepository: BrukerRegistreringRepository,
         registreringTilstandRepository: RegistreringTilstandRepository,
-    ): MigreringPostgressResource {
-        return MigreringPostgressResource(
+    ): MigreringResource {
+        return MigreringResource(
             migreringRepository,
             brukerRegistreringRepository,
             registreringTilstandRepository
