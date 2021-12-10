@@ -3,12 +3,13 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.parse
+import no.nav.fo.veilarbregistrering.http.buildHttpClient
+import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import okhttp3.HttpUrl
 import okhttp3.Request
 import org.slf4j.LoggerFactory
@@ -53,8 +54,7 @@ class FormidlingsgruppeRestClient internal constructor(
             )
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
             .build()
-        val httpClient =
-            RestClient.baseClient().newBuilder().readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS).build()
+        val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
         try {
             httpClient.newCall(request).execute().use { response ->
                 return when {
@@ -70,7 +70,7 @@ class FormidlingsgruppeRestClient internal constructor(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/v1/test/ping"), RestClient.baseClient())
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/v1/test/ping"), defaultHttpClient())
     }
 
     companion object {
