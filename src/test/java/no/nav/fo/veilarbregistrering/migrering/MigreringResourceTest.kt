@@ -63,11 +63,12 @@ class RegistreringResourceTest(
 
     @Test
     fun `hent oppdaterte statuser mapper riktig`() {
+        val time = LocalDateTime.now().minusDays(1)
         every { registreringTilstandRepository.hentRegistreringTilstander(any()) } returns listOf(
             RegistreringTilstand.of(
                 1,
                 1,
-                LocalDateTime.now().minusDays(1),
+                time,
                 null,
                 Status.PUBLISERT_KAFKA,
             )
@@ -81,7 +82,7 @@ class RegistreringResourceTest(
             status { isOk }
         }.andReturn().response.contentAsString
         logger.info("Response: ", responseString)
-        assertThat(responseString).isEqualTo("""{"PUBLISERT_KAFKA":[1]}""")
+        assertThat(responseString).isEqualTo("""{"PUBLISERT_KAFKA":[{"id":1,"brukerRegistreringId":1,"opprettet":"$time","sistEndret":null,"status":"PUBLISERT_KAFKA"}]}""")
     }
 }
 @Configuration

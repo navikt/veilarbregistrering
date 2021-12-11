@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.migrering
 import no.nav.fo.veilarbregistrering.Application
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.web.bind.annotation.*
@@ -51,17 +52,17 @@ class MigreringResource(
     @PostMapping("/registrering-tilstand/hent-oppdaterte-statuser")
     fun hentOppdatertStatusFor(
         @RequestHeader("x-token") token: String,
-        @RequestBody sjekkDisse: Map<String, Status>): Map<Status, MutableList<Long>> {
+        @RequestBody sjekkDisse: Map<String, Status>): Map<Status, MutableList<RegistreringTilstand>> {
         sjekkToken(token)
 
         val tilstander =
             registreringTilstandRepository.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
 
-        val resultMap = tilstander.map { it.status }.distinct().associateWith { mutableListOf<Long>() }
+        val resultMap = tilstander.map { it.status }.distinct().associateWith { mutableListOf<RegistreringTilstand>() }
 
         tilstander.forEach {
             if (it.status != sjekkDisse[it.id.toString()]) {
-                resultMap[it.status]?.add(it.id)
+                resultMap[it.status]?.add(it)
             }
         }
         logger.info("RegistreringTilstander som er oppdatert  $resultMap")
