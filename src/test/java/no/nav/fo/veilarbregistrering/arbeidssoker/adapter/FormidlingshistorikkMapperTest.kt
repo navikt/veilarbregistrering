@@ -36,6 +36,8 @@ class FormidlingshistorikkMapperTest {
             null
         )
         val response = FormidlingsgruppeResponseDto(
+            "123456",
+            "12345612345",
             Arrays.asList(
                 formidlingshistorikkDto1,
                 formidlingshistorikkDto2,
