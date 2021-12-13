@@ -27,7 +27,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.6.0</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <common.version>2.2021.12.09_11.56-a71c36a61ba3</common.version>
+        <common.version>2.2021.09.17_07.09-67428a6422cc</common.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
     </properties>
 
