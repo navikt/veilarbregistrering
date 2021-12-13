@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest
 @AutoConfigureMockMvc
 @WebMvcTest
 @ContextConfiguration(classes = [MigreringResourceConfig::class])
-class RegistreringResourceTest(
+class MigreringResourceTest(
     @Autowired private val mvc: MockMvc,
     @Autowired private val registreringTilstandRepository: RegistreringTilstandRepository,
 ) {
