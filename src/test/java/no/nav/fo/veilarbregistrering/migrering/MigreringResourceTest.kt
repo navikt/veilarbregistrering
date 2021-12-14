@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.migrering
 
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
+import no.nav.fo.veilarbregistrering.config.Secrets
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
 import no.nav.fo.veilarbregistrering.log.logger
@@ -42,8 +40,8 @@ class MigreringResourceTest(
     fun setup() {
         clearAllMocks()
         mockkStatic(RequestContext::class)
-        mockkStatic(Files::class)
-        every { Files.readAllBytes(any()) } returns "token".toByteArray()
+        mockkObject(Secrets)
+        every { Secrets[any()] } returns "token"
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
     }

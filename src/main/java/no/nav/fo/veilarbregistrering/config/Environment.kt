@@ -17,3 +17,6 @@ fun applicationNameOrNull() =
 
 fun isDevelopment(): Boolean =
     requireClusterName().startsWith("dev")
+
+fun isOnPrem(): Boolean =
+    !requireClusterName().endsWith("gcp")

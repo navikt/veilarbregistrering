@@ -20,15 +20,7 @@ class MigreringResource(
     val brukerRegistreringRepository: BrukerRegistreringRepository,
     val registreringTilstandRepository: RegistreringTilstandRepository,
 ) {
-    companion object {
-        private fun getVaultSecret(path: String): String? {
-            return try {
-                String(Files.readAllBytes(Paths.get(Application.SECRETS_PATH, path)), StandardCharsets.UTF_8)
-            } catch (e: Exception) {
-                throw IllegalStateException(String.format("Klarte ikke laste property fra vault for path: %s", path), e)
-            }
-        }
-    }
+
 
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
@@ -76,7 +68,7 @@ class MigreringResource(
     }
 
     private fun sjekkToken(token: String) {
-        val secret = getVaultSecret("vault/migration-token")
+        val secret = no.nav.fo.veilarbregistrering.config.Secrets["vault/migration-token"]
 
         if (!secret.equals(token)) {
             throw ForbiddenException("Ugydlig token")
