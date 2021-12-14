@@ -31,13 +31,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        distribution: 'adopt'
 
     - name: Build with Maven
       run: |
         locale
-        mvn --version
         java --version
-        mvn dependency:tree -Pgithub -B package --settings maven-settings.xml
+        mvn -Pgithub -B package --settings maven-settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
