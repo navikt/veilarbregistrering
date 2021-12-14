@@ -44,14 +44,14 @@ class MigreringResource(
     @PostMapping("/registrering-tilstand/hent-oppdaterte-statuser")
     fun hentOppdatertStatusFor(
         @RequestHeader("x-token") token: String,
-        @RequestBody sjekkDisse: Map<String, Status>): List<RegistreringTilstand> {
+        @RequestBody sjekkDisse: Map<String, Status>): List<Map<String, Any?>> {
         sjekkToken(token)
 
         val tilstander =
-            registreringTilstandRepository.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
+            migreringRepositoryImpl.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
 
         val results = tilstander.filter {
-            it.status != sjekkDisse[it.id.toString()]
+            it["STATUS"] != sjekkDisse[it["ID"].toString()]
         }
 
         logger.info("RegistreringTilstander som er oppdatert  $results")

@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.db.migrering
 
 import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn.*
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
 
@@ -71,6 +73,11 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         }!!
     }
 
+    fun hentRegistreringTilstander(ider: List<Long>): List<Map<String, Any?>> {
+        val sql = "select * from $REGISTRERING_TILSTAND where id in (:idListe)"
+
+        return db.queryForList(sql, mapOf("idListe" to ider))
+    }
 
     companion object {
         private val log = loggerFor<MigreringRepositoryImpl>()

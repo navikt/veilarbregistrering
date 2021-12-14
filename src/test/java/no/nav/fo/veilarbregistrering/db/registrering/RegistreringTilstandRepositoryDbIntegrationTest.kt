@@ -140,16 +140,6 @@ class RegistreringTilstandRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun `henter flere registreringstatus`() {
-        val ider = lagRegistreringMedTilstand(MANGLER_ARBEIDSTILLATELSE, 2) +
-        lagRegistreringMedTilstand(MOTTATT, 2) +
-        lagRegistreringMedTilstand(OVERFORT_ARENA, 2)
-
-        val statuser = registreringTilstandRepository.hentRegistreringTilstander(ider)
-        assertThat(statuser.size).isEqualTo(6)
-    }
-
-    @Test
     fun `skal kaste exception ved forsoek paa aa lagre tilstand med brukerregistreringid som allerede finnes`() {
         var registrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering()
         registrering = brukerRegistreringRepository.lagre(registrering, BRUKER_1)

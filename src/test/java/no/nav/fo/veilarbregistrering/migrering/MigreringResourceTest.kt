@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest
 @ContextConfiguration(classes = [MigreringResourceConfig::class])
 class MigreringResourceTest(
     @Autowired private val mvc: MockMvc,
-    @Autowired private val registreringTilstandRepository: RegistreringTilstandRepository,
+    @Autowired private val migreringRepositoryImpl: MigreringRepositoryImpl
 ) {
     private lateinit var request: HttpServletRequest
 
@@ -63,13 +63,13 @@ class MigreringResourceTest(
     @Test
     fun `hent oppdaterte statuser mapper riktig`() {
         val time = LocalDateTime.of(2021, 12, 12, 21, 20, 10)
-        every { registreringTilstandRepository.hentRegistreringTilstander(any()) } returns listOf(
-            RegistreringTilstand.of(
-                1,
-                1,
-                time,
-                null,
-                Status.PUBLISERT_KAFKA,
+        every { migreringRepositoryImpl.hentRegistreringTilstander(any()) } returns listOf(
+            mapOf<String, Any?>(
+                "ID" to 1,
+                "BRUKER_REGISTRERING_ID" to 1,
+                "OPPRETTET" to time,
+                "SIST_ENDRET" to null,
+                "STATUS" to Status.PUBLISERT_KAFKA,
             )
         )
 
@@ -81,7 +81,7 @@ class MigreringResourceTest(
             status { isOk }
         }.andReturn().response.contentAsString
         logger.info("Response: ", responseString)
-        assertThat(responseString).isEqualTo("""[{"id":1,"brukerRegistreringId":1,"opprettet":"$time","sistEndret":null,"status":"PUBLISERT_KAFKA"}]""")
+        assertThat(responseString).isEqualTo("""[{"ID":1,"BRUKER_REGISTRERING_ID":1,"OPPRETTET":"$time","SIST_ENDRET":null,"STATUS":"PUBLISERT_KAFKA"}]""")
     }
 }
 @Configuration

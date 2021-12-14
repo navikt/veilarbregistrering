@@ -112,12 +112,6 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
             .orElseThrow { IllegalStateException("Registrering med id $registreringsId mangler tilstand") }
     }
 
-    override fun hentRegistreringTilstander(ider: List<Long>): List<RegistreringTilstand> {
-        val sql = "select * from $REGISTRERING_TILSTAND where $ID in (:idListe)"
-
-        return db.query(sql, mapOf("idListe" to ider), rowMapper())
-    }
-
     private fun nesteFraSekvens(): Long {
         return db.queryForObject(
             "select $SEQ_TABLE_NAME.nextval from dual",
