@@ -81,7 +81,7 @@ class MigreringResourceTest(
             status { isOk }
         }.andReturn().response.contentAsString
         logger.info("Response: ", responseString)
-        assertThat(responseString).isEqualTo("""{"PUBLISERT_KAFKA":[{"id":1,"brukerRegistreringId":1,"opprettet":"$time","sistEndret":null,"status":"PUBLISERT_KAFKA"}]}""")
+        assertThat(responseString).isEqualTo("""[{"id":1,"brukerRegistreringId":1,"opprettet":"$time","sistEndret":null,"status":"PUBLISERT_KAFKA"}]""")
     }
 }
 @Configuration

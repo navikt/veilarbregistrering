@@ -44,21 +44,18 @@ class MigreringResource(
     @PostMapping("/registrering-tilstand/hent-oppdaterte-statuser")
     fun hentOppdatertStatusFor(
         @RequestHeader("x-token") token: String,
-        @RequestBody sjekkDisse: Map<String, Status>): Map<Status, MutableList<RegistreringTilstand>> {
+        @RequestBody sjekkDisse: Map<String, Status>): List<RegistreringTilstand> {
         sjekkToken(token)
 
         val tilstander =
             registreringTilstandRepository.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
 
-        val resultMap = tilstander.map { it.status }.distinct().associateWith { mutableListOf<RegistreringTilstand>() }
-
-        tilstander.forEach {
-            if (it.status != sjekkDisse[it.id.toString()]) {
-                resultMap[it.status]?.add(it)
-            }
+        val results = tilstander.filter {
+            it.status != sjekkDisse[it.id.toString()]
         }
-        logger.info("RegistreringTilstander som er oppdatert  $resultMap")
-        return resultMap
+
+        logger.info("RegistreringTilstander som er oppdatert  $results")
+        return results
     }
 
     @GetMapping("/sjekksum/{tabellnavn}")
