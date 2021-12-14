@@ -36,8 +36,8 @@ jobs:
       run: |
         locale
         mvn --version
-        mvn dependency:tree --settings maven-settings.xml
-        mvn -Pgithub -B package --settings maven-settings.xml
+        java --version
+        mvn dependency:tree -Pgithub -B package --settings maven-settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
