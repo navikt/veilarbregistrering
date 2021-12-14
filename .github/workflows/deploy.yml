@@ -33,7 +33,11 @@ jobs:
         java-version: 11
 
     - name: Build with Maven
-      run: mvn -Pgithub -B package --settings maven-settings.xml
+      run: |
+        locale
+        mvn --version
+        mvn dependency:tree
+        mvn -Pgithub -B package --settings maven-settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
