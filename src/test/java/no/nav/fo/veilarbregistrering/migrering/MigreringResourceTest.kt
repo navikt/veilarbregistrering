@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.nio.file.Files
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.servlet.http.HttpServletRequest
 
@@ -61,7 +62,7 @@ class MigreringResourceTest(
 
     @Test
     fun `hent oppdaterte statuser mapper riktig`() {
-        val time = LocalDateTime.now().minusDays(1)
+        val time = LocalDateTime.of(2021, 12, 12, 21, 20, 10)
         every { registreringTilstandRepository.hentRegistreringTilstander(any()) } returns listOf(
             RegistreringTilstand.of(
                 1,
