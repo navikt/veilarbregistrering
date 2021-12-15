@@ -50,11 +50,12 @@ class MigreringResource(
         val tilstander =
             migreringRepositoryImpl.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
 
-        val results = tilstander.filter {
-            it["STATUS"] != sjekkDisse[it["ID"].toString()]
+        val results = tilstander.filterIndexed { index, rad ->
+            if (index == 0) logger.info("Sammenlikner ${rad["STATUS"]} med ${sjekkDisse[rad["ID"].toString()]}")
+            rad["STATUS"] != sjekkDisse[rad["ID"].toString()]
         }
 
-        logger.info("RegistreringTilstander som er oppdatert  $results")
+        logger.info("Oppdatering av RegistreringTilstander: ${results.size} av ${sjekkDisse.size} hadde endret status")
         return results
     }
 
