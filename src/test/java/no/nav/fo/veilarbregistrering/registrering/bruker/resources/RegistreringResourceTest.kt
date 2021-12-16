@@ -63,7 +63,7 @@ class RegistreringResourceTest(
             contentType = MediaType.APPLICATION_JSON
             content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
         }.andExpect {
-            status { isNoContent }
+            status { isNoContent() }
         }.andReturn().response.contentAsString
 
         assertThat(responseString).isNullOrEmpty()
@@ -74,7 +74,7 @@ class RegistreringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         val responseString = mvc.post("/api/startreaktivering").andExpect {
-            status { isNoContent }
+            status { isNoContent() }
         }.andReturn().response.contentAsString
 
         assertThat(responseString).isNullOrEmpty()
@@ -88,7 +88,7 @@ class RegistreringResourceTest(
             contentType = MediaType.APPLICATION_JSON
             content = REGISTRERING_REQUEST
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }.andReturn().response.contentAsString
 
         println(responseString)
@@ -103,7 +103,7 @@ class RegistreringResourceTest(
         val expected = FileToJson.toJson("/registrering/startregistrering.json")
 
         val result = mvc.get("/api/startregistrering")
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
 
         assertThat(result).isEqualTo(expected)
@@ -118,7 +118,7 @@ class RegistreringResourceTest(
 
         val result = mvc.get("/api/registrering")
             .andExpect {
-                status { isNoContent }
+                status { isNoContent() }
             }
             .andReturn().response.contentAsString
 
@@ -134,7 +134,7 @@ class RegistreringResourceTest(
 
         val result = mvc.get("/api/registrering")
             .andExpect {
-                status { isOk }
+                status { isOk() }
                 content { contentType("application/json") }
             }
             .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
@@ -151,7 +151,7 @@ class RegistreringResourceTest(
 
         val result = mvc.get("/api/registrering")
             .andExpect {
-                status { isOk }
+                status { isOk() }
                 content { contentType("application/json") }
             }
             .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
@@ -168,7 +168,7 @@ class RegistreringResourceTest(
 
         val result = mvc.get("/api/igangsattregistrering")
             .andExpect {
-                status { isNoContent }
+                status { isNoContent() }
             }
             .andReturn().response.contentAsString
 
@@ -184,7 +184,7 @@ class RegistreringResourceTest(
 
         val result = mvc.get("/api/igangsattregistrering")
             .andExpect {
-                status { isOk }
+                status { isOk() }
                 content { contentType("application/json") }
             }
             .andReturn().response.getContentAsString(StandardCharsets.UTF_8)

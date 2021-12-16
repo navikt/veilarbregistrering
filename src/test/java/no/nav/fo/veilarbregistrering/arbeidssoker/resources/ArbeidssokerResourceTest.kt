@@ -31,7 +31,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
     fun `get - Svarer med DTO med tom liste av perioder ved 404 fra aareg`() {
         val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER&fraOgMed=2010-01-01&tilOgMed=2021-01-01")
             .andExpect {
-                status { isOk }
+                status { isOk() }
             }
 
         assertThat(responseBody).isNotNull
@@ -41,7 +41,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
     fun `get - Gir ikke feil dersom optional felt droppes`() {
         val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER&fraOgMed=2010-01-01")
             .andExpect {
-                status { isOk }
+                status { isOk() }
             }
 
         assertThat(responseBody).isNotNull
@@ -51,7 +51,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
     fun `get - Gir feil dersom påkrevd felt mangler`() {
         val responseBody = mvc.get("/api/arbeidssoker/perioder?fnr=$BRUKER")
             .andExpect {
-                status { isBadRequest }
+                status { isBadRequest() }
             }
 
         assertThat(responseBody).isNotNull
@@ -64,7 +64,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
             contentType = MediaType.APPLICATION_JSON
         }
                 .andExpect {
-                    status { isOk }
+                    status { isOk() }
                 }
 
         assertThat(responseBody).isNotNull
@@ -77,7 +77,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
             contentType = MediaType.APPLICATION_JSON
         }
                 .andExpect {
-                    status { isOk }
+                    status { isOk() }
                 }
 
         assertThat(responseBody).isNotNull
@@ -90,7 +90,7 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
             contentType = MediaType.APPLICATION_JSON
         }
                 .andExpect {
-                    status { isBadRequest }
+                    status { isBadRequest() }
                 }
 
         assertThat(responseBody).isNotNull

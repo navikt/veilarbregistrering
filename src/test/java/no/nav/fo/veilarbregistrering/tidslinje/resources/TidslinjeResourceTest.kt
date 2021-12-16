@@ -52,7 +52,7 @@ class TidslinjeResourceTest(
         every { tidslinjeAggregator.tidslinje(any()) } returns emptyList()
 
         val resultat = mvc.get("/api/tidslinje")
-                .andExpect { status { isOk } }
+                .andExpect { status { isOk() } }
                 .andReturn().response.contentAsString
 
         assertThat(resultat).isEqualTo(TOM_LISTE)
@@ -65,7 +65,7 @@ class TidslinjeResourceTest(
         every { tidslinjeAggregator.tidslinje(any()) } returns TidslinjeTestdataBuilder.default().tidslinje()
 
         val resultat = mvc.get("/api/tidslinje")
-                .andExpect { status { isOk } }
+                .andExpect { status { isOk() } }
                 .andReturn().response.contentAsString
 
         assertThat(resultat).isEqualTo(LISTE)

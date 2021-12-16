@@ -54,7 +54,7 @@ class MigreringResourceTest(
             content = """{ 1: "MOTTATT" }"""
             header("x-token", "token")
         }.andExpect {
-            status { isMethodNotAllowed }
+            status { isMethodNotAllowed() }
         }.andReturn().response.contentAsString
 
         assertThat(responseString).isNullOrEmpty()
@@ -78,7 +78,7 @@ class MigreringResourceTest(
             content = """{ "1": "MOTTATT" }"""
             header("x-token", "token")
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }.andReturn().response.contentAsString
         logger.info("Response: ", responseString)
         assertThat(responseString).isEqualTo("""[{"ID":1,"BRUKER_REGISTRERING_ID":1,"OPPRETTET":"$time","SIST_ENDRET":null,"STATUS":"PUBLISERT_KAFKA"}]""")
