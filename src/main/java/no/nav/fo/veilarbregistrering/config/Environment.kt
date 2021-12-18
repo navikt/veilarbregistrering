@@ -15,8 +15,10 @@ fun requireApplicationName() =
 fun applicationNameOrNull() =
     getPropertyOrNull("NAIS_APP_NAME")
 
-fun isDevelopment(): Boolean =
-    requireClusterName().startsWith("dev")
+fun isDevelopment(): Boolean = !isProduction()
+
+fun isProduction(): Boolean =
+    getPropertyOrNull("NAIS_CLUSTER_NAME")?.contains("prod") ?: false
 
 fun isOnPrem(): Boolean =
     !requireClusterName().endsWith("gcp")

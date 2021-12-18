@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.kafka
 
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
-import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
+import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import org.apache.kafka.clients.CommonClientConfigs
@@ -18,7 +18,6 @@ import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.io.File
@@ -73,7 +72,7 @@ class KafkaConfig {
     ): FormidlingsgruppeKafkaConsumer {
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
-            "gg-arena-formidlinggruppe-v1" + if (envSuffix == "-p") "-p" else "-q",
+            "gg-arena-formidlinggruppe-v1-$envSuffix",
             arbeidssokerService, unleashClient
         )
     }
@@ -129,10 +128,6 @@ class KafkaConfig {
             }
         }
 
-        private val envSuffix: String =
-            System.getenv("APP_ENVIRONMENT_NAME")?.let {
-                "-" + it.lowercase(Locale.getDefault())
-            } ?: ""
-
+        private val envSuffix: String = if (isProduction()) "p" else "q"
     }
 }

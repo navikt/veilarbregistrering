@@ -17,10 +17,6 @@ spec:
     - https://veilarbregistrering.intern.nav.no
     - https://app.adeo.no/veilarbregistrering
   env:
-    - name: APP_ENVIRONMENT_NAME
-      value: p
-    - name: FEATURE_ENDPOINT_URL
-      value: https://feature-fss.nais.adeo.no/feature
     - name: AAREG_REST_API
       value: https://modapp.adeo.no/aareg-services/api
     - name: OPENAM_DISCOVERY_URL

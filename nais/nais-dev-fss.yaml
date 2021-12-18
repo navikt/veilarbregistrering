@@ -18,10 +18,6 @@ spec:
     - https://veilarbregistrering-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbregistrering
   env:
-    - name: APP_ENVIRONMENT_NAME
-      value: dev
-    - name: FEATURE_ENDPOINT_URL
-      value: https://feature-fss-q1.nais.preprod.local/feature
     - name: AAREG_REST_API
       value: https://modapp-q1.adeo.no/aareg-services/api
     - name: OPENAM_DISCOVERY_URL
