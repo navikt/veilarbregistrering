@@ -6,8 +6,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigSt
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel
 import no.nav.fo.veilarbregistrering.enhet.Kommune
+import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -118,7 +118,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
                     if (Kommune("1241") == kommune) {
                         return Optional.of(Enhetnr.of("232"))
                     }
-                    return if (Kommune.of(KommuneMedBydel.STAVANGER) == kommune) {
+                    return if (Kommune.medBydel(STAVANGER) == kommune) {
                         Optional.of(Enhetnr.of("1103"))
                     } else Optional.empty()
                 }

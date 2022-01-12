@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
 import no.nav.fo.veilarbregistrering.enhet.Kommune
-import no.nav.fo.veilarbregistrering.enhet.KommuneMedBydel
+import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.*
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -96,7 +96,7 @@ class OppgaveRouterTest {
     @Test
     fun `kommunenummer tilhorende kommune med bydeler skal tildeles intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
-                Kommune.of(KommuneMedBydel.STAVANGER),
+                Kommune.medBydel(STAVANGER),
                 Periode.of(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
@@ -147,7 +147,7 @@ class OppgaveRouterTest {
             if (Kommune("1241") == kommune) {
                 return Optional.of(Enhetnr.of("232"))
             }
-            return if (Kommune.of(KommuneMedBydel.STAVANGER) == kommune) {
+            return if (Kommune.medBydel(STAVANGER) == kommune) {
                 Optional.of(Enhetnr.of("1103"))
             } else Optional.empty()
         }
