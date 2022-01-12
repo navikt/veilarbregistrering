@@ -99,7 +99,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
     companion object {
         private const val pid = "41131"
         private val fnr = Foedselsnummer.of("10067924594")
-        private val bruker = Bruker.of(fnr, AktorId("123"))
+        private val bruker = Bruker(fnr, AktorId("123"))
         private val first = LocalDateTime.of(2020, 5, 1, 3, 5, 1)
         private val second = LocalDateTime.of(2020, 8, 3, 7, 25, 1)
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)

@@ -180,6 +180,6 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     }
 
     companion object {
-        private val BRUKER = Bruker.of(FoedselsnummerTestdataBuilder.aremark(), AktorId("AKTØRID"))
+        private val BRUKER = Bruker(FoedselsnummerTestdataBuilder.aremark(), AktorId("AKTØRID"))
     }
 }

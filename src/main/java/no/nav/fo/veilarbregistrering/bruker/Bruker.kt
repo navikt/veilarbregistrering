@@ -8,10 +8,6 @@ data class Bruker(
     fun alleFoedselsnummer(): List<Foedselsnummer> = listOf(gjeldendeFoedselsnummer) + historiskeFoedselsnummer
 
     companion object {
-        @JvmStatic
-        fun of(foedselsnummer: Foedselsnummer, aktorId: AktorId): Bruker {
-            return Bruker(foedselsnummer, aktorId)
-        }
 
         @JvmStatic
         fun of(

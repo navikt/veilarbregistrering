@@ -84,7 +84,7 @@ internal class HentRegistreringServiceTest {
     companion object {
         private val fnr = Foedselsnummer.of("11017724129")
         private val aktorId = AktorId("12311")
-        private val bruker = Bruker.of(fnr, aktorId )
+        private val bruker = Bruker(fnr, aktorId )
         private val gammelDato = LocalDateTime.of(2020,1,11,15,50, 20)
         private val igaar = LocalDateTime.now().minusDays(1)
         private val profilering = lagProfilering()

@@ -37,7 +37,7 @@ internal class ArbeidsforholdResourceTest {
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedHentingAvSisteArbeidsforhold() {
-        every { userService.finnBrukerGjennomPdl() } returns Bruker.of(IDENT, AktorId("1234"))
+        every { userService.finnBrukerGjennomPdl() } returns Bruker(IDENT, AktorId("1234"))
         every { arbeidsforholdGateway.hentArbeidsforhold(IDENT) } returns flereArbeidsforhold()
         arbeidsforholdResource.hentSisteArbeidsforhold()
         verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(any()) }

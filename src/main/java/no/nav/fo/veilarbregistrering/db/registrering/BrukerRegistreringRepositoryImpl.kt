@@ -83,7 +83,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         val sql = "SELECT $FOEDSELSNUMMER, $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID = :id"
 
         return db.queryForObject(sql, mapOf("id" to brukerRegistreringId)) { rs, _ ->
-            Bruker.of(
+            Bruker(
                 Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
                 AktorId(rs.getString("AKTOR_ID"))
             )

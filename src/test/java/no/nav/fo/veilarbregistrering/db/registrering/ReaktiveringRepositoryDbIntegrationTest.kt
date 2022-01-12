@@ -33,6 +33,6 @@ class ReaktiveringRepositoryDbIntegrationTest(
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer.of("12345678911")
         private val AKTOR_ID_11111 = AktorId("11111")
-        private val BRUKER_1 = Bruker.of(FOEDSELSNUMMER, AKTOR_ID_11111)
+        private val BRUKER_1 = Bruker(FOEDSELSNUMMER, AKTOR_ID_11111)
     }
 }
