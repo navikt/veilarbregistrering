@@ -13,7 +13,7 @@ class BrukerTilstandService(
         val oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(bruker.gjeldendeFoedselsnummer)
         val harIgangsattRegistreringSomKanGjenopptas = harIgangsattRegistreringSomKanGjenopptas(bruker)
 
-        return BrukersTilstand(oppfolgingsstatus, harIgangsattRegistreringSomKanGjenopptas)
+        return BrukersTilstand.create(oppfolgingsstatus, harIgangsattRegistreringSomKanGjenopptas)
     }
 
     private fun harIgangsattRegistreringSomKanGjenopptas(bruker: Bruker): Boolean =

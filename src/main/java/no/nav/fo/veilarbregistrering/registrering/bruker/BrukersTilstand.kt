@@ -6,23 +6,10 @@ import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import java.util.*
 
-class BrukersTilstand(
-    private val oppfolgingStatusData: Oppfolgingsstatus,
-    harIgangsattGjenopptagbarRegistrering: Boolean
-) {
-    val registreringstype: RegistreringType
-    val isHarIgangsattGjenopptagbarRegistrering: Boolean
-    private fun beregnRegistreringType(oppfolgingsstatus: Oppfolgingsstatus): RegistreringType {
-        return if (oppfolgingsstatus.isUnderOppfolging && oppfolgingsstatus.kanReaktiveres != true) { // underoppfolging OG ikke kanreaktiveres
-            RegistreringType.ALLEREDE_REGISTRERT
-        } else if (oppfolgingsstatus.kanReaktiveres == true) {
-            RegistreringType.REAKTIVERING
-        } else if (oppfolgingsstatus.erSykmeldtMedArbeidsgiver == true) {
-            RegistreringType.SYKMELDT_REGISTRERING
-        } else {
-            RegistreringType.ORDINAER_REGISTRERING
-        }
-    }
+class BrukersTilstand private constructor(
+    val oppfolgingStatusData: Oppfolgingsstatus,
+    val registreringstype: RegistreringType,
+    val isHarIgangsattGjenopptagbarRegistrering: Boolean) {
 
     fun kanReaktiveres(): Boolean {
         return RegistreringType.REAKTIVERING == registreringstype
@@ -47,9 +34,25 @@ class BrukersTilstand(
     val rettighetsgruppe: Optional<Rettighetsgruppe>
         get() = Optional.ofNullable(oppfolgingStatusData.rettighetsgruppe)
 
-    init {
-        registreringstype = beregnRegistreringType(oppfolgingStatusData)
-        isHarIgangsattGjenopptagbarRegistrering =
-            registreringstype === RegistreringType.ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering
+    companion object Factory {
+        fun create(oppfolgingsstatus: Oppfolgingsstatus, harIgangsattGjenopptagbarRegistrering: Boolean) : BrukersTilstand {
+            val registreringstype = beregnRegistreringType(oppfolgingsstatus)
+            return BrukersTilstand(
+                oppfolgingsstatus,
+                registreringstype,
+                registreringstype === RegistreringType.ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering)
+        }
+
+        private fun beregnRegistreringType(oppfolgingsstatus: Oppfolgingsstatus): RegistreringType {
+            return if (oppfolgingsstatus.isUnderOppfolging && oppfolgingsstatus.kanReaktiveres != true) { // underoppfolging OG ikke kanreaktiveres
+                RegistreringType.ALLEREDE_REGISTRERT
+            } else if (oppfolgingsstatus.kanReaktiveres == true) {
+                RegistreringType.REAKTIVERING
+            } else if (oppfolgingsstatus.erSykmeldtMedArbeidsgiver == true) {
+                RegistreringType.SYKMELDT_REGISTRERING
+            } else {
+                RegistreringType.ORDINAER_REGISTRERING
+            }
+        }
     }
 }
