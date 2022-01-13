@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.profilering;
 
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-
 public class Profilering {
     boolean jobbetSammenhengendeSeksAvTolvSisteManeder;
     int alder;
@@ -14,11 +12,6 @@ public class Profilering {
         this.innsatsgruppe = innsatsgruppe;
         this.alder = alder;
         this.jobbetSammenhengendeSeksAvTolvSisteManeder = harJobbetSammenhengendeSeksAvTolvSisteManeder;
-    }
-
-    public static Profilering of(Besvarelse besvarelse, int alder, boolean harJobbetSammenhengendeSeksAvTolvSisteManeder) {
-        Innsatsgruppe innsatsgruppe = Innsatsgruppe.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
-        return new Profilering(innsatsgruppe, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
     }
 
     public boolean isJobbetSammenhengendeSeksAvTolvSisteManeder() {

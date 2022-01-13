@@ -22,10 +22,10 @@ public class ProfileringService {
     ) {
         FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(fnr);
 
-        return Profilering.of(
-                besvarelse,
-                alder,
-                flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato()));
+        boolean harJobbetSammenhengendeSeksAvTolvSisteManeder = flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato());
+        Innsatsgruppe innsatsgruppe = Innsatsgruppe.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
+
+        return new Profilering(innsatsgruppe, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
     }
 
     protected LocalDate dagensDato() {
