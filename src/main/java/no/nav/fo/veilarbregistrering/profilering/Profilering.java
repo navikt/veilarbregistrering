@@ -10,11 +10,15 @@ public class Profilering {
     public Profilering() {
     }
 
+    public Profilering(Innsatsgruppe innsatsgruppe, int alder, boolean harJobbetSammenhengendeSeksAvTolvSisteManeder) {
+        this.innsatsgruppe = innsatsgruppe;
+        this.alder = alder;
+        this.jobbetSammenhengendeSeksAvTolvSisteManeder = harJobbetSammenhengendeSeksAvTolvSisteManeder;
+    }
+
     public static Profilering of(Besvarelse besvarelse, int alder, boolean harJobbetSammenhengendeSeksAvTolvSisteManeder) {
-        return new Profilering()
-                .setAlder(alder)
-                .setJobbetSammenhengendeSeksAvTolvSisteManeder(harJobbetSammenhengendeSeksAvTolvSisteManeder)
-                .setInnsatsgruppe(Innsatsgruppe.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder));
+        Innsatsgruppe innsatsgruppe = Innsatsgruppe.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
+        return new Profilering(innsatsgruppe, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
     }
 
     public boolean isJobbetSammenhengendeSeksAvTolvSisteManeder() {
