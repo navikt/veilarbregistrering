@@ -23,10 +23,7 @@ class ProfileringRepositoryDbIntegrationTest(
 
     @Test
     fun profilerBruker() {
-        val profilering = Profilering()
-                .setAlder(39)
-                .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
-                .setInnsatsgruppe(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING)
+        val profilering = Profilering(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING, 39, true)
         profileringRepository.lagreProfilering(9, profilering)
 
         val profileringFraDb = profileringRepository.hentProfileringForId(9)

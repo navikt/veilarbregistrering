@@ -50,10 +50,7 @@ class CreateViewTest {
         val initiellTilstand = RegistreringTilstand.medStatus(MOTTATT, ordinaerBrukerRegistrering.id)
         val id: Long = registreringTilstandRepository.lagre(initiellTilstand)
 
-        Profilering()
-                .setAlder(42)
-                .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
-                .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
+        Profilering(Innsatsgruppe.STANDARD_INNSATS, 42, true)
                 .apply { profileringRepository.lagreProfilering(ordinaerBrukerRegistrering.id, this) }
 
         Status.values().forEach { status ->

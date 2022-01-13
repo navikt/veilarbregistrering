@@ -13,10 +13,7 @@ class ProfileringRepositoryTest {
     fun `profilering skal sette riktig informasjon i database`() {
         val jdbcTemplate = mockk<NamedParameterJdbcTemplate>(relaxed = true)
         val profileringRepository = ProfileringRepositoryImpl(jdbcTemplate)
-        val profilering = Profilering()
-                .setInnsatsgruppe(Innsatsgruppe.STANDARD_INNSATS)
-                .setJobbetSammenhengendeSeksAvTolvSisteManeder(true)
-                .setAlder(36)
+        val profilering = Profilering(Innsatsgruppe.STANDARD_INNSATS, 36, true)
         val brukerregistreringId = 7258365L
         profileringRepository.lagreProfilering(brukerregistreringId, profilering)
         val query = "INSERT INTO $BRUKER_PROFILERING ($BRUKER_REGISTRERING_ID, $PROFILERING_TYPE, $VERDI)" +
