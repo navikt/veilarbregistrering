@@ -21,7 +21,7 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
         val telefonnummer: Telefonnummer? =  try {
             krrGateway.hentKontaktinfo(bruker)
         } catch (e: NotAuthorizedException) {
-            LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet pga manglende tilgang", e)
+            LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet pga manglende autentisering", e)
             feiltyper.add(FeilType.INGEN_TILGANG)
             null
         } catch (e: ForbiddenException) {
