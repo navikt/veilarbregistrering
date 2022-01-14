@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker.krr
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import no.nav.common.health.HealthCheck
@@ -9,11 +8,7 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdDto
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.objectMapper
-import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.log.MDCConstants.MDC_CALL_ID
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -77,7 +72,7 @@ class DigDirKrrProxyClient internal constructor(
         private val GSON = GsonBuilder().create()
         private val LOG = LoggerFactory.getLogger(DigDirKrrProxyClient::class.java)
 
-        private fun parse(json: String): DigDirKrrProxyResponse {
+        internal fun parse(json: String): DigDirKrrProxyResponse {
             return GSON.fromJson(json, object : TypeToken<DigDirKrrProxyResponse>() {}.type)
         }
     }

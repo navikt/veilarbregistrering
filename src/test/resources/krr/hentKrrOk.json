@@ -1,0 +1,14 @@
+{
+  "personident": "string",
+  "aktiv": true,
+  "kanVarsles": true,
+  "reservert": true,
+  "spraak": "string",
+  "epostadresse": "string",
+  "mobiltelefonnummer": "22222222",
+  "sikkerDigitalPostkasse": {
+    "adresse": "string",
+    "leverandoerAdresse": "string",
+    "leverandoerSertifikat": "string"
+  }
+}
