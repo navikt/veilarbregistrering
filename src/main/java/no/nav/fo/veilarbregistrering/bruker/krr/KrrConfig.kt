@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.krr
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
@@ -30,8 +31,8 @@ class KrrConfig {
     }
 
     @Bean
-    fun krrGateway(krrClient: KrrClient?): KrrGateway {
-        return KrrGatewayImpl(krrClient!!)
+    fun krrGateway(krrClient: KrrClient, digdirKrrGateway: DigDirKrrProxyClient, unleashClient: UnleashClient): KrrGateway {
+        return KrrGatewayImpl(krrClient, digdirKrrGateway, unleashClient)
     }
 
     companion object {
