@@ -18,11 +18,11 @@ import org.springframework.http.HttpStatus
 import java.io.IOException
 import javax.ws.rs.core.HttpHeaders
 
-class DigDirKrrProxyClient internal constructor(
+open class DigDirKrrProxyClient internal constructor(
     private val baseUrl: String,
     private val tokenProvider: () -> String
 ) : HealthCheck {
-    internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse? {
+    internal open fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse? {
         val kontaktinfoPath = "v1/person"
         val request = buildRequest(kontaktinfoPath, foedselsnummer)
 

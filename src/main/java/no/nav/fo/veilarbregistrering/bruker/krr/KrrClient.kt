@@ -16,11 +16,11 @@ import org.springframework.http.HttpStatus
 import java.io.IOException
 import javax.ws.rs.core.HttpHeaders
 
-class KrrClient internal constructor(
+open class KrrClient internal constructor(
     private val baseUrl: String,
     private val tokenProvider: () -> String
 ) : HealthCheck {
-    internal fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktInfo? {
+    internal open fun hentKontaktinfo(foedselsnummer: Foedselsnummer): KrrKontaktInfo? {
         val kontaktinfoPath = "v1/personer/kontaktinformasjon"
         val request = buildRequest(kontaktinfoPath, foedselsnummer)
 
