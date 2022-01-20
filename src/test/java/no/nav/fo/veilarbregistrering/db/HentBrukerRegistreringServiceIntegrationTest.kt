@@ -48,12 +48,12 @@ class HentBrukerRegistreringServiceIntegrationTest(
     @BeforeEach
     fun setupEach() {
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns Oppfolgingsstatus(
-            false,
-            false,
-            null,
-            null,
-            null,
-            null
+            isUnderOppfolging = false,
+            kanReaktiveres = false,
+            erSykmeldtMedArbeidsgiver = null,
+            formidlingsgruppe = null,
+            servicegruppe = null,
+            rettighetsgruppe = null
         )
         every { profileringService.profilerBruker(any(), any(), any()) } returns lagProfilering()
     }
@@ -66,7 +66,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
         brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
         }
-        assertEquals(gyldigStilling(), hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER).sisteStilling)
+        assertEquals(gyldigStilling(), hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER)?.sisteStilling)
     }
 
     companion object {

@@ -28,31 +28,43 @@ internal class HentRegistreringServiceTest {
         val unleashClient: UnleashClient = mockk()
         val norg2Gateway: Norg2Gateway = mockk()
         val profileringRepository: ProfileringRepository = mockk()
-        brukerRegistreringRepository  = mockk()
+        val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()
+        brukerRegistreringRepository = mockk()
 
         every { unleashClient.isEnabled(any()) } returns true
         every { profileringRepository.hentProfileringForId(any()) } returns profilering
         every { norg2Gateway.hentAlleEnheter() } returns enheter
         every { manuellRegistreringRepository.hentManuellRegistrering(any(), any()) } returns null
 
-        hentRegistreringService = HentRegistreringService(brukerRegistreringRepository, null, profileringRepository, manuellRegistreringRepository, norg2Gateway)
+        hentRegistreringService = HentRegistreringService(
+            brukerRegistreringRepository,
+            sykmeldtRegistreringRepository,
+            profileringRepository,
+            manuellRegistreringRepository,
+            norg2Gateway
+        )
     }
 
     @Test
     fun skalFinneRiktigEnhet() {
         val enhet = hentRegistreringService.finnEnhet(Enhetnr("1234"))
-        assertThat(enhet).hasValue(NavEnhet("1234", "TEST1"))
+        assertThat(enhet).isEqualTo(NavEnhet("1234", "TEST1"))
     }
 
     @Test
     fun skalReturnereEmptyHvisIngenEnhetErFunnet() {
         val enhet = hentRegistreringService.finnEnhet(Enhetnr("2345"))
-        assertThat(enhet).isEmpty
+        assertThat(enhet).isNull()
     }
 
     @Test
     fun `returnerer tom registrering hvis igangsatt registrering er for gammel`() {
-        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns listOf(GAMMEL_BRUKERREGISTRERING)
+        every {
+            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                aktorId,
+                any()
+            )
+        } returns listOf(GAMMEL_BRUKERREGISTRERING)
         val igangsattOrdinaerBrukerRegistrering =
             hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
 
@@ -61,21 +73,31 @@ internal class HentRegistreringServiceTest {
 
     @Test
     fun `returnerer registrering hvis igangsatt registrering ikke er for gammel`() {
-        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns listOf(OK_IGANGSATT_REGISTRERING)
+        every {
+            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                aktorId,
+                any()
+            )
+        } returns listOf(OK_IGANGSATT_REGISTRERING)
         val igangsattOrdinaerBrukerRegistrering =
             hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
 
-        assertThat(igangsattOrdinaerBrukerRegistrering).isNotNull
+        requireNotNull(igangsattOrdinaerBrukerRegistrering)
         assertThat(igangsattOrdinaerBrukerRegistrering.id).isEqualTo(OK_IGANGSATT_REGISTRERING.id)
     }
 
     @Test
     fun `returnerer registrering med profilering når det finnes`() {
-        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId, any()) } returns listOf(OK_IGANGSATT_REGISTRERING)
+        every {
+            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                aktorId,
+                any()
+            )
+        } returns listOf(OK_IGANGSATT_REGISTRERING)
         val igangsattOrdinaerBrukerRegistrering =
             hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
 
-        assertThat(igangsattOrdinaerBrukerRegistrering).isNotNull
+        requireNotNull(igangsattOrdinaerBrukerRegistrering)
         assertThat(igangsattOrdinaerBrukerRegistrering.profilering).isNotNull
         assertThat(igangsattOrdinaerBrukerRegistrering.id).isEqualTo(OK_REGISTRERING.id)
     }
@@ -83,13 +105,14 @@ internal class HentRegistreringServiceTest {
     companion object {
         private val fnr = Foedselsnummer.of("11017724129")
         private val aktorId = AktorId("12311")
-        private val bruker = Bruker(fnr, aktorId )
-        private val gammelDato = LocalDateTime.of(2020,1,11,15,50, 20)
+        private val bruker = Bruker(fnr, aktorId)
+        private val gammelDato = LocalDateTime.of(2020, 1, 11, 15, 50, 20)
         private val igaar = LocalDateTime.now().minusDays(1)
         private val profilering = lagProfilering()
         private val GAMMEL_BRUKERREGISTRERING =
             gyldigBrukerRegistrering(
-                opprettetDato = gammelDato)
+                opprettetDato = gammelDato
+            )
 
         private val OK_IGANGSATT_REGISTRERING = gyldigBrukerRegistrering(
             opprettetDato = igaar

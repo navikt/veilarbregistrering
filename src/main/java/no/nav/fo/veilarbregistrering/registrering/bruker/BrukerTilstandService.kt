@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.registrering.bruker.Resending.kanResendes
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 
 class BrukerTilstandService(
