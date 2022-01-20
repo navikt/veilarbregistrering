@@ -16,9 +16,11 @@ internal class KrrGatewayImpl(
         val telefonnummer = krrClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
             ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
 
+        LOG.info("Henter kontaktinfo fra KrrClient")
+
         if (digdirKrrProxyEnabled()) {
             try {
-                LOG.info("Henter kontaktinfo fra DigDirKrrProxy ...")
+                LOG.info("Henter kontaktinfo fra DigDirKrrProxy")
 
                 digdirKrrProxyClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
                     ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
