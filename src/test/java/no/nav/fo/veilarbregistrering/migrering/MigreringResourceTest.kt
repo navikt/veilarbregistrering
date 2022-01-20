@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.assertj.core.api.Assertions.assertThat
@@ -23,8 +22,6 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import java.nio.file.Files
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.servlet.http.HttpServletRequest
 
