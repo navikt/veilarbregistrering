@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.orgenhet.adapter
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -45,6 +45,6 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
         val enhetsnr = norg2Gateway.hentEnhetFor(Kommune("0302"))
 
         Assertions.assertThat(enhetsnr).isNotEmpty
-        Assertions.assertThat(enhetsnr).hasValue(of("0393"))
+        Assertions.assertThat(enhetsnr).hasValue(Enhetnr("0393"))
     }
 }

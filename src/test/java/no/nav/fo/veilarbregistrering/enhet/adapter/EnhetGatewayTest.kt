@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.enhet.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer.Companion.of
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -27,7 +26,7 @@ class EnhetGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentOrganisasjonsdetaljer skal kunne hente ut kommunenummer fra enhetsregisteret`() {
-        val org = of("995298775")
+        val org = Organisasjonsnummer("995298775")
         mockServer.`when`(
             HttpRequest
                 .request()
@@ -45,7 +44,7 @@ class EnhetGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentOrganisasjonsdetaljer skal gi empty result ved ukjent org nr`() {
-        val ukjentOrg = of("123456789")
+        val ukjentOrg = Organisasjonsnummer("123456789")
 
         mockServer.`when`(
             HttpRequest
@@ -77,6 +76,6 @@ class EnhetGatewayTest(private val mockServer: ClientAndServer) {
 
     companion object {
         private val OK_JSON = FileToJson.toJson("/enhet/enhet.json")
-        private val FEILENDE_ORG: Organisasjonsnummer = of("0")
+        private val FEILENDE_ORG = Organisasjonsnummer("0")
     }
 }

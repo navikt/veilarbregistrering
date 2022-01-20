@@ -30,14 +30,14 @@ class OppgaveRouterTest {
         }
         val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway = arbeidsforholdGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
     }
 
     @Test
     fun `ingen enhet for orgnummer skal gi intern brukerstotte`() {
         val oppgaveRouter = oppgaveRouter()
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
     }
 
     @Test
@@ -49,7 +49,7 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.of("2930"))
+        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
     }
 
     @Test
@@ -60,7 +60,7 @@ class OppgaveRouterTest {
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
+        assertThat(enhetsnr).hasValue(Enhetnr("232"))
     }
 
     @Test
@@ -90,7 +90,7 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.of("232"))
+        assertThat(enhetsnr).hasValue(Enhetnr("232"))
     }
 
     @Test
@@ -145,10 +145,10 @@ class OppgaveRouterTest {
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommune: Kommune): Optional<Enhetnr> {
             if (Kommune("1241") == kommune) {
-                return Optional.of(Enhetnr.of("232"))
+                return Optional.of(Enhetnr("232"))
             }
             return if (Kommune.medBydel(STAVANGER) == kommune) {
-                Optional.of(Enhetnr.of("1103"))
+                Optional.of(Enhetnr("1103"))
             } else Optional.empty()
         }
 

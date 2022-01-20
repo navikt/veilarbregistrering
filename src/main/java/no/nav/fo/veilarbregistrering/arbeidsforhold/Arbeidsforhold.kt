@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer.Companion.of
 import java.time.LocalDate
 import java.util.*
 
@@ -18,9 +17,7 @@ data class Arbeidsforhold(
 
     val organisasjonsnummer: Optional<Organisasjonsnummer>
         get() = if (arbeidsgiverOrgnummer != null) Optional.of(
-            of(
-                arbeidsgiverOrgnummer
-            )
+            Organisasjonsnummer(arbeidsgiverOrgnummer)
         ) else Optional.empty()
 
     override fun toString(): String {

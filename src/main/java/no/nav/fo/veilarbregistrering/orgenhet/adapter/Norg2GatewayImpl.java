@@ -28,7 +28,7 @@ class Norg2GatewayImpl implements Norg2Gateway {
         return listeMedRsNavKontorDtos.stream()
                 .filter(rsNavKontorDtos -> "Aktiv".equals(rsNavKontorDtos.getStatus()))
                 .findFirst()
-                .map(rsNavKontorDtos -> Enhetnr.Companion.of(rsNavKontorDtos.getEnhetNr()));
+                .map(rsNavKontorDtos -> new Enhetnr(rsNavKontorDtos.getEnhetNr()));
     }
 
     @Override
@@ -38,6 +38,6 @@ class Norg2GatewayImpl implements Norg2Gateway {
 
         return rsEnhets.stream()
                 .map(rs -> new NavEnhet(rs.getEnhetNr(), rs.getNavn()))
-                .collect(toMap(navEnhet -> Enhetnr.Companion.of(navEnhet.getId()), navEnhet -> navEnhet));
+                .collect(toMap(navEnhet -> new Enhetnr(navEnhet.getId()), navEnhet -> navEnhet));
     }
 }

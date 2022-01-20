@@ -116,10 +116,10 @@ class HentBrukerRegistreringServiceIntegrationTest(
             fun norg2Gateway() = object : Norg2Gateway {
                 override fun hentEnhetFor(kommune: Kommune): Optional<Enhetnr> {
                     if (Kommune("1241") == kommune) {
-                        return Optional.of(Enhetnr.of("232"))
+                        return Optional.of(Enhetnr("232"))
                     }
                     return if (Kommune.medBydel(STAVANGER) == kommune) {
-                        Optional.of(Enhetnr.of("1103"))
+                        Optional.of(Enhetnr("1103"))
                     } else Optional.empty()
                 }
 

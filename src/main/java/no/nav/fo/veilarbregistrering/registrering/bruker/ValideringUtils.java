@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.fo.veilarbregistrering.besvarelse.StillingKt.tomStilling;
-
 public class ValideringUtils {
 
     private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenHarHattJobb = Arrays.asList(

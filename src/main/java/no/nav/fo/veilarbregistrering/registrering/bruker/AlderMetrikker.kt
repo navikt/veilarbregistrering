@@ -2,9 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.metrics.Event
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import java.time.LocalDate
 

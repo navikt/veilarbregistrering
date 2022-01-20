@@ -4,7 +4,6 @@ import no.nav.common.sts.NaisSystemUserTokenProvider
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
-import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.PepConfig

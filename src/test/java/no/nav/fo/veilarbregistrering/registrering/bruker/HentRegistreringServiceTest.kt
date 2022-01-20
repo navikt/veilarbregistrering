@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.of
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
@@ -41,13 +40,13 @@ internal class HentRegistreringServiceTest {
 
     @Test
     fun skalFinneRiktigEnhet() {
-        val enhet = hentRegistreringService.finnEnhet(of("1234"))
+        val enhet = hentRegistreringService.finnEnhet(Enhetnr("1234"))
         assertThat(enhet).hasValue(NavEnhet("1234", "TEST1"))
     }
 
     @Test
     fun skalReturnereEmptyHvisIngenEnhetErFunnet() {
-        val enhet = hentRegistreringService.finnEnhet(of("2345"))
+        val enhet = hentRegistreringService.finnEnhet(Enhetnr("2345"))
         assertThat(enhet).isEmpty
     }
 
@@ -98,8 +97,8 @@ internal class HentRegistreringServiceTest {
         private val OK_REGISTRERING = gyldigBrukerRegistrering(opprettetDato = igaar, profilering = profilering)
 
         val enheter: Map<Enhetnr, NavEnhet> = mapOf(
-            of("1234") to NavEnhet("1234", "TEST1"),
-            of("5678") to NavEnhet("5678", "TEST2")
+            Enhetnr("1234") to NavEnhet("1234", "TEST1"),
+            Enhetnr("5678") to NavEnhet("5678", "TEST2")
         )
     }
 }
