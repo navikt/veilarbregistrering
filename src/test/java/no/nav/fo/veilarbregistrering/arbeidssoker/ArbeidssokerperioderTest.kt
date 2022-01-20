@@ -101,21 +101,5 @@ class ArbeidssokerperioderTest {
             Formidlingsgruppe.of("ARBS"),
             Periode.of(LocalDate.of(2020, 1, 1), null)
         )
-        private val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 2, 1), null)
-        )
-        private val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
-            Formidlingsgruppe.of("ISERV"),
-            Periode.of(LocalDate.of(2020, 3, 1), null)
-        )
-        private val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 4, 1), null)
-        )
-        private val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
-            Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 6, 9), null)
-        )
     }
 }

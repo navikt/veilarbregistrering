@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.profilering.Profilering
-import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
 import java.time.LocalDateTime
 
 object OrdinaerBrukerRegistreringTestdataBuilder {

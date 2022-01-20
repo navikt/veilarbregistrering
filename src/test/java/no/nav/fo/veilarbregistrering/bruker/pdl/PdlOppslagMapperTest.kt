@@ -1,21 +1,11 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdent
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGruppe
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlIdenter
-import no.nav.fo.veilarbregistrering.bruker.Gruppe
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGradering
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlAdressebeskyttelse
-import no.nav.fo.veilarbregistrering.bruker.AdressebeskyttelseGradering
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlPerson
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlTelefonnummer
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlFoedsel
-import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
 import no.nav.fo.veilarbregistrering.bruker.Foedselsdato
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGeografiskTilknytning
-import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.PdlGtType
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
-import org.assertj.core.api.Assertions.*
+import no.nav.fo.veilarbregistrering.bruker.Gruppe
+import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
+import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 

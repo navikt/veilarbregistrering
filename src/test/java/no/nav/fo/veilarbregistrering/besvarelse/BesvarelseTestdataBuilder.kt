@@ -24,11 +24,4 @@ object BesvarelseTestdataBuilder {
             fremtidigSituasjon = fremtidigSituasjon,
             tilbakeIArbeid = tilbakeIArbeid
         )
-
-    fun gyldigBesvarelseUtenJobb(): Besvarelse =
-        gyldigBesvarelse(
-            dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
-            sisteStilling = SisteStillingSvar.INGEN_SVAR,
-        )
-
 }
