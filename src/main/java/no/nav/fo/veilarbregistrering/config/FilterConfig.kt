@@ -37,6 +37,15 @@ class FilterConfig {
             .withUserRole(UserRole.INTERN)
     }
 
+    private fun createAADOBOConfig(): OidcAuthenticatorConfig? {
+        val discoveryUrl = requireProperty("AZURE_APP_WELL_KNOWN_URL")
+        val clientId = requireProperty("AZURE_APP_CLIENT_ID")
+        return OidcAuthenticatorConfig()
+            .withDiscoveryUrl(discoveryUrl)
+            .withClientId(clientId)
+            .withUserRole(UserRole.INTERN)
+    }
+
     private fun createAADSystemTokenConfig(): OidcAuthenticatorConfig? {
         val discoveryUrl = requireProperty("AAD_DISCOVERY_URL")
         val allowedAudience =
@@ -87,6 +96,7 @@ class FilterConfig {
                 createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
                 createAADSystemTokenConfig(),
+                createAADOBOConfig(),
             )
         )
         registration.filter = authenticationFilter
