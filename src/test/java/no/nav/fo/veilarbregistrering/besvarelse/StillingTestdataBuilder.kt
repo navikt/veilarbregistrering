@@ -9,8 +9,4 @@ object StillingTestdataBuilder {
     ): Stilling =
         Stilling(styrk08 = styrk08, label = label, konseptId = konseptId)
 
-    @JvmStatic
-    fun ingenYrkesbakgrunn(): Stilling {
-        return Stilling("X", -1L, "X")
-    }
 }

@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder.gyldigBesvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigStilling
-import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.ingenYrkesbakgrunn
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -79,7 +78,7 @@ class ValideringUtilsTest {
             besvarelse = gyldigBesvarelse(
                 sisteStilling = SisteStillingSvar.HAR_HATT_JOBB,
             ),
-            stilling = ingenYrkesbakgrunn()
+            stilling = ingenYrkesbakgrunn
         )
         assertThrows<RuntimeException> {
             ValideringUtils.validerBrukerRegistrering(
@@ -144,7 +143,7 @@ class ValideringUtilsTest {
     @Test
     fun `skal ikke svare på spm om siste stilling hvis vi vet at bruker ikke har hatt jobb`() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering(
-            stilling = ingenYrkesbakgrunn(),
+            stilling = ingenYrkesbakgrunn,
             besvarelse = gyldigBesvarelse(
                 dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
                 sisteStilling = SisteStillingSvar.HAR_IKKE_HATT_JOBB,

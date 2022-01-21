@@ -27,7 +27,7 @@ object OrdinaerBrukerRegistreringTestdataBuilder {
     fun gyldigBrukerRegistreringUtenJobb(opprettetDato: LocalDateTime = LocalDateTime.now()): OrdinaerBrukerRegistrering {
         return gyldigBrukerRegistrering(
             opprettetDato = opprettetDato,
-            stilling = StillingTestdataBuilder.ingenYrkesbakgrunn(),
+            stilling = ingenYrkesbakgrunn,
             besvarelse = BesvarelseTestdataBuilder.gyldigBesvarelse(
                 dinSituasjon = DinSituasjonSvar.ALDRI_HATT_JOBB,
                 sisteStilling = SisteStillingSvar.INGEN_SVAR,

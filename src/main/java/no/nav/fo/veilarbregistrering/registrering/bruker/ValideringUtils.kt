@@ -1,114 +1,92 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker;
+package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import no.nav.fo.veilarbregistrering.besvarelse.*;
+import no.nav.fo.veilarbregistrering.besvarelse.*
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
-public class ValideringUtils {
+object ValideringUtils {
+    private val situasjonerDerViVetAtBrukerenHarHattJobb = listOf(
+        DinSituasjonSvar.MISTET_JOBBEN,
+        DinSituasjonSvar.HAR_SAGT_OPP,
+        DinSituasjonSvar.ER_PERMITTERT,
+        DinSituasjonSvar.DELTIDSJOBB_VIL_MER,
+        DinSituasjonSvar.VIL_BYTTE_JOBB,
+        DinSituasjonSvar.VIL_FORTSETTE_I_JOBB
+    )
+    private val situasjonerDerViVetAtBrukerenIkkeHarHattJobb: List<DinSituasjonSvar?> = listOf(
+        DinSituasjonSvar.ALDRI_HATT_JOBB
+    )
 
-    private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenHarHattJobb = Arrays.asList(
-            DinSituasjonSvar.MISTET_JOBBEN,
-            DinSituasjonSvar.HAR_SAGT_OPP,
-            DinSituasjonSvar.ER_PERMITTERT,
-            DinSituasjonSvar.DELTIDSJOBB_VIL_MER,
-            DinSituasjonSvar.VIL_BYTTE_JOBB,
-            DinSituasjonSvar.VIL_FORTSETTE_I_JOBB
-    );
-    private static final List<DinSituasjonSvar> situasjonerDerViVetAtBrukerenIkkeHarHattJobb = Collections.singletonList(
-            DinSituasjonSvar.ALDRI_HATT_JOBB
-    );
-
-    public static void validerBrukerRegistrering(OrdinaerBrukerRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        assertFalse(besvarelseHarNull(bruker));
-        assertFalse(stillingHarNull(bruker));
-
-        assertFalse(besvarelse.getHelseHinder().equals(HelseHinderSvar.INGEN_SVAR));
-        assertFalse(besvarelse.getAndreForhold().equals(AndreForholdSvar.INGEN_SVAR));
-        assertFalse(bruker.getSisteStilling().equals(StillingKt.tomStilling()));
-
-        DinSituasjonSvar dinSituasjonSvar = besvarelse.getDinSituasjon();
-        UtdanningSvar utdanningSvar = besvarelse.getUtdanning();
-        SisteStillingSvar sisteStillingSvar = besvarelse.getSisteStilling();
-
-        stillingSkalSamsvareMedSisteStillingSpm(bruker);
+    @JvmStatic
+    fun validerBrukerRegistrering(bruker: OrdinaerBrukerRegistrering) {
+        val (utdanningSvar, utdanningBestatt, utdanningGodkjent, helseHinder, andreForhold, sisteStillingSvar, dinSituasjonSvar) = bruker.besvarelse
+        assertFalse(besvarelseHarNull(bruker))
+        assertFalse(stillingHarNull(bruker))
+        assertFalse(helseHinder == HelseHinderSvar.INGEN_SVAR)
+        assertFalse(andreForhold == AndreForholdSvar.INGEN_SVAR)
+        assertFalse(bruker.sisteStilling == tomStilling())
+        stillingSkalSamsvareMedSisteStillingSpm(bruker)
         assertBothTrueOrBothFalse(
-                situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar),
-                brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
-        );
+            situasjonerDerViVetAtBrukerenHarHattJobb.contains(dinSituasjonSvar),
+            brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR == sisteStillingSvar
+        )
         assertBothTrueOrBothFalse(
-                situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar),
-                !brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR.equals(sisteStillingSvar)
-        );
-
+            situasjonerDerViVetAtBrukerenIkkeHarHattJobb.contains(dinSituasjonSvar),
+            !brukerHarYrkesbakgrunn(bruker) && SisteStillingSvar.INGEN_SVAR == sisteStillingSvar
+        )
         assertBothTrueOrBothFalse(
-                DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar),
-                UtdanningSvar.INGEN_SVAR.equals(utdanningSvar)
-        );
-
+            DinSituasjonSvar.VIL_FORTSETTE_I_JOBB == dinSituasjonSvar,
+            UtdanningSvar.INGEN_SVAR == utdanningSvar
+        )
         assertBothTrueOrBothFalse(
-                UtdanningSvar.INGEN_SVAR.equals(utdanningSvar) || UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
-                UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
-                        && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
-        );
-
+            UtdanningSvar.INGEN_SVAR == utdanningSvar || UtdanningSvar.INGEN_UTDANNING == utdanningSvar,
+            UtdanningBestattSvar.INGEN_SVAR == utdanningBestatt && UtdanningGodkjentSvar.INGEN_SVAR == utdanningGodkjent
+        )
         assertBothTrueOrBothFalse(
-                UtdanningSvar.INGEN_UTDANNING.equals(utdanningSvar),
-                !DinSituasjonSvar.VIL_FORTSETTE_I_JOBB.equals(dinSituasjonSvar)
-                        && UtdanningBestattSvar.INGEN_SVAR.equals(besvarelse.getUtdanningBestatt())
-                        && UtdanningGodkjentSvar.INGEN_SVAR.equals(besvarelse.getUtdanningGodkjent())
-        );
+            UtdanningSvar.INGEN_UTDANNING == utdanningSvar,
+            DinSituasjonSvar.VIL_FORTSETTE_I_JOBB != dinSituasjonSvar
+                    && UtdanningBestattSvar.INGEN_SVAR == utdanningBestatt && UtdanningGodkjentSvar.INGEN_SVAR == utdanningGodkjent
+        )
     }
 
-    private static void stillingSkalSamsvareMedSisteStillingSpm(OrdinaerBrukerRegistrering bruker) {
-        SisteStillingSvar sisteStillingSvar = bruker.getBesvarelse().getSisteStilling();
-        if (SisteStillingSvar.HAR_HATT_JOBB.equals(sisteStillingSvar)) {
-            assertTrue(brukerHarYrkesbakgrunn(bruker));
-        } else if (SisteStillingSvar.HAR_IKKE_HATT_JOBB.equals(sisteStillingSvar)) {
-            assertFalse(brukerHarYrkesbakgrunn(bruker));
+    private fun stillingSkalSamsvareMedSisteStillingSpm(bruker: OrdinaerBrukerRegistrering) {
+        val sisteStillingSvar = bruker.besvarelse.sisteStilling
+        if (SisteStillingSvar.HAR_HATT_JOBB == sisteStillingSvar) {
+            assertTrue(brukerHarYrkesbakgrunn(bruker))
+        } else if (SisteStillingSvar.HAR_IKKE_HATT_JOBB == sisteStillingSvar) {
+            assertFalse(brukerHarYrkesbakgrunn(bruker))
         }
     }
 
-    private static boolean stillingHarNull(OrdinaerBrukerRegistrering bruker) {
-        Stilling stilling = bruker.getSisteStilling();
-        return stilling == null
-                || isEmpty(stilling.getStyrk08())
-                || isEmpty(stilling.getLabel());
+    private fun stillingHarNull(bruker: OrdinaerBrukerRegistrering): Boolean {
+        val stilling = bruker.sisteStilling
+        return (isEmpty(stilling.styrk08)
+                || isEmpty(stilling.label))
     }
 
-    private static boolean besvarelseHarNull(OrdinaerBrukerRegistrering bruker) {
-        Besvarelse besvarelse = bruker.getBesvarelse();
-        return besvarelse == null
-                || besvarelse.getDinSituasjon() == null
-                || besvarelse.getSisteStilling() == null
-                || besvarelse.getUtdanning() == null
-                || besvarelse.getUtdanningGodkjent() == null
-                || besvarelse.getUtdanningBestatt() == null
-                || besvarelse.getHelseHinder() == null
-                || besvarelse.getAndreForhold() == null;
+    private fun besvarelseHarNull(bruker: OrdinaerBrukerRegistrering): Boolean {
+        val besvarelse = bruker.besvarelse
+        return besvarelse.dinSituasjon == null || besvarelse.sisteStilling == null || besvarelse.utdanning == null || besvarelse.utdanningGodkjent == null || besvarelse.utdanningBestatt == null || besvarelse.helseHinder == null || besvarelse.andreForhold == null
     }
 
-    private static boolean brukerHarYrkesbakgrunn(OrdinaerBrukerRegistrering bruker) {
-        return !bruker.getSisteStilling().equals(StillingKt.ingenYrkesbakgrunn());
+    private fun brukerHarYrkesbakgrunn(bruker: OrdinaerBrukerRegistrering): Boolean {
+        return bruker.sisteStilling != ingenYrkesbakgrunn
     }
 
-    private static void assertBothTrueOrBothFalse(boolean value1, boolean value2) {
-        assertTrue(value1 == value2);
+    private fun assertBothTrueOrBothFalse(value1: Boolean, value2: Boolean) {
+        assertTrue(value1 == value2)
     }
 
-    private static void assertTrue(boolean value) {
+    private fun assertTrue(value: Boolean) {
         if (!value) {
-            throw new RuntimeException("Registreringsinformasjonen er ugyldig.");
+            throw RuntimeException("Registreringsinformasjonen er ugyldig.")
         }
     }
 
-    private static void assertFalse(boolean value) {
-        assertTrue(!value);
+    private fun assertFalse(value: Boolean) {
+        assertTrue(!value)
     }
 
-    private static boolean isEmpty(String str) {
-        return str == null || str.isEmpty();
+    private fun isEmpty(str: String?): Boolean {
+        return str == null || str.isEmpty()
     }
 }

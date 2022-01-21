@@ -14,6 +14,4 @@ fun tomStilling(): Stilling {
     return Stilling("", -1L, "-1")
 }
 
-fun ingenYrkesbakgrunn(): Stilling {
-    return Stilling("X", -1L, "X")
-}
+val ingenYrkesbakgrunn: Stilling = Stilling("X", -1L, "X")
