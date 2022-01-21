@@ -115,6 +115,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: paw-proxy
         - application: veilarbperson
           namespace: pto
         - application: veilarbdirigent
