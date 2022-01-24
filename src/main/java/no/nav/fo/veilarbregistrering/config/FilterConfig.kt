@@ -2,8 +2,10 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
+import no.nav.common.auth.oidc.filter.AzureAdUserRoleResolver
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
+import no.nav.common.auth.oidc.filter.UserRoleResolver
 import no.nav.common.log.LogFilter
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
 import org.springframework.boot.web.servlet.FilterRegistrationBean
@@ -37,24 +39,19 @@ class FilterConfig {
             .withUserRole(UserRole.INTERN)
     }
 
-    private fun createAADOBOConfig(): OidcAuthenticatorConfig? {
+    /*
+    * 24.01.2022 : This config should work for aad tokens obtained with both
+    * client-credentials- and on-behalf-of flow
+    */
+    private fun createAadTokenConfig(): OidcAuthenticatorConfig? {
         val discoveryUrl = requireProperty("AZURE_APP_WELL_KNOWN_URL")
-        val clientId = requireProperty("AZURE_APP_CLIENT_ID")
-        return OidcAuthenticatorConfig()
-            .withDiscoveryUrl(discoveryUrl)
-            .withClientId(clientId)
-            .withUserRole(UserRole.INTERN)
-    }
-
-    private fun createAADSystemTokenConfig(): OidcAuthenticatorConfig? {
-        val discoveryUrl = requireProperty("AAD_DISCOVERY_URL")
         val allowedAudience =
             requireProperty("AZURE_APP_CLIENT_ID")
 
         return OidcAuthenticatorConfig()
             .withDiscoveryUrl(discoveryUrl)
             .withClientId(allowedAudience)
-            .withUserRole(UserRole.SYSTEM)
+            .withUserRoleResolver(AzureAdUserRoleResolver())
     }
 
     private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig? {
@@ -95,8 +92,7 @@ class FilterConfig {
                 createOpenAmAuthenticatorConfig(),
                 createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
-                createAADSystemTokenConfig(),
-                createAADOBOConfig(),
+                createAadTokenConfig(),
             )
         )
         registration.filter = authenticationFilter
