@@ -16,7 +16,7 @@ class KrrConfig {
         val cluster = requireProperty(KRR_CLUSTER_PROPERTY_NAME)
 
         return DigDirKrrProxyClient(baseUrl) {
-            serviceToServiceTokenProvider.getServiceToken("dkif", "team-rocket", cluster)
+            serviceToServiceTokenProvider.getServiceToken("digdir-krr-proxy", "team-rocket", cluster)
         }
     }
 
