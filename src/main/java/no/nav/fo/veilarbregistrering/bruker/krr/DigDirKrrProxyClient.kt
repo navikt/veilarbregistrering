@@ -9,10 +9,11 @@ import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants.MDC_CALL_ID
 import okhttp3.HttpUrl
 import okhttp3.Request
-import org.slf4j.LoggerFactory
+import okhttp3.Response
 import org.slf4j.MDC
 import org.springframework.http.HttpStatus
 import java.io.IOException
@@ -23,38 +24,16 @@ open class DigDirKrrProxyClient internal constructor(
     private val tokenProvider: () -> String
 ) : HealthCheck {
     internal open fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse? {
-        val kontaktinfoPath = "v1/person"
-        val request = buildRequest(kontaktinfoPath, foedselsnummer)
-
-        try {
-            RestClient.baseClient().newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    when(response.code()) {
-                        HttpStatus.NOT_FOUND.value() -> LOG.warn(
-                            "Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret med bruk av AADtoken: {}",
-                            response
-                        )
-                        HttpStatus.FORBIDDEN.value() -> LOG.warn(
-                            "Fant ikke kontaktinfo på person i kontakt og reservasjonsregisteret med bruk av AADtoken: {}",
-                            response
-                        )
-                    }
-                    return null
-                }
-
-                val body = RestUtils.getBodyStr(response).orElseThrow(::RuntimeException)
-                return parse(body)
-            }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        val request = buildRequest(foedselsnummer)
+        val response = utfoer(request)
+        return parse(response)
     }
 
-    private fun buildRequest(path: String, foedselsnummer: Foedselsnummer): Request {
+    private fun buildRequest(foedselsnummer: Foedselsnummer): Request {
         return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments(path)
+                    .addPathSegments("v1/person")
                     .addQueryParameter("inkluderSikkerDigitalPost", "false")
                     .build()
             )
@@ -64,16 +43,35 @@ open class DigDirKrrProxyClient internal constructor(
             .build()
     }
 
+    private fun utfoer(request: Request) : String {
+        try {
+            defaultHttpClient().newCall(request).execute().use { response -> return behandle(response) }
+        } catch (e: IOException) {
+            throw RuntimeException("Noe gikk galt mot DigDir-Krr-Proxy", e)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun behandle(response: Response): String {
+        if (!response.isSuccessful) {
+            val feilmelding = mapOf(
+                HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
+                HttpStatus.NOT_FOUND to "Søk på kontaktinfo gav ingen treff"
+            ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot DigDir-Krr-Proxy")
+            throw RuntimeException(feilmelding)
+        }
+        return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }
+    }
+
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient())
     }
 
     companion object {
         private val GSON = GsonBuilder().create()
-        private val LOG = LoggerFactory.getLogger(DigDirKrrProxyClient::class.java)
 
-        internal fun parse(json: String): DigDirKrrProxyResponse {
-            return GSON.fromJson(json, object : TypeToken<DigDirKrrProxyResponse>() {}.type)
+        internal fun parse(jsonResponse: String): DigDirKrrProxyResponse {
+            return GSON.fromJson(jsonResponse, object : TypeToken<DigDirKrrProxyResponse>() {}.type)
         }
     }
 }
