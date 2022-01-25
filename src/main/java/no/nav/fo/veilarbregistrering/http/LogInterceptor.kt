@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.metrics
+package no.nav.fo.veilarbregistrering.http
 
 import no.nav.common.log.LogFilter
 import no.nav.common.log.MDCConstants
