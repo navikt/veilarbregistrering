@@ -57,9 +57,11 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
             .body(feil.message)
 
     @ExceptionHandler(HentOppfolgingStatusException::class)
-    fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException) =
+    fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException) {
+        logger.error(feil.message, feil)
         ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
+    }
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(r: RuntimeException): ResponseEntity<Any> {
