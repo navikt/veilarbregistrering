@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.config.filters
 
 import com.nimbusds.jwt.JWTParser
 import no.nav.common.auth.Constants

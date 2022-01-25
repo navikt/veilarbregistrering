@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.config.filters
 
 import org.springframework.http.HttpStatus
 import javax.servlet.*
