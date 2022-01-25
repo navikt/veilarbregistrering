@@ -1,15 +1,12 @@
 package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.bruker.feil.*
-import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
-import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -39,7 +36,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(OppgaveAlleredeOpprettet::class)
     fun handleOppgaveAlleredeOpprettet(feil: OppgaveAlleredeOpprettet): ResponseEntity<Any> {
-        LOG.warn(feil.message ?: "Uventet feil", feil)
+        logger.warn(feil.message ?: "Uventet feil", feil)
         return ResponseEntity.status(FORBIDDEN)
             .body(feil.message)
     }
@@ -66,11 +63,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(r: RuntimeException): ResponseEntity<Any> {
-        LOG.error(r.message ?: "Uventet feil", r)
+        logger.error(r.message ?: "Uventet feil", r)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
-    }
-
-    companion object {
-        private val LOG = loggerFor<FeilHandtering>()
     }
 }
