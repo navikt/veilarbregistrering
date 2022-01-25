@@ -17,11 +17,13 @@ import javax.servlet.Filter
 
 @Configuration
 class FilterConfig {
-    
+
+    /**
+     * Veilarbproxy trenger dette endepunktet for å sjekke at tjenesten lever
+     * `/internal` kan ikke brukes siden det blir stoppet før det kommer frem
+     */
     @Bean
     fun pingFilter(): FilterRegistrationBean<*>? {
-        // Veilarbproxy trenger dette endepunktet for å sjekke at tjenesten lever
-        // /internal kan ikke brukes siden det blir stoppet før det kommer frem
         val registration = FilterRegistrationBean<PingFilter>()
         registration.filter = PingFilter()
         registration.order = 1
