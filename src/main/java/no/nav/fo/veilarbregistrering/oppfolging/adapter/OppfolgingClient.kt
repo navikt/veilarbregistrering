@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
@@ -30,6 +31,9 @@ open class OppfolgingClient(
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
+
+        logger.info("Raw cookies found ${servletRequest().getHeader(HttpHeaders.COOKIE)}")
+        logger.info("Cookie-objects found: ${servletRequest().cookies.map{ it.name }}")
 
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
@@ -63,12 +67,12 @@ open class OppfolgingClient(
         when (e) {
             is ForbiddenException -> {
                 val feil = mapper(objectMapper.readValue(e.response!!))
-                LOG.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
+                logger.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
                 metricsService.registrer(AKTIVER_BRUKER_FEIL, Tag.of("aarsak", feil.name))
                 AktiverBrukerException(feil)
             }
             else -> {
-                LOG.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
+                logger.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
                 metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
                 null
             }
@@ -89,9 +93,5 @@ open class OppfolgingClient(
 
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
-    }
-
-    companion object {
-        private val LOG = loggerFor<OppfolgingClient>()
     }
 }
