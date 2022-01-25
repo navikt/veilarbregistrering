@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.Tag
+import no.nav.common.auth.Constants
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -29,7 +30,7 @@ open class OppfolgingClient(
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
-        val headers = listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
+        val headers = makeHeadersIfKnownSessionCookieIsPresent()
 
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
@@ -40,6 +41,15 @@ open class OppfolgingClient(
             metricsService.registrer(HENT_OPPFOLGING)
         }
     }
+
+    private fun makeHeadersIfKnownSessionCookieIsPresent(): List<Pair<String, String>> =
+        servletRequest()
+            .cookies
+            ?.asList()
+            ?.firstOrNull { it.name in KNOWN_AUTH_COOKIES }
+            ?.value
+            ?.let { listOf(HttpHeaders.COOKIE to it) } ?: emptyList()
+
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
@@ -75,7 +85,7 @@ open class OppfolgingClient(
         }
 
     private fun getServiceAuthorizationHeader(): List<Pair<String, String>> =
-        listOf(HttpHeaders.AUTHORIZATION to "Bearer ${ tokenProvider()}")
+        listOf(HttpHeaders.AUTHORIZATION to "Bearer ${tokenProvider()}")
 
     private fun mapper(aktiverBrukerFeilDto: AktiverBrukerFeilDto): AktiverBrukerFeil {
         return when (aktiverBrukerFeilDto.type) {
@@ -93,5 +103,10 @@ open class OppfolgingClient(
 
     companion object {
         private val LOG = loggerFor<OppfolgingClient>()
+        private val KNOWN_AUTH_COOKIES = listOf(
+            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME,
+            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME,
+            Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME
+        )
     }
 }
