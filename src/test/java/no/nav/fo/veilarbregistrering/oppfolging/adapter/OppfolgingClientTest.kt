@@ -43,7 +43,6 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     private fun buildClient(objectMapper: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
         every { RequestContext.servletRequest() } returns httpServletRequest
-        every { httpServletRequest.cookies } returns cookieWithAbnormalChars
         every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl) { "TOKEN" }.also { oppfolgingClient = it }
@@ -105,26 +104,11 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `hentOppfolgingstatus skal ikke krasje dersom innkommende request ikke har cookies hentOppfolgingstatus`() {
-        every { httpServletRequest.cookies } returns emptyArray()
+        every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns null
 
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
             HttpResponse.response()
                 .withStatusCode(200)
-                .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
-        )
-        Assertions.assertNotNull(
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
-        )
-    }
-
-    @Test
-    fun `skal sette session cookies på kall til hentOppfolgingstatus`() {
-        every { httpServletRequest.cookies } returns cookieWithSession
-
-        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
-            HttpResponse.response()
-                .withStatusCode(200)
-                .withCookie(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME, "token")
                 .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
         )
         Assertions.assertNotNull(
@@ -198,7 +182,5 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
 
     companion object {
         private val FNR = Fnr("10108000398") //Aremark fiktivt fnr.";
-        private val cookieWithAbnormalChars = arrayOf(Cookie("amp_t","czas Å\u009Brodkowoeuropejski standardowy"))
-        private val cookieWithSession = arrayOf(Cookie(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME, "token"))
     }
 }

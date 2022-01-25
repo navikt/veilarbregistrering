@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.Tag
-import no.nav.common.auth.Constants
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -13,7 +12,6 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
@@ -31,10 +29,8 @@ open class OppfolgingClient(
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
-        val headers = makeHeadersIfKnownSessionCookieIsPresent()
-
-        logger.info("Raw cookies found ${servletRequest().getHeader(HttpHeaders.COOKIE)}")
-        logger.info("Cookie-objects found: ${servletRequest().cookies.map{ it.name }}")
+        val headers =
+            servletRequest().getHeader(HttpHeaders.COOKIE)?.let { listOf(HttpHeaders.COOKIE to it) } ?: emptyList()
 
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
@@ -45,15 +41,6 @@ open class OppfolgingClient(
             metricsService.registrer(HENT_OPPFOLGING)
         }
     }
-
-    private fun makeHeadersIfKnownSessionCookieIsPresent(): List<Pair<String, String>> =
-        servletRequest()
-            .cookies
-            ?.asList()
-            ?.firstOrNull { it.name in KNOWN_AUTH_COOKIES }
-            ?.value
-            ?.let { listOf(HttpHeaders.COOKIE to it) } ?: emptyList()
-
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
@@ -103,13 +90,5 @@ open class OppfolgingClient(
 
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
-    }
-
-    companion object {
-        private val KNOWN_AUTH_COOKIES = listOf(
-            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME,
-            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME,
-            Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME
-        )
     }
 }
