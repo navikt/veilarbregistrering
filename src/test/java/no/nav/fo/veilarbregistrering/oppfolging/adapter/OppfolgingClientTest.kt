@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
@@ -22,26 +23,28 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
 
 @ExtendWith(MockServerExtension::class)
 internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     private lateinit var oppfolgingClient: OppfolgingClient
+    private lateinit var httpServletRequest: HttpServletRequest
 
 
     @BeforeEach
     fun setup() {
         mockServer.reset()
+        httpServletRequest = mockk()
         oppfolgingClient = buildClient(jacksonObjectMapper().findAndRegisterModules())
     }
 
     private fun buildClient(objectMapper: ObjectMapper): OppfolgingClient {
         mockkStatic(RequestContext::class)
-        val httpServletRequest: HttpServletRequest = mockk()
         every { RequestContext.servletRequest() } returns httpServletRequest
+        every { httpServletRequest.cookies } returns cookieWithAbnormalChars
         every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
-        every { httpServletRequest.cookies } returns emptyArray()
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl) { "TOKEN" }.also { oppfolgingClient = it }
     }
@@ -94,6 +97,35 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
             HttpResponse.response()
                     .withStatusCode(200)
                     .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
+        )
+        Assertions.assertNotNull(
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+        )
+    }
+
+    @Test
+    fun `hentOppfolgingstatus skal ikke krasje dersom innkommende request ikke har cookies hentOppfolgingstatus`() {
+        every { httpServletRequest.cookies } returns emptyArray()
+
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
+            HttpResponse.response()
+                .withStatusCode(200)
+                .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
+        )
+        Assertions.assertNotNull(
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+        )
+    }
+
+    @Test
+    fun `skal sette session cookies på kall til hentOppfolgingstatus`() {
+        every { httpServletRequest.cookies } returns cookieWithSession
+
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
+            HttpResponse.response()
+                .withStatusCode(200)
+                .withCookie(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME, "token")
+                .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
         )
         Assertions.assertNotNull(
             oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
@@ -166,5 +198,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
 
     companion object {
         private val FNR = Fnr("10108000398") //Aremark fiktivt fnr.";
+        private val cookieWithAbnormalChars = arrayOf(Cookie("amp_t","czas Å\u009Brodkowoeuropejski standardowy"))
+        private val cookieWithSession = arrayOf(Cookie(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME, "token"))
     }
 }
