@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatew
 import no.nav.fo.veilarbregistrering.autorisasjon.PepConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig
+import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig

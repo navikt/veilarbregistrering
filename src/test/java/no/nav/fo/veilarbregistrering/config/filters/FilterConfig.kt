@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.config.filters
 
 import no.nav.common.auth.context.UserRole
 import no.nav.common.test.auth.TestAuthContextFilter

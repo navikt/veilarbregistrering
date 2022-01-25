@@ -1,13 +1,13 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.config.filters
 
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.oidc.filter.AzureAdUserRoleResolver
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
-import no.nav.common.auth.oidc.filter.UserRoleResolver
 import no.nav.common.log.LogFilter
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
+import no.nav.fo.veilarbregistrering.config.*
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

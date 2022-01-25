@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.config
 
+import no.nav.fo.veilarbregistrering.config.filters.OidcAuthenticationFilterMigreringBypass
 import org.junit.Test
 import kotlin.test.assertTrue
 
