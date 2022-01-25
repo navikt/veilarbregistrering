@@ -62,6 +62,16 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
+    fun `Feil kastes`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
+            HttpResponse.response().withStatusCode(401)
+        )
+        assertThrows<RuntimeException> {
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+        }
+    }
+
+    @Test
     fun skal_returnere_response_ved_204() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response()
