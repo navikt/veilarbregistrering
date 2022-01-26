@@ -25,7 +25,11 @@ internal class KrrGatewayImpl(
                 val telefonnummerFraNyttGrensesnitt = digdirKrrProxyClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
                     ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
 
-                LOG.info("Nytt og gammelt grensesnitt gir samme verdi? " + telefonnummer?.equals(telefonnummerFraNyttGrensesnitt))
+                LOG.info("Nytt og gammelt grensesnitt gir samme verdi? ${telefonnummer == telefonnummerFraNyttGrensesnitt}")
+
+                if (telefonnummer == telefonnummerFraNyttGrensesnitt) {
+                    return telefonnummerFraNyttGrensesnitt
+                }
 
             } catch (e: RuntimeException) {
                 LOG.error("Kall mot DigDirKrrProxy feilet", e)
