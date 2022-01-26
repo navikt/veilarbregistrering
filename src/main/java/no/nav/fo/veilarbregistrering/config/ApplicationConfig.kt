@@ -28,6 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @Import(
     FilterConfig::class,
     ServiceBeansConfig::class,
+    AuthenticationConfig::class,
     DatabaseConfig::class,
     RepositoryConfig::class,
     KafkaConfig::class,

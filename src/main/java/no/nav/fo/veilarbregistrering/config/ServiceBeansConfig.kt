@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.common.abac.Pep
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.auth.context.AuthContextHolderThreadLocal
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
@@ -18,13 +17,12 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
-import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
-import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
@@ -50,15 +48,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class ServiceBeansConfig {
-    @Bean
-    fun authContextHolder(): AuthContextHolder {
-        return AuthContextHolderThreadLocal.instance()
-    }
-
-    @Bean
-    fun aadOboService(authContextHolder: AuthContextHolder): AadOboService {
-        return AadOboService(authContextHolder)
-    }
 
     @Bean
     fun hentRegistreringService(
