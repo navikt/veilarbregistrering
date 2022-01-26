@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.Tag
-import no.nav.common.auth.context.AuthContextHolderThreadLocal
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -15,6 +14,7 @@ import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
@@ -24,18 +24,14 @@ open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
     private val metricsService: PrometheusMetricsService,
     private val baseUrl: String,
+    private val aadOboService: AadOboService,
     private val tokenProvider: () -> String,
 
     ) : AbstractOppfolgingClient(objectMapper), HealthCheck {
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
-        val headers =
-            servletRequest().getHeader(HttpHeaders.COOKIE)?.let { listOf(HttpHeaders.COOKIE to it) } ?: emptyList()
-
-        if (headers.isEmpty() && !AuthContextHolderThreadLocal.instance().context.isEmpty) {
-           logger.info("Did not find cookies, will add obo token here")
-        }
+        val headers = getAuthorizationFromCookieOrResolveOboToken()
 
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
@@ -79,6 +75,11 @@ open class OppfolgingClient(
                 null
             }
         }
+
+    private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
+        return listOf(servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
+            ?: ("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}"))
+    }
 
     private fun getServiceAuthorizationHeader(): List<Pair<String, String>> =
         listOf(HttpHeaders.AUTHORIZATION to "Bearer ${tokenProvider()}")

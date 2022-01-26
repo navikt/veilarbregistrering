@@ -2,8 +2,11 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.sts.ServiceToServiceTokenProvider
+import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.oauth2.AadOboService
+import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,20 +19,20 @@ class OppfolgingGatewayConfig {
         objectMapper: ObjectMapper,
         prometheusMetricsService: PrometheusMetricsService,
         tokenProvider: ServiceToServiceTokenProvider,
+        aadOboService: AadOboService,
     ): OppfolgingClient {
         val propertyName = "VEILARBOPPFOLGINGAPI_URL"
-        val clusterPropertyName = "VEILARBOPPFOLGINGAPI_CLUSTER"
-        val cluster = requireProperty(clusterPropertyName)
 
         return OppfolgingClient(
             objectMapper,
             prometheusMetricsService,
             requireProperty(propertyName),
+            aadOboService,
         ) {
             tokenProvider.getServiceToken(
-                "veilarboppfolging",
-                "pto",
-                cluster
+                oppfolgingAppNavn,
+                oppfolgingNamespace,
+                oppfolgingCluster
             )
         }
     }
@@ -39,3 +42,8 @@ class OppfolgingGatewayConfig {
         return OppfolgingGatewayImpl(oppfolgingClient)
     }
 }
+
+val oppfolgingNamespace = "pto"
+val oppfolgingAppNavn = "veilarboppfolging"
+val oppfolgingCluster = requireProperty("VEILARBOPPFOLGINGAPI_CLUSTER")
+val oppfolgingApi = DownstreamApi(oppfolgingCluster, oppfolgingNamespace, oppfolgingAppNavn)
