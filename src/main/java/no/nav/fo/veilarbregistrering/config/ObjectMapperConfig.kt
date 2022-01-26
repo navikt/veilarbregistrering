@@ -18,7 +18,7 @@ class ObjectMapperConfig {
 
 }
 
-val objectMapper = jacksonObjectMapper()
+val objectMapper: ObjectMapper = jacksonObjectMapper()
     .findAndRegisterModules()
     .registerModule(KotlinModule())
     .registerModule(dateModule())
