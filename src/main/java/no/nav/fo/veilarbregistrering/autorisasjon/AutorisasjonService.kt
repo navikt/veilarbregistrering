@@ -7,6 +7,7 @@ import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.AktorId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
@@ -22,6 +23,7 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
+        logger.info("startregistrering ABAC-sjekk: Token er $innloggetBrukerToken")
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
