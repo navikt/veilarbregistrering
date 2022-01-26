@@ -13,11 +13,6 @@ internal class KrrGatewayImpl(
 {
     override fun hentKontaktinfo(bruker: Bruker): Telefonnummer? {
 
-        val telefonnummer = krrClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
-            ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
-
-        LOG.info("Henter kontaktinfo fra KrrClient")
-
         if (digdirKrrProxyEnabled()) {
             try {
                 LOG.info("Henter kontaktinfo fra DigDirKrrProxy")
@@ -25,16 +20,17 @@ internal class KrrGatewayImpl(
                 val telefonnummerFraNyttGrensesnitt = digdirKrrProxyClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
                     ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
 
-                LOG.info("Nytt og gammelt grensesnitt gir samme verdi? ${telefonnummer == telefonnummerFraNyttGrensesnitt}")
-
-                if (telefonnummer == telefonnummerFraNyttGrensesnitt) {
-                    return telefonnummerFraNyttGrensesnitt
-                }
+                 return telefonnummerFraNyttGrensesnitt
 
             } catch (e: RuntimeException) {
                 LOG.error("Kall mot DigDirKrrProxy feilet", e)
             }
         }
+
+        val telefonnummer = krrClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
+            ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
+
+        LOG.info("Henter kontaktinfo fra KrrClient")
 
         return telefonnummer
     }
