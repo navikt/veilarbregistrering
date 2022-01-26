@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.oauth2
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
-import no.nav.common.auth.context.AuthContextHolderThreadLocal
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
 import no.nav.security.token.support.client.core.ClientProperties
@@ -9,19 +9,19 @@ import no.nav.security.token.support.client.core.OAuth2GrantType
 import no.nav.security.token.support.client.core.context.JwtBearerTokenResolver
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.core.oauth2.OnBehalfOfTokenClient
-import okhttp3.OkHttpClient
 import java.net.URI
 import java.util.*
 
-class AadOboService() {
+
+class AadOboService(authContextHolder: AuthContextHolder) {
     private val tokenEndpointUrl: URI = URI.create(requireProperty("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"))
     private val discoveryUrl: URI = URI.create(requireProperty("AZURE_APP_WELL_KNOWN_URL"))
     private val onBehalfOfTokenClient = OnBehalfOfTokenClient(DefaultOAuth2HttpClient())
+    private val tokenResolver = TokenResolver(authContextHolder)
+    private val accessTokenService =
+            OAuth2AccessTokenService(tokenResolver, onBehalfOfTokenClient, null, null)
 
     fun getAccessToken(api: DownstreamApi): String {
-        val accessToken = call.request.authorization()?.substring("Bearer ".length) ?: throw IllegalStateException("Forventet access token!")
-        val accessTokenService =
-            OAuth2AccessTokenService({ Optional.of(accessToken) }, onBehalfOfTokenClient, null, null)
 
         val clientProperties = ClientProperties(
             tokenEndpointUrl,
@@ -43,13 +43,13 @@ class AadOboService() {
         return accessTokenService.getAccessToken(clientProperties).accessToken ?: throw IllegalStateException("Did not get access token")
     }
 }
-class TokenResolver : JwtBearerTokenResolver {
+
+class TokenResolver(private val authContextHolder: AuthContextHolder) : JwtBearerTokenResolver {
 
     override fun token(): Optional<String> {
-        return AuthContextHolderThreadLocal.instance(). ?: Optional.empty()
+        return Optional.of(authContextHolder.requireContext().idToken.serialize())
+
     }
 }
 
 data class DownstreamApi(val cluster: String, val namespace: String, val appName: String)
-
-val veilarbregistrering = DownstreamApi(requireClusterName(), requireNamespace(), "veilarbregistrering")

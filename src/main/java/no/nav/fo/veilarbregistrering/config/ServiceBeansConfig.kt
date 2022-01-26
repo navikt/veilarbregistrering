@@ -24,6 +24,7 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
@@ -52,6 +53,11 @@ class ServiceBeansConfig {
     @Bean
     fun authContextHolder(): AuthContextHolder {
         return AuthContextHolderThreadLocal.instance()
+    }
+
+    @Bean
+    fun aadOboService(authContextHolder: AuthContextHolder): AadOboService {
+        return AadOboService(authContextHolder)
     }
 
     @Bean
