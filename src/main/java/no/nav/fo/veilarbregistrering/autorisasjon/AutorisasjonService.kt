@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 
 open class AutorisasjonService(private val veilarbPep: Pep, private val authContextHolder: AuthContextHolder) {
 
@@ -21,9 +22,13 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
 
+
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
+        logger.info("Sjekker lesetilgang for $aktorId: ${authContextHolder.role.nullable()}")
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
+            logger.error("Innlogget bruker har ikke tilgang til aktornr $aktorId")
+            authContextHolder.idTokenClaims.nullable()?.let{ logger.info("sub: ${it.subject} oid: ${it.claims}") }
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
@@ -53,3 +58,5 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun erVeileder(): Boolean = erInternBruker()
 }
+
+fun <T> Optional<T>.nullable(): T? = this.orElse(null)
