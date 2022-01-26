@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
@@ -23,7 +22,6 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
 
@@ -35,6 +33,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
+        System.setProperty("VEILARBOPPFOLGINGAPI_CLUSTER", "dev-fss")
         mockServer.reset()
         httpServletRequest = mockk()
         oppfolgingClient = buildClient(jacksonObjectMapper().findAndRegisterModules())
@@ -45,7 +44,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         every { RequestContext.servletRequest() } returns httpServletRequest
         every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns "czas Å\u009Brodkowoeuropejski standardowy"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl) { "TOKEN" }.also { oppfolgingClient = it }
+        return OppfolgingClient(objectMapper, mockk(relaxed = true), baseUrl, mockk(relaxed = true)) { "TOKEN" }.also { oppfolgingClient = it }
     }
 
     @Test
