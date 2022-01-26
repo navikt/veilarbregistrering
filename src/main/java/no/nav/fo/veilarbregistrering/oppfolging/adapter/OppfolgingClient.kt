@@ -77,8 +77,19 @@ open class OppfolgingClient(
         }
 
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
-        return listOf(servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
-            ?: ("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}"))
+        if (servletRequest().getHeader(HttpHeaders.COOKIE) != null) {
+            logger.info("Fant cookie-header med autentiseringsinfo")
+            return listOf(HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.COOKIE))
+        }
+
+        logger.info("Fant ingen autentisering i cookie. Henter OBO-token for veilarboppfølging...")
+        val accessToken = aadOboService.getAccessToken(oppfolgingApi)
+        return listOf(HttpHeaders.AUTHORIZATION to "Bearer $accessToken")
+
+/*        return listOf(
+            servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
+                ?: ("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}")
+        )*/
     }
 
     private fun getServiceAuthorizationHeader(): List<Pair<String, String>> =
