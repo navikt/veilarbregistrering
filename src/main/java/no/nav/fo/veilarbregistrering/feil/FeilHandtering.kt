@@ -42,9 +42,11 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(HentIdenterException::class)
-    fun handleHentIdenterException(feil: HentIdenterException) =
+    fun handleHentIdenterException(feil: HentIdenterException) {
+        logger.error(feil.message, feil)
         ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
+    }
 
     @ExceptionHandler(ManglendeBrukerInfoException::class)
     fun handleManglendeBrukerInfoException(feil: ManglendeBrukerInfoException) =

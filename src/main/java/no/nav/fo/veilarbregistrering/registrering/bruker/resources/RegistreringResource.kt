@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
@@ -24,8 +25,11 @@ class RegistreringResource(
 ) : RegistreringApi {
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
+        logger.info("Henter startRegistrering-status")
         val bruker = userService.finnBrukerGjennomPdl()
+        logger.info("startregistrering: Hentet bruker fra PDL")
         autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        logger.info("startregistrering: Sjekk lesetilgang til bruker")
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
 
