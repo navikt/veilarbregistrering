@@ -9,6 +9,7 @@ class OppfolgingClientMock internal constructor() : OppfolgingClient(
     mockk(relaxed = true),
     mockk(relaxed = true),
     "",
+    mockk(relaxed = true),
     { "TOKEN" }
 ) {
     override fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
