@@ -23,7 +23,6 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
-        logger.info("startregistrering ABAC-sjekk: Token er $innloggetBrukerToken")
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
