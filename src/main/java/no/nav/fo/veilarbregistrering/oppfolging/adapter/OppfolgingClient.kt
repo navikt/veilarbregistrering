@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.Tag
+import no.nav.common.auth.context.AuthContextHolderThreadLocal
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -31,6 +32,10 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers =
             servletRequest().getHeader(HttpHeaders.COOKIE)?.let { listOf(HttpHeaders.COOKIE to it) } ?: emptyList()
+
+        if (headers.isEmpty() && !AuthContextHolderThreadLocal.instance().context.isEmpty) {
+           logger.info("Did not find cookies, will add obo token here")
+        }
 
         return get(url, headers, OppfolgingStatusData::class.java) { e ->
             when (e) {
