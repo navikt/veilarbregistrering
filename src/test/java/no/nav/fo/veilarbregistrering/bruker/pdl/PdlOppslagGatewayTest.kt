@@ -96,6 +96,6 @@ internal class PdlOppslagGatewayTest {
     private fun dummyPdlPerson(): PdlPerson {
         val pdlFoedsel = PdlFoedsel(LocalDate.of(1970, 3, 23))
         val pdlTelefonnummer = PdlTelefonnummer("94242425", "0047", 0)
-        return PdlPerson(listOf(pdlTelefonnummer), listOf(pdlFoedsel), emptyList())
+        return PdlPerson(listOf(pdlTelefonnummer), listOf(pdlFoedsel), emptyList(), listOf(testPdlNavn))
     }
 }

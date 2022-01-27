@@ -19,9 +19,6 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         } catch (e: BrukerIkkeFunnetException) {
             LOG.warn("Hent person gav ikke treff", e)
             null
-        } catch (e: Exception) {
-            LOG.warn("Ukjent feil ved henting av person", e)
-            null
         }
     }
 
@@ -32,9 +29,6 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
             Optional.ofNullable(map(pdlGeografiskTilknytning))
         } catch (e: BrukerIkkeFunnetException) {
             LOG.warn("Hent geografisk tilknytning gav ikke treff", e)
-            Optional.empty()
-        } catch (e: Exception) {
-            LOG.warn("Ukjent feil ved henting av geografisk tilknytning", e)
             Optional.empty()
         }
     }
