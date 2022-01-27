@@ -51,7 +51,7 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
     }
 
     private fun opprettKontaktinfo(person: Person?, telefonnummer: Telefonnummer?): Kontaktinfo {
-        return Kontaktinfo.of(
+        return Kontaktinfo(
             (person?.telefonnummer?.orElseGet { null })
                 ?.let { obj: Telefonnummer -> obj.asLandkodeOgNummer() },
             telefonnummer,

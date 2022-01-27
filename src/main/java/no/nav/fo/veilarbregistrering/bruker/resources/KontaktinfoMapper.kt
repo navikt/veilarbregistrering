@@ -1,18 +1,14 @@
-package no.nav.fo.veilarbregistrering.bruker.resources;
+package no.nav.fo.veilarbregistrering.bruker.resources
 
-import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo;
+import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo
 
-class KontaktinfoMapper {
-
-    private KontaktinfoMapper() {
-    }
-
-    static KontaktinfoDto map(Kontaktinfo kontaktinfo) {
-        KontaktinfoDto kontaktinfoDto = new KontaktinfoDto(
-                kontaktinfo.getTelefonnummerFraKrr().orElse(null),
-                kontaktinfo.getTelefonnummerFraNav().map(Object::toString).orElse(null),
-                kontaktinfo.getNavn()
-        );
-        return kontaktinfoDto;
+internal object KontaktinfoMapper {
+    @JvmStatic
+    fun map(kontaktinfo: Kontaktinfo): KontaktinfoDto {
+        return KontaktinfoDto(
+            kontaktinfo.telefonnummerFraKrr,
+            kontaktinfo.telefonnummerFraNav?.toString(),
+            kontaktinfo.navn
+        )
     }
 }
