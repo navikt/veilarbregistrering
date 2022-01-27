@@ -25,7 +25,7 @@ internal class ArbeidsforholdResourceTest {
     @BeforeEach
     fun setup() {
         autorisasjonService = mockk()
-        every { autorisasjonService.sjekkLesetilgangTilBruker(any()) } returns true
+        every { autorisasjonService.sjekkLesetilgangTilBruker(any()) } returns Unit
         userService = mockk()
         arbeidsforholdGateway = mockk()
         arbeidsforholdResource = ArbeidsforholdResource(
