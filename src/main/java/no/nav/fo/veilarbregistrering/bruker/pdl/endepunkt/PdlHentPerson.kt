@@ -10,7 +10,8 @@ data class PdlHentPerson(val hentPerson: PdlPerson)
 data class PdlPerson(
     val telefonnummer: List<PdlTelefonnummer>,
     val foedsel: List<PdlFoedsel> = emptyList(),
-    val adressebeskyttelse: List<PdlAdressebeskyttelse> = emptyList()) {
+    val adressebeskyttelse: List<PdlAdressebeskyttelse> = emptyList(),
+    val navn: List<PdlNavn> = emptyList()) {
 
     fun hoyestPrioriterteTelefonnummer() =
         (if (telefonnummer.isEmpty()) Optional.empty()
@@ -27,7 +28,10 @@ data class PdlPerson(
         else adressebeskyttelse.stream()
             .sorted()
             .findFirst())!!
+
+    fun getNavn() = navn.first()
 }
+data class PdlNavn(val fornavn: String, val mellomnavn:String?, val etternavn:String)
 
 data class PdlTelefonnummer(val nummer: String? = null,
                             val landskode: String? = null,

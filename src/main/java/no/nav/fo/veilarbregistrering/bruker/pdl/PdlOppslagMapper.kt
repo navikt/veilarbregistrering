@@ -34,7 +34,9 @@ internal object PdlOppslagMapper {
                 .orElse(null),
             pdlPerson.strengesteAdressebeskyttelse()
                 .map { obj: PdlAdressebeskyttelse -> map(obj) }
-                .orElse(AdressebeskyttelseGradering.UKJENT))
+                .orElse(AdressebeskyttelseGradering.UKJENT),
+            pdlPerson.getNavn().let { Navn(it.fornavn, it.mellomnavn, it.etternavn) }
+            )
     }
 
     private fun map(pdlFoedsel: PdlFoedsel): Foedselsdato {

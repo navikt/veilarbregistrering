@@ -7,20 +7,24 @@ public class Person {
     private final Telefonnummer telefonnummer;
     private final Foedselsdato foedselsdato;
     private final AdressebeskyttelseGradering adressebeskyttelseGradering;
+    private final Navn navn;
 
     public static Person of(
             Telefonnummer telefonnummer,
             Foedselsdato foedselsdato,
-            AdressebeskyttelseGradering adressebeskyttelseGradering) {
-        return new Person(telefonnummer, foedselsdato, adressebeskyttelseGradering);
+            AdressebeskyttelseGradering adressebeskyttelseGradering,
+            Navn navn) {
+        return new Person(telefonnummer, foedselsdato, adressebeskyttelseGradering, navn);
     }
 
     private Person(Telefonnummer telefonnummer,
                    Foedselsdato foedselsdato,
-                   AdressebeskyttelseGradering adressebeskyttelseGradering) {
+                   AdressebeskyttelseGradering adressebeskyttelseGradering,
+                   Navn navn) {
         this.telefonnummer = telefonnummer;
         this.foedselsdato = foedselsdato;
         this.adressebeskyttelseGradering = adressebeskyttelseGradering;
+        this.navn = navn;
     }
 
     public Optional<Telefonnummer> getTelefonnummer() {
@@ -29,6 +33,10 @@ public class Person {
 
     public Foedselsdato getFoedselsdato() {
         return foedselsdato;
+    }
+
+    public Navn getNavn() {
+        return navn;
     }
 
     public AdressebeskyttelseGradering getAdressebeskyttelseGradering() {

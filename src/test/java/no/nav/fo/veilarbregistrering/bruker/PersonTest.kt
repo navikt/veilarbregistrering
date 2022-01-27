@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+
+val testNavn = Navn("Ola", null, "Normann")
+
 class PersonTest {
 
     @Test
@@ -21,6 +24,6 @@ class PersonTest {
     }
 
     private fun personMedAdressebeskyttelseGradering(gradering: AdressebeskyttelseGradering?): Person {
-        return Person.of(null, null, gradering)
+        return Person.of(null, null, gradering, testNavn)
     }
 }

@@ -18,7 +18,7 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
             feiltyper.add(FeilType.UKJENT)
             null
         }
-        val telefonnummer: Telefonnummer? =  try {
+        val telefonnummer: Telefonnummer? = try {
             krrGateway.hentKontaktinfo(bruker)
         } catch (e: NotAuthorizedException) {
             LOG.error("Hent kontaktinfo fra Kontakt og reservasjonsregisteret feilet pga manglende autentisering", e)
@@ -54,7 +54,8 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
         return Kontaktinfo.of(
             (person?.telefonnummer?.orElseGet { null })
                 ?.let { obj: Telefonnummer -> obj.asLandkodeOgNummer() },
-            telefonnummer
+            telefonnummer,
+            person?.navn
         )
     }
 
