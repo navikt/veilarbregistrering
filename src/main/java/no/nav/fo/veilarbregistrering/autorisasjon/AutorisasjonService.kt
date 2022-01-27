@@ -18,14 +18,33 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         return authContextHolder.erInternBruker()
     }
 
-    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
+    fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
-    fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
+    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
+        val ident = authContextHolder.navIdent.orElse(null)
+        val rolle = rolle()
+
+        val harTilgang =
+            if (ident != null && rolle == UserRole.INTERN) {
+                logger.info("Fant NAVident: $ident")
+                veilarbPep.harVeilederTilgangTilPerson(ident, ActionId.READ, Fnr(fnr.stringValue()))
+            } else {
+                veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
+            }
+
+        if (!harTilgang) {
+            throw IllegalStateException("Veileder har ikke lesetilgang til bruker")
+        }
+    }
+
+    fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) =
+        veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
 
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
+
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
@@ -56,4 +75,4 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
     fun erVeileder(): Boolean = erInternBruker()
 }
 
-fun <T> Optional<T>.nullable(): T? = this.orElse(null)
+fun <T> Optional<T>.valueOrThrow(): T = this.orElseThrow { IllegalStateException() }
