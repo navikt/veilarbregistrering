@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
@@ -26,7 +27,9 @@ class RegistreringResource(
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        if (!isDevelopment()) {
+            autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        }
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
 
