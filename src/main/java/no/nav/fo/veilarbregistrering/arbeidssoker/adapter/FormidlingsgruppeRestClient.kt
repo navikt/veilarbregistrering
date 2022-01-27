@@ -47,9 +47,9 @@ class FormidlingsgruppeRestClient internal constructor(
                     .addQueryParameter("fnr", foedselsnummer.stringValue())
                     .addQueryParameter(
                         "fraDato",
-                        periode.fraDatoAs_yyyyMMdd()
+                        periode.fraDatoSomUtcString()
                     ) //TODO: null-sjekk på tilDato - skal ikke alltid med
-                    .addQueryParameter("tilDato", periode.tilDatoAs_yyyyMMdd())
+                    .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
                     .build()
             )
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())

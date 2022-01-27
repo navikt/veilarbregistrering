@@ -32,8 +32,8 @@ class TidslinjeResource(
     }
 
     private fun map(periode: Periode): PeriodeDto {
-        return PeriodeDto(periode.getFra().toString(),
-                Optional.ofNullable<LocalDate>(periode.getTil())
+        return PeriodeDto(periode.fra.toString(),
+                Optional.ofNullable<LocalDate>(periode.til)
                         .map { obj: LocalDate -> obj.toString() }
                         .orElse(null))
     }

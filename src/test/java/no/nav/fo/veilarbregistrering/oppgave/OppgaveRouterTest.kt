@@ -44,7 +44,7 @@ class OppgaveRouterTest {
     fun `ingen navenhet for organisasjon skal gi intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1240"),
-                Periode.of(LocalDate.of(2020, 1, 1), null))
+                Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
@@ -56,7 +56,7 @@ class OppgaveRouterTest {
     fun `enhetsnummer skal returneres nar alle koblingen til arbeidsforhold er komplett`() {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1241"),
-                Periode.of(LocalDate.of(2020, 1, 1), null))
+                Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
@@ -84,7 +84,7 @@ class OppgaveRouterTest {
     fun `geografisk tilknytning med landkode skal bruke arbeidsforhold til routing`() {
         val forretningsadresse = Forretningsadresse(
                 Kommune("1241"),
-                Periode.of(LocalDate.of(2020, 1, 1), null))
+                Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 
@@ -97,7 +97,7 @@ class OppgaveRouterTest {
     fun `kommunenummer tilhorende kommune med bydeler skal tildeles intern brukerstotte`() {
         val forretningsadresse = Forretningsadresse(
                 Kommune.medBydel(STAVANGER),
-                Periode.of(LocalDate.of(2020, 1, 1), null))
+                Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
 

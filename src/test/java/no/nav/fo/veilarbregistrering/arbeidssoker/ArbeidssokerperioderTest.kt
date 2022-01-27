@@ -16,7 +16,7 @@ class ArbeidssokerperioderTest {
                 ARBEIDSSOKERPERIODE_2
             )
         )
-        val forespurtPeriode = Periode.of(
+        val forespurtPeriode = Periode(
             LocalDate.of(2020, 2, 1),
             null
         )
@@ -30,7 +30,7 @@ class ArbeidssokerperioderTest {
                 ARBEIDSSOKERPERIODE_2
             )
         )
-        val forespurtPeriode = Periode.of(
+        val forespurtPeriode = Periode(
             LocalDate.of(2019, 2, 1),
             null
         )
@@ -44,7 +44,7 @@ class ArbeidssokerperioderTest {
                 ARBEIDSSOKERPERIODE_2
             )
         )
-        val forespurtPeriode = Periode.of(
+        val forespurtPeriode = Periode(
             LocalDate.of(2020, 1, 1),
             null
         )
@@ -58,7 +58,7 @@ class ArbeidssokerperioderTest {
                 ARBEIDSSOKERPERIODE_1
             )
         )
-        val forespurtPeriode = Periode.of(
+        val forespurtPeriode = Periode(
             LocalDate.of(2016, 10, 1),
             LocalDate.of(2020, 6, 25)
         )
@@ -84,7 +84,7 @@ class ArbeidssokerperioderTest {
             )
             .build()
         val arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(
-            Periode.of(
+            Periode(
                 LocalDate.of(2020, 4, 13),
                 LocalDate.of(2020, 6, 28)
             )
@@ -95,11 +95,11 @@ class ArbeidssokerperioderTest {
     companion object {
         private val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
             Formidlingsgruppe.of("ISERV"),
-            Periode.of(LocalDate.of(2016, 9, 24), null)
+            Periode(LocalDate.of(2016, 9, 24), null)
         )
         private val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
             Formidlingsgruppe.of("ARBS"),
-            Periode.of(LocalDate.of(2020, 1, 1), null)
+            Periode(LocalDate.of(2020, 1, 1), null)
         )
     }
 }

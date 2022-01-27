@@ -49,7 +49,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
         val arbeidssokerperioder = formidlingsgruppeGateway.finnArbeissokerperioder(
                 Foedselsnummer.of("12345612345"),
-                Periode.of(
+                Periode(
                         LocalDate.of(2020, 1, 10),
                         LocalDate.of(2020, 1, 11)))
 
@@ -57,8 +57,8 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                 arbeidssokerperioder()
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
                                 .medIserv()
-                                .fra(LocalDate.of(2020, 1, 12))
-                                .til(LocalDate.of(2020, 1, 11)))
+                                .fra(LocalDate.of(2020, 1, 11))
+                                .til(LocalDate.of(2020, 1, 12)))
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
                                 .medArbs()
                                 .fra(LocalDate.of(2020, 1, 12))
@@ -94,7 +94,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
         formidlingsgruppeGateway.finnArbeissokerperioder(
             Foedselsnummer.of("12345612345"),
-            Periode.of(
+            Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))
     }
@@ -119,7 +119,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
         formidlingsgruppeGateway.finnArbeissokerperioder(
             Foedselsnummer.of("12345612345"),
-            Periode.of(
+            Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))
     }
@@ -139,7 +139,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
         val arbeidssokerperioder = formidlingsgruppeGateway.finnArbeissokerperioder(
             Foedselsnummer.of("11118035157"),
-            Periode.of(
+            Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))
 

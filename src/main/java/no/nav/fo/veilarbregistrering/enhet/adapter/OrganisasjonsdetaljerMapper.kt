@@ -34,7 +34,7 @@ internal object OrganisasjonsdetaljerMapper {
         )
 
     private fun map(gyldighetsperiodeDto: GyldighetsperiodeDto): Periode =
-        Periode.of(
+        Periode(
             gyldighetsperiodeDto.fom,
             gyldighetsperiodeDto.tom
         )

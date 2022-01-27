@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -29,7 +28,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
     fun `skal kun lagre melding en gang`() {
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
         var id = arbeidssokerRepository.lagre(command)
-        Assertions.assertThat(id).isNotNull()
+        Assertions.assertThat(id).isNotNull
         id = arbeidssokerRepository.lagre(command)
         Assertions.assertThat(id).isEqualTo(-1)
     }
@@ -38,9 +37,9 @@ class ArbeidssokerRepositoryDbIntegrationTest(
     fun `skal lagre formidlingsgruppeEvent`() {
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
         val id = arbeidssokerRepository.lagre(command)
-        Assertions.assertThat(id).isNotNull()
+        Assertions.assertThat(id).isNotNull
         val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
-        val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode.of(LocalDate.now(), null))
+        val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe.of("ARBS"), Periode(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }
 
@@ -52,7 +51,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
         arbeidssokerRepository.lagre(command2)
         val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
         arbeidssokerRepository.lagre(command3)
-        val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, Arrays.asList(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
+        val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
         val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }

@@ -1,107 +1,54 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker
 
-import java.time.LocalDate;
-import java.util.Objects;
+import java.time.LocalDate
 
-public class Periode implements Comparable<Periode> {
+data class Periode (val fra: LocalDate, val til: LocalDate?) : Comparable<Periode> {
 
-    private final LocalDate fra;
-    private final LocalDate til;
-
-    public static Periode gyldigPeriode(LocalDate fraOgMed, LocalDate tilOgMed) {
-        if (fraOgMed == null) {
-            throw new IllegalArgumentException("FraOgMed-dato er null");
-        }
-        if (tilOgMed != null && fraOgMed.isAfter(tilOgMed)) {
-            throw new IllegalArgumentException("FraOgMed-dato er etter TilOgMed-dato");
-        }
-        return of(fraOgMed, tilOgMed);
+    init {
+        require(!(til != null && fra.isAfter(til))) { "FraOgMed-dato er etter TilOgMed-dato" }
     }
 
-    public static Periode of(LocalDate fra, LocalDate til) {
-        return new Periode(fra, til);
-    }
-
-    private Periode(LocalDate fra, LocalDate til) {
-        this.fra = fra;
-        this.til = til;
-    }
-
-    public Periode tilOgMed(LocalDate tilDato) {
-        return new Periode(fra, tilDato);
+    fun tilOgMed(tilDato: LocalDate?): Periode {
+        return Periode(fra, tilDato)
     }
 
     /**
      * Er periode er Åpen, dersom "til"-dato er null.
      */
-    public boolean erApen() {
-        return til == null;
+    fun erApen(): Boolean = til == null
+
+    fun fraDatoSomUtcString(): String {
+        return fra.toString()
     }
 
-    public String fraDatoAs_yyyyMMdd() {
-        return fra.toString();
+    fun tilDatoSomUtcString(): String? {
+        return til?.toString()
     }
 
-    public String tilDatoAs_yyyyMMdd() {
-        return til != null ? til.toString() : null;
-    }
-
-    public LocalDate getFra() {
-        return fra;
-    }
-
-    public LocalDate getTil() {
-        return til;
-    }
-
-    public boolean overlapperMed(Periode forespurtPeriode) {
+    fun overlapperMed(forespurtPeriode: Periode): Boolean {
         if (forespurtPeriodeAvsluttesFørPeriodeStarter(forespurtPeriode)) {
-            return false;
+            return false
         }
-
-        if (forespurtPeriodeStarterEtterPeriodeErAvsluttet(forespurtPeriode)) {
-            return false;
-        }
-
-        return true;
+        return !forespurtPeriodeStarterEtterPeriodeErAvsluttet(forespurtPeriode)
     }
 
-    private boolean forespurtPeriodeStarterEtterPeriodeErAvsluttet(Periode forespurtPeriode) {
-        return til != null && forespurtPeriode.getFra().isAfter(til);
+    private fun forespurtPeriodeStarterEtterPeriodeErAvsluttet(forespurtPeriode: Periode): Boolean {
+        return til != null && forespurtPeriode.fra.isAfter(til)
     }
 
-    private boolean forespurtPeriodeAvsluttesFørPeriodeStarter(Periode forespurtPeriode) {
-        return forespurtPeriode.getTil() != null && fra.isAfter(forespurtPeriode.getTil());
+    private fun forespurtPeriodeAvsluttesFørPeriodeStarter(forespurtPeriode: Periode): Boolean {
+        return forespurtPeriode.til != null && fra.isAfter(forespurtPeriode.til)
     }
 
-    public boolean fraOgMed(Periode periode) {
-        return fra.equals(periode.getFra()) || fra.isAfter(periode.getFra());
+    fun fraOgMed(periode: Periode): Boolean {
+        return fra == periode.fra || fra.isAfter(periode.fra)
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "fra=" + fra +
-                ", til=" + til +
-                '}';
+    override fun compareTo(other: Periode): Int {
+        return fra.compareTo(other.fra)
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Periode periode = (Periode) o;
-        return Objects.equals(fra, periode.fra) &&
-                Objects.equals(til, periode.til);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fra, til);
-    }
-
-    @Override
-    public int compareTo(Periode periode) {
-        return fra.compareTo(periode.getFra());
+    companion object {
+        fun gyldigPeriode(fraOgMed: LocalDate?, tilOgMed: LocalDate?): Periode = Periode(requireNotNull(fraOgMed), tilOgMed)
     }
 }
