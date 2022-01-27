@@ -6,7 +6,7 @@ import java.util.stream.Collectors
 
 class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
     private val arbeidssokerperioder: List<Arbeidssokerperiode> = arbeidssokerperioder ?: emptyList()
-    fun overlapperMed(forespurtPeriode: Periode?): Arbeidssokerperioder {
+    fun overlapperMed(forespurtPeriode: Periode): Arbeidssokerperioder {
         return Arbeidssokerperioder(arbeidssokerperioder.stream()
             .filter { p: Arbeidssokerperiode -> p.periode.overlapperMed(forespurtPeriode) }
             .filter { p: Arbeidssokerperiode -> p.formidlingsgruppe.erArbeidssoker() }
