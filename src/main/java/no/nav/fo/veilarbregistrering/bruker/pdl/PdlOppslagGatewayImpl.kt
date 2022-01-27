@@ -19,6 +19,9 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         } catch (e: BrukerIkkeFunnetException) {
             LOG.warn("Hent person gav ikke treff", e)
             null
+        } catch (e: Exception) {
+            LOG.warn("Ukjent feil ved henting av person", e)
+            null
         }
     }
 
