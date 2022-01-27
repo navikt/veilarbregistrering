@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.feil
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR

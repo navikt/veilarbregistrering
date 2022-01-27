@@ -9,8 +9,8 @@ import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach

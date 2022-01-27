@@ -16,8 +16,8 @@ import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(

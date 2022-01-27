@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.oppfolging
 
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import java.lang.IllegalArgumentException

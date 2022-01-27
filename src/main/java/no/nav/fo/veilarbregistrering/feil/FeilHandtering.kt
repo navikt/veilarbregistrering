@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.feil
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity

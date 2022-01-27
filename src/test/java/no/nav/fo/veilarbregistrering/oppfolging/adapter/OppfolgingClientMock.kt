@@ -2,8 +2,8 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.registrering.bruker.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 
 class OppfolgingClientMock internal constructor() : OppfolgingClient(
     mockk(relaxed = true),

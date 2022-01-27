@@ -6,6 +6,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker;
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
 import no.nav.fo.veilarbregistrering.metrics.Events;
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException;
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil;
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway;
 import no.nav.fo.veilarbregistrering.profilering.Profilering;
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository;
