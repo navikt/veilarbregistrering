@@ -1,6 +1,13 @@
 {
   "data": {
     "hentPerson": {
+        "navn": [
+          {
+            "fornavn": "Ola",
+            "mellomnavn": null,
+            "etternavn": "Normann"
+          }
+        ],
       "foedsel": [
         {
           "foedselsdato": "2000-01-01"

@@ -82,7 +82,7 @@ class PdlOppslagClientTest {
             override fun hentPersonRequest(fnr: String, pdlHentPersonRequest: PdlHentPersonRequest) = toJson(HENT_PERSON_OK_JSON)
         }
 
-        val (telefonnummer, foedsel, adressebeskyttelse) = pdlOppslagClient.hentPerson(AktorId("12345678910"))
+        val (telefonnummer, foedsel, adressebeskyttelse, navn) = pdlOppslagClient.hentPerson(AktorId("12345678910"))
 
         assertThat(foedsel).isEqualTo(listOf(PdlFoedsel(
             foedselsdato = LocalDate.of(2000, 1, 1))
@@ -95,6 +95,8 @@ class PdlOppslagClientTest {
         assertThat(adressebeskyttelse).isEqualTo(listOf(PdlAdressebeskyttelse(
             gradering = PdlGradering.STRENGT_FORTROLIG_UTLAND
         )))
+
+        assertThat(navn).isEqualTo(listOf(PdlNavn(fornavn = "Ola", mellomnavn = null, etternavn = "Normann")))
     }
 
 
