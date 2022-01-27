@@ -54,10 +54,6 @@ spec:
       value: https://digdir-krr-proxy.dev.intern.nav.no/rest/
     - name: DIGDIR_KRR_CLUSTER
       value: dev-gcp
-    - name: KRR_BASE_URL
-      value: http://dkif.default.svc.nais.local/api/
-    - name: KRR_CLUSTER
-      value: dev-fss
     - name: PDL_URL
       value: http://pdl-api.default.svc.nais.local
     - name: PDL_CLUSTER
