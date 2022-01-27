@@ -29,6 +29,7 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
                 logger.info("Fant NAVident: $ident")
                 veilarbPep.harVeilederTilgangTilPerson(ident, ActionId.READ, Fnr(fnr.stringValue()))
             } else {
+                logger.info("NAVident ikke tilgjengelig")
                 veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
             }
 
