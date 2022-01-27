@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
@@ -25,7 +23,7 @@ internal class ArbeidsforholdResourceTest {
     @BeforeEach
     fun setup() {
         autorisasjonService = mockk()
-        every { autorisasjonService.sjekkLesetilgangTilBruker(any()) } returns Unit
+        every { autorisasjonService.sjekkLesetilgangTilBruker(any()) } just Runs
         userService = mockk()
         arbeidsforholdGateway = mockk()
         arbeidsforholdResource = ArbeidsforholdResource(
