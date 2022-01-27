@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
-import no.nav.fo.veilarbregistrering.bruker.Foedselsdato
-import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
-import no.nav.fo.veilarbregistrering.bruker.Gruppe
-import no.nav.fo.veilarbregistrering.bruker.Telefonnummer
+import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -40,7 +37,8 @@ class PdlOppslagMapperTest {
                 PdlTelefonnummer("11223344", "0042", 2)
             ),
             listOf(PdlFoedsel(LocalDate.of(1950, 12, 31))),
-            emptyList()
+            emptyList(),
+            listOf(testPdlNavn),
         )
         val person = PdlOppslagMapper.map(pdlPerson)
         assertThat(person.harAdressebeskyttelse()).isFalse
@@ -53,7 +51,8 @@ class PdlOppslagMapperTest {
         val pdlPerson = PdlPerson(
             emptyList(),
             emptyList(),
-            listOf(PdlAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG))
+            listOf(PdlAdressebeskyttelse(PdlGradering.STRENGT_FORTROLIG)),
+            listOf(testPdlNavn),
         )
         val person = PdlOppslagMapper.map(pdlPerson)
         assertThat(person.harAdressebeskyttelse()).isTrue
@@ -95,3 +94,5 @@ class PdlOppslagMapperTest {
         assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning.of("POL"))
     }
 }
+
+val testPdlNavn = PdlNavn("Ola", null, "Normann")
