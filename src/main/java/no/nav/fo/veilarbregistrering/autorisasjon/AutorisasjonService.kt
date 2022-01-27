@@ -24,11 +24,8 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        logger.info("Sjekker lesetilgang for $aktorId: ${authContextHolder.role.nullable()}")
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
-            logger.error("Innlogget bruker har ikke tilgang til aktornr $aktorId")
-            authContextHolder.idTokenClaims.nullable()?.let{ logger.info("sub: ${it.subject} oid: ${it.claims}") }
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }

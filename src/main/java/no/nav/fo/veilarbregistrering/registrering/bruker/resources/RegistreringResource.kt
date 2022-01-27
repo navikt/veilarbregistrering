@@ -26,9 +26,7 @@ class RegistreringResource(
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        logger.info("startregistrering: Hentet bruker fra PDL, aktørId: ${bruker.aktorId.aktorId}")
         autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
-        logger.info("startregistrering: Sjekket lesetilgang til bruker")
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
 
