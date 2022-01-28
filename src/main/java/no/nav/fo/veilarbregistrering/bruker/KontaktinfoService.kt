@@ -46,13 +46,13 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
     }
 
     private fun fantMinstEttTelefonnummer(person: Person?, telefonnummer: Telefonnummer?): Boolean {
-        return (person?.telefonnummer?.isPresent ?: false)
+        return (person?.telefonnummer?.nummer != null)
                 || telefonnummer != null
     }
 
     private fun opprettKontaktinfo(person: Person?, telefonnummer: Telefonnummer?): Kontaktinfo {
         return Kontaktinfo(
-            (person?.telefonnummer?.orElseGet { null })
+            person?.telefonnummer
                 ?.let { obj: Telefonnummer -> obj.asLandkodeOgNummer() },
             telefonnummer,
             person?.navn

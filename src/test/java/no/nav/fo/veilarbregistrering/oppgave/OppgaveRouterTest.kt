@@ -125,7 +125,7 @@ class OppgaveRouterTest {
     }
 
     private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
-        val person = Person.of(null, null, adressebeskyttelseGradering, testNavn)
+        val person = Person(null, null, adressebeskyttelseGradering, testNavn)
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("0301"),
                                                       users = mapOf(BRUKER.aktorId to person))
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)

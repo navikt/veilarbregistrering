@@ -42,7 +42,7 @@ class PdlOppslagMapperTest {
         )
         val person = PdlOppslagMapper.map(pdlPerson)
         assertThat(person.harAdressebeskyttelse()).isFalse
-        assertThat(person.telefonnummer).hasValue(Telefonnummer("11223344", "0041"))
+        assertThat(person.telefonnummer).isEqualTo(Telefonnummer("11223344", "0041"))
         assertThat(person.foedselsdato).isEqualTo(Foedselsdato(LocalDate.of(1950, 12, 31)))
     }
 
@@ -56,7 +56,7 @@ class PdlOppslagMapperTest {
         )
         val person = PdlOppslagMapper.map(pdlPerson)
         assertThat(person.harAdressebeskyttelse()).isTrue
-        assertThat(person.adressebeskyttelseGradering.erGradert()).isTrue
+        assertThat(person.adressebeskyttelseGradering?.erGradert()).isTrue
     }
 
     @Test

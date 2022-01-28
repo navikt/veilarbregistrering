@@ -25,7 +25,7 @@ internal object PdlOppslagMapper {
 
     @JvmStatic
     fun map(pdlPerson: PdlPerson): Person {
-        return Person.of(
+        return Person(
             pdlPerson.hoyestPrioriterteTelefonnummer()
                 ?.let { map(it) },
             pdlPerson.getSistePdlFoedsel()
