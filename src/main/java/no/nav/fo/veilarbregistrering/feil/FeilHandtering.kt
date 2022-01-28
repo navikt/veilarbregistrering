@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.feil
 
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
@@ -63,6 +64,12 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
         logger.error(feil.message, feil)
         ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
+    }
+
+    @ExceptionHandler(AutorisasjonException::class)
+    fun handleAutorisasjonException(feil: AutorisasjonException) {
+        logger.error(feil.message, feil)
+        ResponseEntity.status(FORBIDDEN).body(feil.message)
     }
 
     @ExceptionHandler(RuntimeException::class)

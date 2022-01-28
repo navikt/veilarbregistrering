@@ -23,7 +23,7 @@ internal class ArbeidsforholdResourceTest {
     @BeforeEach
     fun setup() {
         autorisasjonService = mockk()
-        every { autorisasjonService.sjekkLesetilgangTilBruker(any()) } just Runs
+        every { autorisasjonService.sjekkLesetilgangTilBruker(any<Foedselsnummer>()) } just Runs
         userService = mockk()
         arbeidsforholdGateway = mockk()
         arbeidsforholdResource = ArbeidsforholdResource(
@@ -38,7 +38,7 @@ internal class ArbeidsforholdResourceTest {
         every { userService.finnBrukerGjennomPdl() } returns Bruker(IDENT, AktorId("1234"))
         every { arbeidsforholdGateway.hentArbeidsforhold(IDENT) } returns flereArbeidsforhold()
         arbeidsforholdResource.hentSisteArbeidsforhold()
-        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(any()) }
+        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(any<Foedselsnummer>()) }
     }
 
     private fun flereArbeidsforhold(): FlereArbeidsforhold {

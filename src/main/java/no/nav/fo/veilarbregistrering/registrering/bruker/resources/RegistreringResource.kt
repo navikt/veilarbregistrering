@@ -3,8 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.config.isDevelopment
-import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
@@ -30,7 +28,7 @@ class RegistreringResource(
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
 
-        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
 
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
@@ -46,7 +44,7 @@ class RegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangMedAktorId(bruker.aktorId)
+        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.aktorId)
 
         val veileder = navVeileder()
         val opprettetRegistrering =
@@ -58,7 +56,7 @@ class RegistreringResource(
     @GetMapping("/registrering")
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
         val ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker)
         val sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker)
         val brukerRegistreringWrapper = create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
@@ -72,7 +70,7 @@ class RegistreringResource(
     @GetMapping("/igangsattregistrering")
     override fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
         val ordinaerBrukerRegistrering = hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
         val brukerRegistreringWrapper = create(ordinaerBrukerRegistrering, null)
         if (brukerRegistreringWrapper == null) {
@@ -100,7 +98,7 @@ class RegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangMedAktorId(bruker.aktorId)
+        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.aktorId)
         val veileder = navVeileder()
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder)
     }

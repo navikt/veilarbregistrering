@@ -22,7 +22,7 @@ class TidslinjeResource(
     @GetMapping
     override fun tidslinje() : TidslinjeDto {
         val bruker: Bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+        autorisasjonService.sjekkLesetilgangTilBruker(bruker.aktorId)
 
         return TidslinjeDto(tidslinjeAggregator.tidslinje(bruker).map(this::map).toList())
     }

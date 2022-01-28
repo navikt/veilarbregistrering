@@ -4,13 +4,14 @@ import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
-import no.nav.common.types.identer.AktorId
+import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
+import no.nav.common.types.identer.NavIdent
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
-import java.util.*
+
 
 open class AutorisasjonService(private val veilarbPep: Pep, private val authContextHolder: AuthContextHolder) {
 
@@ -18,39 +19,36 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         return authContextHolder.erInternBruker()
     }
 
-    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
+    fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
+    fun sjekkLesetilgangTilBruker(bruker: AktorId) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
+    fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
+    fun sjekkSkrivetilgangTilBruker(bruker: AktorId) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
 
-    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
-        val ident = authContextHolder.navIdent.orElse(null)
-        val rolle = rolle()
+    private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
+    private fun tilEksternId(bruker: AktorId) = no.nav.common.types.identer.AktorId(bruker.aktorId)
 
-        val harTilgang =
-            if (ident != null && rolle == UserRole.INTERN) {
-                veilarbPep.harVeilederTilgangTilPerson(ident, ActionId.READ, Fnr(fnr.stringValue()))
-            } else {
-                veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, Fnr(fnr.stringValue()))
-            }
-
-        if (!harTilgang) {
-            throw IllegalStateException("Veileder har ikke lesetilgang til bruker")
+    private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
+        if (rolle() == UserRole.SYSTEM) return
+        if (!harTilgang(ActionId.READ, brukerId)) {
+            throw AutorisasjonException()
         }
     }
 
-    fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) =
-        veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, Fnr(fnr.stringValue()))
-
-
-    fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.aktorId))) {
-
-            throw ResponseStatusException(HttpStatus.FORBIDDEN)
+    private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
+        if (!harTilgang(ActionId.WRITE, brukerId)) {
+            throw AutorisasjonException()
         }
     }
 
-    fun sjekkSkrivetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId(aktorId.aktorId))) {
-            throw ResponseStatusException(HttpStatus.FORBIDDEN)
+    private fun navIdentClaim(): NavIdent? = authContextHolder.navIdent.orElse(null)
+
+    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
+        val navIdent = navIdentClaim()
+        return if (navIdent != null) {
+            veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
+        } else
+        {
+            veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
         }
     }
 
@@ -72,4 +70,6 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         }
 
     fun erVeileder(): Boolean = erInternBruker()
+
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 }
