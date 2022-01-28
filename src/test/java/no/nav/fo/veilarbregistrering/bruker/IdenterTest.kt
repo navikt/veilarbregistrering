@@ -32,7 +32,7 @@ class IdenterTest {
             )
         )
         val aktorId = identer.finnGjeldendeAktorId()
-        assertThat(aktorId.asString()).isEqualTo("22222222222")
+        assertThat(aktorId.aktorId).isEqualTo("22222222222")
     }
 
     @Test

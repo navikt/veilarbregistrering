@@ -14,7 +14,7 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
     override fun lagreReaktiveringForBruker(aktorId: AktorId) {
         val params = mapOf(
                 "id" to nesteFraSekvens(BRUKER_REAKTIVERING_SEQ),
-                "aktor_id" to aktorId.asString(),
+                "aktor_id" to aktorId.aktorId,
                 "reaktivering_dato" to Timestamp.valueOf(LocalDateTime.now())
         )
 
@@ -31,7 +31,7 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
 
     override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
         val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), reaktiveringMapper)
+        return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), reaktiveringMapper)
     }
 
     companion object {

@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 
 class OppgaveGatewayImpl(private val restClient: OppgaveRestClient) : OppgaveGateway {
     override fun opprett(oppgave: Oppgave): OppgaveResponse {
-        val oppgaveDto = OppgaveDto(oppgave.aktorId.asString(),
+        val oppgaveDto = OppgaveDto(oppgave.aktorId.aktorId,
             oppgave.beskrivelse,
             TEMA_OPPFOLGING,
             OPPGAVETYPE_KONTAKT_BRUKER,

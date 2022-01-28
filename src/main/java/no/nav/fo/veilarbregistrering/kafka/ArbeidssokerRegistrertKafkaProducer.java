@@ -33,7 +33,7 @@ class ArbeidssokerRegistrertKafkaProducer implements ArbeidssokerRegistrertProdu
 
         try {
             ArbeidssokerRegistrertEvent arbeidssokerRegistrertEvent = map(arbeidssokerRegistrertInternalEvent);
-            ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, arbeidssokerRegistrertInternalEvent.getAktorId().asString(), arbeidssokerRegistrertEvent);
+            ProducerRecord<String, ArbeidssokerRegistrertEvent> record = new ProducerRecord<>(topic, arbeidssokerRegistrertInternalEvent.getAktorId().getAktorId(), arbeidssokerRegistrertEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, getCorrelationIdAsBytes()));
             AtomicBoolean resultat = new AtomicBoolean(false);
             producer.send(record, (recordMetadata, e) -> {

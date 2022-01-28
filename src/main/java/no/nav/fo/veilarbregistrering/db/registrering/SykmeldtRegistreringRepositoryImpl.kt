@@ -23,7 +23,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         val teksterForBesvarelse = tilJson(bruker.teksterForBesvarelse)
         val params = mapOf(
                 "id" to id,
-                "aktor_id" to aktorId.asString(),
+                "aktor_id" to aktorId.aktorId,
                 "opprettet" to Timestamp.valueOf(LocalDateTime.now()),
                 "tekster" to teksterForBesvarelse,
                 "fremtidig_situasjon" to besvarelse.fremtidigSituasjon?.toString(),
@@ -49,14 +49,14 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
                 " ORDER BY ${SYKMELDT_REGISTRERING_ID} DESC" +
                 " FETCH NEXT 1 ROWS ONLY"
 
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt).firstOrNull()
+        return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), rowMapperSykmeldt).firstOrNull()
     }
 
     override fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering> {
         val sql = "SELECT * FROM ${SYKMELDT_REGISTRERING}" +
                 " WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
 
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapperSykmeldt)
+        return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), rowMapperSykmeldt)
     }
 
     private fun nesteFraSekvens(sekvensNavn: String): Long {

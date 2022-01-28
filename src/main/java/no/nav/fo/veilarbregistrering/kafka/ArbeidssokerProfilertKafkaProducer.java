@@ -36,7 +36,7 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
     public void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
         try {
             ArbeidssokerProfilertEvent arbeidssokerProfilertEvent = map(aktorId, innsatsgruppe, profilertDato);
-            ProducerRecord<String, ArbeidssokerProfilertEvent> record = new ProducerRecord<>(topic, aktorId.asString(), arbeidssokerProfilertEvent);
+            ProducerRecord<String, ArbeidssokerProfilertEvent> record = new ProducerRecord<>(topic, aktorId.getAktorId(), arbeidssokerProfilertEvent);
             record.headers().add(new RecordHeader(MDC_CALL_ID, CallId.getCorrelationIdAsBytes()));
             producer.send(record, (recordMetadata, e) -> {
                 if (e != null) {
@@ -54,7 +54,7 @@ class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProduce
 
     private static ArbeidssokerProfilertEvent map(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
         return ArbeidssokerProfilertEvent.newBuilder()
-                .setAktorid(aktorId.asString())
+                .setAktorid(aktorId.getAktorId())
                 .setProfilertTil(map(innsatsgruppe))
                 .setProfileringGjennomfort(ZonedDateTime.of(profilertDato, ZoneId.systemDefault()).format(ISO_ZONED_DATE_TIME))
                 .build();

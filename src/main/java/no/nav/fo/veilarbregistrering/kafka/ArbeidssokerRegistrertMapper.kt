@@ -13,7 +13,7 @@ internal object ArbeidssokerRegistrertMapper {
     @JvmStatic
     fun map(event: ArbeidssokerRegistrertInternalEvent): ArbeidssokerRegistrertEvent {
         return ArbeidssokerRegistrertEvent(
-            event.aktorId.asString(),
+            event.aktorId.aktorId,
             event.brukersSituasjon?.name,
             ZonedDateTime.of(
                 event.opprettetDato,

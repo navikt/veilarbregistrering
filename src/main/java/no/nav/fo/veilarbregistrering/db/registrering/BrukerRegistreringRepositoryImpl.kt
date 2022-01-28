@@ -29,7 +29,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         val params = mapOf(
             "id" to id,
-            "aktor_id" to bruker.aktorId.asString(),
+            "aktor_id" to bruker.aktorId.aktorId,
             "fnr" to bruker.gjeldendeFoedselsnummer.stringValue(),
             "opprettet" to Timestamp.valueOf(registrering.opprettetDato),
             "tekster" to teksterForBesvarelse,
@@ -65,7 +65,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         tilstander: List<Status>
     ): List<OrdinaerBrukerRegistrering> {
         val params = mapOf(
-            "aktor_id" to aktorId.asString(),
+            "aktor_id" to aktorId.aktorId,
             "tilstander" to tilstander.map { it.name }
         )
 

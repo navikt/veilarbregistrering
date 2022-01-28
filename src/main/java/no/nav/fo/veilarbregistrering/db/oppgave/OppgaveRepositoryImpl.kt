@@ -18,7 +18,7 @@ class OppgaveRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Oppgav
         val id = nesteFraSekvens()
         val params  = mapOf(
             "id" to id,
-            "aktor_id" to aktorId.asString(),
+            "aktor_id" to aktorId.aktorId,
             "oppgavetype" to oppgaveType.name,
             "ekstern_oppgave_id" to oppgaveId,
             "opprettet" to Timestamp.valueOf(LocalDateTime.now())
@@ -38,7 +38,7 @@ class OppgaveRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Oppgav
 
     override fun hentOppgaverFor(aktorId: AktorId): List<OppgaveImpl> {
         val sql = "SELECT * FROM $OPPGAVE WHERE $AKTOR_ID = :aktor_id"
-        return db.query(sql, mapOf("aktor_id" to aktorId.asString()), rowMapper)
+        return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), rowMapper)
     }
 
     companion object {

@@ -42,14 +42,14 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun sjekkLesetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
         if (authContextHolder.role.orElse(null) == UserRole.SYSTEM) return
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.asString()))) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AktorId(aktorId.aktorId))) {
 
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
 
     fun sjekkSkrivetilgangMedAktorId(aktorId: no.nav.fo.veilarbregistrering.bruker.AktorId) {
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId(aktorId.asString()))) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.WRITE, AktorId(aktorId.aktorId))) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }

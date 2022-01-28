@@ -36,8 +36,8 @@ open class PdlOppslagClient(
     }
 
     fun hentIdenter(aktorId: AktorId): PdlIdenter {
-        val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(aktorId.asString()))
-        val json = hentIdenterRequest(aktorId.asString(), request)
+        val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(aktorId.aktorId))
+        val json = hentIdenterRequest(aktorId.aktorId, request)
         val response = mapAndValidateResponse<PdlHentIdenterResponse>(json)
         return response.data.hentIdenter
     }
@@ -70,9 +70,9 @@ open class PdlOppslagClient(
     fun hentGeografiskTilknytning(aktorId: AktorId): PdlGeografiskTilknytning {
         val request = PdlHentGeografiskTilknytningRequest(
             hentGeografisktilknytningQuery(),
-            HentGeografiskTilknytningVariables(aktorId.asString())
+            HentGeografiskTilknytningVariables(aktorId.aktorId)
         )
-        val json = hentGeografiskTilknytningRequest(aktorId.asString(), request)
+        val json = hentGeografiskTilknytningRequest(aktorId.aktorId, request)
         val resp = mapAndValidateResponse<PdlHentGeografiskTilknytningResponse>(json)
         return resp.data.hentGeografiskTilknytning
     }
@@ -88,8 +88,8 @@ open class PdlOppslagClient(
     }
 
     fun hentPerson(aktorId: AktorId): PdlPerson {
-        val request = PdlHentPersonRequest(hentPersonQuery(), HentPersonVariables(aktorId.asString(), false))
-        val json = hentPersonRequest(aktorId.asString(), request)
+        val request = PdlHentPersonRequest(hentPersonQuery(), HentPersonVariables(aktorId.aktorId, false))
+        val json = hentPersonRequest(aktorId.aktorId, request)
         val resp = mapAndValidateResponse<PdlHentPersonResponse>(json)
         return resp.data.hentPerson
     }
