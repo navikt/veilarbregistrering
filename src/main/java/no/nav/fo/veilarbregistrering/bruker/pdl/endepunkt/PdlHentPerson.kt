@@ -13,11 +13,8 @@ data class PdlPerson(
     val adressebeskyttelse: List<PdlAdressebeskyttelse> = emptyList(),
     val navn: List<PdlNavn> = emptyList()) {
 
-    fun hoyestPrioriterteTelefonnummer() =
-        (if (telefonnummer.isEmpty()) Optional.empty()
-        else telefonnummer.stream()
-            .sorted()
-            .findFirst())!!
+    fun hoyestPrioriterteTelefonnummer(): PdlTelefonnummer? =
+        telefonnummer.minOrNull()
 
     fun getSistePdlFoedsel() =
         if (foedsel.isEmpty()) Optional.empty()
@@ -33,7 +30,7 @@ data class PdlPerson(
 }
 data class PdlNavn(val fornavn: String, val mellomnavn:String?, val etternavn:String)
 
-data class PdlTelefonnummer(val nummer: String? = null,
+data class PdlTelefonnummer(val nummer: String,
                             val landskode: String? = null,
                             val prioritet: Int = 0) : Comparable<PdlTelefonnummer> {
 

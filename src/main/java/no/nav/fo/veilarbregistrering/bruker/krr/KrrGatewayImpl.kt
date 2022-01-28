@@ -11,7 +11,7 @@ internal class KrrGatewayImpl(private val digdirKrrProxyClient: DigDirKrrProxyCl
         LOG.info("Henter kontaktinfo fra DigDirKrrProxy")
 
         return digdirKrrProxyClient.hentKontaktinfo(bruker.gjeldendeFoedselsnummer)
-            ?.let { Telefonnummer.of(it.mobiltelefonnummer) }
+            ?.let { Telefonnummer(it.mobiltelefonnummer) }
     }
 
     companion object {

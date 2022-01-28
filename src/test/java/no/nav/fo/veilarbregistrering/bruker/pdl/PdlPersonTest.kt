@@ -11,13 +11,13 @@ class PdlPersonTest {
 
     @Test
     fun `hoyestPrioriterteTelefonnummer skal returneres`() {
-        val pdlTelefonnummer1 = PdlTelefonnummer(prioritet = 1)
-        val pdlTelefonnummer2 = PdlTelefonnummer(prioritet = 2)
-        val pdlTelefonnummer3 = PdlTelefonnummer(prioritet = 3)
+        val pdlTelefonnummer1 = PdlTelefonnummer("9", prioritet = 1)
+        val pdlTelefonnummer2 = PdlTelefonnummer("6", prioritet = 2)
+        val pdlTelefonnummer3 = PdlTelefonnummer("2", prioritet = 3)
         val telefonnummer = listOf(pdlTelefonnummer2, pdlTelefonnummer3, pdlTelefonnummer1)
         val pdlPerson = PdlPerson(telefonnummer, emptyList(), emptyList())
 
-        assertThat(pdlPerson.hoyestPrioriterteTelefonnummer()).hasValue(pdlTelefonnummer1)
+        assertThat(pdlPerson.hoyestPrioriterteTelefonnummer()?.nummer).isEqualTo("9")
     }
 
     @Test

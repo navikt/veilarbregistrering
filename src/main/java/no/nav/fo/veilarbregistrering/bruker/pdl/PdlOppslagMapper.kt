@@ -27,8 +27,7 @@ internal object PdlOppslagMapper {
     fun map(pdlPerson: PdlPerson): Person {
         return Person.of(
             pdlPerson.hoyestPrioriterteTelefonnummer()
-                .map { obj: PdlTelefonnummer -> map(obj) }
-                .orElse(null),
+                ?.let { map(it) },
             pdlPerson.getSistePdlFoedsel()
                 .map { obj: PdlFoedsel -> map(obj) }
                 .orElse(null),
@@ -44,7 +43,7 @@ internal object PdlOppslagMapper {
     }
 
     private fun map(pdlTelefonnummer: PdlTelefonnummer): Telefonnummer {
-        return Telefonnummer.of(pdlTelefonnummer.nummer, pdlTelefonnummer.landskode)
+        return Telefonnummer(pdlTelefonnummer.nummer, pdlTelefonnummer.landskode)
     }
 
     @JvmStatic

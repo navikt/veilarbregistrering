@@ -16,11 +16,11 @@ class KrrGatewayTest {
 
         val telefonnummer = krrGateway.hentKontaktinfo(Bruker(IDENT, AktorId("1234")))
 
-        assertThat(telefonnummer).isEqualTo(Telefonnummer.of("23235656"))
+        assertThat(telefonnummer).isEqualTo(Telefonnummer("23235656"))
     }
 
     private class StubDigDirKrrProxyClient : DigDirKrrProxyClient("", mockk()) {
-        override fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse? {
+        override fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse {
             return DigDirKrrProxyResponse(foedselsnummer.stringValue(), true, false, "23235656")
         }
     }
