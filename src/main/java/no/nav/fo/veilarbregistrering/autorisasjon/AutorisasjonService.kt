@@ -2,8 +2,10 @@ package no.nav.fo.veilarbregistrering.autorisasjon
 
 import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
+import no.nav.common.auth.Constants.AAD_NAV_IDENT_CLAIM
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
+import no.nav.common.auth.utils.IdentUtils
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
@@ -39,8 +41,14 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
             throw AutorisasjonException()
         }
     }
+    
+    fun AuthContextHolder.hentNavIdForOboTokens(): NavIdent? =
+        this.requireIdTokenClaims()
+            .getStringClaim(AAD_NAV_IDENT_CLAIM)
+            .takeIf(IdentUtils::erGydligNavIdent)
+            ?.let(NavIdent::of)
 
-    private fun navIdentClaim(): NavIdent? = authContextHolder.navIdent.orElse(null)
+    private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()
 
     private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
         val navIdent = navIdentClaim()
