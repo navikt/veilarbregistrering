@@ -29,9 +29,9 @@ class RegistreringResource(
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        if (!isDevelopment()) {
-            autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
-        }
+
+        autorisasjonsService.sjekkLesetilgangMedAktorId(bruker.aktorId)
+
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
     }
 
