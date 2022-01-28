@@ -64,7 +64,11 @@ open class DigDirKrrProxyClient internal constructor(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), RestClient.baseClient())
+        val request: Request = Request.Builder()
+            .url(UrlUtils.joinPaths(baseUrl, "/ping"))
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenProvider())
+            .build()
+        return HealthCheckUtils.pingUrl(request, RestClient.baseClient())
     }
 
     companion object {
