@@ -18,7 +18,7 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         return authContextHolder.erInternBruker()
     }
 
-    fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
         val ident = authContextHolder.navIdent.orElse(null)
@@ -73,5 +73,3 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun erVeileder(): Boolean = erInternBruker()
 }
-
-fun <T> Optional<T>.valueOrThrow(): T = this.orElseThrow { IllegalStateException() }
