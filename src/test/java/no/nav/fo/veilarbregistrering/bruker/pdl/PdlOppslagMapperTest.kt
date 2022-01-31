@@ -70,28 +70,28 @@ class PdlOppslagMapperTest {
     fun `skal mappe kommune nummer korrekt`() {
         val pdlGeografiskTilknytning = PdlGeografiskTilknytning(PdlGtType.KOMMUNE, "0144", "", "")
         val geografiskTilknytning = PdlOppslagMapper.map(pdlGeografiskTilknytning)
-        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning.of("0144"))
+        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning("0144"))
     }
 
     @Test
     fun `skal mappe bydel nummer korrekt`() {
         val pdlGeografiskTilknytning = PdlGeografiskTilknytning(PdlGtType.BYDEL, null, "030102", null)
         val geografiskTilknytning = PdlOppslagMapper.map(pdlGeografiskTilknytning)
-        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning.of("030102"))
+        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning("030102"))
     }
 
     @Test
     fun `skal mappe utland uten gtLand til nor`() {
         val pdlGeografiskTilknytning = PdlGeografiskTilknytning(PdlGtType.UTLAND, null, null, null)
         val geografiskTilknytning = PdlOppslagMapper.map(pdlGeografiskTilknytning)
-        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning.of("NOR"))
+        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning("NOR"))
     }
 
     @Test
     fun `skal mappe utland med gtLand til landkode`() {
         val pdlGeografiskTilknytning = PdlGeografiskTilknytning(PdlGtType.UTLAND, null, null, "POL")
         val geografiskTilknytning = PdlOppslagMapper.map(pdlGeografiskTilknytning)
-        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning.of("POL"))
+        assertThat(geografiskTilknytning).isEqualTo(GeografiskTilknytning("POL"))
     }
 }
 

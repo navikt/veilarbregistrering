@@ -62,6 +62,12 @@ data class GeografiskTilknytning(private val geografisktilknytning: String) : Me
         return ByMedBydeler.byMedBydelerAsKode().contains(geografisktilknytning)
     }
 
+    companion object {
+        fun ukjentBostedsadresse(): GeografiskTilknytning {
+            return GeografiskTilknytning("NOR")
+        }
+    }
+
     internal enum class ByMedBydeler(private val kode: String) {
         Oslo("0301"), Stavanger("1103"), Bergen("4601"), Trondheim("5001");
 
@@ -120,16 +126,6 @@ data class GeografiskTilknytning(private val geografisktilknytning: String) : Me
                 return Arrays.stream(values())
                     .anyMatch { bydelOslo: BydelOslo -> bydelOslo.kode == geografisktilknytning }
             }
-        }
-    }
-
-    companion object {
-        fun of(geografisktilknytning: String): GeografiskTilknytning {
-            return GeografiskTilknytning(geografisktilknytning)
-        }
-
-        fun ukjentBostedsadresse(): GeografiskTilknytning {
-            return GeografiskTilknytning("NOR")
         }
     }
 }

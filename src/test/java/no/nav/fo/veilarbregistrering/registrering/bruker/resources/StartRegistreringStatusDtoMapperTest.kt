@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class StartRegistreringStatusDtoMapperTest {
 
     @Test
-    fun `map skal håndtere null verdier`() {
+    fun `map skal handtere null verdier`() {
         val oppfolgingsstatus = Oppfolgingsstatus(
             false,
             null,
@@ -45,7 +45,7 @@ class StartRegistreringStatusDtoMapperTest {
     }
 
     @Test
-    fun `map skal håndtere verdi i alle felter`() {
+    fun `map skal handtere verdi i alle felter`() {
         val oppfolgingsstatus = Oppfolgingsstatus(
             false,
             false,
@@ -57,7 +57,7 @@ class StartRegistreringStatusDtoMapperTest {
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val (maksDato, underOppfolging, erSykmeldtMedArbeidsgiver, jobbetSeksAvTolvSisteManeder, registreringType, _, formidlingsgruppe, servicegruppe, rettighetsgruppe, geografiskTilknytning) = map(
             brukersTilstand,
-            GeografiskTilknytning.of("030109"),
+            GeografiskTilknytning("030109"),
             true,
             30
         )
@@ -87,7 +87,7 @@ class StartRegistreringStatusDtoMapperTest {
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val (_, _, erSykmeldtMedArbeidsgiver) = map(
             brukersTilstand,
-            GeografiskTilknytning.of("030109"),
+            GeografiskTilknytning("030109"),
             false,
             30
         )

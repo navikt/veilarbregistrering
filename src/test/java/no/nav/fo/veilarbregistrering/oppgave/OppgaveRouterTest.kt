@@ -65,7 +65,7 @@ class OppgaveRouterTest {
 
     @Test
     fun `geografisk tilknytning med by med bydel skal gi intern brukerstotte`() {
-        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("0301"))
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("0301"))
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
         assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
@@ -73,7 +73,7 @@ class OppgaveRouterTest {
 
     @Test
     fun `geografisk tilknytning med unntak av landkode skal gi empty enhetsnummer`() {
-        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("030106"))
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("030106"))
 
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
@@ -86,7 +86,7 @@ class OppgaveRouterTest {
                 Kommune("1241"),
                 Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
-        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("DNK"))
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
@@ -99,7 +99,7 @@ class OppgaveRouterTest {
                 Kommune.medBydel(STAVANGER),
                 Periode(LocalDate.of(2020, 1, 1), null))
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
-        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("DNK"))
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("DNK"))
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
@@ -126,7 +126,7 @@ class OppgaveRouterTest {
 
     private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
         val person = Person(null, null, adressebeskyttelseGradering, testNavn)
-        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning.of("0301"),
+        val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("0301"),
                                                       users = mapOf(BRUKER.aktorId to person))
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
 

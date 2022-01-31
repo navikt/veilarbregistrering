@@ -97,7 +97,7 @@ class StartRegistreringStatusServiceTest {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
         every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns
-                Optional.of(GeografiskTilknytning.of("1234"))
+                Optional.of(GeografiskTilknytning("1234"))
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isEqualTo("1234")
