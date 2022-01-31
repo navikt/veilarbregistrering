@@ -257,7 +257,7 @@ class RegistreringResourceTest(
 
     companion object {
         private val IDENT = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
-        private val IDENTER = Identer.of(
+        private val IDENTER = Identer(
             mutableListOf(
                 Ident(IDENT.stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
                 Ident("22222222222", false, Gruppe.AKTORID)

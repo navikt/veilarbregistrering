@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.bruker
 
-import no.nav.fo.veilarbregistrering.bruker.Identer.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -9,7 +8,7 @@ import org.junit.jupiter.api.assertThrows
 class IdenterTest {
     @Test
     fun `skal finne gjeldende fn`() {
-        val identer = of(
+        val identer = Identer(
             listOf(
                 Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 Ident("44444444444", true, Gruppe.FOLKEREGISTERIDENT),
@@ -23,7 +22,7 @@ class IdenterTest {
 
     @Test
     fun `skal finne gjeldende aktorid`() {
-        val identer = of(
+        val identer = Identer(
              listOf(
                 Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 Ident("22222222222", false, Gruppe.AKTORID),
@@ -37,13 +36,13 @@ class IdenterTest {
 
     @Test
     fun `tom liste skal gi notFound`() {
-        assertThrows<ManglendeBrukerInfoException> { of(ArrayList()).finnGjeldendeFnr() }
-        assertThrows<ManglendeBrukerInfoException> { of(ArrayList()).finnGjeldendeAktorId() }
+        assertThrows<ManglendeBrukerInfoException> { Identer(ArrayList()).finnGjeldendeFnr() }
+        assertThrows<ManglendeBrukerInfoException> { Identer(ArrayList()).finnGjeldendeAktorId() }
     }
 
     @Test
     fun `ingen gjeldende fnr skal gi notFound`() {
-        val identer = of(
+        val identer = Identer(
              listOf(
                 Ident("11111111111", true, Gruppe.FOLKEREGISTERIDENT),
                 Ident("22222222222", false, Gruppe.AKTORID),
@@ -55,7 +54,7 @@ class IdenterTest {
 
     @Test
     fun `ingen gjeldende aktorid skal gi notFound`() {
-        val identer = of(
+        val identer = Identer(
              listOf(
                 Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 Ident("22222222222", true, Gruppe.AKTORID),
@@ -67,7 +66,7 @@ class IdenterTest {
 
     @Test
     fun `skal finne historiske fnr`() {
-        val identer = of(
+        val identer = Identer(
              listOf(
                 Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                 Ident("44444444444", true, Gruppe.FOLKEREGISTERIDENT),

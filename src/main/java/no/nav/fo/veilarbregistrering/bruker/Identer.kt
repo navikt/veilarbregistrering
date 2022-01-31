@@ -24,11 +24,10 @@ class Identer(val identer: List<Ident>) {
             .filter { it.gruppe == Gruppe.FOLKEREGISTERIDENT && it.isHistorisk}
             .map { it.ident }
             .map { Foedselsnummer(it) }
+}
 
-    companion object {
-        @JvmStatic
-        fun of(identer: List<Ident>): Identer {
-            return Identer(identer)
-        }
-    }
+class Ident(val ident: String, val isHistorisk: Boolean, val gruppe: Gruppe)
+
+enum class Gruppe {
+    FOLKEREGISTERIDENT, AKTORID, NPID
 }

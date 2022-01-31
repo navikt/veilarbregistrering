@@ -72,7 +72,7 @@ class TidslinjeResourceTest(
     }
 
     companion object {
-        private val IDENTER = Identer.of(
+        private val IDENTER = Identer(
                 mutableListOf(
                         Ident(aremark().stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
                         Ident("22222222222", false, Gruppe.AKTORID)

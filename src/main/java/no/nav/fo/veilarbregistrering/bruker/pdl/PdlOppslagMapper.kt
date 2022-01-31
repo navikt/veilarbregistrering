@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.pdl
 
 import no.nav.fo.veilarbregistrering.bruker.*
-import no.nav.fo.veilarbregistrering.bruker.Identer.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 
 internal object PdlOppslagMapper {
@@ -48,7 +47,7 @@ internal object PdlOppslagMapper {
 
     @JvmStatic
     fun map(pdlIdenter: PdlIdenter): Identer {
-        return of(pdlIdenter.identer.map { (ident, historisk, gruppe) ->
+        return Identer(pdlIdenter.identer.map { (ident, historisk, gruppe) ->
                 Ident(
                     ident,
                     historisk,
