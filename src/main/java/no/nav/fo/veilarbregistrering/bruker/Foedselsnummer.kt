@@ -1,43 +1,26 @@
-package no.nav.fo.veilarbregistrering.bruker;
+package no.nav.fo.veilarbregistrering.bruker
 
-import java.time.LocalDate;
-import java.util.Objects;
 
-public class Foedselsnummer {
+import java.time.LocalDate
 
-    private final String foedselsnummer;
+data class Foedselsnummer(val foedselsnummer: String) {
 
-    public static Foedselsnummer of(String foedselsnummer) {
-        return new Foedselsnummer(foedselsnummer);
+    fun stringValue(): String {
+        return foedselsnummer
     }
 
-    private Foedselsnummer(String foedselsnummer) {
-        Objects.requireNonNull(foedselsnummer, "Foedselsnummer kan ikke være null.");
-        this.foedselsnummer = foedselsnummer;
+    fun maskert(): String {
+        return foedselsnummer.replace("[0-9]{11}".toRegex(), "***********")
     }
 
-    public String stringValue() {
-        return foedselsnummer;
+    fun alder(dato: LocalDate?): Int {
+        return FnrUtils.utledAlderForFnr(foedselsnummer, dato)
     }
 
-    public String maskert() {
-        return foedselsnummer.replaceAll("[0-9]{11}", "***********");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Foedselsnummer that = (Foedselsnummer) o;
-        return Objects.equals(foedselsnummer, that.foedselsnummer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(foedselsnummer);
-    }
-
-    public int alder(LocalDate dato) {
-        return FnrUtils.utledAlderForFnr(foedselsnummer, dato);
+    companion object {
+        @JvmStatic
+        fun of(foedselsnummer: String): Foedselsnummer {
+            return Foedselsnummer(foedselsnummer)
+        }
     }
 }
