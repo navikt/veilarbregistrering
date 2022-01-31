@@ -43,9 +43,7 @@ class HentRegistreringService(
             ordinaerBrukerRegistrering.id, ordinaerBrukerRegistrering.hentType()
         )
         ordinaerBrukerRegistrering.manueltRegistrertAv = veileder
-        val profilering = profileringRepository.hentProfileringForId(
-            ordinaerBrukerRegistrering.id
-        )
+        val profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.id)
         return medProfilering(ordinaerBrukerRegistrering, profilering)
     }
 
@@ -66,10 +64,8 @@ class HentRegistreringService(
         val (_, _, _, veilederIdent, veilederEnhetId) = manuellRegistreringRepository
             .hentManuellRegistrering(registreringId, brukerRegistreringType) ?: return null
         val enhet = finnEnhet(Enhetnr(veilederEnhetId))
-        return Veileder(
-            veilederIdent,
-            enhet
-        )
+
+        return Veileder(veilederIdent, enhet)
     }
 
     fun finnEnhet(enhetId: Enhetnr): NavEnhet? {
