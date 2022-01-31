@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.slf4j.LoggerFactory
@@ -31,25 +32,20 @@ open class SykmeldtRegistreringService(
     }
 
     private fun validerSykmeldtdRegistrering(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker) {
-        Optional.ofNullable(sykmeldtRegistrering.besvarelse)
-            .orElseThrow { RuntimeException("Besvarelse for sykmeldt ugyldig.") }
+        if (sykmeldtRegistrering.besvarelse == null) throw RuntimeException("Besvarelse for sykmeldt ugyldig.")
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) throw RuntimeException("Bruker kan ikke registreres.")
     }
 
     private fun lagreManuellRegistrering(id: Long, veileder: NavVeileder?) {
         if (veileder == null) return
-        val manuellRegistrering = ManuellRegistrering(
-            id, BrukerRegistreringType.SYKMELDT,
-            veileder.veilederIdent,
-            veileder.enhetsId
-        )
+        val manuellRegistrering = ManuellRegistrering(id, SYKMELDT, veileder.veilederIdent, veileder.enhetsId)
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
     }
 
     private fun registrerOverfortStatistikk(veileder: NavVeileder?) {
         if (veileder == null) return
-        prometheusMetricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, BrukerRegistreringType.SYKMELDT)
+        prometheusMetricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, SYKMELDT)
     }
 
     companion object {
