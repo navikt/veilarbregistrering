@@ -268,10 +268,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     companion object {
-        val FOEDSELSNUMMER_1: Foedselsnummer = Foedselsnummer.of("12345678911")
-        val FOEDSELSNUMMER_2: Foedselsnummer = Foedselsnummer.of("11234567890")
-        private val FOEDSELSNUMMER_3 = Foedselsnummer.of("22334455661")
-        private val FOEDSELSNUMMER_4 = Foedselsnummer.of("99887766554")
+        val FOEDSELSNUMMER_1: Foedselsnummer = Foedselsnummer("12345678911")
+        val FOEDSELSNUMMER_2: Foedselsnummer = Foedselsnummer("11234567890")
+        private val FOEDSELSNUMMER_3 = Foedselsnummer("22334455661")
+        private val FOEDSELSNUMMER_4 = Foedselsnummer("99887766554")
         private val BRUKER_1 = Bruker.of(
             FOEDSELSNUMMER_3,
             AktorId("100002345678"),

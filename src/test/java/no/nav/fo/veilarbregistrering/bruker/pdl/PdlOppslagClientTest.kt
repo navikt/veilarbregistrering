@@ -107,7 +107,7 @@ class PdlOppslagClientTest {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
         }
-        val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
+        val pdlIdenter = client.hentIdenter(Foedselsnummer("12345678910"))
         assertThat(pdlIdenter.identer).hasSize(2)
         assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.historisk })
@@ -122,7 +122,7 @@ class PdlOppslagClientTest {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
         }
-        val pdlIdenter = client.hentIdenter(Foedselsnummer.of("12345678910"))
+        val pdlIdenter = client.hentIdenter(Foedselsnummer("12345678910"))
         assertThat(pdlIdenter.identer).hasSize(3)
         assertTrue(pdlIdenter.identer.stream()
             .anyMatch { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.historisk })

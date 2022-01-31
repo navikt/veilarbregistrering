@@ -49,8 +49,8 @@ internal class PdlOppslagGatewayTest {
         val pdlOppslagGateway = context.getBean(PdlOppslagGateway::class.java)
         every { pdlOppslagClient.hentIdenter(any<Foedselsnummer>())} returns dummyPdlIdent()
 
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"))
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("22222222222"))
+        pdlOppslagGateway.hentIdenter(Foedselsnummer("22222222222"))
+        pdlOppslagGateway.hentIdenter(Foedselsnummer("22222222222"))
 
         verify(exactly = 1) { pdlOppslagClient.hentIdenter(any<Foedselsnummer>()) }
     }
@@ -60,8 +60,8 @@ internal class PdlOppslagGatewayTest {
         val pdlOppslagGateway = context.getBean(PdlOppslagGateway::class.java)
         every { pdlOppslagClient.hentIdenter(any<Foedselsnummer>())} returns dummyPdlIdent()
 
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("12345678910"))
-        pdlOppslagGateway.hentIdenter(Foedselsnummer.of("109987654321"))
+        pdlOppslagGateway.hentIdenter(Foedselsnummer("12345678910"))
+        pdlOppslagGateway.hentIdenter(Foedselsnummer("109987654321"))
 
         verify(exactly = 2) { pdlOppslagClient.hentIdenter(any<Foedselsnummer>()) }
     }

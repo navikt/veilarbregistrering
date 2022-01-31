@@ -47,7 +47,7 @@ class UserServiceTest {
 
     @Test
     fun skalFinneBrukerGjennomPdl() {
-        every { pdlOppslagGateway.hentIdenter(Foedselsnummer.of("11111111111")) } returns
+        every { pdlOppslagGateway.hentIdenter(Foedselsnummer("11111111111")) } returns
             Identer(
                 Arrays.asList(
                     Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),

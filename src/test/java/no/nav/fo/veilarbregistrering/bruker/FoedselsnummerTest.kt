@@ -7,7 +7,7 @@ class FoedselsnummerTest {
 
     @Test
     fun `maskert skal maskere alle tegn med stjerne`() {
-        val foedselsnummer = Foedselsnummer.of("23067822521")
+        val foedselsnummer = Foedselsnummer("23067822521")
         assertThat(foedselsnummer.maskert()).isEqualTo("***********")
     }
 }

@@ -103,7 +103,7 @@ internal class HentRegistreringServiceTest {
     }
 
     companion object {
-        private val fnr = Foedselsnummer.of("11017724129")
+        private val fnr = Foedselsnummer("11017724129")
         private val aktorId = AktorId("12311")
         private val bruker = Bruker(fnr, aktorId)
         private val gammelDato = LocalDateTime.of(2020, 1, 11, 15, 50, 20)

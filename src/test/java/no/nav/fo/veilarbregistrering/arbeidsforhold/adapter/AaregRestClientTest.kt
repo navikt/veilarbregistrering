@@ -10,7 +10,7 @@ class AaregRestClientTest {
 
     @Test
     fun `skal parse formidlingshistorikkResponse`() {
-        val arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(Foedselsnummer.of("12345678910"))
+        val arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(Foedselsnummer("12345678910"))
         assertThat(arbeidsforholdDtos).hasSize(1)
 
         val arbeidsgiver = ArbeidsgiverDto(

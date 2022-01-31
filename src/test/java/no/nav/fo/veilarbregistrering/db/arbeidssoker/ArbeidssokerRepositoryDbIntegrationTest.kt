@@ -70,7 +70,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
     }
 
     companion object {
-        private val FOEDSELSNUMMER = Foedselsnummer.of("01234567890")
+        private val FOEDSELSNUMMER = Foedselsnummer("01234567890")
         private val AKTORID = AktorId("1000010000100")
         private val FOEDSELSNUMMER_2 = Foedselsnummer.of("01234567892")
         private val FOEDSELSNUMMER_3 = Foedselsnummer.of("01234567895")

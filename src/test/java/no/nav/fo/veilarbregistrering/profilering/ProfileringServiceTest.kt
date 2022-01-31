@@ -159,8 +159,8 @@ internal class ProfileringServiceTest {
         BesvarelseTestdataBuilder.gyldigBesvarelse(helseHinder = HelseHinderSvar.JA)
 
     companion object {
-        private val FOEDSELSNUMMER_MINUS_10_MND = Foedselsnummer.of("12345678911")
-        private val FOEDSELSNUMMER_MINUS_2_MND = Foedselsnummer.of("11987654321")
+        private val FOEDSELSNUMMER_MINUS_10_MND = Foedselsnummer("12345678911")
+        private val FOEDSELSNUMMER_MINUS_2_MND = Foedselsnummer("11987654321")
     }
 }
 

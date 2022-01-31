@@ -68,7 +68,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
             HttpResponse.response().withStatusCode(401)
         )
         assertThrows<RuntimeException> {
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
         }
     }
 
@@ -97,7 +97,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
                     .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
         )
         Assertions.assertNotNull(
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
         )
     }
 
@@ -111,7 +111,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
                 .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
         )
         Assertions.assertNotNull(
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer.of(FNR.fnr))
+            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
         )
     }
 

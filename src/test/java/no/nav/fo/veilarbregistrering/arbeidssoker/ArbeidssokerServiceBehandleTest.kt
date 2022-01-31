@@ -44,7 +44,7 @@ class ArbeidssokerServiceBehandleTest {
 
     private fun testEvent(test: LocalDateTime): FormidlingsgruppeEvent {
         return FormidlingsgruppeEvent(
-            Foedselsnummer.of("12345678910"),
+            Foedselsnummer("12345678910"),
             "012345",
             "AKTIV",
             Operation.UPDATE,

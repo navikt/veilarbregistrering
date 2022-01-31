@@ -177,6 +177,6 @@ class OppgaveRouterTest {
 
     companion object {
         private val BRUKER = Bruker(
-                Foedselsnummer.of("12345678911"), AktorId("32235352"))
+                Foedselsnummer("12345678911"), AktorId("32235352"))
     }
 }

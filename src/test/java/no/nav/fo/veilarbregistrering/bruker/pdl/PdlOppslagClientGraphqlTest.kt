@@ -80,7 +80,7 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
             .withBody(toJson(PdlOppslagClientTest.HENT_IDENTER_OK_JSON), MediaType.JSON_UTF_8)
         )
 
-        val pdlIdenter = client.hentIdenter(Foedselsnummer.of(fnr))
+        val pdlIdenter = client.hentIdenter(Foedselsnummer(fnr))
         assertThat(pdlIdenter).isNotNull
     }
 

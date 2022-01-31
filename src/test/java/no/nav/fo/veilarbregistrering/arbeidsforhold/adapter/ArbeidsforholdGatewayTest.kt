@@ -59,7 +59,7 @@ class ArbeidsforholdGatewayTest {
     }
 
     companion object {
-        private val IDENT_1 = Foedselsnummer.of("12345678910")
-        private val IDENT_2 = Foedselsnummer.of("109987654321")
+        private val IDENT_1 = Foedselsnummer("12345678910")
+        private val IDENT_2 = Foedselsnummer("109987654321")
     }
 }

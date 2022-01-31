@@ -61,6 +61,6 @@ internal class ArbeidsforholdResourceTest {
     }
 
     companion object {
-        private val IDENT = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
+        private val IDENT = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
     }
 }

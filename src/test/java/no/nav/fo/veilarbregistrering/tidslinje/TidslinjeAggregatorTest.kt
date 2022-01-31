@@ -76,6 +76,6 @@ class TidslinjeAggregatorTest {
     }
 
     companion object {
-        private val testBruker = Bruker.of(Foedselsnummer.of("11019141466"), AktorId("1"), emptyList())
+        private val testBruker = Bruker.of(Foedselsnummer("11019141466"), AktorId("1"), emptyList())
     }
 }

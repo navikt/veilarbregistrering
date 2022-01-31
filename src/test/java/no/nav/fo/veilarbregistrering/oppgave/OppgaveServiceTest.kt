@@ -156,9 +156,6 @@ class OppgaveServiceTest {
     }
 
     companion object {
-        private val BRUKER = Bruker(
-            Foedselsnummer.of("12345678911"),
-            AktorId("2134")
-        )
+        private val BRUKER = Bruker(Foedselsnummer("12345678911"), AktorId("2134"))
     }
 }

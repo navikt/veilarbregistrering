@@ -79,7 +79,7 @@ class IdenterTest {
         val historiskeFnr = identer.finnHistoriskeFoedselsnummer()
         assertThat(historiskeFnr.size).isEqualTo(2)
         assertThat(historiskeFnr).containsAll(listOf(
-            Foedselsnummer.of("55555555555"),
-            Foedselsnummer.of("44444444444")))
+            Foedselsnummer("55555555555"),
+            Foedselsnummer("44444444444")))
     }
 }

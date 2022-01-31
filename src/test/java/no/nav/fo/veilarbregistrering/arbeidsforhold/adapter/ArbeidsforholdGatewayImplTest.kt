@@ -12,7 +12,7 @@ class ArbeidsforholdGatewayImplTest {
 
     @Test
     fun `hent arbeidsforhold fra aareg via rest`() {
-        val flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer.of("12345678910"))
+        val flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(Foedselsnummer("12345678910"))
         assertThat(flereArbeidsforhold).isEqualTo(FlereArbeidsforholdTestdataBuilder.somJson())
     }
 }

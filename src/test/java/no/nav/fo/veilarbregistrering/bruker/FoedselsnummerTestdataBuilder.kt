@@ -11,7 +11,7 @@ object FoedselsnummerTestdataBuilder {
      */
     @JvmStatic
     fun aremark(): Foedselsnummer {
-        return Foedselsnummer.of("10108000398")
+        return Foedselsnummer("10108000398")
     }
 
     fun getFodselsnummerAsStringOnDateMinusYears(localDate: LocalDate, minusYears: Int): String {
@@ -21,6 +21,6 @@ object FoedselsnummerTestdataBuilder {
 
     fun fodselsnummerOnDateMinusYears(localDate: LocalDate, minusYears: Int): Foedselsnummer {
         val date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).minusYears(minusYears.toLong()).toInstant())
-        return Foedselsnummer.of(FodselsnummerCalculator.getFodselsnummerForDate(date).toString())
+        return Foedselsnummer(FodselsnummerCalculator.getFodselsnummerForDate(date).toString())
     }
 }

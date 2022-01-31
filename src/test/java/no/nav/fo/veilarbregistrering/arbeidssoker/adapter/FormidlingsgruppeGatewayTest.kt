@@ -48,7 +48,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                         .withBody(json, MediaType.JSON_UTF_8))
 
         val arbeidssokerperioder = formidlingsgruppeGateway.finnArbeissokerperioder(
-                Foedselsnummer.of("12345612345"),
+                Foedselsnummer("12345612345"),
                 Periode(
                         LocalDate.of(2020, 1, 10),
                         LocalDate.of(2020, 1, 11)))
@@ -93,7 +93,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
             )
 
         formidlingsgruppeGateway.finnArbeissokerperioder(
-            Foedselsnummer.of("12345612345"),
+            Foedselsnummer("12345612345"),
             Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))
@@ -118,7 +118,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
             )
 
         formidlingsgruppeGateway.finnArbeissokerperioder(
-            Foedselsnummer.of("12345612345"),
+            Foedselsnummer("12345612345"),
             Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))
@@ -138,7 +138,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                 .withStatusCode(404))
 
         val arbeidssokerperioder = formidlingsgruppeGateway.finnArbeissokerperioder(
-            Foedselsnummer.of("11118035157"),
+            Foedselsnummer("11118035157"),
             Periode(
                 LocalDate.of(2020, 1, 10),
                 LocalDate.of(2020, 1, 11)))

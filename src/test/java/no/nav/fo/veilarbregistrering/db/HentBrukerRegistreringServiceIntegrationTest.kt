@@ -70,7 +70,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
     }
 
     companion object {
-        private val ident = Foedselsnummer.of("10108000398") //Aremark fiktivt fnr.";
+        private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker(ident, AktorId("AKTØRID"))
         private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb(opprettetDato =
             LocalDate.of(2014, 12, 8).atStartOfDay())
