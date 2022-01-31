@@ -13,7 +13,7 @@ class Norg2GatewayConfig {
     }
 
     @Bean
-    fun norgGateway(norg2RestClient: Norg2RestClient?): Norg2Gateway {
+    fun norgGateway(norg2RestClient: Norg2RestClient): Norg2Gateway {
         return Norg2GatewayImpl(norg2RestClient)
     }
 
