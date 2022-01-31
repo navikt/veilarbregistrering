@@ -50,7 +50,7 @@ public class UserService {
             throw new ManglendeBrukerInfoException("Fødselsnummer ikke gyldig.");
         }
 
-        return Foedselsnummer.of(fnr);
+        return new Foedselsnummer(fnr);
     }
 
     public String getFnrFromUrl() {

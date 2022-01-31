@@ -14,7 +14,7 @@ abstract class FormidlingsgruppeMapper {
     internal abstract fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent
 
     protected fun mapFoedselsnummer(fodselsnr: String?): Foedselsnummer? = fodselsnr
-        ?.let { Foedselsnummer.of(it) }
+        ?.let { Foedselsnummer(it) }
 
     protected fun mapOperation(operation: String): Operation =
         when (operation) {

@@ -18,13 +18,6 @@ data class Foedselsnummer(val foedselsnummer: String) {
     fun alder(dato: LocalDate): Int {
         return FnrUtils.utledAlderForFnr(foedselsnummer, dato)
     }
-
-    companion object {
-        @JvmStatic
-        fun of(foedselsnummer: String): Foedselsnummer {
-            return Foedselsnummer(foedselsnummer)
-        }
-    }
 }
 
 internal object FnrUtils {

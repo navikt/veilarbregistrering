@@ -16,7 +16,7 @@ class InternalUserResource(private val userService: UserService) {
     @GetMapping("/bruker")
     fun fnrOgAktorIdOppslag(@RequestParam(required = false) fnr: String?, @RequestParam(required=false) aktorid: String?): User =
         fnr?.let {
-            User(it, userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr)).aktorId.aktorId)
+            User(it, userService.finnBrukerGjennomPdl(Foedselsnummer(fnr)).aktorId.aktorId)
         } ?: aktorid?.let {
             User(userService.hentBruker(AktorId(aktorid)).gjeldendeFoedselsnummer.stringValue(), it)
         } ?: throw IllegalArgumentException("Må ha enten fnr=X eller aktorid=Y")

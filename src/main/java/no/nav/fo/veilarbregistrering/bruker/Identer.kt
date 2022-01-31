@@ -8,7 +8,7 @@ class Identer(val identer: List<Ident>) {
             .filter { it.gruppe == Gruppe.FOLKEREGISTERIDENT }
             .firstOrNull { !it.isHistorisk }
             ?: throw ManglendeBrukerInfoException("Kunne ikke finne et gjeldende fødselsnummer")
-        return Foedselsnummer.of(gjeldendeFnr.ident)
+        return Foedselsnummer(gjeldendeFnr.ident)
     }
 
     fun finnGjeldendeAktorId(): AktorId {
@@ -23,7 +23,7 @@ class Identer(val identer: List<Ident>) {
         identer
             .filter { it.gruppe == Gruppe.FOLKEREGISTERIDENT && it.isHistorisk}
             .map { it.ident }
-            .map { Foedselsnummer.of(it) }
+            .map { Foedselsnummer(it) }
 
     companion object {
         @JvmStatic

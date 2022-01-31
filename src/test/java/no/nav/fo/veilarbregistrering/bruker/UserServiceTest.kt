@@ -56,7 +56,7 @@ class UserServiceTest {
                 )
             )
 
-        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of("11111111111"))
+        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer("11111111111"))
         assertThat(bruker.gjeldendeFoedselsnummer.stringValue()).isEqualTo("11111111111")
         assertThat(bruker.aktorId.aktorId).isEqualTo("22222222222")
     }

@@ -84,7 +84,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
         return db.queryForObject(sql, mapOf("id" to brukerRegistreringId)) { rs, _ ->
             Bruker(
-                Foedselsnummer.of(rs.getString("FOEDSELSNUMMER")),
+                Foedselsnummer(rs.getString("FOEDSELSNUMMER")),
                 AktorId(rs.getString("AKTOR_ID"))
             )
         }!!

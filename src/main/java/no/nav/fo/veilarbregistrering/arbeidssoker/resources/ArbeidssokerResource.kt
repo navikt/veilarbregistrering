@@ -41,7 +41,7 @@ class ArbeidssokerResource(
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
-        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer.of(fnr.fnr))
+        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr))
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
