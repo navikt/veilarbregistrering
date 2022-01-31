@@ -85,13 +85,13 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val rowMapperSykmeldt = RowMapper { rs, _ ->
             try {
-                SykmeldtRegistrering()
-                    .setId(rs.getLong(SYKMELDT_REGISTRERING_ID))
-                    .setOpprettetDato(
+                SykmeldtRegistrering(
+                    id=(rs.getLong(SYKMELDT_REGISTRERING_ID)),
+                    opprettetDato=(
                         rs.getTimestamp(BrukerRegistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime()
-                    )
-                    .setTeksterForBesvarelse(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE)))
-                    .setBesvarelse(
+                    ),
+                    teksterForBesvarelse=(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE))),
+                    besvarelse=(
                         Besvarelse(
                             fremtidigSituasjon = rs.getString(BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON)
                                 ?.let(FremtidigSituasjonSvar::valueOf),
@@ -105,7 +105,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
                             andreForhold = rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)
                                 ?.let(AndreForholdSvar::valueOf),
                         )
-                    )
+                    ))
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }

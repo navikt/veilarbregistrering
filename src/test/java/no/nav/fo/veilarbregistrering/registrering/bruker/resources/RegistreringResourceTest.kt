@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -224,13 +225,12 @@ class RegistreringResourceTest(
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
-        val sykmeldtRegistrering = SykmeldtRegistrering()
-            .setBesvarelse(
-                Besvarelse(
+        val sykmeldtRegistrering = gyldigSykmeldtRegistrering(
+            besvarelse =Besvarelse(
                     fremtidigSituasjon = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
                     tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING,
                 )
-            )
+        )
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.registrerSykmeldt(sykmeldtRegistrering)

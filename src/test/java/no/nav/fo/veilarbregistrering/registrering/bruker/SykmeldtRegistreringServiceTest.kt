@@ -47,19 +47,6 @@ class SykmeldtRegistreringServiceTest {
     }
 
     @Test
-    fun skalIkkeRegistrereSykmeldteMedTomBesvarelse() {
-        mockSykmeldtMedArbeidsgiver()
-        val sykmeldtRegistrering = SykmeldtRegistrering().setBesvarelse(null)
-        Assertions.assertThrows(RuntimeException::class.java) {
-            sykmeldtRegistreringService.registrerSykmeldt(
-                sykmeldtRegistrering,
-                BRUKER_INTERN,
-                null
-            )
-        }
-    }
-
-    @Test
     fun skalIkkeRegistrereSykmeldtSomIkkeOppfyllerKrav() {
         mockSykmeldtUtenArbeidsgiver()
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
