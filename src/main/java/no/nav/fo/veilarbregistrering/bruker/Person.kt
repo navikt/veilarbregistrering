@@ -7,7 +7,6 @@ class Person (
     val navn: Navn
 ) {
 
-    fun harAdressebeskyttelse(): Boolean {
-        return adressebeskyttelseGradering != null && adressebeskyttelseGradering.erGradert()
-    }
+    fun harAdressebeskyttelse(): Boolean =
+        adressebeskyttelseGradering != null && adressebeskyttelseGradering.erGradert()
 }

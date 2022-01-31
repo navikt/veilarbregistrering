@@ -7,17 +7,9 @@ import java.time.Period
 
 data class Foedselsnummer(val foedselsnummer: String) {
 
-    fun stringValue(): String {
-        return foedselsnummer
-    }
-
-    fun maskert(): String {
-        return foedselsnummer.replace("[0-9]{11}".toRegex(), "***********")
-    }
-
-    fun alder(dato: LocalDate): Int {
-        return FnrUtils.utledAlderForFnr(foedselsnummer, dato)
-    }
+    fun stringValue(): String = foedselsnummer
+    fun maskert(): String = foedselsnummer.replace("[0-9]{11}".toRegex(), "***********")
+    fun alder(dato: LocalDate): Int = FnrUtils.utledAlderForFnr(foedselsnummer, dato)
 }
 
 internal object FnrUtils {
