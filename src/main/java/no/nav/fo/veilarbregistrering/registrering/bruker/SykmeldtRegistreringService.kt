@@ -4,13 +4,11 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 open class SykmeldtRegistreringService(
     private val brukerTilstandService: BrukerTilstandService,
@@ -22,7 +20,7 @@ open class SykmeldtRegistreringService(
     @Transactional
     open fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker, navVeileder: NavVeileder?): Long {
         validerSykmeldtdRegistrering(sykmeldtRegistrering, bruker)
-        oppfolgingGateway.settOppfolgingSykmeldt(bruker.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
+        oppfolgingGateway.aktiverSykmeldt(bruker.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
         val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.aktorId)
         lagreManuellRegistrering(id, navVeileder)
         registrerOverfortStatistikk(navVeileder)

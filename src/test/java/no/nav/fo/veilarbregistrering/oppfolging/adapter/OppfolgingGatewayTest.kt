@@ -54,7 +54,7 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(
             HttpResponse.response().withStatusCode(204)
         )
-        oppfolgingGateway.settOppfolgingSykmeldt(BRUKER.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
+        oppfolgingGateway.aktiverSykmeldt(BRUKER.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
     }
 
     @Test
@@ -71,7 +71,7 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
                     .withStatusCode(502)
             )
         Assertions.assertThrows(RuntimeException::class.java) {
-            oppfolgingGateway.settOppfolgingSykmeldt(
+            oppfolgingGateway.aktiverSykmeldt(
                 BRUKER.gjeldendeFoedselsnummer,
                 sykmeldtRegistrering.besvarelse
             )

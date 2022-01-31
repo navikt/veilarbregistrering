@@ -55,7 +55,7 @@ open class OppfolgingClient(
         metricsService.registrer(AKTIVER_BRUKER)
     }
 
-    fun settOppfolgingSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
+    fun aktiverSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
         post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(OPPFOLGING_SYKMELDT)
