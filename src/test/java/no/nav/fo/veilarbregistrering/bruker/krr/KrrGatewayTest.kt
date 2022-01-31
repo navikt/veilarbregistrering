@@ -19,9 +19,21 @@ class KrrGatewayTest {
         assertThat(telefonnummer).isEqualTo(Telefonnummer("23235656"))
     }
 
+    @Test
+    fun `skal hente optional telefonnummer når telefonnummer uteblir i responsen`() {
+        val krrGateway = KrrGatewayImpl(StubDigDirKrrProxyClient())
+
+        val telefonnummer = krrGateway.hentKontaktinfo(Bruker(Foedselsnummer("12345678910"), AktorId("1234")))
+
+        assertThat(telefonnummer).isNull()
+    }
+
     private class StubDigDirKrrProxyClient : DigDirKrrProxyClient("", mockk()) {
         override fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse {
-            return DigDirKrrProxyResponse(foedselsnummer.stringValue(), true, false, "23235656")
+            if (IDENT == foedselsnummer) {
+                return DigDirKrrProxyResponse(foedselsnummer.stringValue(), true, false, "23235656")
+            }
+            return DigDirKrrProxyResponse(foedselsnummer.stringValue(), true, false, null)
         }
     }
 

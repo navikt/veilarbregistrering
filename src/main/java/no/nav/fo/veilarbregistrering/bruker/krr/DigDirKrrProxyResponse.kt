@@ -4,4 +4,4 @@ internal data class DigDirKrrProxyResponse(
     val personident: String,
     val aktiv : Boolean,
     val reservert : Boolean,
-    val mobiltelefonnummer : String)
+    val mobiltelefonnummer : String?)
