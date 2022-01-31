@@ -12,8 +12,8 @@ internal object PdlOppslagMapper {
             return null
         }
         return when (pdlGeografiskTilknytning.gtType) {
-            PdlGtType.BYDEL -> return GeografiskTilknytning.of(pdlGeografiskTilknytning.gtBydel)
-            PdlGtType.KOMMUNE -> return GeografiskTilknytning.of(pdlGeografiskTilknytning.gtKommune)
+            PdlGtType.BYDEL -> return GeografiskTilknytning.of(pdlGeografiskTilknytning.gtBydel!!)
+            PdlGtType.KOMMUNE -> return GeografiskTilknytning.of(pdlGeografiskTilknytning.gtKommune!!)
             PdlGtType.UTLAND -> {
                 val gtLand = pdlGeografiskTilknytning.gtLand
                 return if (gtLand != null) GeografiskTilknytning.of(gtLand) else GeografiskTilknytning.ukjentBostedsadresse()

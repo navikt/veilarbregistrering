@@ -1,21 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker
 
 import org.assertj.core.api.Assertions.assertThat
-import java.lang.NullPointerException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.lang.IllegalArgumentException
 
 class GeografiskTilknytningTest {
-
-    @Test
-    fun `geografiskTilknytning kan ikke vaere null`() {
-        val nullPointerException = assertThrows<NullPointerException> {
-            GeografiskTilknytning.of(null)
-        }
-        assertThat(nullPointerException.message)
-            .isEqualTo("Geografisk tilknytning kan ikke være null. Bruk <code>ofNullable</code> hvis du er usikker.")
-    }
 
     @Test
     fun `fieldName skal bruke bydel ikke oslo hvis geografiskTilknytning er bydel men ikke oslo`() {
