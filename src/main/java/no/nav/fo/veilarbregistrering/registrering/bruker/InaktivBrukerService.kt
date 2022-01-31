@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.registrering.bruker.AlderMetrikker.rapporterAlder
 import org.springframework.transaction.annotation.Transactional
 
 open class InaktivBrukerService(
@@ -26,7 +25,6 @@ open class InaktivBrukerService(
         if (erVeileder) {
             prometheusMetricsService.registrer(Events.MANUELL_REAKTIVERING_EVENT)
         }
-        rapporterAlder(prometheusMetricsService, bruker.gjeldendeFoedselsnummer)
     }
 
     companion object {

@@ -100,7 +100,6 @@ public class BrukerRegistreringService {
         }
 
         registrerOverfortStatistikk(veileder);
-        AlderMetrikker.rapporterAlder(prometheusMetricsService, bruker.getGjeldendeFoedselsnummer());
     }
 
     private RegistreringTilstand overforArena(long registreringId, Bruker bruker) {
