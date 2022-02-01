@@ -43,9 +43,9 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(HentIdenterException::class)
-    fun handleHentIdenterException(feil: HentIdenterException) {
+    fun handleHentIdenterException(feil: HentIdenterException): ResponseEntity<String> {
         logger.error(feil.message, feil)
-        ResponseEntity.status(INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
     }
 
@@ -60,16 +60,16 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
             .body(feil.message)
 
     @ExceptionHandler(HentOppfolgingStatusException::class)
-    fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException) {
+    fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException): ResponseEntity<String> {
         logger.error(feil.message, feil)
-        ResponseEntity.status(INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
     }
 
     @ExceptionHandler(AutorisasjonException::class)
-    fun handleAutorisasjonException(feil: AutorisasjonException) {
+    fun handleAutorisasjonException(feil: AutorisasjonException) : ResponseEntity<Any> {
         logger.error(feil.message, feil)
-        ResponseEntity.status(FORBIDDEN).body(feil.message)
+        return ResponseEntity.status(FORBIDDEN).body(feil.message)
     }
 
     @ExceptionHandler(RuntimeException::class)
