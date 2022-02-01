@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
-import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -68,7 +67,7 @@ open class DigDirKrrProxyClient internal constructor(
             .url(UrlUtils.joinPaths(baseUrl, "/ping"))
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenProvider())
             .build()
-        return HealthCheckUtils.pingUrl(request, RestClient.baseClient())
+        return HealthCheckUtils.pingUrl(request, defaultHttpClient())
     }
 
     companion object {
