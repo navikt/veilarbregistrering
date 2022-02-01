@@ -22,6 +22,8 @@ spec:
     - https://app-q1.adeo.no/veilarbregistrering
   env:
     - name: AAREG_REST_API
+      value: https://aareg-services-q1.dev.intern.nav.no/
+    - name: AAREG_REST_API_OLD
       value: https://modapp-q1.adeo.no/aareg-services/api
     - name: OPENAM_DISCOVERY_URL
       value: https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration

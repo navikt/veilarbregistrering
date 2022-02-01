@@ -16,9 +16,10 @@ class ArbeidsforholdGatewayConfig {
     ): AaregRestClient {
         return AaregRestClient(
             requireProperty(REST_URL),
+            requireProperty(REST_URL_OLD),
             systemUserTokenProvider,
             authContextHolder
-        )
+        ) { "no token yet" }
     }
 
     @Bean
@@ -28,5 +29,6 @@ class ArbeidsforholdGatewayConfig {
 
     companion object {
         private const val REST_URL = "AAREG_REST_API"
+        private const val REST_URL_OLD = "AAREG_REST_API_OLD"
     }
 }

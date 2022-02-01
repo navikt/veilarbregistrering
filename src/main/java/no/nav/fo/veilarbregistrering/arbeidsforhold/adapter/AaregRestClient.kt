@@ -12,6 +12,7 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
+import no.nav.fo.veilarbregistrering.log.logger
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -23,19 +24,41 @@ import java.io.IOException
 
 open class AaregRestClient(
         private val baseUrl: String,
+        private val baseUrlOld: String,
         private val systemUserTokenProvider: SystemUserTokenProvider,
-        private val authContextHolder: AuthContextHolder) : HealthCheck {
+        private val authContextHolder: AuthContextHolder,
+        private val tokenProvider: () -> String) : HealthCheck {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
+        val responseAad = utfoerRequestAad(fnr)
         val response = utforRequest(fnr)
+        if (responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
         return parse(response)
+    }
+
+    protected open fun utfoerRequestAad(fnr: Foedselsnummer) : String {
+        val request = Request.Builder().url(HttpUrl.parse(baseUrl)!!.newBuilder()
+            .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+            .addQueryParameter("regelverk", "A_ORDNINGEN")
+            .build())
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
+            .header(NAV_PERSONIDENT, fnr.stringValue())
+            .build()
+
+        return try {
+            defaultHttpClient().newCall(request).execute().use { response -> behandleResponse(response) }
+        } catch (e: Exception) {
+            logger.warn("Nytt kall til Aareg feilet", e)
+            "No response"
+        }
     }
 
     protected open fun utforRequest(fnr: Foedselsnummer): String {
         val request = Request.Builder()
-                .url(HttpUrl.parse(baseUrl)!!.newBuilder()
+                .url(HttpUrl.parse(baseUrlOld)!!.newBuilder()
                         .addPathSegments("v1/arbeidstaker/arbeidsforhold")
                         .addQueryParameter("regelverk", "A_ORDNINGEN")
                         .build())
