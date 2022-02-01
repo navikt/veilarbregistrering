@@ -1,9 +1,12 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
+import no.nav.fo.veilarbregistrering.config.requireClusterName
+import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -12,14 +15,26 @@ class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
         systemUserTokenProvider: SystemUserTokenProvider,
-        authContextHolder: AuthContextHolder
+        authContextHolder: AuthContextHolder,
+        serviceToServiceTokenProvider: ServiceToServiceTokenProvider
     ): AaregRestClient {
+        val aaregCluster = requireClusterName()
         return AaregRestClient(
             requireProperty(REST_URL),
             requireProperty(REST_URL_OLD),
             systemUserTokenProvider,
             authContextHolder
-        ) { "no token yet" }
+        ) {
+            try {
+                val token =
+                    serviceToServiceTokenProvider.getServiceToken("aareg-service-q1", "arbeidsforhold", aaregCluster)
+                logger.info("Hentet å hente token: $token")
+                token
+            } catch (e: Exception) {
+                logger.warn("Henting av token for aad-kall til aareg feilet: ", e)
+                "no token"
+            }
+        }
     }
 
     @Bean

@@ -10,6 +10,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -34,15 +35,17 @@ open class AaregRestClient(
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
         val responseAad = utfoerRequestAad(fnr)
         val response = utforRequest(fnr)
-        if (responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
+        sammenliknResponser(responseAad, response)
         return parse(response)
     }
 
+    private fun sammenliknResponser(responseAad: String, response: String) {
+        if (isDevelopment() && responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
+    }
+
     protected open fun utfoerRequestAad(fnr: Foedselsnummer) : String {
-        val request = Request.Builder().url(HttpUrl.parse(baseUrl)!!.newBuilder()
-            .addPathSegments("v1/arbeidstaker/arbeidsforhold")
-            .addQueryParameter("regelverk", "A_ORDNINGEN")
-            .build())
+        if (!isDevelopment()) return ""
+        val request = Request.Builder().url(baseUrl)
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
