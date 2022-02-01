@@ -8,11 +8,13 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants.MDC_CALL_ID
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
+import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.http.HttpStatus
 import java.io.IOException
@@ -25,7 +27,7 @@ open class DigDirKrrProxyClient internal constructor(
     internal open fun hentKontaktinfo(foedselsnummer: Foedselsnummer): DigDirKrrProxyResponse? {
         val request = buildRequest(foedselsnummer)
         val response = utfoer(request)
-        return parse(response)
+        return response?.let { parse(it) }
     }
 
     private fun buildRequest(foedselsnummer: Foedselsnummer): Request {
@@ -42,7 +44,7 @@ open class DigDirKrrProxyClient internal constructor(
             .build()
     }
 
-    private fun utfoer(request: Request) : String {
+    private fun utfoer(request: Request) : String? {
         try {
             defaultHttpClient().newCall(request).execute().use { response -> return behandle(response) }
         } catch (e: IOException) {
@@ -51,13 +53,14 @@ open class DigDirKrrProxyClient internal constructor(
     }
 
     @Throws(IOException::class)
-    private fun behandle(response: Response): String {
+    private fun behandle(response: Response): String? {
         if (!response.isSuccessful) {
-            val feilmelding = mapOf(
-                HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
-                HttpStatus.NOT_FOUND to "Søk på kontaktinfo gav ingen treff"
-            ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot DigDir-Krr-Proxy")
-            throw RuntimeException(feilmelding)
+            val status = HttpStatus.valueOf(response.code())
+            when (status) {
+                HttpStatus.NOT_FOUND -> { LOG.warn("Søk på kontaktinfo hos KRR gav ingen treff"); return null }
+                HttpStatus.FORBIDDEN -> throw ForbiddenException("Ingen tilgang til forespurt ressurs")
+                else -> throw RuntimeException("Noe gikk galt mot DigDir-Krr-Proxy - HttpStatus = $status")
+            }
         }
         return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }
     }
@@ -71,6 +74,7 @@ open class DigDirKrrProxyClient internal constructor(
     }
 
     companion object {
+        private val LOG = LoggerFactory.getLogger(DigDirKrrProxyClient::class.java)
         private val GSON = GsonBuilder().create()
 
         internal fun parse(jsonResponse: String): DigDirKrrProxyResponse {
