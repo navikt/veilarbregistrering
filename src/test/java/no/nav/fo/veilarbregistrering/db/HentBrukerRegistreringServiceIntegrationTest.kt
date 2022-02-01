@@ -42,7 +42,8 @@ class HentBrukerRegistreringServiceIntegrationTest(
     @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
     @Autowired val hentRegistreringService: HentRegistreringService,
     @Autowired var oppfolgingGateway: OppfolgingGateway,
-    @Autowired var profileringService: ProfileringService
+    @Autowired var profileringService: ProfileringService,
+    @Autowired val profileringRepository: ProfileringRepository,
 ) {
 
     @BeforeEach
@@ -62,9 +63,12 @@ class HentBrukerRegistreringServiceIntegrationTest(
     fun `henter opp siste brukerregistrering med filtre på tilstand`() {
         brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+            profileringRepository.lagreProfilering(id, lagProfilering())
         }
         brukerRegistreringRepository.lagre(BRUKER_UTEN_JOBB, BRUKER).id.let { id ->
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+            profileringRepository.lagreProfilering(id, lagProfilering())
+
         }
         assertEquals(gyldigStilling(), hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER)?.sisteStilling)
     }

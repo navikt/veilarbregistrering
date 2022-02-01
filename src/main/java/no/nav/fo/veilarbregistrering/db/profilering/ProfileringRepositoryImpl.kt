@@ -17,7 +17,7 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
         val params2 = mapOf(
             "bruker_registrering_id" to brukerregistreringId,
             "type" to ARB_6_AV_SISTE_12_MND,
-            "verdi" to profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder
+            "verdi" to profilering.jobbetSammenhengendeSeksAvTolvSisteManeder
         )
         val params3 = mapOf(
             "bruker_registrering_id" to brukerregistreringId,
@@ -36,8 +36,9 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
     override fun hentProfileringForId(brukerregistreringId: Long): Profilering =
         db.query(
             "SELECT * FROM $BRUKER_PROFILERING WHERE $BRUKER_REGISTRERING_ID = :id" +
-                " FETCH NEXT 3 ROWS ONLY",
-            mapOf("id" to brukerregistreringId), mapper)!!
+                    " FETCH NEXT 3 ROWS ONLY",
+            mapOf("id" to brukerregistreringId), mapper
+        )!!
 
 
     companion object {
@@ -52,7 +53,7 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
 
         private val mapper: (ResultSet) -> Profilering = { rs ->
             try {
-                Profilering().also {
+                ProtoProfilering().also {
                     while (rs.next()) {
                         when (rs.getString(PROFILERING_TYPE)) {
                             ALDER -> it.alder = rs.getInt(VERDI)
@@ -63,10 +64,31 @@ class ProfileringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Pr
                             RESULTAT_PROFILERING -> it.innsatsgruppe = Innsatsgruppe.of(rs.getString(VERDI))
                         }
                     }
-                }
+                }.toProfilering()
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }
         }
+    }
+}
+
+class ProtoProfilering(
+    var alder: Int = 0,
+    var isJobbetSammenhengendeSeksAvTolvSisteManeder: Boolean? = null,
+    var innsatsgruppe: Innsatsgruppe? = null
+) {
+    fun toProfilering(): Profilering =
+        Profilering(
+            alder = alder.also { require(it > 0, uferdigMessage("alder")) },
+            jobbetSammenhengendeSeksAvTolvSisteManeder = requireNotNull(
+                isJobbetSammenhengendeSeksAvTolvSisteManeder,
+                uferdigMessage("isJobbetSammenhengendeSeksAvTolvSisteManeder")
+            ),
+            innsatsgruppe = requireNotNull(innsatsgruppe, uferdigMessage("innsatsgruppe")),
+        )
+
+    companion object {
+        fun uferdigMessage(felt: String): () -> String =
+            { "Feil ved lesing av Profilering fra database, manglende- eller ugyldig verdi for feltet $felt" }
     }
 }

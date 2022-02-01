@@ -26,7 +26,7 @@ class ProfileringRepositoryTest {
                 query,
                 idParam + mapOf(
                     "type" to ARB_6_AV_SISTE_12_MND,
-                    "verdi" to profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder
+                    "verdi" to profilering.jobbetSammenhengendeSeksAvTolvSisteManeder
                 )
             )
         }

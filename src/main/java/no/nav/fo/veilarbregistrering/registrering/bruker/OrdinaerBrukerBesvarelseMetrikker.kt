@@ -50,7 +50,7 @@ internal object OrdinaerBrukerBesvarelseMetrikker {
         profilering: Profilering
     ) = ((svarSomIndikererArbeidSisteManeder.contains(ordinaerBrukerRegistrering.besvarelse.dinSituasjon) ||
             ordinaerBrukerRegistrering.besvarelse.sisteStilling == SisteStillingSvar.HAR_HATT_JOBB)
-            == profilering.isJobbetSammenhengendeSeksAvTolvSisteManeder)
+            == profilering.jobbetSammenhengendeSeksAvTolvSisteManeder)
 
     private val svarSomIndikererArbeidSisteManeder = listOf(
         DinSituasjonSvar.MISTET_JOBBEN,

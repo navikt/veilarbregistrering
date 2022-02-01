@@ -106,7 +106,7 @@ internal class ProfileringServiceTest {
             alder,
             foedselsnummer,
             besvarelse
-        ).getInnsatsgruppe()
+        ).innsatsgruppe
         val onsketInnsatsgruppe: Innsatsgruppe = if (besvarelse.helseHinder == HelseHinderSvar.JA || besvarelse.andreForhold == AndreForholdSvar.JA) {
                 Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING
             } else if (alder in 18..59
@@ -128,7 +128,7 @@ internal class ProfileringServiceTest {
             35,
             FOEDSELSNUMMER_MINUS_10_MND,
             hentStandardInnsatsBesvarelse()
-        ).getInnsatsgruppe()
+        ).innsatsgruppe
         assertEquals(Innsatsgruppe.STANDARD_INNSATS, innsatsgruppe)
     }
 
@@ -138,7 +138,7 @@ internal class ProfileringServiceTest {
             60,
             FOEDSELSNUMMER_MINUS_10_MND,
             hentStandardInnsatsBesvarelse()
-        ).getInnsatsgruppe()
+        ).innsatsgruppe
         assertEquals(Innsatsgruppe.SITUASJONSBESTEMT_INNSATS, innsatsgruppe)
     }
 
@@ -148,7 +148,7 @@ internal class ProfileringServiceTest {
             40,
             FOEDSELSNUMMER_MINUS_10_MND,
             hentArbeidsEvneVurderingBesvarelse()
-        ).getInnsatsgruppe()
+        ).innsatsgruppe
         assertEquals(Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING, innsatsgruppe)
     }
 
