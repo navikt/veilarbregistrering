@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 class OppgaveServiceTest {
     private lateinit var oppgaveService: OppgaveService
@@ -30,7 +29,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `opprettOppgave ang opphold skal gi beskrivelse om rutine`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         every { oppgaveGateway.opprett(any()) } returns DummyOppgaveResponse()
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         val oppgave = Oppgave.opprettOppgave(
@@ -43,7 +42,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `opprettOppgave ang dod utvandret skal gi beskrivelse om rutine`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         every { oppgaveGateway.opprett(any()) } returns DummyOppgaveResponse()
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.UTVANDRET)
         val oppgave = Oppgave.opprettOppgave(
@@ -56,7 +55,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `skal lagre oppgave ved vellykket opprettelse av oppgave`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         every { oppgaveGateway.opprett(any()) } returns DummyOppgaveResponse()
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
         verify(exactly = 1) { oppgaveRepository.opprettOppgave(BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 234L) }
@@ -89,7 +88,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `skal ikke kaste exception dersom det finnes eldre oppgave fra for`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         val oppgaveSomBleOpprettetTreDagerFor =
             OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 3, 10, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetTreDagerFor)
@@ -106,7 +105,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `ingen tidligere oppgaver`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         every { oppgaveRepository.hentOppgaverFor(any()) } returns emptyList()
         every { oppgaveGateway.opprett(any()) } returns DummyOppgaveResponse()
         oppgaveService.opprettOppgave(BRUKER, OppgaveType.OPPHOLDSTILLATELSE)
@@ -120,7 +119,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `skal ikke kaste exception dersom det finnes oppgave av annen type`() {
-        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns Optional.empty()
+        every { oppgaveRouter.hentEnhetsnummerFor(BRUKER) } returns null
         val oppgaveSomBleOpprettetEnDagerFor =
             OppgaveImpl(23, BRUKER.aktorId, OppgaveType.OPPHOLDSTILLATELSE, 23, LocalDateTime.of(2020, 4, 9, 22, 0))
         val oppgaver = listOf(oppgaveSomBleOpprettetEnDagerFor)

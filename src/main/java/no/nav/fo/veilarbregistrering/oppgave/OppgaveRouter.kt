@@ -1,162 +1,146 @@
-package no.nav.fo.veilarbregistrering.oppgave;
+package no.nav.fo.veilarbregistrering.oppgave
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer;
-import no.nav.fo.veilarbregistrering.bruker.*;
-import no.nav.fo.veilarbregistrering.enhet.EnhetGateway;
-import no.nav.fo.veilarbregistrering.enhet.Kommune;
-import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer;
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService;
-import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr;
-import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
-
-import static java.util.Optional.of;
-import static no.nav.fo.veilarbregistrering.metrics.Events.OPPGAVE_ROUTING_EVENT;
-import static no.nav.fo.veilarbregistrering.oppgave.RoutingStep.*;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
+import no.nav.fo.veilarbregistrering.bruker.*
+import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
+import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
+import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
+import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.internBrukerstotte
+import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
+import java.util.*
 
 /**
- * <p>Har som hovedoppgave å route Oppgaver til riktig enhet.</p>
  *
- * <p>Oppgave-tjenesten router i utgangspunktet oppgaver selv, men for utvandrede brukere som
+ * Har som hovedoppgave å route Oppgaver til riktig enhet.
+ *
+ *
+ * Oppgave-tjenesten router i utgangspunktet oppgaver selv, men for utvandrede brukere som
  * ikke ligger inne med Norsk adresse og tilknytning til NAV-kontor må vi gå via tidligere
- * arbeidsgiver.</p>
+ * arbeidsgiver.
  *
- * <p>Geografisk tilknytning kan gi verdier ift. landkode, fylke og bydel. Gitt landkode,
- * forsøker vi å gå via tidligere arbeidsforhold</p>
+ *
+ * Geografisk tilknytning kan gi verdier ift. landkode, fylke og bydel. Gitt landkode,
+ * forsøker vi å gå via tidligere arbeidsforhold
  */
-public class OppgaveRouter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRouter.class);
 
-    private final ArbeidsforholdGateway arbeidsforholdGateway;
-    private final EnhetGateway enhetGateway;
-    private final Norg2Gateway norg2Gateway;
-    private final PdlOppslagGateway pdlOppslagGateway;
-    private final PrometheusMetricsService prometheusMetricsService;
-
-    public OppgaveRouter(
-            ArbeidsforholdGateway arbeidsforholdGateway,
-            EnhetGateway enhetGateway,
-            Norg2Gateway norg2Gateway,
-            PdlOppslagGateway pdlOppslagGateway,
-            PrometheusMetricsService prometheusMetricsService) {
-        this.arbeidsforholdGateway = arbeidsforholdGateway;
-        this.enhetGateway = enhetGateway;
-        this.norg2Gateway = norg2Gateway;
-        this.pdlOppslagGateway = pdlOppslagGateway;
-        this.prometheusMetricsService = prometheusMetricsService;
-    }
-
-    public Optional<Enhetnr> hentEnhetsnummerFor(Bruker bruker) {
-        AdressebeskyttelseGradering adressebeskyttelseGradering = hentAdressebeskyttelse(bruker);
+class OppgaveRouter(
+    private val arbeidsforholdGateway: ArbeidsforholdGateway,
+    private val enhetGateway: EnhetGateway,
+    private val norg2Gateway: Norg2Gateway,
+    private val pdlOppslagGateway: PdlOppslagGateway,
+    private val prometheusMetricsService: PrometheusMetricsService
+) {
+    fun hentEnhetsnummerFor(bruker: Bruker): Enhetnr? {
+        val adressebeskyttelseGradering = hentAdressebeskyttelse(bruker)
         if (adressebeskyttelseGradering.erGradert()) {
-            return Optional.ofNullable(adressebeskyttelseGradering.getEksplisittRoutingEnhet());
+            return adressebeskyttelseGradering.eksplisittRoutingEnhet
         }
 
-        Optional<GeografiskTilknytning> geografiskTilknytning;
-        try {
-            geografiskTilknytning = pdlOppslagGateway.hentGeografiskTilknytning(bruker.getAktorId());
-        } catch (RuntimeException e) {
-            LOG.warn("Henting av geografisk tilknytning feilet", e);
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Feilet);
-            geografiskTilknytning = Optional.empty();
+        val geografiskTilknytning: GeografiskTilknytning? = try {
+            pdlOppslagGateway.hentGeografiskTilknytning(bruker.aktorId)
+        } catch (e: RuntimeException) {
+            logger.warn("Henting av geografisk tilknytning feilet", e)
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.GeografiskTilknytning_Feilet)
+            null
         }
 
-        if (geografiskTilknytning.isPresent()) {
-
-            GeografiskTilknytning gk = geografiskTilknytning.get();
-
-            if (gk.byMedBydeler()) {
-                LOG.info("Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte", gk);
-                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_ByMedBydel_Funnet);
-                return Optional.of(Enhetnr.Companion.internBrukerstotte());
+        if (geografiskTilknytning != null) {
+            if (geografiskTilknytning.byMedBydeler()) {
+                logger.info(
+                    "Fant {} som er en by med bydeler -> sender oppgave til intern brukerstøtte",
+                    geografiskTilknytning
+                )
+                prometheusMetricsService.registrer(
+                    Events.OPPGAVE_ROUTING_EVENT,
+                    RoutingStep.GeografiskTilknytning_ByMedBydel_Funnet
+                )
+                return internBrukerstotte()
             }
-
-            if (!gk.utland()) {
-                LOG.info("Fant {} -> overlater til oppgave-api å route selv", gk);
-                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Funnet);
-                return Optional.empty();
+            if (!geografiskTilknytning.utland()) {
+                logger.info("Fant {} -> overlater til oppgave-api å route selv", geografiskTilknytning)
+                prometheusMetricsService.registrer(
+                    Events.OPPGAVE_ROUTING_EVENT,
+                    RoutingStep.GeografiskTilknytning_Funnet
+                )
+                return null
             }
-
-            LOG.info("Fant {} -> forsøker å finne enhetsnr via arbeidsforhold", gk);
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, GeografiskTilknytning_Utland);
+            logger.info("Fant {} -> forsøker å finne enhetsnr via arbeidsforhold", geografiskTilknytning)
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.GeografiskTilknytning_Utland)
         }
-
-        try {
-            Optional<Enhetnr> enhetsnr = hentEnhetsnummerForSisteArbeidsforholdTil(bruker);
-            if (enhetsnr.isPresent()) {
-                prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Funnet);
-                return enhetsnr;
-            }
-            return of(Enhetnr.Companion.internBrukerstotte());
-        } catch (RuntimeException e) {
-            LOG.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e);
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_Feilet);
-            return Optional.empty();
+        return try {
+            hentEnhetsnummerForSisteArbeidsforholdTil(bruker)?.also {
+                prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Enhetsnummer_Funnet)
+            } ?: internBrukerstotte()
+        } catch (e: RuntimeException) {
+            logger.warn("Henting av enhetsnummer for siste arbeidsforhold feilet", e)
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Enhetsnummer_Feilet)
+            null
         }
     }
 
-    private AdressebeskyttelseGradering hentAdressebeskyttelse(Bruker bruker) {
-        try {
-            Optional<Person> person = Optional.ofNullable(pdlOppslagGateway.hentPerson(bruker.getAktorId()));
-            return person.map(Person::getAdressebeskyttelseGradering)
-                    .orElse(AdressebeskyttelseGradering.UKJENT);
-
-        } catch (Exception e) {
-            LOG.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e);
-            return AdressebeskyttelseGradering.UKJENT;
+    private fun hentAdressebeskyttelse(bruker: Bruker): AdressebeskyttelseGradering {
+        return try {
+            pdlOppslagGateway.hentPerson(bruker.aktorId)
+                ?.adressebeskyttelseGradering
+                ?: (AdressebeskyttelseGradering.UKJENT)
+        } catch (e: Exception) {
+            logger.warn("Feil ved uthenting av adressebeskyttelse fra PDL", e)
+            AdressebeskyttelseGradering.UKJENT
         }
     }
 
-    public Optional<Enhetnr> hentEnhetsnummerForSisteArbeidsforholdTil(Bruker bruker) {
-        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.getGjeldendeFoedselsnummer());
+    private fun hentEnhetsnummerForSisteArbeidsforholdTil(bruker: Bruker): Enhetnr? {
+        val flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)
         if (flereArbeidsforhold.sisteUtenDefault() == null) {
-            LOG.warn("Fant ingen arbeidsforhold knyttet til bruker");
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, SisteArbeidsforhold_IkkeFunnet);
-            return Optional.empty();
+            logger.warn("Fant ingen arbeidsforhold knyttet til bruker")
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.SisteArbeidsforhold_IkkeFunnet)
+            return null
         }
-        Optional<Organisasjonsnummer> organisasjonsnummer = Optional.ofNullable(flereArbeidsforhold.sisteUtenDefault())
-                .map(Arbeidsforhold::getOrganisasjonsnummer)
-                .orElseThrow(IllegalStateException::new);
-        if (organisasjonsnummer.isEmpty()) {
-            LOG.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet");
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, OrgNummer_ikkeFunnet);
-            return Optional.empty();
+        val organisasjonsnummer = Optional.ofNullable(flereArbeidsforhold.sisteUtenDefault())
+            .map(Arbeidsforhold::organisasjonsnummer)
+            .orElseThrow { IllegalStateException() }
+        if (organisasjonsnummer.isEmpty) {
+            logger.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet")
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgNummer_ikkeFunnet)
+            return null
         }
-
-        Optional<Organisasjonsdetaljer> organisasjonsdetaljer = Optional.ofNullable(enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get()));
-        if (organisasjonsdetaljer.isEmpty()) {
-            LOG.warn("Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}", organisasjonsnummer.get().asString());
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, OrgDetaljer_IkkeFunnet);
-            return Optional.empty();
+        val organisasjonsdetaljer = Optional.ofNullable(
+            enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get())
+        )
+        if (organisasjonsdetaljer.isEmpty) {
+            logger.warn(
+                "Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}",
+                organisasjonsnummer.get().asString()
+            )
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgDetaljer_IkkeFunnet)
+            return null
         }
-
-        Optional<Kommune> muligKommunenummer = Optional.ofNullable(organisasjonsdetaljer
-                .map(Organisasjonsdetaljer::kommunenummer)
-                .orElseThrow(IllegalStateException::new));
-        if (muligKommunenummer.isEmpty()) {
-            LOG.warn("Fant ingen muligKommunenummer knyttet til organisasjon");
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Kommunenummer_IkkeFunnet);
-            return Optional.empty();
+        val muligKommunenummer = Optional.ofNullable(organisasjonsdetaljer
+            .map { obj: Organisasjonsdetaljer -> obj.kommunenummer() }
+            .orElseThrow { IllegalStateException() })
+        if (muligKommunenummer.isEmpty) {
+            logger.warn("Fant ingen muligKommunenummer knyttet til organisasjon")
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Kommunenummer_IkkeFunnet)
+            return null
         }
-
-        Kommune kommune = muligKommunenummer.orElseThrow(IllegalStateException::new);
+        val kommune = muligKommunenummer.orElseThrow { IllegalStateException() }
         if (kommune.kommuneMedBydeler()) {
-            LOG.info("Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.", kommune.getKommunenummer());
-            return of(Enhetnr.Companion.internBrukerstotte());
+            logger.info(
+                "Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.",
+                kommune.kommunenummer
+            )
+            return internBrukerstotte()
         }
-
-        Optional<Enhetnr> enhetsnr = norg2Gateway.hentEnhetFor(kommune);
-        if (enhetsnr.isEmpty()) {
-            LOG.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommune.getKommunenummer());
-            prometheusMetricsService.registrer(OPPGAVE_ROUTING_EVENT, Enhetsnummer_IkkeFunnet);
+        return norg2Gateway.hentEnhetFor(kommune).orElseGet {
+            logger.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommune.kommunenummer)
+            prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Enhetsnummer_IkkeFunnet)
+            null
         }
-        return enhetsnr;
     }
+
 }

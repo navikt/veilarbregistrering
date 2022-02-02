@@ -48,15 +48,17 @@ class StartRegistreringStatusService(
     }
 
     private fun hentGeografiskTilknytning(bruker: Bruker): Optional<GeografiskTilknytning> {
-        var geografiskTilknytning: Optional<GeografiskTilknytning> = Optional.empty()
-        try {
-            val t1 = System.currentTimeMillis()
-            geografiskTilknytning = pdlOppslagGateway.hentGeografiskTilknytning(bruker.aktorId)
-            LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1)
+        val t1 = System.currentTimeMillis()
+
+        val geografiskTilknytning = try {
+            pdlOppslagGateway.hentGeografiskTilknytning(bruker.aktorId)?.also {
+                LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1)
+            }
         } catch (e: RuntimeException) {
             LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e)
+            null
         }
-        return geografiskTilknytning
+        return Optional.ofNullable(geografiskTilknytning)
     }
 
     companion object {

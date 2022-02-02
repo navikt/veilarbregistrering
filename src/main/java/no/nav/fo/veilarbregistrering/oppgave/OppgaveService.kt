@@ -17,7 +17,7 @@ open class OppgaveService(
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(bruker)
         val oppgave = Oppgave.opprettOppgave(
             bruker.aktorId,
-            enhetsnr.orElse(null),
+            enhetsnr,
             oppgaveType,
             idag()
         )

@@ -97,7 +97,7 @@ class StartRegistreringStatusServiceTest {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
         every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns
-                Optional.of(GeografiskTilknytning("1234"))
+                GeografiskTilknytning("1234")
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isEqualTo("1234")
@@ -117,11 +117,11 @@ class StartRegistreringStatusServiceTest {
     fun skalReturnereOrdinarRegistrering() {
         mockIkkeSykmeldtBruker()
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav())
-        val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+        val startRegistreringStatus = getStartRegistreringStatus()
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ORDINAER_REGISTRERING).isTrue
     }
 
-    private fun getStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
+    private fun getStartRegistreringStatus(bruker: Bruker = BRUKER_INTERN): StartRegistreringStatusDto {
         return brukerRegistreringService.hentStartRegistreringStatus(bruker)
     }
 

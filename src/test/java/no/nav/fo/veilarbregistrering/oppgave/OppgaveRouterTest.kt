@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
 import no.nav.fo.veilarbregistrering.enhet.Kommune
-import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.*
+import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -30,14 +30,14 @@ class OppgaveRouterTest {
         }
         val oppgaveRouter = oppgaveRouter(arbeidsforholdGateway = arbeidsforholdGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
+        assertThat(enhetsnr).isEqualTo(Enhetnr("2930"))
     }
 
     @Test
     fun `ingen enhet for orgnummer skal gi intern brukerstotte`() {
         val oppgaveRouter = oppgaveRouter()
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
+        assertThat(enhetsnr).isEqualTo(Enhetnr("2930"))
     }
 
     @Test
@@ -49,7 +49,7 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr("2930"))
+        assertThat(enhetsnr).isEqualTo(Enhetnr("2930"))
     }
 
     @Test
@@ -60,7 +60,7 @@ class OppgaveRouterTest {
         val enhetGateway = EnhetGateway { Organisasjonsdetaljer(listOf(forretningsadresse), emptyList()) }
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr("232"))
+        assertThat(enhetsnr).isEqualTo(Enhetnr("232"))
     }
 
     @Test
@@ -68,7 +68,7 @@ class OppgaveRouterTest {
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("0301"))
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
+        assertThat(enhetsnr).isEqualTo(Enhetnr.internBrukerstotte())
     }
 
     @Test
@@ -77,7 +77,7 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).isEmpty
+        assertThat(enhetsnr).isNull()
     }
 
     @Test
@@ -90,7 +90,7 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr("232"))
+        assertThat(enhetsnr).isEqualTo(Enhetnr("232"))
     }
 
     @Test
@@ -103,28 +103,28 @@ class OppgaveRouterTest {
 
         val oppgaveRouter = oppgaveRouter(enhetGateway = enhetGateway, pdlOppslagGateway = pdlOppslagGateway)
         val enhetsnr = oppgaveRouter.hentEnhetsnummerFor(BRUKER)
-        assertThat(enhetsnr).hasValue(Enhetnr.internBrukerstotte())
+        assertThat(enhetsnr).isEqualTo(Enhetnr.internBrukerstotte())
     }
 
     @Test
     fun `brukere med adressebeskyttelse FORTROLIG (kode 6) overlates til oppgave api`() {
         val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)
-        assertThat(enhetsnr).isEmpty
+        assertThat(enhetsnr).isNull()
     }
 
     @Test
     fun `brukere med adressebeskyttelse STRENGT_FORTROLIG (kode 7) overlates til oppgave api`() {
         val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
-        assertThat(enhetsnr).isEmpty
+        assertThat(enhetsnr).isNull()
     }
 
     @Test
     fun `brukere med adressebeskyttelse STRENGT_FORTROLIG_UTLAND routes eksplisitt til spesialkontor`() {
         val enhetsnr = hentEnhetsnummerForBrukerMedAdressebeskyttelse(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND)
-        assertThat(enhetsnr).hasValue(Enhetnr.enhetForAdressebeskyttelse())
+        assertThat(enhetsnr).isEqualTo(Enhetnr.enhetForAdressebeskyttelse())
     }
 
-    private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Optional<Enhetnr> {
+    private fun hentEnhetsnummerForBrukerMedAdressebeskyttelse(adressebeskyttelseGradering: AdressebeskyttelseGradering): Enhetnr? {
         val person = Person(null, null, adressebeskyttelseGradering, testNavn)
         val pdlOppslagGateway = StubPdlOppslagGateway(geografiskTilknytning = GeografiskTilknytning("0301"),
                                                       users = mapOf(BRUKER.aktorId to person))
@@ -171,7 +171,7 @@ class OppgaveRouterTest {
             TODO("Not yet implemented")
         }
 
-        override fun hentGeografiskTilknytning(aktorId: AktorId) = Optional.ofNullable(geografiskTilknytning)
+        override fun hentGeografiskTilknytning(aktorId: AktorId) = geografiskTilknytning
 
     }
 

@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map
 import no.nav.fo.veilarbregistrering.config.CacheConfig
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
-import java.util.*
 
 open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient) : PdlOppslagGateway {
 
@@ -23,13 +22,13 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
     }
 
     @Cacheable(CacheConfig.HENT_GEOGRAFISK_TILKNYTNING)
-    override fun hentGeografiskTilknytning(aktorId: AktorId): Optional<GeografiskTilknytning> {
+    override fun hentGeografiskTilknytning(aktorId: AktorId): GeografiskTilknytning? {
         return try {
             val pdlGeografiskTilknytning = pdlOppslagClient.hentGeografiskTilknytning(aktorId)
-            Optional.ofNullable(map(pdlGeografiskTilknytning))
+            map(pdlGeografiskTilknytning)
         } catch (e: BrukerIkkeFunnetException) {
             LOG.warn("Hent geografisk tilknytning gav ikke treff", e)
-            Optional.empty()
+            null
         }
     }
 
