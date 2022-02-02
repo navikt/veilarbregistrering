@@ -61,6 +61,14 @@ open class OppfolgingClient(
         metricsService.registrer(OPPFOLGING_SYKMELDT)
     }
 
+    fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
+        val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
+        return get(url, getServiceAuthorizationHeader(), ErUnderOppfolgingDto::class.java) {
+            logger.warn("Feil ved kall til oppfolging-api v2")
+            null
+        }
+    }
+
     private fun aktiveringFeilMapper(e: Exception): RuntimeException? =
         when (e) {
             is ForbiddenException -> {
