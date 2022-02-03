@@ -1,34 +1,26 @@
-package no.nav.fo.veilarbregistrering.profilering;
+package no.nav.fo.veilarbregistrering.profilering
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway;
-import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold;
-import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse;
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer;
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe.Companion.of
+import java.time.LocalDate
 
-import java.time.LocalDate;
+class ProfileringService(private val arbeidsforholdGateway: ArbeidsforholdGateway) {
 
-public class ProfileringService {
-
-    private final ArbeidsforholdGateway arbeidsforholdGateway;
-
-    public ProfileringService(ArbeidsforholdGateway arbeidsforholdGateway) {
-        this.arbeidsforholdGateway = arbeidsforholdGateway;
+    fun profilerBruker(
+        alder: Int,
+        fnr: Foedselsnummer,
+        besvarelse: Besvarelse
+    ): Profilering {
+        val flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(fnr)
+        val harJobbetSammenhengendeSeksAvTolvSisteManeder =
+            flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato())
+        val innsatsgruppe = of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder)
+        return Profilering(innsatsgruppe, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder)
     }
 
-    public Profilering profilerBruker(
-            int alder,
-            Foedselsnummer fnr,
-            Besvarelse besvarelse
-    ) {
-        FlereArbeidsforhold flereArbeidsforhold = arbeidsforholdGateway.hentArbeidsforhold(fnr);
-
-        boolean harJobbetSammenhengendeSeksAvTolvSisteManeder = flereArbeidsforhold.harJobbetSammenhengendeSeksAvTolvSisteManeder(dagensDato());
-        Innsatsgruppe innsatsgruppe = Innsatsgruppe.of(besvarelse, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
-
-        return new Profilering(innsatsgruppe, alder, harJobbetSammenhengendeSeksAvTolvSisteManeder);
-    }
-
-    protected LocalDate dagensDato() {
-        return LocalDate.now();
+    protected fun dagensDato(): LocalDate {
+        return LocalDate.now()
     }
 }
