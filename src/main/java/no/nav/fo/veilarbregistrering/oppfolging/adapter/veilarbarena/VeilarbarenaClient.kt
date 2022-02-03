@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import okhttp3.Request
@@ -14,11 +15,11 @@ class VeilarbarenaClient(
     private val baseUrl: String,
     private val tokenProvider: () -> String
 ) : HealthCheck {
-    internal fun arenaStatus(): ArenaStatusDto {
+    internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto {
         val aadToken = tokenProvider()
 
         val request = Request.Builder()
-            .url("$baseUrl/api/arena/status")
+            .url("$baseUrl/api/arena/status?fnr=${fnr.stringValue()}")
             .header("Authorization", "Bearer $aadToken")
             .build()
 
@@ -37,11 +38,11 @@ class VeilarbarenaClient(
         }
     }
 
-    internal fun kanReaktiveres(): KanReaktiveresDto {
+    internal fun kanReaktiveres(fnr: Foedselsnummer): KanReaktiveresDto {
         val aadToken = tokenProvider()
 
         val request = Request.Builder()
-            .url("$baseUrl/api/arena/status")
+            .url("$baseUrl/api/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
             .header("Authorization", "Bearer $aadToken")
             .build()
 
@@ -63,7 +64,6 @@ class VeilarbarenaClient(
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(baseUrl, defaultHttpClient())
     }
-
 }
 
 class ArenaStatusDto(val formidlingsgruppe: String, val kvalifiseringsgruppe: String, val rettighetsgruppe: String)
