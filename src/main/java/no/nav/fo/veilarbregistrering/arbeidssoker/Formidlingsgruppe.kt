@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.metrics.Metric
-
 /**
  * Formidlingsgruppe:
  *
@@ -9,10 +7,7 @@ import no.nav.fo.veilarbregistrering.metrics.Metric
  * IARBS - Ikke arbeidssøker
  * ISERV - Ikke servicebruker
  */
-data class Formidlingsgruppe(private val formidlingsgruppe: String) : Metric {
-    override fun fieldName(): String = "formidlingsgruppe"
-
-    override fun value(): String = formidlingsgruppe
+data class Formidlingsgruppe(private val formidlingsgruppe: String) {
 
     fun stringValue(): String = formidlingsgruppe
 
