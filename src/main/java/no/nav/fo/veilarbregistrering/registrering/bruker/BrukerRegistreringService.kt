@@ -49,10 +49,7 @@ open class BrukerRegistreringService(
         val profilering =
             profilerBrukerTilInnsatsgruppe(bruker.gjeldendeFoedselsnummer, opprettetBrukerRegistrering.besvarelse)
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.id, profilering)
-        prometheusMetricsService.registrer(
-            Events.PROFILERING_EVENT,
-            Tag.of("innsatsgruppe", profilering.innsatsgruppe.arenakode)
-        )
+        prometheusMetricsService.registrer(Events.PROFILERING_EVENT, profilering.innsatsgruppe)
         rapporterOrdinaerBesvarelse(prometheusMetricsService, ordinaerBrukerRegistrering, profilering)
         val registreringTilstand = medStatus(Status.MOTTATT, opprettetBrukerRegistrering.id)
         registreringTilstandRepository.lagre(registreringTilstand)
