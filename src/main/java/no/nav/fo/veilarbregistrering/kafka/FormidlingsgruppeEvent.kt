@@ -25,7 +25,7 @@ class FormidlingsgruppeEvent(
                 ", operation='" + operation + '\'' +
                 ", formidlingsgruppe=" + formidlingsgruppe +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret.toString() +
-                ", forrigeFormidlingsgruppe=" + forrigeFormidlingsgruppe?.stringValue() +
+                ", forrigeFormidlingsgruppe=" + forrigeFormidlingsgruppe?.toString() +
                 ", forrigeFormidlingsgruppeEndret=" + forrigeFormidlingsgruppeEndret?.toString() +
                 "'}'"
     }

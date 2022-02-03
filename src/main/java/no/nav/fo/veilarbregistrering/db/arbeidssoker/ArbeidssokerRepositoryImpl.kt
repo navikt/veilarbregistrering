@@ -19,7 +19,7 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
         val fnr = command.foedselsnummer?.stringValue()
             ?: throw IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!")
 
-        val formidlingsgruppe = command.formidlingsgruppe.stringValue()
+        val formidlingsgruppe = command.formidlingsgruppe.kode
         val formidlingsgruppeEndret = Timestamp.valueOf(command.formidlingsgruppeEndret)
 
         if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
@@ -38,7 +38,7 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
             "operasjon" to command.operation.name,
             "formidlingsgruppe" to formidlingsgruppe,
             "formidlingsgruppe_endret" to formidlingsgruppeEndret,
-            "forrige_formidlingsgruppe" to command.forrigeFormidlingsgruppe?.let(Formidlingsgruppe::stringValue),
+            "forrige_formidlingsgruppe" to command.forrigeFormidlingsgruppe?.let(Formidlingsgruppe::kode),
             "forrige_formidlingsgruppe_endret" to command.forrigeFormidlingsgruppeEndret?.let(Timestamp::valueOf),
             "formidlingsgruppe_lest" to Timestamp.valueOf(LocalDateTime.now())
         )

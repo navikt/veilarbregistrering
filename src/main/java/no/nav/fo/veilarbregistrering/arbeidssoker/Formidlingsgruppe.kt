@@ -7,13 +7,11 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
  * IARBS - Ikke arbeidssøker
  * ISERV - Ikke servicebruker
  */
-data class Formidlingsgruppe(private val formidlingsgruppe: String) {
+data class Formidlingsgruppe(val kode: String) {
 
-    fun stringValue(): String = formidlingsgruppe
-
-    override fun toString(): String = "{kode='$formidlingsgruppe'}"
+    override fun toString(): String = "{kode='$kode'}"
 
     fun erArbeidssoker(): Boolean {
-        return "ARBS" == formidlingsgruppe
+        return "ARBS" == kode
     }
 }

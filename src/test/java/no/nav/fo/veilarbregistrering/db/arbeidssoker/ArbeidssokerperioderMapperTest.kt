@@ -132,7 +132,7 @@ class ArbeidssokerperioderMapperTest {
         )
 
         Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(1)
-        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.stringValue()).isEqualTo("IARBS")
+        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.kode).isEqualTo("IARBS")
         Assertions.assertThat(arbeidssokerperioder.asList()[0].periode.fra).isEqualTo(now.toLocalDate())
     }
 
@@ -188,9 +188,9 @@ class ArbeidssokerperioderMapperTest {
         )
 
         Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(3)
-        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.stringValue()).isEqualTo("IARBS")
-        Assertions.assertThat(arbeidssokerperioder.asList()[1].formidlingsgruppe.stringValue()).isEqualTo("ARBS")
-        Assertions.assertThat(arbeidssokerperioder.asList()[2].formidlingsgruppe.stringValue()).isEqualTo("ISERV")
+        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.kode).isEqualTo("IARBS")
+        Assertions.assertThat(arbeidssokerperioder.asList()[1].formidlingsgruppe.kode).isEqualTo("ARBS")
+        Assertions.assertThat(arbeidssokerperioder.asList()[2].formidlingsgruppe.kode).isEqualTo("ISERV")
         Assertions.assertThat(arbeidssokerperioder.asList()[0].periode.fra).isEqualTo(now.toLocalDate())
         Assertions.assertThat(arbeidssokerperioder.asList()[1].periode.fra).isEqualTo(now.plusDays(7).toLocalDate())
         Assertions.assertThat(arbeidssokerperioder.asList()[2].periode.fra).isEqualTo(now.plusDays(50).toLocalDate())
