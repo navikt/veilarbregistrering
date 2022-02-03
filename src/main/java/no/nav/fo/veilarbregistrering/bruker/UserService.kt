@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.bruker
 
-import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
-import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
-import no.nav.common.auth.context.AuthContextHolder
 import no.bekk.bekkopen.person.FodselsnummerValidator
+import no.nav.common.auth.context.AuthContextHolder
+import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
-import java.lang.IllegalArgumentException
+import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,12 +14,12 @@ class UserService(
 ) {
     fun finnBrukerGjennomPdl(): Bruker = finnBrukerGjennomPdl(hentFnrFraUrlEllerToken())
 
-    fun finnBrukerGjennomPdl(fnr: Foedselsnummer?): Bruker {
-        return map(pdlOppslagGateway.hentIdenter(fnr!!))
+    fun finnBrukerGjennomPdl(fnr: Foedselsnummer): Bruker {
+        return map(pdlOppslagGateway.hentIdenter(fnr))
     }
 
-    fun hentBruker(aktorId: AktorId?): Bruker {
-        return map(pdlOppslagGateway.hentIdenter(aktorId!!))
+    fun hentBruker(aktorId: AktorId): Bruker {
+        return map(pdlOppslagGateway.hentIdenter(aktorId))
     }
 
     fun getEnhetIdFromUrlOrThrow(): String =
