@@ -34,23 +34,4 @@ public class Rettighetsgruppe {
     public int hashCode() {
         return Objects.hash(rettighetsgruppe);
     }
-
-    public static NullableRettighetsgruppe nullable() {
-        return new NullableRettighetsgruppe();
-    }
-
-    /**
-     * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
-     */
-    public static class NullableRettighetsgruppe extends Rettighetsgruppe {
-
-        private NullableRettighetsgruppe() {
-            super("INGEN_VERDI");
-        }
-
-        @Override
-        public String stringValue() {
-            return null;
-        }
-    }
 }
