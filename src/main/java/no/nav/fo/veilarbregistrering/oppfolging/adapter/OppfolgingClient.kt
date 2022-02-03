@@ -64,7 +64,7 @@ open class OppfolgingClient(
 
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
-        return get(url, getServiceAuthorizationHeader(), ErUnderOppfolgingDto::class.java) {
+        return get(url, getAuthorizationFromCookieOrResolveOboToken(), ErUnderOppfolgingDto::class.java) {
             SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2", it)
         }
     }
