@@ -16,7 +16,7 @@ data class Oppfolgingsstatus(
                 "kanReaktiveres=$kanReaktiveres, " +
                 "erSykmeldtMedArbeidsgiver=$erSykmeldtMedArbeidsgiver, " +
                 "formidlingsgruppe=$formidlingsgruppe, " +
-                "${servicegruppe ?: "servicegruppe=null"}" +
+                "${servicegruppe ?: "servicegruppe=null"}, " +
                 "${rettighetsgruppe ?: "rettighetsgruppe=null"}"
     }
 }
