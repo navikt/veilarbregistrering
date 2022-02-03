@@ -18,6 +18,7 @@ import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
@@ -59,6 +60,13 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
         post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
         metricsService.registrer(OPPFOLGING_SYKMELDT)
+    }
+
+    fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
+        val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
+        return get(url, getServiceAuthorizationHeader(), ErUnderOppfolgingDto::class.java) {
+            SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2")
+        }
     }
 
     private fun aktiveringFeilMapper(e: Exception): RuntimeException? =

@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -38,8 +39,27 @@ class OppfolgingGatewayConfig {
     }
 
     @Bean
-    fun oppfolgingGateway(oppfolgingClient: OppfolgingClient): OppfolgingGateway {
-        return OppfolgingGatewayImpl(oppfolgingClient)
+    fun veilarbarenaClient(
+        tokenProvider: ServiceToServiceTokenProvider,
+    ) : VeilarbarenaClient {
+        val baseUrl = requireProperty("VEILARBARENA_URL")
+        val veilarbarenaCluster = requireProperty("VEILARBARENA_CLUSTER")
+        return VeilarbarenaClient(
+            baseUrl
+        )
+            {
+                tokenProvider.getServiceToken(
+                    "veilarbarena",
+                    "pto",
+                    oppfolgingCluster
+                )
+            }
+
+    }
+
+    @Bean
+    fun oppfolgingGateway(oppfolgingClient: OppfolgingClient, veilarbarenaClient: VeilarbarenaClient): OppfolgingGateway {
+        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
     }
 }
 

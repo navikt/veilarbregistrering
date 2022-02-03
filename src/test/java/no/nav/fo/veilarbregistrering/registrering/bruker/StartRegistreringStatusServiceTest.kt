@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
+import io.mockk.MockKAdditionalAnswerScope
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
@@ -7,6 +8,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
@@ -28,7 +30,7 @@ class StartRegistreringStatusServiceTest {
         oppfolgingClient = mockk()
         pdlOppslagGateway = mockk()
         val metricsService: PrometheusMetricsService = mockk(relaxed = true)
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk(relaxed = true))
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
@@ -137,32 +139,40 @@ class StartRegistreringStatusServiceTest {
         return OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
     }
 
-    private fun mockArbeidssokerSomHarAktivOppfolging() =
+    private fun mockArbeidssokerSomHarAktivOppfolging() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
             OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+    }
 
 
 
-    private fun mockSykmeldtBruker() =
+    private fun mockSykmeldtBruker() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-            OppfolgingStatusData()
-                .withUnderOppfolging(false)
-                .withKanReaktiveres(false)
-                .withErSykmeldtMedArbeidsgiver(true)
+                OppfolgingStatusData()
+                    .withUnderOppfolging(false)
+                    .withKanReaktiveres(false)
+                    .withErSykmeldtMedArbeidsgiver(true)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+    }
 
-    private fun mockIkkeSykmeldtBruker() =
+    private fun mockIkkeSykmeldtBruker() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-            OppfolgingStatusData()
-                .withUnderOppfolging(false)
-                .withKanReaktiveres(false)
-                .withErSykmeldtMedArbeidsgiver(false)
+                OppfolgingStatusData()
+                    .withUnderOppfolging(false)
+                    .withKanReaktiveres(false)
+                    .withErSykmeldtMedArbeidsgiver(false)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+    }
 
     private fun mockArbeidsforhold(arbeidsforhold: List<Arbeidsforhold>) =
         every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns FlereArbeidsforhold(arbeidsforhold)
 
-    private fun mockInaktivBrukerUtenReaktivering() =
+    private fun mockInaktivBrukerUtenReaktivering() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-            OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false)
+                OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+    }
 
     private fun mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() =
         every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns
@@ -178,8 +188,10 @@ class StartRegistreringStatusServiceTest {
                 )
             )
 
-    private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) =
+    private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+    }
 
     companion object {
         private val FNR_OPPFYLLER_KRAV =

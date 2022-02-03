@@ -45,6 +45,10 @@ spec:
       value: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: dev-fss
+    - name: VEILARBARENA_URL
+      value: https://veilarbarena-q1.nais.preprod.local/veilarbarena/api
+    - name: VEILARBARENA_CLUSTER
+      value: dev-fss
     - name: ABAC_PDP_ENDPOINT_URL
       value: https://abac-veilarb-q1.dev.intern.nav.no/application/asm-pdp/authorize
     - name: UNLEASH_API_URL
