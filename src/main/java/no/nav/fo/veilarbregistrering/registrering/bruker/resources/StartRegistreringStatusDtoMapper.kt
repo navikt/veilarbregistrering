@@ -21,7 +21,7 @@ object StartRegistreringStatusDtoMapper {
         brukersTilstand.registreringstype,
         brukersTilstand.isHarIgangsattGjenopptagbarRegistrering,
         brukersTilstand.formidlingsgruppe.map(Formidlingsgruppe::stringValue).orElse(null),
-        brukersTilstand.servicegruppe.orElse(Servicegruppe.nullable()).stringValue(),
+        brukersTilstand.servicegruppe.map(Servicegruppe::stringValue).orElse(null),
         brukersTilstand.rettighetsgruppe.orElse(Rettighetsgruppe.nullable()).stringValue(),
         geografiskTilknytning?.stringValue(),
         alder

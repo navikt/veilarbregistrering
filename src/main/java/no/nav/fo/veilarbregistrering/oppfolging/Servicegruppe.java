@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
-import no.nav.fo.veilarbregistrering.metrics.Metric;
-
 import java.util.Objects;
 
-public class Servicegruppe implements Metric {
+public class Servicegruppe {
 
     private final String servicegruppe;
 
@@ -18,16 +16,6 @@ public class Servicegruppe implements Metric {
                     "Hvis null, kan NullableServicegruppe brukes i stedet.");
         }
         this.servicegruppe = servicegruppe;
-    }
-
-    @Override
-    public String fieldName() {
-        return "servicegruppe";
-    }
-
-    @Override
-    public String value() {
-        return servicegruppe;
     }
 
     public String stringValue() {
@@ -47,27 +35,5 @@ public class Servicegruppe implements Metric {
         return Objects.hash(servicegruppe);
     }
 
-    public static NullableServicegruppe nullable() {
-        return new NullableServicegruppe();
-    }
 
-    /**
-     * <code>Null object</code> is an object with no referenced value or with defined neutral ("null") behavior
-     */
-    public static class NullableServicegruppe extends Servicegruppe {
-
-        private NullableServicegruppe() {
-            super("INGEN_VERDI");
-        }
-
-        @Override
-        public String stringValue() {
-            return null;
-        }
-
-        @Override
-        public String value() {
-            return "INGEN_VERDI";
-        }
-    }
 }
