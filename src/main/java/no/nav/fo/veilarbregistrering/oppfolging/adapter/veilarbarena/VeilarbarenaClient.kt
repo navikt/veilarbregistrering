@@ -32,8 +32,7 @@ class VeilarbarenaClient(
                         ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
                 }
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }
@@ -55,8 +54,7 @@ class VeilarbarenaClient(
                         ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
                 }
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }
