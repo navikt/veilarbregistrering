@@ -19,7 +19,7 @@ class VeilarbarenaClient(
         val aadToken = tokenProvider()
 
         val request = Request.Builder()
-            .url("$baseUrl/api/arena/status?fnr=${fnr.stringValue()}")
+            .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
             .header("Authorization", "Bearer $aadToken")
             .build()
 
@@ -32,8 +32,7 @@ class VeilarbarenaClient(
                         ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
                 }
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }
@@ -42,7 +41,7 @@ class VeilarbarenaClient(
         val aadToken = tokenProvider()
 
         val request = Request.Builder()
-            .url("$baseUrl/api/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
+            .url("$baseUrl/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
             .header("Authorization", "Bearer $aadToken")
             .build()
 
@@ -55,8 +54,7 @@ class VeilarbarenaClient(
                         ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
                 }
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }

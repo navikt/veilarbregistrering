@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
@@ -31,9 +32,11 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
     override fun hentOppfolgingsstatusFraNyeKilder(fodselsnummer: Foedselsnummer): Oppfolgingsstatus? {
         return try {
             val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
-            val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
-            val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
-            map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
+            if (isDevelopment()) {
+                val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
+                val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
+                map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
+            } else Oppfolgingsstatus(erUnderOppfolging.erUnderOppfolging)
         } catch (e: SammensattOppfolgingStatusException) {
             logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
             null
@@ -60,7 +63,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
                     erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && erUnderOppfolgingDto.erUnderOppfolging,
                     formidlingsgruppe = Formidlingsgruppe.of(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe.of(arenastatus.kvalifiseringsgruppe),
-                    rettighetsgruppe = Rettighetsgruppe.of(arenastatus.rettighetsgruppe)
+                    rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
             )
         }
 
@@ -71,7 +74,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
                     oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
                     oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
                     oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
-                    oppfolgingStatusData.rettighetsgruppe?.let(Rettighetsgruppe::of)
+                    oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
             )
         }
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
@@ -11,6 +12,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.lang.Exception
 
 @Configuration
 class OppfolgingGatewayConfig {
@@ -48,11 +50,15 @@ class OppfolgingGatewayConfig {
             baseUrl
         )
             {
-                tokenProvider.getServiceToken(
-                    "veilarbarena",
-                    "pto",
-                    oppfolgingCluster
-                )
+                try {
+                    tokenProvider.getServiceToken(
+                        "veilarbarena",
+                        "pto",
+                        veilarbarenaCluster
+                    )
+                } catch (e: Exception) {
+                    "no token"
+                }
             }
 
     }
