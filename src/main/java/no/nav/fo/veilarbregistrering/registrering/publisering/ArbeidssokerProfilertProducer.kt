@@ -5,5 +5,5 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import java.time.LocalDateTime
 
 interface ArbeidssokerProfilertProducer {
-    fun publiserProfilering(aktorId: AktorId?, innsatsgruppe: Innsatsgruppe?, profilertDato: LocalDateTime?)
+    fun publiserProfilering(aktorId: AktorId, innsatsgruppe: Innsatsgruppe, profilertDato: LocalDateTime)
 }

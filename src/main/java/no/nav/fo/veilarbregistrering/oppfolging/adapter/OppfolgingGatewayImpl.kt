@@ -62,19 +62,19 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
                     erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && erUnderOppfolgingDto.erUnderOppfolging,
                     formidlingsgruppe = Formidlingsgruppe.of(arenastatus.formidlingsgruppe),
-                    servicegruppe = Servicegruppe.of(arenastatus.kvalifiseringsgruppe),
+                    servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
             )
         }
 
         private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {
             return Oppfolgingsstatus(
-                oppfolgingStatusData.underOppfolging,
-                oppfolgingStatusData.kanReaktiveres,
-                oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
-                oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
-                oppfolgingStatusData.servicegruppe?.let(Servicegruppe::of),
-                oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
+                    oppfolgingStatusData.underOppfolging,
+                    oppfolgingStatusData.kanReaktiveres,
+                    oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
+                    oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
+                    oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
+                    oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
             )
         }
     }

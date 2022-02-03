@@ -35,7 +35,7 @@ class BrukerTilstandServiceTest {
             false,
             true,
             Formidlingsgruppe.of("IARBS"),
-            Servicegruppe.of("VURDI"),
+            Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus

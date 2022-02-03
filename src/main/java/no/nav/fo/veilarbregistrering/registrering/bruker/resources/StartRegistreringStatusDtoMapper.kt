@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
-import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukersTilstand
 
 object StartRegistreringStatusDtoMapper {
@@ -21,7 +20,7 @@ object StartRegistreringStatusDtoMapper {
         brukersTilstand.registreringstype,
         brukersTilstand.isHarIgangsattGjenopptagbarRegistrering,
         brukersTilstand.formidlingsgruppe.map(Formidlingsgruppe::stringValue).orElse(null),
-        brukersTilstand.servicegruppe.orElse(Servicegruppe.nullable()).stringValue(),
+        brukersTilstand.servicegruppe.map{it.servicegruppe}.orElse(null),
         brukersTilstand.rettighetsgruppe.map(Rettighetsgruppe::stringValue).orElse(null),
         geografiskTilknytning?.stringValue(),
         alder

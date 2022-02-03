@@ -15,7 +15,7 @@ class BrukersTilstandTest {
             false,
             true,
             Formidlingsgruppe.of("IARBS"),
-            Servicegruppe.of("VURDI"),
+            Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
@@ -30,7 +30,7 @@ class BrukersTilstandTest {
             false,
             true,
             Formidlingsgruppe.of("IARBS"),
-            Servicegruppe.of("VURDI"),
+            Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
@@ -56,7 +56,7 @@ class BrukersTilstandTest {
             true,
             true,
             Formidlingsgruppe.of("IARBS"),
-            Servicegruppe.of("VURDI"),
+            Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
@@ -71,7 +71,7 @@ class BrukersTilstandTest {
             true,
             true,
             Formidlingsgruppe.of("IARBS"),
-            Servicegruppe.of("VURDI"),
+            Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
