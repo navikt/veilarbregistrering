@@ -34,7 +34,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient) : Op
                     oppfolgingStatusData.kanReaktiveres,
                     oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
                     oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
-                    oppfolgingStatusData.servicegruppe?.let(Servicegruppe::of),
+                    oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
                     oppfolgingStatusData.rettighetsgruppe?.let(Rettighetsgruppe::of)
             )
         }
