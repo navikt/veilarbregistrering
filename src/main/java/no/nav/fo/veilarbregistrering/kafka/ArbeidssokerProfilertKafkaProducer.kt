@@ -1,83 +1,75 @@
-package no.nav.fo.veilarbregistrering.kafka;
+package no.nav.fo.veilarbregistrering.kafka
 
-import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent;
-import no.nav.arbeid.soker.profilering.ProfilertTil;
-import no.nav.fo.veilarbregistrering.bruker.AktorId;
-import no.nav.fo.veilarbregistrering.log.CallId;
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe;
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
+import no.nav.arbeid.soker.profilering.ProfilertTil
+import no.nav.common.log.MDCConstants
+import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.log.CallId.correlationIdAsBytes
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
+import org.apache.kafka.clients.producer.Callback
+import org.apache.kafka.clients.producer.KafkaProducer
+import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer.RecordMetadata
+import org.apache.kafka.common.header.internals.RecordHeader
+import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
-import static no.nav.arbeid.soker.profilering.ProfilertTil.*;
-import static no.nav.common.log.MDCConstants.MDC_CALL_ID;
-
-class ArbeidssokerProfilertKafkaProducer implements ArbeidssokerProfilertProducer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ArbeidssokerProfilertKafkaProducer.class);
-
-    private final KafkaProducer producer;
-    private final String topic;
-
-    ArbeidssokerProfilertKafkaProducer(KafkaProducer kafkaProducer, String topic) {
-        this.producer = kafkaProducer;
-        this.topic = topic;
-    }
-
-    @Override
-    public void publiserProfilering(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
+internal class ArbeidssokerProfilertKafkaProducer(
+    private val producer: KafkaProducer<String, ArbeidssokerProfilertEvent>,
+    private val topic: String
+) : ArbeidssokerProfilertProducer {
+    override fun publiserProfilering(aktorId: AktorId, innsatsgruppe: Innsatsgruppe, profilertDato: LocalDateTime) {
         try {
-            ArbeidssokerProfilertEvent arbeidssokerProfilertEvent = map(aktorId, innsatsgruppe, profilertDato);
-            ProducerRecord<String, ArbeidssokerProfilertEvent> record = new ProducerRecord<>(topic, aktorId.getAktorId(), arbeidssokerProfilertEvent);
-            record.headers().add(new RecordHeader(MDC_CALL_ID, CallId.getCorrelationIdAsBytes()));
-            producer.send(record, (recordMetadata, e) -> {
-                if (e != null) {
-                    LOG.error(String.format("En feil oppsto ved publisering av ArbeidssokerProfilertEvent på topic, %s", topic), e);
+            val arbeidssokerProfilertEvent = map(aktorId, innsatsgruppe, profilertDato)
+            val record = ProducerRecord(
+                topic, aktorId.aktorId, arbeidssokerProfilertEvent
+            )
+            record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, correlationIdAsBytes))
 
-                } else {
-                    LOG.info("ArbeidssokerProfilertEvent publisert: {}", recordMetadata);
+            producer.send(record, Callback { recordMetadata: RecordMetadata, e: Exception? ->
+                when(e) {
+                    null -> LOG.info("ArbeidssokerProfilertEvent publisert: {}", recordMetadata)
+                    else -> LOG.error(String.format("En feil oppsto ved publisering av ArbeidssokerProfilertEvent på topic, %s", topic), e)
                 }
-            });
+            })
 
-        } catch (Exception e) {
-            LOG.error("Sending av ArbeidssokerProfilertEvent til Kafka feilet", e);
+        } catch (e: Exception) {
+            LOG.error("Sending av ArbeidssokerProfilertEvent til Kafka feilet", e)
         }
     }
 
-    private static ArbeidssokerProfilertEvent map(AktorId aktorId, Innsatsgruppe innsatsgruppe, LocalDateTime profilertDato) {
-        return ArbeidssokerProfilertEvent.newBuilder()
-                .setAktorid(aktorId.getAktorId())
+    companion object {
+        private val LOG = LoggerFactory.getLogger(ArbeidssokerProfilertKafkaProducer::class.java)
+        private fun map(
+            aktorId: AktorId,
+            innsatsgruppe: Innsatsgruppe,
+            profilertDato: LocalDateTime
+        ): ArbeidssokerProfilertEvent {
+            return ArbeidssokerProfilertEvent.newBuilder()
+                .setAktorid(aktorId.aktorId)
                 .setProfilertTil(map(innsatsgruppe))
-                .setProfileringGjennomfort(ZonedDateTime.of(profilertDato, ZoneId.systemDefault()).format(ISO_ZONED_DATE_TIME))
-                .build();
-    }
-
-    private static ProfilertTil map(Innsatsgruppe innsatsgruppe) {
-        ProfilertTil profilering;
-        switch (innsatsgruppe) {
-            case STANDARD_INNSATS: {
-                profilering = ANTATT_GODE_MULIGHETER;
-                break;
-            }
-            case SITUASJONSBESTEMT_INNSATS: {
-                profilering = ANTATT_BEHOV_FOR_VEILEDNING;
-                break;
-            }
-            case BEHOV_FOR_ARBEIDSEVNEVURDERING: {
-                profilering =  OPPGITT_HINDRINGER;
-                break;
-            }
-            default: throw new EnumConstantNotPresentException(Innsatsgruppe.class, innsatsgruppe.name());
+                .setProfileringGjennomfort(
+                    ZonedDateTime.of(profilertDato, ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                )
+                .build()
         }
-        return profilering;
-    }
 
+        private fun map(innsatsgruppe: Innsatsgruppe): ProfilertTil =
+            when (innsatsgruppe) {
+                Innsatsgruppe.STANDARD_INNSATS -> {
+                    ProfilertTil.ANTATT_GODE_MULIGHETER
+                }
+                Innsatsgruppe.SITUASJONSBESTEMT_INNSATS -> {
+                    ProfilertTil.ANTATT_BEHOV_FOR_VEILEDNING
+                }
+                Innsatsgruppe.BEHOV_FOR_ARBEIDSEVNEVURDERING -> {
+                    ProfilertTil.OPPGITT_HINDRINGER
+                }
+            }
+    }
 }
