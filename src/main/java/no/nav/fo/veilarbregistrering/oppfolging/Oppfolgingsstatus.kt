@@ -17,6 +17,6 @@ data class Oppfolgingsstatus(
                 "erSykmeldtMedArbeidsgiver=$erSykmeldtMedArbeidsgiver, " +
                 "formidlingsgruppe=$formidlingsgruppe, " +
                 "${servicegruppe ?: "servicegruppe=null"}" +
-                "rettighetsgruppe=$rettighetsgruppe)"
+                "${rettighetsgruppe ?: "rettighetsgruppe=null"}"
     }
 }
