@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
@@ -31,9 +32,11 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
     override fun hentOppfolgingsstatusFraNyeKilder(fodselsnummer: Foedselsnummer): Oppfolgingsstatus? {
         return try {
             val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
-            val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
-            val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
-            map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
+            if (isDevelopment()) {
+                val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
+                val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
+                map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
+            } else Oppfolgingsstatus(erUnderOppfolging.erUnderOppfolging)
         } catch (e: SammensattOppfolgingStatusException) {
             logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
             null

@@ -57,7 +57,6 @@ class OppfolgingGatewayConfig {
                         veilarbarenaCluster
                     )
                 } catch (e: Exception) {
-                    logger.error("Feil ved henting av aad token for å kalle veilarbarena:", e)
                     "no token"
                 }
             }
