@@ -16,7 +16,7 @@ class BrukersTilstandTest {
             true,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe.of("VURDI"),
-            Rettighetsgruppe.of("IYT")
+            Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val registreringType = brukersTilstand.registreringstype
@@ -31,7 +31,7 @@ class BrukersTilstandTest {
             true,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe.of("VURDI"),
-            Rettighetsgruppe.of("IYT")
+            Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val registreringType = brukersTilstand.registreringstype
@@ -57,7 +57,7 @@ class BrukersTilstandTest {
             true,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe.of("VURDI"),
-            Rettighetsgruppe.of("IYT")
+            Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val registreringType = brukersTilstand.registreringstype
@@ -72,7 +72,7 @@ class BrukersTilstandTest {
             true,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe.of("VURDI"),
-            Rettighetsgruppe.of("IYT")
+            Rettighetsgruppe("IYT")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val registreringType = brukersTilstand.registreringstype

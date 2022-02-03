@@ -36,7 +36,7 @@ class BrukerTilstandServiceTest {
             true,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe.of("VURDI"),
-            Rettighetsgruppe.of("IYT")
+            Rettighetsgruppe("IYT")
         )
         every { oppfolgingGateway.hentOppfolgingsstatus(any()) } returns oppfolgingsstatus
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(testBruker)
