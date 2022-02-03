@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppfolging;
 
-import no.nav.fo.veilarbregistrering.metrics.Metric;
-
 import java.util.Objects;
 
-public class Rettighetsgruppe implements Metric {
+public class Rettighetsgruppe {
 
     private final String rettighetsgruppe;
 
@@ -18,16 +16,6 @@ public class Rettighetsgruppe implements Metric {
                     "Hvis null, kan NullableRettighetsgruppe brukes i stedet.");
         }
         this.rettighetsgruppe = rettighetsgruppe;
-    }
-
-    @Override
-    public String fieldName() {
-        return "rettighetsgruppe";
-    }
-
-    @Override
-    public String value() {
-        return rettighetsgruppe;
     }
 
     public String stringValue() {
@@ -63,11 +51,6 @@ public class Rettighetsgruppe implements Metric {
         @Override
         public String stringValue() {
             return null;
-        }
-
-        @Override
-        public String value() {
-            return "INGEN_VERDI";
         }
     }
 }
