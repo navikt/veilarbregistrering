@@ -50,7 +50,7 @@ class StartRegistreringStatusDtoMapperTest {
             false,
             false,
             true,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
@@ -80,7 +80,7 @@ class StartRegistreringStatusDtoMapperTest {
             true,
             true,
             false,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )

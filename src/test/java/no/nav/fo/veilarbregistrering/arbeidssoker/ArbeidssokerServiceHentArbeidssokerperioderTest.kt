@@ -174,43 +174,43 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
         companion object {
             val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
             )
             val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29))
             )
             val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31))
             )
             val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2))
             )
             val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9))
             )
             val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 10), LocalDate.of(2020, 5, 29))
             )
             val ARBEIDSSOKERPERIODE_7 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 30), LocalDate.of(2020, 6, 30))
             )
             val ARBEIDSSOKERPERIODE_8 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 7, 1), null)
             )
             val ARBEIDSSOKERPERIODE_9 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 10, 5))
             )
             val ARBEIDSSOKERPERIODE_10 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2021, 10, 17), null)
             )
         }
@@ -237,31 +237,31 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
 
         companion object {
             val ARBEIDSSOKERPERIODE_0 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2019, 12, 1), LocalDate.of(2019, 12, 31))
             )
             val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
             )
             val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29))
             )
             val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31))
             )
             val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2))
             )
             val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9))
             )
             val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 10), null)
             )
         }

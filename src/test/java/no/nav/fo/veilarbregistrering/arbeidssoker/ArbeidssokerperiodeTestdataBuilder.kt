@@ -24,12 +24,12 @@ class ArbeidssokerperiodeTestdataBuilder private constructor(private val formidl
     companion object {
         @JvmStatic
         fun medArbs(): ArbeidssokerperiodeTestdataBuilder {
-            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe.of("ARBS"))
+            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe("ARBS"))
         }
 
         @JvmStatic
         fun medIserv(): ArbeidssokerperiodeTestdataBuilder {
-            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe.of("ISERV"))
+            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe("ISERV"))
         }
     }
 }

@@ -34,7 +34,7 @@ class FormidlingsgruppeMapperTest {
         val formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json)
         assertThat(formidlingsgruppeEvent.foedselsnummer?.stringValue()).isEqualTo("***********")
         assertThat(formidlingsgruppeEvent.personId).isEqualTo("3226568")
-        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe.of("ARBS"))
+        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("ARBS"))
         assertThat(formidlingsgruppeEvent.formidlingsgruppeEndret)
             .isEqualTo(LocalDateTime.of(2020, 6, 19, 9, 31, 50))
     }
@@ -46,7 +46,7 @@ class FormidlingsgruppeMapperTest {
         assertNull(formidlingsgruppeEvent.foedselsnummer)
         assertThat(formidlingsgruppeEvent.personId).isEqualTo("1652")
         assertThat(formidlingsgruppeEvent.operation).isEqualTo(Operation.INSERT)
-        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe.of("ISERV"))
+        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("ISERV"))
         assertThat(formidlingsgruppeEvent.formidlingsgruppeEndret)
             .isEqualTo(LocalDateTime.of(2007, 12, 3, 3, 5, 54))
     }
@@ -58,10 +58,10 @@ class FormidlingsgruppeMapperTest {
         assertThat(formidlingsgruppeEvent.foedselsnummer?.stringValue()).isEqualTo("***********")
         assertThat(formidlingsgruppeEvent.personId).isEqualTo("3226568")
         assertThat(formidlingsgruppeEvent.operation).isEqualTo(Operation.UPDATE)
-        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe.of("ARBS"))
+        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("ARBS"))
         assertThat(formidlingsgruppeEvent.formidlingsgruppeEndret)
             .isEqualTo(LocalDateTime.of(2020, 6, 19, 9, 31, 50))
-        assertThat(formidlingsgruppeEvent.forrigeFormidlingsgruppe).isEqualTo(Formidlingsgruppe.of("ISERV"))
+        assertThat(formidlingsgruppeEvent.forrigeFormidlingsgruppe).isEqualTo(Formidlingsgruppe("ISERV"))
         assertThat(formidlingsgruppeEvent.forrigeFormidlingsgruppeEndret)
             .isEqualTo(LocalDateTime.of(2020, 6, 18, 11, 13, 1))
     }
@@ -73,7 +73,7 @@ class FormidlingsgruppeMapperTest {
         assertThat(formidlingsgruppeEvent.foedselsnummer).isNull()
         assertThat(formidlingsgruppeEvent.personId).isEqualTo("1365747")
         assertThat(formidlingsgruppeEvent.operation).isEqualTo(Operation.DELETE)
-        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe.of("IJOBS"))
+        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("IJOBS"))
         assertThat(formidlingsgruppeEvent.formidlingsgruppeEndret)
             .isEqualTo(LocalDateTime.of(2016, 3, 12, 0, 47, 50))
     }

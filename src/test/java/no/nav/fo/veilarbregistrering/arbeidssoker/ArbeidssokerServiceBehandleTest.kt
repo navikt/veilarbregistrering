@@ -48,9 +48,9 @@ class ArbeidssokerServiceBehandleTest {
             "012345",
             "AKTIV",
             Operation.UPDATE,
-            Formidlingsgruppe.of("ISERV"),
+            Formidlingsgruppe("ISERV"),
             test,
-            Formidlingsgruppe.of("ARBS"),
+            Formidlingsgruppe("ARBS"),
             test.minusDays(1)
         )
     }

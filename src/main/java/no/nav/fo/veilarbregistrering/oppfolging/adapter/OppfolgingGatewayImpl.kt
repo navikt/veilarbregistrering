@@ -61,7 +61,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
                     isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
                     erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && erUnderOppfolgingDto.erUnderOppfolging,
-                    formidlingsgruppe = Formidlingsgruppe.of(arenastatus.formidlingsgruppe),
+                    formidlingsgruppe = Formidlingsgruppe(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
             )
@@ -72,7 +72,7 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
                     oppfolgingStatusData.underOppfolging,
                     oppfolgingStatusData.kanReaktiveres,
                     oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
-                    oppfolgingStatusData.formidlingsgruppe?.let(Formidlingsgruppe::of),
+                    oppfolgingStatusData.formidlingsgruppe?.let(::Formidlingsgruppe),
                     oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
                     oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
             )

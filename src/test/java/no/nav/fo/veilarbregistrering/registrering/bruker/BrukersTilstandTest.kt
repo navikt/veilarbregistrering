@@ -14,7 +14,7 @@ class BrukersTilstandTest {
             false,
             false,
             true,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
@@ -29,7 +29,7 @@ class BrukersTilstandTest {
             true,
             false,
             true,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
@@ -55,7 +55,7 @@ class BrukersTilstandTest {
             true,
             true,
             true,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
@@ -70,7 +70,7 @@ class BrukersTilstandTest {
             false,
             true,
             true,
-            Formidlingsgruppe.of("IARBS"),
+            Formidlingsgruppe("IARBS"),
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )

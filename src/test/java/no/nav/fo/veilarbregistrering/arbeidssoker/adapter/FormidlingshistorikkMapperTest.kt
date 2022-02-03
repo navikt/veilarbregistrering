@@ -47,14 +47,14 @@ class FormidlingshistorikkMapperTest {
         assertThat(liste).hasSize(4)
         assertThat(liste).contains(
             Arbeidssokerperiode(
-                Formidlingsgruppe.of("ISERV"),
+                Formidlingsgruppe("ISERV"),
                 Periode(
                     LocalDate.of(2020, 2, 21),
                     LocalDate.of(2020, 3, 11)
                 )
             ),
             Arbeidssokerperiode(
-                Formidlingsgruppe.of("ARBS"),
+                Formidlingsgruppe("ARBS"),
                 Periode(
                     LocalDate.of(2020, 3, 12),
                     null

@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.metrics.Metric
  * IARBS - Ikke arbeidssøker
  * ISERV - Ikke servicebruker
  */
-data class Formidlingsgruppe (private val formidlingsgruppe: String) : Metric {
+data class Formidlingsgruppe(private val formidlingsgruppe: String) : Metric {
     override fun fieldName(): String = "formidlingsgruppe"
 
     override fun value(): String = formidlingsgruppe
@@ -20,11 +20,5 @@ data class Formidlingsgruppe (private val formidlingsgruppe: String) : Metric {
 
     fun erArbeidssoker(): Boolean {
         return "ARBS" == formidlingsgruppe
-    }
-
-    companion object {
-        @JvmStatic
-        fun of(formidlingsgruppe: String) : Formidlingsgruppe =
-            Formidlingsgruppe(formidlingsgruppe)
     }
 }

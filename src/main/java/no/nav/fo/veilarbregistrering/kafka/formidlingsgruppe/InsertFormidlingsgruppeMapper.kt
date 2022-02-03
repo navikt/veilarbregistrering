@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe.Companion.of
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
 
 internal class InsertFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
@@ -11,7 +11,7 @@ internal class InsertFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
             after.PERSON_ID,
             after.PERSON_ID_STATUS,
             mapOperation(ggArenaFormidlinggruppeDto.op_type),
-            of(after.FORMIDLINGSGRUPPEKODE),
+            Formidlingsgruppe(after.FORMIDLINGSGRUPPEKODE),
             modDato(after.MOD_DATO),
             null,
             null
