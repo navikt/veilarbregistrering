@@ -1,37 +1,14 @@
-package no.nav.fo.veilarbregistrering.oppfolging;
+package no.nav.fo.veilarbregistrering.oppfolging
 
-import java.util.Objects;
+data class Rettighetsgruppe private constructor(val rettighetsgruppe: String) {
 
-public class Rettighetsgruppe {
-
-    private final String rettighetsgruppe;
-
-    public static Rettighetsgruppe of(String rettighetsgruppe) {
-        return new Rettighetsgruppe(rettighetsgruppe);
+    fun stringValue(): String {
+        return rettighetsgruppe
     }
 
-    private Rettighetsgruppe(String rettighetsgruppe) {
-        if (rettighetsgruppe == null) {
-            throw new IllegalArgumentException("Rettighetsgruppe skal ikke kunne være null. " +
-                    "Hvis null, kan NullableRettighetsgruppe brukes i stedet.");
+    companion object {
+        fun of(rettighetsgruppe: String): Rettighetsgruppe {
+            return Rettighetsgruppe(rettighetsgruppe)
         }
-        this.rettighetsgruppe = rettighetsgruppe;
-    }
-
-    public String stringValue() {
-        return rettighetsgruppe;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Rettighetsgruppe that = (Rettighetsgruppe) o;
-        return Objects.equals(rettighetsgruppe, that.rettighetsgruppe);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(rettighetsgruppe);
     }
 }
