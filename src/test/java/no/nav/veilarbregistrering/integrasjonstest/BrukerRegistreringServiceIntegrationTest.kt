@@ -156,14 +156,14 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
         @Bean
         fun brukerRegistreringService(
-                brukerRegistreringRepository: BrukerRegistreringRepository?,
-                profileringRepository: ProfileringRepository?,
-                oppfolgingGateway: OppfolgingGateway?,
-                profileringService: ProfileringService?,
-                registreringTilstandRepository: RegistreringTilstandRepository?,
-                brukerTilstandService: BrukerTilstandService?,
-                manuellRegistreringRepository: ManuellRegistreringRepository?,
-                prometheusMetricsService: PrometheusMetricsService?
+                brukerRegistreringRepository: BrukerRegistreringRepository,
+                profileringRepository: ProfileringRepository,
+                oppfolgingGateway: OppfolgingGateway,
+                profileringService: ProfileringService,
+                registreringTilstandRepository: RegistreringTilstandRepository,
+                brukerTilstandService: BrukerTilstandService,
+                manuellRegistreringRepository: ManuellRegistreringRepository,
+                prometheusMetricsService: PrometheusMetricsService
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
                 brukerRegistreringRepository,
