@@ -51,6 +51,7 @@ class StartRegistreringStatusDtoMapperTest {
             false,
             true,
             Formidlingsgruppe.of("IARBS"),
+            Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
@@ -81,7 +82,7 @@ class StartRegistreringStatusDtoMapperTest {
             false,
             Formidlingsgruppe.of("IARBS"),
             Servicegruppe("SERV"),
-            Rettighetsgruppe"AAP")
+            Rettighetsgruppe("AAP")
         )
         val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
         val (_, _, erSykmeldtMedArbeidsgiver) = map(
