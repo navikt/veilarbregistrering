@@ -34,7 +34,7 @@ class UserServiceTest {
         mockkStatic(RequestContext::class)
         every { RequestContext.servletRequest() } returns request
         every { request.getParameter("enhetId") } returns enhetId
-        val enhetIdFraUrl = userService.enhetIdFromUrlOrThrow
+        val enhetIdFraUrl = userService.getEnhetIdFromUrlOrThrow()
         assertThat(enhetIdFraUrl).isEqualTo(enhetId)
     }
 
@@ -42,7 +42,7 @@ class UserServiceTest {
     fun skalFeileHvisUrlIkkeHarEnhetId() {
         val request: HttpServletRequest = mockk()
         every { request.getParameter("enhetId") } returns null
-        assertThrows<RuntimeException> { userService.enhetIdFromUrlOrThrow }
+        assertThrows<RuntimeException> { userService.getEnhetIdFromUrlOrThrow() }
     }
 
     @Test

@@ -108,7 +108,7 @@ class RegistreringResource(
             null
         } else NavVeileder(
             autorisasjonsService.innloggetVeilederIdent,
-            userService.enhetIdFromUrlOrThrow
+            userService.getEnhetIdFromUrlOrThrow()
         )
     }
 
