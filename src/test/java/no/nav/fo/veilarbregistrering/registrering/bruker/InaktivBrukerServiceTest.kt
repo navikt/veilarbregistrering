@@ -23,7 +23,7 @@ class InaktivBrukerServiceTest {
     @BeforeEach
     fun setup() {
         every { oppfolgingClient.reaktiverBruker(any()) } just Runs
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient)
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk())
         inaktivBrukerService = InaktivBrukerService(
                 BrukerTilstandService(
                     oppfolgingGateway,

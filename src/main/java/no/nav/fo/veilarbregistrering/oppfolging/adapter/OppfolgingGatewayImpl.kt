@@ -7,12 +7,21 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 
-class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient) : OppfolgingGateway {
+class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, private val veilarbarenaClient: VeilarbarenaClient) : OppfolgingGateway {
     override fun hentOppfolgingsstatus(fodselsnummer: Foedselsnummer): Oppfolgingsstatus {
         val oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer)
         return map(oppfolgingStatusData)
+    }
+
+    override fun hentOppfolgingsstatusFraNyeKilder(fodselsnummer: Foedselsnummer): Oppfolgingsstatus {
+        val erUnderOppfolging: Boolean = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer).erUnderOppfolging
+//        val arenaStatus = veilarbarenaClient.arenaStatus()
+//        val kanReaktiveres = veilarbarenaClient.kanReaktiveres()
+//        return map(erUnderOppfolging, arenaStatus, kanReaktiveres)
+        return Oppfolgingsstatus(erUnderOppfolging)
     }
 
     override fun aktiverBruker(foedselsnummer: Foedselsnummer, innsatsgruppe: Innsatsgruppe) {
