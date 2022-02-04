@@ -27,7 +27,7 @@ class ArbeidsforholdGatewayConfig {
         ) {
             try {
                 val token =
-                    serviceToServiceTokenProvider.getServiceToken("aareg-services-q1", "arbeidsforhold", aaregCluster)
+                    serviceToServiceTokenProvider.getServiceToken("aareg-services-nais-q1", "arbeidsforhold", aaregCluster)
                 logger.info("Hentet å hente token: $token")
                 token
             } catch (e: Exception) {
