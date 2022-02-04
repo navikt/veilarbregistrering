@@ -17,10 +17,11 @@ import java.io.IOException
 class Norg2RestClient(private val baseUrl: String) : HealthCheck {
 
     fun hentEnhetFor(kommune: Kommune): List<RsNavKontorDto> {
-        val rsArbeidsfordelingCriteriaDto = RsArbeidsfordelingCriteriaDto()
-        rsArbeidsfordelingCriteriaDto.geografiskOmraade = kommune.kommunenummer
-        rsArbeidsfordelingCriteriaDto.oppgavetype = RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER
-        rsArbeidsfordelingCriteriaDto.tema = RsArbeidsfordelingCriteriaDto.OPPFOLGING
+        val rsArbeidsfordelingCriteriaDto = RsArbeidsfordelingCriteriaDto(
+            kommune.kommunenummer,
+            RsArbeidsfordelingCriteriaDto.KONTAKT_BRUKER,
+            RsArbeidsfordelingCriteriaDto.OPPFOLGING
+        )
         val request = Request.Builder()
             .url("$baseUrl/api/v1/arbeidsfordeling/enheter/bestmatch")
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
