@@ -44,7 +44,7 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
 
         val enhetsnr = norg2Gateway.hentEnhetFor(Kommune("0302"))
 
-        Assertions.assertThat(enhetsnr).isNotEmpty
-        Assertions.assertThat(enhetsnr).hasValue(Enhetnr("0393"))
+        Assertions.assertThat(enhetsnr).isNotNull
+        Assertions.assertThat(enhetsnr).isEqualTo(Enhetnr("0393"))
     }
 }

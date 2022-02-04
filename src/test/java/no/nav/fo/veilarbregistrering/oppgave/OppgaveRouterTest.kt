@@ -17,7 +17,6 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.*
 
 class OppgaveRouterTest {
 
@@ -143,13 +142,13 @@ class OppgaveRouterTest {
             OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, prometheusMetricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
-        override fun hentEnhetFor(kommune: Kommune): Optional<Enhetnr> {
+        override fun hentEnhetFor(kommune: Kommune): Enhetnr? {
             if (Kommune("1241") == kommune) {
-                return Optional.of(Enhetnr("232"))
+                return Enhetnr("232")
             }
             return if (Kommune.medBydel(STAVANGER) == kommune) {
-                Optional.of(Enhetnr("1103"))
-            } else Optional.empty()
+                Enhetnr("1103")
+            } else null
         }
 
         override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = emptyMap()

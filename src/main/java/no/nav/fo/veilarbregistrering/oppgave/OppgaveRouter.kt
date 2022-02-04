@@ -136,7 +136,7 @@ class OppgaveRouter(
             )
             return internBrukerstotte()
         }
-        return norg2Gateway.hentEnhetFor(kommune).orElseGet {
+        return norg2Gateway.hentEnhetFor(kommune) ?: let {
             logger.warn("Fant ingen enhetsnummer knyttet til kommunenummer: {}", kommune.kommunenummer)
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Enhetsnummer_IkkeFunnet)
             null
