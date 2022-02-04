@@ -5,6 +5,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
+import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.config.isProduction
@@ -28,7 +29,7 @@ import java.util.*
 class KafkaConfig {
 
     @Bean
-    fun arbeidssokerRegistrertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<*, *>?): ArbeidssokerRegistrertProducer {
+    fun arbeidssokerRegistrertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerRegistrertEvent>): ArbeidssokerRegistrertProducer {
         return ArbeidssokerRegistrertKafkaProducer(
             kafkaProducerAiven,
             "paw.arbeidssoker-registrert-v1"
