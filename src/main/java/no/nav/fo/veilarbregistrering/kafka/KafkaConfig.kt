@@ -69,8 +69,8 @@ class KafkaConfig {
 
     @Bean
     fun formidlingsgruppeKafkaConsumer(
-        unleashClient: UnleashClient?,
-        arbeidssokerService: ArbeidssokerService?
+        unleashClient: UnleashClient,
+        arbeidssokerService: ArbeidssokerService
     ): FormidlingsgruppeKafkaConsumer {
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
