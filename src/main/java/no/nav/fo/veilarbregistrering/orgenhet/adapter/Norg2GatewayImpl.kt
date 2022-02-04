@@ -17,7 +17,10 @@ internal open class Norg2GatewayImpl(private val norg2RestClient: Norg2RestClien
         return listeMedRsNavKontorDtos.stream()
             .filter { rsNavKontorDtos: RsNavKontorDto -> "Aktiv" == rsNavKontorDtos.status }
             .findFirst()
-            .map { rsNavKontorDtos: RsNavKontorDto -> Enhetnr(rsNavKontorDtos.enhetNr) }
+            .map { rsNavKontorDtos: RsNavKontorDto ->
+                if (rsNavKontorDtos.enhetNr != null) Enhetnr(rsNavKontorDtos.enhetNr)
+                else null
+            }
     }
 
     @Cacheable(CacheConfig.HENT_ALLE_ENHETER_V2)
