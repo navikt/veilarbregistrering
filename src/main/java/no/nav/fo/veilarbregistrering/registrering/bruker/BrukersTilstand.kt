@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import java.util.*
 
 class BrukersTilstand private constructor(
-    val oppfolgingStatusData: Oppfolgingsstatus,
+    oppfolgingStatusData: Oppfolgingsstatus,
     val registreringstype: RegistreringType,
     val isHarIgangsattGjenopptagbarRegistrering: Boolean) {
 
@@ -23,16 +23,11 @@ class BrukersTilstand private constructor(
         return RegistreringType.SYKMELDT_REGISTRERING != registreringstype
     }
 
-    val isErSykmeldtMedArbeidsgiver: Boolean
-        get() = oppfolgingStatusData.erSykmeldtMedArbeidsgiver == true
-    val isUnderOppfolging: Boolean
-        get() = oppfolgingStatusData.isUnderOppfolging
-    val formidlingsgruppe: Optional<Formidlingsgruppe>
-        get() = Optional.ofNullable(oppfolgingStatusData.formidlingsgruppe)
-    val servicegruppe: Optional<Servicegruppe>
-        get() = Optional.ofNullable(oppfolgingStatusData.servicegruppe)
-    val rettighetsgruppe: Optional<Rettighetsgruppe>
-        get() = Optional.ofNullable(oppfolgingStatusData.rettighetsgruppe)
+    val isErSykmeldtMedArbeidsgiver: Boolean = oppfolgingStatusData.erSykmeldtMedArbeidsgiver == true
+    val isUnderOppfolging: Boolean = oppfolgingStatusData.isUnderOppfolging
+    val formidlingsgruppe: Formidlingsgruppe? = oppfolgingStatusData.formidlingsgruppe
+    val servicegruppe: Servicegruppe? = oppfolgingStatusData.servicegruppe
+    val rettighetsgruppe: Rettighetsgruppe? = oppfolgingStatusData.rettighetsgruppe
 
     companion object Factory {
         fun create(oppfolgingsstatus: Oppfolgingsstatus, harIgangsattGjenopptagbarRegistrering: Boolean) : BrukersTilstand {

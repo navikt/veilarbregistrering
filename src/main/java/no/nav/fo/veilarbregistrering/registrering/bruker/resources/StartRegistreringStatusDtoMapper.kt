@@ -19,9 +19,9 @@ object StartRegistreringStatusDtoMapper {
         oppfyllerBetingelseOmArbeidserfaring,
         brukersTilstand.registreringstype,
         brukersTilstand.isHarIgangsattGjenopptagbarRegistrering,
-        brukersTilstand.formidlingsgruppe.map(Formidlingsgruppe::kode).orElse(null),
-        brukersTilstand.servicegruppe.map{it.servicegruppe}.orElse(null),
-        brukersTilstand.rettighetsgruppe.map(Rettighetsgruppe::stringValue).orElse(null),
+        brukersTilstand.formidlingsgruppe?.kode,
+        brukersTilstand.servicegruppe?.servicegruppe,
+        brukersTilstand.rettighetsgruppe?.stringValue(),
         geografiskTilknytning?.stringValue(),
         alder
     )
