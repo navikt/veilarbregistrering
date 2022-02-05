@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt
 
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlError
 import java.time.LocalDate
-import java.util.*
 
 data class PdlHentPerson(val hentPerson: PdlPerson)
 
@@ -16,15 +15,9 @@ data class PdlPerson(
     fun hoyestPrioriterteTelefonnummer(): PdlTelefonnummer? =
         telefonnummer.minOrNull()
 
-    fun getSistePdlFoedsel() =
-        if (foedsel.isEmpty()) Optional.empty()
-        else Optional.of(foedsel[foedsel.size - 1])
+    fun getSistePdlFoedsel() = foedsel.lastOrNull()
 
-    fun strengesteAdressebeskyttelse() =
-        (if (adressebeskyttelse.isEmpty()) Optional.empty()
-        else adressebeskyttelse.stream()
-            .sorted()
-            .findFirst())!!
+    fun strengesteAdressebeskyttelse() = adressebeskyttelse.minOrNull()
 
     fun getNavn() = navn.first()
 }

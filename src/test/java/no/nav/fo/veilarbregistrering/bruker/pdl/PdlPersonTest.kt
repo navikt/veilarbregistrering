@@ -22,7 +22,7 @@ class PdlPersonTest {
 
     @Test
     fun `strengesteAdressebeskyttelse uten eksplisitt graderingsniva`() {
-        assertThat(personMedAdressebeskyttelse().strengesteAdressebeskyttelse()).isEmpty
+        assertThat(personMedAdressebeskyttelse().strengesteAdressebeskyttelse()).isNull()
     }
 
     @Test
@@ -57,9 +57,8 @@ class PdlPersonTest {
         ).isEqualTo(PdlGradering.STRENGT_FORTROLIG_UTLAND)
     }
 
-    private fun strengesteGraderingForPerson(person: PdlPerson): PdlGradering {
-        return person.strengesteAdressebeskyttelse()
-            .map(PdlAdressebeskyttelse::gradering).orElse(null)
+    private fun strengesteGraderingForPerson(person: PdlPerson): PdlGradering? {
+        return person.strengesteAdressebeskyttelse()?.gradering
     }
 
     private fun personMedAdressebeskyttelse(vararg pdlGraderinger: PdlGradering): PdlPerson {

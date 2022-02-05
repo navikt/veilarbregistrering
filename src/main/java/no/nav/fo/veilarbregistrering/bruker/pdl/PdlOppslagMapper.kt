@@ -25,14 +25,9 @@ internal object PdlOppslagMapper {
     @JvmStatic
     fun map(pdlPerson: PdlPerson): Person {
         return Person(
-            pdlPerson.hoyestPrioriterteTelefonnummer()
-                ?.let { map(it) },
-            pdlPerson.getSistePdlFoedsel()
-                .map { obj: PdlFoedsel -> map(obj) }
-                .orElse(null),
-            pdlPerson.strengesteAdressebeskyttelse()
-                .map { obj: PdlAdressebeskyttelse -> map(obj) }
-                .orElse(AdressebeskyttelseGradering.UKJENT),
+            pdlPerson.hoyestPrioriterteTelefonnummer()?.let(::map),
+            pdlPerson.getSistePdlFoedsel()?.let(::map),
+            pdlPerson.strengesteAdressebeskyttelse()?.let(::map) ?: AdressebeskyttelseGradering.UKJENT,
             pdlPerson.getNavn().let { Navn(it.fornavn, it.mellomnavn, it.etternavn) }
             )
     }
