@@ -53,7 +53,6 @@ class OppfolgingGatewayConfig {
                     veilarbarenaCluster
                 )
             } catch (e: Exception) {
-                logger.info("Klarte ikke hente token til veilarbarena")
                 "no token"
             }
         }

@@ -16,6 +16,7 @@ class VeilarbarenaClient(
     private val veilarbarenaTokenProvider: () -> String,
     private val proxyTokenProvider: () -> String
 ) : HealthCheck {
+
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto {
         try {
             val proxyToken = proxyTokenProvider()
@@ -31,7 +32,7 @@ class VeilarbarenaClient(
             return try {
                 defaultHttpClient().newCall(request).execute().use { response ->
                     if (response.code() != HttpStatus.OK.value()) {
-                        throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
+                        throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
                     } else {
                         response.body()?.string()?.let { objectMapper.readValue(it) }
                             ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
@@ -41,7 +42,7 @@ class VeilarbarenaClient(
                 throw RuntimeException(e)
             }
         } catch (e: Exception) {
-            throw SammensattOppfolgingStatusException("Feil ved henting av token", e)
+            throw SammensattOppfolgingStatusException("Feil ved henting av arena-status: ${e.message}", e)
         }
     }
 
