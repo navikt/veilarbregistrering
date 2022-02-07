@@ -135,6 +135,7 @@ spec:
 
     outbound:
       rules:
+        - application: paw-proxy
         - application: aareg-services-q1
           namespace: arbeidsforhold
           cluster: dev-fss
