@@ -42,7 +42,7 @@ spec:
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: prod-fss
     - name: VEILARBARENA_URL
-      value: https://veilarbarena.nais.adeo.no/veilarbarena/api
+      value: http://paw-proxy.paw.svc.nais.local/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
       value: prod-fss
     - name: ABAC_PDP_ENDPOINT_URL
