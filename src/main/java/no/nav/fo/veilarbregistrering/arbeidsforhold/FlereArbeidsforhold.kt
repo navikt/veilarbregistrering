@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold.Companion.utenStyrkkode
 import java.time.LocalDate
 
 data class FlereArbeidsforhold(val flereArbeidsforhold: List<Arbeidsforhold>) {
@@ -37,7 +36,7 @@ data class FlereArbeidsforhold(val flereArbeidsforhold: List<Arbeidsforhold>) {
     }
 
     fun siste(): Arbeidsforhold = sisteUtenDefault()
-        ?: utenStyrkkode()
+        ?: Arbeidsforhold(null, fom = null, tom = null, navArbeidsforholdId = null)
 
     fun harArbeidsforholdPaaDato(innevaerendeMnd: LocalDate): Boolean =
         flereArbeidsforhold.any {

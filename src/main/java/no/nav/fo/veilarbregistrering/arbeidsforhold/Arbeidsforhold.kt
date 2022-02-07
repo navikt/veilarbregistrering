@@ -5,7 +5,7 @@ import java.util.*
 
 data class Arbeidsforhold(
     val arbeidsgiverOrgnummer: String?,
-    val styrk: String = DEFAULT_STYRK,
+    val styrk: String = "utenstyrkkode",
     val fom: LocalDate?,
     val tom: LocalDate?,
     private val navArbeidsforholdId: String?
@@ -26,15 +26,5 @@ data class Arbeidsforhold(
                 ", fom=" + fom +
                 ", tom=" + tom +
                 ", navArbeidsforholdId=" + navArbeidsforholdId + ")"
-    }
-
-    companion object {
-        @JvmStatic
-        val DEFAULT_STYRK = "utenstyrkkode"
-
-        @JvmStatic
-        fun utenStyrkkode(): Arbeidsforhold {
-            return Arbeidsforhold(null, DEFAULT_STYRK, null, null, null)
-        }
     }
 }
