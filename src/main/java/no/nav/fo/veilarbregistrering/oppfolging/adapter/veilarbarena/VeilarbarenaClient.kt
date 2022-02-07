@@ -43,11 +43,13 @@ class VeilarbarenaClient(
     }
 
     internal fun kanReaktiveres(fnr: Foedselsnummer): KanReaktiveresDto {
-        val aadToken = veilarbarenaTokenProvider()
+        val proxyToken = proxyTokenProvider()
+        val veilarbarenaToken = veilarbarenaTokenProvider()
 
         val request = Request.Builder()
             .url("$baseUrl/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
-            .header("Authorization", "Bearer $aadToken")
+            .header("Authorization", "Bearer $proxyToken")
+            .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
             .build()
 
         return try {
