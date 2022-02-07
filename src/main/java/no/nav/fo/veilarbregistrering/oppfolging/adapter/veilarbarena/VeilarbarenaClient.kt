@@ -13,32 +13,40 @@ import java.io.IOException
 
 class VeilarbarenaClient(
     private val baseUrl: String,
-    private val tokenProvider: () -> String
+    private val veilarbarenaTokenProvider: () -> String,
+    private val proxyTokenProvider: () -> String
 ) : HealthCheck {
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto {
-        val aadToken = tokenProvider()
+        try {
+            val proxyToken = proxyTokenProvider()
+            val veilarbarenaToken = veilarbarenaTokenProvider()
 
-        val request = Request.Builder()
-            .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
-            .header("Authorization", "Bearer $aadToken")
-            .build()
 
-        return try {
-            defaultHttpClient().newCall(request).execute().use { response ->
-                if (response.code() != HttpStatus.OK.value()) {
-                    throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
-                } else {
-                    response.body()?.string()?.let { objectMapper.readValue(it) }
-                        ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+            val request = Request.Builder()
+                .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
+                .header("Authorization", "Bearer $proxyToken")
+                .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
+                .build()
+
+            return try {
+                defaultHttpClient().newCall(request).execute().use { response ->
+                    if (response.code() != HttpStatus.OK.value()) {
+                        throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
+                    } else {
+                        response.body()?.string()?.let { objectMapper.readValue(it) }
+                            ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+                    }
                 }
+            } catch (e: IOException) {
+                throw RuntimeException(e)
             }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
+        } catch (e: Exception) {
+            throw SammensattOppfolgingStatusException("Feil ved henting av token", e)
         }
     }
 
     internal fun kanReaktiveres(fnr: Foedselsnummer): KanReaktiveresDto {
-        val aadToken = tokenProvider()
+        val aadToken = veilarbarenaTokenProvider()
 
         val request = Request.Builder()
             .url("$baseUrl/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
