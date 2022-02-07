@@ -34,11 +34,9 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
     override fun hentOppfolgingsstatusFraNyeKilder(fodselsnummer: Foedselsnummer): Oppfolgingsstatus? {
         return try {
             val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
-            if (isDevelopment()) {
-                val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
-                val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
-                map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
-            } else Oppfolgingsstatus(erUnderOppfolging.erUnderOppfolging)
+            val oppfolgingsstatus = veilarbarenaClient.arenaStatus(fodselsnummer)
+            val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
+            map(erUnderOppfolging, oppfolgingsstatus, kanReaktiveres)
         } catch (e: SammensattOppfolgingStatusException) {
             logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
             null
