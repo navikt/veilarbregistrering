@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
@@ -52,6 +53,7 @@ class OppfolgingGatewayConfig {
                     veilarbarenaCluster
                 )
             } catch (e: Exception) {
+                logger.info("Klarte ikke hente token til veilarbarena")
                 "no token"
             }
         }
