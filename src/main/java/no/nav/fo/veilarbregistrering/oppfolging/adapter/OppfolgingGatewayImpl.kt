@@ -24,6 +24,8 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
 
         if (oppfolgingsstatus != oppfolgingsstatusFraNyeKilder) {
             logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusFraNyeKilder")
+        } else {
+            logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
         }
 
         return oppfolgingsstatus

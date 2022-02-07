@@ -38,7 +38,7 @@ class VeilarbarenaClient(
                 }
             }
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
         }
     }
 
@@ -62,7 +62,7 @@ class VeilarbarenaClient(
                 }
             }
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
         }
     }
 
