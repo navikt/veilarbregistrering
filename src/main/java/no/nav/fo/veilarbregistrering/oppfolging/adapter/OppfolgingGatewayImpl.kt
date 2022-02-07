@@ -56,15 +56,22 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
     }
 
     companion object {
-        private fun map(erUnderOppfolgingDto: ErUnderOppfolgingDto, arenastatus: ArenaStatusDto, kanReaktiveresDto: KanReaktiveresDto): Oppfolgingsstatus {
-            return Oppfolgingsstatus(
+        private fun map(erUnderOppfolgingDto: ErUnderOppfolgingDto, arenastatus: ArenaStatusDto?, kanReaktiveresDto: KanReaktiveresDto): Oppfolgingsstatus {
+            return if (arenastatus != null) {
+                Oppfolgingsstatus(
                     isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
                     erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && erUnderOppfolgingDto.erUnderOppfolging,
                     formidlingsgruppe = Formidlingsgruppe(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
-            )
+                )
+            } else {
+                Oppfolgingsstatus(
+                    isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
+                    kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres
+                )
+            }
         }
 
         private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {

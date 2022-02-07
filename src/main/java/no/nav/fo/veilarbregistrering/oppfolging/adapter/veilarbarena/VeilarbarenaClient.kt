@@ -17,32 +17,28 @@ class VeilarbarenaClient(
     private val proxyTokenProvider: () -> String
 ) : HealthCheck {
 
-    internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto {
-        try {
-            val proxyToken = proxyTokenProvider()
-            val veilarbarenaToken = veilarbarenaTokenProvider()
+    internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
+        val proxyToken = proxyTokenProvider()
+        val veilarbarenaToken = veilarbarenaTokenProvider()
 
 
-            val request = Request.Builder()
-                .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
-                .header("Authorization", "Bearer $proxyToken")
-                .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
-                .build()
+        val request = Request.Builder()
+            .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
+            .header("Authorization", "Bearer $proxyToken")
+            .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
+            .build()
 
-            return try {
-                defaultHttpClient().newCall(request).execute().use { response ->
-                    if (response.code() != HttpStatus.OK.value()) {
-                        throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
-                    } else {
-                        response.body()?.string()?.let { objectMapper.readValue(it) }
-                            ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
-                    }
+        return try {
+            defaultHttpClient().newCall(request).execute().use { response ->
+                when (response.code()) {
+                    404 -> null
+                    in 300..599 -> throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
+                    else -> response.body()?.string()?.let { objectMapper.readValue(it) }
+                        ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
                 }
-            } catch (e: IOException) {
-                throw RuntimeException(e)
             }
-        } catch (e: Exception) {
-            throw SammensattOppfolgingStatusException("Feil ved henting av arena-status: ${e.message}", e)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
     }
 
@@ -74,4 +70,4 @@ class VeilarbarenaClient(
 }
 
 class ArenaStatusDto(val formidlingsgruppe: String, val kvalifiseringsgruppe: String, val rettighetsgruppe: String)
-class KanReaktiveresDto(val kanEnkeltReaktiveres: Boolean)
+class KanReaktiveresDto(val kanEnkeltReaktiveres: Boolean?)
