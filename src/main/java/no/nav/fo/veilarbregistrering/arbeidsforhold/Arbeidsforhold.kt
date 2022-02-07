@@ -15,10 +15,9 @@ data class Arbeidsforhold(
                 (Objects.isNull(tom) || innevaerendeMnd.isBefore(tom!!.plusDays(1)))
     }
 
-    val organisasjonsnummer: Optional<Organisasjonsnummer>
-        get() = if (arbeidsgiverOrgnummer != null) Optional.of(
-            Organisasjonsnummer(arbeidsgiverOrgnummer)
-        ) else Optional.empty()
+    fun organisasjonsnummer() =
+        if (arbeidsgiverOrgnummer != null) Organisasjonsnummer(arbeidsgiverOrgnummer)
+        else null
 
     override fun toString(): String {
         return "Arbeidsforhold(" +

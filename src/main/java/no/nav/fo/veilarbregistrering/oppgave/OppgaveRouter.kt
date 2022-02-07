@@ -1,8 +1,10 @@
 package no.nav.fo.veilarbregistrering.oppgave
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
-import no.nav.fo.veilarbregistrering.bruker.*
+import no.nav.fo.veilarbregistrering.bruker.AdressebeskyttelseGradering
+import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.log.logger
@@ -101,21 +103,19 @@ class OppgaveRouter(
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.SisteArbeidsforhold_IkkeFunnet)
             return null
         }
-        val organisasjonsnummer = Optional.ofNullable(flereArbeidsforhold.sisteUtenDefault())
-            .map(Arbeidsforhold::organisasjonsnummer)
-            .orElseThrow { IllegalStateException() }
-        if (organisasjonsnummer.isEmpty) {
+        val organisasjonsnummer = flereArbeidsforhold.sisteUtenDefault()?.organisasjonsnummer()
+
+        if (organisasjonsnummer == null) {
             logger.warn("Fant ingen organisasjonsnummer knyttet til det siste arbeidsforholdet")
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgNummer_ikkeFunnet)
             return null
         }
         val organisasjonsdetaljer = Optional.ofNullable(
-            enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer.get())
+            enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer)
         )
         if (organisasjonsdetaljer.isEmpty) {
             logger.warn(
-                "Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: {}",
-                organisasjonsnummer.get().asString()
+                "Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: $organisasjonsnummer",
             )
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgDetaljer_IkkeFunnet)
             return null
