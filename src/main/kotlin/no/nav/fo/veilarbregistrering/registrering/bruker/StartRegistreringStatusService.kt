@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistre
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDtoMapper.map
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
-import java.util.*
 
 class StartRegistreringStatusService(
     private val arbeidsforholdGateway: ArbeidsforholdGateway,
@@ -21,14 +20,16 @@ class StartRegistreringStatusService(
     fun hentStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
-        muligGeografiskTilknytning.ifPresent { geografiskTilknytning: GeografiskTilknytning? ->
+
+        muligGeografiskTilknytning.apply {
             LOG.info(
                 "Bruker {} startet registrering med geografisk tilknytning [BrukersTilstand], [GeografiskTilknytning] [{}] [{}]",
                 bruker.aktorId,
                 brukersTilstand,
-                geografiskTilknytning
+                this
             )
         }
+
         val registreringType = brukersTilstand.registreringstype
         var oppfyllerBetingelseOmArbeidserfaring: Boolean? = null
         if (RegistreringType.ORDINAER_REGISTRERING == registreringType) {
@@ -38,7 +39,7 @@ class StartRegistreringStatusService(
         }
         val startRegistreringStatus = map(
             brukersTilstand,
-            muligGeografiskTilknytning.orElse(null),
+            muligGeografiskTilknytning,
             oppfyllerBetingelseOmArbeidserfaring,
             bruker.gjeldendeFoedselsnummer.alder(LocalDate.now())
         )
@@ -47,7 +48,7 @@ class StartRegistreringStatusService(
         return startRegistreringStatus
     }
 
-    private fun hentGeografiskTilknytning(bruker: Bruker): Optional<GeografiskTilknytning> {
+    private fun hentGeografiskTilknytning(bruker: Bruker): GeografiskTilknytning? {
         val t1 = System.currentTimeMillis()
 
         val geografiskTilknytning = try {
@@ -58,7 +59,7 @@ class StartRegistreringStatusService(
             LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e)
             null
         }
-        return Optional.ofNullable(geografiskTilknytning)
+        return geografiskTilknytning
     }
 
     companion object {
