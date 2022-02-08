@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
@@ -15,7 +14,10 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattO
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 
-class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, private val veilarbarenaClient: VeilarbarenaClient) : OppfolgingGateway {
+class OppfolgingGatewayImpl(
+    private val oppfolgingClient: OppfolgingClient,
+    private val veilarbarenaClient: VeilarbarenaClient
+) : OppfolgingGateway {
     override fun hentOppfolgingsstatus(fodselsnummer: Foedselsnummer): Oppfolgingsstatus {
         val oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer)
         val oppfolgingsstatus = map(oppfolgingStatusData)
@@ -56,12 +58,24 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
     }
 
     companion object {
-        private fun map(erUnderOppfolgingDto: ErUnderOppfolgingDto, arenastatus: ArenaStatusDto?, kanReaktiveresDto: KanReaktiveresDto): Oppfolgingsstatus {
+        private fun map(
+            erUnderOppfolgingDto: ErUnderOppfolgingDto,
+            arenastatus: ArenaStatusDto?,
+            kanReaktiveresDto: KanReaktiveresDto
+        ): Oppfolgingsstatus {
             return if (arenastatus != null) {
                 Oppfolgingsstatus(
                     isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
                     erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && !erUnderOppfolgingDto.erUnderOppfolging,
+                    erSykmeldtMedArbeidsgiver2 = arenastatus.formidlingsgruppe == "IARBS" && !setOf(
+                        "BATT",
+                        "BFORM",
+                        "IKVAL",
+                        "VURDU",
+                        "OPPFI",
+                        "VARIG"
+                    ).contains(arenastatus.kvalifiseringsgruppe),
                     formidlingsgruppe = Formidlingsgruppe(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
@@ -76,12 +90,13 @@ class OppfolgingGatewayImpl(private val oppfolgingClient: OppfolgingClient, priv
 
         private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {
             return Oppfolgingsstatus(
-                    oppfolgingStatusData.underOppfolging,
-                    oppfolgingStatusData.kanReaktiveres,
-                    oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
-                    oppfolgingStatusData.formidlingsgruppe?.let(::Formidlingsgruppe),
-                    oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
-                    oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
+                isUnderOppfolging = oppfolgingStatusData.underOppfolging,
+                kanReaktiveres = oppfolgingStatusData.kanReaktiveres,
+                erSykmeldtMedArbeidsgiver = oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
+                erSykmeldtMedArbeidsgiver2 = oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
+                formidlingsgruppe = oppfolgingStatusData.formidlingsgruppe?.let(::Formidlingsgruppe),
+                servicegruppe = oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
+                rettighetsgruppe = oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
             )
         }
     }
