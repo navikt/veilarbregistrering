@@ -1,12 +1,9 @@
 package no.nav.fo.veilarbregistrering.oppfolging
 
-data class Rettighetsgruppe(val rettighetsgruppe: String) {
+/**
+ * Rettighetsgruppe beskriver "ytelsen" du har i Arena, type Dagpenger, AAP, osv
+ */
+data class Rettighetsgruppe(val kode: String) {
 
-    override fun toString(): String {
-        return "rettighetsgruppe='$rettighetsgruppe'"
-    }
-
-    fun stringValue(): String {
-        return rettighetsgruppe
-    }
+    override fun toString(): String = "rettighetsgruppe='$kode'"
 }
