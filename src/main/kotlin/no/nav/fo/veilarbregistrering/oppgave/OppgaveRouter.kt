@@ -6,14 +6,12 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
-import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr.Companion.internBrukerstotte
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
-import java.util.*
 
 /**
  *
@@ -28,8 +26,6 @@ import java.util.*
  * Geografisk tilknytning kan gi verdier ift. landkode, fylke og bydel. Gitt landkode,
  * forsøker vi å gå via tidligere arbeidsforhold
  */
-
-
 class OppgaveRouter(
     private val arbeidsforholdGateway: ArbeidsforholdGateway,
     private val enhetGateway: EnhetGateway,
@@ -110,25 +106,20 @@ class OppgaveRouter(
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgNummer_ikkeFunnet)
             return null
         }
-        val organisasjonsdetaljer = Optional.ofNullable(
-            enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer)
-        )
-        if (organisasjonsdetaljer.isEmpty) {
+        val organisasjonsdetaljer = enhetGateway.hentOrganisasjonsdetaljer(organisasjonsnummer)
+        if (organisasjonsdetaljer == null) {
             logger.warn(
                 "Fant ingen organisasjonsdetaljer knyttet til organisasjonsnummer: $organisasjonsnummer",
             )
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.OrgDetaljer_IkkeFunnet)
             return null
         }
-        val muligKommunenummer = Optional.ofNullable(organisasjonsdetaljer
-            .map { obj: Organisasjonsdetaljer -> obj.kommunenummer() }
-            .orElseThrow { IllegalStateException() })
-        if (muligKommunenummer.isEmpty) {
+        val kommune = organisasjonsdetaljer.kommunenummer()
+        if (kommune == null) {
             logger.warn("Fant ingen muligKommunenummer knyttet til organisasjon")
             prometheusMetricsService.registrer(Events.OPPGAVE_ROUTING_EVENT, RoutingStep.Kommunenummer_IkkeFunnet)
             return null
         }
-        val kommune = muligKommunenummer.orElseThrow { IllegalStateException() }
         if (kommune.kommuneMedBydeler()) {
             logger.info(
                 "Fant kommunenummer {} som er tilknyttet kommune med byder -> tildeler den til intern brukerstøtte.",
