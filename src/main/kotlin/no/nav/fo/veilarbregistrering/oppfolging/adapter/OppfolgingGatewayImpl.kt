@@ -67,15 +67,7 @@ class OppfolgingGatewayImpl(
                 Oppfolgingsstatus(
                     isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
-                    erSykmeldtMedArbeidsgiver = arenastatus.formidlingsgruppe == "IARBS" && !erUnderOppfolgingDto.erUnderOppfolging,
-                    erSykmeldtMedArbeidsgiver2 = arenastatus.formidlingsgruppe == "IARBS" && !setOf(
-                        "BATT",
-                        "BFORM",
-                        "IKVAL",
-                        "VURDU",
-                        "OPPFI",
-                        "VARIG"
-                    ).contains(arenastatus.kvalifiseringsgruppe),
+                    erSykmeldtMedArbeidsgiver = arenastatus.erSykmeldtMedArbeidsgiver(),
                     formidlingsgruppe = Formidlingsgruppe(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
@@ -93,7 +85,6 @@ class OppfolgingGatewayImpl(
                 isUnderOppfolging = oppfolgingStatusData.underOppfolging,
                 kanReaktiveres = oppfolgingStatusData.kanReaktiveres,
                 erSykmeldtMedArbeidsgiver = oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
-                erSykmeldtMedArbeidsgiver2 = oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
                 formidlingsgruppe = oppfolgingStatusData.formidlingsgruppe?.let(::Formidlingsgruppe),
                 servicegruppe = oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
                 rettighetsgruppe = oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
@@ -101,3 +92,13 @@ class OppfolgingGatewayImpl(
         }
     }
 }
+
+fun ArenaStatusDto.erSykmeldtMedArbeidsgiver(): Boolean =
+    formidlingsgruppe == "IARBS" && !setOf(
+        "IKVAL",
+        "BFORM",
+        "BATT",
+        "VARIG",
+        "VURDU",
+        "OPPFI",
+    ).contains(kvalifiseringsgruppe)

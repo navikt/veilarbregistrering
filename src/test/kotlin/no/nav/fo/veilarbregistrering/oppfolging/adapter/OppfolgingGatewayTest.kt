@@ -4,13 +4,18 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.junit.jupiter.MockServerExtension
@@ -46,6 +51,14 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
             baseUrl,
             mockk(relaxed = true)
         ) { "TOKEN" }.also { oppfolgingClient = it }
+    }
+
+    @Test
+    fun `Test toString gir mening`() {
+        val oppfolgingsstatus = Oppfolgingsstatus(true, false, false, Formidlingsgruppe("ARBS"), null, null)
+        val s = oppfolgingsstatus.toString()
+        println(s)
+
     }
 
     @Test
