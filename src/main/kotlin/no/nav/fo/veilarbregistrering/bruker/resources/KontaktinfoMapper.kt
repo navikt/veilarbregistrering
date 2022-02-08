@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.bruker.resources
 import no.nav.fo.veilarbregistrering.bruker.Kontaktinfo
 
 internal object KontaktinfoMapper {
-    @JvmStatic
     fun map(kontaktinfo: Kontaktinfo): KontaktinfoDto {
         return KontaktinfoDto(
             kontaktinfo.telefonnummerFraKrr,

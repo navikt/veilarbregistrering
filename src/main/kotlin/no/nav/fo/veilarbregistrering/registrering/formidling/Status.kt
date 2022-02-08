@@ -16,7 +16,6 @@ enum class Status(private val status: String) {
     OPPRINNELIG_OPPRETTET_UTEN_TILSTAND("opprinneligOpprettetUtenTilstand");
 
     companion object {
-        @JvmStatic
         fun parse(status: String): Status =
              values().find { s: Status -> s.status == status }
                     ?: throw IllegalStateException("Ukjent Status ble forsøkt parset")

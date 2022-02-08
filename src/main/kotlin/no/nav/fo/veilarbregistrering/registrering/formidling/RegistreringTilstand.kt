@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.formidling
 
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import java.time.LocalDateTime
 
 /**
@@ -29,7 +28,6 @@ class RegistreringTilstand private constructor(
             status: Status
         ): RegistreringTilstand = RegistreringTilstand(id, brukerRegistreringId, opprettet, sistEndret, status)
 
-        @JvmStatic
         fun medStatus(status: Status, brukerRegistreringId: Long): RegistreringTilstand =
             RegistreringTilstand(-1L, brukerRegistreringId, LocalDateTime.now(), null, status)
     }

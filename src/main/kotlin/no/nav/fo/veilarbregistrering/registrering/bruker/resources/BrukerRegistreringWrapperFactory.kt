@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrer
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
 
 object BrukerRegistreringWrapperFactory {
-    @JvmStatic
     fun create(
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering?,
         sykmeldtBrukerRegistrering: SykmeldtRegistrering?

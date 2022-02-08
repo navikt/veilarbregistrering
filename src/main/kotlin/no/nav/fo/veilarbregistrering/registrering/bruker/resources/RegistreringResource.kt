@@ -112,9 +112,7 @@ class RegistreringResource(
         )
     }
 
-    private fun tjenesteErNede(): Boolean {
-        return unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
-    }
+    private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
 
     companion object {
         private val LOG = loggerFor<RegistreringResource>()
