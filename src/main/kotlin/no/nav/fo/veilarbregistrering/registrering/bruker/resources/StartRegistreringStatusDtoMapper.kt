@@ -20,7 +20,7 @@ object StartRegistreringStatusDtoMapper {
         brukersTilstand.registreringstype,
         brukersTilstand.isHarIgangsattGjenopptagbarRegistrering,
         brukersTilstand.formidlingsgruppe?.kode,
-        brukersTilstand.servicegruppe?.servicegruppe,
+        brukersTilstand.servicegruppe?.kode,
         brukersTilstand.rettighetsgruppe?.stringValue(),
         geografiskTilknytning?.stringValue(),
         alder
