@@ -9,8 +9,6 @@ import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeElement
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
-import java.util.*
 
 @RestController
 @RequestMapping("/api/tidslinje")
@@ -31,10 +29,5 @@ class TidslinjeResource(
         return HistoriskElementDto(map(element.periode()), element.kilde(), element.type())
     }
 
-    private fun map(periode: Periode): PeriodeDto {
-        return PeriodeDto(periode.fra.toString(),
-                Optional.ofNullable<LocalDate>(periode.til)
-                        .map { obj: LocalDate -> obj.toString() }
-                        .orElse(null))
-    }
+    private fun map(periode: Periode): PeriodeDto = PeriodeDto(periode.fra.toString(), periode.til?.toString())
 }
