@@ -33,9 +33,9 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        val responseAad = utfoerRequestAad(fnr)
+        //val responseAad = utfoerRequestAad(fnr)
         val response = utforRequest(fnr)
-        sammenliknResponser(responseAad, response)
+        //sammenliknResponser(responseAad, response)
         return parse(response)
     }
 
