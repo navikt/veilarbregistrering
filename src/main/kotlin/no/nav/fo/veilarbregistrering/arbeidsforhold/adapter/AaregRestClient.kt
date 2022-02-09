@@ -33,18 +33,10 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        if (isDevelopment()) {
-            val response = utfoerRequestAad(fnr)
-            logger.info("Respons fra Aareg: $response")
-            return parse(utfoerRequestAad(fnr))
-        }
-        return parse(utforRequest(fnr))
-        
-
-/*        val responseAad = utfoerRequestAad(fnr)
+        val responseAad = utfoerRequestAad(fnr)
         val response = utforRequest(fnr)
         sammenliknResponser(responseAad, response)
-        return parse(response)*/
+        return parse(response)
     }
 
     private fun sammenliknResponser(responseAad: String, response: String) {
