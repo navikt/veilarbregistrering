@@ -34,6 +34,8 @@ open class AaregRestClient(
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
         if (isDevelopment()) {
+            val response = utfoerRequestAad(fnr)
+            logger.info("Respons fra Aareg: $response")
             return parse(utfoerRequestAad(fnr))
         }
         return parse(utforRequest(fnr))
