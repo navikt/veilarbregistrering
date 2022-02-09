@@ -24,10 +24,10 @@ class OppfolgingGatewayImpl(
 
         val oppfolgingsstatusFraNyeKilder = hentOppfolgingsstatusFraNyeKilder(fodselsnummer)
 
-        if (oppfolgingsstatus != oppfolgingsstatusFraNyeKilder) {
-            logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusFraNyeKilder")
-        } else {
+        if (oppfolgingsstatusFraNyeKilder != null && oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusFraNyeKilder)) {
             logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
+        } else {
+            logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusFraNyeKilder")
         }
 
         return oppfolgingsstatus

@@ -19,4 +19,9 @@ data class Oppfolgingsstatus(
                 "${servicegruppe ?: "servicegruppe=null"}, " +
                 "${rettighetsgruppe ?: "rettighetsgruppe=null"}"
     }
+
+    fun erLikBortsettFraKanReaktiveres(annen: Oppfolgingsstatus): Boolean {
+        return isUnderOppfolging == annen.isUnderOppfolging && erSykmeldtMedArbeidsgiver == annen.erSykmeldtMedArbeidsgiver
+                && formidlingsgruppe == annen.formidlingsgruppe && servicegruppe == annen.servicegruppe && rettighetsgruppe == annen.rettighetsgruppe
+    }
 }
