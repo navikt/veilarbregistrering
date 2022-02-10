@@ -37,17 +37,17 @@ class BrukersTilstand private constructor(
                 registreringstype,
                 registreringstype === RegistreringType.ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering)
         }
+    }
+}
 
-        private fun beregnRegistreringType(oppfolgingsstatus: Oppfolgingsstatus): RegistreringType {
-            return if (oppfolgingsstatus.isUnderOppfolging && oppfolgingsstatus.kanReaktiveres != true) { // underoppfolging OG ikke kanreaktiveres
-                RegistreringType.ALLEREDE_REGISTRERT
-            } else if (oppfolgingsstatus.kanReaktiveres == true) {
-                RegistreringType.REAKTIVERING
-            } else if (oppfolgingsstatus.erSykmeldtMedArbeidsgiver == true) {
-                RegistreringType.SYKMELDT_REGISTRERING
-            } else {
-                RegistreringType.ORDINAER_REGISTRERING
-            }
-        }
+fun beregnRegistreringType(oppfolgingsstatus: Oppfolgingsstatus): RegistreringType {
+    return if (oppfolgingsstatus.isUnderOppfolging && oppfolgingsstatus.kanReaktiveres != true) { // underoppfolging OG ikke kanreaktiveres
+        RegistreringType.ALLEREDE_REGISTRERT
+    } else if (oppfolgingsstatus.kanReaktiveres == true) {
+        RegistreringType.REAKTIVERING
+    } else if (oppfolgingsstatus.erSykmeldtMedArbeidsgiver == true) {
+        RegistreringType.SYKMELDT_REGISTRERING
+    } else {
+        RegistreringType.ORDINAER_REGISTRERING
     }
 }
