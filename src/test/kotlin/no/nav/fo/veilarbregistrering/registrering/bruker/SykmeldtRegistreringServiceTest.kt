@@ -34,7 +34,7 @@ class SykmeldtRegistreringServiceTest {
 
     @BeforeEach
     fun setup() {
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, mockk(relaxed = true))
         brukerRegistreringRepository
 
         sykmeldtRegistreringService = SykmeldtRegistreringService(
