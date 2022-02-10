@@ -49,6 +49,7 @@ open class AaregRestClient(
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
+            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
 
         return try {
