@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
@@ -30,6 +31,9 @@ class OppfolgingGatewayImpl(
             logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusFraNyeKilder")
         }
 
+        if (isDevelopment() && oppfolgingsstatusFraNyeKilder != null) {
+            return oppfolgingsstatusFraNyeKilder
+        }
         return oppfolgingsstatus
     }
 

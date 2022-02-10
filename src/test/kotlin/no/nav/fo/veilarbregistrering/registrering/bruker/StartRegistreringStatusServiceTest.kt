@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
-import io.mockk.MockKAdditionalAnswerScope
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
@@ -12,25 +11,29 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.*
 
 class StartRegistreringStatusServiceTest {
     private lateinit var brukerRegistreringService: StartRegistreringStatusService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway
     private lateinit var oppfolgingClient: OppfolgingClient
+    private lateinit var veilarbarenaClient: VeilarbarenaClient
     private lateinit var pdlOppslagGateway: PdlOppslagGateway
     @BeforeEach
     fun setup() {
         arbeidsforholdGateway = mockk()
         oppfolgingClient = mockk()
+        veilarbarenaClient = mockk()
         pdlOppslagGateway = mockk()
         val metricsService: PrometheusMetricsService = mockk(relaxed = true)
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk(relaxed = true))
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
@@ -143,6 +146,8 @@ class StartRegistreringStatusServiceTest {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
             OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
     }
 
 
@@ -153,7 +158,9 @@ class StartRegistreringStatusServiceTest {
                     .withUnderOppfolging(false)
                     .withKanReaktiveres(false)
                     .withErSykmeldtMedArbeidsgiver(true)
-        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "IARBS", kvalifiseringsgruppe = "VURDI", rettighetsgruppe = "IYT")
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
     }
 
     private fun mockIkkeSykmeldtBruker() {
@@ -162,7 +169,10 @@ class StartRegistreringStatusServiceTest {
                     .withUnderOppfolging(false)
                     .withKanReaktiveres(false)
                     .withErSykmeldtMedArbeidsgiver(false)
-        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
+
     }
 
     private fun mockArbeidsforhold(arbeidsforhold: List<Arbeidsforhold>) =
@@ -171,7 +181,9 @@ class StartRegistreringStatusServiceTest {
     private fun mockInaktivBrukerUtenReaktivering() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
                 OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false)
-        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ISERV", kvalifiseringsgruppe = "IVURD", rettighetsgruppe = "IYT")
     }
 
     private fun mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring() =
@@ -191,6 +203,8 @@ class StartRegistreringStatusServiceTest {
     private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
     }
 
     companion object {
