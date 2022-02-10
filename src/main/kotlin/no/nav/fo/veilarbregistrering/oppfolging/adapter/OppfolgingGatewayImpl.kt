@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -17,40 +18,43 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 
 class OppfolgingGatewayImpl(
     private val oppfolgingClient: OppfolgingClient,
-    private val veilarbarenaClient: VeilarbarenaClient
+    private val veilarbarenaClient: VeilarbarenaClient,
+    private val unleashClient: UnleashClient
 ) : OppfolgingGateway {
     override fun hentOppfolgingsstatus(fodselsnummer: Foedselsnummer): Oppfolgingsstatus {
         val oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer)
         val oppfolgingsstatus = map(oppfolgingStatusData)
 
-        //val oppfolgingsstatusFraNyeKilder = hentOppfolgingsstatusFraNyeKilder(fodselsnummer)
+        if (unleashClient.isEnabled("veilarbregistrering.hentOppfolgingsstatusFraNyeKilder")) {
 
-        val oppfolgingsstatusFraNyeKilder = try {
-            val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
-            val arenastatus = veilarbarenaClient.arenaStatus(fodselsnummer)
-            val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
-            val oppfolgingsstatusNy = map(erUnderOppfolging, arenastatus, kanReaktiveres)
+            val oppfolgingsstatusFraNyeKilder = try {
+                val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
+                val arenastatus = veilarbarenaClient.arenaStatus(fodselsnummer)
+                val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
+                val oppfolgingsstatusNy = map(erUnderOppfolging, arenastatus, kanReaktiveres)
 
-            if (oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusNy)) {
-                logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
-            } else {
-                val dtoer = """
+                if (oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusNy)) {
+                    logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
+                } else {
+                    val dtoer = """
                 OppfolgingStatusData(v1): \\t$oppfolgingStatusData\\n\\n
                 OppfolgingStatus(v2): \\t$erUnderOppfolging\\n
                 KanReaktiveres: \\t$kanReaktiveres\\n
                 ArenaStatus: \\t${arenastatus}
             """.trimIndent()
-                logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusNy\n\nDtoer: \n$dtoer")
+                    logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusNy\n\nDtoer: \n$dtoer")
+                }
+                oppfolgingsstatusNy
+            } catch (e: SammensattOppfolgingStatusException) {
+                logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
+                null
             }
-            oppfolgingsstatusNy
-        } catch (e: SammensattOppfolgingStatusException) {
-            logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
-            null
+
+            if (isDevelopment() && oppfolgingsstatusFraNyeKilder != null) {
+                return oppfolgingsstatusFraNyeKilder
+            }
         }
 
-        if (isDevelopment() && oppfolgingsstatusFraNyeKilder != null) {
-            return oppfolgingsstatusFraNyeKilder
-        }
         return oppfolgingsstatus
     }
 

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireProperty
@@ -69,9 +70,10 @@ class OppfolgingGatewayConfig {
     @Bean
     fun oppfolgingGateway(
         oppfolgingClient: OppfolgingClient,
-        veilarbarenaClient: VeilarbarenaClient
+        veilarbarenaClient: VeilarbarenaClient,
+        unleashClient: UnleashClient
     ): OppfolgingGateway {
-        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
+        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient)
     }
 }
 
