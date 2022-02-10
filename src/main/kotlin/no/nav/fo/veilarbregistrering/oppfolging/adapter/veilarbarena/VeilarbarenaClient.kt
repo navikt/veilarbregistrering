@@ -71,5 +71,5 @@ class VeilarbarenaClient(
     }
 }
 
-class ArenaStatusDto(val formidlingsgruppe: String, val kvalifiseringsgruppe: String, val rettighetsgruppe: String)
-class KanReaktiveresDto(val kanEnkeltReaktiveres: Boolean?)
+data class ArenaStatusDto(val formidlingsgruppe: String, val kvalifiseringsgruppe: String, val rettighetsgruppe: String)
+data class KanReaktiveresDto(val kanEnkeltReaktiveres: Boolean?)

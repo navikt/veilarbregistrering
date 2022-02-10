@@ -1,3 +1,3 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
-class ErUnderOppfolgingDto(val erUnderOppfolging: Boolean)
+data class ErUnderOppfolgingDto(val erUnderOppfolging: Boolean)

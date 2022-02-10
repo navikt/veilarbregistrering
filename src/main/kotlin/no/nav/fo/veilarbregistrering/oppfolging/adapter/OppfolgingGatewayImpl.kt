@@ -35,10 +35,10 @@ class OppfolgingGatewayImpl(
                 logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
             } else {
                 val dtoer = """
-                OppfolgingStatusData(v1): \t$oppfolgingStatusData\n\n
-                OppfolgingStatus(v2): \t$erUnderOppfolging\n
-                KanReaktiveres: \t$kanReaktiveres\n
-                ArenaStatus: \t${arenastatus}
+                OppfolgingStatusData(v1): \\t$oppfolgingStatusData\\n\\n
+                OppfolgingStatus(v2): \\t$erUnderOppfolging\\n
+                KanReaktiveres: \\t$kanReaktiveres\\n
+                ArenaStatus: \\t${arenastatus}
             """.trimIndent()
                 logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusNy\n\nDtoer: \n$dtoer")
             }
