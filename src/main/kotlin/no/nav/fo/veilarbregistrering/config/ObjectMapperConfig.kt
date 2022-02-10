@@ -20,7 +20,7 @@ class ObjectMapperConfig {
 
 val objectMapper: ObjectMapper = jacksonObjectMapper()
     .findAndRegisterModules()
-    .registerModule(KotlinModule())
+    .registerModule(KotlinModule.Builder().build())
     .registerModule(dateModule())
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
