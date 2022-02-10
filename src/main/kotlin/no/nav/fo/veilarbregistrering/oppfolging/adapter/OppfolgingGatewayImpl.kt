@@ -23,12 +23,29 @@ class OppfolgingGatewayImpl(
         val oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer)
         val oppfolgingsstatus = map(oppfolgingStatusData)
 
-        val oppfolgingsstatusFraNyeKilder = hentOppfolgingsstatusFraNyeKilder(fodselsnummer)
+        //val oppfolgingsstatusFraNyeKilder = hentOppfolgingsstatusFraNyeKilder(fodselsnummer)
 
-        if (oppfolgingsstatusFraNyeKilder != null && oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusFraNyeKilder)) {
-            logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
-        } else {
-            logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusFraNyeKilder")
+        val oppfolgingsstatusFraNyeKilder = try {
+            val erUnderOppfolging: ErUnderOppfolgingDto = oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer)
+            val arenastatus = veilarbarenaClient.arenaStatus(fodselsnummer)
+            val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
+            val oppfolgingsstatusNy = map(erUnderOppfolging, arenastatus, kanReaktiveres)
+
+            if (oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusNy)) {
+                logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
+            } else {
+                val dtoer = """
+                OppfolgingStatusData(v1): \t$oppfolgingStatusData\n\n
+                OppfolgingStatus(v2): \t$erUnderOppfolging\n
+                KanReaktiveres: \t$kanReaktiveres\n
+                ArenaStatus: \t${arenastatus}
+            """.trimIndent()
+                logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusNy\n\nDtoer: \n$dtoer")
+            }
+            oppfolgingsstatusNy
+        } catch (e: SammensattOppfolgingStatusException) {
+            logger.warn("Feil ved henting av oppfolgingsstatus fra nye kilder", e)
+            null
         }
 
         if (isDevelopment() && oppfolgingsstatusFraNyeKilder != null) {
