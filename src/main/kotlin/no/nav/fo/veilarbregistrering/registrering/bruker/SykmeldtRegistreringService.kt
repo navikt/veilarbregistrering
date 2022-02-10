@@ -19,7 +19,7 @@ open class SykmeldtRegistreringService(
 ) {
     @Transactional
     open fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker, navVeileder: NavVeileder?): Long {
-        validerSykmeldtdRegistrering(sykmeldtRegistrering, bruker)
+        sjekkAtBrukerKanRegistreres(bruker)
         oppfolgingGateway.aktiverSykmeldt(bruker.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
         val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.aktorId)
         lagreManuellRegistrering(id, navVeileder)
@@ -29,8 +29,7 @@ open class SykmeldtRegistreringService(
         return id
     }
 
-    private fun validerSykmeldtdRegistrering(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker) {
-        if (sykmeldtRegistrering.besvarelse == null) throw RuntimeException("Besvarelse for sykmeldt ugyldig.")
+    private fun sjekkAtBrukerKanRegistreres(bruker: Bruker) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) throw RuntimeException("Bruker kan ikke registreres.")
     }
