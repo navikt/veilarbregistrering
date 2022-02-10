@@ -18,7 +18,7 @@ spec:
     - https://app.adeo.no/veilarbregistrering
   env:
     - name: AAREG_REST_API
-      value: https://modapp.adeo.no/aareg-services/api
+      value: https://aareg-services.intern.nav.no/api
     - name: AAREG_REST_API_OLD
       value: https://modapp.adeo.no/aareg-services/api
     - name: OPENAM_DISCOVERY_URL

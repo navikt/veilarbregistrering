@@ -50,7 +50,11 @@ open class AaregRestClient(
     }
 
     protected open fun utfoerRequestAad(fnr: Foedselsnummer) : String {
-        val request = Request.Builder().url(baseUrl)
+        val request = Request.Builder()
+            .url(HttpUrl.parse(baseUrl)!!.newBuilder()
+                .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                .addQueryParameter("regelverk", "A_ORDNINGEN")
+                .build())
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
