@@ -12,6 +12,8 @@ import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -26,12 +28,13 @@ class SykmeldtRegistreringServiceTest {
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk(relaxed = true)
     private val manuellRegistreringRepository: ManuellRegistreringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
+    private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
     private val autorisasjonService: AutorisasjonService = mockk()
     private val metricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk(relaxed = true))  
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         brukerRegistreringRepository
 
         sykmeldtRegistreringService = SykmeldtRegistreringService(
@@ -98,11 +101,13 @@ class SykmeldtRegistreringServiceTest {
                             .withErSykmeldtMedArbeidsgiver(false)
                             .withKanReaktiveres(false)
 
-    private fun mockSykmeldtMedArbeidsgiver() =
+    private fun mockSykmeldtMedArbeidsgiver() {
         every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-            OppfolgingStatusData()
-                .withErSykmeldtMedArbeidsgiver(true)
-                .withKanReaktiveres(false)
+                OppfolgingStatusData()
+                    .withErSykmeldtMedArbeidsgiver(true)
+                    .withKanReaktiveres(false)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "IARBS", kvalifiseringsgruppe = "VURDI", rettighetsgruppe = "IYT")
+    }
 
     companion object {
         private val FNR_OPPFYLLER_KRAV =
