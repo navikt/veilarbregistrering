@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -10,7 +11,6 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -24,27 +24,32 @@ import org.springframework.http.MediaType
 import java.io.IOException
 
 open class AaregRestClient(
-        private val baseUrl: String,
-        private val baseUrlOld: String,
-        private val systemUserTokenProvider: SystemUserTokenProvider,
-        private val authContextHolder: AuthContextHolder,
-        private val tokenProvider: () -> String) : HealthCheck {
+    private val unleashClient: UnleashClient,
+    private val baseUrl: String,
+    private val baseUrlOld: String,
+    private val systemUserTokenProvider: SystemUserTokenProvider,
+    private val authContextHolder: AuthContextHolder,
+    private val tokenProvider: () -> String
+) : HealthCheck {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        val responseAad = utfoerRequestAad(fnr)
         val response = utforRequest(fnr)
-        sammenliknResponser(responseAad, response)
+
+        if (unleashClient.isEnabled("veilarbregistrering.aareg.aad")) {
+            val responseAad = utfoerRequestAad(fnr)
+            sammenliknResponser(responseAad, response)
+        }
+
         return parse(response)
     }
 
     private fun sammenliknResponser(responseAad: String, response: String) {
-        if (isDevelopment() && responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
+        if (responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
     }
 
     protected open fun utfoerRequestAad(fnr: Foedselsnummer) : String {
-        if (!isDevelopment()) return ""
         val request = Request.Builder().url(baseUrl)
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")

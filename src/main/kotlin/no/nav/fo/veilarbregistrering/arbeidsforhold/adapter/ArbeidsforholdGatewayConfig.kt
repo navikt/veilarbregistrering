@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.config.requireProperty
@@ -14,12 +15,14 @@ import org.springframework.context.annotation.Configuration
 class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
+        unleashClient: UnleashClient,
         systemUserTokenProvider: SystemUserTokenProvider,
         authContextHolder: AuthContextHolder,
         serviceToServiceTokenProvider: ServiceToServiceTokenProvider
     ): AaregRestClient {
         val aaregCluster = requireClusterName()
         return AaregRestClient(
+            unleashClient,
             requireProperty(REST_URL),
             requireProperty(REST_URL_OLD),
             systemUserTokenProvider,
