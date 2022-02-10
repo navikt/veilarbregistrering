@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -51,14 +52,6 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
             baseUrl,
             mockk(relaxed = true)
         ) { "TOKEN" }.also { oppfolgingClient = it }
-    }
-
-    @Test
-    fun `Test toString gir mening`() {
-        val oppfolgingsstatus = Oppfolgingsstatus(true, false, false, Formidlingsgruppe("ARBS"), null, null)
-        val s = oppfolgingsstatus.toString()
-        println(s)
-
     }
 
     @Test
