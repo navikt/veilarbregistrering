@@ -19,11 +19,11 @@ enum class Events(override val key: String) : Event {
     HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde.event"),
     HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar.event"),
     ORDINAER_BESVARELSE("registrering.besvarelse"),
-    BESVARELSE_ALDER("registrering.bruker.alder"),
     BESVARELSE_HELSEHINDER("registrering.besvarelse.helseHinder"),
     BESVARELSE_ANDRE_FORHOLD("registrering.besvarelse.andreForhold"),
-    BESVARELSE_HAR_HATT_JOBB_SAMSVARER_M_AAREG("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg");
+    BESVARELSE_HAR_HATT_JOBB_SAMSVARER_M_AAREG("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg"),
 
+    REGISTRERING_REGISTERINGSTYPE("registrering.registreringstype");
 }
 
 interface Event {

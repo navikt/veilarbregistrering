@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
@@ -19,6 +20,7 @@ class StartRegistreringStatusService(
 ) {
     fun hentStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
+        prometheusMetricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
 
         muligGeografiskTilknytning.apply {
