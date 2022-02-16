@@ -76,7 +76,7 @@ open class AaregRestClient(
                         .addQueryParameter("regelverk", "A_ORDNINGEN")
                         .build())
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemUserTokenProvider.systemUserToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authContextHolder.requireIdTokenString())
                 .header(NAV_CONSUMER_TOKEN, "Bearer " + systemUserTokenProvider.systemUserToken)
                 .header(NAV_PERSONIDENT, fnr.stringValue())
                 .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
