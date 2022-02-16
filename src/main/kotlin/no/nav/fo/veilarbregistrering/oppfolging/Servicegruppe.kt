@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging
 
+import no.nav.fo.veilarbregistrering.metrics.Metric
+
 /**
  * Servicegruppe er en undergruppe (?) til Kvalifiseringsgruppe sammen med Innsatsgruppe.
  * Begrepene brukes litt på tvers av hverandre, men referer til det samme feltet i Arena.
@@ -21,7 +23,10 @@ package no.nav.fo.veilarbregistrering.oppfolging
  * ----------------------------------
  * IVURD - Ikke vurdert
  */
-data class Servicegruppe(val kode: String) {
+data class Servicegruppe(val kode: String): Metric {
+
+    override fun fieldName() = "servicegruppe"
+    override fun value() = kode
 
     override fun toString(): String = "servicegruppe='$kode'"
 }

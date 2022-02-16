@@ -20,7 +20,7 @@ class StartRegistreringStatusService(
 ) {
     fun hentStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
-        prometheusMetricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
+        registrerFunksjonelleMetrikker(brukersTilstand)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
 
         muligGeografiskTilknytning.apply {
@@ -62,6 +62,13 @@ class StartRegistreringStatusService(
             null
         }
         return geografiskTilknytning
+    }
+
+    private fun registrerFunksjonelleMetrikker(brukersTilstand: BrukersTilstand) {
+        prometheusMetricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
+        brukersTilstand.servicegruppe?.let {
+            prometheusMetricsService.registrer(Events.REGISTRERING_SERVICEGRUPPE, it)
+        }
     }
 
     companion object {

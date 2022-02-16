@@ -23,7 +23,8 @@ enum class Events(override val key: String) : Event {
     BESVARELSE_ANDRE_FORHOLD("registrering.besvarelse.andreForhold"),
     BESVARELSE_HAR_HATT_JOBB_SAMSVARER_M_AAREG("registrering.besvarelse.sistestilling.samsvarermedinfofraaareg"),
 
-    REGISTRERING_REGISTERINGSTYPE("registrering.registreringstype");
+    REGISTRERING_REGISTERINGSTYPE("registrering.registreringstype"),
+    REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe");
 }
 
 interface Event {
