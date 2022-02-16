@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.metrics.Metric
+
 /**
  * Formidlingsgruppe:
  *
@@ -7,7 +9,10 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
  * IARBS - Ikke arbeidssøker
  * ISERV - Ikke servicebruker
  */
-data class Formidlingsgruppe(val kode: String) {
+data class Formidlingsgruppe(val kode: String): Metric {
+
+    override fun fieldName() = "formidlingsgruppe"
+    override fun value() = kode
 
     override fun toString(): String = "{kode='$kode'}"
 

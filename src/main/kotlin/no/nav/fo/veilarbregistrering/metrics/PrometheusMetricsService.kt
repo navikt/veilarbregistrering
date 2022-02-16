@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.metrics
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
-import java.util.HashMap
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -28,7 +28,7 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
         }
     }
     
-    private val statusVerdier: MutableMap<Status, AtomicInteger> = HashMap()
+    private val statusVerdier: MutableMap<Status, AtomicInteger> = EnumMap(Status::class.java)
 
     fun registrer(event: Event, vararg tags: Tag) {
         meterRegistry.counter(event.key, tags.asIterable()).increment()
@@ -38,7 +38,8 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
         meterRegistry.counter(event.key).increment()
     }
 
-    fun registrer(event: Event, metrikk: Metric) {
-        registrer(event, Tag.of(metrikk.fieldName(), metrikk.value().toString()))
+    fun registrer(event: Event, vararg metrikk: Metric) {
+        val tags = metrikk.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
+        registrer(event, *tags)
     }
 }
