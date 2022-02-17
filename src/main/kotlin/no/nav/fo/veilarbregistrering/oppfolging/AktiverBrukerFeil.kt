@@ -1,13 +1,17 @@
 package no.nav.fo.veilarbregistrering.oppfolging
 
+import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import java.lang.IllegalArgumentException
 
-enum class AktiverBrukerFeil {
+enum class AktiverBrukerFeil: Metric {
     BRUKER_ER_UKJENT,
     BRUKER_KAN_IKKE_REAKTIVERES,
     BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET,
     BRUKER_MANGLER_ARBEIDSTILLATELSE, ;
+
+    override fun fieldName() = "aarsak"
+    override fun value() = this.toString()
 
     companion object {
         @JvmStatic

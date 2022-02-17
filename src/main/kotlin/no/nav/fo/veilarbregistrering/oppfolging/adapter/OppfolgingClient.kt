@@ -74,7 +74,7 @@ open class OppfolgingClient(
             is ForbiddenException -> {
                 val feil = mapper(objectMapper.readValue(e.response!!))
                 logger.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
-                metricsService.registrer(AKTIVER_BRUKER_FEIL, Tag.of("aarsak", feil.name))
+                metricsService.registrer(AKTIVER_BRUKER_FEIL, feil)
                 AktiverBrukerException(feil)
             }
             else -> {
