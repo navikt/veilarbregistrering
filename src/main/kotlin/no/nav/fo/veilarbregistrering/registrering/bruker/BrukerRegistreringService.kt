@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerBesvarelseMetrikker.rapporterOrdinaerBesvarelse
 import no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand.Companion.medStatus
@@ -49,7 +48,6 @@ open class BrukerRegistreringService(
             profilerBrukerTilInnsatsgruppe(bruker.gjeldendeFoedselsnummer, opprettetBrukerRegistrering.besvarelse)
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.id, profilering)
         prometheusMetricsService.registrer(Events.PROFILERING_EVENT, profilering.innsatsgruppe)
-        rapporterOrdinaerBesvarelse(prometheusMetricsService, ordinaerBrukerRegistrering, profilering)
         val registreringTilstand = medStatus(Status.MOTTATT, opprettetBrukerRegistrering.id)
         registreringTilstandRepository.lagre(registreringTilstand)
         LOG.info(
