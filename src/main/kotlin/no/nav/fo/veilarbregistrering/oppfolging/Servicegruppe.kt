@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.metrics.Metric
  * IKVAL - Standard Innsats
  * BFORM - Situasjonsbestemt innsats
  * BATT  - Spesielt tilpasset innsats
+ * BKART - Behov for arbeidsevnevurdering
  * VARIG - Varig tilpasset innsats
  * ----------------------------------
  * Sykefraværsoppfølging

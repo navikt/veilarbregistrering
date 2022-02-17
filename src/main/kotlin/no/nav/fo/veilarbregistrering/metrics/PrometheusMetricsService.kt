@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.metrics
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import java.time.Duration
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -38,8 +39,17 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
         meterRegistry.counter(event.key).increment()
     }
 
-    fun registrer(event: Event, vararg metrikk: Metric) {
-        val tags = metrikk.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
+    fun registrer(event: Event, vararg metrikker: Metric) {
+        val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
         registrer(event, *tags)
+    }
+
+    private fun registrerTimer(event: Event, tid: Duration, vararg tags: Tag) {
+        meterRegistry.timer(event.key, tags.asIterable()).record(tid)
+    }
+
+    fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
+        val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
+        registrerTimer(event, tid, *tags)
     }
 }

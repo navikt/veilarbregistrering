@@ -43,6 +43,7 @@ class OppfolgingGatewayConfig {
     @Bean
     fun veilarbarenaClient(
         tokenProvider: ServiceToServiceTokenProvider,
+        prometheusMetricsService: PrometheusMetricsService
     ): VeilarbarenaClient {
         val baseUrl = requireProperty("VEILARBARENA_URL")
         val veilarbarenaCluster = requireProperty("VEILARBARENA_CLUSTER")
@@ -64,7 +65,7 @@ class OppfolgingGatewayConfig {
                 if (isDevelopment()) "dev-fss" else "prod-fss"
             )
         }
-        return VeilarbarenaClient(baseUrl, veilarbarenaTokenProvider, proxyTokenProvider)
+        return VeilarbarenaClient(baseUrl, prometheusMetricsService, veilarbarenaTokenProvider, proxyTokenProvider)
     }
 
     @Bean
