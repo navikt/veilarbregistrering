@@ -39,13 +39,13 @@ open class OppfolgingClient(
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
         val headers = getAuthorizationFromCookieOrResolveOboToken()
 
-        return get(url, headers, OppfolgingStatusData::class.java) { e ->
-            when (e) {
-                is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
-                else -> null
+        return doTimedCall(HENT_OPPFOLGING) {
+            get(url, headers, OppfolgingStatusData::class.java) { e ->
+                when (e) {
+                    is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
+                    else -> null
+                }
             }
-        }.also {
-            metricsService.registrer(HENT_OPPFOLGING)
         }
     }
 
@@ -72,8 +72,10 @@ open class OppfolgingClient(
 
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
-        return get(url, getAuthorizationFromCookieOrResolveOboToken(), ErUnderOppfolgingDto::class.java) {
-            SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2", it)
+        return doTimedCall {
+            get(url, getAuthorizationFromCookieOrResolveOboToken(), ErUnderOppfolgingDto::class.java) {
+                SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2", it)
+            }
         }
     }
 
@@ -112,12 +114,12 @@ open class OppfolgingClient(
         }
     }
 
-    private fun <T> doTimedCall(event: Event, httpCall: () -> T): T {
+    private fun <T> doTimedCall(event: Event? = null, httpCall: () -> T): T {
         val start = Instant.now(Clock.systemDefaultZone())
         val result = httpCall()
         val end = Instant.now(Clock.systemDefaultZone())
         metricsService.registrerTimer(KALL_TREDJEPART, Duration.between(start, end), this)
-        metricsService.registrer(event)
+        event?.let { metricsService.registrer(it) }
         return result
     }
     
