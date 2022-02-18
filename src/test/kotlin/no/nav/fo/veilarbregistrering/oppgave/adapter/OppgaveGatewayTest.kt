@@ -30,7 +30,7 @@ internal class OppgaveGatewayTest(private val mockServer: ClientAndServer) {
         every { httpServletRequest.getHeader(any()) } returns ""
         every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return OppgaveRestClient(baseUrl) { "testToken" }
+        return OppgaveRestClient(baseUrl, mockk(relaxed = true)) { "testToken" }
     }
 
     @Test
