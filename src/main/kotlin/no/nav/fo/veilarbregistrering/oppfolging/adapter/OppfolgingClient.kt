@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.metrics.Event
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
@@ -50,23 +51,23 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        post(url, fnr, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        metricsService.registrer(REAKTIVER_BRUKER)
+        doTimedCall(REAKTIVER_BRUKER) {
+            post(url, fnr, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        }
     }
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        val start = Instant.now(Clock.systemDefaultZone())
-        post(url, aktiverBrukerData, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        val end = Instant.now(Clock.systemDefaultZone())
-        metricsService.registrerTimer(KALL_TREDJEPART, Duration.between(start, end), this)
-        metricsService.registrer(AKTIVER_BRUKER)
+        doTimedCall(AKTIVER_BRUKER) {
+            post(url, aktiverBrukerData, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        }
     }
 
     fun aktiverSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
-        metricsService.registrer(OPPFOLGING_SYKMELDT)
+        doTimedCall(OPPFOLGING_SYKMELDT) {
+            post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+        }
     }
 
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
@@ -111,6 +112,15 @@ open class OppfolgingClient(
         }
     }
 
+    private fun <T> doTimedCall(event: Event, httpCall: () -> T): T {
+        val start = Instant.now(Clock.systemDefaultZone())
+        val result = httpCall()
+        val end = Instant.now(Clock.systemDefaultZone())
+        metricsService.registrerTimer(KALL_TREDJEPART, Duration.between(start, end), this)
+        metricsService.registrer(event)
+        return result
+    }
+    
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
     }
