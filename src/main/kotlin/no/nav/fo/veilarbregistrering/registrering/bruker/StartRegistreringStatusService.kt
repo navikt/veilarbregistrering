@@ -73,6 +73,9 @@ class StartRegistreringStatusService(
         brukersTilstand.servicegruppe?.let {
             prometheusMetricsService.registrer(Events.REGISTRERING_SERVICEGRUPPE, it)
         }
+        brukersTilstand.rettighetsgruppe?.let {
+            prometheusMetricsService.registrer(Events.REGISTRERING_RETTIGHETSGRUPPE, it)
+        }
 
         if (brukersTilstand.registreringstype == RegistreringType.ALLEREDE_REGISTRERT &&
             brukersTilstand.formidlingsgruppe != null && brukersTilstand.servicegruppe != null
