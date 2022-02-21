@@ -50,6 +50,10 @@ class StartRegistreringStatusService(
         return startRegistreringStatus
     }
 
+    fun registrerAtArenaHarPlanlagtNedetid() {
+        prometheusMetricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
+    }
+
     private fun hentGeografiskTilknytning(bruker: Bruker): GeografiskTilknytning? {
         val t1 = System.currentTimeMillis()
 

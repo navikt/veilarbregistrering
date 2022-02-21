@@ -41,6 +41,7 @@ class RegistreringResource(
     @PostMapping("/startregistrering")
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
         if (tjenesteErNede()) {
+            startRegistreringStatusService.registrerAtArenaHarPlanlagtNedetid()
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
