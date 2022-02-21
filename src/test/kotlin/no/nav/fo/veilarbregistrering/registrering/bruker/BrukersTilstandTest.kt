@@ -107,6 +107,12 @@ class BrukersTilstandTest {
         val ISERVNyKilde = Oppfolgingsstatus(isUnderOppfolging=true, kanReaktiveres=null, erSykmeldtMedArbeidsgiver=false, formidlingsgruppe=Formidlingsgruppe("ISERV"), servicegruppe=Servicegruppe("BFORM"), rettighetsgruppe=Rettighetsgruppe("IYT"))
 
         assertThat(beregnRegistreringType(ARBSGammelKilde)).isEqualTo(beregnRegistreringType(ISERVNyKilde))
+
+        val underOppfolgingArenaKoderGammelKilde = Oppfolgingsstatus(isUnderOppfolging=true, kanReaktiveres=null, erSykmeldtMedArbeidsgiver=true, formidlingsgruppe=Formidlingsgruppe(kode="IARBS"), servicegruppe=Servicegruppe("VURDI"), rettighetsgruppe=Rettighetsgruppe("IYT"))
+        val underOppfolgingNullNyKilde = Oppfolgingsstatus(isUnderOppfolging=true, kanReaktiveres=null, erSykmeldtMedArbeidsgiver=null, formidlingsgruppe=null, servicegruppe=null, rettighetsgruppe=null)
+
+        assertThat(beregnRegistreringType(underOppfolgingArenaKoderGammelKilde)).isEqualTo(beregnRegistreringType(underOppfolgingNullNyKilde))
+
     }
 
     @Disabled
@@ -122,6 +128,10 @@ class BrukersTilstandTest {
 
         assertThat(beregnRegistreringType(ukjentBrukerGammelKilde)).isEqualTo(beregnRegistreringType(erSykmeldtMedArbeidsgiverTrueNyKilde))
 
+        val ikkeUnderOppfolgingArenaKoderGammelKilde = Oppfolgingsstatus(isUnderOppfolging=false, kanReaktiveres=null, erSykmeldtMedArbeidsgiver=true, formidlingsgruppe=Formidlingsgruppe(kode="IARBS"), servicegruppe=Servicegruppe("VURDI"), rettighetsgruppe=Rettighetsgruppe("IYT"))
+        val ikkeUnderOppfolgingNullNyKilde = Oppfolgingsstatus(isUnderOppfolging=false, kanReaktiveres=null, erSykmeldtMedArbeidsgiver=null, formidlingsgruppe=null, servicegruppe=null, rettighetsgruppe=null)
+
+        assertThat(beregnRegistreringType(ikkeUnderOppfolgingArenaKoderGammelKilde)).isEqualTo(beregnRegistreringType(ikkeUnderOppfolgingNullNyKilde))
     }
 
 
