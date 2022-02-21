@@ -14,10 +14,8 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.Event
-import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -26,19 +24,16 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.io.IOException
-import java.time.Clock
-import java.time.Duration
-import java.time.Instant
 
 open class AaregRestClient(
     private val unleashClient: UnleashClient,
-    private val metricsService: PrometheusMetricsService,
+    metricsService: PrometheusMetricsService,
     private val baseUrl: String,
     private val baseUrlOld: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,
     private val tokenProvider: () -> String
-) : HealthCheck, Metric {
+) : HealthCheck, TimedMetric(metricsService) {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
@@ -115,14 +110,6 @@ open class AaregRestClient(
         return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }
     }
 
-    private fun <T> doTimedCall(httpCall: () -> T): T {
-        val start = Instant.now(Clock.systemDefaultZone())
-        val result = httpCall()
-        val end = Instant.now(Clock.systemDefaultZone())
-        metricsService.registrerTimer(Events.KALL_TREDJEPART, Duration.between(start, end), this)
-        return result
-    }
-
     companion object {
         private val GSON = GsonBuilder().create()
 
@@ -146,6 +133,5 @@ open class AaregRestClient(
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), defaultHttpClient())
     }
 
-    override fun fieldName() = "tjeneste"
     override fun value() = "aareg"
 }

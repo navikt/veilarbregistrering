@@ -7,22 +7,18 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
-import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.Request
 import org.springframework.http.HttpStatus
 import java.io.IOException
-import java.time.Clock
-import java.time.Duration
-import java.time.Instant
 
 class VeilarbarenaClient(
     private val baseUrl: String,
-    private val prometheusMetricsService: PrometheusMetricsService,
+    prometheusMetricsService: PrometheusMetricsService,
     private val veilarbarenaTokenProvider: () -> String,
     private val proxyTokenProvider: () -> String
-) : HealthCheck, Metric {
+) : HealthCheck, TimedMetric(prometheusMetricsService) {
 
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
         val proxyToken = proxyTokenProvider()
@@ -35,19 +31,19 @@ class VeilarbarenaClient(
             .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
             .build()
 
-        return try {
-            val startTid = Instant.now(Clock.systemDefaultZone())
-            val response = defaultHttpClient().newCall(request).execute()
-            val sluttid = Instant.now(Clock.systemDefaultZone())
-            prometheusMetricsService.registrerTimer(Events.KALL_TREDJEPART, Duration.between(startTid, sluttid), this)
-            when (response.code()) {
-                404 -> null
-                in 300..599 -> throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
-                else -> response.body()?.string()?.let { objectMapper.readValue(it) }
-                    ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+        return doTimedCall {
+            try {
+                defaultHttpClient().newCall(request).execute().use { response ->
+                    when (response.code()) {
+                        404 -> null
+                        in 300..599 -> throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
+                        else -> response.body()?.string()?.let { objectMapper.readValue(it) }
+                            ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+                    }
+                }
+            } catch (e: IOException) {
+                throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
             }
-        } catch (e: IOException) {
-            throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
         }
     }
 
@@ -61,17 +57,19 @@ class VeilarbarenaClient(
             .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
             .build()
 
-        return try {
-            defaultHttpClient().newCall(request).execute().use { response ->
-                if (response.code() != HttpStatus.OK.value()) {
-                    throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
-                } else {
-                    response.body()?.string()?.let { objectMapper.readValue(it) }
-                        ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+        return doTimedCall {
+            try {
+                defaultHttpClient().newCall(request).execute().use { response ->
+                    if (response.code() != HttpStatus.OK.value()) {
+                        throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
+                    } else {
+                        response.body()?.string()?.let { objectMapper.readValue(it) }
+                            ?: throw SammensattOppfolgingStatusException("Henting av arenastatus returnerte tom body")
+                    }
                 }
+            } catch (e: IOException) {
+                throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
             }
-        } catch (e: IOException) {
-            throw SammensattOppfolgingStatusException("Uventet feil mot veilarbarena: ${e.message}", e)
         }
     }
 
@@ -79,7 +77,6 @@ class VeilarbarenaClient(
         return HealthCheckUtils.pingUrl(baseUrl, defaultHttpClient())
     }
 
-    override fun fieldName() = "tjeneste"
     override fun value() = "veilarbarena"
 }
 

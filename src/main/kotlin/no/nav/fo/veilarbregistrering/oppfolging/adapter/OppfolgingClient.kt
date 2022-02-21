@@ -12,18 +12,13 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.Event
 import no.nav.fo.veilarbregistrering.metrics.Events.*
-import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
-import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
-import java.time.Clock
-import java.time.Duration
-import java.time.Instant
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
@@ -33,7 +28,7 @@ open class OppfolgingClient(
     private val aadOboService: AadOboService,
     private val tokenProvider: () -> String,
 
-    ) : AbstractOppfolgingClient(objectMapper), HealthCheck, Metric {
+    ) : AbstractOppfolgingClient(objectMapper, metricsService), HealthCheck  {
 
     open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
         val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
@@ -113,20 +108,8 @@ open class OppfolgingClient(
             else -> throw IllegalStateException("Ukjent feil fra Arena: $aktiverBrukerFeilDto")
         }
     }
-
-    private fun <T> doTimedCall(event: Event? = null, httpCall: () -> T): T {
-        val start = Instant.now(Clock.systemDefaultZone())
-        val result = httpCall()
-        val end = Instant.now(Clock.systemDefaultZone())
-        metricsService.registrerTimer(KALL_TREDJEPART, Duration.between(start, end), this)
-        event?.let { metricsService.registrer(it) }
-        return result
-    }
     
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
     }
-
-    override fun fieldName() = "tjeneste"
-    override fun value() = "veilarboppfolging"
 }
