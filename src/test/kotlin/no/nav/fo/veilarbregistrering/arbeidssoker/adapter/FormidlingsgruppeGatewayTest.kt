@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
+import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
@@ -29,7 +30,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): FormidlingsgruppeRestClient {
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return FormidlingsgruppeRestClient(baseUrl) { "arenaOrdsTokenProvider" }
+        return FormidlingsgruppeRestClient(baseUrl, mockk(relaxed = true)) { "arenaOrdsTokenProvider" }
     }
 
     @Test

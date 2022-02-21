@@ -10,6 +10,8 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.parse
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
 import okhttp3.Request
 import org.slf4j.LoggerFactory
@@ -21,21 +23,25 @@ import java.util.function.Supplier
 
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,
+    metricsService: PrometheusMetricsService,
     private val arenaOrdsTokenProvider: Supplier<String>
-) : HealthCheck {
+) : HealthCheck, TimedMetric(metricsService) {
+
     fun hentFormidlingshistorikk(
         foedselsnummer: Foedselsnummer,
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
-        return try {
-            val response = utfoerRequest(foedselsnummer, periode)
+        return doTimedCall {
+            try {
+                val response = utfoerRequest(foedselsnummer, periode)
 
-            response?.let(::parse) ?: run {
-                LOG.warn("Søk på fødselsnummer gav ingen treff i Arena")
-                null
+                response?.let(::parse) ?: run {
+                    LOG.warn("Søk på fødselsnummer gav ingen treff i Arena")
+                    null
+                }
+            } catch (e: RuntimeException) {
+                throw RuntimeException("Hent formidlingshistorikk feilet", e)
             }
-        } catch (e: RuntimeException) {
-            throw RuntimeException("Hent formidlingshistorikk feilet", e)
         }
     }
 
@@ -77,4 +83,6 @@ class FormidlingsgruppeRestClient internal constructor(
         private const val HTTP_READ_TIMEOUT = 120000
         private val LOG = LoggerFactory.getLogger(FormidlingsgruppeRestClient::class.java)
     }
+
+    override fun value() = "arenaords"
 }
