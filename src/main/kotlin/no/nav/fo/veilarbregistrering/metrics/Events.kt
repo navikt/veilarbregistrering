@@ -24,7 +24,7 @@ enum class Events(override val key: String) : Event {
     REGISTRERING_NEDETID_ARENA("registrering.nedetid.arena"),
     REGISTRERING_RETTIGHETSGRUPPE("registrering.rettighetsgruppe"),
     REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe"),
-    OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE("oppfolgingsstatus.sammenlikning");
+    OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE("oppfolgingsstatus.mangler.arenastatus.ny.kilde");
 }
 
 interface Event {
