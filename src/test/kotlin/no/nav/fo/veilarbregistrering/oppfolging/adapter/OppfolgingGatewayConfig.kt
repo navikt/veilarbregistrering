@@ -18,5 +18,5 @@ class OppfolgingGatewayConfig {
 
     @Bean
     fun oppfolgingGateway(oppfolgingClient: OppfolgingClient, veilarbarenaClient: VeilarbarenaClient, unleashClient: UnleashClient): OppfolgingGateway =
-        OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient)
+        OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient, mockk(relaxed = true))
 }

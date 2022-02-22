@@ -6,6 +6,9 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.metrics.Events.OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE
+import no.nav.fo.veilarbregistrering.metrics.JaNei
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
@@ -19,7 +22,8 @@ import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 class OppfolgingGatewayImpl(
     private val oppfolgingClient: OppfolgingClient,
     private val veilarbarenaClient: VeilarbarenaClient,
-    private val unleashClient: UnleashClient
+    private val unleashClient: UnleashClient,
+    private val metricsService: PrometheusMetricsService
 ) : OppfolgingGateway {
     override fun hentOppfolgingsstatus(fodselsnummer: Foedselsnummer): Oppfolgingsstatus {
         val oppfolgingStatusData = oppfolgingClient.hentOppfolgingsstatus(fodselsnummer)
@@ -33,16 +37,10 @@ class OppfolgingGatewayImpl(
                 val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
                 val oppfolgingsstatusNy = map(erUnderOppfolging, arenastatus, kanReaktiveres)
 
-                if (oppfolgingsstatus.erLikBortsettFraKanReaktiveres(oppfolgingsstatusNy)) {
-                    logger.info("Oppfølgingsstatus fra ny kilde er lik eksisterende")
+                if (oppfolgingsstatus.manglerArenstatusFraNyKilde(oppfolgingsstatusNy)) {
+                    metricsService.registrer(OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE, JaNei.JA)
                 } else {
-                    val dtoer = """
-                OppfolgingStatusData(v1): \\t$oppfolgingStatusData\\n\\n
-                OppfolgingStatus(v2): \\t$erUnderOppfolging\\n
-                KanReaktiveres: \\t$kanReaktiveres\\n
-                ArenaStatus: \\t${arenastatus}
-            """.trimIndent()
-                    logger.warn("Oppfolgingsstatus fra ny kilde er ulik eksisterende på andre felter enn kanReaktiveres: Eksisterende: $oppfolgingsstatus Ny: $oppfolgingsstatusNy\n\nDtoer: \n$dtoer")
+                    metricsService.registrer(OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE, JaNei.NEI)
                 }
                 oppfolgingsstatusNy
             } catch (e: SammensattOppfolgingStatusException) {

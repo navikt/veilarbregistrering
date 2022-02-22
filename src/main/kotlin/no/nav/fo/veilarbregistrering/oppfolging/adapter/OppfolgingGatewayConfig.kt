@@ -72,9 +72,10 @@ class OppfolgingGatewayConfig {
     fun oppfolgingGateway(
         oppfolgingClient: OppfolgingClient,
         veilarbarenaClient: VeilarbarenaClient,
-        unleashClient: UnleashClient
+        unleashClient: UnleashClient,
+        prometheusMetricsService: PrometheusMetricsService
     ): OppfolgingGateway {
-        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient)
+        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient, prometheusMetricsService)
     }
 }
 

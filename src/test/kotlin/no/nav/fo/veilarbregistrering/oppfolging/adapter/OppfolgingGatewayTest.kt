@@ -33,7 +33,7 @@ internal class OppfolgingGatewayTest(private val mockServer: ClientAndServer) {
     @BeforeEach
     fun setup() {
         oppfolgingClient = buildOppfolgingClient()
-        oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk(relaxed = true), mockk(relaxed = true))
+        oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
     }
 
     @AfterEach
