@@ -58,14 +58,9 @@ class RegistreringResource(
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
-        val ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker)
-        val sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker)
-        val brukerRegistreringWrapper = create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
-        if (brukerRegistreringWrapper == null) {
-            logger.info("Bruker ble ikke funnet i databasen.")
-            return ResponseEntity.noContent().build()
-        }
-        return ResponseEntity.ok(brukerRegistreringWrapper)
+        return hentRegistreringService.hentBrukerregistrering(bruker)?.let {
+            ResponseEntity.ok(it)
+        } ?: ResponseEntity.noContent().build()
     }
 
     @GetMapping("/igangsattregistrering")

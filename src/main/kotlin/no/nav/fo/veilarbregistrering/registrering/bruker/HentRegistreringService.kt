@@ -8,6 +8,8 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering.Companion.medProfilering
+import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapper
+import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
@@ -20,6 +22,17 @@ class HentRegistreringService(
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
     private val norg2Gateway: Norg2Gateway
 ) {
+    fun hentBrukerregistrering(bruker: Bruker): BrukerRegistreringWrapper? {
+        val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)
+        val sykmeldtBrukerRegistrering = hentSykmeldtRegistrering(bruker)
+        val brukerRegistreringWrapper =
+            BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
+        if (brukerRegistreringWrapper == null) {
+            logger.info("Bruker ble ikke funnet i databasen.")
+        }
+        return brukerRegistreringWrapper
+    }
+
     fun hentOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? = hentOrdinaerBrukerRegistrering(
         bruker,
         listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND)

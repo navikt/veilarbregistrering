@@ -16,6 +16,7 @@ import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
+import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
@@ -32,7 +33,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
-import java.util.*
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -40,6 +40,7 @@ import java.util.*
 class HentBrukerRegistreringServiceIntegrationTest(
     @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
     @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
+    @Autowired val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     @Autowired val hentRegistreringService: HentRegistreringService,
     @Autowired var oppfolgingGateway: OppfolgingGateway,
     @Autowired var profileringService: ProfileringService,
@@ -73,9 +74,22 @@ class HentBrukerRegistreringServiceIntegrationTest(
         assertEquals(gyldigStilling(), hentRegistreringService.hentOrdinaerBrukerRegistrering(BRUKER)?.sisteStilling)
     }
 
+    @Test
+    fun `henter opp siste brukerregistrering riktig`() {
+        brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id.let { id ->
+            registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+            profileringRepository.lagreProfilering(id, lagProfilering())
+        }
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
+        assertEquals(BrukerRegistreringType.SYKMELDT, hentRegistreringService.hentBrukerregistrering(BRUKER)?.type )
+    }
+
     companion object {
         private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker(ident, AktorId("AKTØRID"))
+        private val SYKMELDT_BRUKER = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(
+            opprettetDato = LocalDate.of(2019,10,10).atStartOfDay()
+        )
         private val BRUKER_UTEN_JOBB = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistreringUtenJobb(opprettetDato =
             LocalDate.of(2014, 12, 8).atStartOfDay())
         private val SELVGAENDE_BRUKER = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(

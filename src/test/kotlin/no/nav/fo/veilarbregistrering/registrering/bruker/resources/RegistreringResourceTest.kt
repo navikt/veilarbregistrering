@@ -114,8 +114,7 @@ class RegistreringResourceTest(
     fun `serialiserer tom registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns null
-        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
+        every { hentRegistreringService.hentBrukerregistrering(any()) } returns null
 
         val result = mvc.get("/api/registrering")
             .andExpect {
@@ -130,8 +129,10 @@ class RegistreringResourceTest(
     fun `serialiserer registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns GYLDIG_BRUKERREGISTRERING
-        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
+        every { hentRegistreringService.hentBrukerregistrering(any()) } returns BrukerRegistreringWrapperFactory.create(
+            GYLDIG_BRUKERREGISTRERING,
+            null
+        )
 
         val result = mvc.get("/api/registrering")
             .andExpect {
@@ -147,8 +148,10 @@ class RegistreringResourceTest(
     fun `serialiserer registrering med profilering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns GYLDIG_BRUKERREGISTRERING_M_PROF
-        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
+        every { hentRegistreringService.hentBrukerregistrering(any()) } returns BrukerRegistreringWrapperFactory.create(
+            GYLDIG_BRUKERREGISTRERING_M_PROF,
+            null
+        )
 
         val result = mvc.get("/api/registrering")
             .andExpect {
@@ -197,7 +200,7 @@ class RegistreringResourceTest(
     fun skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         mockkStatic(StartRegistreringStatusMetrikker::class)
         every { StartRegistreringStatusMetrikker.rapporterRegistreringsstatus(any(), any()) } just runs
-        every {startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentStartRegistreringStatus()
@@ -206,30 +209,31 @@ class RegistreringResourceTest(
 
     @Test
     fun skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
-        every {startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
 
-        assertThrows<RuntimeException>("Fødselsnummer ikke gyldig.")  { registreringResource.hentRegistrering() }
+        assertThrows<RuntimeException>("Fødselsnummer ikke gyldig.") { registreringResource.hentRegistrering() }
         verify { autorisasjonService wasNot Called }
     }
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedHentingAvRegistrering() {
-        every { hentRegistreringService.hentOrdinaerBrukerRegistrering(any()) } returns
-                gyldigBrukerRegistrering()
+        every { hentRegistreringService.hentBrukerregistrering(any()) } returns BrukerRegistreringWrapperFactory.create(
+            gyldigBrukerRegistrering(), null
+        )
         every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentRegistrering()
-        verify(exactly = 1) {autorisasjonService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeAktorId()) }
+        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeAktorId()) }
     }
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
         val sykmeldtRegistrering = gyldigSykmeldtRegistrering(
-            besvarelse =Besvarelse(
-                    fremtidigSituasjon = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
-                    tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING,
-                )
+            besvarelse = Besvarelse(
+                fremtidigSituasjon = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
+                tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING,
+            )
         )
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
@@ -264,29 +268,35 @@ class RegistreringResourceTest(
             )
         )
         private val START_REGISTRERING_STATUS = StartRegistreringStatusDto()
-        private val time = LocalDateTime.of(2020,1,11,15,50, 20)
+        private val time = LocalDateTime.of(2020, 1, 11, 15, 50, 20)
         private val profilering = lagProfilering()
         private val GYLDIG_BRUKERREGISTRERING = gyldigBrukerRegistrering(opprettetDato = time)
-        private val GYLDIG_BRUKERREGISTRERING_M_PROF = gyldigBrukerRegistrering(opprettetDato = time, profilering = profilering)
+        private val GYLDIG_BRUKERREGISTRERING_M_PROF =
+            gyldigBrukerRegistrering(opprettetDato = time, profilering = profilering)
 
-        private val REGISTRERING_RESPONSE = "{\"registrering\":{\"id\":0,\"opprettetDato\":\"$time\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":null,\"manueltRegistrertAv\":null},\"type\":\"ORDINAER\"}"
-        private const val REGISTRERING_RESPONSE_M_PROF = "{\"registrering\":{\"id\":0,\"opprettetDato\":\"2020-01-11T15:50:20\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":{\"innsatsgruppe\":\"STANDARD_INNSATS\",\"alder\":62,\"jobbetSammenhengendeSeksAvTolvSisteManeder\":false},\"manueltRegistrertAv\":null},\"type\":\"ORDINAER\"}"
+        private val REGISTRERING_RESPONSE =
+            "{\"registrering\":{\"id\":0,\"opprettetDato\":\"$time\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":null,\"manueltRegistrertAv\":null},\"type\":\"ORDINAER\"}"
+        private const val REGISTRERING_RESPONSE_M_PROF =
+            "{\"registrering\":{\"id\":0,\"opprettetDato\":\"2020-01-11T15:50:20\",\"besvarelse\":{\"utdanning\":\"HOYERE_UTDANNING_5_ELLER_MER\",\"utdanningBestatt\":\"JA\",\"utdanningGodkjent\":\"JA\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\",\"sisteStilling\":\"HAR_HATT_JOBB\",\"dinSituasjon\":\"JOBB_OVER_2_AAR\",\"fremtidigSituasjon\":null,\"tilbakeIArbeid\":null},\"teksterForBesvarelse\":[{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Høyere utdanning (5 år eller mer)\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ja\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med helseutfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Trenger du oppfølging i forbindelse med andre utfordringer?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Din siste jobb\",\"svar\":\"Har hatt jobb\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Hvorfor registrerer du deg?\",\"svar\":\"Jeg er permittert eller vil bli permittert\"}],\"sisteStilling\":{\"label\":\"yrkesbeskrivelse\",\"konseptId\":1246345,\"styrk08\":\"12345\"},\"profilering\":{\"innsatsgruppe\":\"STANDARD_INNSATS\",\"alder\":62,\"jobbetSammenhengendeSeksAvTolvSisteManeder\":false},\"manueltRegistrertAv\":null},\"type\":\"ORDINAER\"}"
 
-        private const val REGISTRERING_REQUEST = "{\"sisteStilling\":{\"label\":\"Annen stilling\",\"styrk08\":\"-1\",\"konseptId\":-1},\"besvarelse\":{\"sisteStilling\":\"INGEN_SVAR\",\"utdanning\":\"INGEN_UTDANNING\",\"utdanningBestatt\":\"INGEN_SVAR\",\"utdanningGodkjent\":\"INGEN_SVAR\",\"dinSituasjon\":\"MISTET_JOBBEN\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\"},\"teksterForBesvarelse\":[{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Hva er din siste jobb?\",\"svar\":\"Annen stilling\"},{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Ingen utdanning\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ikke aktuelt\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Ikke aktuelt\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Velg den situasjonen som passer deg best\",\"svar\":\"Har mistet eller kommer til å miste jobben\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Har du helseproblemer som hindrer deg i å søke eller være i jobb?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Har du andre problemer med å søke eller være i jobb?\",\"svar\":\"Nei\"}]}"
+        private const val REGISTRERING_REQUEST =
+            "{\"sisteStilling\":{\"label\":\"Annen stilling\",\"styrk08\":\"-1\",\"konseptId\":-1},\"besvarelse\":{\"sisteStilling\":\"INGEN_SVAR\",\"utdanning\":\"INGEN_UTDANNING\",\"utdanningBestatt\":\"INGEN_SVAR\",\"utdanningGodkjent\":\"INGEN_SVAR\",\"dinSituasjon\":\"MISTET_JOBBEN\",\"helseHinder\":\"NEI\",\"andreForhold\":\"NEI\"},\"teksterForBesvarelse\":[{\"sporsmalId\":\"sisteStilling\",\"sporsmal\":\"Hva er din siste jobb?\",\"svar\":\"Annen stilling\"},{\"sporsmalId\":\"utdanning\",\"sporsmal\":\"Hva er din høyeste fullførte utdanning?\",\"svar\":\"Ingen utdanning\"},{\"sporsmalId\":\"utdanningBestatt\",\"sporsmal\":\"Er utdanningen din bestått?\",\"svar\":\"Ikke aktuelt\"},{\"sporsmalId\":\"utdanningGodkjent\",\"sporsmal\":\"Er utdanningen din godkjent i Norge?\",\"svar\":\"Ikke aktuelt\"},{\"sporsmalId\":\"dinSituasjon\",\"sporsmal\":\"Velg den situasjonen som passer deg best\",\"svar\":\"Har mistet eller kommer til å miste jobben\"},{\"sporsmalId\":\"helseHinder\",\"sporsmal\":\"Har du helseproblemer som hindrer deg i å søke eller være i jobb?\",\"svar\":\"Nei\"},{\"sporsmalId\":\"andreForhold\",\"sporsmal\":\"Har du andre problemer med å søke eller være i jobb?\",\"svar\":\"Nei\"}]}"
     }
 }
+
 @Configuration
 private class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
-            autorisasjonService: AutorisasjonService,
-            userService: UserService,
-            brukerRegistreringService: BrukerRegistreringService,
-            hentRegistreringService: HentRegistreringService,
-            unleashClient: UnleashClient,
-            sykmeldtRegistreringService: SykmeldtRegistreringService,
-            startRegistreringStatusService: StartRegistreringStatusService,
-            inaktivBrukerService: InaktivBrukerService) = RegistreringResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        brukerRegistreringService: BrukerRegistreringService,
+        hentRegistreringService: HentRegistreringService,
+        unleashClient: UnleashClient,
+        sykmeldtRegistreringService: SykmeldtRegistreringService,
+        startRegistreringStatusService: StartRegistreringStatusService,
+        inaktivBrukerService: InaktivBrukerService
+    ) = RegistreringResource(
         autorisasjonService,
         userService,
         brukerRegistreringService,
@@ -296,24 +306,35 @@ private class RegistreringResourceConfig {
         startRegistreringStatusService,
         inaktivBrukerService,
     )
+
     @Bean
     fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
+
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)
+
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
+
     @Bean
     fun brukerRegistreringService(): BrukerRegistreringService = mockk(relaxed = true)
+
     @Bean
     fun hentRegistreringService(): HentRegistreringService = mockk()
+
     @Bean
     fun startRegistreringStatusService(): StartRegistreringStatusService = mockk()
+
     @Bean
     fun authContextHolder(): AuthContextHolder = mockk()
+
     @Bean
-    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService = UserService(pdlOppslagGateway, authContextHolder)
+    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService =
+        UserService(pdlOppslagGateway, authContextHolder)
+
     @Bean
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
+
     @Bean
     fun inaktivBrukerService(): InaktivBrukerService = mockk(relaxed = true)
 }
