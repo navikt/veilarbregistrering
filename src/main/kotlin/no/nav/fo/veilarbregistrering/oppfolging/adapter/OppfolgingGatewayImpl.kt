@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
+import no.nav.fo.veilarbregistrering.bruker.FnrUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
@@ -39,6 +40,7 @@ class OppfolgingGatewayImpl(
 
                 if (oppfolgingsstatus.manglerArenstatusFraNyKilde(oppfolgingsstatusNy)) {
                     metricsService.registrer(OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE, JaNei.JA)
+                    logger.warn("Oppfolgingsstatus ny kilde avviker negativt. Maskert fnr: ${fodselsnummer.stringValue().slice(0..4)}*******")
                 } else {
                     metricsService.registrer(OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE, JaNei.NEI)
                 }
