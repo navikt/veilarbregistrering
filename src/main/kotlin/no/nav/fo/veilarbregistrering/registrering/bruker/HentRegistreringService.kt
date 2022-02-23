@@ -2,6 +2,9 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.JaNei
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
@@ -20,7 +23,8 @@ class HentRegistreringService(
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     private val profileringRepository: ProfileringRepository,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
-    private val norg2Gateway: Norg2Gateway
+    private val norg2Gateway: Norg2Gateway,
+    private val metricsService: PrometheusMetricsService
 ) {
     fun hentBrukerregistrering(bruker: Bruker): BrukerRegistreringWrapper? {
         val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)
@@ -29,7 +33,9 @@ class HentRegistreringService(
             BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
         if (brukerRegistreringWrapper == null) {
             logger.info("Bruker ble ikke funnet i databasen.")
+            metricsService.registrer(Events.HENT_BRUKERREGISTRERING_BRUKER_FUNNET, JaNei.NEI)
         }
+        metricsService.registrer(Events.HENT_BRUKERREGISTRERING_BRUKER_FUNNET, JaNei.JA)
         return brukerRegistreringWrapper
     }
 

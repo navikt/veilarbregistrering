@@ -55,14 +55,16 @@ class ServiceBeansConfig {
         sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
         profileringRepository: ProfileringRepository,
         manuellRegistreringRepository: ManuellRegistreringRepository,
-        norg2Gateway: Norg2Gateway
+        norg2Gateway: Norg2Gateway,
+        metricsService: PrometheusMetricsService
     ): HentRegistreringService {
         return HentRegistreringService(
             brukerRegistreringRepository,
             sykmeldtRegistreringRepository,
             profileringRepository,
             manuellRegistreringRepository,
-            norg2Gateway
+            norg2Gateway,
+            metricsService
         )
     }
 

@@ -41,7 +41,8 @@ internal class HentRegistreringServiceTest {
             sykmeldtRegistreringRepository,
             profileringRepository,
             manuellRegistreringRepository,
-            norg2Gateway
+            norg2Gateway,
+            mockk(relaxed = true)
         )
     }
 
