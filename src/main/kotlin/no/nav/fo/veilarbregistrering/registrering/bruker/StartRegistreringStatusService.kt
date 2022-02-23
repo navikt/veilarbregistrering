@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus
@@ -24,7 +25,7 @@ class StartRegistreringStatusService(
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
 
         muligGeografiskTilknytning.apply {
-            LOG.info(
+            logger.info(
                 "Bruker {} startet registrering med geografisk tilknytning [BrukersTilstand], [GeografiskTilknytning] [{}] [{}]",
                 bruker.aktorId,
                 brukersTilstand,
@@ -45,7 +46,7 @@ class StartRegistreringStatusService(
             oppfyllerBetingelseOmArbeidserfaring,
             bruker.gjeldendeFoedselsnummer.alder(LocalDate.now())
         )
-        LOG.info("Startreg.status for {}: {}", bruker.aktorId, startRegistreringStatus)
+        logger.info("Startreg.status for {}: {}", bruker.aktorId, startRegistreringStatus)
         rapporterRegistreringsstatus(prometheusMetricsService, startRegistreringStatus)
         return startRegistreringStatus
     }
@@ -59,10 +60,10 @@ class StartRegistreringStatusService(
 
         val geografiskTilknytning = try {
             pdlOppslagGateway.hentGeografiskTilknytning(bruker.aktorId)?.also {
-                LOG.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1)
+                logger.info("Henting av geografisk tilknytning tok {} ms.", System.currentTimeMillis() - t1)
             }
         } catch (e: RuntimeException) {
-            LOG.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e)
+            logger.warn("Hent geografisk tilknytning fra PDL feilet. Skal ikke påvirke annen bruk.", e)
             null
         }
         return geografiskTilknytning
@@ -86,9 +87,5 @@ class StartRegistreringStatusService(
                 brukersTilstand.servicegruppe
             )
         }
-    }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(StartRegistreringStatusService::class.java)
     }
 }
