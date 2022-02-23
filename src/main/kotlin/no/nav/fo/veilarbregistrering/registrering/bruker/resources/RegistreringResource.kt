@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
@@ -62,7 +62,7 @@ class RegistreringResource(
         val sykmeldtBrukerRegistrering = hentRegistreringService.hentSykmeldtRegistrering(bruker)
         val brukerRegistreringWrapper = create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
         if (brukerRegistreringWrapper == null) {
-            LOG.info("Bruker ble ikke funnet i databasen.")
+            logger.info("Bruker ble ikke funnet i databasen.")
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(brukerRegistreringWrapper)
@@ -75,7 +75,7 @@ class RegistreringResource(
         val ordinaerBrukerRegistrering = hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
         val brukerRegistreringWrapper = create(ordinaerBrukerRegistrering, null)
         if (brukerRegistreringWrapper == null) {
-            LOG.info("Bruker ble ikke funnet i databasen.")
+            logger.info("Bruker ble ikke funnet i databasen.")
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(brukerRegistreringWrapper)
@@ -114,8 +114,4 @@ class RegistreringResource(
     }
 
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
-
-    companion object {
-        private val LOG = loggerFor<RegistreringResource>()
-    }
 }
