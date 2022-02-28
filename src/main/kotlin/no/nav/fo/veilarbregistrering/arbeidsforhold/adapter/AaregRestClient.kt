@@ -11,6 +11,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -52,12 +53,14 @@ open class AaregRestClient(
         if (responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
     }
 
-    protected open fun utfoerRequestAad(fnr: Foedselsnummer) : String {
+    protected open fun utfoerRequestAad(fnr: Foedselsnummer): String {
         val request = Request.Builder()
-            .url(HttpUrl.parse(baseUrl)!!.newBuilder()
-                .addPathSegments("v1/arbeidstaker/arbeidsforhold")
-                .addQueryParameter("regelverk", "A_ORDNINGEN")
-                .build())
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                    .addQueryParameter("regelverk", "A_ORDNINGEN")
+                    .build()
+            )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
@@ -75,17 +78,21 @@ open class AaregRestClient(
     }
 
     protected open fun utforRequest(fnr: Foedselsnummer): String {
+        val systemToken = systemUserTokenProvider.systemUserToken
+        val authorization = if (isDevelopment()) systemToken else authContextHolder.requireIdTokenString()
         val request = Request.Builder()
-                .url(HttpUrl.parse(baseUrlOld)!!.newBuilder()
-                        .addPathSegments("v1/arbeidstaker/arbeidsforhold")
-                        .addQueryParameter("regelverk", "A_ORDNINGEN")
-                        .build())
-                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authContextHolder.requireIdTokenString())
-                .header(NAV_CONSUMER_TOKEN, "Bearer " + systemUserTokenProvider.systemUserToken)
-                .header(NAV_PERSONIDENT, fnr.stringValue())
-                .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-                .build()
+            .url(
+                HttpUrl.parse(baseUrlOld)!!.newBuilder()
+                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                    .addQueryParameter("regelverk", "A_ORDNINGEN")
+                    .build()
+            )
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $authorization")
+            .header(NAV_CONSUMER_TOKEN, "Bearer $systemToken")
+            .header(NAV_PERSONIDENT, fnr.stringValue())
+            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+            .build()
 
         return doTimedCall {
             try {
@@ -100,10 +107,10 @@ open class AaregRestClient(
     private fun behandleResponse(response: Response): String {
         if (!response.isSuccessful) {
             val feilmelding = mapOf(
-                    HttpStatus.BAD_REQUEST to "Ugyldig input",
-                    HttpStatus.UNAUTHORIZED to "Token mangler eller er ugyldig",
-                    HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
-                    HttpStatus.NOT_FOUND to "Søk på arbeidforhold gav ingen treff"
+                HttpStatus.BAD_REQUEST to "Ugyldig input",
+                HttpStatus.UNAUTHORIZED to "Token mangler eller er ugyldig",
+                HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
+                HttpStatus.NOT_FOUND to "Søk på arbeidforhold gav ingen treff"
             ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg")
             throw RuntimeException(feilmelding)
         }
