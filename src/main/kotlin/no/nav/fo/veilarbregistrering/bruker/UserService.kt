@@ -5,6 +5,8 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.isDevelopment
+import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 
 @Service
@@ -29,6 +31,9 @@ class UserService(
         val fnr: String =
             servletRequest().getParameter("fnr")
             ?: authContextHolder.subject.orElseThrow { IllegalArgumentException() }
+        if (isDevelopment()) {
+            logger.info("Utledet fnr: $fnr")
+        }
 
         if (!FodselsnummerValidator.isValid(fnr)) {
             throw ManglendeBrukerInfoException("Fødselsnummer ikke gyldig.")
