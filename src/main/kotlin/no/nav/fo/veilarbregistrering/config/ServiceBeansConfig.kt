@@ -20,6 +20,7 @@ import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
+import no.nav.fo.veilarbregistrering.featuretoggle.FeaturetoggleResource
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
@@ -177,6 +178,11 @@ class ServiceBeansConfig {
     @Bean
     fun helsesjekkResource(selfTestChecks: SelfTestChecks): HelsesjekkResource {
         return HelsesjekkResource(selfTestChecks)
+    }
+
+    @Bean
+    fun featuretoggleResource(unleashClient: UnleashClient): FeaturetoggleResource {
+        return FeaturetoggleResource(unleashClient)
     }
 
     @Bean
