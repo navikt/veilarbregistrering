@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.server.UnsupportedMediaTypeStatusException
 
 
 @Configuration
@@ -87,7 +88,7 @@ class ApplicationConfig {
 
         @ExceptionHandler
         @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-        fun handle(e: HttpClientErrorException.UnsupportedMediaType) {
+        fun handle(e: UnsupportedMediaTypeStatusException) {
             logger.warn("Returning HTTP 415 Unsupported Media Type", e)
             throw e!!
         }
