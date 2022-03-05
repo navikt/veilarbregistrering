@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import no.nav.fo.veilarbregistrering.log.logger
+import org.springframework.web.client.HttpClientErrorException
 
 
 @Configuration
@@ -81,6 +82,13 @@ class ApplicationConfig {
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         fun handle(e: HttpMessageNotReadableException?) {
             logger.warn("Returning HTTP 400 Bad Request", e)
+            throw e!!
+        }
+
+        @ExceptionHandler
+        @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+        fun handle(e: HttpClientErrorException.UnsupportedMediaType) {
+            logger.warn("Returning HTTP 415 Unsupported Media Type", e)
             throw e!!
         }
     }
