@@ -23,7 +23,14 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.Publiser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.http.HttpStatus
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
+import no.nav.fo.veilarbregistrering.log.logger
+
 
 @Configuration
 @Import(
@@ -66,5 +73,15 @@ class ApplicationConfig {
         return AzureAdServiceTokenProviderBuilder.builder()
             .withEnvironmentDefaults()
             .build()
+    }
+
+    @ControllerAdvice
+    class ControllerConfig {
+        @ExceptionHandler
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        fun handle(e: HttpMessageNotReadableException?) {
+            logger.warn("Returning HTTP 400 Bad Request", e)
+            throw e!!
+        }
     }
 }
