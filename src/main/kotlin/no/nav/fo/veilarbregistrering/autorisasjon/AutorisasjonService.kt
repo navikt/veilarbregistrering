@@ -17,10 +17,6 @@ import org.springframework.web.server.ResponseStatusException
 
 open class AutorisasjonService(private val veilarbPep: Pep, private val authContextHolder: AuthContextHolder) {
 
-    fun erInternBruker(): Boolean {
-        return authContextHolder.erInternBruker()
-    }
-
     fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkLesetilgangTilBruker(bruker: AktorId) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
@@ -31,22 +27,14 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
         if (rolle() == UserRole.SYSTEM) return
-        if (!harTilgang(ActionId.READ, brukerId)) {
-            throw AutorisasjonException()
-        }
+        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException()
     }
 
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
+
     private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
-        if (!harTilgang(ActionId.WRITE, brukerId)) {
-            throw AutorisasjonException()
-        }
+        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException()
     }
-    
-    fun AuthContextHolder.hentNavIdForOboTokens(): NavIdent? =
-        this.requireIdTokenClaims()
-            .getStringClaim(AAD_NAV_IDENT_CLAIM)
-            .takeIf(IdentUtils::erGydligNavIdent)
-            ?.let(NavIdent::of)
 
     private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()
 
@@ -77,7 +65,12 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
             return (authContextHolder.hentNavIdForOboTokens()?.toString() ?: innloggetBrukerIdent)
         }
 
-    fun erVeileder(): Boolean = erInternBruker()
+    fun AuthContextHolder.hentNavIdForOboTokens(): NavIdent? =
+        this.requireIdTokenClaims()
+            .getStringClaim(AAD_NAV_IDENT_CLAIM)
+            .takeIf(IdentUtils::erGydligNavIdent)
+            ?.let(NavIdent::of)
 
-    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
+    fun erVeileder(): Boolean = erInternBruker()
+    fun erInternBruker(): Boolean = authContextHolder.erInternBruker()
 }
