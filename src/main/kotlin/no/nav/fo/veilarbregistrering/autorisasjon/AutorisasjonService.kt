@@ -74,7 +74,7 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
             if (!erInternBruker()) {
                 throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
             }
-            return innloggetBrukerIdent
+            return (authContextHolder.hentNavIdForOboTokens()?.toString() ?: innloggetBrukerIdent)
         }
 
     fun erVeileder(): Boolean = erInternBruker()
