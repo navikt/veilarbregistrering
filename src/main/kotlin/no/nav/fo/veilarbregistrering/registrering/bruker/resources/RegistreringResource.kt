@@ -4,8 +4,6 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
 import org.springframework.http.HttpStatus
@@ -31,11 +29,6 @@ class RegistreringResource(
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
 
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
-    }
-
-    @PostMapping("/startregistrering-test")
-    fun registrerBruker() {
-        throw AktiverBrukerException(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
     }
 
     @PostMapping("/startregistrering")
