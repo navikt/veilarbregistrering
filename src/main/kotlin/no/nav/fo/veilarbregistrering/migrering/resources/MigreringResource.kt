@@ -1,44 +1,39 @@
-package no.nav.fo.veilarbregistrering.db.migrering
+package no.nav.fo.veilarbregistrering.migrering.resources
 
-import no.nav.fo.veilarbregistrering.Application
+import no.nav.fo.veilarbregistrering.config.Secrets
+import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.web.bind.annotation.*
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
 import javax.ws.rs.ForbiddenException
 
 
 @RestController
 @RequestMapping("/api/migrering")
 class MigreringResource(
-    val migreringRepositoryImpl: MigreringRepositoryImpl,
+    val migreringRepository: MigreringRepository,
     val brukerRegistreringRepository: BrukerRegistreringRepository,
     val registreringTilstandRepository: RegistreringTilstandRepository,
 ) {
-
-
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
         sjekkToken(token)
-
-        return migreringRepositoryImpl.nesteFraTabell(tabellNavn, idSisthentet)
+        return migreringRepository.nesteFraTabell(tabellNavn, idSisthentet)
     }
 
     @GetMapping("/status")
     fun hentStatus(@RequestHeader("x-token") token: String): List<Map<String, Any>> {
         sjekkToken(token)
-        return migreringRepositoryImpl.hentStatus()
+        return migreringRepository.hentStatus()
     }
 
     @GetMapping("/registrering-tilstand/antall-potensielt-oppdaterte")
     fun hentAntallPotensieltOppdaterte(@RequestHeader("x-token") token: String): Map<String, Int> {
         sjekkToken(token)
-        return mapOf("antall" to migreringRepositoryImpl.hentAntallPotensieltOppdaterte())
+        return mapOf("antall" to migreringRepository.hentAntallPotensieltOppdaterte())
     }
 
     @PostMapping("/registrering-tilstand/hent-oppdaterte-statuser")
@@ -48,7 +43,7 @@ class MigreringResource(
         sjekkToken(token)
 
         val tilstander =
-            migreringRepositoryImpl.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
+            migreringRepository.hentRegistreringTilstander(sjekkDisse.keys.map(String::toLong))
 
         val results = tilstander.filterIndexed { index, rad ->
             if (index == 0) logger.info("Sammenlikner ${rad["STATUS"]} med ${sjekkDisse[rad["ID"].toString()]}")
@@ -62,11 +57,11 @@ class MigreringResource(
     @GetMapping("/sjekksum/{tabellnavn}")
     fun hentSjekksumForTabell(@RequestHeader("x-token") token: String, @PathVariable tabellnavn: TabellNavn): List<Map<String, Any>> {
         sjekkToken(token)
-        return migreringRepositoryImpl.hentSjekksumFor(tabellnavn)
+        return migreringRepository.hentSjekksumFor(tabellnavn)
     }
 
     private fun sjekkToken(token: String) {
-        val secret = no.nav.fo.veilarbregistrering.config.Secrets["vault/migration-token"]
+        val secret = Secrets["vault/migration-token"]
 
         if (!secret.equals(token)) {
             throw ForbiddenException("Ugydlig token")

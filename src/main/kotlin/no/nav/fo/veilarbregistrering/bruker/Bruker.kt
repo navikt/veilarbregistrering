@@ -9,7 +9,6 @@ data class Bruker(
 
     companion object {
 
-        @JvmStatic
         fun of(
             gjeldendeFoedselsnummer: Foedselsnummer,
             gjeldendeAktorId: AktorId,

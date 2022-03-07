@@ -1,9 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.migrering
 
 import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn.*
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
+import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
 
@@ -17,9 +16,9 @@ enum class TabellNavn(val idKolonneNavn: String) {
     OPPGAVE("ID"),
 }
 
-class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
+class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : MigreringRepository {
 
-    fun nesteFraTabell(tabellNavn: TabellNavn, id: Long): List<Map<String, Any>> {
+    override fun nesteFraTabell(tabellNavn: TabellNavn, id: Long): List<Map<String, Any>> {
             val sql =
                 """
                 SELECT *
@@ -31,7 +30,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
             return db.queryForList(sql, mapOf("id" to id))
     }
 
-    fun hentStatus(): List<Map<String, Any>> {
+    override fun hentStatus(): List<Map<String, Any>> {
         val sql =
             """
             select 'registrering_tilstand' as table_name, max(id), count(*) as row_count from registrering_tilstand union 
@@ -46,7 +45,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         return db.queryForList(sql, emptyMap<String, Any>())
     }
 
-    fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> {
+    override fun hentSjekksumFor(tabellNavn: TabellNavn): List<Map<String, Any>> {
         val startTime = System.currentTimeMillis()
 
         val result = when (tabellNavn) {
@@ -62,7 +61,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         return result
     }
 
-    fun hentAntallPotensieltOppdaterte(): Int {
+    override fun hentAntallPotensieltOppdaterte(): Int {
         val sql = "select count(*) as antall from registrering_tilstand " +
                 "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND')"
         return db.queryForObject(
@@ -73,7 +72,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         }!!
     }
 
-    fun hentRegistreringTilstander(ider: List<Long>): List<Map<String, Any?>> {
+    override fun hentRegistreringTilstander(ider: List<Long>): List<Map<String, Any?>> {
         val sql = "select * from $REGISTRERING_TILSTAND where id in (:idListe)"
 
         return db.queryForList(sql, mapOf("idListe" to ider))

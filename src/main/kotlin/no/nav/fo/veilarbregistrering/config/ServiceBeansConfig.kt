@@ -18,7 +18,7 @@ import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering.MigreringResource
+import no.nav.fo.veilarbregistrering.migrering.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.featuretoggle.FeaturetoggleResource
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering

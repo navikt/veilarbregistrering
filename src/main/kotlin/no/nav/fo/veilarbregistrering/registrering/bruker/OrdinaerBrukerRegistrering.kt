@@ -26,7 +26,6 @@ data class OrdinaerBrukerRegistrering(
     }
 
     companion object {
-        @JvmStatic
         fun medProfilering(registrering: OrdinaerBrukerRegistrering, profilering: Profilering): OrdinaerBrukerRegistrering =
             OrdinaerBrukerRegistrering(
                 registrering.id,
