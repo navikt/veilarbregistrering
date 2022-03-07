@@ -1,7 +1,9 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.featuretoggle
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.featuretoggle.UnleashClientImpl
+import no.nav.fo.veilarbregistrering.config.requireApplicationName
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

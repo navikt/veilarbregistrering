@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.featuretoggle
 
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient

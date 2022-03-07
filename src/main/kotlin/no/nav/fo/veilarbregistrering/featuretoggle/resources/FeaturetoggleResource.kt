@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.featuretoggle
+package no.nav.fo.veilarbregistrering.featuretoggle.resources
 
 import no.nav.common.featuretoggle.UnleashClient
 import org.springframework.web.bind.annotation.GetMapping

@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig
+import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import no.nav.fo.veilarbregistrering.log.logger
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.server.UnsupportedMediaTypeStatusException
 
 
