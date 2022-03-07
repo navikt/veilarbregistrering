@@ -1,20 +1,11 @@
 package no.nav.fo.veilarbregistrering.db.migrering
 
-import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn.*
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
-
-enum class TabellNavn(val idKolonneNavn: String) {
-    BRUKER_REGISTRERING("BRUKER_REGISTRERING_ID"),
-    BRUKER_PROFILERING("BRUKER_REGISTRERING_ID"),
-    BRUKER_REAKTIVERING("BRUKER_REAKTIVERING_ID"),
-    SYKMELDT_REGISTRERING("SYKMELDT_REGISTRERING_ID"),
-    MANUELL_REGISTRERING("MANUELL_REGISTRERING_ID"),
-    REGISTRERING_TILSTAND("ID"),
-    OPPGAVE("ID"),
-}
 
 class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : MigreringRepository {
 
@@ -135,6 +126,4 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migr
         floor(avg(ekstern_oppgave_id)) as gjsnitt_oppgave_id from oppgave
         """
     }
-
 }
-

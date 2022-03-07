@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.migrering.resources
 
 import no.nav.fo.veilarbregistrering.config.Secrets
-import no.nav.fo.veilarbregistrering.db.migrering.TabellNavn
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
