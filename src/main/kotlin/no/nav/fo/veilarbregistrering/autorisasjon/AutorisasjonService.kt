@@ -36,8 +36,6 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException()
     }
 
-    private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()
-
     private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
         val navIdent = navIdentClaim()
         return if (navIdent != null) {
@@ -48,14 +46,11 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         }
     }
 
+    private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()
+
     private val innloggetBrukerToken: String
         get() = authContextHolder.idTokenString
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "Fant ikke token for innlogget bruker") }
-
-    // NAV ident, fnr eller annen ID
-    private val innloggetBrukerIdent: String
-        get() = authContextHolder.subject
-            .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "NAV ident is missing") }
 
     val innloggetVeilederIdent: String
         get() {
@@ -64,6 +59,11 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
             }
             return (authContextHolder.hentNavIdForOboTokens()?.toString() ?: innloggetBrukerIdent)
         }
+
+    // NAV ident, fnr eller annen ID
+    private val innloggetBrukerIdent: String
+        get() = authContextHolder.subject
+            .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "NAV ident is missing") }
 
     fun AuthContextHolder.hentNavIdForOboTokens(): NavIdent? =
         this.requireIdTokenClaims()
