@@ -6,11 +6,11 @@ import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.Gauges
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDtoMapper.map
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
 class StartRegistreringStatusService(
@@ -52,7 +52,11 @@ class StartRegistreringStatusService(
     }
 
     fun registrerAtArenaHarPlanlagtNedetid() {
-        prometheusMetricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
+        prometheusMetricsService.registrerNyVerdiForGauge(Gauges.PLANLAGT_NEDETID_ARENA, 1.0)
+    }
+
+    fun registrerAtArenaErOppe() {
+        prometheusMetricsService.registrerNyVerdiForGauge(Gauges.PLANLAGT_NEDETID_ARENA, 0.0)
     }
 
     private fun hentGeografiskTilknytning(bruker: Bruker): GeografiskTilknytning? {

@@ -37,6 +37,7 @@ class RegistreringResource(
             startRegistreringStatusService.registrerAtArenaHarPlanlagtNedetid()
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
+        startRegistreringStatusService.registrerAtArenaErOppe()
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.aktorId)
 
