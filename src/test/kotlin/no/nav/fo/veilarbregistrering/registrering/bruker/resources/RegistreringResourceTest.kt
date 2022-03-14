@@ -85,6 +85,7 @@ class RegistreringResourceTest(
     fun `Kan parse registrering json i requestbody til objekt ok`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { startRegistreringStatusService.registrerAtArenaErOppe() } just Runs
         val responseString = mvc.post("/api/startregistrering") {
             contentType = MediaType.APPLICATION_JSON
             content = REGISTRERING_REQUEST
@@ -248,6 +249,7 @@ class RegistreringResourceTest(
         )
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { startRegistreringStatusService.registrerAtArenaErOppe() } just Runs
         every {
             brukerRegistreringService.registrerBrukerUtenOverforing(
                 ordinaerBrukerRegistrering,
