@@ -44,15 +44,12 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
         registrer(event, *tags)
     }
 
-    fun registrerNyVerdiForGauge(gaugeMetric: GaugeMetric, verdi: Double) {
-        gaugeMetric.gauge.set(verdi)
+    private fun registrerTimer(event: Event, tid: Duration, vararg tags: Tag) {
+        meterRegistry.timer(event.key, tags.asIterable()).record(tid)
     }
 
     fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
         val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
         registrerTimer(event, tid, *tags)
-    }
-    private fun registrerTimer(event: Event, tid: Duration, vararg tags: Tag) {
-        meterRegistry.timer(event.key, tags.asIterable()).record(tid)
     }
 }

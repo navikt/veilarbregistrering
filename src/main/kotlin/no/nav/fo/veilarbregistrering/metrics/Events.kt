@@ -22,6 +22,7 @@ enum class Events(override val key: String) : Event {
     KALL_TREDJEPART("timer.tredjepart"),
     REGISTRERING_REGISTERINGSTYPE("registrering.registreringstype"),
     REGISTRERING_ALLEREDEREGISTRERT("registrering.allerederegistrert"),
+    REGISTRERING_NEDETID_ARENA("registrering.nedetid.arena"),
     REGISTRERING_RETTIGHETSGRUPPE("registrering.rettighetsgruppe"),
     REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe"),
     OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE("oppfolgingsstatus.mangler.arenastatus.ny.kilde");
