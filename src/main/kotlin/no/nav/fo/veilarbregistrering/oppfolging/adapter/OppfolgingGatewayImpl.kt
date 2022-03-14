@@ -50,7 +50,7 @@ class OppfolgingGatewayImpl(
                 null
             }
 
-            if (isDevelopment() && oppfolgingsstatusFraNyeKilder != null) {
+            if (oppfolgingsstatusFraNyeKilder != null) {
                 return oppfolgingsstatusFraNyeKilder
             }
         }
