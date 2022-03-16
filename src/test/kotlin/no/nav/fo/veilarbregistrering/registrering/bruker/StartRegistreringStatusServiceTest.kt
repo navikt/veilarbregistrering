@@ -126,11 +126,6 @@ class StartRegistreringStatusServiceTest {
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ORDINAER_REGISTRERING).isTrue
     }
 
-    @Test
-    fun skalRegistrereOppetidIArenaUtenFeil() {
-        brukerRegistreringService.registrerAtArenaErOppe()
-    }
-
     private fun getStartRegistreringStatus(bruker: Bruker = BRUKER_INTERN): StartRegistreringStatusDto {
         return brukerRegistreringService.hentStartRegistreringStatus(bruker)
     }
