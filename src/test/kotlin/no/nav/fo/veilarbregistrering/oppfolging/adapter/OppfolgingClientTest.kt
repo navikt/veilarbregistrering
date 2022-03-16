@@ -6,11 +6,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -63,16 +62,6 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `Feil kastes`() {
-        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
-            HttpResponse.response().withStatusCode(401)
-        )
-        assertThrows<RuntimeException> {
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
-        }
-    }
-
-    @Test
     fun skal_returnere_response_ved_204() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response()
@@ -86,32 +75,6 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
                     Innsatsgruppe.SITUASJONSBESTEMT_INNSATS
                 )
             )
-        )
-    }
-
-    @Test
-    fun `skal returnere respons for hentOppfolgingstatus`() {
-        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
-            HttpResponse.response()
-                    .withStatusCode(200)
-                    .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
-        )
-        Assertions.assertNotNull(
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
-        )
-    }
-
-    @Test
-    fun `hentOppfolgingstatus skal ikke krasje dersom innkommende request ikke har cookies hentOppfolgingstatus`() {
-        every { httpServletRequest.getHeader(HttpHeaders.COOKIE) } returns null
-
-        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging")).respond(
-            HttpResponse.response()
-                .withStatusCode(200)
-                .withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
-        )
-        Assertions.assertNotNull(
-            oppfolgingClient.hentOppfolgingsstatus(Foedselsnummer(FNR.fnr))
         )
     }
 

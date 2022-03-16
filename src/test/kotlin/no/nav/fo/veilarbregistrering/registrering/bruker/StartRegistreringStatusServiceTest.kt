@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
@@ -59,7 +58,7 @@ class StartRegistreringStatusServiceTest {
 
     @Test
     fun skalReturnereFalseOmIkkeUnderOppfolging() {
-        mockOppfolgingMedRespons(inaktivBruker())
+        mockOppfolgingMedRespons()
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav())
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT).isFalse
@@ -74,7 +73,7 @@ class StartRegistreringStatusServiceTest {
 
     @Test
     fun skalReturnereReaktivering() {
-        mockOppfolgingMedRespons(inaktivBruker())
+        mockOppfolgingMedRespons()
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav())
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
         Assertions.assertThat(startRegistreringStatus.registreringType).isEqualTo(RegistreringType.REAKTIVERING)
@@ -138,13 +137,7 @@ class StartRegistreringStatusServiceTest {
         )
     }
 
-    private fun inaktivBruker(): OppfolgingStatusData {
-        return OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(true)
-    }
-
     private fun mockArbeidssokerSomHarAktivOppfolging() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-            OppfolgingStatusData().withUnderOppfolging(true).withKanReaktiveres(false)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
@@ -153,22 +146,12 @@ class StartRegistreringStatusServiceTest {
 
 
     private fun mockSykmeldtBruker() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData()
-                    .withUnderOppfolging(false)
-                    .withKanReaktiveres(false)
-                    .withErSykmeldtMedArbeidsgiver(true)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "IARBS", kvalifiseringsgruppe = "VURDI", rettighetsgruppe = "IYT")
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
     }
 
     private fun mockIkkeSykmeldtBruker() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData()
-                    .withUnderOppfolging(false)
-                    .withKanReaktiveres(false)
-                    .withErSykmeldtMedArbeidsgiver(false)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
@@ -179,8 +162,6 @@ class StartRegistreringStatusServiceTest {
         every { arbeidsforholdGateway.hentArbeidsforhold(any()) } returns FlereArbeidsforhold(arbeidsforhold)
 
     private fun mockInaktivBrukerUtenReaktivering() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData().withUnderOppfolging(false).withKanReaktiveres(false)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ISERV", kvalifiseringsgruppe = "IVURD", rettighetsgruppe = "IYT")
@@ -200,8 +181,7 @@ class StartRegistreringStatusServiceTest {
                 )
             )
 
-    private fun mockOppfolgingMedRespons(oppfolgingStatusData: OppfolgingStatusData) {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns oppfolgingStatusData
+    private fun mockOppfolgingMedRespons() {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")

@@ -8,7 +8,6 @@ import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingStatusData
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import org.junit.jupiter.api.Assertions
@@ -55,19 +54,11 @@ class InaktivBrukerServiceTest {
     }
 
     private fun mockInaktivBrukerSomSkalReaktiveres() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData()
-                    .withUnderOppfolging(false)
-                    .withKanReaktiveres(true)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
     }
 
     private fun mockBrukerSomIkkeSkalReaktiveres() {
-        every { oppfolgingClient.hentOppfolgingsstatus(any()) } returns
-                OppfolgingStatusData()
-                    .withUnderOppfolging(false)
-                    .withKanReaktiveres(false)
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
     }

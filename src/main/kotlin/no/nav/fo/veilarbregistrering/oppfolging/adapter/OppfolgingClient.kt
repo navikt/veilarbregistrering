@@ -10,14 +10,12 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
-import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
-import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
 import javax.ws.rs.core.HttpHeaders
 
@@ -29,20 +27,6 @@ open class OppfolgingClient(
     private val tokenProvider: () -> String,
 
     ) : AbstractOppfolgingClient(objectMapper, metricsService), HealthCheck  {
-
-    open fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
-        val url = "$baseUrl/oppfolging?fnr=${fnr.stringValue()}"
-        val headers = getAuthorizationFromCookieOrResolveOboToken()
-
-        return doTimedCall(HENT_OPPFOLGING) {
-            get(url, headers, OppfolgingStatusData::class.java) { e ->
-                when (e) {
-                    is RestException -> HentOppfolgingStatusException("Hent oppfølgingstatus feilet med status: " + e.code)
-                    else -> null
-                }
-            }
-        }
-    }
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"

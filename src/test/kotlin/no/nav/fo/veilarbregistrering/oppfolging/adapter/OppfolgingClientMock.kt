@@ -12,12 +12,6 @@ class OppfolgingClientMock internal constructor() : OppfolgingClient(
     mockk(relaxed = true),
     { "TOKEN" }
 ) {
-    override fun hentOppfolgingsstatus(fnr: Foedselsnummer): OppfolgingStatusData {
-        return OppfolgingStatusData()
-            .withUnderOppfolging(false)
-            .withKanReaktiveres(false)
-            .withErSykmeldtMedArbeidsgiver(true)
-    }
 
     override fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         //sendException("BRUKER_ER_UKJENT");
