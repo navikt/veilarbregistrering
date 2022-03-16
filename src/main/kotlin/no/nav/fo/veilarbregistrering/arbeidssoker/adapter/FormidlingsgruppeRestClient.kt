@@ -76,7 +76,7 @@ class FormidlingsgruppeRestClient internal constructor(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/v1/test/ping"), defaultHttpClient())
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "v1/test/ping"), defaultHttpClient())
     }
 
     companion object {
