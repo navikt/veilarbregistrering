@@ -49,7 +49,7 @@ class FormidlingsgruppeRestClient internal constructor(
         val request = Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("/api/v1/person/arbeidssoeker/formidlingshistorikk")
+                    .addPathSegments("v1/person/arbeidssoeker/formidlingshistorikk")
                     .addQueryParameter("fnr", foedselsnummer.stringValue())
                     .addQueryParameter(
                         "fraDato",
