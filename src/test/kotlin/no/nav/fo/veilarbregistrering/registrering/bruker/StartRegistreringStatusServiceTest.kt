@@ -33,7 +33,7 @@ class StartRegistreringStatusServiceTest {
         veilarbarenaClient = mockk()
         pdlOppslagGateway = mockk()
         val metricsService: PrometheusMetricsService = mockk(relaxed = true)
-        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, mockk(relaxed = true), mockk(relaxed = true))
+        val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
             BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),

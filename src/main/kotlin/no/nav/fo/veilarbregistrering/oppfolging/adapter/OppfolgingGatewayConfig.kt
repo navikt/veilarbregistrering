@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireProperty
-import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
@@ -71,11 +69,9 @@ class OppfolgingGatewayConfig {
     @Bean
     fun oppfolgingGateway(
         oppfolgingClient: OppfolgingClient,
-        veilarbarenaClient: VeilarbarenaClient,
-        unleashClient: UnleashClient,
-        prometheusMetricsService: PrometheusMetricsService
+        veilarbarenaClient: VeilarbarenaClient
     ): OppfolgingGateway {
-        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient, unleashClient, prometheusMetricsService)
+        return OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
     }
 }
 

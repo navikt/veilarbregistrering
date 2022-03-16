@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.HentOppfolgingStatusException
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
@@ -61,6 +62,13 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(HentOppfolgingStatusException::class)
     fun handleHentOppfolgingStatusException(feil: HentOppfolgingStatusException): ResponseEntity<String> {
+        logger.error(feil.message, feil)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            .body(feil.message)
+    }
+
+    @ExceptionHandler(SammensattOppfolgingStatusException::class)
+    fun handleSammensattOppfolgingStatusException(feil: SammensattOppfolgingStatusException): ResponseEntity<String> {
         logger.error(feil.message, feil)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)

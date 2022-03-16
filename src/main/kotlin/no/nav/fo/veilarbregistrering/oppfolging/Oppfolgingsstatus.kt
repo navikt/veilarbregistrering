@@ -9,7 +9,4 @@ data class Oppfolgingsstatus(
     val formidlingsgruppe: Formidlingsgruppe? = null,
     val servicegruppe: Servicegruppe? = null,
     val rettighetsgruppe: Rettighetsgruppe? = null,
-) {
-    fun manglerArenstatusFraNyKilde(nyKilde: Oppfolgingsstatus): Boolean =
-        nyKilde.formidlingsgruppe == null && nyKilde.rettighetsgruppe == null && nyKilde.servicegruppe == null && formidlingsgruppe != null && servicegruppe != null && rettighetsgruppe != null
-}
+)

@@ -10,5 +10,4 @@ interface OppfolgingGateway {
     fun aktiverBruker(foedselsnummer: Foedselsnummer, innsatsgruppe: Innsatsgruppe)
     fun reaktiverBruker(fodselsnummer: Foedselsnummer)
     fun aktiverSykmeldt(fodselsnummer: Foedselsnummer, besvarelse: Besvarelse)
-    fun hentOppfolgingsstatusFraNyeKilder(fodselsnummer: Foedselsnummer): Oppfolgingsstatus?
 }
