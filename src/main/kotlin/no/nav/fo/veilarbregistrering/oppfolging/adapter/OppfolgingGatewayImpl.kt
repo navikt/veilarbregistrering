@@ -57,17 +57,6 @@ class OppfolgingGatewayImpl(
                 )
             }
         }
-
-        private fun map(oppfolgingStatusData: OppfolgingStatusData): Oppfolgingsstatus {
-            return Oppfolgingsstatus(
-                isUnderOppfolging = oppfolgingStatusData.underOppfolging,
-                kanReaktiveres = oppfolgingStatusData.kanReaktiveres,
-                erSykmeldtMedArbeidsgiver = oppfolgingStatusData.erSykmeldtMedArbeidsgiver,
-                formidlingsgruppe = oppfolgingStatusData.formidlingsgruppe?.let(::Formidlingsgruppe),
-                servicegruppe = oppfolgingStatusData.servicegruppe?.let(::Servicegruppe),
-                rettighetsgruppe = oppfolgingStatusData.rettighetsgruppe?.let(::Rettighetsgruppe)
-            )
-        }
     }
 }
 
