@@ -51,9 +51,7 @@ class FormidlingsgruppeRestClient internal constructor(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v1/person/arbeidssoeker/formidlingshistorikk")
                     .addQueryParameter("fnr", foedselsnummer.stringValue())
-                    .addQueryParameter(
-                        "fraDato",
-                        periode.fraDatoSomUtcString())
+                    .addQueryParameter("fraDato", periode.fraDatoSomUtcString())
                     .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
                     .build())
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
