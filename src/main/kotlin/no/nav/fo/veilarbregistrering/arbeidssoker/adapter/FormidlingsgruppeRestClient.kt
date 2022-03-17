@@ -53,11 +53,9 @@ class FormidlingsgruppeRestClient internal constructor(
                     .addQueryParameter("fnr", foedselsnummer.stringValue())
                     .addQueryParameter(
                         "fraDato",
-                        periode.fraDatoSomUtcString()
-                    ) //TODO: null-sjekk på tilDato - skal ikke alltid med
+                        periode.fraDatoSomUtcString())
                     .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
-                    .build()
-            )
+                    .build())
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
             .build()
         val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
