@@ -68,7 +68,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(AutorisasjonException::class)
     fun handleAutorisasjonException(feil: AutorisasjonException) : ResponseEntity<Any> {
-        logger.error(feil.message, feil)
+        logger.warn(feil.message, feil)
         return ResponseEntity.status(FORBIDDEN).body(feil.message)
     }
 
