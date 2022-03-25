@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
+import io.swagger.v3.oas.annotations.ExternalDocumentation
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -13,7 +14,14 @@ interface RegistreringApi {
     fun hentStartRegistreringStatus(): StartRegistreringStatusDto
 
     @Operation(
-        summary = "Starter nyregistrering av arbeidssøker.",
+        summary = "Registrerer bruker som av arbeidssøker.",
+        description = "Tjenesten persisterer svaret fra bruker, og aktiverer bruker som arbeidssøker " +
+                "(formidlingsgruppe=ARBS) i Arena (via veilarboppfolging). Hvis aktiveringen i Arena blir vellykket, " +
+                "varsles omgivelsene ved å publisere to hendelser på Kafka om at arbeidsøker er registrert og at arbeidssøker er profilert.",
+        externalDocs = ExternalDocumentation(
+            description = "Arena - Tjeneste Webservice - BehandleArbeidssoeker_v1",
+            url = "https://confluence.adeo.no/display/ARENA/Arena+-+Tjeneste+Webservice+-+BehandleArbeidssoeker_v1#ArenaTjenesteWebserviceBehandleArbeidssoeker_v1-Funksjonellbeskrivelse"
+        ),
         responses = [
             ApiResponse(responseCode = "200", description = "Registrering OK"),
             ApiResponse(responseCode = "500", description = "Registrering feilet. \n" +
@@ -31,9 +39,14 @@ interface RegistreringApi {
     @Operation(summary = "Henter siste påbegynte registrering")
     fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
 
-    @Operation(summary = "Starter reaktivering av arbeidssøker.")
+    @Operation(
+        summary = "Reaktiverer bruker som arbeidssøker.",
+        description = "Tjenesten gjør en reaktivering av brukere som har blitt inaktivert i løpet av de siste 28 " +
+                "dagene. Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
+                "uten at saksbehandler manuelt vurderer reaktiveringen via en arbeidsprosess."
+    )
     fun reaktivering()
 
-    @Operation(summary = "Starter nyregistrering av sykmeldt med arbeidsgiver.")
+    @Operation(summary = "Registrerer bruker som `sykmeldt registrert`.")
     fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering)
 }
