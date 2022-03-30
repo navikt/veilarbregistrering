@@ -5,6 +5,8 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.isDevelopment
+import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,6 +14,13 @@ class UserService(
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val authContextHolder: AuthContextHolder
 ) {
+    init {
+        if (isDevelopment()) {
+            logger.warn("Enabler syntetiske fødselsnummer i DEV")
+            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = true;
+        }
+    }
+
     fun finnBrukerGjennomPdl(): Bruker = finnBrukerGjennomPdl(hentFnrFraUrlEllerToken())
     fun finnBrukerGjennomPdl(fnr: Foedselsnummer): Bruker = map(pdlOppslagGateway.hentIdenter(fnr))
 
