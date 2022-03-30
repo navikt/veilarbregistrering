@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.config.RequestContext
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeTestdataBuilder
 import org.assertj.core.api.Assertions.assertThat
@@ -103,7 +104,11 @@ private open class TidslinjeResourceConfig {
     fun authContextHolder(): AuthContextHolder = mockk()
 
     @Bean
-    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService = UserService(pdlOppslagGateway, authContextHolder)
+    fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService = UserService(
+        pdlOppslagGateway,
+        authContextHolder,
+        isDevelopment()
+    )
 
     @Bean
     fun tidslinjeAggregator(): TidslinjeAggregator = mockk()
