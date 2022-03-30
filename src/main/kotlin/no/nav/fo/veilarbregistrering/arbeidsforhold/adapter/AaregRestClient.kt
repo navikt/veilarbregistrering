@@ -33,7 +33,7 @@ open class AaregRestClient(
     private val baseUrlOld: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,
-    private val tokenProvider: () -> String
+    private val aadTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
@@ -58,12 +58,13 @@ open class AaregRestClient(
         val request = Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                    .addPathSegments("v2/arbeidstaker/arbeidsforhold")
                     .addQueryParameter("regelverk", "A_ORDNINGEN")
                     .build()
             )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${aadTokenProvider()}")
+            .header(NAV_CONSUMER_TOKEN, "Bearer ${systemUserTokenProvider.systemUserToken}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
