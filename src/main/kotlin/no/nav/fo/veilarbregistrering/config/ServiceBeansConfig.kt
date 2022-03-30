@@ -289,7 +289,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService {
-        return UserService(pdlOppslagGateway, authContextHolder)
+        return UserService(pdlOppslagGateway, authContextHolder, isDevelopment())
     }
 
     @Bean
