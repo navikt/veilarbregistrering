@@ -59,7 +59,7 @@ open class AaregRestClient(
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v2/arbeidstaker/arbeidsforhold")
-                    .addQueryParameter("regelverk", "A_ORDNINGEN")
+                    .addQueryParameter("rapporteringsordning", "A_ORDNINGEN")
                     .build()
             )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
