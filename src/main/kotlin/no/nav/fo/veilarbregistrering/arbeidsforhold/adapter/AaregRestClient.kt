@@ -110,6 +110,7 @@ open class AaregRestClient(
     @Throws(IOException::class)
     private fun behandleResponse(response: Response): String {
         if (!response.isSuccessful) {
+            logger.info("Feilmelding fra Aareg: Message: ${response.message()} Body: ${response.body()}")
             val feilmelding = mapOf(
                 HttpStatus.BAD_REQUEST to "Ugyldig input",
                 HttpStatus.UNAUTHORIZED to "Token mangler eller er ugyldig",
