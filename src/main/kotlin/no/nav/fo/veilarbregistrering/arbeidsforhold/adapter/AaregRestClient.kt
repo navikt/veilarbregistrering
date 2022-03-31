@@ -58,8 +58,8 @@ open class AaregRestClient(
         val request = Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("v2/arbeidstaker/arbeidsforhold")
-                    .addQueryParameter("rapporteringsordning", "A_ORDNINGEN")
+                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                    .addQueryParameter("regelverk", "A_ORDNINGEN")
                     .build()
             )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
