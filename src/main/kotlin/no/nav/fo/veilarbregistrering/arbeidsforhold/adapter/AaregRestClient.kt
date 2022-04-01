@@ -113,15 +113,7 @@ open class AaregRestClient(
         return RestUtils.getBodyStr(response).orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
     }
 
-    private fun AuthContextHolder.erAADToken(): Boolean {
-        // TODO Finnes det en bedre måte å sjekke dette på? Kan vi sjekke issuer?
-        val claim = this.requireIdTokenClaims()
-            .getStringClaim(Constants.AAD_NAV_IDENT_CLAIM)
-        return IdentUtils.erGydligNavIdent(claim)
-    }
 
-    private fun AuthContextHolder.hentIssuer(): String =
-        this.requireIdTokenClaims().issuer
 
     companion object {
         private val GSON = GsonBuilder().create()
@@ -148,3 +140,13 @@ open class AaregRestClient(
 
     override fun value() = "aareg"
 }
+
+private fun AuthContextHolder.erAADToken(): Boolean {
+    // TODO Finnes det en bedre måte å sjekke dette på? Kan vi sjekke issuer?
+    val claim = this.requireIdTokenClaims()
+        .getStringClaim(Constants.AAD_NAV_IDENT_CLAIM)
+    return IdentUtils.erGydligNavIdent(claim)
+}
+
+fun AuthContextHolder.hentIssuer(): String =
+    this.requireIdTokenClaims().issuer

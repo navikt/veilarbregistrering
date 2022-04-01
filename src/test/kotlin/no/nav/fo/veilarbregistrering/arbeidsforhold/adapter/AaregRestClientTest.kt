@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
+import io.mockk.every
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test
 class AaregRestClientTest {
 
     private val aaregRestClient: AaregRestClient = StubAaregRestClient()
+
 
     @Test
     fun `skal parse formidlingshistorikkResponse`() {
