@@ -41,6 +41,7 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
+        if (isDevelopment()) logger.info("Issuer i token: ${authContextHolder.hentIssuer()}")
         return if (unleashClient.isEnabled("veilarbregistrering.aareg.aad") && authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
         } else {
@@ -118,6 +119,9 @@ open class AaregRestClient(
             .getStringClaim(Constants.AAD_NAV_IDENT_CLAIM)
         return IdentUtils.erGydligNavIdent(claim)
     }
+
+    private fun AuthContextHolder.hentIssuer(): String =
+        this.requireIdTokenClaims().issuer
 
     companion object {
         private val GSON = GsonBuilder().create()
