@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.feil
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
@@ -61,6 +62,13 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(SammensattOppfolgingStatusException::class)
     fun handleSammensattOppfolgingStatusException(feil: SammensattOppfolgingStatusException): ResponseEntity<String> {
+        logger.error(feil.message, feil)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            .body(feil.message)
+    }
+
+    @ExceptionHandler(HentArbeidsforholdException::class)
+    fun handleSammensattOppfolgingStatusException(feil: HentArbeidsforholdException): ResponseEntity<String> {
         logger.error(feil.message, feil)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)

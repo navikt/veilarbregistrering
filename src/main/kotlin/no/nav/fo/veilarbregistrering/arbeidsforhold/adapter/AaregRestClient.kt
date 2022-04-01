@@ -2,7 +2,9 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import no.nav.common.auth.Constants
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.auth.utils.IdentUtils
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
@@ -39,18 +41,11 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        val response = utforRequest(fnr)
-
-        if (unleashClient.isEnabled("veilarbregistrering.aareg.aad")) {
-            val responseAad = utfoerRequestAad(fnr)
-            sammenliknResponser(responseAad, response)
+        return if (unleashClient.isEnabled("veilarbregistrering.aareg.aad") && authContextHolder.erAADToken()) {
+            parse(utfoerRequestAad(fnr))
+        } else {
+            parse(utforRequest(fnr))
         }
-
-        return parse(response)
-    }
-
-    private fun sammenliknResponser(responseAad: String, response: String) {
-        if (responseAad != response) logger.warn("Respons fra ny og gammel Aareg divergerer")
     }
 
     protected open fun utfoerRequestAad(fnr: Foedselsnummer): String {
@@ -99,7 +94,7 @@ open class AaregRestClient(
             try {
                 defaultHttpClient().newCall(request).execute().use { response -> behandleResponse(response) }
             } catch (e: IOException) {
-                throw RuntimeException("Noe gikk galt mot Aareg", e)
+                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
             }
         }
     }
@@ -109,14 +104,21 @@ open class AaregRestClient(
         if (!response.isSuccessful) {
             logger.info("Feilmelding fra Aareg: Message: ${response.message()} Body: ${response.body()}")
             val feilmelding = mapOf(
-                HttpStatus.BAD_REQUEST to "Ugyldig input",
-                HttpStatus.UNAUTHORIZED to "Token mangler eller er ugyldig",
-                HttpStatus.FORBIDDEN to "Ingen tilgang til forespurt ressurs",
+                HttpStatus.BAD_REQUEST to "Aareg: Ugyldig input",
+                HttpStatus.UNAUTHORIZED to "Aareg: Token mangler eller er ugyldig",
+                HttpStatus.FORBIDDEN to "Aareg: Ingen tilgang til forespurt ressurs",
                 HttpStatus.NOT_FOUND to "Søk på arbeidforhold gav ingen treff"
             ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg")
-            throw RuntimeException(feilmelding)
+            throw HentArbeidsforholdException(feilmelding)
         }
-        return RestUtils.getBodyStr(response).orElseThrow { RuntimeException() }
+        return RestUtils.getBodyStr(response).orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
+    }
+
+    private fun AuthContextHolder.erAADToken(): Boolean {
+        // TODO Finnes det en bedre måte å sjekke dette på? Kan vi sjekke issuer?
+        val claim = this.requireIdTokenClaims()
+            .getStringClaim(Constants.AAD_NAV_IDENT_CLAIM)
+        return IdentUtils.erGydligNavIdent(claim)
     }
 
     companion object {
