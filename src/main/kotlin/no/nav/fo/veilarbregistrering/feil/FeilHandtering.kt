@@ -68,7 +68,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(HentArbeidsforholdException::class)
-    fun handleSammensattOppfolgingStatusException(feil: HentArbeidsforholdException): ResponseEntity<String> {
+    fun handleHentArbeidsforholdException(feil: HentArbeidsforholdException): ResponseEntity<String> {
         logger.error(feil.message, feil)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(feil.message)
