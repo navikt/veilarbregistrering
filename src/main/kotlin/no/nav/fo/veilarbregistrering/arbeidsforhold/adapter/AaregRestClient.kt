@@ -66,26 +66,24 @@ open class AaregRestClient(
             try {
                 defaultHttpClient().newCall(request).execute()
                     .use { response -> behandleResponse(response) }
-            } catch (e: Exception) {
-                logger.warn("Nytt kall til Aareg feilet", e)
-                "No response"
+            } catch (e: IOException) {
+                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
             }
         }
     }
 
     protected open fun utforRequest(fnr: Foedselsnummer): String {
-        val systemToken = systemUserTokenProvider.systemUserToken
-        val authorization = if (isDevelopment()) systemToken else authContextHolder.requireIdTokenString()
+        val url = if (isDevelopment()) baseUrl else baseUrlOld
         val request = Request.Builder()
             .url(
-                HttpUrl.parse(baseUrlOld)!!.newBuilder()
+                HttpUrl.parse(url)!!.newBuilder()
                     .addPathSegments("v1/arbeidstaker/arbeidsforhold")
                     .addQueryParameter("regelverk", "A_ORDNINGEN")
                     .build()
             )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $authorization")
-            .header(NAV_CONSUMER_TOKEN, "Bearer $systemToken")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${authContextHolder.requireIdTokenString()}")
+            .header(NAV_CONSUMER_TOKEN, "Bearer ${systemUserTokenProvider.systemUserToken}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
