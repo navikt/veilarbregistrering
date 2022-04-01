@@ -131,3 +131,8 @@ spec:
         - application: familie-ef-proxy
           namespace: teamfamilie
           cluster: prod-fss
+    outbound:
+      rules:
+        - application: aareg-services-nais
+          namespace: arbeidsforhold
+          cluster: dev-fss

@@ -54,7 +54,6 @@ open class AaregRestClient(
     }
 
     protected open fun utfoerRequestAad(fnr: Foedselsnummer): String {
-        logger.info("Gjør kall mot ny Aareg-tjeneste")
         val request = Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
@@ -72,7 +71,6 @@ open class AaregRestClient(
             try {
                 defaultHttpClient().newCall(request).execute()
                     .use { response -> behandleResponse(response) }
-                    .also { logger.info("Kall til ny Aareg-tjeneste OK") }
             } catch (e: Exception) {
                 logger.warn("Nytt kall til Aareg feilet", e)
                 "No response"

@@ -6,6 +6,7 @@ import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
@@ -32,7 +33,8 @@ class ArbeidsforholdGatewayConfig {
             authContextHolder
         ) {
             try {
-                serviceToServiceTokenProvider.getServiceToken("aareg-services-nais-q1", "arbeidsforhold", aaregCluster)
+                val serviceName = if (isDevelopment()) "aareg-services-nais-q1" else "aareg-services-nais"
+                serviceToServiceTokenProvider.getServiceToken(serviceName, "arbeidsforhold", aaregCluster)
             } catch (e: Exception) {
                 logger.warn("Henting av token for aad-kall til aareg feilet: ", e)
                 "no token"
