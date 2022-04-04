@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
@@ -331,7 +330,7 @@ private class RegistreringResourceConfig {
 
     @Bean
     fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService =
-        UserService(pdlOppslagGateway, authContextHolder, isDevelopment())
+        UserService(pdlOppslagGateway, authContextHolder)
 
     @Bean
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
