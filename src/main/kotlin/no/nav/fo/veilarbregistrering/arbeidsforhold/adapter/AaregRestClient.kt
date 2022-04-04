@@ -2,9 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import no.nav.common.auth.Constants
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.auth.utils.IdentUtils
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
@@ -41,8 +39,6 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        logger.info("Henter arbeidsforhold...")
-        if (isDevelopment()) logger.info("Issuer i token: ${authContextHolder.hentIssuer()}")
         return if (unleashClient.isEnabled("veilarbregistrering.aareg.aad") && authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
         } else {
@@ -75,7 +71,7 @@ open class AaregRestClient(
     }
 
     protected open fun utforRequest(fnr: Foedselsnummer): String {
-        val url = if (isDevelopment()) baseUrl else baseUrlOld
+        val url = if (unleashClient.isEnabled("veilarbregistrering.aareg.aad")) baseUrl else baseUrlOld
         val request = Request.Builder()
             .url(
                 HttpUrl.parse(url)!!.newBuilder()

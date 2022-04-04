@@ -36,7 +36,6 @@ class StartRegistreringStatusService(
         val registreringType = brukersTilstand.registreringstype
         var oppfyllerBetingelseOmArbeidserfaring: Boolean? = null
         if (RegistreringType.ORDINAER_REGISTRERING == registreringType) {
-            logger.info("Registreringstype er ordinær registrering - skal hente arbeidsforhold")
             oppfyllerBetingelseOmArbeidserfaring =
                 arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)
                     .harJobbetSammenhengendeSeksAvTolvSisteManeder(LocalDate.now())
