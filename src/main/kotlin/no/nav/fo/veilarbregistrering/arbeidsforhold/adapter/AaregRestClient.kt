@@ -41,6 +41,7 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
+        logger.info("Henter arbeidsforhold...")
         if (isDevelopment()) logger.info("Issuer i token: ${authContextHolder.hentIssuer()}")
         return if (unleashClient.isEnabled("veilarbregistrering.aareg.aad") && authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
@@ -141,12 +142,7 @@ open class AaregRestClient(
     override fun value() = "aareg"
 }
 
-private fun AuthContextHolder.erAADToken(): Boolean {
-    // TODO Finnes det en bedre måte å sjekke dette på? Kan vi sjekke issuer?
-    val claim = this.requireIdTokenClaims()
-        .getStringClaim(Constants.AAD_NAV_IDENT_CLAIM)
-    return IdentUtils.erGydligNavIdent(claim)
-}
+private fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
 
 fun AuthContextHolder.hentIssuer(): String =
     this.requireIdTokenClaims().issuer
