@@ -16,8 +16,11 @@ class UserService(
 ) {
     init {
         if (enableSyntetiskeFnr) {
-            logger.warn("Enabler syntetiske fødselsnummer i DEV")
+            logger.warn("Enabler syntetiske fødselsnummer")
             FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = true;
+        } else {
+            logger.warn("Disabler syntetiske fødselsnummer")
+            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = false;
         }
     }
 
