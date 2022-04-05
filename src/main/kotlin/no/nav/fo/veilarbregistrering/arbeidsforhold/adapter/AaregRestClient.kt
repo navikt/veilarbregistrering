@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -11,7 +10,6 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -27,10 +25,8 @@ import org.springframework.http.MediaType
 import java.io.IOException
 
 open class AaregRestClient(
-    private val unleashClient: UnleashClient,
     metricsService: PrometheusMetricsService,
     private val baseUrl: String,
-    private val baseUrlOld: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,
     private val aadTokenProvider: () -> String
@@ -39,7 +35,7 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        return if (unleashClient.isEnabled("veilarbregistrering.aareg.aad") && authContextHolder.erAADToken()) {
+        return if (authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
         } else {
             parse(utforRequest(fnr))
@@ -71,10 +67,9 @@ open class AaregRestClient(
     }
 
     protected open fun utforRequest(fnr: Foedselsnummer): String {
-        val url = if (unleashClient.isEnabled("veilarbregistrering.aareg.aad")) baseUrl else baseUrlOld
         val request = Request.Builder()
             .url(
-                HttpUrl.parse(url)!!.newBuilder()
+                HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v1/arbeidstaker/arbeidsforhold")
                     .addQueryParameter("regelverk", "A_ORDNINGEN")
                     .build()

@@ -9,6 +9,9 @@ spec:
   azure:
     application:
       enabled: true
+      claims:
+        extra:
+          - "NAVident"
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}
@@ -20,8 +23,6 @@ spec:
   env:
     - name: AAREG_REST_API
       value: https://aareg-services-q1.dev.intern.nav.no/api
-    - name: AAREG_REST_API_OLD
-      value: https://modapp-q1.adeo.no/aareg-services/api
     - name: OPENAM_DISCOVERY_URL
       value: https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration
     - name: VEILARBLOGIN_OPENAM_CLIENT_ID
@@ -123,4 +124,9 @@ spec:
           namespace: teamdagpenger
         - application: familie-ef-proxy
           namespace: teamfamilie
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: aareg-services-nais-q1
+          namespace: arbeidsforhold
           cluster: dev-fss

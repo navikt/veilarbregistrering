@@ -1,13 +1,12 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.common.sts.SystemUserTokenProvider
-import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireClusterName
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.springframework.context.annotation.Bean
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Configuration
 class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
-        unleashClient: UnleashClient,
         prometheusMetricsService: PrometheusMetricsService,
         systemUserTokenProvider: SystemUserTokenProvider,
         authContextHolder: AuthContextHolder,
@@ -25,10 +23,8 @@ class ArbeidsforholdGatewayConfig {
     ): AaregRestClient {
         val aaregCluster = requireClusterName()
         return AaregRestClient(
-            unleashClient,
             prometheusMetricsService,
             requireProperty(REST_URL),
-            requireProperty(REST_URL_OLD),
             systemUserTokenProvider,
             authContextHolder
         ) {
@@ -49,6 +45,5 @@ class ArbeidsforholdGatewayConfig {
 
     companion object {
         private const val REST_URL = "AAREG_REST_API"
-        private const val REST_URL_OLD = "AAREG_REST_API_OLD"
     }
 }
