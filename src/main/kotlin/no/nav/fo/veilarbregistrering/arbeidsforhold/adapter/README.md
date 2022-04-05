@@ -1,3 +1,3 @@
 AaReg - Arbeidsforhold
 
-Swagger: https://modapp-q2.adeo.no/aareg-services/api/swagger-ui/index.html#/arbeidsforhold/finnArbeidsforhold
+Swagger: https://aareg-services.dev.intern.nav.no/swagger-ui/index.html?urls.primaryName=aareg.api.v1#/arbeidstaker/finnArbeidsforholdPrArbeidstaker
