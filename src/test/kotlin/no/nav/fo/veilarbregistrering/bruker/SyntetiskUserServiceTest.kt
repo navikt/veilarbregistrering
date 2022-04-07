@@ -25,7 +25,7 @@ class SyntetiskUserServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["63867500393", "01927397621", "05815598832", "03837197367", "03818197224"])
-    fun `syntetiske foedselsnummer fra testfamilien skal IKKE funke som default`(input: String) {
+    fun `syntetiske foedselsnummer fra testfamilien skal funke hvis enablet`(input: String) {
         //syntetiske fødselsnummer enables ved å instansiere UserService m/ enableSyntetiskeFnr=true
         assertTrue(FodselsnummerValidator.isValid(input));
     }
