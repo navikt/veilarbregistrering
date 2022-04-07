@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.bekk.bekkopen.person.FodselsnummerValidator
 import no.nav.common.auth.context.AuthContextHolder
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,6 +22,11 @@ class SyntetiskUserServiceTest {
         pdlOppslagGateway = mockk()
         authContextHolder = mockk()
         userService = UserService(pdlOppslagGateway, authContextHolder, true)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        userService = UserService(pdlOppslagGateway, authContextHolder)
     }
 
     @ParameterizedTest
