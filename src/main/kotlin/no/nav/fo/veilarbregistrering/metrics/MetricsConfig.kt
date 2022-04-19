@@ -11,9 +11,8 @@ import org.springframework.context.annotation.Configuration
 class MetricsConfig {
 
     @Bean
-    fun meterRegistry() {
+    fun meterRegistry(): MeterRegistry =
         PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    }
 
     @Bean
     fun prometheusMetricsService(meterRegistry: MeterRegistry): MetricsService =
