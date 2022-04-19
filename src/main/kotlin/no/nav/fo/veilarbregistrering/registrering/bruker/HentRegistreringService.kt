@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
@@ -24,7 +24,7 @@ class HentRegistreringService(
     private val profileringRepository: ProfileringRepository,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
     private val norg2Gateway: Norg2Gateway,
-    private val metricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     fun hentBrukerregistrering(bruker: Bruker): BrukerRegistreringWrapper? {
         val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)

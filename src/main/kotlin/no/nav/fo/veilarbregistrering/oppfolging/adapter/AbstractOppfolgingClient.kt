@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.http.Headers.buildHeaders
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 abstract class AbstractOppfolgingClient(
     private val objectMapper: ObjectMapper,
-    metricsService: PrometheusMetricsService
+    metricsService: MetricsService
 ): TimedMetric(metricsService) {
 
     fun <R : RuntimeException> post(

@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
@@ -15,7 +15,7 @@ open class SykmeldtRegistreringService(
     private val oppfolgingGateway: OppfolgingGateway,
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     @Transactional
     open fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker, navVeileder: NavVeileder?): Long {
@@ -25,7 +25,7 @@ open class SykmeldtRegistreringService(
         lagreManuellRegistrering(id, navVeileder)
         registrerOverfortStatistikk(navVeileder)
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering)
-        prometheusMetricsService.registrer(Events.SYKMELDT_BESVARELSE_EVENT)
+        metricsService.registrer(Events.SYKMELDT_BESVARELSE_EVENT)
         return id
     }
 
@@ -42,7 +42,7 @@ open class SykmeldtRegistreringService(
 
     private fun registrerOverfortStatistikk(veileder: NavVeileder?) {
         if (veileder == null) return
-        prometheusMetricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, SYKMELDT)
+        metricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, SYKMELDT)
     }
 
     companion object {

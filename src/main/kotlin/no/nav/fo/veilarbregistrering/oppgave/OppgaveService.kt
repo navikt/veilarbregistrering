@@ -3,14 +3,14 @@ package no.nav.fo.veilarbregistrering.oppgave
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import java.time.LocalDate
 
 open class OppgaveService(
     private val oppgaveGateway: OppgaveGateway,
     private val oppgaveRepository: OppgaveRepository,
     private val oppgaveRouter: OppgaveRouter,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     fun opprettOppgave(bruker: Bruker, oppgaveType: OppgaveType): OppgaveResponse {
         validerNyOppgaveMotAktive(bruker, oppgaveType)
@@ -27,7 +27,7 @@ open class OppgaveService(
             oppgaveType, oppgaveResponse.id, oppgaveResponse.tildeltEnhetsnr
         )
         oppgaveRepository.opprettOppgave(bruker.aktorId, oppgaveType, oppgaveResponse.id)
-        prometheusMetricsService.registrer(Events.OPPGAVE_OPPRETTET_EVENT, oppgaveType)
+        metricsService.registrer(Events.OPPGAVE_OPPRETTET_EVENT, oppgaveType)
         return oppgaveResponse
     }
 
@@ -38,7 +38,7 @@ open class OppgaveService(
             .filter(OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(idag()))
             .findFirst()
         muligOppgave.ifPresent { oppgave: OppgaveImpl ->
-            prometheusMetricsService.registrer(Events.OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgaveType)
+            metricsService.registrer(Events.OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgaveType)
             throw OppgaveAlleredeOpprettet(
                 "Fant en oppgave av samme type ${oppgave.oppgavetype} " +
                         "som ble opprettet ${oppgave.opprettet.tidspunkt} - " +

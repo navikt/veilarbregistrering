@@ -4,7 +4,7 @@ import java.time.Clock
 import java.time.Duration
 import java.time.Instant
 
-abstract class TimedMetric(private val metricsService: PrometheusMetricsService) : Metric {
+abstract class TimedMetric(private val metricsService: MetricsService) : Metric {
 
     override fun fieldName() = "tjeneste"
 

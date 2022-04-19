@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -152,18 +152,18 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         }
 
         @Bean
-        fun metricsService(): PrometheusMetricsService  = mockk(relaxed = true)
+        fun metricsService(): MetricsService  = mockk(relaxed = true)
 
         @Bean
         fun brukerRegistreringService(
-                brukerRegistreringRepository: BrukerRegistreringRepository,
-                profileringRepository: ProfileringRepository,
-                oppfolgingGateway: OppfolgingGateway,
-                profileringService: ProfileringService,
-                registreringTilstandRepository: RegistreringTilstandRepository,
-                brukerTilstandService: BrukerTilstandService,
-                manuellRegistreringRepository: ManuellRegistreringRepository,
-                prometheusMetricsService: PrometheusMetricsService
+            brukerRegistreringRepository: BrukerRegistreringRepository,
+            profileringRepository: ProfileringRepository,
+            oppfolgingGateway: OppfolgingGateway,
+            profileringService: ProfileringService,
+            registreringTilstandRepository: RegistreringTilstandRepository,
+            brukerTilstandService: BrukerTilstandService,
+            manuellRegistreringRepository: ManuellRegistreringRepository,
+            metricsService: MetricsService
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -173,7 +173,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 registreringTilstandRepository,
                 brukerTilstandService,
                 manuellRegistreringRepository,
-                prometheusMetricsService
+                metricsService
             )
         }
 

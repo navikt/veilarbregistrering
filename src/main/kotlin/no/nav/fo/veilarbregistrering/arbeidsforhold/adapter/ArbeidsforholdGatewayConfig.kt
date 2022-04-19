@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,14 +16,14 @@ import org.springframework.context.annotation.Configuration
 class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
-        prometheusMetricsService: PrometheusMetricsService,
+        metricsService: MetricsService,
         systemUserTokenProvider: SystemUserTokenProvider,
         authContextHolder: AuthContextHolder,
         serviceToServiceTokenProvider: ServiceToServiceTokenProvider
     ): AaregRestClient {
         val aaregCluster = requireClusterName()
         return AaregRestClient(
-            prometheusMetricsService,
+            metricsService,
             requireProperty(REST_URL),
             systemUserTokenProvider,
             authContextHolder

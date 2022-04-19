@@ -4,7 +4,7 @@ import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
@@ -21,7 +21,7 @@ class InaktivBrukerServiceTest {
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
-    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+    private val metricsService: MetricsService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
@@ -34,7 +34,7 @@ class InaktivBrukerServiceTest {
                 ),
                 reaktiveringRepository,
                 oppfolgingGateway,
-                prometheusMetricsService
+                metricsService
         )
     }
 

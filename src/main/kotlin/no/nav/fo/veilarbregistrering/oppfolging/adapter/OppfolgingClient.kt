@@ -12,7 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
@@ -21,7 +21,7 @@ import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
-    private val metricsService: PrometheusMetricsService,
+    private val metricsService: MetricsService,
     private val baseUrl: String,
     private val aadOboService: AadOboService,
     private val tokenProvider: () -> String,

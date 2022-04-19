@@ -13,9 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger
  *
  * Prometheus benytter en pull-modell, hvor appen tilbyr et endepunkt for å hente data. Se application.yml.
  */
-class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
+class PrometheusMetricsService(private val meterRegistry: MeterRegistry) : MetricsService {
 
-    fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
+    override fun rapporterRegistreringStatusAntall(antallPerStatus: Map<Status, Int>) {
         antallPerStatus.forEach {
             val registrertAntall = statusVerdier.computeIfAbsent(it.key) { key ->
                 val atomiskAntall = AtomicInteger()
@@ -31,20 +31,20 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
     
     private val statusVerdier: MutableMap<Status, AtomicInteger> = EnumMap(Status::class.java)
 
-    fun registrer(event: Event, vararg metrikker: Metric) {
+    override fun registrer(event: Event, vararg metrikker: Metric) {
         val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
         registrer(event, *tags)
     }
 
-    fun registrer(event: Event, vararg tags: Tag) {
+    override fun registrer(event: Event, vararg tags: Tag) {
         meterRegistry.counter(event.key, tags.asIterable()).increment()
     }
 
-    fun registrer(event: Event) {
+    override fun registrer(event: Event) {
         meterRegistry.counter(event.key).increment()
     }
 
-    fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
+    override fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
         val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
         registrerTimer(event, tid, *tags)
     }

@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.enhet.Forretningsadresse
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
 import no.nav.fo.veilarbregistrering.enhet.Organisasjonsdetaljer
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
 import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
@@ -137,9 +137,9 @@ class OppgaveRouterTest {
         enhetGateway: EnhetGateway = EnhetGateway { null },
         norg2Gateway: Norg2Gateway = StubNorg2Gateway(),
         pdlOppslagGateway: PdlOppslagGateway = StubPdlOppslagGateway(),
-        prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+        metricsService: MetricsService = mockk(relaxed = true)
     ) =
-            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, prometheusMetricsService)
+            OppgaveRouter(arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, metricsService)
 
     private class StubNorg2Gateway : Norg2Gateway {
         override fun hentEnhetFor(kommune: Kommune): Enhetnr? {

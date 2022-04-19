@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +17,7 @@ class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
@@ -57,7 +57,7 @@ class ArbeidssokerService(
         val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)
         val lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS)
-        prometheusMetricsService.registrer(
+        metricsService.registrer(
             Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
             if (lokalErLikOrds) JaNei.JA else JaNei.NEI
         )
@@ -70,7 +70,7 @@ class ArbeidssokerService(
             )
         }
         if (dekkerHele && brukLokalCache()) {
-            prometheusMetricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL)
+            metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL)
             LOG.info(
                 String.format(
                     "Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s",
@@ -79,7 +79,7 @@ class ArbeidssokerService(
             )
             return overlappendeArbeidssokerperioderLokalt
         }
-        prometheusMetricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
+        metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
         LOG.info(
             String.format(
                 "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s",

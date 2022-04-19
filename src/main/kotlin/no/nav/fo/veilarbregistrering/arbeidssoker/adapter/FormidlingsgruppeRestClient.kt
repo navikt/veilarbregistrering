@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.parse
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -23,7 +23,7 @@ import java.util.function.Supplier
 
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,
-    metricsService: PrometheusMetricsService,
+    metricsService: MetricsService,
     private val arenaOrdsTokenProvider: Supplier<String>
 ) : HealthCheck, TimedMetric(metricsService) {
 

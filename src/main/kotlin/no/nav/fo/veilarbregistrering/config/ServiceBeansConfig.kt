@@ -23,7 +23,7 @@ import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResource
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
@@ -57,7 +57,7 @@ class ServiceBeansConfig {
         profileringRepository: ProfileringRepository,
         manuellRegistreringRepository: ManuellRegistreringRepository,
         norg2Gateway: Norg2Gateway,
-        metricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): HentRegistreringService {
         return HentRegistreringService(
             brukerRegistreringRepository,
@@ -87,13 +87,13 @@ class ServiceBeansConfig {
         arbeidsforholdGateway: ArbeidsforholdGateway,
         brukerTilstandService: BrukerTilstandService,
         pdlOppslagGateway: PdlOppslagGateway,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): StartRegistreringStatusService {
         return StartRegistreringStatusService(
             arbeidsforholdGateway,
             brukerTilstandService,
             pdlOppslagGateway,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -102,13 +102,13 @@ class ServiceBeansConfig {
         brukerTilstandService: BrukerTilstandService,
         reaktiveringRepository: ReaktiveringRepository,
         oppfolgingGateway: OppfolgingGateway,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): InaktivBrukerService {
         return InaktivBrukerService(
             brukerTilstandService,
             reaktiveringRepository,
             oppfolgingGateway,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -118,14 +118,14 @@ class ServiceBeansConfig {
         oppfolgingGateway: OppfolgingGateway,
         sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
         manuellRegistreringRepository: ManuellRegistreringRepository,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): SykmeldtRegistreringService {
         return SykmeldtRegistreringService(
             brukerTilstandService,
             oppfolgingGateway,
             sykmeldtRegistreringRepository,
             manuellRegistreringRepository,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -138,7 +138,7 @@ class ServiceBeansConfig {
         registreringTilstandRepository: RegistreringTilstandRepository,
         brukerTilstandService: BrukerTilstandService,
         manuellRegistreringRepository: ManuellRegistreringRepository,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): BrukerRegistreringService {
         return BrukerRegistreringService(
             brukerRegistreringRepository,
@@ -148,7 +148,7 @@ class ServiceBeansConfig {
             registreringTilstandRepository,
             brukerTilstandService,
             manuellRegistreringRepository,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -203,13 +203,13 @@ class ServiceBeansConfig {
         oppgaveGateway: OppgaveGateway,
         oppgaveRepository: OppgaveRepository,
         oppgaveRouter: OppgaveRouter,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): OppgaveService {
         return OppgaveService(
             oppgaveGateway,
             oppgaveRepository,
             oppgaveRouter,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -219,14 +219,14 @@ class ServiceBeansConfig {
         enhetGateway: EnhetGateway,
         norg2Gateway: Norg2Gateway,
         pdlOppslagGateway: PdlOppslagGateway,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): OppgaveRouter {
         return OppgaveRouter(
             arbeidsforholdGateway,
             enhetGateway,
             norg2Gateway,
             pdlOppslagGateway,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -244,13 +244,13 @@ class ServiceBeansConfig {
         arbeidssokerRepository: ArbeidssokerRepository,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             arbeidssokerRepository,
             formidlingsgruppeGateway,
             unleashClient,
-            prometheusMetricsService
+            metricsService
         )
     }
 
@@ -270,7 +270,7 @@ class ServiceBeansConfig {
         registrertProducer: ArbeidssokerRegistrertProducer,
         registreringTilstandRepository: RegistreringTilstandRepository,
         profilertProducer: ArbeidssokerProfilertProducer,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): PubliseringAvEventsService {
         return PubliseringAvEventsService(
             profileringRepository,
@@ -278,7 +278,7 @@ class ServiceBeansConfig {
             registrertProducer,
             registreringTilstandRepository,
             profilertProducer,
-            prometheusMetricsService
+            metricsService
         )
     }
 

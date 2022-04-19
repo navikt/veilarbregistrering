@@ -1,9 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,11 +15,11 @@ class FormidlingsgruppeGatewayConfig {
     @Bean
     fun formidlingsgruppeRestClient(
         arenaOrdsTokenProviderClient: ArenaOrdsTokenProviderClient,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ) =
         FormidlingsgruppeRestClient(
             requireProperty(ARENA_ORDS_API),
-            prometheusMetricsService,
+            metricsService,
         ) { arenaOrdsTokenProviderClient.token }
 
     @Bean

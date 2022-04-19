@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireProperty
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -18,7 +18,7 @@ class OppfolgingGatewayConfig {
     @Bean
     fun oppfolgingClient(
         objectMapper: ObjectMapper,
-        prometheusMetricsService: PrometheusMetricsService,
+        metricsService: MetricsService,
         tokenProvider: ServiceToServiceTokenProvider,
         aadOboService: AadOboService,
     ): OppfolgingClient {
@@ -26,7 +26,7 @@ class OppfolgingGatewayConfig {
 
         return OppfolgingClient(
             objectMapper,
-            prometheusMetricsService,
+            metricsService,
             requireProperty(propertyName),
             aadOboService,
         ) {
@@ -41,7 +41,7 @@ class OppfolgingGatewayConfig {
     @Bean
     fun veilarbarenaClient(
         tokenProvider: ServiceToServiceTokenProvider,
-        prometheusMetricsService: PrometheusMetricsService
+        metricsService: MetricsService
     ): VeilarbarenaClient {
         val baseUrl = requireProperty("VEILARBARENA_URL")
         val veilarbarenaCluster = requireProperty("VEILARBARENA_CLUSTER")
@@ -63,7 +63,7 @@ class OppfolgingGatewayConfig {
                 if (isDevelopment()) "dev-fss" else "prod-fss"
             )
         }
-        return VeilarbarenaClient(baseUrl, prometheusMetricsService, veilarbarenaTokenProvider, proxyTokenProvider)
+        return VeilarbarenaClient(baseUrl, metricsService, veilarbarenaTokenProvider, proxyTokenProvider)
     }
 
     @Bean
