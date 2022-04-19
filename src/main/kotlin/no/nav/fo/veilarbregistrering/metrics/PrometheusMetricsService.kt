@@ -31,6 +31,11 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
     
     private val statusVerdier: MutableMap<Status, AtomicInteger> = EnumMap(Status::class.java)
 
+    fun registrer(event: Event, vararg metrikker: Metric) {
+        val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
+        registrer(event, *tags)
+    }
+
     fun registrer(event: Event, vararg tags: Tag) {
         meterRegistry.counter(event.key, tags.asIterable()).increment()
     }
@@ -39,17 +44,12 @@ class PrometheusMetricsService(private val meterRegistry: MeterRegistry) {
         meterRegistry.counter(event.key).increment()
     }
 
-    fun registrer(event: Event, vararg metrikker: Metric) {
+    fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
         val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
-        registrer(event, *tags)
+        registrerTimer(event, tid, *tags)
     }
 
     private fun registrerTimer(event: Event, tid: Duration, vararg tags: Tag) {
         meterRegistry.timer(event.key, tags.asIterable()).record(tid)
-    }
-
-    fun registrerTimer(event: Event, tid: Duration, vararg metrikker: Metric) {
-        val tags = metrikker.map { Tag.of(it.fieldName(), it.value().toString()) }.toTypedArray()
-        registrerTimer(event, tid, *tags)
     }
 }
