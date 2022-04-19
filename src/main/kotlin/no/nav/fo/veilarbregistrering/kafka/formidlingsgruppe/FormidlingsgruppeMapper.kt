@@ -47,9 +47,9 @@ abstract class FormidlingsgruppeMapper {
         private val json = jacksonObjectMapper().findAndRegisterModules()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-        fun map(record: String?): FormidlingsgruppeEvent {
+        fun map(record: String): FormidlingsgruppeEvent {
             val ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto = try {
-                record?.let { json.readValue<GgArenaFormidlinggruppeDto>(record) } ?: throw IllegalArgumentException("Missing required fields from record")
+                json.readValue(record)
             } catch (e: JsonProcessingException) {
                 throw IllegalArgumentException("Manglende påkrevde felter i record", e)
             }

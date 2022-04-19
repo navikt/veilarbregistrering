@@ -53,7 +53,7 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
                 while (!stopKonsumeringAvFormidlingsgruppe()) {
                     val consumerRecords = consumer.poll(Duration.ofMinutes(2))
                     LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic)
-                    consumerRecords.forEach(Consumer { record: ConsumerRecord<String?, String?> ->
+                    consumerRecords.forEach(Consumer { record: ConsumerRecord<String, String> ->
                         leggTilCallId()
                         MDC.put(mdcOffsetKey, record.offset().toString())
                         MDC.put(mdcPartitionKey, record.partition().toString())
@@ -82,8 +82,7 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
         }
     }
 
-    private fun behandleFormiddlingsgruppeMelding(melding: ConsumerRecord<String?, String?>) = arbeidssokerService.behandle(map(melding.value()))
-
+    private fun behandleFormiddlingsgruppeMelding(melding: ConsumerRecord<String, String>) = arbeidssokerService.behandle(map(melding.value()))
 
     private fun stopKonsumeringAvFormidlingsgruppe() = unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME)
 
