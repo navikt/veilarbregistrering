@@ -10,7 +10,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal object ArbeidssokerRegistrertMapper {
-    @JvmStatic
     fun map(event: ArbeidssokerRegistrertInternalEvent): ArbeidssokerRegistrertEvent {
         return ArbeidssokerRegistrertEvent(
             event.aktorId.aktorId,

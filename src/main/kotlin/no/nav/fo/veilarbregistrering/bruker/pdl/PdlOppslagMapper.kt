@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 
 internal object PdlOppslagMapper {
 
-    @JvmStatic
     fun map(pdlGeografiskTilknytning: PdlGeografiskTilknytning?): GeografiskTilknytning? {
         if (pdlGeografiskTilknytning == null) {
             return null
@@ -22,7 +21,6 @@ internal object PdlOppslagMapper {
         }
     }
 
-    @JvmStatic
     fun map(pdlPerson: PdlPerson): Person {
         return Person(
             pdlPerson.hoyestPrioriterteTelefonnummer()?.let(::map),
@@ -40,7 +38,6 @@ internal object PdlOppslagMapper {
         return Telefonnummer(pdlTelefonnummer.nummer, pdlTelefonnummer.landskode)
     }
 
-    @JvmStatic
     fun map(pdlIdenter: PdlIdenter): Identer {
         return Identer(pdlIdenter.identer.map { (ident, historisk, gruppe) ->
                 Ident(
@@ -51,7 +48,6 @@ internal object PdlOppslagMapper {
             })
     }
 
-    @JvmStatic
     fun map(adressebeskyttelse: PdlAdressebeskyttelse): AdressebeskyttelseGradering {
         return AdressebeskyttelseGradering.valueOf(adressebeskyttelse.gradering.name)
     }

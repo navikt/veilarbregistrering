@@ -16,7 +16,6 @@ object ValideringUtils {
         DinSituasjonSvar.ALDRI_HATT_JOBB
     )
 
-    @JvmStatic
     fun validerBrukerRegistrering(bruker: OrdinaerBrukerRegistrering) {
         val (utdanningSvar, utdanningBestatt, utdanningGodkjent, helseHinder, andreForhold, sisteStillingSvar, dinSituasjonSvar) = bruker.besvarelse
         assertFalse(besvarelseHarNull(bruker))

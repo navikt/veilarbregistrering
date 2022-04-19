@@ -5,7 +5,6 @@ import org.springframework.web.context.request.ServletRequestAttributes
 import javax.servlet.http.HttpServletRequest
 
 object RequestContext {
-    @JvmStatic
     fun servletRequest(): HttpServletRequest {
         return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
     }

@@ -27,7 +27,6 @@ enum class Innsatsgruppe(val arenakode: String) : Metric {
                     .findAny().orElse(null)
         }
 
-        @JvmStatic
         fun of(besvarelse: Besvarelse, alder: Int, harJobbetSammenhengendeSeksAvTolvSisteManeder: Boolean): Innsatsgruppe {
             return if (besvarelse.anbefalerBehovForArbeidsevnevurdering()) {
                 BEHOV_FOR_ARBEIDSEVNEVURDERING

@@ -5,7 +5,6 @@ import javax.ws.rs.core.HttpHeaders
 
 object Headers {
 
-    @JvmStatic
     fun buildHeaders(headers: List<Pair<String, String>>) =
         Headers.Builder().also { h ->
             headers.forEach { (k, v) ->

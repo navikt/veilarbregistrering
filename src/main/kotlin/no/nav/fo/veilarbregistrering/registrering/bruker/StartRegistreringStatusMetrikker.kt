@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 
 internal object StartRegistreringStatusMetrikker {
-    @JvmStatic
     fun rapporterRegistreringsstatus(prometheusMetricsService: PrometheusMetricsService, registreringStatus: StartRegistreringStatusDto) {
         val iArbeidSiste12Mnd = registreringStatus.jobbetSeksAvTolvSisteManeder ?: false
         val type = when (registreringStatus.registreringType) {

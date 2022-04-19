@@ -7,7 +7,6 @@ import java.time.LocalDate
  */
 internal object Helligdager {
 
-    @JvmStatic
     fun erHelligdag(dag: LocalDate): Boolean {
         return HELLIGDAGER.contains(dag)
     }

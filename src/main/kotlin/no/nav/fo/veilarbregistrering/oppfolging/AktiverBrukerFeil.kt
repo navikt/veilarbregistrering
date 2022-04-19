@@ -14,7 +14,6 @@ enum class AktiverBrukerFeil: Metric {
     override fun value() = this.toString()
 
     companion object {
-        @JvmStatic
         fun fromStatus(status: Status): AktiverBrukerFeil =
                 when (status) {
                     Status.MANGLER_ARBEIDSTILLATELSE -> BRUKER_MANGLER_ARBEIDSTILLATELSE

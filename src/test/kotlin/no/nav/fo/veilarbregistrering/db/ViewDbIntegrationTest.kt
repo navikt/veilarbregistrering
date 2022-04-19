@@ -61,7 +61,6 @@ open class ViewDbIntegrationTest {
 
     companion object {
 
-        @JvmStatic
         fun viewsForTest() = listOf(
                 "DVH_BRUKER_REGISTRERING",
                 "DVH_BEGRUNNELSE_KODEVERK",

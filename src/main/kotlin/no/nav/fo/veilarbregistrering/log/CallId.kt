@@ -6,7 +6,6 @@ import no.nav.common.utils.IdUtils
 import java.nio.charset.StandardCharsets
 
 object CallId {
-    @JvmStatic
     val correlationIdAsBytes: ByteArray
         get() {
             var correlationId = MDC.get(MDCConstants.MDC_CALL_ID)
@@ -19,7 +18,6 @@ object CallId {
             return correlationId!!.toByteArray(StandardCharsets.UTF_8)
         }
 
-    @JvmStatic
     fun leggTilCallId() {
         if (MDC.get(MDCConstants.MDC_CALL_ID) != null) {
             return

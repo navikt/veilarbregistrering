@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold
 import java.time.LocalDate
 
 object FlereArbeidsforholdTestdataBuilder {
-    @JvmStatic
     fun flereArbeidsforholdTilfeldigSortert(): FlereArbeidsforhold {
 
         // Skal hente sistearbeidsforhold
@@ -15,7 +14,6 @@ object FlereArbeidsforholdTestdataBuilder {
         return FlereArbeidsforhold(tilfeldigSortertListe)
     }
 
-    @JvmStatic
     fun somJson(): FlereArbeidsforhold = FlereArbeidsforhold(
         listOf(
             Arbeidsforhold(

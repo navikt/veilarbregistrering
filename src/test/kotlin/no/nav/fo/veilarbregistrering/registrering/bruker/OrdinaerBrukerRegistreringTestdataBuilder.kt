@@ -6,7 +6,6 @@ import java.time.LocalDateTime
 
 object OrdinaerBrukerRegistreringTestdataBuilder {
 
-    @JvmStatic
     fun gyldigBrukerRegistrering(
         opprettetDato: LocalDateTime = LocalDateTime.now(),
         stilling: Stilling = StillingTestdataBuilder.gyldigStilling(),
@@ -23,7 +22,6 @@ object OrdinaerBrukerRegistreringTestdataBuilder {
         )
     }
 
-    @JvmStatic
     fun gyldigBrukerRegistreringUtenJobb(opprettetDato: LocalDateTime = LocalDateTime.now()): OrdinaerBrukerRegistrering {
         return gyldigBrukerRegistrering(
             opprettetDato = opprettetDato,

@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 
 object RegistreringTilstandTestdataBuilder {
 
-    @JvmStatic
     fun registreringTilstand() = Builder()
 
     class Builder {

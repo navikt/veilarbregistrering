@@ -32,7 +32,6 @@ interface Event {
     val key: String
 
     companion object {
-        @JvmStatic
         fun of(key: String): Event = object:Event {
             override val key: String
                 get() = key

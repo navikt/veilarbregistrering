@@ -17,7 +17,6 @@ class ArbeidssokerperioderTestdataBuilder private constructor() {
     }
 
     companion object {
-        @JvmStatic
         fun arbeidssokerperioder(): ArbeidssokerperioderTestdataBuilder {
             return ArbeidssokerperioderTestdataBuilder()
         }

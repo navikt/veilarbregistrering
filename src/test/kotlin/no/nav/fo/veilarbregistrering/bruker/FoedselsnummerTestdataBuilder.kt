@@ -9,7 +9,6 @@ object FoedselsnummerTestdataBuilder {
     /**
      * Returnerer fødselsnummer til Aremark som er fiktivt
      */
-    @JvmStatic
     fun aremark(): Foedselsnummer {
         return Foedselsnummer("10108000398")
     }

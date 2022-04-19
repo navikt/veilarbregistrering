@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.besvarelse
 
 object StillingTestdataBuilder {
-    @JvmStatic
     fun gyldigStilling(
         styrk08: String = "12345",
         label: String? = "yrkesbeskrivelse",
