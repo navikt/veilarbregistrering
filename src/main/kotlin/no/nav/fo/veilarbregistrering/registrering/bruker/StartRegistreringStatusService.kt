@@ -7,10 +7,8 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
-import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusMetrikker.rapporterRegistreringsstatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDtoMapper.map
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
 class StartRegistreringStatusService(
@@ -47,7 +45,6 @@ class StartRegistreringStatusService(
             bruker.gjeldendeFoedselsnummer.alder(LocalDate.now())
         )
         logger.info("Startreg.status for {}: {}", bruker.aktorId, startRegistreringStatus)
-        rapporterRegistreringsstatus(prometheusMetricsService, startRegistreringStatus)
         return startRegistreringStatus
     }
 

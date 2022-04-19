@@ -198,8 +198,6 @@ class RegistreringResourceTest(
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
-        mockkStatic(StartRegistreringStatusMetrikker::class)
-        every { StartRegistreringStatusMetrikker.rapporterRegistreringsstatus(any(), any()) } just runs
         every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER

@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
-open class ViewDbIntegrationTest {
+class ViewDbIntegrationTest {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -61,6 +61,7 @@ open class ViewDbIntegrationTest {
 
     companion object {
 
+        @JvmStatic
         fun viewsForTest() = listOf(
                 "DVH_BRUKER_REGISTRERING",
                 "DVH_BEGRUNNELSE_KODEVERK",

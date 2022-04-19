@@ -6,11 +6,9 @@ enum class Events(override val key: String) : Event {
     REAKTIVER_BRUKER("oppfolging.reaktiverBruker.event"),
     OPPFOLGING_SYKMELDT("oppfolging.sykmeldt.event"),
     OPPFOLGING_FEIL("oppfolging.feil.event"),
-    HENT_OPPFOLGING("oppfolging.status.event"),
     OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave.event"),
     OPPGAVE_ALLEREDE_OPPRETTET_EVENT("arbeid.registrert.oppgave.allerede-opprettet.event"),
     OPPGAVE_ROUTING_EVENT("arbeid.registrert.oppgave.routing.event"),
-    START_REGISTRERING_EVENT("start.registrering.event"),
     HENT_BRUKERREGISTRERING_BRUKER_FUNNET("hent.brukerregistrering.bruker.funnet"),
     MANUELL_REGISTRERING_EVENT("registrering.manuell-registrering.event"),
     MANUELL_REAKTIVERING_EVENT("registrering.manuell-reaktivering.event"),
@@ -25,7 +23,6 @@ enum class Events(override val key: String) : Event {
     REGISTRERING_NEDETID_ARENA("registrering.nedetid.arena"),
     REGISTRERING_RETTIGHETSGRUPPE("registrering.rettighetsgruppe"),
     REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe"),
-    OPPFOLGINSSTATUS_MANGLER_DATA_NY_KILDE("oppfolgingsstatus.mangler.arenastatus.ny.kilde");
 }
 
 interface Event {
