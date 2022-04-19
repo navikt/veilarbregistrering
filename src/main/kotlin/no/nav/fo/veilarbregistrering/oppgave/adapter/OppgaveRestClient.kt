@@ -5,7 +5,7 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 class OppgaveRestClient(
     private val baseUrl: String,
-    metricsService: PrometheusMetricsService,
+    metricsService: MetricsService,
     private val tokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
     internal fun opprettOppgave(oppgaveDto: OppgaveDto): OppgaveResponseDto {

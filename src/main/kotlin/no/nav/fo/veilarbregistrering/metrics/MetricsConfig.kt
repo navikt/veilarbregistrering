@@ -16,7 +16,6 @@ class MetricsConfig {
     }
 
     @Bean
-    fun prometheusMetricsService(meterRegistry: MeterRegistry): PrometheusMetricsService =
+    fun prometheusMetricsService(meterRegistry: MeterRegistry): MetricsService =
         PrometheusMetricsService(meterRegistry)
-
 }

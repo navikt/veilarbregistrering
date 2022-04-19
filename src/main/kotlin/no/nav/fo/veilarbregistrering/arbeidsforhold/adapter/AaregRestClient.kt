@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -25,7 +25,7 @@ import org.springframework.http.MediaType
 import java.io.IOException
 
 open class AaregRestClient(
-    metricsService: PrometheusMetricsService,
+    metricsService: MetricsService,
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,

@@ -7,7 +7,7 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.Request
 import org.springframework.http.HttpStatus
@@ -15,10 +15,10 @@ import java.io.IOException
 
 class VeilarbarenaClient(
     private val baseUrl: String,
-    prometheusMetricsService: PrometheusMetricsService,
+    metricsService: MetricsService,
     private val veilarbarenaTokenProvider: () -> String,
     private val proxyTokenProvider: () -> String
-) : HealthCheck, TimedMetric(prometheusMetricsService) {
+) : HealthCheck, TimedMetric(metricsService) {
 
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
         val proxyToken = proxyTokenProvider()

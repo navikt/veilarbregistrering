@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDto
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.StartRegistreringStatusDtoMapper.map
 import java.time.LocalDate
@@ -15,7 +15,7 @@ class StartRegistreringStatusService(
     private val arbeidsforholdGateway: ArbeidsforholdGateway,
     private val brukerTilstandService: BrukerTilstandService,
     private val pdlOppslagGateway: PdlOppslagGateway,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     fun hentStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
@@ -49,7 +49,7 @@ class StartRegistreringStatusService(
     }
 
     fun registrerAtArenaHarPlanlagtNedetid() {
-        prometheusMetricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
+        metricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
     }
 
     private fun hentGeografiskTilknytning(bruker: Bruker): GeografiskTilknytning? {
@@ -67,18 +67,18 @@ class StartRegistreringStatusService(
     }
 
     private fun registrerFunksjonelleMetrikker(brukersTilstand: BrukersTilstand) {
-        prometheusMetricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
+        metricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
         brukersTilstand.servicegruppe?.let {
-            prometheusMetricsService.registrer(Events.REGISTRERING_SERVICEGRUPPE, it)
+            metricsService.registrer(Events.REGISTRERING_SERVICEGRUPPE, it)
         }
         brukersTilstand.rettighetsgruppe?.let {
-            prometheusMetricsService.registrer(Events.REGISTRERING_RETTIGHETSGRUPPE, it)
+            metricsService.registrer(Events.REGISTRERING_RETTIGHETSGRUPPE, it)
         }
 
         if (brukersTilstand.registreringstype == RegistreringType.ALLEREDE_REGISTRERT &&
             brukersTilstand.formidlingsgruppe != null && brukersTilstand.servicegruppe != null
         ) {
-            prometheusMetricsService.registrer(
+            metricsService.registrer(
                 Events.REGISTRERING_ALLEREDEREGISTRERT,
                 brukersTilstand.formidlingsgruppe,
                 brukersTilstand.servicegruppe

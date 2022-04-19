@@ -12,7 +12,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import org.junit.jupiter.api.AfterEach
@@ -66,7 +66,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         fun profileringService(): ProfileringService = mockk(relaxed = true)
 
         @Bean
-        fun metricsService(): PrometheusMetricsService = mockk(relaxed = true)
+        fun metricsService(): MetricsService = mockk(relaxed = true)
 
         @Bean
         fun unleashClient(): UnleashClient = mockk(relaxed = true)
@@ -80,7 +80,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             arbeidssokerRepository: ArbeidssokerRepository,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
-            metricsService: PrometheusMetricsService
+            metricsService: MetricsService
         ): ArbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
             formidlingsgruppeGateway,

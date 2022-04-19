@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -106,7 +106,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
                     sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
                     profileringRepository: ProfileringRepository,
                     manuellRegistreringRepository: ManuellRegistreringRepository,
-                    metricsService: PrometheusMetricsService
+                    metricsService: MetricsService
             ) = HentRegistreringService(
                     brukerRegistreringRepository,
                     sykmeldtRegistreringRepository,
@@ -128,7 +128,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
             }
 
             @Bean
-            fun metricsService(): PrometheusMetricsService = mockk(relaxed = true)
+            fun metricsService(): MetricsService = mockk(relaxed = true)
 
             @Bean
             fun oppfolgingGateway(): OppfolgingGateway = mockk()

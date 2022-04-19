@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering
 
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
@@ -17,7 +17,7 @@ class PubliseringAvEventsService(
     private val registrertProducer: ArbeidssokerRegistrertProducer,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val profilertProducer: ArbeidssokerProfilertProducer,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     @Transactional
     fun publiserEvents() {
@@ -63,7 +63,7 @@ class PubliseringAvEventsService(
     private fun rapporterRegistreringStatusAntallForPublisering() {
         try {
             val antallPerStatus = registreringTilstandRepository.hentAntallPerStatus()
-            prometheusMetricsService.rapporterRegistreringStatusAntall(antallPerStatus)
+            metricsService.rapporterRegistreringStatusAntall(antallPerStatus)
         } catch (e: Exception) {
             LOG.error("Feil ved rapportering av antall statuser", e)
         }

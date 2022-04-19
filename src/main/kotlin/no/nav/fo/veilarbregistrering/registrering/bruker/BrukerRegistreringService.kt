@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil.Companion.fromStatus
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -32,7 +32,7 @@ open class BrukerRegistreringService(
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val brukerTilstandService: BrukerTilstandService,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val metricsService: MetricsService
 ) {
     @Transactional
     open fun registrerBrukerUtenOverforing(
@@ -47,7 +47,7 @@ open class BrukerRegistreringService(
         val profilering =
             profilerBrukerTilInnsatsgruppe(bruker.gjeldendeFoedselsnummer, opprettetBrukerRegistrering.besvarelse)
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.id, profilering)
-        prometheusMetricsService.registrer(Events.PROFILERING_EVENT, profilering.innsatsgruppe)
+        metricsService.registrer(Events.PROFILERING_EVENT, profilering.innsatsgruppe)
         val registreringTilstand = medStatus(Status.MOTTATT, opprettetBrukerRegistrering.id)
         registreringTilstandRepository.lagre(registreringTilstand)
         LOG.info(
@@ -102,7 +102,7 @@ open class BrukerRegistreringService(
 
     private fun registrerOverfortStatistikk(veileder: NavVeileder?) {
         if (veileder == null) return
-        prometheusMetricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, BrukerRegistreringType.ORDINAER)
+        metricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, BrukerRegistreringType.ORDINAER)
     }
 
     private fun validerBrukerRegistrering(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering, bruker: Bruker) {
@@ -126,7 +126,7 @@ open class BrukerRegistreringService(
                 ordinaerBrukerRegistrering.besvarelse,
                 ordinaerBrukerRegistrering.sisteStilling
             )
-            prometheusMetricsService.registrer(Events.INVALID_REGISTRERING_EVENT)
+            metricsService.registrer(Events.INVALID_REGISTRERING_EVENT)
             throw e
         }
     }

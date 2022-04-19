@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.Arbeidsforhold
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.bruker.*
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
@@ -31,7 +31,7 @@ class StartRegistreringStatusServiceTest {
         oppfolgingClient = mockk()
         veilarbarenaClient = mockk()
         pdlOppslagGateway = mockk()
-        val metricsService: PrometheusMetricsService = mockk(relaxed = true)
+        val metricsService: MetricsService = mockk(relaxed = true)
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
