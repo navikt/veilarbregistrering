@@ -53,7 +53,7 @@ jobs:
     name: Deploy to dev FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/extract-metricsService-interface'
     steps:
       - uses: actions/checkout@v1
 
