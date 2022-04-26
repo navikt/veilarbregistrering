@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.featuretoggle
 
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.featuretoggle.UnleashClientImpl
 import no.nav.fo.veilarbregistrering.config.requireApplicationName
@@ -9,11 +10,13 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class UnleashConfig {
+
     @Bean
-    fun unleashClient(): UnleashClient {
+    fun unleashClient(authContextHolder: AuthContextHolder): UnleashClient {
         return UnleashClientImpl(
             requireProperty(UNLEASH_API_URL_PROPERTY),
-            requireApplicationName()
+            requireApplicationName(),
+            listOf(ByUserIdStrategy(authContextHolder))
         )
     }
 
