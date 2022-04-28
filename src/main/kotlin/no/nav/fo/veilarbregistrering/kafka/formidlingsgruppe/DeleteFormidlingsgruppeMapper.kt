@@ -11,7 +11,7 @@ internal class DeleteFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
             before.PERSON_ID,
             before.PERSON_ID_STATUS,
             mapOperation(ggArenaFormidlinggruppeDto.op_type),
-            Formidlingsgruppe(before.FORMIDLINGSGRUPPEKODE),
+            Formidlingsgruppe.valueOfKode(before.FORMIDLINGSGRUPPEKODE),
             modDato(before.MOD_DATO),
             null,
             null

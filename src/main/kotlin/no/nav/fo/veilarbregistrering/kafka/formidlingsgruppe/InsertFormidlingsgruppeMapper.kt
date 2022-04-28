@@ -11,7 +11,7 @@ internal class InsertFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
             after.PERSON_ID,
             after.PERSON_ID_STATUS,
             mapOperation(ggArenaFormidlinggruppeDto.op_type),
-            Formidlingsgruppe(after.FORMIDLINGSGRUPPEKODE),
+            Formidlingsgruppe.valueOfKode(after.FORMIDLINGSGRUPPEKODE),
             modDato(after.MOD_DATO),
             null,
             null
