@@ -10,6 +10,9 @@ class ByUserIdStrategy(private val authContextHolder: AuthContextHolder) : Strat
     override fun getName(): String = "byUserId"
 
     override fun isEnabled(parameters: MutableMap<String, String>): Boolean {
+
+        LOG.info("ByUserIdStrategy.isEnabled?")
+
         val navIdentIKontekst: String = authContextHolder.navIdent.get().get()
 
         LOG.info("Nav Ident i kontekst: {}", navIdentIKontekst)
