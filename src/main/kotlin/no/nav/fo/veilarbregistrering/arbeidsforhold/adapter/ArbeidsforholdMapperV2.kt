@@ -6,7 +6,7 @@ import java.time.LocalDate
 internal object ArbeidsforholdMapperV2 {
     fun map(arbeidsforholdDto: ArbeidsforholdDto): Arbeidsforhold = Arbeidsforhold(
         arbeidsgiverOrgnummer = arbeidsforholdDto.arbeidsgiver?.let(::orgnummerHvisOrganisasjon),
-        styrk = arbeidsforholdDto.arbeidsavtaler.firstOrNull()
+        styrk = arbeidsforholdDto.arbeidsavtaler.sisteArbeidsavtale()
             ?.let(ArbeidsavtaleDto::yrke)
             ?: "utenstyrkkode",
         fom = getFom(arbeidsforholdDto.ansettelsesperiode),
@@ -29,5 +29,9 @@ internal object ArbeidsforholdMapperV2 {
             ?.periode
             ?.tom
             ?.let(LocalDate::parse)
+    }
+
+    private fun List<ArbeidsavtaleDto>.sisteArbeidsavtale(): ArbeidsavtaleDto? {
+        return this.firstOrNull()
     }
 }
