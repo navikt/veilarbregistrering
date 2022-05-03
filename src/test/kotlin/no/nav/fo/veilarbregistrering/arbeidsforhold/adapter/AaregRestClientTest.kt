@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
-import io.mockk.every
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,7 +26,13 @@ class AaregRestClientTest {
             ),
         )
 
-        val arbeidsavtale = ArbeidsavtaleDto(yrke = "2130123")
+        val arbeidsavtale = ArbeidsavtaleDto(
+            yrke = "2130123",
+            gyldighetsperiode = GyldighetsperiodeDto(
+                fom = "2014-07-01",
+                tom = "2015-12-31"
+            )
+        )
 
         val arbeidsforhold =
             ArbeidsforholdDto(

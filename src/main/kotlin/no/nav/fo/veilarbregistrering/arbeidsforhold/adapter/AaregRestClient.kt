@@ -36,7 +36,9 @@ open class AaregRestClient(
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
         return if (authContextHolder.erAADToken()) {
-            parse(utfoerRequestAad(fnr))
+            val rådata = utfoerRequestAad(fnr)
+            logger.info("Rådata fra AAREG: $rådata")
+            parse(rådata)
         } else {
             parse(utforRequest(fnr))
         }
