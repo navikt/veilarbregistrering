@@ -11,8 +11,6 @@ import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
-import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
@@ -28,9 +26,6 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
     private fun tilEksternId(bruker: AktorId) = no.nav.common.types.identer.AktorId(bruker.aktorId)
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
-        if (isDevelopment()) {
-            logger.info("Sjekker lesetilgang for ekstern bruker")
-        }
         if (rolle() == UserRole.SYSTEM) return
         if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException()
     }
@@ -45,11 +40,7 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         val navIdent = navIdentClaim()
         return if (navIdent != null) {
             veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
-        } else
-        {
-            if (isDevelopment()) {
-                logger.info("Kaller ABAC for å sjekke lesetilgang for ekstern bruker")
-            }
+        } else {
             veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
         }
     }

@@ -50,9 +50,6 @@ class RegistreringResource(
 
     @GetMapping("/registrering")
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
-        if (isDevelopment()) {
-            logger.info("Henter registrering")
-        }
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
         return hentRegistreringService.hentBrukerregistrering(bruker)?.let {
