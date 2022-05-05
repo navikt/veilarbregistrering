@@ -5,6 +5,7 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 
@@ -36,9 +37,12 @@ class UserService(
         val fnr: String =
             servletRequest().getParameter("fnr")
             ?: authContextHolder.subject.orElseThrow { IllegalArgumentException() }
-
+        if (isDevelopment()) {
+            logger.info("Subjekt i token: ${authContextHolder.subject}")
+            logger.info("Fødselsnummer hentet fra token eller URL: $fnr")
+        }
         if (!FodselsnummerValidator.isValid(fnr)) {
-            throw ManglendeBrukerInfoException("Fødselsnummer ikke gyldig.")
+            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL eller subject i token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
         return Foedselsnummer(fnr)
     }
