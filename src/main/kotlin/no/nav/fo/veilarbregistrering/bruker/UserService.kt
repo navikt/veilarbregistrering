@@ -26,13 +26,7 @@ class UserService(
         }
     }
 
-    fun finnBrukerGjennomPdl(): Bruker {
-        return if (authContextHolder.erInternBruker() || authContextHolder.erSystemBruker()) {
-            finnBrukerGjennomPdl(hentFnrFraUrl())
-        } else {
-            finnBrukerGjennomPdl(hentFnrFraToken())
-        }
-    }
+    fun finnBrukerGjennomPdl(): Bruker = finnBrukerGjennomPdl(hentFnrFraUrlEllerToken())
     fun finnBrukerGjennomPdl(fnr: Foedselsnummer): Bruker = map(pdlOppslagGateway.hentIdenter(fnr))
 
     fun hentBruker(aktorId: AktorId): Bruker = map(pdlOppslagGateway.hentIdenter(aktorId))
@@ -40,28 +34,23 @@ class UserService(
     fun getEnhetIdFromUrlOrThrow(): String =
         servletRequest().getParameter("enhetId") ?: throw ManglendeBrukerInfoException("Mangler enhetId")
 
-    private fun hentFnrFraUrl(): Foedselsnummer {
+    private fun hentFnrFraUrlEllerToken(): Foedselsnummer {
         val fnr: String =
-            servletRequest().getParameter("fnr")
+            servletRequest().getParameter("fnr") ?: hentFnrFraToken()
         if (!FodselsnummerValidator.isValid(fnr)) {
-            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
+            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL eller token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
         return Foedselsnummer(fnr)
     }
 
-    private fun hentFnrFraToken(): Foedselsnummer {
-        val fnr: String = if (authContextHolder.hentFnrFraPid().isPresent) {
+    private fun hentFnrFraToken(): String {
+        return if (authContextHolder.hentFnrFraPid().isPresent) {
             logger.info("Henter FNR fra PID-claim")
             authContextHolder.hentFnrFraPid()
         } else {
             logger.info("Henter FNR fra subject-claim")
             authContextHolder.hentFnrFraSubject()
         }.orElseThrow { IllegalStateException("Fant ikke FNR hverken i PID-claim eller subject i token for ekstern bruker. Kan ikke gjøre oppslag i PDL") }
-
-        if (!FodselsnummerValidator.isValid(fnr)) {
-            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
-        }
-        return Foedselsnummer(fnr)
     }
 
     companion object {
