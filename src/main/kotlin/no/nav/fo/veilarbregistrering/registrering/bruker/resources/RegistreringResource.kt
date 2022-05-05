@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
@@ -49,6 +50,9 @@ class RegistreringResource(
 
     @GetMapping("/registrering")
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
+        if (isDevelopment()) {
+            logger.info("Henter registrering")
+        }
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.aktorId)
         return hentRegistreringService.hentBrukerregistrering(bruker)?.let {
