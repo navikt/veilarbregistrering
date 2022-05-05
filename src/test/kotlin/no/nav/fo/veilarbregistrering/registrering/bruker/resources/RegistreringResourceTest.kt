@@ -57,6 +57,7 @@ class RegistreringResourceTest(
         every { RequestContext.servletRequest() } returns request
         every { autorisasjonService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
+        every { authContextHolder.idTokenClaims } returns Optional.empty()
     }
 
     @Test

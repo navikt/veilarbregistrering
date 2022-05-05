@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker
 
 import no.bekk.bekkopen.person.FodselsnummerValidator
+import no.nav.common.auth.Constants
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
@@ -8,6 +9,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UserService(
@@ -38,7 +40,7 @@ class UserService(
             servletRequest().getParameter("fnr")
             ?: authContextHolder.subject.orElseThrow { IllegalArgumentException() }
         if (isDevelopment()) {
-            logger.info("Subjekt i token: ${authContextHolder.subject}")
+            logger.info("PID i token: ${authContextHolder.hentFnrFraPid()}")
             logger.info("Fødselsnummer hentet fra token eller URL: $fnr")
         }
         if (!FodselsnummerValidator.isValid(fnr)) {
@@ -56,4 +58,8 @@ class UserService(
             )
         }
     }
+}
+
+fun AuthContextHolder.hentFnrFraPid(): Optional<String> {
+    return idTokenClaims.flatMap { getStringClaim(it, Constants.ID_PORTEN_PID_CLAIM) }
 }
