@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.util.*
 import java.util.Collections.emptyList
 import javax.servlet.http.HttpServletRequest
 
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest
 class TidslinjeResourceTest(
         @Autowired private val mvc: MockMvc,
         @Autowired private val autorisasjonService: AutorisasjonService,
+        @Autowired private val authContextHolder: AuthContextHolder,
         @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
         @Autowired private val tidslinjeAggregator: TidslinjeAggregator) {
 
@@ -43,6 +45,7 @@ class TidslinjeResourceTest(
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
         every { autorisasjonService.erVeileder() } returns true
+        every { authContextHolder.subject} returns Optional.of("sub")
     }
 
     @Test

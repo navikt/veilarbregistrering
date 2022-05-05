@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
@@ -40,6 +41,7 @@ class RegistreringResourceTest(
     @Autowired private val mvc: MockMvc,
     @Autowired private val registreringResource: RegistreringResource,
     @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val brukerRegistreringService: BrukerRegistreringService,
     @Autowired private val hentRegistreringService: HentRegistreringService,
@@ -54,6 +56,7 @@ class RegistreringResourceTest(
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
         every { autorisasjonService.erVeileder() } returns true
+        every { authContextHolder.subject} returns Optional.of("sub")
     }
 
     @Test
