@@ -10,7 +10,6 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -95,9 +94,6 @@ open class AaregRestClient(
     private fun behandleResponse(response: Response): String {
         if (!response.isSuccessful) {
             logger.info("Feilmelding fra Aareg: Message: ${response.message()} Body: ${RestUtils.getBodyStr(response)}")
-            if (isDevelopment()) {
-                logger.info("Token brukt mot Aareg: ${authContextHolder.requireIdTokenString()}")
-            }
             val feilmelding = mapOf(
                 HttpStatus.BAD_REQUEST to "Aareg: Ugyldig input",
                 HttpStatus.UNAUTHORIZED to "Aareg: Token mangler eller er ugyldig",
