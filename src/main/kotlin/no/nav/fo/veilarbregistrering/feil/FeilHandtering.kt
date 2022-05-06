@@ -51,9 +51,11 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(ManglendeBrukerInfoException::class)
-    fun handleManglendeBrukerInfoException(feil: ManglendeBrukerInfoException) =
-        ResponseEntity.status(UNAUTHORIZED)
+    fun handleManglendeBrukerInfoException(feil: ManglendeBrukerInfoException): ResponseEntity<String> {
+        logger.error(feil.message, feil)
+        return ResponseEntity.status(UNAUTHORIZED)
             .body(feil.message)
+    }
 
     @ExceptionHandler(KanIkkeReaktiveresException::class)
     fun handleKanIkkeReaktiveresException(feil: KanIkkeReaktiveresException) =
