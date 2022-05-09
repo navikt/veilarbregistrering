@@ -22,6 +22,7 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -40,6 +41,7 @@ import java.time.LocalDate
 @ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
 class HentBrukerRegistreringServiceIntegrationTest(
     @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
+    @Autowired val manuellRegistreringRepository: ManuellRegistreringRepository,
     @Autowired val registreringTilstandRepository: RegistreringTilstandRepository,
     @Autowired val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     @Autowired val hentRegistreringService: HentRegistreringService,
@@ -83,6 +85,17 @@ class HentBrukerRegistreringServiceIntegrationTest(
         }
         sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
         assertEquals(BrukerRegistreringType.SYKMELDT, hentRegistreringService.hentBrukerregistrering(BRUKER)?.type )
+    }
+
+    @Test
+    fun `hent sykmeldt med veileders enhet med navn`() {
+        val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
+        val manuellRegistrering = ManuellRegistrering(id, BrukerRegistreringType.SYKMELDT, "H114522", "123")
+        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
+
+        val brukerRegistreringWrapper = hentRegistreringService.hentBrukerregistrering(BRUKER)
+        assertEquals(BrukerRegistreringType.SYKMELDT, brukerRegistreringWrapper?.type)
+        assertEquals("RANDOM", brukerRegistreringWrapper?.registrering?.manueltRegistrertAv?.enhet?.navn)
     }
 
     companion object {
@@ -147,7 +160,10 @@ class HentBrukerRegistreringServiceIntegrationTest(
                     } else null
                 }
 
-                override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = emptyMap()
+                override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = mapOf(
+                    Enhetnr("123") to NavEnhet("123", "RANDOM"),
+                    Enhetnr("232") to NavEnhet("232", "Stavanger")
+                )
             }
         }
     }

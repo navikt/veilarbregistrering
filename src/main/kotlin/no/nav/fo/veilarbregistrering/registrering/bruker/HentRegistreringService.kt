@@ -84,6 +84,8 @@ class HentRegistreringService(
             .hentManuellRegistrering(registreringId, brukerRegistreringType) ?: return null
         val enhet = finnEnhet(Enhetnr(veilederEnhetId))
 
+        logger.info("Henter NAV-enhet: ${enhet} for enhetId: $veilederEnhetId")
+
         return Veileder(veilederIdent, enhet)
     }
 
