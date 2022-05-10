@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import no.nav.fo.veilarbregistrering.orgenhet.Enhetnr
@@ -13,6 +14,8 @@ import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @ExtendWith(MockServerExtension::class)
 class Norg2GatewayTest(private val mockServer: ClientAndServer) {
@@ -24,7 +27,7 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): Norg2RestClient {
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return Norg2RestClient(baseUrl)
+        return Norg2RestClient(baseUrl, objectMapper)
     }
 
     @Test
@@ -47,4 +50,28 @@ class Norg2GatewayTest(private val mockServer: ClientAndServer) {
         Assertions.assertThat(enhetsnr).isNotNull
         Assertions.assertThat(enhetsnr).isEqualTo(Enhetnr("0393"))
     }
+
+    @Test
+    fun `skal hente alle enheter`() {
+        val norg2Gateway = Norg2GatewayImpl(buildClient())
+
+        val json = FileToJson.toJson("/orgenhet/alleEnheter.json")
+
+        mockServer.`when`(
+            HttpRequest
+                .request()
+                .withMethod("GET")
+                .withPath("/api/v1/enhet")
+                .withQueryStringParameter("oppgavebehandlerFilter", "UFILTRERT"))
+            .respond(HttpResponse.response()
+                .withStatusCode(200)
+                .withBody(json, MediaType.JSON_UTF_8))
+
+        val alleEnheter = norg2Gateway.hentAlleEnheter()
+        assertTrue(alleEnheter.size == 2)
+
+        val fredrikstad = alleEnheter[Enhetnr("0106")]
+        assertTrue("NAV Fredrikstad".equals(fredrikstad!!.navn))
+    }
+
 }
