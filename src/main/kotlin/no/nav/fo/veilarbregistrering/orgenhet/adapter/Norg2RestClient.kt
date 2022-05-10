@@ -58,6 +58,7 @@ class Norg2RestClient(private val baseUrl: String) : HealthCheck {
             RestClient.baseClient().newCall(request).execute()
                 .use { response -> return RestUtils.parseJsonResponseArrayOrThrow(response, RsEnhet::class.java) }
         } catch (e: IOException) {
+            LOG.error("Feil ved henting av alle enheter fra NORG2. Vil ikke kunne populere registreringer med aktuelt NAV-kontor.", e)
             return emptyList()
         }
     }
