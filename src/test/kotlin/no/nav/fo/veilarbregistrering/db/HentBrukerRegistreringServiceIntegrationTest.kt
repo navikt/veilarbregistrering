@@ -90,12 +90,27 @@ class HentBrukerRegistreringServiceIntegrationTest(
     @Test
     fun `hent sykmeldt med veileders enhet med navn`() {
         val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
-        val manuellRegistrering = ManuellRegistrering(id, BrukerRegistreringType.SYKMELDT, "H114522", "123")
+        val manuellRegistrering = ManuellRegistrering(id, BrukerRegistreringType.SYKMELDT, "H114522", "0106")
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
 
         val brukerRegistreringWrapper = hentRegistreringService.hentBrukerregistrering(BRUKER)
         assertEquals(BrukerRegistreringType.SYKMELDT, brukerRegistreringWrapper?.type)
-        assertEquals("RANDOM", brukerRegistreringWrapper?.registrering?.manueltRegistrertAv?.enhet?.navn)
+        assertEquals("NAV Fredrikstad", brukerRegistreringWrapper?.registrering?.manueltRegistrertAv?.enhet?.navn)
+    }
+
+    @Test
+    fun `hent ordinær registrering med veileders enhet med navn`() {
+        val id = brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+        profileringRepository.lagreProfilering(id, lagProfilering())
+
+        val manuellRegistrering = ManuellRegistrering(id, BrukerRegistreringType.ORDINAER, "H114522", "0106")
+        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
+
+        val brukerRegistreringWrapper = hentRegistreringService.hentBrukerregistrering(BRUKER)
+
+        assertEquals(BrukerRegistreringType.ORDINAER, brukerRegistreringWrapper?.type)
+        assertEquals("NAV Fredrikstad", brukerRegistreringWrapper?.registrering?.manueltRegistrertAv?.enhet?.navn)
     }
 
     companion object {
@@ -153,16 +168,16 @@ class HentBrukerRegistreringServiceIntegrationTest(
             fun norg2Gateway() = object : Norg2Gateway {
                 override fun hentEnhetFor(kommune: Kommune): Enhetnr? {
                     if (Kommune("1241") == kommune) {
-                        return Enhetnr("232")
+                        return Enhetnr("0106")
                     }
                     return if (Kommune.medBydel(STAVANGER) == kommune) {
-                        Enhetnr("1103")
+                        Enhetnr("0232")
                     } else null
                 }
 
                 override fun hentAlleEnheter(): Map<Enhetnr, NavEnhet> = mapOf(
-                    Enhetnr("123") to NavEnhet("123", "RANDOM"),
-                    Enhetnr("232") to NavEnhet("232", "Stavanger")
+                    Enhetnr("0106") to NavEnhet("0106", "NAV Fredrikstad"),
+                    Enhetnr("0232") to NavEnhet("0232", "Stavanger")
                 )
             }
         }
