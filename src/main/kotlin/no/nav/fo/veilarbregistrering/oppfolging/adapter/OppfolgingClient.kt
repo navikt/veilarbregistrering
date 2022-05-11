@@ -7,16 +7,30 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
+import no.nav.fo.veilarbregistrering.feil.RestException
+import no.nav.fo.veilarbregistrering.http.Json
+import no.nav.fo.veilarbregistrering.http.buildHttpClient
+import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
+import no.nav.fo.veilarbregistrering.oppfolging.ReaktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.slf4j.MDC
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
@@ -30,8 +44,32 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
+        val request = Request.Builder()
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("oppfolging/reaktiverbruker")
+                    .build()
+            )
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenProvider()}")
+            .method("POST", fnr.let { RequestBody.create(Json, objectMapper.writeValueAsString(it)) })
+            .build()
+
         doTimedCall(REAKTIVER_BRUKER) {
-            post(url, fnr, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+            client.newCall(request).execute().use { response ->
+                when (val code = response.code()) {
+                    204 -> return@use
+                    403 -> throw ReaktiverBrukerException(
+                        "Feil ved reaktivering av bruker - ingen tilgang. Response fra oppfølging: ${
+                            response.body()?.toString()
+                        }"
+                    )
+                    else -> throw ReaktiverBrukerException(
+                        "Feil ved reaktiver av bruker. Responsekode: ${response.code()}. " +
+                                "Response fra oppfølging: ${response.body()?.toString()}"
+                    )
+                }
+
+            }
         }
     }
 
@@ -95,5 +133,13 @@ open class OppfolgingClient(
     
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
+    }
+
+    companion object {
+        val client: OkHttpClient = buildHttpClient {
+            readTimeout(120L, TimeUnit.SECONDS)
+        }
+
+        val emptyHandler: (Exception) -> Nothing? = { null }
     }
 }
