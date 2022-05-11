@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.orgenhet.adapter
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -16,7 +14,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import java.io.IOException
 
-class Norg2RestClient(private val baseUrl: String, private val objectMapper: ObjectMapper) : HealthCheck {
+class Norg2RestClient(private val baseUrl: String) : HealthCheck {
 
     fun hentEnhetFor(kommune: Kommune): List<RsNavKontorDto> {
         val rsArbeidsfordelingCriteriaDto = RsArbeidsfordelingCriteriaDto(
@@ -58,8 +56,7 @@ class Norg2RestClient(private val baseUrl: String, private val objectMapper: Obj
             .build()
         try {
             RestClient.baseClient().newCall(request).execute()
-                .use { response -> return objectMapper.readValue(response.body()!!.byteStream(), object : TypeReference<List<RsEnhet>>() {})
-                }
+                .use { response -> return RestUtils.parseJsonResponseArrayOrThrow(response, RsEnhet::class.java) }
         } catch (e: IOException) {
             LOG.error("Feil ved henting av alle enheter fra NORG2. Vil ikke kunne populere registreringer med aktuelt NAV-kontor.", e)
             return emptyList()
