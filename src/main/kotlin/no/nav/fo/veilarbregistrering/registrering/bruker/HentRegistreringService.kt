@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering.Companion.medProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapper
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
@@ -63,7 +62,7 @@ class HentRegistreringService(
         )
         ordinaerBrukerRegistrering.manueltRegistrertAv = veileder
         val profilering = profileringRepository.hentProfileringForId(ordinaerBrukerRegistrering.id)
-        return medProfilering(ordinaerBrukerRegistrering, profilering)
+        return ordinaerBrukerRegistrering.med(profilering)
     }
 
     fun hentSykmeldtRegistrering(bruker: Bruker): SykmeldtRegistrering? {

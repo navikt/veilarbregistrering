@@ -25,16 +25,16 @@ data class OrdinaerBrukerRegistrering(
         return "OrdinaerBrukerRegistrering(id=$id, opprettetDato=$opprettetDato, besvarelse=$besvarelse, teksterForBesvarelse=$teksterForBesvarelse, sisteStilling=$sisteStilling, profilering=$profilering)"
     }
 
-    companion object {
-        fun medProfilering(registrering: OrdinaerBrukerRegistrering, profilering: Profilering): OrdinaerBrukerRegistrering =
-            OrdinaerBrukerRegistrering(
-                registrering.id,
-                registrering.opprettetDato,
-                registrering.besvarelse,
-                registrering.teksterForBesvarelse,
-                registrering.sisteStilling,
-                profilering
-            )
+    fun med(profilering: Profilering) : OrdinaerBrukerRegistrering {
+        return OrdinaerBrukerRegistrering(
+            id,
+            opprettetDato,
+            besvarelse,
+            teksterForBesvarelse,
+            sisteStilling,
+            profilering,
+            manueltRegistrertAv
+        )
     }
 }
 
