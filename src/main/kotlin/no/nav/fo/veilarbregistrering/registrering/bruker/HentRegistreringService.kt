@@ -83,6 +83,10 @@ class HentRegistreringService(
             .hentManuellRegistrering(registreringId, brukerRegistreringType) ?: return null
         val enhet = finnEnhet(Enhetnr(veilederEnhetId))
 
+        if (veilederEnhetId == null) {
+            logger.warn("veilederEnhetId er null for registreringId: $registreringId")
+        }
+
         logger.info("Henter NAV-enhet: ${enhet} for enhetId: $veilederEnhetId")
 
         return Veileder(veilederIdent, enhet)
@@ -92,7 +96,7 @@ class HentRegistreringService(
         return try {
             norg2Gateway.hentAlleEnheter()[enhetId]
         } catch (e: Exception) {
-            logger.error("Feil ved henting av NAV-enheter fra den nye Organisasjonsenhet-tjenesten.", e)
+            logger.error("Får ikke populert registrering med NAV-enhet pga. feil mot NORG2 - fortsetter uten.", e)
             null
         }
     }

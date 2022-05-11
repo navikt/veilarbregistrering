@@ -9,6 +9,7 @@ import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.enhet.Kommune
+import no.nav.fo.veilarbregistrering.orgenhet.HentAlleEnheterException
 import okhttp3.HttpUrl
 import okhttp3.Request
 import org.slf4j.LoggerFactory
@@ -61,8 +62,7 @@ class Norg2RestClient(private val baseUrl: String, private val objectMapper: Obj
                 .use { response -> return objectMapper.readValue(response.body()!!.byteStream(), object : TypeReference<List<RsEnhet>>() {})
                 }
         } catch (e: IOException) {
-            LOG.error("Feil ved henting av alle enheter fra NORG2. Vil ikke kunne populere registreringer med aktuelt NAV-kontor.", e)
-            return emptyList()
+            throw HentAlleEnheterException("Henting av alle enheter fra NORG2 feilet.", e)
         }
     }
 

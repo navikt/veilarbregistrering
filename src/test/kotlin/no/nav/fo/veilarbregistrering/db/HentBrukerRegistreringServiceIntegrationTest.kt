@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
+import kotlin.test.assertNull
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -111,6 +112,18 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
         assertEquals(BrukerRegistreringType.ORDINAER, brukerRegistreringWrapper?.type)
         assertEquals("NAV Fredrikstad", brukerRegistreringWrapper?.registrering?.manueltRegistrertAv?.enhet?.navn)
+    }
+
+    @Test
+    fun `hent ordinær registrering uten veileder`() {
+        val id = brukerRegistreringRepository.lagre(SELVGAENDE_BRUKER, BRUKER).id
+        registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
+        profileringRepository.lagreProfilering(id, lagProfilering())
+
+        val brukerRegistreringWrapper = hentRegistreringService.hentBrukerregistrering(BRUKER)
+
+        assertEquals(BrukerRegistreringType.ORDINAER, brukerRegistreringWrapper?.type)
+        assertNull(brukerRegistreringWrapper?.registrering?.manueltRegistrertAv)
     }
 
     companion object {
