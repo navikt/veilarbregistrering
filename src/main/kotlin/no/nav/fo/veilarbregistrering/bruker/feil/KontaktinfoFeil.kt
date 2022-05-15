@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.bruker.feil
 
-class KontaktinfoIngenTilgang : RuntimeException("Ingen tilgang ved kall til PDL")
+class KontaktinfoIngenTilgang(val melding: String) : RuntimeException(melding)
 
-class KontaktinfoIngenTreff : RuntimeException("Ingen treff ved oppslag i PDL")
+class KontaktinfoIngenTreff(val melding: String) : RuntimeException(melding)
 
-class KontaktinfoUkjentFeil : RuntimeException("Ukjent feil ved henting av kontaktinfo fra PDL")
+class KontaktinfoUkjentFeil(val melding: String) : RuntimeException(melding)

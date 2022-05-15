@@ -37,12 +37,12 @@ class KontaktinfoService(private val pdlOppslagGateway: PdlOppslagGateway, priva
             return opprettKontaktinfo(person, telefonnummer)
         }
         if (feiltyper.contains(FeilType.INGEN_TILGANG)) {
-            throw KontaktinfoIngenTilgang()
+            throw KontaktinfoIngenTilgang("Ingen tilgang ved kall til PDL eller KRR")
         }
         if (feiltyper.contains(FeilType.UKJENT)) {
-            throw KontaktinfoUkjentFeil()
+            throw KontaktinfoUkjentFeil("Ukjent feil ved henting av kontaktinfo fra PDL eller KRR")
         }
-        throw KontaktinfoIngenTreff()
+        throw KontaktinfoIngenTreff("Ingen treff ved oppslag i PDL eller KRR")
     }
 
     private fun fantMinstEttTelefonnummer(person: Person?, telefonnummer: Telefonnummer?): Boolean {
