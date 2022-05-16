@@ -26,4 +26,14 @@ class ProfilertInnsatsgruppeService(
 
         return Pair(profilering?.innsatsgruppe, oppfolgingsstatus.servicegruppe)
     }
+
+    fun erStandardInnsats(bruker: Bruker): Boolean {
+        val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
+
+        return if (servicegruppe?.value() === "IVURD") {
+            innsatsgruppe === Innsatsgruppe.STANDARD_INNSATS
+        } else {
+            servicegruppe?.value() === "IKVAL"
+        }
+    }
 }
