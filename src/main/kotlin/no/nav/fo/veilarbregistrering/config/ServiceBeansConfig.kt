@@ -33,6 +33,9 @@ import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
+import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
+import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringApi
+import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
@@ -285,6 +288,20 @@ class ServiceBeansConfig {
     @Bean
     fun profileringService(arbeidsforholdGateway: ArbeidsforholdGateway): ProfileringService {
         return ProfileringService(arbeidsforholdGateway)
+    }
+
+    @Bean
+    fun profilertInnsatsgruppeService(
+        oppfolgingGateway: OppfolgingGateway,
+        profileringRepository: ProfileringRepository,
+        brukerRegistreringRepository: BrukerRegistreringRepository
+    ): ProfilertInnsatsgruppeService {
+        return ProfilertInnsatsgruppeService(oppfolgingGateway, profileringRepository, brukerRegistreringRepository)
+    }
+
+    @Bean
+    fun profileringResource(userService: UserService, autorisasjonService: AutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
+        return ProfileringResource(userService, autorisasjonService, profilertInnsatsgruppeService)
     }
 
     @Bean
