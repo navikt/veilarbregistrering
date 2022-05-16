@@ -11,6 +11,8 @@ import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
@@ -39,8 +41,10 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
     private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
         val navIdent = navIdentClaim()
         return if (navIdent != null) {
+            LOG.info("harVeilederTilgangTilPerson utfører $handling for ${rolle()}-rolle")
             veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
         } else {
+            LOG.info("harTilgangTilPerson utfører $handling for ${rolle()}-rolle")
             veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
         }
     }
@@ -72,4 +76,8 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
 
     fun erVeileder(): Boolean = erInternBruker()
     fun erInternBruker(): Boolean = authContextHolder.erInternBruker()
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(AutorisasjonService::class.java)
+    }
 }
