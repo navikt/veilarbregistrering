@@ -16,20 +16,33 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @AutoConfigureMockMvc
 @WebMvcTest
 @ContextConfiguration(classes = [ProfileringResourceConfig::class])
 class ProfileringResourceTest(@Autowired private val mvc: MockMvc) {
    @Test
-   fun `get - Svarer med Pair`() {
+   fun `get profilering returnerer Pair av innsatsgruppe og servicegruppe`() {
        val responseBody = mvc.get("/api/profilering")
            .andExpect {
                status { isOk() }
            }.andReturn().response.contentAsString
 
-       Assertions.assertThat(responseBody).isNotNull
+       System.out.println(responseBody)
+       assertEquals("{\"innsatsgruppe\":\"STANDARD_INNSATS\",\"servicegruppe\":\"IVURD\"}", responseBody)
    }
+
+    @Test
+    fun `get standard-innsats returnerer boolsk verdi`() {
+        val responseBody = mvc.get("/api/profilering/standard-innsats")
+            .andExpect {
+                status { isOk() }
+            }.andReturn().response.contentAsString
+
+        assertEquals("false", responseBody)
+    }
 }
 
 @Configuration
@@ -45,6 +58,7 @@ class ProfileringResourceConfig {
         val profilertInnsatsgruppeService = mockk<ProfilertInnsatsgruppeService>()
 
         every { profilertInnsatsgruppeService.hentProfilering(any()) } returns Pair(Innsatsgruppe.STANDARD_INNSATS, Servicegruppe("IVURD"))
+        every { profilertInnsatsgruppeService.erStandardInnsats(any()) } returns false
 
         return profilertInnsatsgruppeService
     }

@@ -22,4 +22,12 @@ class ProfileringResource(
 
         return ProfileringDto.fra(profilertInnsatsgruppeService.hentProfilering(bruker))
     }
+
+    @GetMapping("/profilering/standard-innsats")
+    override fun erStandardInnsatsBruker(): Boolean {
+      val bruker = userService.finnBrukerGjennomPdl()
+      autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+
+      return profilertInnsatsgruppeService.erStandardInnsats(bruker)
+    }
 }
