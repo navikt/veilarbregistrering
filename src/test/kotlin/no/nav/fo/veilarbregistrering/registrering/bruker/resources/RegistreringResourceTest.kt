@@ -226,7 +226,7 @@ class RegistreringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentRegistrering()
-        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeAktorId()) }
+        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(IDENT) }
     }
 
     @Test
@@ -240,7 +240,7 @@ class RegistreringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.registrerSykmeldt(sykmeldtRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<AktorId>()) }
+        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
     }
 
     @Test
@@ -258,7 +258,7 @@ class RegistreringResourceTest(
             )
         } returns ordinaerBrukerRegistrering
         registreringResource.registrerBruker(ordinaerBrukerRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<AktorId>()) }
+        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
     }
 
     companion object {

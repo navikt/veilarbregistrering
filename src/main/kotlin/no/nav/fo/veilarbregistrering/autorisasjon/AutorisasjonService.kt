@@ -10,7 +10,6 @@ import no.nav.common.auth.utils.IdentUtils
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
-import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -25,12 +24,9 @@ open class AutorisasjonService(
     private val metricsService: MetricsService) {
 
     fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
-    fun sjekkLesetilgangTilBruker(bruker: AktorId) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
-    fun sjekkSkrivetilgangTilBruker(bruker: AktorId) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
-    private fun tilEksternId(bruker: AktorId) = no.nav.common.types.identer.AktorId(bruker.aktorId)
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
         if (rolle() == UserRole.SYSTEM) return
