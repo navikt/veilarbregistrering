@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
+import io.micrometer.core.instrument.Tag
 import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.Constants.AAD_NAV_IDENT_CLAIM
@@ -11,13 +12,17 @@ import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringService
+import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
 
-open class AutorisasjonService(private val veilarbPep: Pep, private val authContextHolder: AuthContextHolder) {
+open class AutorisasjonService(
+    private val veilarbPep: Pep,
+    private val authContextHolder: AuthContextHolder,
+    private val metricsService: MetricsService) {
 
     fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkLesetilgangTilBruker(bruker: AktorId) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
@@ -42,11 +47,22 @@ open class AutorisasjonService(private val veilarbPep: Pep, private val authCont
         val navIdent = navIdentClaim()
         return if (navIdent != null) {
             LOG.info("harVeilederTilgangTilPerson utfører $handling for ${rolle()}-rolle")
+            registrerAutorisationEvent(true, handling, rolle())
             veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
         } else {
             LOG.info("harTilgangTilPerson utfører $handling for ${rolle()}-rolle")
+            registrerAutorisationEvent(false, handling, rolle())
             veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
         }
+    }
+
+    private fun registrerAutorisationEvent(navIdentFlagg: Boolean, handling: ActionId, userRole: UserRole) {
+        metricsService.registrer(
+            Events.AUTORISASJON,
+            Tag.of("navident", navIdentFlagg.toString().lowercase())   ,
+            Tag.of("handling", handling.id),
+            Tag.of("rolle", userRole.name.lowercase())
+        )
     }
 
     private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()
