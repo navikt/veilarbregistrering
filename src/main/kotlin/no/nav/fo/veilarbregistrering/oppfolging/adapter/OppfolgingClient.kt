@@ -31,7 +31,7 @@ open class OppfolgingClient(
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
         doTimedCall(REAKTIVER_BRUKER) {
-            post(url, fnr, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+            post(url, fnr, getServiceAuthorizationHeader(), ::reaktiveringFeilMapper)
         }
     }
 
@@ -62,12 +62,27 @@ open class OppfolgingClient(
         when (e) {
             is ForbiddenException -> {
                 val feil = mapper(objectMapper.readValue(e.response!!))
-                logger.warn("Feil ved (re)aktivering av bruker: ${feil.name}")
+                logger.warn("Feil ved aktivering av bruker: ${feil.name}")
                 metricsService.registrer(AKTIVER_BRUKER_FEIL, feil)
                 AktiverBrukerException(feil)
             }
             else -> {
                 logger.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
+                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
+                null
+            }
+        }
+
+    private fun reaktiveringFeilMapper(e: Exception): RuntimeException? =
+        when (e) {
+            is ForbiddenException -> {
+                val feil = mapper(objectMapper.readValue(e.response!!))
+                logger.warn("Feil ved reaktivering av bruker: ${feil.name}")
+                metricsService.registrer(REAKTIVER_BRUKER_FEIL, feil)
+                AktiverBrukerException(feil)
+            }
+            else -> {
+                logger.error("Uhåndtert feil ved reaktivering av bruker: ${e.message}", e)
                 metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
                 null
             }
