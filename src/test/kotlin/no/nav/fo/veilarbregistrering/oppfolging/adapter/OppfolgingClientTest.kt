@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
@@ -103,13 +104,37 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil ved manglende oppholdstillatelse`() {
+    fun `skal kaste riktig feil ved manglende oppholdstillatelse for aktivering`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
         )
         val exception: AktiverBrukerException = assertThrows {
             oppfolgingClient.aktiverBruker(AktiverBrukerData(FNR, Innsatsgruppe.SITUASJONSBESTEMT_INNSATS))
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
+    @Test
+    fun `skal kaste riktig feil ved manglende oppholdstillatelse for reaktivering`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
+            HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
+                .withStatusCode(403)
+        )
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.reaktiverBruker(FNR)
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
+    @Test
+    fun `skal kaste riktig feil ved manglende oppholdstillatelse for sykmeldt-aktivering`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(
+            HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
+                .withStatusCode(403)
+        )
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.aktiverSykmeldt(SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER, Foedselsnummer(FNR.fnr))
         }
         assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
     }
