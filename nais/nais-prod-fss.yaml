@@ -119,6 +119,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: pto-proxy
+          namespace: pto
+          cluster: prod-gcp
         - application: paw-proxy
         - application: veilarbperson
           namespace: pto
