@@ -45,7 +45,7 @@ open class OppfolgingClient(
     fun aktiverSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
         doTimedCall(OPPFOLGING_SYKMELDT) {
-            post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+            post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringSykmeldtFeilMapper)
         }
     }
 
@@ -68,6 +68,21 @@ open class OppfolgingClient(
             }
             else -> {
                 logger.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
+                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
+                null
+            }
+        }
+
+    private fun aktiveringSykmeldtFeilMapper(e: Exception): RuntimeException? =
+        when (e) {
+            is ForbiddenException -> {
+                val feil = mapper(objectMapper.readValue(e.response!!))
+                logger.warn("Feil ved aktivering av sykmeldt bruker: ${feil.name}")
+                metricsService.registrer(OPPFOLGING_SYKMELDT_FEIL, feil)
+                AktiverBrukerException(feil)
+            }
+            else -> {
+                logger.error("Uhåndtert feil ved aktivering av sykmeldt bruker: ${e.message}", e)
                 metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
                 null
             }

@@ -6,6 +6,7 @@ enum class Events(override val key: String) : Event {
     REAKTIVER_BRUKER_FEIL("oppfolging.reaktiverBruker.feil.event"),
     REAKTIVER_BRUKER("oppfolging.reaktiverBruker.event"),
     OPPFOLGING_SYKMELDT("oppfolging.sykmeldt.event"),
+    OPPFOLGING_SYKMELDT_FEIL("oppfolging.sykmeldt.feil.event"),
     OPPFOLGING_FEIL("oppfolging.feil.event"),
     OPPGAVE_OPPRETTET_EVENT("arbeid.registrert.oppgave.event"),
     OPPGAVE_ALLEREDE_OPPRETTET_EVENT("arbeid.registrert.oppgave.allerede-opprettet.event"),
