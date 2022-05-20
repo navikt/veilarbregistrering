@@ -4,44 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.feil.RestException
 import no.nav.fo.veilarbregistrering.http.Headers.buildHeaders
-import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import java.util.concurrent.TimeUnit
 
 abstract class AbstractOppfolgingClient(
     private val objectMapper: ObjectMapper,
     metricsService: MetricsService
 ): TimedMetric(metricsService) {
-
-    fun <R : RuntimeException> post(
-            url: String,
-            requestEntity: Any,
-            headers: List<Pair<String, String>> = emptyList(),
-            expectedErrorsHandler: (Exception) -> R?
-    ) {
-        val request: Request.Builder = buildRequest(url, headers)
-        request.method(
-                "POST",
-                requestEntity.let { RequestBody.create(Json, objectMapper.writeValueAsString(it)) }
-        )
-
-        try {
-            client.newCall(request.build()).execute().use { response ->
-                when (val code = response.code()) {
-                    204 -> return@use
-                    403 -> throw ForbiddenException(response.body()?.string())
-                    else -> throw RestException(code)
-                }
-            }
-        } catch (e: Exception) {
-            runExceptionmapperAndThrow(expectedErrorsHandler, e, "POST", url)
-        }
-    }
 
     fun <T, R : RuntimeException> executeRequest(
         request: Request,

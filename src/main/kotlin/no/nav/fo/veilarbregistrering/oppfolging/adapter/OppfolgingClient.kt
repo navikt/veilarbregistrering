@@ -9,7 +9,6 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
-import no.nav.fo.veilarbregistrering.feil.ForbiddenException
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
@@ -65,15 +64,64 @@ open class OppfolgingClient(
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
+        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
+        request.method(
+            "POST",
+            RequestBody.create(Json, objectMapper.writeValueAsString(aktiverBrukerData))
+        )
         doTimedCall(AKTIVER_BRUKER) {
-            post(url, aktiverBrukerData, getServiceAuthorizationHeader(), ::aktiveringFeilMapper)
+            client.newCall(request.build()).execute().use { aktiveringResponsMapper(it) }
+        }
+    }
+
+    private fun aktiveringResponsMapper(response: Response) {
+        if (response.isSuccessful) return
+        else {
+            when (response.code()) {
+                403 -> {
+                    val feil = mapper(objectMapper.readValue(response.body()!!.string()))
+                    logger.warn("Feil ved aktivering av bruker: ${feil.name}")
+                    metricsService.registrer(AKTIVER_BRUKER_FEIL, feil)
+                    throw AktiverBrukerException(feil)
+                }
+                else -> {
+                    logger.error("Uhåndtert feil ved aktivering av bruker: ${response.code()}, ${response.body()?.string()}")
+                    metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
+                    throw RuntimeException("Feil ved aktivering av bruker: ${response.code()}")
+                }
+            }
         }
     }
 
     fun aktiverSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
+        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
+        request.method(
+            "POST",
+            RequestBody.create(Json, objectMapper.writeValueAsString(sykmeldtBrukerType))
+        )
         doTimedCall(OPPFOLGING_SYKMELDT) {
-            post(url, sykmeldtBrukerType, getServiceAuthorizationHeader(), ::aktiveringSykmeldtFeilMapper)
+            client.newCall(request.build()).execute().use { aktiveringSykmeldtResponsMapper(it) }
+        }
+    }
+
+
+    private fun aktiveringSykmeldtResponsMapper(response: Response) {
+        if (response.isSuccessful) return
+        else {
+            when (response.code()) {
+                403 -> {
+                    val feil = mapper(objectMapper.readValue(response.body()!!.string()))
+                    logger.warn("Feil ved aktivering av sykmeldt bruker: ${feil.name}")
+                    metricsService.registrer(OPPFOLGING_SYKMELDT_FEIL, feil)
+                    throw AktiverBrukerException(feil)
+                }
+                else -> {
+                    logger.error("Uhåndtert feil ved aktivering av sykmeldt bruker: ${response.code()}, ${response.body()?.string()}")
+                    metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
+                    throw RuntimeException("Feil ved aktivering av sykmeldt bruker: ${response.code()}")
+                }
+            }
         }
     }
 
@@ -85,36 +133,6 @@ open class OppfolgingClient(
             }
         }
     }
-
-    private fun aktiveringFeilMapper(e: Exception): RuntimeException? =
-        when (e) {
-            is ForbiddenException -> {
-                val feil = mapper(objectMapper.readValue(e.response!!))
-                logger.warn("Feil ved aktivering av bruker: ${feil.name}")
-                metricsService.registrer(AKTIVER_BRUKER_FEIL, feil)
-                AktiverBrukerException(feil)
-            }
-            else -> {
-                logger.error("Uhåndtert feil ved aktivering av bruker: ${e.message}", e)
-                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
-                null
-            }
-        }
-
-    private fun aktiveringSykmeldtFeilMapper(e: Exception): RuntimeException? =
-        when (e) {
-            is ForbiddenException -> {
-                val feil = mapper(objectMapper.readValue(e.response!!))
-                logger.warn("Feil ved aktivering av sykmeldt bruker: ${feil.name}")
-                metricsService.registrer(OPPFOLGING_SYKMELDT_FEIL, feil)
-                AktiverBrukerException(feil)
-            }
-            else -> {
-                logger.error("Uhåndtert feil ved aktivering av sykmeldt bruker: ${e.message}", e)
-                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
-                null
-            }
-        }
 
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
