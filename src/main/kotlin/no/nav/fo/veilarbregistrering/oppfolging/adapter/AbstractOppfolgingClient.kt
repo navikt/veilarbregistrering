@@ -43,16 +43,7 @@ abstract class AbstractOppfolgingClient(
         }
     }
 
-    fun <T, R : RuntimeException> get(
-        url: String,
-        headers: List<Pair<String, String>> = emptyList(),
-        responseClass: Class<T>,
-        expectedErrorsHandler: (Exception) -> R?
-    ): T {
-        return executeRequest(buildRequest(url, headers).build(), responseClass, expectedErrorsHandler)
-    }
-
-    private fun <T, R : RuntimeException> executeRequest(
+    fun <T, R : RuntimeException> executeRequest(
         request: Request,
         responseClass: Class<T>,
         expectedErrorsHandler: (Exception) -> R? = emptyHandler
@@ -74,12 +65,12 @@ abstract class AbstractOppfolgingClient(
         }
     }
 
-    private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
+    fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
         Request.Builder().url(url).also { r ->
             r.headers(buildHeaders(headers))
         }
 
-    private fun <R : RuntimeException> runExceptionmapperAndThrow(
+    fun <R : RuntimeException> runExceptionmapperAndThrow(
         expectedErrorsHandler: (Exception) -> R?,
         e: Exception,
         method: String,

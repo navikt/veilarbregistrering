@@ -10,6 +10,7 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.feil.ForbiddenException
+import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -17,6 +18,9 @@ import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
@@ -30,8 +34,32 @@ open class OppfolgingClient(
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
+        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
+        request.method(
+            "POST",
+            RequestBody.create(Json, objectMapper.writeValueAsString(fnr))
+        )
         doTimedCall(REAKTIVER_BRUKER) {
-            post(url, fnr, getServiceAuthorizationHeader(), ::reaktiveringFeilMapper)
+            client.newCall(request.build()).execute().use { reaktiveringResponsMapper(it) }
+        }
+    }
+
+    private fun reaktiveringResponsMapper(response: Response) {
+        if (response.isSuccessful) return
+        else {
+            when (response.code()) {
+                403 -> {
+                    val feil = mapper(objectMapper.readValue(response.body()!!.string()))
+                    logger.warn("Feil ved reaktivering av bruker: ${feil.name}")
+                    metricsService.registrer(REAKTIVER_BRUKER_FEIL, feil)
+                    throw AktiverBrukerException(feil)
+                }
+                else -> {
+                    logger.error("Uhåndtert feil ved reaktivering av bruker: ${response.code()}, ${response.body()?.string()}")
+                    metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
+                    throw RuntimeException("Feil ved reaktivering av bruker: ${response.code()}")
+                }
+            }
         }
     }
 
@@ -52,7 +80,7 @@ open class OppfolgingClient(
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
         return doTimedCall {
-            get(url, getAuthorizationFromCookieOrResolveOboToken(), ErUnderOppfolgingDto::class.java) {
+            executeRequest(buildRequest(url, getAuthorizationFromCookieOrResolveOboToken()).build(), ErUnderOppfolgingDto::class.java) {
                 SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2", it)
             }
         }
@@ -88,21 +116,6 @@ open class OppfolgingClient(
             }
         }
 
-    private fun reaktiveringFeilMapper(e: Exception): RuntimeException? =
-        when (e) {
-            is ForbiddenException -> {
-                val feil = mapper(objectMapper.readValue(e.response!!))
-                logger.warn("Feil ved reaktivering av bruker: ${feil.name}")
-                metricsService.registrer(REAKTIVER_BRUKER_FEIL, feil)
-                AktiverBrukerException(feil)
-            }
-            else -> {
-                logger.error("Uhåndtert feil ved reaktivering av bruker: ${e.message}", e)
-                metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", e.message ?: "ukjent"))
-                null
-            }
-        }
-
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
             servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
@@ -122,7 +135,7 @@ open class OppfolgingClient(
             else -> throw IllegalStateException("Ukjent feil fra Arena: $aktiverBrukerFeilDto")
         }
     }
-    
+
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
     }
