@@ -24,6 +24,7 @@ import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
+import kotlin.test.assertFalse
 
 @ExtendWith(MockServerExtension::class)
 internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
@@ -83,7 +84,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     fun testAtReaktiveringFeilerDersomArenaSierAtBrukerErUnderOppfolging() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging"))
             .respond(
-                HttpResponse.response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8)
+                HttpResponse.response().withBody(settOppfolgingOgReaktivering(oppfolging = true, reaktivering = false), MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
         assertThrows<RuntimeException> {
@@ -94,7 +95,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     fun testAtReaktiveringGirOKDersomArenaSierAtBrukerKanReaktiveres() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging"))
             .respond(
-                HttpResponse.response().withBody(settOppfolgingOgReaktivering(false, true), MediaType.JSON_UTF_8)
+                HttpResponse.response().withBody(settOppfolgingOgReaktivering(oppfolging = false, reaktivering = true), MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
@@ -151,12 +152,24 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES)
     }
 
+    @Test
+    fun `skal hente og deserialisere bruker under oppfølging`() {
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/v2/oppfolging"))
+            .respond(
+                HttpResponse.response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
+                    .withStatusCode(200)
+            )
+
+        val response = oppfolgingClient.erBrukerUnderOppfolging(Foedselsnummer(FNR.fnr))
+        assertFalse(response.erUnderOppfolging)
+    }
+
     private fun settOppfolgingOgReaktivering(oppfolging: Boolean, reaktivering: Boolean): String {
         return "{\"kanReaktiveres\": $reaktivering, \"underOppfolging\": $oppfolging}"
     }
 
     private fun ikkeUnderOppfolgingBody(): String = """
-        { "underOppfolging": false }
+        { "erUnderOppfolging": false }
     """.trimIndent()
 
     private fun okRegistreringBody(): String {

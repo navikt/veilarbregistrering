@@ -9,17 +9,22 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.http.Headers
 import no.nav.fo.veilarbregistrering.http.Json
+import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.HttpHeaders
 
 open class OppfolgingClient(
@@ -29,7 +34,7 @@ open class OppfolgingClient(
     private val aadOboService: AadOboService,
     private val tokenProvider: () -> String,
 
-    ) : AbstractOppfolgingClient(objectMapper, metricsService), HealthCheck  {
+    ) : TimedMetric(metricsService), HealthCheck  {
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
@@ -128,11 +133,21 @@ open class OppfolgingClient(
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
         return doTimedCall {
-            executeRequest(buildRequest(url, getAuthorizationFromCookieOrResolveOboToken()).build(), ErUnderOppfolgingDto::class.java) {
-                SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2", it)
+            client.newCall(buildRequest(url, getAuthorizationFromCookieOrResolveOboToken()).build()).execute().use {
+                if (it.isSuccessful) {
+                    it.body()?.string()?.let { bodyString ->
+                        objectMapper.readValue(bodyString, ErUnderOppfolgingDto::class.java)
+                    } ?: throw RuntimeException("Unexpected empty body")
+                }
+                else throw SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2: ${it.code()}")
             }
         }
     }
+
+    private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
+        Request.Builder().url(url).also { r ->
+            r.headers(Headers.buildHeaders(headers))
+        }
 
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
@@ -156,5 +171,13 @@ open class OppfolgingClient(
 
     override fun checkHealth(): HealthCheckResult {
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/ping"), client)
+    }
+
+    override fun value() = "veilarboppfolging"
+
+    companion object {
+        val client: OkHttpClient = buildHttpClient {
+            readTimeout(120L, TimeUnit.SECONDS)
+        }
     }
 }
