@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
@@ -22,7 +22,7 @@ import java.time.LocalDate
 class ArbeidssokerResource(
     private val arbeidssokerService: ArbeidssokerService,
     private val userService: UserService,
-    private val autorisasjonService: AutorisasjonService
+    private val autorisasjonService: DefaultAutorisasjonService
 ) : ArbeidssokerApi {
 
     @GetMapping("/perioder")

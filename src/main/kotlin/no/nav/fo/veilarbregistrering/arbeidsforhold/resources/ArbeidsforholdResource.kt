@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.resources
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api")
 class ArbeidsforholdResource(
-    private val autorisasjonService: AutorisasjonService,
+    private val autorisasjonService: DefaultAutorisasjonService,
     private val userService: UserService,
     private val arbeidsforholdGateway: ArbeidsforholdGateway,
 ) : ArbeidsforholdApi {

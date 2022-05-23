@@ -4,7 +4,7 @@ import io.mockk.*
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest
 class RegistreringResourceTest(
     @Autowired private val mvc: MockMvc,
     @Autowired private val registreringResource: RegistreringResource,
-    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val autorisasjonService: DefaultAutorisasjonService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val brukerRegistreringService: BrukerRegistreringService,
@@ -290,7 +290,7 @@ class RegistreringResourceTest(
 private class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
-        autorisasjonService: AutorisasjonService,
+        autorisasjonService: DefaultAutorisasjonService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
@@ -310,7 +310,7 @@ private class RegistreringResourceConfig {
     )
 
     @Bean
-    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
+    fun autorisasjonService(): DefaultAutorisasjonService = mockk(relaxed = true)
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)

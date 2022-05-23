@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 class ProfileringResource(
     private val userService: UserService,
-    private val autorisasjonService: AutorisasjonService,
+    private val autorisasjonService: DefaultAutorisasjonService,
     private val profilertInnsatsgruppeService: ProfilertInnsatsgruppeService
 ) : ProfileringApi {
 

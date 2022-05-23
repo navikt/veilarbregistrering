@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
 
-open class AutorisasjonService(
+open class DefaultAutorisasjonService(
     private val veilarbPep: Pep,
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) {
@@ -90,6 +90,6 @@ open class AutorisasjonService(
     fun erInternBruker(): Boolean = authContextHolder.erInternBruker()
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(AutorisasjonService::class.java)
+        private val LOG = LoggerFactory.getLogger(DefaultAutorisasjonService::class.java)
     }
 }

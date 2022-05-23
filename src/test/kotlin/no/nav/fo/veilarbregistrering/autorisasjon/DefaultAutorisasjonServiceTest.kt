@@ -21,12 +21,12 @@ import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 
-class AutorisasjonServiceTest {
+class DefaultAutorisasjonServiceTest {
 
     private val pep : Pep = mockk()
     private val authContextHolder : AuthContextHolder = mockk()
     private val metricsService : MetricsService = mockk()
-    private val autorisasjonService = AutorisasjonService(pep, authContextHolder, metricsService)
+    private val autorisasjonService = DefaultAutorisasjonService(pep, authContextHolder, metricsService)
 
     @Test
     fun `gitt at veileder er satt opp med lesetilgang til bruker i ABAC (pep) skal ingen exception kastes`() {

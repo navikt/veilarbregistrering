@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoMapper.map
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 class KontaktinfoResource(
     private val userService: UserService,
     private val kontaktinfoService: KontaktinfoService,
-    private val autorisasjonService: AutorisasjonService
+    private val autorisasjonService: DefaultAutorisasjonService
 ) : KontaktinfoApi {
 
     @GetMapping("/kontaktinfo")

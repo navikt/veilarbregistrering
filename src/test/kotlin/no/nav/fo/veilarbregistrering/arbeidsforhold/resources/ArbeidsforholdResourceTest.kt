@@ -4,7 +4,7 @@ import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -12,10 +12,9 @@ import no.nav.fo.veilarbregistrering.bruker.UserService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.*
 
 internal class ArbeidsforholdResourceTest {
-    private lateinit var autorisasjonService: AutorisasjonService
+    private lateinit var autorisasjonService: DefaultAutorisasjonService
     private lateinit var arbeidsforholdResource: ArbeidsforholdResource
     private lateinit var userService: UserService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway

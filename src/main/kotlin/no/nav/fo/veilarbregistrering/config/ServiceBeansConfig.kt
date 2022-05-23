@@ -10,7 +10,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
@@ -157,7 +157,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun registreringResource(
-        autorisasjonService: AutorisasjonService,
+        autorisasjonService: DefaultAutorisasjonService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
@@ -190,7 +190,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun arbeidsforholdResource(
-        autorisasjonService: AutorisasjonService,
+        autorisasjonService: DefaultAutorisasjonService,
         userService: UserService,
         arbeidsforholdGateway: ArbeidsforholdGateway
     ): ArbeidsforholdResource {
@@ -237,7 +237,7 @@ class ServiceBeansConfig {
     fun oppgaveResource(
         userService: UserService,
         oppgaveService: OppgaveService,
-        autorisasjonService: AutorisasjonService
+        autorisasjonService: DefaultAutorisasjonService
     ): OppgaveResource {
         return OppgaveResource(userService, oppgaveService, autorisasjonService)
     }
@@ -261,7 +261,7 @@ class ServiceBeansConfig {
     fun arbeidssokerResource(
         arbeidssokerService: ArbeidssokerService,
         userService: UserService,
-        autorisasjonService: AutorisasjonService
+        autorisasjonService: DefaultAutorisasjonService
     ): ArbeidssokerResource {
         return ArbeidssokerResource(arbeidssokerService, userService, autorisasjonService)
     }
@@ -300,7 +300,7 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun profileringResource(userService: UserService, autorisasjonService: AutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
+    fun profileringResource(userService: UserService, autorisasjonService: DefaultAutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
         return ProfileringResource(userService, autorisasjonService, profilertInnsatsgruppeService)
     }
 
@@ -321,7 +321,7 @@ class ServiceBeansConfig {
     fun kontaktinfoResource(
         userService: UserService,
         kontaktinfoService: KontaktinfoService,
-        autorisasjonService: AutorisasjonService
+        autorisasjonService: DefaultAutorisasjonService
     ): KontaktinfoResource {
         return KontaktinfoResource(userService, kontaktinfoService, autorisasjonService)
     }
@@ -343,7 +343,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun tidslinjeResource(
-        autorisasjonService: AutorisasjonService,
+        autorisasjonService: DefaultAutorisasjonService,
         userService: UserService,
         tidslinjeAggregator: TidslinjeAggregator
     ): TidslinjeResource {
@@ -358,8 +358,8 @@ class ServiceBeansConfig {
         veilarbPep: Pep,
         authContextHolder: AuthContextHolder,
         metricsService: MetricsService
-    ): AutorisasjonService {
-        return AutorisasjonService(veilarbPep, authContextHolder, metricsService)
+    ): DefaultAutorisasjonService {
+        return DefaultAutorisasjonService(veilarbPep, authContextHolder, metricsService)
     }
 
     @Bean

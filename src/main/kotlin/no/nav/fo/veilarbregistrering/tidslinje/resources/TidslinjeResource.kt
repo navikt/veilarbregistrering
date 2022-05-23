@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.tidslinje.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/tidslinje")
 class TidslinjeResource(
-        private val autorisasjonService: AutorisasjonService,
-        private val userService: UserService,
-        private val tidslinjeAggregator: TidslinjeAggregator) : TidslinjeApi {
+    private val autorisasjonService: DefaultAutorisasjonService,
+    private val userService: UserService,
+    private val tidslinjeAggregator: TidslinjeAggregator) : TidslinjeApi {
 
     @GetMapping
     override fun tidslinje() : TidslinjeDto {

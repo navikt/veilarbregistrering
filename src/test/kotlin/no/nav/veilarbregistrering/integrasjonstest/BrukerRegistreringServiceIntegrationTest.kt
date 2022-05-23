@@ -1,7 +1,7 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -178,7 +178,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         }
 
         @Bean
-        fun pepClient(): AutorisasjonService = mockk(relaxed = true)
+        fun pepClient(): DefaultAutorisasjonService = mockk(relaxed = true)
     }
 
     companion object {
