@@ -4,7 +4,6 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -28,7 +27,6 @@ class SykmeldtRegistreringServiceTest {
     private val manuellRegistreringRepository: ManuellRegistreringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
-    private val autorisasjonService: DefaultAutorisasjonService = mockk()
     private val metricsService: MetricsService = mockk(relaxed = true)
 
     @BeforeEach
@@ -66,7 +64,6 @@ class SykmeldtRegistreringServiceTest {
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(any(), any())
         } returns 5L
-        every { autorisasjonService.erInternBruker() } returns false
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
         val id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null)
         assertThat(id).isEqualTo(5)
@@ -76,7 +73,6 @@ class SykmeldtRegistreringServiceTest {
     @Test
     fun gitt_at_veileder_er_angitt_skal_registrering_lagres_med_navident() {
         mockSykmeldtMedArbeidsgiver()
-        every { autorisasjonService.erInternBruker() } returns true
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(
                 any(),
