@@ -354,8 +354,12 @@ class ServiceBeansConfig {
     fun internalUserResource(userService: UserService) = InternalUserResource(userService)
 
     @Bean
-    fun autorisasjonService(veilarbPep: Pep, authContextHolder: AuthContextHolder): AutorisasjonService {
-        return AutorisasjonService(veilarbPep, authContextHolder)
+    fun autorisasjonService(
+        veilarbPep: Pep,
+        authContextHolder: AuthContextHolder,
+        metricsService: MetricsService
+    ): AutorisasjonService {
+        return AutorisasjonService(veilarbPep, authContextHolder, metricsService)
     }
 
     @Bean
