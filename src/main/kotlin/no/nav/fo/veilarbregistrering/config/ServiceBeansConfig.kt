@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
@@ -157,7 +158,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun registreringResource(
-        autorisasjonService: DefaultAutorisasjonService,
+        autorisasjonService: AutorisasjonService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
@@ -190,7 +191,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun arbeidsforholdResource(
-        autorisasjonService: DefaultAutorisasjonService,
+        autorisasjonService: AutorisasjonService,
         userService: UserService,
         arbeidsforholdGateway: ArbeidsforholdGateway
     ): ArbeidsforholdResource {
@@ -237,7 +238,7 @@ class ServiceBeansConfig {
     fun oppgaveResource(
         userService: UserService,
         oppgaveService: OppgaveService,
-        autorisasjonService: DefaultAutorisasjonService
+        autorisasjonService: AutorisasjonService
     ): OppgaveResource {
         return OppgaveResource(userService, oppgaveService, autorisasjonService)
     }
@@ -261,7 +262,7 @@ class ServiceBeansConfig {
     fun arbeidssokerResource(
         arbeidssokerService: ArbeidssokerService,
         userService: UserService,
-        autorisasjonService: DefaultAutorisasjonService
+        autorisasjonService: AutorisasjonService
     ): ArbeidssokerResource {
         return ArbeidssokerResource(arbeidssokerService, userService, autorisasjonService)
     }
@@ -300,7 +301,7 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun profileringResource(userService: UserService, autorisasjonService: DefaultAutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
+    fun profileringResource(userService: UserService, autorisasjonService: AutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
         return ProfileringResource(userService, autorisasjonService, profilertInnsatsgruppeService)
     }
 
@@ -321,7 +322,7 @@ class ServiceBeansConfig {
     fun kontaktinfoResource(
         userService: UserService,
         kontaktinfoService: KontaktinfoService,
-        autorisasjonService: DefaultAutorisasjonService
+        autorisasjonService: AutorisasjonService
     ): KontaktinfoResource {
         return KontaktinfoResource(userService, kontaktinfoService, autorisasjonService)
     }
@@ -343,7 +344,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun tidslinjeResource(
-        autorisasjonService: DefaultAutorisasjonService,
+        autorisasjonService: AutorisasjonService,
         userService: UserService,
         tidslinjeAggregator: TidslinjeAggregator
     ): TidslinjeResource {
@@ -358,7 +359,7 @@ class ServiceBeansConfig {
         veilarbPep: Pep,
         authContextHolder: AuthContextHolder,
         metricsService: MetricsService
-    ): DefaultAutorisasjonService {
+    ): AutorisasjonService {
         return DefaultAutorisasjonService(veilarbPep, authContextHolder, metricsService)
     }
 

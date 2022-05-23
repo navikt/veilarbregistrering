@@ -67,7 +67,7 @@ open class DefaultAutorisasjonService(
         get() = authContextHolder.idTokenString
             .orElseThrow { ResponseStatusException(HttpStatus.UNAUTHORIZED, "Fant ikke token for innlogget bruker") }
 
-    val innloggetVeilederIdent: String
+    override val innloggetVeilederIdent: String
         get() {
             if (!erInternBruker()) {
                 throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
@@ -86,7 +86,7 @@ open class DefaultAutorisasjonService(
             .takeIf(IdentUtils::erGydligNavIdent)
             ?.let(NavIdent::of)
 
-    fun erVeileder(): Boolean = erInternBruker()
+    override fun erVeileder(): Boolean = erInternBruker()
     fun erInternBruker(): Boolean = authContextHolder.erInternBruker()
 
     companion object {

@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.config.RequestContext
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest
 @ContextConfiguration(classes = [TidslinjeResourceConfig::class])
 class TidslinjeResourceTest(
     @Autowired private val mvc: MockMvc,
-    @Autowired private val autorisasjonService: DefaultAutorisasjonService,
+    @Autowired private val autorisasjonService: AutorisasjonService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val tidslinjeAggregator: TidslinjeAggregator) {
@@ -92,13 +92,13 @@ private open class TidslinjeResourceConfig {
 
     @Bean
     fun tidslinjeResource(
-        autorisasjonService: DefaultAutorisasjonService,
+        autorisasjonService: AutorisasjonService,
         userService: UserService,
         tidslinjeAggregator: TidslinjeAggregator
     ) = TidslinjeResource(autorisasjonService, userService, tidslinjeAggregator)
 
     @Bean
-    fun autorisasjonService(): DefaultAutorisasjonService = mockk(relaxed = true)
+    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
 
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()

@@ -2,19 +2,14 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 
 @RestController
@@ -22,7 +17,7 @@ import java.time.LocalDate
 class ArbeidssokerResource(
     private val arbeidssokerService: ArbeidssokerService,
     private val userService: UserService,
-    private val autorisasjonService: DefaultAutorisasjonService
+    private val autorisasjonService: AutorisasjonService
 ) : ArbeidssokerApi {
 
     @GetMapping("/perioder")

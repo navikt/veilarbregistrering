@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveMapper.map
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class OppgaveResource(
     private val userService: UserService,
     private val oppgaveService: OppgaveService,
-    private val autorisasjonService: DefaultAutorisasjonService
+    private val autorisasjonService: AutorisasjonService
 ) : OppgaveApi {
 
     @PostMapping

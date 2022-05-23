@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api")
 class RegistreringResource(
-    private val autorisasjonsService: DefaultAutorisasjonService,
+    private val autorisasjonsService: AutorisasjonService,
     private val userService: UserService,
     private val brukerRegistreringService: BrukerRegistreringService,
     private val hentRegistreringService: HentRegistreringService,
