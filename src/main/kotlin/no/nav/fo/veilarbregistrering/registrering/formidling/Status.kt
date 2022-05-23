@@ -10,6 +10,7 @@ enum class Status(private val status: String) {
     UKJENT_BRUKER("ukjentBruker"),
     MANGLER_ARBEIDSTILLATELSE("oppholdstillatelse"),
     KAN_IKKE_REAKTIVERES("ikkeReaktivering"),
+    KAN_IKKE_REAKTIVERES_FORENKLET("ikkeReaktiveringForenklet"),
     DOD_UTVANDRET_ELLER_FORSVUNNET("utvandret"),
     UKJENT_TEKNISK_FEIL("ukjentTeknisk"),
     TEKNISK_FEIL("teknisk"),
@@ -25,6 +26,7 @@ enum class Status(private val status: String) {
                 BRUKER_MANGLER_ARBEIDSTILLATELSE -> MANGLER_ARBEIDSTILLATELSE
                 BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET -> DOD_UTVANDRET_ELLER_FORSVUNNET
                 BRUKER_KAN_IKKE_REAKTIVERES -> KAN_IKKE_REAKTIVERES
+                BRUKER_KAN_IKKE_REAKTIVERES_FORENKLET -> KAN_IKKE_REAKTIVERES_FORENKLET
                 BRUKER_ER_UKJENT -> UKJENT_BRUKER
             }
     }

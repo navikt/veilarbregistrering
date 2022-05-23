@@ -7,6 +7,7 @@ import java.lang.IllegalArgumentException
 enum class AktiverBrukerFeil: Metric {
     BRUKER_ER_UKJENT,
     BRUKER_KAN_IKKE_REAKTIVERES,
+    BRUKER_KAN_IKKE_REAKTIVERES_FORENKLET,
     BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET,
     BRUKER_MANGLER_ARBEIDSTILLATELSE, ;
 
@@ -19,6 +20,7 @@ enum class AktiverBrukerFeil: Metric {
                     Status.MANGLER_ARBEIDSTILLATELSE -> BRUKER_MANGLER_ARBEIDSTILLATELSE
                     Status.DOD_UTVANDRET_ELLER_FORSVUNNET -> BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
                     Status.KAN_IKKE_REAKTIVERES -> BRUKER_KAN_IKKE_REAKTIVERES
+                    Status.KAN_IKKE_REAKTIVERES_FORENKLET -> BRUKER_KAN_IKKE_REAKTIVERES_FORENKLET
                     Status.UKJENT_BRUKER -> BRUKER_ER_UKJENT
                     else -> throw IllegalArgumentException("Mottok en status som ikke er en feil til mapping")
                 }
