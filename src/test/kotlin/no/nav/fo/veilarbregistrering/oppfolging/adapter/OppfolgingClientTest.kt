@@ -105,7 +105,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil ved manglende oppholdstillatelse for aktivering`() {
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for aktivering`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
@@ -117,7 +117,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil ved manglende oppholdstillatelse for reaktivering`() {
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for reaktivering`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
@@ -129,7 +129,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil ved manglende oppholdstillatelse for sykmeldt-aktivering`() {
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for sykmeldt-aktivering`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
@@ -141,7 +141,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil dersom bruker ikke kan reaktiveres`() {
+    fun `skal kaste AktiverBrukerException dersom bruker ikke kan reaktiveres`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/kanIkkeReaktiveres.json"))
                 .withStatusCode(403)
