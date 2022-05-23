@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.http.Headers
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
-import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
@@ -53,14 +52,12 @@ open class OppfolgingClient(
             when (response.code()) {
                 403 -> {
                     val feil = mapper(objectMapper.readValue(response.body()!!.string()))
-                    logger.warn("Feil ved reaktivering av bruker: ${feil.name}")
                     metricsService.registrer(REAKTIVER_BRUKER_FEIL, feil)
-                    throw AktiverBrukerException(feil)
+                    throw AktiverBrukerException("Feil ved reaktivering av bruker: ${feil.name}", feil)
                 }
                 else -> {
-                    logger.error("Uhåndtert feil ved reaktivering av bruker: ${response.code()}, ${response.body()?.string()}")
                     metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
-                    throw RuntimeException("Feil ved reaktivering av bruker: ${response.code()}")
+                    throw RuntimeException("Feil ved reaktivering av bruker: ${response.code()}, ${response.body()?.string()}")
                 }
             }
         }
@@ -83,14 +80,12 @@ open class OppfolgingClient(
             when (response.code()) {
                 403 -> {
                     val feil = mapper(objectMapper.readValue(response.body()!!.string()))
-                    logger.warn("Feil ved aktivering av bruker: ${feil.name}")
                     metricsService.registrer(AKTIVER_BRUKER_FEIL, feil)
-                    throw AktiverBrukerException(feil)
+                    throw AktiverBrukerException("Feil ved aktivering av bruker: ${feil.name}", feil)
                 }
                 else -> {
-                    logger.error("Uhåndtert feil ved aktivering av bruker: ${response.code()}, ${response.body()?.string()}")
                     metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
-                    throw RuntimeException("Feil ved aktivering av bruker: ${response.code()}")
+                    throw RuntimeException("Feil ved aktivering av bruker: ${response.code()}, ${response.body()?.string()}")
                 }
             }
         }
@@ -114,14 +109,12 @@ open class OppfolgingClient(
             when (response.code()) {
                 403 -> {
                     val feil = mapper(objectMapper.readValue(response.body()!!.string()))
-                    logger.warn("Feil ved aktivering av sykmeldt bruker: ${feil.name}")
                     metricsService.registrer(OPPFOLGING_SYKMELDT_FEIL, feil)
-                    throw AktiverBrukerException(feil)
+                    throw AktiverBrukerException("Feil ved aktivering av sykmeldt bruker: ${feil.name}", feil)
                 }
                 else -> {
-                    logger.error("Uhåndtert feil ved aktivering av sykmeldt bruker: ${response.code()}, ${response.body()?.string()}")
                     metricsService.registrer(OPPFOLGING_FEIL, Tag.of("aarsak", response.code().toString()))
-                    throw RuntimeException("Feil ved aktivering av sykmeldt bruker: ${response.code()}")
+                    throw RuntimeException("Feil ved aktivering av sykmeldt bruker: ${response.code()}, ${response.body()?.string()}")
                 }
             }
         }

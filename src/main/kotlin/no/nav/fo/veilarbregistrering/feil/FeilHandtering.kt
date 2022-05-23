@@ -17,9 +17,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class FeilHandtering : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(AktiverBrukerException::class)
-    fun aktiverBrukerException(f: AktiverBrukerException): ResponseEntity<FeilDto> =
-        ResponseEntity.status(INTERNAL_SERVER_ERROR)
+    fun aktiverBrukerException(f: AktiverBrukerException): ResponseEntity<FeilDto> {
+        logger.warn(f.feilmelding)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(FeilDto(f.aktiverBrukerFeil.toString()))
+    }
 
     @ExceptionHandler(KontaktinfoIngenTilgang::class)
     fun kontaktInfoIngenTilgang(feil: KontaktinfoIngenTilgang) =
@@ -77,7 +79,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(AutorisasjonException::class)
-    fun handleAutorisasjonException(feil: AutorisasjonException) : ResponseEntity<Any> {
+    fun handleAutorisasjonException(feil: AutorisasjonException): ResponseEntity<Any> {
         logger.warn(feil.message, feil)
         return ResponseEntity.status(FORBIDDEN).body(feil.message)
     }

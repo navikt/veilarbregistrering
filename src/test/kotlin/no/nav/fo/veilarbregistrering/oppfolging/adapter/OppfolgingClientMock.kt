@@ -22,6 +22,6 @@ class OppfolgingClientMock internal constructor() : OppfolgingClient(
 
     override fun reaktiverBruker(fnr: Fnr) {}
     private fun sendException(feilType: String) {
-        throw AktiverBrukerException(AktiverBrukerFeil.valueOf(feilType))
+        throw AktiverBrukerException("Feil ved reaktivering av bruker", AktiverBrukerFeil.valueOf(feilType))
     }
 }
