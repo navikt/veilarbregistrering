@@ -21,10 +21,10 @@ import org.springframework.web.server.ResponseStatusException
 open class DefaultAutorisasjonService(
     private val veilarbPep: Pep,
     private val authContextHolder: AuthContextHolder,
-    private val metricsService: MetricsService) {
+    private val metricsService: MetricsService) : AutorisasjonService {
 
-    fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
-    fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
+    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
+    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
