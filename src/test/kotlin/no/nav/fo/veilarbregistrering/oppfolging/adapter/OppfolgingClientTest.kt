@@ -153,7 +153,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal hente og deserialisere bruker under oppfølging`() {
+    fun `skal hente og deserialisere er bruker under oppfølging`() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/v2/oppfolging"))
             .respond(
                 HttpResponse.response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)

@@ -34,17 +34,16 @@ open class OppfolgingClient(
     private val aadOboService: AadOboService,
     private val tokenProvider: () -> String,
 
-    ) : TimedMetric(metricsService), HealthCheck  {
+    ) : TimedMetric(metricsService), HealthCheck {
 
     open fun reaktiverBruker(fnr: Fnr) {
         val url = "$baseUrl/oppfolging/reaktiverbruker"
-        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
-        request.method(
-            "POST",
-            RequestBody.create(Json, objectMapper.writeValueAsString(fnr))
-        )
+        val request = Request.Builder().url(url)
+            .headers(Headers.buildHeaders(getServiceAuthorizationHeader()))
+            .method("POST", RequestBody.create(Json, objectMapper.writeValueAsString(fnr)))
+            .build()
         doTimedCall(REAKTIVER_BRUKER) {
-            client.newCall(request.build()).execute().use { reaktiveringResponsMapper(it) }
+            client.newCall(request).execute().use { reaktiveringResponsMapper(it) }
         }
     }
 
@@ -69,13 +68,12 @@ open class OppfolgingClient(
 
     open fun aktiverBruker(aktiverBrukerData: AktiverBrukerData) {
         val url = "$baseUrl/oppfolging/aktiverbruker"
-        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
-        request.method(
-            "POST",
-            RequestBody.create(Json, objectMapper.writeValueAsString(aktiverBrukerData))
-        )
+        val request = Request.Builder().url(url)
+            .headers(Headers.buildHeaders(getServiceAuthorizationHeader()))
+            .method("POST", RequestBody.create(Json, objectMapper.writeValueAsString(aktiverBrukerData)))
+            .build()
         doTimedCall(AKTIVER_BRUKER) {
-            client.newCall(request.build()).execute().use { aktiveringResponsMapper(it) }
+            client.newCall(request).execute().use { aktiveringResponsMapper(it) }
         }
     }
 
@@ -100,13 +98,12 @@ open class OppfolgingClient(
 
     fun aktiverSykmeldt(sykmeldtBrukerType: SykmeldtBrukerType, fnr: Foedselsnummer) {
         val url = "$baseUrl/oppfolging/aktiverSykmeldt?fnr=${fnr.stringValue()}"
-        val request: Request.Builder = buildRequest(url, getServiceAuthorizationHeader())
-        request.method(
-            "POST",
-            RequestBody.create(Json, objectMapper.writeValueAsString(sykmeldtBrukerType))
-        )
+        val request = Request.Builder().url(url)
+            .headers(Headers.buildHeaders(getServiceAuthorizationHeader()))
+            .method("POST", RequestBody.create(Json, objectMapper.writeValueAsString(sykmeldtBrukerType)))
+            .build()
         doTimedCall(OPPFOLGING_SYKMELDT) {
-            client.newCall(request.build()).execute().use { aktiveringSykmeldtResponsMapper(it) }
+            client.newCall(request).execute().use { aktiveringSykmeldtResponsMapper(it) }
         }
     }
 
@@ -132,22 +129,19 @@ open class OppfolgingClient(
 
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
+        val request = Request.Builder().url(url)
+            .headers(Headers.buildHeaders(getAuthorizationFromCookieOrResolveOboToken()))
+            .build()
         return doTimedCall {
-            client.newCall(buildRequest(url, getAuthorizationFromCookieOrResolveOboToken()).build()).execute().use {
+            client.newCall(request).execute().use {
                 if (it.isSuccessful) {
                     it.body()?.string()?.let { bodyString ->
                         objectMapper.readValue(bodyString, ErUnderOppfolgingDto::class.java)
                     } ?: throw RuntimeException("Unexpected empty body")
-                }
-                else throw SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2: ${it.code()}")
+                } else throw SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2: ${it.code()}")
             }
         }
     }
-
-    private fun buildRequest(url: String, headers: List<Pair<String, String>>): Request.Builder =
-        Request.Builder().url(url).also { r ->
-            r.headers(Headers.buildHeaders(headers))
-        }
 
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
