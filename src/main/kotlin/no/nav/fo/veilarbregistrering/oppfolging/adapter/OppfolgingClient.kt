@@ -128,30 +128,26 @@ open class OppfolgingClient(
             .build()
         return doTimedCall {
             client.newCall(request).execute().use {
-                logger.info("Respons fra erBrukerUnderOppfolging ${it.body()?.string()}")
                 if (it.isSuccessful) {
                     it.body()?.string()?.let { bodyString ->
                         objectMapper.readValue(bodyString, ErUnderOppfolgingDto::class.java)
                     } ?: throw RuntimeException("Unexpected empty body")
-                } else throw SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2: ${it.code()}")
+                } else {
+                    logger.info("Respons fra erBrukerUnderOppfolging ${it.body()?.string()}")
+                    throw SammensattOppfolgingStatusException("Feil ved kall til oppfolging-api v2: ${it.code()}")
+                }
             }
         }
     }
 
-    private fun hentTokenFraAuthorizationHeaderEllerVeksleFraOboToken(): String {
-        val token = servletRequest().getHeader(HttpHeaders.AUTHORIZATION)
-
+    private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         if (aadOboService.erAzureAdToken()) {
-            return aadOboService.getAccessToken(oppfolgingApi)
+            return listOf(("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}"))
         }
 
-        return token
-    }
-
-    private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
             servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
-                ?: ("Authorization" to "Bearer ${hentTokenFraAuthorizationHeaderEllerVeksleFraOboToken()}")
+                ?: (HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.AUTHORIZATION))
         )
     }
 
