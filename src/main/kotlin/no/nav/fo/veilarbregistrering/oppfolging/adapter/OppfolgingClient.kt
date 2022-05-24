@@ -136,10 +136,20 @@ open class OppfolgingClient(
         }
     }
 
+    private fun hentTokenFraAuthorizationHeaderEllerVeksleFraOboToken(): String {
+        val token = servletRequest().getHeader(HttpHeaders.AUTHORIZATION)
+
+        if (aadOboService.erAzureAdToken()) {
+            return aadOboService.getAccessToken(oppfolgingApi)
+        }
+
+        return token
+    }
+
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
         return listOf(
             servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
-                ?: ("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}")
+                ?: ("Authorization" to "Bearer ${hentTokenFraAuthorizationHeaderEllerVeksleFraOboToken()}")
         )
     }
 
@@ -169,3 +179,4 @@ open class OppfolgingClient(
         }
     }
 }
+

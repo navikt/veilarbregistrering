@@ -133,7 +133,7 @@ open class AaregRestClient(
     override fun value() = "aareg"
 }
 
-private fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
+fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
 
 fun AuthContextHolder.hentIssuer(): String =
     this.requireIdTokenClaims().issuer

@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.oauth2
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.erAADToken
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
 import no.nav.security.token.support.client.core.ClientProperties
@@ -13,7 +14,7 @@ import java.net.URI
 import java.util.*
 
 
-class AadOboService(authContextHolder: AuthContextHolder) {
+class AadOboService(private val authContextHolder: AuthContextHolder) {
     private val tokenEndpointUrl: URI = URI.create(requireProperty("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"))
     private val discoveryUrl: URI = URI.create(requireProperty("AZURE_APP_WELL_KNOWN_URL"))
     private val onBehalfOfTokenClient = OnBehalfOfTokenClient(DefaultOAuth2HttpClient())
@@ -41,6 +42,10 @@ class AadOboService(authContextHolder: AuthContextHolder) {
             )
         )
         return accessTokenService.getAccessToken(clientProperties).accessToken ?: throw IllegalStateException("Did not get access token")
+    }
+
+    fun erAzureAdToken(): Boolean {
+        return authContextHolder.erAADToken()
     }
 }
 
