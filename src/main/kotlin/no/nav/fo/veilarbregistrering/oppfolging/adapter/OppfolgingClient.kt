@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.http.Headers
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
@@ -127,6 +128,7 @@ open class OppfolgingClient(
             .build()
         return doTimedCall {
             client.newCall(request).execute().use {
+                logger.info("Respons fra erBrukerUnderOppfolging ${it.body()?.string()}")
                 if (it.isSuccessful) {
                     it.body()?.string()?.let { bodyString ->
                         objectMapper.readValue(bodyString, ErUnderOppfolgingDto::class.java)
