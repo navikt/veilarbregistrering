@@ -9,6 +9,7 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.http.Headers
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
@@ -123,8 +124,12 @@ open class OppfolgingClient(
 
     fun erBrukerUnderOppfolging(fodselsnummer: Foedselsnummer): ErUnderOppfolgingDto {
         val url = "$baseUrl/v2/oppfolging?fnr=${fodselsnummer.stringValue()}"
+        val headers = Headers.buildHeaders(getAuthorizationFromCookieOrResolveOboToken())
+        if (isDevelopment()) {
+            logger.info("Headere for erBrukerUnderOppfolging ${headers}")
+        }
         val request = Request.Builder().url(url)
-            .headers(Headers.buildHeaders(getAuthorizationFromCookieOrResolveOboToken()))
+            .headers(headers)
             .build()
         return doTimedCall {
             client.newCall(request).execute().use {
