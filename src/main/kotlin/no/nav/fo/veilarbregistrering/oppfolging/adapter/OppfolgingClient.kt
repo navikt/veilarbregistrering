@@ -152,7 +152,7 @@ open class OppfolgingClient(
 
         return listOf(
             servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
-                ?: (HttpHeaders.COOKIE to servletRequest().getHeader(HttpHeaders.AUTHORIZATION))
+                ?: (HttpHeaders.COOKIE to "selvbetjening-idtoken=${servletRequest().getHeader(HttpHeaders.AUTHORIZATION)}")
         )
     }
 
