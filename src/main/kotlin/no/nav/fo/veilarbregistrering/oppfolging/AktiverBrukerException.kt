@@ -1,3 +1,3 @@
 package no.nav.fo.veilarbregistrering.oppfolging
 
-class AktiverBrukerException(val aktiverBrukerFeil: AktiverBrukerFeil) : RuntimeException("Feil ved aktivering av bruker")
+class AktiverBrukerException(val feilmelding: String, val aktiverBrukerFeil: AktiverBrukerFeil) : RuntimeException(feilmelding)

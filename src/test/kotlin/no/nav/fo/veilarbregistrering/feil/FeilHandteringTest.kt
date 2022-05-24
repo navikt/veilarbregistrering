@@ -16,7 +16,7 @@ class FeilHandteringTest {
     @Test
     fun `Svarer med riktig struktur dersom aktivering av bruker feiler`() {
         val entity =
-            feilHandtering.aktiverBrukerException(AktiverBrukerException(BRUKER_MANGLER_ARBEIDSTILLATELSE))
+            feilHandtering.aktiverBrukerException(AktiverBrukerException("Feil ved aktivering av bruker", BRUKER_MANGLER_ARBEIDSTILLATELSE))
 
         assertThat(entity.body).isNotNull
         assertThat(entity.body?.type == BRUKER_MANGLER_ARBEIDSTILLATELSE.toString())

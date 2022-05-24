@@ -75,9 +75,8 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
 
     @Test
     fun `skal sette registreringsstatus dersom arenafeil er dod eller utvandret`() {
-        every { oppfolgingGateway.aktiverBruker(any(), any()) } throws AktiverBrukerException(
-            AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET
-        )
+        every { oppfolgingGateway.aktiverBruker(any(), any()) } throws
+                AktiverBrukerException("Feil ved aktivering av bruker", AktiverBrukerFeil.BRUKER_ER_DOD_UTVANDRET_ELLER_FORSVUNNET)
 
         val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
@@ -97,7 +96,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     @Test
     fun skal_sette_registreringsstatus_dersom_arenafeil_er_mangler_opphold() {
         every { oppfolgingGateway.aktiverBruker(any(), any()) } throws
-            AktiverBrukerException(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+            AktiverBrukerException("Feil ved aktivering av bruker", AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
 
         val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),

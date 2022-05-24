@@ -74,7 +74,7 @@ open class BrukerRegistreringService(
     open fun overforArena(registreringId: Long, bruker: Bruker, veileder: NavVeileder?) {
         val registreringTilstand = overforArena(registreringId, bruker)
         if (registreringTilstand.status !== Status.OVERFORT_ARENA) {
-            throw AktiverBrukerException(fromStatus(registreringTilstand.status))
+            throw AktiverBrukerException("Feil ved overføring til Arena: ${registreringTilstand.status}", fromStatus(registreringTilstand.status))
         }
         registrerOverfortStatistikk(veileder)
     }

@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
@@ -23,6 +24,7 @@ import org.mockserver.model.HttpResponse
 import org.mockserver.model.MediaType
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.HttpHeaders
+import kotlin.test.assertFalse
 
 @ExtendWith(MockServerExtension::class)
 internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
@@ -82,7 +84,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     fun testAtReaktiveringFeilerDersomArenaSierAtBrukerErUnderOppfolging() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging"))
             .respond(
-                HttpResponse.response().withBody(settOppfolgingOgReaktivering(true, false), MediaType.JSON_UTF_8)
+                HttpResponse.response().withBody(settOppfolgingOgReaktivering(oppfolging = true, reaktivering = false), MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
         assertThrows<RuntimeException> {
@@ -93,7 +95,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     fun testAtReaktiveringGirOKDersomArenaSierAtBrukerKanReaktiveres() {
         mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/oppfolging"))
             .respond(
-                HttpResponse.response().withBody(settOppfolgingOgReaktivering(false, true), MediaType.JSON_UTF_8)
+                HttpResponse.response().withBody(settOppfolgingOgReaktivering(oppfolging = false, reaktivering = true), MediaType.JSON_UTF_8)
                     .withStatusCode(200)
             )
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
@@ -103,7 +105,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil ved manglende oppholdstillatelse`() {
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for aktivering`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
                 .withStatusCode(403)
@@ -115,7 +117,31 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal kaste riktig feil dersom bruker ikke kan reaktiveres`() {
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for reaktivering`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/reaktiverbruker")).respond(
+            HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
+                .withStatusCode(403)
+        )
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.reaktiverBruker(FNR)
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
+    @Test
+    fun `skal kaste AktiverBrukerException ved manglende oppholdstillatelse for sykmeldt-aktivering`() {
+        mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverSykmeldt")).respond(
+            HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/manglerOppholdstillatelse.json"))
+                .withStatusCode(403)
+        )
+        val exception: AktiverBrukerException = assertThrows {
+            oppfolgingClient.aktiverSykmeldt(SykmeldtBrukerType.SKAL_TIL_NY_ARBEIDSGIVER, Foedselsnummer(FNR.fnr))
+        }
+        assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_MANGLER_ARBEIDSTILLATELSE)
+    }
+
+    @Test
+    fun `skal kaste AktiverBrukerException dersom bruker ikke kan reaktiveres`() {
         mockServer.`when`(HttpRequest.request().withMethod("POST").withPath("/oppfolging/aktiverbruker")).respond(
             HttpResponse.response().withBody(FileToJson.toJson("/oppfolging/kanIkkeReaktiveres.json"))
                 .withStatusCode(403)
@@ -126,12 +152,24 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
         assertThat(exception.aktiverBrukerFeil).isEqualTo(AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES)
     }
 
+    @Test
+    fun `skal hente og deserialisere er bruker under oppfølging`() {
+        mockServer.`when`(HttpRequest.request().withMethod("GET").withPath("/v2/oppfolging"))
+            .respond(
+                HttpResponse.response().withBody(ikkeUnderOppfolgingBody(), MediaType.JSON_UTF_8)
+                    .withStatusCode(200)
+            )
+
+        val response = oppfolgingClient.erBrukerUnderOppfolging(Foedselsnummer(FNR.fnr))
+        assertFalse(response.erUnderOppfolging)
+    }
+
     private fun settOppfolgingOgReaktivering(oppfolging: Boolean, reaktivering: Boolean): String {
         return "{\"kanReaktiveres\": $reaktivering, \"underOppfolging\": $oppfolging}"
     }
 
     private fun ikkeUnderOppfolgingBody(): String = """
-        { "underOppfolging": false }
+        { "erUnderOppfolging": false }
     """.trimIndent()
 
     private fun okRegistreringBody(): String {
