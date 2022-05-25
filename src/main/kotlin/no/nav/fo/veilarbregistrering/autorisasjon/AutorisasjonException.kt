@@ -1,3 +1,3 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
-class AutorisasjonException : RuntimeException("Bruker mangler tilgang til subjektet")
+class AutorisasjonException(val melding: String) : RuntimeException(melding)

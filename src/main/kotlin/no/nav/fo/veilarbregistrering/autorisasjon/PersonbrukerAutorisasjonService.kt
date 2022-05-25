@@ -27,12 +27,12 @@ open class PersonbrukerAutorisasjonService(
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
         validateState()
-        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException()
+        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
     }
 
     private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
         validateState()
-        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException()
+        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
     }
 
     private fun validateState() {

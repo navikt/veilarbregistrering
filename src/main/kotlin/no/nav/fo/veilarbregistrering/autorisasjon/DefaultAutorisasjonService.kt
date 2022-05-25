@@ -30,13 +30,13 @@ open class DefaultAutorisasjonService(
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
         if (rolle() == UserRole.SYSTEM) return
-        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException()
+        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
-        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException()
+        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
     }
 
     private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
