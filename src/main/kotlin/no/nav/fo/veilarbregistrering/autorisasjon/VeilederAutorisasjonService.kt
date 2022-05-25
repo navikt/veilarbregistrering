@@ -21,26 +21,24 @@ open class VeilederAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
+    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) {
+        validateState()
+        harTilgang(ActionId.READ, tilEksternId(bruker))
+    }
+
+    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) {
+        validateState()
+        harTilgang(ActionId.WRITE, tilEksternId(bruker))
+    }
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
-    private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
-        validateState()
-        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
-    }
-
-    private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
-        validateState()
-        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
-    }
-
-    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
+    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId) {
         val navIdent = navIdentClaim()
         LOG.info("harVeilederTilgangTilPerson utfører $handling for ${UserRole.INTERN}-rolle")
         registrerAutorisationEvent(true, handling, UserRole.INTERN)
-        return veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
+        if (!veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker))
+            throw AutorisasjonException("Veileder mangler $handling-tilgang til person")
     }
 
     private fun navIdentClaim(): NavIdent = authContextHolder.hentNavIdForOboTokens()
@@ -48,7 +46,7 @@ open class VeilederAutorisasjonService(
     private fun registrerAutorisationEvent(navIdentFlagg: Boolean, handling: ActionId, userRole: UserRole) {
         metricsService.registrer(
             Events.AUTORISASJON,
-            Tag.of("navident", navIdentFlagg.toString().lowercase())   ,
+            Tag.of("navident", navIdentFlagg.toString().lowercase()),
             Tag.of("handling", handling.id),
             Tag.of("rolle", userRole.name.lowercase())
         )
@@ -72,7 +70,7 @@ open class VeilederAutorisasjonService(
             .getStringClaim(AAD_NAV_IDENT_CLAIM)
             .takeIf(IdentUtils::erGydligNavIdent)
             ?.let(NavIdent::of)
-            ?:throw IllegalStateException("Fant ikke NAV-ident. Denne strategien skal kun benyttes for ${UserRole.INTERN} - ikke ${authContextHolder.role}")
+            ?: throw IllegalStateException("Fant ikke NAV-ident. Denne strategien skal kun benyttes for ${UserRole.INTERN} - ikke ${authContextHolder.role}")
 
     companion object {
         private val LOG = LoggerFactory.getLogger(VeilederAutorisasjonService::class.java)

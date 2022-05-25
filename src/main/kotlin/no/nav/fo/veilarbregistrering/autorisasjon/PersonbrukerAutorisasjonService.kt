@@ -20,36 +20,34 @@ open class PersonbrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
+    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) {
+        validateState()
+        harTilgang(ActionId.READ, tilEksternId(bruker))
+    }
+
+    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) {
+        validateState()
+        harTilgang(ActionId.WRITE, tilEksternId(bruker))
+    }
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
-
-    private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
-        validateState()
-        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
-    }
-
-    private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
-        validateState()
-        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException("Bruker mangler tilgang til subjektet")
-    }
 
     private fun validateState() {
         if (!authContextHolder.erEksternBruker())
             throw UnsupportedOperationException("Denne strategien skal kun benyttes for ${UserRole.EKSTERN} - ikke ${authContextHolder.role}")
     }
 
-    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
+    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId) {
         LOG.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
         registrerAutorisationEvent(false, handling, UserRole.EKSTERN)
-        return veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker))
+            throw AutorisasjonException("Personbruker mangler $handling-tilgang til seg selv - utløpt token?")
     }
 
     private fun registrerAutorisationEvent(navIdentFlagg: Boolean, handling: ActionId, userRole: UserRole) {
         metricsService.registrer(
             Events.AUTORISASJON,
-            Tag.of("navident", navIdentFlagg.toString().lowercase())   ,
+            Tag.of("navident", navIdentFlagg.toString().lowercase()),
             Tag.of("handling", handling.id),
             Tag.of("rolle", userRole.name.lowercase())
         )
