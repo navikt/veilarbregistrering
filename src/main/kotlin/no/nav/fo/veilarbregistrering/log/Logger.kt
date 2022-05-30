@@ -7,6 +7,7 @@ inline fun <reified T:Any> loggerFor(): Logger =
     getLogger(T::class.java) ?: throw IllegalStateException("Error creating logger")
 
 inline val <reified T : Any> T.logger get() = getCachedLogger(T::class.java.name)
+inline val <reified T : Any> T.secureLogger get() = getLogger("SecureLog")
 
 fun getCachedLogger(loggerName: String): Logger {
     return LoggerCache.getLogger(loggerName)

@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.http.Headers
 import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
@@ -43,16 +44,19 @@ open class OppfolgingClient(
             .method("POST", RequestBody.create(Json, objectMapper.writeValueAsString(fnr)))
             .build()
         doTimedCall(REAKTIVER_BRUKER) {
-            client.newCall(request).execute().use { reaktiveringResponsMapper(it) }
+            client.newCall(request).execute().use { reaktiveringResponsMapper(it, fnr) }
         }
     }
 
-    private fun reaktiveringResponsMapper(response: Response) {
+    private fun reaktiveringResponsMapper(response: Response, fnr: Fnr) {
         if (response.isSuccessful) return
         else {
             when (response.code()) {
                 403 -> {
                     val feil = mapper(objectMapper.readValue(response.body()!!.string()))
+                    if (feil == AktiverBrukerFeil.BRUKER_KAN_IKKE_REAKTIVERES_FORENKLET) {
+                        secureLogger.info("Bruker med fnr ${fnr.fnr} fikk feil ved reaktivering: $feil")
+                    }
                     metricsService.registrer(REAKTIVER_BRUKER_FEIL, feil)
                     throw AktiverBrukerException("Feil ved reaktivering av bruker: ${feil.name}", feil)
                 }
