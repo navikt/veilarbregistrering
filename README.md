@@ -51,10 +51,10 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 
 ```
 # bygge
-mvn clean install 
+./mvnw clean install 
 
 # test
-mvn test
+./mvnw test
 
 # starte
 # Kjør main-metoden i Main.java
