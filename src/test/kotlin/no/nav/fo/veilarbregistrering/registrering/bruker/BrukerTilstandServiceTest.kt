@@ -34,7 +34,7 @@ class BrukerTilstandServiceTest {
             false,
             false,
             true,
-            Formidlingsgruppe("IARBS"),
+            Formidlingsgruppe.IKKE_ARBEIDSSØKER,
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )

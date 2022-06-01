@@ -23,11 +23,11 @@ class ArbeidssokerperiodeTestdataBuilder private constructor(private val formidl
 
     companion object {
         fun medArbs(): ArbeidssokerperiodeTestdataBuilder {
-            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe("ARBS"))
+            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe.ARBEIDSSOKER)
         }
 
         fun medIserv(): ArbeidssokerperiodeTestdataBuilder {
-            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe("ISERV"))
+            return ArbeidssokerperiodeTestdataBuilder(Formidlingsgruppe.IKKE_SERVICEBRUKER)
         }
     }
 }

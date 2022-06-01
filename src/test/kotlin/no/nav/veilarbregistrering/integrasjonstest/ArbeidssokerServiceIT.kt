@@ -106,7 +106,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 pid,
                 "AKTIV",
                 Operation.INSERT,
-                Formidlingsgruppe("ISERV"),
+                Formidlingsgruppe.IKKE_SERVICEBRUKER,
                 first,
                 null,
                 null
@@ -116,7 +116,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 pid,
                 "AKTIV",
                 Operation.INSERT,
-                Formidlingsgruppe("ARBS"),
+                Formidlingsgruppe.ARBEIDSSOKER,
                 first.plusSeconds(1),
                 null,
                 null
@@ -126,7 +126,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 pid,
                 "AKTIV",
                 Operation.INSERT,
-                Formidlingsgruppe("ISERV"),
+                Formidlingsgruppe.IKKE_SERVICEBRUKER,
                 second,
                 null,
                 null
@@ -136,9 +136,9 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 pid,
                 "AKTIV",
                 Operation.INSERT,
-                Formidlingsgruppe("ARBS"),
+                Formidlingsgruppe.ARBEIDSSOKER,
                 third,
-                Formidlingsgruppe("ISERV"),
+                Formidlingsgruppe.IKKE_SERVICEBRUKER,
                 second
             ),
 

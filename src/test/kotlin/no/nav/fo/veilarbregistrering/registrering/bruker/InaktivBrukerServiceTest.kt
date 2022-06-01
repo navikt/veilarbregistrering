@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.ErUnderOppfolgingDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
+import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import org.junit.jupiter.api.Assertions
@@ -56,6 +57,7 @@ class InaktivBrukerServiceTest {
     private fun mockInaktivBrukerSomSkalReaktiveres() {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto("ISERV", "IKVAL", "DAGPENGER")
     }
 
     private fun mockBrukerSomIkkeSkalReaktiveres() {

@@ -37,7 +37,7 @@ internal object ArbeidssokerperioderMapper {
             }
             arbeidssokerperioder.add(
                 Arbeidssokerperiode(
-                    Formidlingsgruppe(formidlingsgruppeendring.formidlingsgruppe),
+                    Formidlingsgruppe.valueOfKode(formidlingsgruppeendring.formidlingsgruppe),
                     Periode(
                         endretDato,
                         null

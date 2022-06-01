@@ -39,7 +39,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
         val id = arbeidssokerRepository.lagre(command)
         Assertions.assertThat(id).isNotNull
         val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
-        val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.now(), null))
+        val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe.ARBEIDSSOKER, Periode(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }
 
@@ -62,7 +62,7 @@ class ArbeidssokerRepositoryDbIntegrationTest(
             override val personId = "123456"
             override val personIdStatus = "AKTIV"
             override val operation = Operation.UPDATE
-            override val formidlingsgruppe = Formidlingsgruppe("ARBS")
+            override val formidlingsgruppe = Formidlingsgruppe.ARBEIDSSOKER
             override val formidlingsgruppeEndret = tidspunkt
             override val forrigeFormidlingsgruppe: Formidlingsgruppe? = null
             override val forrigeFormidlingsgruppeEndret: LocalDateTime? = null

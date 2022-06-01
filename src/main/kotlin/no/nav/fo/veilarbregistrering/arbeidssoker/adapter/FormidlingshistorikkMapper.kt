@@ -10,7 +10,7 @@ internal object FormidlingshistorikkMapper {
 
     private fun map(formidlingshistorikkDto: FormidlingshistorikkDto): Arbeidssokerperiode {
         return Arbeidssokerperiode(
-            Formidlingsgruppe(formidlingshistorikkDto.formidlingsgruppeKode),
+            Formidlingsgruppe.valueOfKode(formidlingshistorikkDto.formidlingsgruppeKode),
             Periode(
                 formidlingshistorikkDto.fraDato,
                 formidlingshistorikkDto.tilDato

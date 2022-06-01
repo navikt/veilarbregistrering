@@ -46,7 +46,7 @@ class OppfolgingGatewayImpl(
                     isUnderOppfolging = erUnderOppfolgingDto.erUnderOppfolging,
                     kanReaktiveres = kanReaktiveresDto.kanEnkeltReaktiveres,
                     erSykmeldtMedArbeidsgiver = arenastatus.erSykmeldtMedArbeidsgiver(),
-                    formidlingsgruppe = Formidlingsgruppe(arenastatus.formidlingsgruppe),
+                    formidlingsgruppe = Formidlingsgruppe.valueOfKode(arenastatus.formidlingsgruppe),
                     servicegruppe = Servicegruppe(arenastatus.kvalifiseringsgruppe),
                     rettighetsgruppe = Rettighetsgruppe(arenastatus.rettighetsgruppe)
                 )

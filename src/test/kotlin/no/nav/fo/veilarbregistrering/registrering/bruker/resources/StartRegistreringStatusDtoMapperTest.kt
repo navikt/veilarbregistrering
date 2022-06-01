@@ -50,7 +50,7 @@ class StartRegistreringStatusDtoMapperTest {
             false,
             false,
             true,
-            Formidlingsgruppe("IARBS"),
+            Formidlingsgruppe.IKKE_ARBEIDSSØKER,
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
@@ -80,7 +80,7 @@ class StartRegistreringStatusDtoMapperTest {
             true,
             true,
             false,
-            Formidlingsgruppe("IARBS"),
+            Formidlingsgruppe.IKKE_ARBEIDSSØKER,
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
