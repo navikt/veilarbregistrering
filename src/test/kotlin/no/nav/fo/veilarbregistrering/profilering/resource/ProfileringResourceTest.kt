@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -17,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @AutoConfigureMockMvc
 @WebMvcTest
