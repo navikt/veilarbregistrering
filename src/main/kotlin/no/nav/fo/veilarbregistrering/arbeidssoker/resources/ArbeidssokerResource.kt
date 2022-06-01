@@ -37,11 +37,11 @@ class ArbeidssokerResource(
 
     @PostMapping("/perioder")
     override fun hentArbeidssokerperioder(
-        @RequestBody fnr: Fnr,
+        @RequestBody fnr: Fnr?,
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
-        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr))
+        val bruker = if (fnr != null) userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr)) else userService.finnBrukerGjennomPdl()
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 

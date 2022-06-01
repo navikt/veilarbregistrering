@@ -95,6 +95,18 @@ class ArbeidssokerResourceTest(@Autowired private val mvc: MockMvc) {
 
         assertThat(responseBody).isNotNull
     }
+
+    @Test
+    fun `Henter periode for innlogget bruker hvis ikke fødselsnummer er med i request`() {
+        val responseBody = mvc.post("/api/arbeidssoker/perioder?fraOgMed=2010-01-01") {
+            contentType = MediaType.APPLICATION_JSON
+        }
+            .andExpect {
+                status { isOk() }
+            }
+
+        assertThat(responseBody).isNotNull
+    }
 }
 
 @Configuration

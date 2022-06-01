@@ -33,7 +33,7 @@ interface ArbeidssokerApi {
             ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
     fun hentArbeidssokerperioder(
-            @RequestBody(required = true, description = "Fødselsnummer") fnr: Fnr,
+            @RequestBody(description = "Fødselsnummer") fnr: Fnr?,
             @Parameter(required = true, description = "Fra og med dato") fraOgMed: LocalDate,
             @Parameter(description = "Til og med dato") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto
