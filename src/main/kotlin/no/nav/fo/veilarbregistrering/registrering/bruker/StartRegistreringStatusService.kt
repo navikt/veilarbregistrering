@@ -40,10 +40,6 @@ class StartRegistreringStatusService(
         )
     }
 
-    fun registrerAtArenaHarPlanlagtNedetid() {
-        metricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
-    }
-
     private fun hentGeografiskTilknytning(bruker: Bruker): GeografiskTilknytning? {
         val geografiskTilknytning = try {
             pdlOppslagGateway.hentGeografiskTilknytning(bruker.aktorId)

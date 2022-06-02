@@ -139,6 +139,10 @@ open class BrukerRegistreringService(
         )
     }
 
+    fun registrerAtArenaHarPlanlagtNedetid() {
+        metricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
+    }
+
     companion object {
         private val LOG = LoggerFactory.getLogger(BrukerRegistreringService::class.java)
     }
