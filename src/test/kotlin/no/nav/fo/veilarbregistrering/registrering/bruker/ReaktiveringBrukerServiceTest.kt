@@ -15,8 +15,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class InaktivBrukerServiceTest {
-    private lateinit var inaktivBrukerService: InaktivBrukerService
+class ReaktiveringBrukerServiceTest {
+    private lateinit var reaktiveringBrukerService: ReaktiveringBrukerService
     private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
@@ -27,7 +27,7 @@ class InaktivBrukerServiceTest {
     fun setup() {
         every { oppfolgingClient.reaktiverBruker(any()) } just Runs
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
-        inaktivBrukerService = InaktivBrukerService(
+        reaktiveringBrukerService = ReaktiveringBrukerService(
                 BrukerTilstandService(
                     oppfolgingGateway,
                     brukerRegistreringRepository
@@ -41,7 +41,7 @@ class InaktivBrukerServiceTest {
     @Test
     fun skalReaktivereInaktivBrukerUnder28Dager() {
         mockInaktivBrukerSomSkalReaktiveres()
-        inaktivBrukerService.reaktiverBruker(BRUKER_INTERN, false)
+        reaktiveringBrukerService.reaktiverBruker(BRUKER_INTERN, false)
         verify(exactly = 1) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
 
     }
@@ -49,7 +49,7 @@ class InaktivBrukerServiceTest {
     @Test
     fun reaktiveringAvBrukerOver28DagerSkalGiException() {
         mockBrukerSomIkkeSkalReaktiveres()
-        Assertions.assertThrows(RuntimeException::class.java, { inaktivBrukerService.reaktiverBruker(BRUKER_INTERN, false) }, "Bruker kan ikke reaktiveres.")
+        Assertions.assertThrows(RuntimeException::class.java, { reaktiveringBrukerService.reaktiverBruker(BRUKER_INTERN, false) }, "Bruker kan ikke reaktiveres.")
         verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 

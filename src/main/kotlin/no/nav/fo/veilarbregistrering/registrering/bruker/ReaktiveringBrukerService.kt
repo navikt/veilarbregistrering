@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import org.springframework.transaction.annotation.Transactional
 
-open class InaktivBrukerService(
+open class ReaktiveringBrukerService(
     private val brukerTilstandService: BrukerTilstandService,
     private val reaktiveringRepository: ReaktiveringRepository,
     private val oppfolgingGateway: OppfolgingGateway,
@@ -28,6 +28,6 @@ open class InaktivBrukerService(
     }
 
     companion object {
-        private val LOG = loggerFor<InaktivBrukerService>()
+        private val LOG = loggerFor<ReaktiveringBrukerService>()
     }
 }

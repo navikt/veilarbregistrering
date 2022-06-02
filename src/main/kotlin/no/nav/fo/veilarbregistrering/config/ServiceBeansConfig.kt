@@ -101,13 +101,13 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun inaktivBrukerService(
+    fun reaktiveringBrukerService(
         brukerTilstandService: BrukerTilstandService,
         reaktiveringRepository: ReaktiveringRepository,
         oppfolgingGateway: OppfolgingGateway,
         metricsService: MetricsService
-    ): InaktivBrukerService {
-        return InaktivBrukerService(
+    ): ReaktiveringBrukerService {
+        return ReaktiveringBrukerService(
             brukerTilstandService,
             reaktiveringRepository,
             oppfolgingGateway,
@@ -164,7 +164,7 @@ class ServiceBeansConfig {
         unleashClient: UnleashClient,
         startRegistreringStatusService: StartRegistreringStatusService,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
-        inaktivBrukerService: InaktivBrukerService
+        reaktiveringBrukerService: ReaktiveringBrukerService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
@@ -174,7 +174,7 @@ class ServiceBeansConfig {
             unleashClient,
             sykmeldtRegistreringService,
             startRegistreringStatusService,
-            inaktivBrukerService
+            reaktiveringBrukerService
         )
     }
 

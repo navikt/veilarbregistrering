@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
@@ -21,7 +20,7 @@ class RegistreringResource(
     private val unleashClient: UnleashClient,
     private val sykmeldtRegistreringService: SykmeldtRegistreringService,
     private val startRegistreringStatusService: StartRegistreringStatusService,
-    private val inaktivBrukerService: InaktivBrukerService
+    private val reaktiveringBrukerService: ReaktiveringBrukerService
 ) : RegistreringApi {
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
@@ -78,7 +77,7 @@ class RegistreringResource(
         }
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        inaktivBrukerService.reaktiverBruker(bruker, autorisasjonsService.erVeileder())
+        reaktiveringBrukerService.reaktiverBruker(bruker, autorisasjonsService.erVeileder())
     }
 
     @PostMapping("/startregistrersykmeldt")

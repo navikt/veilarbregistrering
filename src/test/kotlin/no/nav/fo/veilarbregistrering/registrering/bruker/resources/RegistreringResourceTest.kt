@@ -297,7 +297,7 @@ private class RegistreringResourceConfig {
         unleashClient: UnleashClient,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
         startRegistreringStatusService: StartRegistreringStatusService,
-        inaktivBrukerService: InaktivBrukerService
+        reaktiveringBrukerService: ReaktiveringBrukerService
     ) = RegistreringResource(
         autorisasjonService,
         userService,
@@ -306,7 +306,7 @@ private class RegistreringResourceConfig {
         unleashClient,
         sykmeldtRegistreringService,
         startRegistreringStatusService,
-        inaktivBrukerService,
+        reaktiveringBrukerService,
     )
 
     @Bean
@@ -338,5 +338,5 @@ private class RegistreringResourceConfig {
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
 
     @Bean
-    fun inaktivBrukerService(): InaktivBrukerService = mockk(relaxed = true)
+    fun inaktivBrukerService(): ReaktiveringBrukerService = mockk(relaxed = true)
 }
