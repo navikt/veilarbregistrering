@@ -21,16 +21,6 @@ class StartRegistreringStatusService(
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         registrerFunksjonelleMetrikker(brukersTilstand)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
-
-        muligGeografiskTilknytning.apply {
-            logger.info(
-                "Bruker {} startet registrering med geografisk tilknytning [BrukersTilstand], [GeografiskTilknytning] [{}] [{}]",
-                bruker.aktorId,
-                brukersTilstand,
-                this
-            )
-        }
-
         val registreringType = brukersTilstand.registreringstype
         var oppfyllerBetingelseOmArbeidserfaring: Boolean? = null
         if (RegistreringType.ORDINAER_REGISTRERING == registreringType) {
