@@ -22,20 +22,22 @@ class StartRegistreringStatusService(
         registrerFunksjonelleMetrikker(brukersTilstand)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
         val registreringType = brukersTilstand.registreringstype
+
         var oppfyllerBetingelseOmArbeidserfaring: Boolean? = null
         if (RegistreringType.ORDINAER_REGISTRERING == registreringType) {
             oppfyllerBetingelseOmArbeidserfaring =
                 arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)
                     .harJobbetSammenhengendeSeksAvTolvSisteManeder(LocalDate.now())
         }
-        val startRegistreringStatus = map(
+
+        logger.info("Brukers tilstand for {}: {}", bruker.aktorId, brukersTilstand)
+
+        return map(
             brukersTilstand,
             muligGeografiskTilknytning,
             oppfyllerBetingelseOmArbeidserfaring,
             bruker.gjeldendeFoedselsnummer.alder(LocalDate.now())
         )
-        logger.info("Startreg.status for {}: {}", bruker.aktorId, startRegistreringStatus)
-        return startRegistreringStatus
     }
 
     fun registrerAtArenaHarPlanlagtNedetid() {

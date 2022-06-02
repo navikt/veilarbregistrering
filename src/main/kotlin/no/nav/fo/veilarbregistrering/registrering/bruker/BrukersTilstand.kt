@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import java.util.*
 
 class BrukersTilstand private constructor(
-    oppfolgingStatusData: Oppfolgingsstatus,
+    private val oppfolgingStatusData: Oppfolgingsstatus,
     val registreringstype: RegistreringType,
     val isHarIgangsattGjenopptagbarRegistrering: Boolean) {
 
@@ -21,6 +21,12 @@ class BrukersTilstand private constructor(
 
     fun ikkeErSykemeldtRegistrering(): Boolean {
         return RegistreringType.SYKMELDT_REGISTRERING != registreringstype
+    }
+
+    override fun toString(): String {
+        return "BrukersTilstand(" +
+                "oppfolgingsstatus=$oppfolgingStatusData, " +
+                "registreringstype=$registreringstype)"
     }
 
     val isErSykmeldtMedArbeidsgiver: Boolean = oppfolgingStatusData.erSykmeldtMedArbeidsgiver == true

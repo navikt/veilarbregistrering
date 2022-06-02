@@ -44,7 +44,10 @@ class StartRegistreringStatusServiceTest {
     @Test
     fun skalReturnereUnderOppfolgingNaarUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging()
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT).isTrue
     }
 
@@ -52,7 +55,10 @@ class StartRegistreringStatusServiceTest {
     fun skalReturnereAtBrukerOppfyllerBetingelseOmArbeidserfaring() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus.jobbetSeksAvTolvSisteManeder).isTrue
     }
 
@@ -60,14 +66,21 @@ class StartRegistreringStatusServiceTest {
     fun skalReturnereFalseOmIkkeUnderOppfolging() {
         mockOppfolgingMedRespons()
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav())
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT).isFalse
     }
 
     @Test
     fun skalReturnereAlleredeUnderOppfolging() {
         mockArbeidssokerSomHarAktivOppfolging()
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT).isTrue
     }
 
@@ -75,14 +88,20 @@ class StartRegistreringStatusServiceTest {
     fun skalReturnereReaktivering() {
         mockOppfolgingMedRespons()
         mockArbeidsforhold(arbeidsforholdSomOppfyllerKrav())
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus.registreringType).isEqualTo(RegistreringType.REAKTIVERING)
     }
 
     @Test
     fun skalReturnereSykmeldtRegistrering() {
         mockSykmeldtBruker()
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus.registreringType)
             .isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
@@ -91,7 +110,10 @@ class StartRegistreringStatusServiceTest {
     fun gitt_at_geografiskTilknytning_ikke_ble_funnet_skal_null_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns null
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isNull()
     }
@@ -100,9 +122,10 @@ class StartRegistreringStatusServiceTest {
     fun gitt_at_geografiskTilknytning_er_1234_skal_1234_returneres() {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
-        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns
-                GeografiskTilknytning("1234")
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("1234")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isEqualTo("1234")
     }
@@ -112,7 +135,9 @@ class StartRegistreringStatusServiceTest {
         mockInaktivBrukerUtenReaktivering()
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
         every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } throws RuntimeException("Ikke tilgang")
+
         val startRegistreringStatus = getStartRegistreringStatus(BRUKER_INTERN)
+
         Assertions.assertThat(startRegistreringStatus).isNotNull
         Assertions.assertThat(startRegistreringStatus.geografiskTilknytning).isNull()
     }
@@ -155,7 +180,6 @@ class StartRegistreringStatusServiceTest {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
-
     }
 
     private fun mockArbeidsforhold(arbeidsforhold: List<Arbeidsforhold>) =
@@ -182,6 +206,7 @@ class StartRegistreringStatusServiceTest {
             )
 
     private fun mockOppfolgingMedRespons() {
+        every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(true)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
         every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "ARBS", kvalifiseringsgruppe = "IKVAL", rettighetsgruppe = "IYT")
