@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
@@ -108,6 +109,7 @@ open class BrukerRegistreringService(
     private fun validerBrukerRegistrering(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering, bruker: Bruker) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.isUnderOppfolging) {
+            secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
             throw RuntimeException("Bruker allerede under oppfølging.")
         }
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
