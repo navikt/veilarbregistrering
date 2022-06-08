@@ -28,7 +28,6 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         val type = when {
             Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "AADB2C"
             Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> "AAD"
-            Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME in cookieNames -> "OPENAM"
             !bearerToken.isNullOrBlank() -> checkBearerTokenForType(bearerToken)
             else -> null
         }

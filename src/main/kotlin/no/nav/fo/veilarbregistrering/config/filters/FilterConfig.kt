@@ -59,7 +59,6 @@ class FilterConfig {
         val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
         val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
             OidcAuthenticator.fromConfigs(
-                createOpenAmAuthenticatorConfig(),
                 createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
                 createAadTokenConfig(),
@@ -69,19 +68,6 @@ class FilterConfig {
         registration.order = 4
         registration.addUrlPatterns("/api/*")
         return registration
-    }
-
-    private fun createOpenAmAuthenticatorConfig(): OidcAuthenticatorConfig? {
-        val discoveryUrl = requireProperty("OPENAM_DISCOVERY_URL")
-        val clientId = requireProperty("VEILARBLOGIN_OPENAM_CLIENT_ID")
-        val refreshUrl = requireProperty("VEILARBLOGIN_OPENAM_REFRESH_URL")
-        return OidcAuthenticatorConfig()
-            .withDiscoveryUrl(discoveryUrl)
-            .withClientId(clientId)
-            .withRefreshUrl(refreshUrl)
-            .withRefreshTokenCookieName(Constants.REFRESH_TOKEN_COOKIE_NAME)
-            .withIdTokenCookieName(Constants.OPEN_AM_ID_TOKEN_COOKIE_NAME) //FIXME: Verifiser riktig bruk
-            .withUserRole(UserRole.INTERN)
     }
 
     private fun createVeilarbloginAADConfig(): OidcAuthenticatorConfig? {
