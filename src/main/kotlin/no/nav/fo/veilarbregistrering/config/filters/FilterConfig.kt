@@ -10,6 +10,8 @@ import no.nav.common.rest.filter.SetStandardHttpHeadersFilter
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireApplicationName
 import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -44,9 +46,9 @@ class FilterConfig {
     }
 
     @Bean
-    fun loginStatsFilter(): FilterRegistrationBean<*> {
+    fun loginStatsFilter(metricsService: MetricsService): FilterRegistrationBean<*> {
         return FilterRegistrationBean<Filter>().apply {
-            filter = AuthStatsFilter()
+            filter = AuthStatsFilter(metricsService)
             order = 3
             addUrlPatterns("/*")
         }

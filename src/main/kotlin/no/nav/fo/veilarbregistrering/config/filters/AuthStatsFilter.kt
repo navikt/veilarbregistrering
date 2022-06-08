@@ -1,8 +1,12 @@
 package no.nav.fo.veilarbregistrering.config.filters
 
 import com.nimbusds.jwt.JWTParser
+import io.micrometer.core.instrument.Tag
 import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import java.text.ParseException
@@ -12,7 +16,7 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 
-class AuthStatsFilter : Filter {
+class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request: HttpServletRequest = servletRequest as HttpServletRequest
@@ -32,6 +36,7 @@ class AuthStatsFilter : Filter {
         try {
             type?.let {
                 MDC.put(TOKEN_TYPE, type)
+                metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
             }
             chain.doFilter(servletRequest, servletResponse)

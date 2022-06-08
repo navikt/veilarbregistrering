@@ -21,6 +21,7 @@ enum class Events(override val key: String) : Event {
     HENT_ARBEIDSSOKERPERIODER_KILDE("arbeid.arbeidssoker.kilde.event"),
     HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR("arbeid.arbeidssoker.kilder.gir.samme.svar.event"),
     KALL_TREDJEPART("timer.tredjepart"),
+    REGISTRERING_TOKEN("registrering.token"),
     REGISTRERING_REGISTERINGSTYPE("registrering.registreringstype"),
     REGISTRERING_ALLEREDEREGISTRERT("registrering.allerederegistrert"),
     REGISTRERING_NEDETID_ARENA("registrering.nedetid.arena"),
