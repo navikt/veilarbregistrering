@@ -57,8 +57,6 @@ spec:
       value: dev-fss
     - name: ENHET_URL
       value: https://modapp-q1.adeo.no/ereg
-    - name: ISSO_ISALIVE_URL
-      value: https://isso-q.adeo.no/isso/isAlive.jsp
     - name: KAFKA_SERVERS
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: KAFKA_SCHEMA
