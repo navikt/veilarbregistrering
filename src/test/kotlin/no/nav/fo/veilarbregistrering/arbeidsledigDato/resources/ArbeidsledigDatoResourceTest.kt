@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidsledigDato.resources
 
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResourceConfig
+import no.nav.fo.veilarbregistrering.toJSON
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,8 +25,10 @@ class ArbeidsledigDatoResourceTest (@Autowired private val mvc: MockMvc) {
             .andExpect {
                 status { isOk() }
             }
+            .andReturn()
+            .response.contentAsString
 
-        Assertions.assertThat(responseBody).isEqualTo(ArbeidsledigDatoDto(null))
+        Assertions.assertThat(responseBody).isEqualTo(toJSON(ArbeidsledigDatoDto(null)))
     }
 }
 
