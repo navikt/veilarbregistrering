@@ -23,12 +23,6 @@ spec:
   env:
     - name: AAREG_REST_API
       value: https://aareg-services-q1.dev.intern.nav.no/api
-    - name: OPENAM_DISCOVERY_URL
-      value: https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration
-    - name: VEILARBLOGIN_OPENAM_CLIENT_ID
-      value: veilarblogin-q1
-    - name: VEILARBLOGIN_OPENAM_REFRESH_URL
-      value: https://app-q1.adeo.no/veilarblogin/api/openam-refresh
     - name: AAD_DISCOVERY_URL
       value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration
     - name: VEILARBLOGIN_AAD_CLIENT_ID
@@ -67,8 +61,6 @@ spec:
       value: dev-fss
     - name: ENHET_URL
       value: https://modapp-q1.adeo.no/ereg
-    - name: ISSO_ISALIVE_URL
-      value: https://isso-q.adeo.no/isso/isAlive.jsp
     - name: KAFKA_SERVERS
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: KAFKA_SCHEMA
