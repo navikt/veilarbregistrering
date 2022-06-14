@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.tidslinje
 
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.registrering.bruker.Reaktivering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import kotlin.streams.toList
 
 class ReaktiveringTidslinje(private val reaktiveringer: List<Reaktivering>): Tidslinje {
