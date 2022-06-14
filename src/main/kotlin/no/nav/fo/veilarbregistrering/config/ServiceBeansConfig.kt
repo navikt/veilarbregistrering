@@ -50,6 +50,7 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegist
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.ReaktiveringResource
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
@@ -163,6 +164,21 @@ class ServiceBeansConfig {
     }
 
     @Bean
+    fun reaktiveringResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        unleashClient: UnleashClient,
+        reaktiveringBrukerService: ReaktiveringBrukerService
+    ) : ReaktiveringResource {
+        return ReaktiveringResource(
+            autorisasjonService,
+            userService,
+            unleashClient,
+            reaktiveringBrukerService
+        )
+    }
+
+    @Bean
     fun registreringResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
@@ -170,8 +186,7 @@ class ServiceBeansConfig {
         hentRegistreringService: HentRegistreringService,
         unleashClient: UnleashClient,
         startRegistreringStatusService: StartRegistreringStatusService,
-        sykmeldtRegistreringService: SykmeldtRegistreringService,
-        reaktiveringBrukerService: ReaktiveringBrukerService
+        sykmeldtRegistreringService: SykmeldtRegistreringService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
@@ -180,8 +195,7 @@ class ServiceBeansConfig {
             hentRegistreringService,
             unleashClient,
             sykmeldtRegistreringService,
-            startRegistreringStatusService,
-            reaktiveringBrukerService
+            startRegistreringStatusService
         )
     }
 

@@ -39,14 +39,6 @@ interface RegistreringApi {
     @Operation(summary = "Henter siste påbegynte registrering")
     fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
 
-    @Operation(
-        summary = "Reaktiverer bruker som arbeidssøker.",
-        description = "Tjenesten gjør en reaktivering av brukere som har blitt inaktivert i løpet av de siste 28 " +
-                "dagene. Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
-                "uten at saksbehandler manuelt vurderer reaktiveringen via en arbeidsprosess."
-    )
-    fun reaktivering()
-
     @Operation(summary = "Registrerer bruker som `sykmeldt registrert`.")
     fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering)
 }

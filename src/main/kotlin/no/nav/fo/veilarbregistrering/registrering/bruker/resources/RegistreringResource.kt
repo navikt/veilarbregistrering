@@ -4,11 +4,12 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import org.springframework.http.HttpStatus
@@ -24,9 +25,9 @@ class RegistreringResource(
     private val hentRegistreringService: HentRegistreringService,
     private val unleashClient: UnleashClient,
     private val sykmeldtRegistreringService: SykmeldtRegistreringService,
-    private val startRegistreringStatusService: StartRegistreringStatusService,
-    private val reaktiveringBrukerService: ReaktiveringBrukerService
+    private val startRegistreringStatusService: StartRegistreringStatusService
 ) : RegistreringApi {
+
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
@@ -72,17 +73,6 @@ class RegistreringResource(
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(brukerRegistreringWrapper)
-    }
-
-    @PostMapping("/startreaktivering")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun reaktivering() {
-        if (tjenesteErNede()) {
-            throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
-        }
-        val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        reaktiveringBrukerService.reaktiverBruker(bruker, autorisasjonsService.erVeileder())
     }
 
     @PostMapping("/startregistrersykmeldt")
