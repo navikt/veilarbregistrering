@@ -8,8 +8,8 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

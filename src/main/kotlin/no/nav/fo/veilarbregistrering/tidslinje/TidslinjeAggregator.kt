@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.tidslinje
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status

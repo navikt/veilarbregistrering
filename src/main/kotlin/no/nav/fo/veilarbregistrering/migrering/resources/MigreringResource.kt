@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.config.Secrets
 import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.web.bind.annotation.*

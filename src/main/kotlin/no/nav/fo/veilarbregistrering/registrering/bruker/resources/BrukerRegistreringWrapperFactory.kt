@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 
 object BrukerRegistreringWrapperFactory {

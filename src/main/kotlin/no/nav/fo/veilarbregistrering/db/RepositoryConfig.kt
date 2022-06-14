@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepos
 import no.nav.fo.veilarbregistrering.db.registrering.ReaktiveringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.db.registrering.SykmeldtRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl

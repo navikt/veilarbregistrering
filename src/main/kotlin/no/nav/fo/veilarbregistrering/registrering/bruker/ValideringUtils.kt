@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.fo.veilarbregistrering.besvarelse.*
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 
 
 object ValideringUtils {

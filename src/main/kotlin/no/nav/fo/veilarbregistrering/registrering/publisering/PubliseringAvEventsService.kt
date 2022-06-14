@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.publisering
 
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status

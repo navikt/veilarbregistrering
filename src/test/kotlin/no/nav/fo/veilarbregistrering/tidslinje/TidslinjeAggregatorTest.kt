@@ -6,8 +6,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository

@@ -1,7 +1,9 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.profilering.Profilering
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmalTestdataBuilder
 import java.time.LocalDateTime
 
 object OrdinaerBrukerRegistreringTestdataBuilder {
@@ -14,11 +16,11 @@ object OrdinaerBrukerRegistreringTestdataBuilder {
         profilering: Profilering? = null,
     ): OrdinaerBrukerRegistrering {
         return OrdinaerBrukerRegistrering(
-                opprettetDato = opprettetDato,
-                sisteStilling = stilling,
-                besvarelse = besvarelse,
-                teksterForBesvarelse = teksterForBesvarelse,
-                profilering = profilering,
+            opprettetDato = opprettetDato,
+            sisteStilling = stilling,
+            besvarelse = besvarelse,
+            teksterForBesvarelse = teksterForBesvarelse,
+            profilering = profilering,
         )
     }
 

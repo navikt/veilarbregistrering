@@ -43,6 +43,8 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
