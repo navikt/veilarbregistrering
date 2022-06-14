@@ -5,8 +5,8 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata.medDa
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach

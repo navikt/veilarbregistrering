@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.registrering.bruker
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.kanResendes
 
 class BrukerTilstandService(
     private val oppfolgingGateway: OppfolgingGateway,

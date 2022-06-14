@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.tidslinje
 
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import java.time.LocalDate
 
 class TidslinjeTestdataBuilder {

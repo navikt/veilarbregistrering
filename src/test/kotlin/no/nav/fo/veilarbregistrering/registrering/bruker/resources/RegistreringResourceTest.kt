@@ -13,7 +13,8 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService

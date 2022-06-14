@@ -6,6 +6,8 @@ import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService

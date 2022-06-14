@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
