@@ -5,9 +5,9 @@ import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +21,8 @@ import org.springframework.test.context.ContextConfiguration
 class SykmeldtRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository) {
+    private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
+) {
 
     @Test
     fun hentSykmeldtregistreringForAktorId() {
