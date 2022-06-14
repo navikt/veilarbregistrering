@@ -6,9 +6,7 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
@@ -18,12 +16,12 @@ import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.migrering.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResource
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.migrering.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
@@ -245,17 +243,26 @@ class ServiceBeansConfig {
     @Bean
     fun arbeidssokerService(
         arbeidssokerRepository: ArbeidssokerRepository,
+        arbeidssokerperiodeService: ArbeidssokerperiodeService,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
         metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             arbeidssokerRepository,
+            arbeidssokerperiodeService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService
         )
     }
+
+    @Bean
+    fun arbeidssokerperioderService(arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer): ArbeidssokerperiodeService =
+        ArbeidssokerperiodeService(arbeidssokerperiodeProducer)
+
+    @Bean
+    fun arbeidssokerperiodeProducer(): ArbeidssokerperiodeProducer = ArbeidssokerperiodeProducer()
 
     @Bean
     fun arbeidssokerResource(
@@ -300,7 +307,11 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun profileringResource(userService: UserService, autorisasjonService: AutorisasjonService, profilertInnsatsgruppeService: ProfilertInnsatsgruppeService): ProfileringApi {
+    fun profileringResource(
+        userService: UserService,
+        autorisasjonService: AutorisasjonService,
+        profilertInnsatsgruppeService: ProfilertInnsatsgruppeService
+    ): ProfileringApi {
         return ProfileringResource(userService, autorisasjonService, profilertInnsatsgruppeService)
     }
 

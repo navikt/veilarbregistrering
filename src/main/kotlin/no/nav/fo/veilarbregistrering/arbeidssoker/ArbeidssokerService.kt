@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 @Service
 class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService
@@ -39,7 +40,15 @@ class ArbeidssokerService(
             )
             return
         }
+
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
+        val arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
+            listOf(endretFormidlingsgruppeCommand.foedselsnummer!!)
+        )
+        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(
+            endretFormidlingsgruppeCommand,
+            arbeidssokerperioderLokalt
+        )
     }
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {

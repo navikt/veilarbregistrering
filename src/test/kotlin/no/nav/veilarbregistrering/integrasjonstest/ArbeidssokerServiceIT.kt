@@ -72,17 +72,22 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         fun unleashClient(): UnleashClient = mockk(relaxed = true)
 
         @Bean
+        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService = mockk(relaxed = true)
+
+        @Bean
         fun formidlingsgruppeGateway(): FormidlingsgruppeGateway =
             mockk(relaxed = true)
 
         @Bean
         fun arbeidssokerService(
             arbeidssokerRepository: ArbeidssokerRepository,
+            arbeidssokerperiodeService: ArbeidssokerperiodeService,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService
         ): ArbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
+            arbeidssokerperiodeService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService

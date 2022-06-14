@@ -1,9 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import no.nav.common.featuretoggle.UnleashClient
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
 import org.junit.jupiter.api.BeforeEach
@@ -14,14 +11,18 @@ import java.time.Month
 class ArbeidssokerServiceBehandleTest {
     private lateinit var arbeidssokerService: ArbeidssokerService
     private lateinit var arbeidssokerRepository: ArbeidssokerRepository
+    private lateinit var arbeidssokerperiodeService: ArbeidssokerperiodeService
 
     @BeforeEach
     fun setup() {
         arbeidssokerRepository = mockk()
+        arbeidssokerperiodeService = mockk()
+        every { arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
         arbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
-            mockk<FormidlingsgruppeGateway>(),
-            mockk<UnleashClient>(),
+            arbeidssokerperiodeService,
+            mockk(),
+            mockk(),
             mockk()
         )
     }
@@ -30,6 +31,7 @@ class ArbeidssokerServiceBehandleTest {
     fun `endringer fra 2010 skal persisteres`() {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0))
         every { arbeidssokerRepository.lagre(any()) } returns 1L
+        every { arbeidssokerRepository.finnFormidlingsgrupper(any()) } returns Arbeidssokerperioder(emptyList())
         arbeidssokerService.behandle(formidlingsgruppeEvent)
         verify(exactly = 1) { arbeidssokerRepository.lagre(formidlingsgruppeEvent) }
     }
