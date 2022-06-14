@@ -1,7 +1,8 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.sykmeldt
 
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmalTestdataBuilder
 import java.time.LocalDateTime
 
 object SykmeldtRegistreringTestdataBuilder {
@@ -11,9 +12,9 @@ object SykmeldtRegistreringTestdataBuilder {
         besvarelse: Besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(),
     ): SykmeldtRegistrering {
         return SykmeldtRegistrering(
-                opprettetDato = opprettetDato,
-                besvarelse = besvarelse,
-                teksterForBesvarelse = TekstForSporsmalTestdataBuilder.gyldigeTeksterForSykmeldtBesvarelse(),
+            opprettetDato = opprettetDato,
+            besvarelse = besvarelse,
+            teksterForBesvarelse = TekstForSporsmalTestdataBuilder.gyldigeTeksterForSykmeldtBesvarelse(),
         )
     }
 }

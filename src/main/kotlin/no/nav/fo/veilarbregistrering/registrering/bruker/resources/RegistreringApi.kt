@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import org.springframework.http.ResponseEntity
 
 @Tag(name = "RegistreringResource")
@@ -38,14 +38,6 @@ interface RegistreringApi {
 
     @Operation(summary = "Henter siste påbegynte registrering")
     fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
-
-    @Operation(
-        summary = "Reaktiverer bruker som arbeidssøker.",
-        description = "Tjenesten gjør en reaktivering av brukere som har blitt inaktivert i løpet av de siste 28 " +
-                "dagene. Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
-                "uten at saksbehandler manuelt vurderer reaktiveringen via en arbeidsprosess."
-    )
-    fun reaktivering()
 
     @Operation(summary = "Registrerer bruker som `sykmeldt registrert`.")
     fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering)

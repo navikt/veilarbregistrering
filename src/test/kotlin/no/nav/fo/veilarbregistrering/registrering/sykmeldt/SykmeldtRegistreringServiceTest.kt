@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.sykmeldt
 
 import io.mockk.Called
 import io.mockk.every
@@ -13,8 +13,10 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -69,7 +71,7 @@ class SykmeldtRegistreringServiceTest {
         every { autorisasjonService.erInternBruker() } returns false
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
         val id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null)
-        assertThat(id).isEqualTo(5)
+        org.assertj.core.api.Assertions.assertThat(id).isEqualTo(5)
         verify { manuellRegistreringRepository wasNot Called }
     }
 
@@ -89,12 +91,16 @@ class SykmeldtRegistreringServiceTest {
             BRUKER_INTERN,
             NavVeileder("Z123456", "Ustekveikja")
         )
-        assertThat(id).isEqualTo(5)
+        org.assertj.core.api.Assertions.assertThat(id).isEqualTo(5)
         verify(exactly = 1) { manuellRegistreringRepository.lagreManuellRegistrering(any()) }
     }
 
     private fun mockSykmeldtMedArbeidsgiver() {
-        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(formidlingsgruppe = "IARBS", kvalifiseringsgruppe = "VURDI", rettighetsgruppe = "IYT")
+        every { veilarbarenaClient.arenaStatus(any()) } returns ArenaStatusDto(
+            formidlingsgruppe = "IARBS",
+            kvalifiseringsgruppe = "VURDI",
+            rettighetsgruppe = "IYT"
+        )
     }
 
     companion object {

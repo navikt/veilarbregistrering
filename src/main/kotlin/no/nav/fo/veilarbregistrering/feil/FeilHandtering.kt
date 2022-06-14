@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
-import no.nav.fo.veilarbregistrering.registrering.bruker.KanIkkeReaktiveresException
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice

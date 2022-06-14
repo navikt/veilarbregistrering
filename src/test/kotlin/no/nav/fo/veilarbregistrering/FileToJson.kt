@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering
 
+import com.google.gson.GsonBuilder
 import java.lang.Exception
 import java.lang.RuntimeException
 import java.nio.file.Files
@@ -14,4 +15,9 @@ object FileToJson {
             throw RuntimeException(e)
         }
     }
+}
+
+fun toJSON(dto: Any): String? {
+    val GSON = GsonBuilder().serializeNulls().create()
+    return GSON.toJson(dto)
 }

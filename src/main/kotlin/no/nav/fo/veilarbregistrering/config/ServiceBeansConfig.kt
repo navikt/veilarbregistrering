@@ -6,6 +6,7 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
@@ -40,9 +41,16 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.ReaktiveringResource
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean
@@ -154,6 +162,21 @@ class ServiceBeansConfig {
     }
 
     @Bean
+    fun reaktiveringResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        unleashClient: UnleashClient,
+        reaktiveringBrukerService: ReaktiveringBrukerService
+    ) : ReaktiveringResource {
+        return ReaktiveringResource(
+            autorisasjonService,
+            userService,
+            unleashClient,
+            reaktiveringBrukerService
+        )
+    }
+
+    @Bean
     fun registreringResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
@@ -161,8 +184,7 @@ class ServiceBeansConfig {
         hentRegistreringService: HentRegistreringService,
         unleashClient: UnleashClient,
         startRegistreringStatusService: StartRegistreringStatusService,
-        sykmeldtRegistreringService: SykmeldtRegistreringService,
-        reaktiveringBrukerService: ReaktiveringBrukerService
+        sykmeldtRegistreringService: SykmeldtRegistreringService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
@@ -171,8 +193,7 @@ class ServiceBeansConfig {
             hentRegistreringService,
             unleashClient,
             sykmeldtRegistreringService,
-            startRegistreringStatusService,
-            reaktiveringBrukerService
+            startRegistreringStatusService
         )
     }
 
@@ -394,5 +415,12 @@ class ServiceBeansConfig {
             brukerRegistreringRepository,
             registreringTilstandRepository
         )
+    }
+    @Bean
+    fun gjelderFraDatoResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+    ): GjelderFraDatoResource {
+        return GjelderFraDatoResource(autorisasjonService, userService)
     }
 }

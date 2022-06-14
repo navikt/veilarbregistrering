@@ -12,9 +12,12 @@ import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
-import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -68,17 +71,6 @@ class RegistreringResourceTest(
             contentType = MediaType.APPLICATION_JSON
             content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
         }.andExpect {
-            status { isNoContent() }
-        }.andReturn().response.contentAsString
-
-        assertThat(responseString).isNullOrEmpty()
-    }
-
-    @Test
-    fun `startreaktivering returnerer riktig status og responsbody`() {
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        val responseString = mvc.post("/api/startreaktivering").andExpect {
             status { isNoContent() }
         }.andReturn().response.contentAsString
 
@@ -296,8 +288,7 @@ private class RegistreringResourceConfig {
         hentRegistreringService: HentRegistreringService,
         unleashClient: UnleashClient,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
-        startRegistreringStatusService: StartRegistreringStatusService,
-        reaktiveringBrukerService: ReaktiveringBrukerService
+        startRegistreringStatusService: StartRegistreringStatusService
     ) = RegistreringResource(
         autorisasjonService,
         userService,
@@ -305,8 +296,7 @@ private class RegistreringResourceConfig {
         hentRegistreringService,
         unleashClient,
         sykmeldtRegistreringService,
-        startRegistreringStatusService,
-        reaktiveringBrukerService,
+        startRegistreringStatusService
     )
 
     @Bean
@@ -336,7 +326,4 @@ private class RegistreringResourceConfig {
 
     @Bean
     fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
-
-    @Bean
-    fun inaktivBrukerService(): ReaktiveringBrukerService = mockk(relaxed = true)
 }

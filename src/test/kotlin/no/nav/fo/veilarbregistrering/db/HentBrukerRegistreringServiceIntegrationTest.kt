@@ -24,6 +24,10 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -142,12 +146,12 @@ class HentBrukerRegistreringServiceIntegrationTest(
         class TestContext {
             @Bean
             fun hentRegistreringService(
-                    db: JdbcTemplate,
-                    brukerRegistreringRepository: BrukerRegistreringRepository,
-                    sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
-                    profileringRepository: ProfileringRepository,
-                    manuellRegistreringRepository: ManuellRegistreringRepository,
-                    metricsService: MetricsService
+                db: JdbcTemplate,
+                brukerRegistreringRepository: BrukerRegistreringRepository,
+                sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
+                profileringRepository: ProfileringRepository,
+                manuellRegistreringRepository: ManuellRegistreringRepository,
+                metricsService: MetricsService
             ) = HentRegistreringService(
                     brukerRegistreringRepository,
                     sykmeldtRegistreringRepository,
@@ -159,8 +163,8 @@ class HentBrukerRegistreringServiceIntegrationTest(
 
             @Bean
             fun hentBrukerTilstandService(
-                    oppfolgingGateway: OppfolgingGateway,
-                    brukerRegistreringRepository: BrukerRegistreringRepository,
+                oppfolgingGateway: OppfolgingGateway,
+                brukerRegistreringRepository: BrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
                     oppfolgingGateway,

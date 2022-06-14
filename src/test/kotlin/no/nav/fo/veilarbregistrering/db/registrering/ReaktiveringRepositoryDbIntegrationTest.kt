@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +19,8 @@ import org.springframework.test.context.ContextConfiguration
 class ReaktiveringRepositoryDbIntegrationTest(
 
     @Autowired
-    private val reaktiveringRepository: ReaktiveringRepository) {
+    private val reaktiveringRepository: ReaktiveringRepository
+) {
 
     @Test
     fun `finnReaktiveringer skal returnere liste med alle reaktiveringer for gitt aktørId`() {
