@@ -6,9 +6,7 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
-import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
-import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
@@ -16,8 +14,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -61,20 +57,6 @@ class RegistreringResourceTest(
         every { autorisasjonService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
         every { authContextHolder.idTokenClaims } returns Optional.empty()
-    }
-
-    @Test
-    fun `startregistrersykmeldt har riktig status og responsbody`() {
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        val responseString = mvc.post("/api/startregistrersykmeldt") {
-            contentType = MediaType.APPLICATION_JSON
-            content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
-        }.andExpect {
-            status { isNoContent() }
-        }.andReturn().response.contentAsString
-
-        assertThat(responseString).isNullOrEmpty()
     }
 
     @Test
@@ -222,20 +204,6 @@ class RegistreringResourceTest(
     }
 
     @Test
-    fun skalSjekkeTilgangTilBrukerVedRegistreringSykmeldt() {
-        val sykmeldtRegistrering = gyldigSykmeldtRegistrering(
-            besvarelse = Besvarelse(
-                fremtidigSituasjon = FremtidigSituasjonSvar.SAMME_ARBEIDSGIVER,
-                tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING,
-            )
-        )
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        registreringResource.registrerSykmeldt(sykmeldtRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<AktorId>()) }
-    }
-
-    @Test
     fun skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         val ordinaerBrukerRegistrering = gyldigBrukerRegistrering(
             besvarelse = Besvarelse(helseHinder = HelseHinderSvar.NEI)
@@ -287,7 +255,6 @@ private class RegistreringResourceConfig {
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
         unleashClient: UnleashClient,
-        sykmeldtRegistreringService: SykmeldtRegistreringService,
         startRegistreringStatusService: StartRegistreringStatusService
     ) = RegistreringResource(
         autorisasjonService,
@@ -295,7 +262,6 @@ private class RegistreringResourceConfig {
         brukerRegistreringService,
         hentRegistreringService,
         unleashClient,
-        sykmeldtRegistreringService,
         startRegistreringStatusService
     )
 
@@ -323,7 +289,4 @@ private class RegistreringResourceConfig {
     @Bean
     fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService =
         UserService(pdlOppslagGateway, authContextHolder)
-
-    @Bean
-    fun sykmeldtRegistreringService(): SykmeldtRegistreringService = mockk(relaxed = true)
 }

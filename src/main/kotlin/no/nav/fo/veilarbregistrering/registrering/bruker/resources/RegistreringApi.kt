@@ -39,6 +39,4 @@ interface RegistreringApi {
     @Operation(summary = "Henter siste påbegynte registrering")
     fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
 
-    @Operation(summary = "Registrerer bruker som `sykmeldt registrert`.")
-    fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering)
 }
