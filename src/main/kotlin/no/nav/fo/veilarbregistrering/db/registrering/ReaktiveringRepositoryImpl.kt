@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
-import no.nav.fo.veilarbregistrering.registrering.bruker.Reaktivering
-import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.SQLException

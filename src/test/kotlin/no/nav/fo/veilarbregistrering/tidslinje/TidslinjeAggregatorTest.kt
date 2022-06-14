@@ -8,8 +8,8 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.ReaktiveringTestdataBuilder.gyldigReaktivering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import org.assertj.core.api.Assertions.assertThat

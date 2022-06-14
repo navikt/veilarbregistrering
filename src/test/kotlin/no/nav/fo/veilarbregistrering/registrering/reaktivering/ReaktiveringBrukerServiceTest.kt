@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -10,6 +10,10 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

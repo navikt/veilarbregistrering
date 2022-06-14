@@ -1,10 +1,11 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import org.springframework.transaction.annotation.Transactional
 
 open class ReaktiveringBrukerService(
