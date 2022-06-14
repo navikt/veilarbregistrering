@@ -6,6 +6,7 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
@@ -383,5 +384,12 @@ class ServiceBeansConfig {
             brukerRegistreringRepository,
             registreringTilstandRepository
         )
+    }
+    @Bean
+    fun gjelderFraDatoResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+    ): GjelderFraDatoResource {
+        return GjelderFraDatoResource(autorisasjonService, userService)
     }
 }
