@@ -53,6 +53,7 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepos
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.ReaktiveringResource
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources.SykmeldtResource
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean
@@ -164,6 +165,20 @@ class ServiceBeansConfig {
     }
 
     @Bean
+    fun sykmeldtResource(
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        unleashClient: UnleashClient,
+        sykmeldtRegistreringService: SykmeldtRegistreringService
+    ) : SykmeldtResource {
+        return SykmeldtResource(
+            autorisasjonService,
+            userService,
+            unleashClient,
+            sykmeldtRegistreringService)
+    }
+
+    @Bean
     fun reaktiveringResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
@@ -185,8 +200,7 @@ class ServiceBeansConfig {
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
         unleashClient: UnleashClient,
-        startRegistreringStatusService: StartRegistreringStatusService,
-        sykmeldtRegistreringService: SykmeldtRegistreringService
+        startRegistreringStatusService: StartRegistreringStatusService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
@@ -194,7 +208,6 @@ class ServiceBeansConfig {
             brukerRegistreringService,
             hentRegistreringService,
             unleashClient,
-            sykmeldtRegistreringService,
             startRegistreringStatusService
         )
     }
