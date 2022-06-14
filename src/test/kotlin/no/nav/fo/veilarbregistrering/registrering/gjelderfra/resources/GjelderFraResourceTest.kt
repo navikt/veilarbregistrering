@@ -1,7 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidsledigDato.resources
+package no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources
 
 import io.mockk.mockk
-import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResourceConfig
 import no.nav.fo.veilarbregistrering.toJSON
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -16,26 +15,26 @@ import org.springframework.test.web.servlet.get
 
 @AutoConfigureMockMvc
 @WebMvcTest
-@ContextConfiguration(classes = [ArbeidsledigDatoResourceConfig::class])
-class ArbeidsledigDatoResourceTest (@Autowired private val mvc: MockMvc) {
+@ContextConfiguration(classes = [GjelderFraDatoResourceConfig::class])
+class GjelderFraResourceTest (@Autowired private val mvc: MockMvc) {
 
     @Test
     fun `get - Svarer med 200 - dato=null når det ikke fins noen dato`(){
-        val responseBody = mvc.get("/api/arbeidsledigDato/")
+        val responseBody = mvc.get("/api/registrering/gjelder-fra")
             .andExpect {
                 status { isOk() }
             }
             .andReturn()
             .response.contentAsString
 
-        Assertions.assertThat(responseBody).isEqualTo(toJSON(ArbeidsledigDatoDto(null)))
+        Assertions.assertThat(responseBody).isEqualTo(toJSON(GjelderFraDatoDto(null)))
     }
 }
 
 @Configuration
-class ArbeidsledigDatoResourceConfig {
+class GjelderFraDatoResourceConfig {
     @Bean
-    fun arbeidsledigDatoResource() : ArbeidsledigDatoResource {
-        return ArbeidsledigDatoResource(mockk(relaxed = true), mockk(relaxed = true))
+    fun gjelderFraDatoResource() : GjelderFraDatoResource {
+        return GjelderFraDatoResource(mockk(relaxed = true), mockk(relaxed = true))
     }
 }

@@ -6,7 +6,7 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
-import no.nav.fo.veilarbregistrering.arbeidsledigDato.resources.ArbeidsledigDatoResource
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
@@ -386,10 +386,10 @@ class ServiceBeansConfig {
         )
     }
     @Bean
-    fun arbeidsledigDatoResource(
+    fun gjelderFraDatoResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
-    ): ArbeidsledigDatoResource {
-        return ArbeidsledigDatoResource(autorisasjonService, userService)
+    ): GjelderFraDatoResource {
+        return GjelderFraDatoResource(autorisasjonService, userService)
     }
 }

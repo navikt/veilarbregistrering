@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidsledigDato.resources
+package no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources
 
 
 
@@ -12,23 +12,25 @@ import java.time.LocalDate
 
 
 @RestController
-@RequestMapping("/api")
-class ArbeidsledigDatoResource(
+@RequestMapping("/api/registrering")
+class GjelderFraDatoResource(
     private val autorisasjonService: AutorisasjonService,
     private val userService: UserService,
-) : ArbeidsledigDatoApi {
+) : GjelderFraDatoApi {
 
-    @GetMapping("/arbeidsledigDato")
-    override fun hentArbeidsledigDato(): ArbeidsledigDatoDto? {
+    @GetMapping("/gjelder-fra")
+    override fun hentGjelderFraDato(): GjelderFraDatoDto? {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        return ArbeidsledigDatoDto(dato=null)
+
+        return GjelderFraDatoDto(dato=null)
     }
 
-    @PostMapping("/arbeidsledigDato")
-    override fun lagreArbeidsledigDato(dato: LocalDate): ArbeidsledigDatoDto {
+    @PostMapping("/gjelder-fra")
+    override fun lagreGjelderFraDato(dato: LocalDate): GjelderFraDatoDto {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        return ArbeidsledigDatoDto(dato=null)
+
+        return GjelderFraDatoDto(dato=null)
     }
 }
