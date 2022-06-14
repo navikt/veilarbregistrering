@@ -41,14 +41,17 @@ class ArbeidssokerService(
             return
         }
 
-        arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
-        val arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
+        val eksisterendeArbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
             listOf(endretFormidlingsgruppeCommand.foedselsnummer!!)
         )
+
+        arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
+
         arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(
             endretFormidlingsgruppeCommand,
-            arbeidssokerperioderLokalt
+            eksisterendeArbeidssokerperioderLokalt
         )
+
     }
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {

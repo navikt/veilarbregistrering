@@ -19,11 +19,14 @@ class ArbeidssokerperiodeService(
     ): Boolean {
         endretFormidlingsgruppeCommand.foedselsnummer?.let {
             val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
-            if (sistePeriode.formidlingsgruppe.kode == "ARBS" && endretFormidlingsgruppeCommand.formidlingsgruppe.kode !== "ARBS") {
+            if (harNaavaerendePeriodeMedARBS(sistePeriode) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
                 return true
             }
             return false
         }
         return false
     }
+
+    private fun harNaavaerendePeriodeMedARBS(sistePeriode: Arbeidssokerperiode): Boolean =
+        sistePeriode.formidlingsgruppe.kode == "ARBS" && sistePeriode.periode.til == null
 }
