@@ -10,8 +10,8 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistreringRepos
 import no.nav.fo.veilarbregistrering.registrering.bruker.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

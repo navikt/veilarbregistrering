@@ -7,6 +7,8 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

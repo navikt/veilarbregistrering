@@ -48,6 +48,8 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegist
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
 import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean

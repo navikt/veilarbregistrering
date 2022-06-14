@@ -16,6 +16,8 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 
 class HentRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,

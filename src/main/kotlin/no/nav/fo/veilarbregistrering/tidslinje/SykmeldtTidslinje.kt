@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.tidslinje
 
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.registrering.bruker.SykmeldtRegistrering
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import kotlin.streams.toList
 
 class SykmeldtTidslinje(private var sykmeldtRegistreringer: List<SykmeldtRegistrering>) : Tidslinje {
