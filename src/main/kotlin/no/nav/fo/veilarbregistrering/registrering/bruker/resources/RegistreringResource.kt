@@ -10,9 +10,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatus
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -24,7 +21,6 @@ class RegistreringResource(
     private val brukerRegistreringService: BrukerRegistreringService,
     private val hentRegistreringService: HentRegistreringService,
     private val unleashClient: UnleashClient,
-    private val sykmeldtRegistreringService: SykmeldtRegistreringService,
     private val startRegistreringStatusService: StartRegistreringStatusService
 ) : RegistreringApi {
 
@@ -73,18 +69,6 @@ class RegistreringResource(
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(brukerRegistreringWrapper)
-    }
-
-    @PostMapping("/startregistrersykmeldt")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun registrerSykmeldt(@RequestBody sykmeldtRegistrering: SykmeldtRegistrering) {
-        if (tjenesteErNede()) {
-            throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
-        }
-        val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.aktorId)
-        val veileder = navVeileder()
-        sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder)
     }
 
     private fun navVeileder(): NavVeileder? {
