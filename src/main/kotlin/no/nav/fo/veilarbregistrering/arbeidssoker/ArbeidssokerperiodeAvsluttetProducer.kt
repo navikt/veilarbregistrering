@@ -4,7 +4,9 @@ import no.nav.fo.veilarbregistrering.log.logger
 
 class ArbeidssokerperiodeAvsluttetProducer {
 
-    fun publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
-        logger.info("Ny formidlingsgruppe for person: ${endretFormidlingsgruppeCommand.formidlingsgruppe} - arbeidssøkerperiode avsluttet ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}")
+    fun publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand, sisteArbeidssokerperiode: Arbeidssokerperiode) {
+
+        logger.info("Ny formidlingsgruppe for person: ${endretFormidlingsgruppeCommand.formidlingsgruppe} - arbeidssøkerperiode avsluttet ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}. " +
+                "Nyeste arbeidssøkerperiode før denne endringen er: $sisteArbeidssokerperiode.")
     }
 }

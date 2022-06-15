@@ -9,7 +9,8 @@ class ArbeidssokerperiodeAvsluttetService(
         arbeidssokerperioder: Arbeidssokerperioder
     ) {
         if (erAvslutningAvArbeidssokerperiode(endretFormidlingsgruppeCommand, arbeidssokerperioder)) {
-            arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand)
+            val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
+            arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand, sistePeriode)
         }
     }
 

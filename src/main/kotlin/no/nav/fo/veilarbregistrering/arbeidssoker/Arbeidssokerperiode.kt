@@ -11,7 +11,7 @@ data class Arbeidssokerperiode(val formidlingsgruppe: Formidlingsgruppe, val per
         )
     }
 
-    override fun toString() = "{formidlingsgruppe=$formidlingsgruppe, periode=$periode}"
+    override fun toString() = "{formidlingsgruppe=$formidlingsgruppe, fraOgMed=${periode.fra}, tilOgMed=${periode.til}}"
 
     companion object {
         fun of(formidlingsgruppe: Formidlingsgruppe, periode: Periode): Arbeidssokerperiode {
