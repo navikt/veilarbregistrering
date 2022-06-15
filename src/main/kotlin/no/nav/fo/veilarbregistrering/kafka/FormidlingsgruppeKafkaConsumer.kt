@@ -58,7 +58,7 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
                         MDC.put(mdcOffsetKey, record.offset().toString())
                         MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
-                            behandleFormiddlingsgruppeMelding(record)
+                            behandleFormidlingsgruppeMelding(record)
                         } catch (e: IllegalArgumentException) {
                             LOG.warn(String.format("Behandling av record feilet: %s", record.value()), e)
                         } catch (e: RuntimeException) {
@@ -82,7 +82,7 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
         }
     }
 
-    private fun behandleFormiddlingsgruppeMelding(melding: ConsumerRecord<String, String>) = arbeidssokerService.behandle(map(melding.value()))
+    private fun behandleFormidlingsgruppeMelding(melding: ConsumerRecord<String, String>) = arbeidssokerService.behandle(map(melding.value()))
 
     private fun stopKonsumeringAvFormidlingsgruppe() = unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME)
 

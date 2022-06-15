@@ -34,7 +34,7 @@ import kotlin.test.assertEquals
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, ArbeidssokerServiceIT.ArbeidssokerConfigTest::class])
 internal class ArbeidssokerServiceIT @Autowired constructor(
     private val arbeidssokerService: ArbeidssokerService,
-    private val arbeidssokerperiodeService: ArbeidssokerperiodeService,
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val arbeidssokerRepository: ArbeidssokerRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
@@ -73,7 +73,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         )
 
         val arbeidssokerperioderSlot = slot<Arbeidssokerperioder>()
-        every { arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(any(), capture(arbeidssokerperioderSlot)) } just Runs
+        every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), capture(arbeidssokerperioderSlot)) } just Runs
 
         arbeidssokerService.behandle(nyttFormidlingsgruppeEvent)
 
@@ -96,7 +96,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         fun unleashClient(): UnleashClient = mockk(relaxed = true)
 
         @Bean
-        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService = mockk(relaxed = true)
+        fun arbeidssokerperiodeAvsluttetService(): ArbeidssokerperiodeAvsluttetService = mockk(relaxed = true)
 
         @Bean
         fun formidlingsgruppeGateway(): FormidlingsgruppeGateway =
@@ -105,13 +105,13 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         @Bean
         fun arbeidssokerService(
             arbeidssokerRepository: ArbeidssokerRepository,
-            arbeidssokerperiodeService: ArbeidssokerperiodeService,
+            arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService
         ): ArbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
-            arbeidssokerperiodeService,
+            arbeidssokerperiodeAvsluttetService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService

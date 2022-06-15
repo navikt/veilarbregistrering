@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
@@ -16,15 +15,13 @@ import java.time.LocalDateTime
 @Service
 class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
-    private val arbeidssokerperiodeService: ArbeidssokerperiodeService,
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService
 ) {
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
-
-        if (isDevelopment()) {LOG.info("Formidlingsgruppe ble endret til ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}")}
 
         if (endretFormidlingsgruppeCommand.foedselsnummer == null) {
             LOG.warn(
@@ -51,7 +48,7 @@ class ArbeidssokerService(
 
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
             endretFormidlingsgruppeCommand,
             eksisterendeArbeidssokerperioderLokalt
         )

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-class ArbeidssokerperiodeService(
-    private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer
+class ArbeidssokerperiodeAvsluttetService(
+    private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
 ) {
 
     fun behandleAvslutningAvArbeidssokerperiode(
@@ -9,7 +9,7 @@ class ArbeidssokerperiodeService(
         arbeidssokerperioder: Arbeidssokerperioder
     ) {
         if (erAvslutningAvArbeidssokerperiode(endretFormidlingsgruppeCommand, arbeidssokerperioder)) {
-            arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand)
+            arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand)
         }
     }
 

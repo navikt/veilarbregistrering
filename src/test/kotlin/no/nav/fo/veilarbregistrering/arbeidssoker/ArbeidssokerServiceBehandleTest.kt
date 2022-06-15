@@ -11,16 +11,16 @@ import java.time.Month
 class ArbeidssokerServiceBehandleTest {
     private lateinit var arbeidssokerService: ArbeidssokerService
     private lateinit var arbeidssokerRepository: ArbeidssokerRepository
-    private lateinit var arbeidssokerperiodeService: ArbeidssokerperiodeService
+    private lateinit var arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
 
     @BeforeEach
     fun setup() {
         arbeidssokerRepository = mockk()
-        arbeidssokerperiodeService = mockk()
-        every { arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
+        arbeidssokerperiodeAvsluttetService = mockk()
+        every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
         arbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
-            arbeidssokerperiodeService,
+            arbeidssokerperiodeAvsluttetService,
             mockk(),
             mockk(),
             mockk()

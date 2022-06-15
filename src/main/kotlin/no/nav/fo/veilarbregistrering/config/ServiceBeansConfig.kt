@@ -277,14 +277,14 @@ class ServiceBeansConfig {
     @Bean
     fun arbeidssokerService(
         arbeidssokerRepository: ArbeidssokerRepository,
-        arbeidssokerperiodeService: ArbeidssokerperiodeService,
+        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
         metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             arbeidssokerRepository,
-            arbeidssokerperiodeService,
+            arbeidssokerperiodeAvsluttetService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService
@@ -292,11 +292,11 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun arbeidssokerperioderService(arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer): ArbeidssokerperiodeService =
-        ArbeidssokerperiodeService(arbeidssokerperiodeProducer)
+    fun arbeidssokerperioderService(arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer): ArbeidssokerperiodeAvsluttetService =
+        ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer)
 
     @Bean
-    fun arbeidssokerperiodeProducer(): ArbeidssokerperiodeProducer = ArbeidssokerperiodeProducer()
+    fun arbeidssokerperiodeAvsluttetProducer(): ArbeidssokerperiodeAvsluttetProducer = ArbeidssokerperiodeAvsluttetProducer()
 
     @Bean
     fun arbeidssokerResource(

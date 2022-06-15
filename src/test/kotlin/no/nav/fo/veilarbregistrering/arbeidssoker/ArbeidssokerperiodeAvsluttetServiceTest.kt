@@ -9,13 +9,13 @@ import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-internal class ArbeidssokerperiodeServiceTest {
-    private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer = mockk(relaxed = true)
-    private val arbeidssokerperiodeService = ArbeidssokerperiodeService(arbeidssokerperiodeProducer)
+internal class ArbeidssokerperiodeAvsluttetServiceTest {
+    private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer = mockk(relaxed = true)
+    private val arbeidssokerperiodeAvsluttetService = ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer)
 
     @BeforeEach
     fun setup() {
-        every { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) } just Runs
+        every { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) } just Runs
     }
 
     @Test
@@ -23,9 +23,9 @@ internal class ArbeidssokerperiodeServiceTest {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS, NÅVÆRENDE_ARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify (exactly = 1) { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify (exactly = 1) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
     }
 
     @Test
@@ -33,9 +33,9 @@ internal class ArbeidssokerperiodeServiceTest {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS, NÅVÆRENDE_ARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ARBS"))
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
     }
 
     @Test
@@ -43,9 +43,9 @@ internal class ArbeidssokerperiodeServiceTest {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS, NÅVÆRENDE_IARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ARBS"))
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
     }
 
     @Test
@@ -53,9 +53,9 @@ internal class ArbeidssokerperiodeServiceTest {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
     }
 
     @Test
@@ -63,9 +63,9 @@ internal class ArbeidssokerperiodeServiceTest {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_IARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
 
-        arbeidssokerperiodeService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
     }
 
     private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): EndretFormidlingsgruppeCommand {
