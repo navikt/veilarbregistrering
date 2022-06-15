@@ -23,7 +23,9 @@ class ArbeidssokerService(
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
 
-        if (endretFormidlingsgruppeCommand.foedselsnummer == null) {
+        val foedselsnummer = endretFormidlingsgruppeCommand.foedselsnummer
+
+        if (foedselsnummer == null) {
             LOG.warn(
                 String.format(
                     "Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
@@ -43,7 +45,7 @@ class ArbeidssokerService(
         }
 
         val eksisterendeArbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
-            listOf(endretFormidlingsgruppeCommand.foedselsnummer!!)
+            listOf(foedselsnummer)
         )
 
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)

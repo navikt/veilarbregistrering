@@ -292,7 +292,7 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun arbeidssokerperioderService(arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer): ArbeidssokerperiodeAvsluttetService =
+    fun arbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer): ArbeidssokerperiodeAvsluttetService =
         ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer)
 
     @Bean
