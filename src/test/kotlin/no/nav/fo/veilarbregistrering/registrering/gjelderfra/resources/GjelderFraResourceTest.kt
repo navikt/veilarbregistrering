@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources
 
 import io.mockk.mockk
-import no.nav.fo.veilarbregistrering.toJSON
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +27,7 @@ class GjelderFraResourceTest (@Autowired private val mvc: MockMvc) {
             .andReturn()
             .response.contentAsString
 
-        Assertions.assertThat(responseBody).isEqualTo(toJSON(GjelderFraDatoDto(null)))
+        Assertions.assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoDto(null)))
     }
 }
 

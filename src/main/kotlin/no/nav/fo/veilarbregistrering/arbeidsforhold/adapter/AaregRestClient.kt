@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
@@ -10,6 +9,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
@@ -108,8 +108,6 @@ open class AaregRestClient(
 
 
     companion object {
-        private val GSON = GsonBuilder().create()
-
         /**
          * Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering
          * og autorisasjon for tjenestekall - angis med ‘Bearer + mellomrom + token’
@@ -122,7 +120,7 @@ open class AaregRestClient(
         private const val NAV_PERSONIDENT = "Nav-Personident"
         private const val NAV_CALL_ID_HEADER = "Nav-Call-Id"
         private fun parse(json: String): List<ArbeidsforholdDto> {
-            return GSON.fromJson(json, object : TypeToken<List<ArbeidsforholdDto?>?>() {}.type)
+            return objectMapper.readValue(json, object : TypeReference<List<ArbeidsforholdDto>>() {})
         }
     }
 
