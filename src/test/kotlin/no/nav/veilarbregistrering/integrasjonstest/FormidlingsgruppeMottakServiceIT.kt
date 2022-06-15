@@ -1,20 +1,12 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
-import io.mockk.clearAllMocks
-import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashClient
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
-import no.nav.fo.veilarbregistrering.bruker.AktorId
-import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,14 +18,15 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.jdbc.JdbcTestUtils
-import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, ArbeidssokerServiceIT.ArbeidssokerConfigTest::class])
-internal class ArbeidssokerServiceIT @Autowired constructor(
-    private val arbeidssokerService: ArbeidssokerService,
+@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, FormidlingsgruppeMottakServiceIT.ArbeidssokerConfigTest::class])
+internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
+    private val formidlingsgruppeMottakService: FormidlingsgruppeMottakService,
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val arbeidssokerRepository: ArbeidssokerRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
@@ -48,45 +41,41 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
     }
 
     @Test
-    fun `Kan hente arbeidssokerperioder uten feil`() {
+    fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
         eksisterendeFormidlingsgrupper.map { arbeidssokerRepository.lagre(it) }
-        arbeidssokerService.hentArbeidssokerperioder(
-            bruker,
-            Periode.gyldigPeriode(LocalDate.of(2021, 10, 30), null)
+        val eksisterendeArbeidssokerPerioder = arbeidssokerRepository.finnFormidlingsgrupper(listOf(fnr))
+        val nyttFormidlingsgruppeEvent = FormidlingsgruppeEvent(
+            foedselsnummer = fnr,
+            personId = pid,
+            personIdStatus = "AKTIV",
+            operation = Operation.INSERT,
+            formidlingsgruppe = Formidlingsgruppe("ISERV"),
+            formidlingsgruppeEndret = third.plusDays(3),
+            forrigeFormidlingsgruppe = null,
+            forrigeFormidlingsgruppeEndret = null
         )
+
+        val arbeidssokerperioderSlot = slot<Arbeidssokerperioder>()
+        every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), capture(arbeidssokerperioderSlot)) } just Runs
+
+        formidlingsgruppeMottakService.behandle(nyttFormidlingsgruppeEvent)
+
+        assertEquals(eksisterendeArbeidssokerPerioder, arbeidssokerperioderSlot.captured)
     }
 
     @Configuration
     class ArbeidssokerConfigTest {
 
         @Bean
-        fun oppfolgingGateway(): OppfolgingGateway = mockk(relaxed = true)
+        fun arbeidssokerperiodeAvsluttetService(): ArbeidssokerperiodeAvsluttetService = mockk(relaxed = true)
 
         @Bean
-        fun profileringService(): ProfileringService = mockk(relaxed = true)
-
-        @Bean
-        fun metricsService(): MetricsService = mockk(relaxed = true)
-
-        @Bean
-        fun unleashClient(): UnleashClient = mockk(relaxed = true)
-
-        @Bean
-        fun formidlingsgruppeGateway(): FormidlingsgruppeGateway =
-            mockk(relaxed = true)
-
-        @Bean
-        fun arbeidssokerService(
+        fun formidlingsgruppeMottakService(
             arbeidssokerRepository: ArbeidssokerRepository,
             arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
-            unleashClient: UnleashClient,
-            formidlingsgruppeGateway: FormidlingsgruppeGateway,
-            metricsService: MetricsService
-        ): ArbeidssokerService = ArbeidssokerService(
+        ): FormidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             arbeidssokerRepository,
-            formidlingsgruppeGateway,
-            unleashClient,
-            metricsService
+            arbeidssokerperiodeAvsluttetService
         )
 
         @Bean
@@ -96,7 +85,6 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
     companion object {
         private const val pid = "41131"
         private val fnr = Foedselsnummer("10067924594")
-        private val bruker = Bruker(fnr, AktorId("123"))
         private val first = LocalDateTime.of(2020, 5, 1, 3, 5, 1)
         private val second = LocalDateTime.of(2020, 8, 3, 7, 25, 1)
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)

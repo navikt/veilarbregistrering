@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.Month
 
-class ArbeidssokerServiceBehandleTest {
-    private lateinit var arbeidssokerService: ArbeidssokerService
+class FormidlingsgruppeMottakServiceTest {
+    private lateinit var formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     private lateinit var arbeidssokerRepository: ArbeidssokerRepository
     private lateinit var arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
 
@@ -18,12 +18,9 @@ class ArbeidssokerServiceBehandleTest {
         arbeidssokerRepository = mockk()
         arbeidssokerperiodeAvsluttetService = mockk()
         every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
-        arbeidssokerService = ArbeidssokerService(
+        formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             arbeidssokerRepository,
-            arbeidssokerperiodeAvsluttetService,
-            mockk(),
-            mockk(),
-            mockk()
+            arbeidssokerperiodeAvsluttetService
         )
     }
 
@@ -32,7 +29,7 @@ class ArbeidssokerServiceBehandleTest {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0))
         every { arbeidssokerRepository.lagre(any()) } returns 1L
         every { arbeidssokerRepository.finnFormidlingsgrupper(any()) } returns Arbeidssokerperioder(emptyList())
-        arbeidssokerService.behandle(formidlingsgruppeEvent)
+        formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
         verify(exactly = 1) { arbeidssokerRepository.lagre(formidlingsgruppeEvent) }
     }
 
@@ -40,7 +37,7 @@ class ArbeidssokerServiceBehandleTest {
     fun `endringer før 2010 skal ikke persisteres`() {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23, 59, 59))
         every { arbeidssokerRepository.lagre(any()) } returns 1L
-        arbeidssokerService.behandle(formidlingsgruppeEvent)
+        formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
         verify(exactly = 0) { arbeidssokerRepository.lagre(formidlingsgruppeEvent) }
     }
 

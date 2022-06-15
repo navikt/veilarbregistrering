@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper.Companion.map
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -23,7 +23,7 @@ import java.util.function.Consumer
 class FormidlingsgruppeKafkaConsumer internal constructor(
     private val kafkaConsumerProperties: Properties,
     private val topic: String,
-    private val arbeidssokerService: ArbeidssokerService,
+    private val formidlingsgruppeMottakService: FormidlingsgruppeMottakService,
     private val unleashClient: UnleashClient
 ) : Runnable {
     init {
@@ -82,7 +82,8 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
         }
     }
 
-    private fun behandleFormidlingsgruppeMelding(melding: ConsumerRecord<String, String>) = arbeidssokerService.behandle(map(melding.value()))
+    private fun behandleFormidlingsgruppeMelding(melding: ConsumerRecord<String, String>) =
+        formidlingsgruppeMottakService.behandle(map(melding.value()))
 
     private fun stopKonsumeringAvFormidlingsgruppe() = unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME)
 

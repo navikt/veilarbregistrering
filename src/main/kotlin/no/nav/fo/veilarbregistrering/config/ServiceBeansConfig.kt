@@ -6,7 +6,6 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
@@ -35,11 +34,14 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringApi
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
@@ -277,18 +279,24 @@ class ServiceBeansConfig {
     @Bean
     fun arbeidssokerService(
         arbeidssokerRepository: ArbeidssokerRepository,
-        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
         metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             arbeidssokerRepository,
-            arbeidssokerperiodeAvsluttetService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService
         )
+    }
+
+    @Bean
+    fun formidlingsgruppeMottakService(
+        arbeidssokerRepository: ArbeidssokerRepository,
+        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
+    ): FormidlingsgruppeMottakService {
+        return FormidlingsgruppeMottakService(arbeidssokerRepository, arbeidssokerperiodeAvsluttetService)
     }
 
     @Bean

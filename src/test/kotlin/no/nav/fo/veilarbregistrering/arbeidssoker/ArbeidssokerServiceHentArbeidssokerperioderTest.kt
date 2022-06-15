@@ -23,7 +23,6 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
             StubArbeidssokerRepository(),
-            mockk(),
             StubFormidlingsgruppeGateway(),
             unleashService,
             metricsService,

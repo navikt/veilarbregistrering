@@ -3,66 +3,27 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
-    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService
 ) {
-    @Transactional
-    fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
-
-        val foedselsnummer = endretFormidlingsgruppeCommand.foedselsnummer
-
-        if (foedselsnummer == null) {
-            LOG.warn(
-                String.format(
-                    "Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
-                    endretFormidlingsgruppeCommand.personId
-                )
-            )
-            return
-        }
-        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))) {
-            LOG.warn(
-                String.format(
-                    "Foreldet formidlingsgruppe-endring (%s) lest fra topic: 'gg-arena-formidlinggruppe-v1'  - denne forkastes.",
-                    endretFormidlingsgruppeCommand.formidlingsgruppeEndret
-                )
-            )
-            return
-        }
-
-        val eksisterendeArbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
-            listOf(foedselsnummer)
-        )
-
-        arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
-
-        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-            endretFormidlingsgruppeCommand,
-            eksisterendeArbeidssokerperioderLokalt
-        )
-
-    }
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
         val arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
-        LOG.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt))
+        logger.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt))
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
-        LOG.info(
+        logger.info(
             String.format(
                 "Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s",
                 arbeidssokerperioderORDS
@@ -77,7 +38,7 @@ class ArbeidssokerService(
             if (lokalErLikOrds) JaNei.JA else JaNei.NEI
         )
         if (!lokalErLikOrds) {
-            LOG.warn(
+            logger.warn(
                 String.format(
                     "Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
                     forespurtPeriode, overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS
@@ -86,7 +47,7 @@ class ArbeidssokerService(
         }
         if (dekkerHele && brukLokalCache()) {
             metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL)
-            LOG.info(
+            logger.info(
                 String.format(
                     "Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s",
                     overlappendeArbeidssokerperioderLokalt
@@ -95,7 +56,7 @@ class ArbeidssokerService(
             return overlappendeArbeidssokerperioderLokalt
         }
         metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
-        LOG.info(
+        logger.info(
             String.format(
                 "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s",
                 overlappendeHistoriskePerioderORDS
@@ -121,7 +82,6 @@ class ArbeidssokerService(
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ArbeidssokerService::class.java)
         const val VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE = "veilarbregistrering.formidlingsgruppe.localcache"
     }
 }

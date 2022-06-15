@@ -7,7 +7,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
@@ -70,12 +70,12 @@ class KafkaConfig {
     @Bean
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient,
-        arbeidssokerService: ArbeidssokerService
+        formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     ): FormidlingsgruppeKafkaConsumer {
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
             "gg-arena-formidlinggruppe-v1-$envSuffix",
-            arbeidssokerService, unleashClient
+            formidlingsgruppeMottakService, unleashClient
         )
     }
 
