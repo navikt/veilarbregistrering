@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppeperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
@@ -228,12 +228,12 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        val iservAktiv = Arbeidssokerperiode.of(
+        val iservAktiv = Formidlingsgruppeperiode.of(
             Formidlingsgruppe("ISERV"),
             Periode(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8))
         )
         val arbsAktiv =
-            Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2019, 12, 9), null))
+            Formidlingsgruppeperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2019, 12, 9), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             iservAktiv,
             arbsAktiv
@@ -268,11 +268,11 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        var arbs1 = Arbeidssokerperiode.of(
+        var arbs1 = Formidlingsgruppeperiode.of(
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8))
         )
-        val arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 9, 9), null))
+        val arbs2 = Formidlingsgruppeperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 9, 9), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1,
             arbs2
@@ -293,7 +293,7 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 8, 14), null))
+        arbs1 = Formidlingsgruppeperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 8, 14), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1
         )
@@ -308,7 +308,7 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 8, 14), null))
+        arbs1 = Formidlingsgruppeperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 8, 14), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1
         )
@@ -341,11 +341,11 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        val arbs1 = Arbeidssokerperiode.of(
+        val arbs1 = Formidlingsgruppeperiode.of(
             Formidlingsgruppe("IARBS"),
             Periode(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8))
         )
-        val arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe("IARBS"), Periode(LocalDate.of(2020, 9, 9), null))
+        val arbs2 = Formidlingsgruppeperiode.of(Formidlingsgruppe("IARBS"), Periode(LocalDate.of(2020, 9, 9), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1,
             arbs2

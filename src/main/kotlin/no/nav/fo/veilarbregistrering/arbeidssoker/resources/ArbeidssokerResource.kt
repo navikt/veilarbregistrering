@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppeperiode
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -56,9 +56,9 @@ class ArbeidssokerResource(
         return map(arbeidssokerperiodes.eldsteFoerst())
     }
 
-    private fun map(arbeidssokerperioder: List<Arbeidssokerperiode>): ArbeidssokerperioderDto {
+    private fun map(arbeidssokerperioder: List<Formidlingsgruppeperiode>): ArbeidssokerperioderDto {
         val arbeidssokerperiodeDtoer = arbeidssokerperioder
-            .map { periode: Arbeidssokerperiode ->
+            .map { periode: Formidlingsgruppeperiode ->
                 ArbeidssokerperiodeDto(
                     periode.periode.fra.toString(),
                     periode.periode.til?.toString(),

@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppeperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import org.assertj.core.api.Assertions.assertThat
@@ -46,14 +46,14 @@ class FormidlingshistorikkMapperTest {
         val liste = FormidlingshistorikkMapper.map(response)
         assertThat(liste).hasSize(4)
         assertThat(liste).contains(
-            Arbeidssokerperiode(
+            Formidlingsgruppeperiode(
                 Formidlingsgruppe("ISERV"),
                 Periode(
                     LocalDate.of(2020, 2, 21),
                     LocalDate.of(2020, 3, 11)
                 )
             ),
-            Arbeidssokerperiode(
+            Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(
                     LocalDate.of(2020, 3, 12),

@@ -4,11 +4,11 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.time.LocalDate
 
 class ArbeidssokerperiodeTestdataBuilder private constructor(private val formidlingsgruppe: Formidlingsgruppe) :
-    Builder<Arbeidssokerperiode> {
+    Builder<Formidlingsgruppeperiode> {
     private var fra: LocalDate? = null
     private var til: LocalDate? = null
-    override fun build(): Arbeidssokerperiode {
-        return Arbeidssokerperiode(formidlingsgruppe, Periode.gyldigPeriode(fra, til))
+    override fun build(): Formidlingsgruppeperiode {
+        return Formidlingsgruppeperiode(formidlingsgruppe, Periode.gyldigPeriode(fra, til))
     }
 
     fun fra(fra: LocalDate?): ArbeidssokerperiodeTestdataBuilder {

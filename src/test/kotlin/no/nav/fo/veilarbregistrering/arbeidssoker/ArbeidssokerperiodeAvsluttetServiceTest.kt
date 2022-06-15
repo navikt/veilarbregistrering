@@ -92,19 +92,19 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
     }
 
     companion object {
-        val AVSLUTTET_ARBS = Arbeidssokerperiode(
+        val AVSLUTTET_ARBS = Formidlingsgruppeperiode(
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
         )
-        val AVSLUTTET_IARBS = Arbeidssokerperiode(
+        val AVSLUTTET_IARBS = Formidlingsgruppeperiode(
             Formidlingsgruppe("IARBS"),
             Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
         )
-        val NÅVÆRENDE_ARBS = Arbeidssokerperiode(
+        val NÅVÆRENDE_ARBS = Formidlingsgruppeperiode(
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 2, 1), null)
         )
-        val NÅVÆRENDE_IARBS = Arbeidssokerperiode(
+        val NÅVÆRENDE_IARBS = Formidlingsgruppeperiode(
             Formidlingsgruppe("IARBS"),
             Periode(LocalDate.of(2020, 3, 1), null)
         )

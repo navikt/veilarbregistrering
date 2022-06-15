@@ -6,21 +6,21 @@ class ArbeidssokerperiodeAvsluttetService(
 
     fun behandleAvslutningAvArbeidssokerperiode(
         endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
-        arbeidssokerperioder: Arbeidssokerperioder
+        formidlingsgruppeperioder: Arbeidssokerperioder
     ) {
-        if (erAvslutningAvArbeidssokerperiode(endretFormidlingsgruppeCommand, arbeidssokerperioder)) {
-            val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
+        if (erAvslutningAvArbeidssokerperiode(endretFormidlingsgruppeCommand, formidlingsgruppeperioder)) {
+            val sistePeriode = formidlingsgruppeperioder.eldsteFoerst().last()
             arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand, sistePeriode)
         }
     }
 
     private fun erAvslutningAvArbeidssokerperiode(
         endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
-        arbeidssokerperioder: Arbeidssokerperioder
+        formidlingsgruppeperioder: Arbeidssokerperioder
     ): Boolean {
-        if (arbeidssokerperioder.asList().isEmpty()) return false
+        if (formidlingsgruppeperioder.asList().isEmpty()) return false
         endretFormidlingsgruppeCommand.foedselsnummer?.let {
-            val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
+            val sistePeriode = formidlingsgruppeperioder.eldsteFoerst().last()
             if (harNaavaerendePeriodeMedARBS(sistePeriode) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
                 return true
             }
@@ -29,6 +29,6 @@ class ArbeidssokerperiodeAvsluttetService(
         return false
     }
 
-    private fun harNaavaerendePeriodeMedARBS(sistePeriode: Arbeidssokerperiode): Boolean =
+    private fun harNaavaerendePeriodeMedARBS(sistePeriode: Formidlingsgruppeperiode): Boolean =
         sistePeriode.formidlingsgruppe.kode == "ARBS" && sistePeriode.periode.til == null
 }

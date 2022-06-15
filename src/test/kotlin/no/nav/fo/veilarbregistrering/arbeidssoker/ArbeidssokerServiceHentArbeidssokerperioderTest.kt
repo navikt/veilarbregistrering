@@ -39,10 +39,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_1,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_2,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_3,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_4
         )
     }
 
@@ -54,11 +54,11 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_0,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_4
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_0,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_1,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_2,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_3,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_4
         )
     }
 
@@ -99,11 +99,11 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode)
         assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_6,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_7
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_3,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_4,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_5,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_6,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_7
         )
     }
 
@@ -119,11 +119,11 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_1, forespurtPeriode)
         assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_4,
-            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_5
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_1,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_2,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_3,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_4,
+            StubFormidlingsgruppeGateway.FORMIDLINGSGRUPPEPERIODE_5
         )
     }
 
@@ -139,8 +139,8 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_2, forespurtPeriode)
         assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_9,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_10,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_9,
+            StubArbeidssokerRepository.FORMIDLINGSGRUPPEPERIODE_10,
         )
     }
 
@@ -153,63 +153,63 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             return mapOf(
                 FOEDSELSNUMMER_3 to Arbeidssokerperioder(
                     listOf(
-                        ARBEIDSSOKERPERIODE_3,
-                        ARBEIDSSOKERPERIODE_1,
-                        ARBEIDSSOKERPERIODE_4,
-                        ARBEIDSSOKERPERIODE_2,
-                        ARBEIDSSOKERPERIODE_6,
-                        ARBEIDSSOKERPERIODE_5,
-                        ARBEIDSSOKERPERIODE_7,
-                        ARBEIDSSOKERPERIODE_8,
+                        FORMIDLINGSGRUPPEPERIODE_3,
+                        FORMIDLINGSGRUPPEPERIODE_1,
+                        FORMIDLINGSGRUPPEPERIODE_4,
+                        FORMIDLINGSGRUPPEPERIODE_2,
+                        FORMIDLINGSGRUPPEPERIODE_6,
+                        FORMIDLINGSGRUPPEPERIODE_5,
+                        FORMIDLINGSGRUPPEPERIODE_7,
+                        FORMIDLINGSGRUPPEPERIODE_8,
                     )
                 ),
                 FOEDSELSNUMMER_4 to Arbeidssokerperioder(
                     listOf(
-                        ARBEIDSSOKERPERIODE_9,
-                        ARBEIDSSOKERPERIODE_10,
+                        FORMIDLINGSGRUPPEPERIODE_9,
+                        FORMIDLINGSGRUPPEPERIODE_10,
                     ),
                 )
             ).entries.first { (fnr, _) -> fnr in foedselsnummerList }.value
         }
 
         companion object {
-            val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_1 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
             )
-            val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_2 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29))
             )
-            val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_3 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31))
             )
-            val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_4 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2))
             )
-            val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_5 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9))
             )
-            val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_6 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 10), LocalDate.of(2020, 5, 29))
             )
-            val ARBEIDSSOKERPERIODE_7 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_7 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 30), LocalDate.of(2020, 6, 30))
             )
-            val ARBEIDSSOKERPERIODE_8 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_8 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 7, 1), null)
             )
-            val ARBEIDSSOKERPERIODE_9 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_9 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 10, 5))
             )
-            val ARBEIDSSOKERPERIODE_10 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_10 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2021, 10, 17), null)
             )
@@ -221,13 +221,13 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             val map: Map<Foedselsnummer, Arbeidssokerperioder> = mapOf(
                 FOEDSELSNUMMER_3 to Arbeidssokerperioder(
                     listOf(
-                        ARBEIDSSOKERPERIODE_2,
-                        ARBEIDSSOKERPERIODE_4,
-                        ARBEIDSSOKERPERIODE_3,
-                        ARBEIDSSOKERPERIODE_0,
-                        ARBEIDSSOKERPERIODE_1,
-                        ARBEIDSSOKERPERIODE_5,
-                        ARBEIDSSOKERPERIODE_6
+                        FORMIDLINGSGRUPPEPERIODE_2,
+                        FORMIDLINGSGRUPPEPERIODE_4,
+                        FORMIDLINGSGRUPPEPERIODE_3,
+                        FORMIDLINGSGRUPPEPERIODE_0,
+                        FORMIDLINGSGRUPPEPERIODE_1,
+                        FORMIDLINGSGRUPPEPERIODE_5,
+                        FORMIDLINGSGRUPPEPERIODE_6
                     )
                 ),
                 FOEDSELSNUMMER_4 to Arbeidssokerperioder(emptyList())
@@ -236,31 +236,31 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         }
 
         companion object {
-            val ARBEIDSSOKERPERIODE_0 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_0 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2019, 12, 1), LocalDate.of(2019, 12, 31))
             )
-            val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_1 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
             )
-            val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_2 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29))
             )
-            val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_3 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31))
             )
-            val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_4 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2))
             )
-            val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_5 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9))
             )
-            val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
+            val FORMIDLINGSGRUPPEPERIODE_6 = Formidlingsgruppeperiode(
                 Formidlingsgruppe("ARBS"),
                 Periode(LocalDate.of(2020, 5, 10), null)
             )

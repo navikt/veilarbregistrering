@@ -13,7 +13,7 @@ class ArbeidssokerperioderTest {
     fun `gitt at forespurt periode starter etter eldste periode dekkes hele`() {
         val arbeidssokerperioder = Arbeidssokerperioder(
             listOf(
-                ARBEIDSSOKERPERIODE_2
+                Formidlingsgruppeperiode_2
             )
         )
         val forespurtPeriode = Periode(
@@ -27,7 +27,7 @@ class ArbeidssokerperioderTest {
     fun `gitt at forespurt periode starter før eldste periode dekkes ikke hele`() {
         val arbeidssokerperioder = Arbeidssokerperioder(
             listOf(
-                ARBEIDSSOKERPERIODE_2
+                Formidlingsgruppeperiode_2
             )
         )
         val forespurtPeriode = Periode(
@@ -41,7 +41,7 @@ class ArbeidssokerperioderTest {
     fun `gitt at forespurt periode starter samme dag som eldste periode dekkes hele perioden`() {
         val arbeidssokerperioder = Arbeidssokerperioder(
             listOf(
-                ARBEIDSSOKERPERIODE_2
+                Formidlingsgruppeperiode_2
             )
         )
         val forespurtPeriode = Periode(
@@ -55,7 +55,7 @@ class ArbeidssokerperioderTest {
     fun `gitt at forespurt periode slutter dagen etter siste periode`() {
         val arbeidssokerperioder = Arbeidssokerperioder(
             listOf(
-                ARBEIDSSOKERPERIODE_1
+                Formidlingsgruppeperiode_1
             )
         )
         val forespurtPeriode = Periode(
@@ -93,11 +93,11 @@ class ArbeidssokerperioderTest {
     }
 
     companion object {
-        private val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
+        private val Formidlingsgruppeperiode_1 = Formidlingsgruppeperiode(
             Formidlingsgruppe("ISERV"),
             Periode(LocalDate.of(2016, 9, 24), null)
         )
-        private val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
+        private val Formidlingsgruppeperiode_2 = Formidlingsgruppeperiode(
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 1, 1), null)
         )

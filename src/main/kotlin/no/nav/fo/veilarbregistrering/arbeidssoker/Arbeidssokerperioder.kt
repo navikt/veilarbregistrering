@@ -3,9 +3,9 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.util.Objects
 
-class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
+class Arbeidssokerperioder(arbeidssokerperioder: List<Formidlingsgruppeperiode>?) {
 
-    private val arbeidssokerperioder: List<Arbeidssokerperiode> = arbeidssokerperioder ?: emptyList()
+    private val arbeidssokerperioder: List<Formidlingsgruppeperiode> = arbeidssokerperioder ?: emptyList()
 
     fun overlapperMed(forespurtPeriode: Periode): Arbeidssokerperioder {
         return Arbeidssokerperioder(arbeidssokerperioder
@@ -14,16 +14,16 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
     }
 
     fun dekkerHele(forespurtPeriode: Periode): Boolean {
-        val eldsteArbeidssokerperiode: Arbeidssokerperiode? = arbeidssokerperioder.minByOrNull { it.periode.fra }
+        val eldsteFormidlingsgruppeperiode: Formidlingsgruppeperiode? = arbeidssokerperioder.minByOrNull { it.periode.fra }
 
-        return eldsteArbeidssokerperiode?.let { forespurtPeriode.fraOgMed(it.periode) } ?: false
+        return eldsteFormidlingsgruppeperiode?.let { forespurtPeriode.fraOgMed(it.periode) } ?: false
     }
 
-    fun asList(): List<Arbeidssokerperiode> {
+    fun asList(): List<Formidlingsgruppeperiode> {
         return arbeidssokerperioder
     }
 
-    fun eldsteFoerst(): List<Arbeidssokerperiode> {
+    fun eldsteFoerst(): List<Formidlingsgruppeperiode> {
         return arbeidssokerperioder.sortedBy{ it.periode.fra }
     }
 
@@ -43,7 +43,7 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
     }
 
     companion object {
-        fun of(arbeidssokerperioder: List<Arbeidssokerperiode>?): Arbeidssokerperioder {
+        fun of(arbeidssokerperioder: List<Formidlingsgruppeperiode>?): Arbeidssokerperioder {
             return Arbeidssokerperioder(arbeidssokerperioder)
         }
     }
