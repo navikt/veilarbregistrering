@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
@@ -22,6 +23,9 @@ class ArbeidssokerService(
 ) {
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
+
+        if (isDevelopment()) {LOG.info("Formidlingsgruppe ble endret til ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}")}
+
         if (endretFormidlingsgruppeCommand.foedselsnummer == null) {
             LOG.warn(
                 String.format(
