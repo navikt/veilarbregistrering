@@ -108,8 +108,9 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
                 " FETCH NEXT 1 ROWS ONLY"
         val registreringsTilstander: MutableList<RegistreringTilstand> =
             db.query(sql, params, rowMapper())
-        return registreringsTilstander.stream().findFirst()
-            .orElseThrow { IllegalStateException("Registrering med id $registreringsId mangler tilstand") }
+
+        return registreringsTilstander.firstOrNull() ?:
+        throw IllegalStateException("Registrering med id $registreringsId mangler tilstand")
     }
 
     private fun nesteFraSekvens(): Long {

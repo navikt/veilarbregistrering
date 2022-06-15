@@ -7,7 +7,7 @@ import kotlin.streams.toList
 class ReaktiveringTidslinje(private val reaktiveringer: List<Reaktivering>): Tidslinje {
 
     override fun tidslinje(): List<TidslinjeElement> {
-        return reaktiveringer.stream().map(::ReaktiveringTidslinjeElement).toList()
+        return reaktiveringer.map(::ReaktiveringTidslinjeElement)
     }
 
     private class ReaktiveringTidslinjeElement(private var reaktivering: Reaktivering) : TidslinjeElement {

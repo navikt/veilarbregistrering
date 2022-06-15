@@ -7,7 +7,7 @@ import kotlin.streams.toList
 class SykmeldtTidslinje(private var sykmeldtRegistreringer: List<SykmeldtRegistrering>) : Tidslinje {
 
     override fun tidslinje(): List<TidslinjeElement> {
-        return sykmeldtRegistreringer.stream().map(::SykmeldtTidslinjeElement).toList()
+        return sykmeldtRegistreringer.map(::SykmeldtTidslinjeElement)
     }
 
     private class SykmeldtTidslinjeElement(private var sykmeldtRegistrering: SykmeldtRegistrering) : TidslinjeElement {

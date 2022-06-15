@@ -33,11 +33,11 @@ open class OppgaveService(
 
     private fun validerNyOppgaveMotAktive(bruker: Bruker, oppgaveType: OppgaveType) {
         val oppgaver = oppgaveRepository.hentOppgaverFor(bruker.aktorId)
-        val muligOppgave = oppgaver.stream()
-            .filter(OppgavePredicates.oppgaveAvType(oppgaveType))
-            .filter(OppgavePredicates.oppgaveOpprettetForMindreEnnToArbeidsdagerSiden(idag()))
-            .findFirst()
-        muligOppgave.ifPresent { oppgave: OppgaveImpl ->
+        val muligOppgave: OppgaveImpl? = oppgaver
+            .filter { it.oppgavetype == oppgaveType }
+            .firstOrNull { it.opprettet.erMindreEnnToArbeidsdagerSiden(idag()) }
+
+        muligOppgave?.let { oppgave: OppgaveImpl ->
             metricsService.registrer(Events.OPPGAVE_ALLEREDE_OPPRETTET_EVENT, oppgaveType)
             throw OppgaveAlleredeOpprettet(
                 "Fant en oppgave av samme type ${oppgave.oppgavetype} " +
