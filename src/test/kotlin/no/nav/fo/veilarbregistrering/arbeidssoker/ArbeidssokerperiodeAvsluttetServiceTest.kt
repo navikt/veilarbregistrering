@@ -15,7 +15,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
     @BeforeEach
     fun setup() {
-        every { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) } just Runs
+        every { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) } just Runs
     }
 
     @Test
@@ -25,7 +25,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify (exactly = 1) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify (exactly = 1) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
     @Test
@@ -35,7 +35,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
     @Test
@@ -45,7 +45,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
     @Test
@@ -55,7 +55,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
     @Test
@@ -65,7 +65,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any()) }
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
     private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): EndretFormidlingsgruppeCommand {
