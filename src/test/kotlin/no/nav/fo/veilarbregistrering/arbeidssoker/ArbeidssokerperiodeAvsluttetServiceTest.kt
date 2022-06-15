@@ -68,6 +68,16 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
         verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
+    @Test
+    fun `Skal ikke publisere hendelse når bruker ikke har noen arbeidssøkerperioder fra før`() {
+        val arbeidssokerperioder = Arbeidssokerperioder(emptyList())
+        val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
+
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
+
+        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
+    }
+
     private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): EndretFormidlingsgruppeCommand {
         return object : EndretFormidlingsgruppeCommand {
             override val foedselsnummer = Foedselsnummer("10108000398")

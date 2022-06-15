@@ -18,6 +18,7 @@ class ArbeidssokerperiodeAvsluttetService(
         endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
         arbeidssokerperioder: Arbeidssokerperioder
     ): Boolean {
+        if (arbeidssokerperioder.asList().isEmpty()) return false
         endretFormidlingsgruppeCommand.foedselsnummer?.let {
             val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
             if (harNaavaerendePeriodeMedARBS(sistePeriode) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
