@@ -15,13 +15,17 @@ import java.time.LocalDateTime
 @Service
 class ArbeidssokerService(
     private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService
 ) {
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
-        if (endretFormidlingsgruppeCommand.foedselsnummer == null) {
+
+        val foedselsnummer = endretFormidlingsgruppeCommand.foedselsnummer
+
+        if (foedselsnummer == null) {
             LOG.warn(
                 String.format(
                     "Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
@@ -39,7 +43,18 @@ class ArbeidssokerService(
             )
             return
         }
+
+        val eksisterendeArbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
+            listOf(foedselsnummer)
+        )
+
         arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
+
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
+            endretFormidlingsgruppeCommand,
+            eksisterendeArbeidssokerperioderLokalt
+        )
+
     }
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {

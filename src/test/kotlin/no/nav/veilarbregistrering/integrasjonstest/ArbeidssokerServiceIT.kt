@@ -1,7 +1,6 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
-import io.mockk.clearAllMocks
-import io.mockk.mockk
+import io.mockk.*
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
@@ -28,12 +27,14 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.jdbc.JdbcTestUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, ArbeidssokerServiceIT.ArbeidssokerConfigTest::class])
 internal class ArbeidssokerServiceIT @Autowired constructor(
     private val arbeidssokerService: ArbeidssokerService,
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val arbeidssokerRepository: ArbeidssokerRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
@@ -49,11 +50,34 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
 
     @Test
     fun `Kan hente arbeidssokerperioder uten feil`() {
-        commands.map { arbeidssokerRepository.lagre(it) }
+        eksisterendeFormidlingsgrupper.map { arbeidssokerRepository.lagre(it) }
         arbeidssokerService.hentArbeidssokerperioder(
             bruker,
             Periode.gyldigPeriode(LocalDate.of(2021, 10, 30), null)
         )
+    }
+
+    @Test
+    fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
+        eksisterendeFormidlingsgrupper.map { arbeidssokerRepository.lagre(it) }
+        val eksisterendeArbeidssokerPerioder = arbeidssokerRepository.finnFormidlingsgrupper(listOf(fnr))
+        val nyttFormidlingsgruppeEvent = FormidlingsgruppeEvent(
+            foedselsnummer = fnr,
+            personId = pid,
+            personIdStatus = "AKTIV",
+            operation = Operation.INSERT,
+            formidlingsgruppe = Formidlingsgruppe("ISERV"),
+            formidlingsgruppeEndret = third.plusDays(3),
+            forrigeFormidlingsgruppe = null,
+            forrigeFormidlingsgruppeEndret = null
+        )
+
+        val arbeidssokerperioderSlot = slot<Arbeidssokerperioder>()
+        every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), capture(arbeidssokerperioderSlot)) } just Runs
+
+        arbeidssokerService.behandle(nyttFormidlingsgruppeEvent)
+
+        assertEquals(eksisterendeArbeidssokerPerioder, arbeidssokerperioderSlot.captured)
     }
 
     @Configuration
@@ -72,17 +96,22 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         fun unleashClient(): UnleashClient = mockk(relaxed = true)
 
         @Bean
+        fun arbeidssokerperiodeAvsluttetService(): ArbeidssokerperiodeAvsluttetService = mockk(relaxed = true)
+
+        @Bean
         fun formidlingsgruppeGateway(): FormidlingsgruppeGateway =
             mockk(relaxed = true)
 
         @Bean
         fun arbeidssokerService(
             arbeidssokerRepository: ArbeidssokerRepository,
+            arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService
         ): ArbeidssokerService = ArbeidssokerService(
             arbeidssokerRepository,
+            arbeidssokerperiodeAvsluttetService,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService
@@ -100,7 +129,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         private val second = LocalDateTime.of(2020, 8, 3, 7, 25, 1)
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)
 
-        private val commands = listOf(
+        private val eksisterendeFormidlingsgrupper = listOf(
             FormidlingsgruppeEvent(
                 fnr,
                 pid,
