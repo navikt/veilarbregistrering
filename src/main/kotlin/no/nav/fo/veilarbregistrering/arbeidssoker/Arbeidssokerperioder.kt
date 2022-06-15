@@ -5,20 +5,19 @@ import java.util.*
 import java.util.stream.Collectors
 
 class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
+
     private val arbeidssokerperioder: List<Arbeidssokerperiode> = arbeidssokerperioder ?: emptyList()
+
     fun overlapperMed(forespurtPeriode: Periode): Arbeidssokerperioder {
-        return Arbeidssokerperioder(arbeidssokerperioder.stream()
-            .filter { p: Arbeidssokerperiode -> p.periode.overlapperMed(forespurtPeriode) }
-            .filter { p: Arbeidssokerperiode -> p.formidlingsgruppe.erArbeidssoker() }
-            .collect(Collectors.toList()))
+        return Arbeidssokerperioder(arbeidssokerperioder
+            .filter { it.periode.overlapperMed(forespurtPeriode) && it.formidlingsgruppe.erArbeidssoker() }
+        )
     }
 
     fun dekkerHele(forespurtPeriode: Periode): Boolean {
-        val eldsteArbeidssokerperiode = arbeidssokerperioder.stream()
-            .min(Comparator.comparing { e: Arbeidssokerperiode -> e.periode.fra })
-        return eldsteArbeidssokerperiode
-            .map { arbeidssokerperiode: Arbeidssokerperiode -> forespurtPeriode.fraOgMed(arbeidssokerperiode.periode) }
-            .orElse(false)
+        val eldsteArbeidssokerperiode: Arbeidssokerperiode? = arbeidssokerperioder.minByOrNull { it.periode.fra }
+
+        return eldsteArbeidssokerperiode?.let { forespurtPeriode.fraOgMed(it.periode) } ?: false
     }
 
     fun asList(): List<Arbeidssokerperiode> {
@@ -26,15 +25,11 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
     }
 
     fun eldsteFoerst(): List<Arbeidssokerperiode> {
-        return arbeidssokerperioder.stream()
-            .sorted(Comparator.comparing { e: Arbeidssokerperiode -> e.periode.fra })
-            .collect(Collectors.toList())
+        return arbeidssokerperioder.sortedBy{ it.periode.fra }
     }
 
     override fun toString(): String {
-        return "{" +
-                "arbeidssokerperioder=" + arbeidssokerperioder +
-                '}'
+        return "{arbeidssokerperioder=$arbeidssokerperioder}"
     }
 
     override fun equals(other: Any?): Boolean {
