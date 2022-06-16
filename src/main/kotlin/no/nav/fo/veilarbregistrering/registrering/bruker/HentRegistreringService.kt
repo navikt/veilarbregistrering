@@ -30,11 +30,14 @@ class HentRegistreringService(
     private val norg2Gateway: Norg2Gateway,
     private val metricsService: MetricsService
 ) {
-    fun hentBrukerregistrering(bruker: Bruker): BrukerRegistreringWrapper? {
+    fun hentBrukerregistreringUtenMetrics(bruker: Bruker): BrukerRegistreringWrapper? {
         val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)
         val sykmeldtBrukerRegistrering = hentSykmeldtRegistrering(bruker)
-        val brukerRegistreringWrapper =
-            BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
+        return BrukerRegistreringWrapperFactory.create(ordinaerBrukerRegistrering, sykmeldtBrukerRegistrering)
+    }
+
+    fun hentBrukerregistrering(bruker: Bruker): BrukerRegistreringWrapper? {
+        val brukerRegistreringWrapper = hentBrukerregistreringUtenMetrics(bruker)
         if (brukerRegistreringWrapper == null) {
             logger.info("Bruker ble ikke funnet i databasen.")
             metricsService.registrer(Events.HENT_BRUKERREGISTRERING_BRUKER_FUNNET, JaNei.NEI)
