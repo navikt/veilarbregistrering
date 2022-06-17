@@ -7,6 +7,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.parse
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
@@ -27,6 +28,30 @@ class FormidlingsgruppeRestClient internal constructor(
     private val arenaOrdsTokenProvider: Supplier<String>
 ) : HealthCheck, TimedMetric(metricsService) {
 
+    fun hentFormidlingshistorikkVersjon2(
+        foedselsnummer: Foedselsnummer,
+        periode: Periode
+    ): FormidlingsgruppeResponseDto? {
+        val request = buildRequest(foedselsnummer, periode)
+        val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
+        return doTimedCall {
+            httpClient.newCall(request).execute().use {
+                if (it.isSuccessful) {
+                    it.body()?.string()?.let {
+                        objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
+                    } ?: throw RuntimeException("Unexpected empty body")
+
+                } else {
+                    val status = HttpStatus.valueOf(it.code())
+                    when (status) {
+                        HttpStatus.NOT_FOUND -> null
+                        else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
+                    }
+                }
+            }
+        }
+    }
+
     fun hentFormidlingshistorikk(
         foedselsnummer: Foedselsnummer,
         periode: Periode
@@ -46,17 +71,9 @@ class FormidlingsgruppeRestClient internal constructor(
     }
 
     private fun utfoerRequest(foedselsnummer: Foedselsnummer, periode: Periode): String? {
-        val request = Request.Builder()
-            .url(
-                HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("v1/person/arbeidssoeker/formidlingshistorikk")
-                    .addQueryParameter("fnr", foedselsnummer.stringValue())
-                    .addQueryParameter("fraDato", periode.fraDatoSomUtcString())
-                    .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
-                    .build())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
-            .build()
+        val request = buildRequest(foedselsnummer, periode)
         val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
+
         try {
             httpClient.newCall(request).execute().use { response ->
                 return when {
@@ -69,6 +86,20 @@ class FormidlingsgruppeRestClient internal constructor(
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
+    }
+
+    private fun buildRequest(foedselsnummer: Foedselsnummer, periode: Periode): Request {
+        return Request.Builder()
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("v1/person/arbeidssoeker/formidlingshistorikk")
+                    .addQueryParameter("fnr", foedselsnummer.stringValue())
+                    .addQueryParameter("fraDato", periode.fraDatoSomUtcString())
+                    .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
+                    .build()
+            )
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
+            .build()
     }
 
     override fun checkHealth(): HealthCheckResult {
