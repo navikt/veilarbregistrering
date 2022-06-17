@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -23,8 +24,11 @@ class FormidlingsgruppeGatewayConfig {
         ) { arenaOrdsTokenProviderClient.token }
 
     @Bean
-    fun formidlingsgruppeGateway(formidlingsgruppeRestClient: FormidlingsgruppeRestClient?): FormidlingsgruppeGateway {
-        return FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient!!)
+    fun formidlingsgruppeGateway(
+        formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
+        unleashClient: UnleashClient
+    ): FormidlingsgruppeGateway {
+        return FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient, unleashClient)
     }
 
     companion object {

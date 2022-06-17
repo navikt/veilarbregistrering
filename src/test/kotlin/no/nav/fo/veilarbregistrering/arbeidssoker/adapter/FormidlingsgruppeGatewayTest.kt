@@ -22,10 +22,13 @@ import java.time.LocalDate
 @ExtendWith(MockServerExtension::class)
 class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
+    private lateinit var formidlingsgruppeGateway: FormidlingsgruppeGateway
+
     @BeforeEach
     fun setup() {
         leggTilCallId()
         mockServer.reset()
+        formidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient(), mockk(relaxed = true))
     }
 
     private fun buildClient(): FormidlingsgruppeRestClient {
@@ -35,8 +38,6 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `skal hente formidlingsgruppe for gitt person`() {
-        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
-
         val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk.json")
 
         mockServer.`when`(
@@ -77,8 +78,6 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `skal parse formidlingsgruppe for person uten historikk`() {
-        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
-
         val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk_missing.json")
 
         mockServer.`when`(
@@ -102,8 +101,6 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `skal parse formidlingsgruppe for person med null historikk`() {
-        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
-
         val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk_null.json")
 
         mockServer.`when`(
@@ -127,8 +124,6 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @Test
     fun `skal gi empty for ukjent person`() {
-        val formidlingsgruppeGateway: FormidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
-
         mockServer.`when`(
             HttpRequest
                 .request()
