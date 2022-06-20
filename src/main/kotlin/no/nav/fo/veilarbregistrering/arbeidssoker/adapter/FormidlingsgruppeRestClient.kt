@@ -4,6 +4,7 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.objectMapper
@@ -41,6 +42,7 @@ class FormidlingsgruppeRestClient internal constructor(
                     val status = HttpStatus.valueOf(it.code())
                     when (status) {
                         HttpStatus.NOT_FOUND -> null
+                        HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
                         else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
                     }
                 }
