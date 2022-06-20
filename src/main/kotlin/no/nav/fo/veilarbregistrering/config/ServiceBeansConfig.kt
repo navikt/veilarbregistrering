@@ -41,6 +41,8 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringR
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
@@ -437,6 +439,12 @@ class ServiceBeansConfig {
             registreringTilstandRepository
         )
     }
+
+    @Bean
+    fun gjelderFraDatoService(gjelderFraRepository: GjelderFraRepository): GjelderFraService {
+        return GjelderFraService(gjelderFraRepository)
+    }
+
     @Bean
     fun gjelderFraDatoResource(
         autorisasjonService: AutorisasjonService,

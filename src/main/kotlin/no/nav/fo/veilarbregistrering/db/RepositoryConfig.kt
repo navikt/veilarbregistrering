@@ -18,6 +18,8 @@ import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
+import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepositoryImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -66,5 +68,10 @@ class RepositoryConfig {
     @Bean
     fun migreringRepository(db: NamedParameterJdbcTemplate): MigreringRepositoryImpl {
         return MigreringRepositoryImpl(db)
+    }
+
+    @Bean
+    fun gjeøderFraDato(db: NamedParameterJdbcTemplate): GjelderFraRepository {
+        return GjelderFraRepositoryImpl(db)
     }
 }
