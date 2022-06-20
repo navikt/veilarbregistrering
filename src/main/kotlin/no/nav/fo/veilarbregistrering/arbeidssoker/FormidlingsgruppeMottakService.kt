@@ -18,20 +18,14 @@ class FormidlingsgruppeMottakService(
 
         if (foedselsnummer == null) {
             logger.warn(
-                String.format(
-                    "Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id = %s",
-                    endretFormidlingsgruppeCommand.personId
-                )
-            )
+                    "Foedselsnummer mangler for EndretFormidlingsgruppeCommand med person_id " +
+                            "= ${endretFormidlingsgruppeCommand.personId}")
             return
         }
         if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))) {
             logger.warn(
-                String.format(
-                    "Foreldet formidlingsgruppe-endring (%s) lest fra topic: 'gg-arena-formidlinggruppe-v1'  - denne forkastes.",
-                    endretFormidlingsgruppeCommand.formidlingsgruppeEndret
-                )
-            )
+                "Foreldet formidlingsgruppe-endring (${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) " +
+                        "lest fra topic: 'gg-arena-formidlinggruppe-v1' - denne forkastes.")
             return
         }
 
@@ -45,6 +39,5 @@ class FormidlingsgruppeMottakService(
             endretFormidlingsgruppeCommand,
             eksisterendeArbeidssokerperioderLokalt
         )
-
     }
 }
