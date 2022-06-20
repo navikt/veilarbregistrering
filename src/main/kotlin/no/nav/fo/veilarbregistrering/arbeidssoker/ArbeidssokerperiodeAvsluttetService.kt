@@ -30,5 +30,5 @@ class ArbeidssokerperiodeAvsluttetService(
     }
 
     private fun harNaavaerendePeriodeMedARBS(sistePeriode: Arbeidssokerperiode): Boolean =
-        sistePeriode.formidlingsgruppe.kode == "ARBS" && sistePeriode.periode.til == null
+        sistePeriode.formidlingsgruppe.kode == "ARBS" && sistePeriode.erGjeldende()
 }

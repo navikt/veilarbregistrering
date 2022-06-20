@@ -11,6 +11,10 @@ data class Arbeidssokerperiode(val formidlingsgruppe: Formidlingsgruppe, val per
         )
     }
 
+    fun erGjeldende() : Boolean {
+        return periode.erApen()
+    }
+
     override fun toString() = "{formidlingsgruppe=$formidlingsgruppe, fraOgMed=${periode.fra}, tilOgMed=${periode.til}}"
 
     companion object {
