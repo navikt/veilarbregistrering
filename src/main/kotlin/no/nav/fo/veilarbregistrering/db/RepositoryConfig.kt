@@ -9,8 +9,8 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRep
 import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerRepositoryImpl
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
@@ -44,8 +44,8 @@ class RepositoryConfig {
     }
 
     @Bean
-    fun arbeidssokerRepository(db: NamedParameterJdbcTemplate): ArbeidssokerRepository {
-        return ArbeidssokerRepositoryImpl(db)
+    fun arbeidssokerRepository(db: NamedParameterJdbcTemplate): FormidlingsgruppeRepository {
+        return FormidlingsgruppeRepositoryImpl(db)
     }
 
     @Bean

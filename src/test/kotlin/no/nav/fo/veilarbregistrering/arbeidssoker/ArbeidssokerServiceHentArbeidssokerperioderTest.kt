@@ -22,7 +22,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     @BeforeEach
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
-            StubArbeidssokerRepository(),
+            StubFormidlingsgruppeRepository(),
             StubFormidlingsgruppeGateway(),
             unleashService,
             metricsService,
@@ -39,10 +39,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_1,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_2,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_1,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_2,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_3,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_4
         )
     }
 
@@ -99,11 +99,11 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode)
         assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_3,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_4,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_5,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_6,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_7
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_3,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_4,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_5,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_6,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_7
         )
     }
 
@@ -139,12 +139,12 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_2, forespurtPeriode)
         assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_9,
-            StubArbeidssokerRepository.ARBEIDSSOKERPERIODE_10,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_9,
+            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_10,
         )
     }
 
-    private class StubArbeidssokerRepository : ArbeidssokerRepository {
+    private class StubFormidlingsgruppeRepository : FormidlingsgruppeRepository {
         override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
             return 0
         }

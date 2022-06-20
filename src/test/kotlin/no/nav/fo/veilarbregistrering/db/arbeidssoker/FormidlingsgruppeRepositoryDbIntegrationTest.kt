@@ -19,26 +19,26 @@ import java.time.LocalDateTime
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
-class ArbeidssokerRepositoryDbIntegrationTest(
+class FormidlingsgruppeRepositoryDbIntegrationTest(
 
     @Autowired
-    private val arbeidssokerRepository: ArbeidssokerRepository) {
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository) {
 
     @Test
     fun `skal kun lagre melding en gang`() {
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
-        var id = arbeidssokerRepository.lagre(command)
+        var id = formidlingsgruppeRepository.lagre(command)
         Assertions.assertThat(id).isNotNull
-        id = arbeidssokerRepository.lagre(command)
+        id = formidlingsgruppeRepository.lagre(command)
         Assertions.assertThat(id).isEqualTo(-1)
     }
 
     @Test
     fun `skal lagre formidlingsgruppeEvent`() {
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
-        val id = arbeidssokerRepository.lagre(command)
+        val id = formidlingsgruppeRepository.lagre(command)
         Assertions.assertThat(id).isNotNull
-        val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
+        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
         val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }
@@ -46,13 +46,13 @@ class ArbeidssokerRepositoryDbIntegrationTest(
     @Test
     fun `skal hente alle periodene for en persons identer`() {
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusDays(10))
-        arbeidssokerRepository.lagre(command)
+        formidlingsgruppeRepository.lagre(command)
         val command2 = endretFormdlingsgruppe(FOEDSELSNUMMER_2, LocalDateTime.now().minusDays(50))
-        arbeidssokerRepository.lagre(command2)
+        formidlingsgruppeRepository.lagre(command2)
         val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
-        arbeidssokerRepository.lagre(command3)
+        formidlingsgruppeRepository.lagre(command3)
         val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
-        val arbeidssokerperiodes = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
+        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 

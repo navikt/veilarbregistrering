@@ -10,16 +10,16 @@ import java.time.Month
 
 class FormidlingsgruppeMottakServiceTest {
     private lateinit var formidlingsgruppeMottakService: FormidlingsgruppeMottakService
-    private lateinit var arbeidssokerRepository: ArbeidssokerRepository
+    private lateinit var formidlingsgruppeRepository: FormidlingsgruppeRepository
     private lateinit var arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
 
     @BeforeEach
     fun setup() {
-        arbeidssokerRepository = mockk()
+        formidlingsgruppeRepository = mockk()
         arbeidssokerperiodeAvsluttetService = mockk()
         every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
-            arbeidssokerRepository,
+            formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService
         )
     }
@@ -27,18 +27,18 @@ class FormidlingsgruppeMottakServiceTest {
     @Test
     fun `endringer fra 2010 skal persisteres`() {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0))
-        every { arbeidssokerRepository.lagre(any()) } returns 1L
-        every { arbeidssokerRepository.finnFormidlingsgrupper(any()) } returns Arbeidssokerperioder(emptyList())
+        every { formidlingsgruppeRepository.lagre(any()) } returns 1L
+        every { formidlingsgruppeRepository.finnFormidlingsgrupper(any()) } returns Arbeidssokerperioder(emptyList())
         formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
-        verify(exactly = 1) { arbeidssokerRepository.lagre(formidlingsgruppeEvent) }
+        verify(exactly = 1) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
     }
 
     @Test
     fun `endringer før 2010 skal ikke persisteres`() {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23, 59, 59))
-        every { arbeidssokerRepository.lagre(any()) } returns 1L
+        every { formidlingsgruppeRepository.lagre(any()) } returns 1L
         formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
-        verify(exactly = 0) { arbeidssokerRepository.lagre(formidlingsgruppeEvent) }
+        verify(exactly = 0) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
     }
 
     private fun testEvent(test: LocalDateTime): FormidlingsgruppeEvent {

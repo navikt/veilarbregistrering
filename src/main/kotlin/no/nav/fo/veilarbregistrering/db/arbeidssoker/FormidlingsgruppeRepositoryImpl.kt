@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
-class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : ArbeidssokerRepository {
+class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate) : FormidlingsgruppeRepository {
 
     override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
         val personId = command.personId
@@ -88,7 +88,7 @@ class ArbeidssokerRepositoryImpl(private val db: NamedParameterJdbcTemplate) : A
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ArbeidssokerRepositoryImpl::class.java)
+        private val LOG = LoggerFactory.getLogger(FormidlingsgruppeRepositoryImpl::class.java)
         const val FORMIDLINGSGRUPPE_SEQ = "FORMIDLINGSGRUPPE_SEQ"
         const val FORMIDLINGSGRUPPE = "FORMIDLINGSGRUPPE"
         const val ID = "ID"

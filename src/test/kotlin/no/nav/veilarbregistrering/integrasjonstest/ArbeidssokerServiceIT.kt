@@ -34,7 +34,7 @@ import java.time.LocalDateTime
 @ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, ArbeidssokerServiceIT.ArbeidssokerConfigTest::class])
 internal class ArbeidssokerServiceIT @Autowired constructor(
     private val arbeidssokerService: ArbeidssokerService,
-    private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
@@ -49,7 +49,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
 
     @Test
     fun `Kan hente arbeidssokerperioder uten feil`() {
-        eksisterendeFormidlingsgrupper.map { arbeidssokerRepository.lagre(it) }
+        eksisterendeFormidlingsgrupper.map { formidlingsgruppeRepository.lagre(it) }
         arbeidssokerService.hentArbeidssokerperioder(
             bruker,
             Periode.gyldigPeriode(LocalDate.of(2021, 10, 30), null)
@@ -77,13 +77,13 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
 
         @Bean
         fun arbeidssokerService(
-            arbeidssokerRepository: ArbeidssokerRepository,
+            formidlingsgruppeRepository: FormidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService
         ): ArbeidssokerService = ArbeidssokerService(
-            arbeidssokerRepository,
+            formidlingsgruppeRepository,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService

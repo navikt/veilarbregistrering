@@ -278,13 +278,13 @@ class ServiceBeansConfig {
 
     @Bean
     fun arbeidssokerService(
-        arbeidssokerRepository: ArbeidssokerRepository,
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
         metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
-            arbeidssokerRepository,
+            formidlingsgruppeRepository,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService
@@ -293,10 +293,10 @@ class ServiceBeansConfig {
 
     @Bean
     fun formidlingsgruppeMottakService(
-        arbeidssokerRepository: ArbeidssokerRepository,
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
         arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
     ): FormidlingsgruppeMottakService {
-        return FormidlingsgruppeMottakService(arbeidssokerRepository, arbeidssokerperiodeAvsluttetService)
+        return FormidlingsgruppeMottakService(formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService)
     }
 
     @Bean
@@ -384,13 +384,13 @@ class ServiceBeansConfig {
         brukerRegistreringRepository: BrukerRegistreringRepository,
         sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
         reaktiveringRepository: ReaktiveringRepository,
-        arbeidssokerRepository: ArbeidssokerRepository
+        formidlingsgruppeRepository: FormidlingsgruppeRepository
     ): TidslinjeAggregator {
         return TidslinjeAggregator(
             brukerRegistreringRepository,
             sykmeldtRegistreringRepository,
             reaktiveringRepository,
-            arbeidssokerRepository
+            formidlingsgruppeRepository
         )
     }
 

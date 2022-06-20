@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 @Service
 class FormidlingsgruppeMottakService(
-    private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
 ) {
 
@@ -35,11 +35,11 @@ class FormidlingsgruppeMottakService(
             return
         }
 
-        val eksisterendeArbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(
+        val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupper(
             listOf(foedselsnummer)
         )
 
-        arbeidssokerRepository.lagre(endretFormidlingsgruppeCommand)
+        formidlingsgruppeRepository.lagre(endretFormidlingsgruppeCommand)
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
             endretFormidlingsgruppeCommand,

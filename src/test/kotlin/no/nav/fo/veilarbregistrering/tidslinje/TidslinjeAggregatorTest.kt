@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.tidslinje
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -23,7 +23,7 @@ class TidslinjeAggregatorTest {
     private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
     private lateinit var sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
     private lateinit var reaktiveringRepository: ReaktiveringRepository
-    private lateinit var arbeidssokerperiodeRepository: ArbeidssokerRepository
+    private lateinit var arbeidssokerperiodeRepository: FormidlingsgruppeRepository
 
     private lateinit var tidslinjeAggregator: TidslinjeAggregator
 

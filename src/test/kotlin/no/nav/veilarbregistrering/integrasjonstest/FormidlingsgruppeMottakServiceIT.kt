@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
     private val formidlingsgruppeMottakService: FormidlingsgruppeMottakService,
     private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
-    private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
@@ -42,8 +42,8 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
 
     @Test
     fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
-        eksisterendeFormidlingsgrupper.map { arbeidssokerRepository.lagre(it) }
-        val eksisterendeArbeidssokerPerioder = arbeidssokerRepository.finnFormidlingsgrupper(listOf(fnr))
+        eksisterendeFormidlingsgrupper.map { formidlingsgruppeRepository.lagre(it) }
+        val eksisterendeArbeidssokerPerioder = formidlingsgruppeRepository.finnFormidlingsgrupper(listOf(fnr))
         val nyttFormidlingsgruppeEvent = FormidlingsgruppeEvent(
             foedselsnummer = fnr,
             personId = pid,
@@ -71,10 +71,10 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
 
         @Bean
         fun formidlingsgruppeMottakService(
-            arbeidssokerRepository: ArbeidssokerRepository,
+            formidlingsgruppeRepository: FormidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         ): FormidlingsgruppeMottakService = FormidlingsgruppeMottakService(
-            arbeidssokerRepository,
+            formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService
         )
 

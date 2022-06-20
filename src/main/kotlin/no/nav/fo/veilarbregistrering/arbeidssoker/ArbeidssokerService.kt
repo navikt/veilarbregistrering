@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class ArbeidssokerService(
-    private val arbeidssokerRepository: ArbeidssokerRepository,
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
-        val arbeidssokerperioderLokalt = arbeidssokerRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
+        val arbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         logger.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt))
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
