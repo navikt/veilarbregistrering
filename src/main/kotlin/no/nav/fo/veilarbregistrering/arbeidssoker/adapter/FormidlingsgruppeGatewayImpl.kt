@@ -18,9 +18,15 @@ class FormidlingsgruppeGatewayImpl(
 
         val arbeidssokerperioder: List<Arbeidssokerperiode> =
             formidlingsgruppeResponseDto
-                ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap)
+                ?.formidlingshistorikk
+                ?.filter { it -> erArbeidssoker(it) }
+                ?.map(FormidlingshistorikkMapper::map)
                 ?: emptyList()
 
         return Arbeidssokerperioder(arbeidssokerperioder)
+    }
+
+    private fun erArbeidssoker(formidlingshistorikkDto: FormidlingshistorikkDto): Boolean {
+        return formidlingshistorikkDto.formidlingsgruppeKode == "ARBS"
     }
 }
