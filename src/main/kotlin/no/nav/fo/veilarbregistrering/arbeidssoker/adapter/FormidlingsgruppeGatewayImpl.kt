@@ -15,20 +15,15 @@ class FormidlingsgruppeGatewayImpl(
     FormidlingsgruppeGateway {
     override fun finnArbeissokerperioder(foedselsnummer: Foedselsnummer, periode: Periode): Arbeidssokerperioder {
         if (unleashClient.isEnabled("veilarbregistrering.formidlingshistorikk_v2")) {
-            try {
-                LOG.info("Henter formidlingshistorikk via ny client")
+            LOG.info("Henter formidlingshistorikk via ny client")
 
-                val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
-                    formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
-                        ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
+            val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
+                formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
+                    ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
 
-                LOG.info("Returnerer formidlingshistorikk fra ny client")
+            LOG.info("Returnerer formidlingshistorikk fra ny client")
 
-                return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
-
-            } catch (e : RuntimeException) {
-                LOG.warn("Integrasjon mot ARENA ORDS feilet. Har ikke betydning for flyt.", e)
-            }
+            return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
         }
 
         val arbeidssokerperioder: List<Arbeidssokerperiode> =
