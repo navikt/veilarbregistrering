@@ -13,6 +13,6 @@ class FormidlingsgruppeGatewayConfig {
 
     @Bean
     fun formidlingsgruppeGateway(formidlingsgruppeRestClient: FormidlingsgruppeRestClient): FormidlingsgruppeGateway {
-        return FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient, mockk(relaxed = true))
+        return FormidlingsgruppeGatewayImpl(formidlingsgruppeRestClient)
     }
 }

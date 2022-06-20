@@ -28,7 +28,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
     fun setup() {
         leggTilCallId()
         mockServer.reset()
-        formidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient(), mockk(relaxed = true))
+        formidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())
     }
 
     private fun buildClient(): FormidlingsgruppeRestClient {

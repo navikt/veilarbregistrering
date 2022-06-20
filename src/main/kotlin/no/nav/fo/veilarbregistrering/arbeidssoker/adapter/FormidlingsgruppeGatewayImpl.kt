@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
@@ -9,8 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger
 
 class FormidlingsgruppeGatewayImpl(
-    private val formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
-    private val unleashClient: UnleashClient
+    private val formidlingsgruppeRestClient: FormidlingsgruppeRestClient
 ) :
     FormidlingsgruppeGateway {
     override fun finnArbeissokerperioder(foedselsnummer: Foedselsnummer, periode: Periode): Arbeidssokerperioder {
