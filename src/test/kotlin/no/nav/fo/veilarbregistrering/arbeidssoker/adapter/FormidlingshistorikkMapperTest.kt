@@ -10,7 +10,7 @@ import java.util.*
 
 class FormidlingshistorikkMapperTest {
     @Test
-    fun `skal mappe fra formidlingsgruppeResponseDto til liste med arbeidssokerperiode`() {
+    fun `skal filtrere bort formidlingshistorikkDto-er med IARBS og ISERV og mappe fra formidlingsgruppeResponseDto til liste med arbeidssokerperiode`() {
         val formidlingshistorikkDto1 = FormidlingshistorikkDto(
             "ISERV",
             "2019-01-12 12:03:24",
@@ -36,21 +36,21 @@ class FormidlingshistorikkMapperTest {
             null
         )
         val response = FormidlingsgruppeResponseDto(
-            Arrays.asList(
+            listOf(
                 formidlingshistorikkDto1,
                 formidlingshistorikkDto2,
                 formidlingshistorikkDto3,
                 formidlingshistorikkDto4
             )
         )
-        val liste = FormidlingshistorikkMapper.map(response)
-        assertThat(liste).hasSize(4)
+        val liste = FormidlingshistorikkMapper.hentArbeidssokerperioderOgMap(response)
+        assertThat(liste).hasSize(2)
         assertThat(liste).contains(
             Arbeidssokerperiode(
-                Formidlingsgruppe("ISERV"),
+                Formidlingsgruppe("ARBS"),
                 Periode(
-                    LocalDate.of(2020, 2, 21),
-                    LocalDate.of(2020, 3, 11)
+                    LocalDate.of(2020, 1, 12),
+                    LocalDate.of(2020, 2, 20)
                 )
             ),
             Arbeidssokerperiode(

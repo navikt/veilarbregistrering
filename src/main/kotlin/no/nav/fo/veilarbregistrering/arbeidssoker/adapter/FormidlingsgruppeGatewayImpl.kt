@@ -18,13 +18,13 @@ class FormidlingsgruppeGatewayImpl(
             try {
                 LOG.info("Henter formidlingshistorikk via ny client")
 
-                val arbeidssokerperioder2: List<Arbeidssokerperiode> =
+                val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
                     formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
-                        ?.let(FormidlingshistorikkMapper::map) ?: emptyList()
+                        ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
 
                 LOG.info("Returnerer formidlingshistorikk fra ny client")
 
-                return Arbeidssokerperioder(arbeidssokerperioder2)
+                return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
 
             } catch (e : RuntimeException) {
                 LOG.warn("Integrasjon mot ARENA ORDS feilet. Har ikke betydning for flyt.", e)
@@ -33,7 +33,7 @@ class FormidlingsgruppeGatewayImpl(
 
         val arbeidssokerperioder: List<Arbeidssokerperiode> =
             formidlingsgruppeRestClient.hentFormidlingshistorikk(foedselsnummer, periode)
-                ?.let(FormidlingshistorikkMapper::map) ?: emptyList()
+                ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
 
         return Arbeidssokerperioder(arbeidssokerperioder)
     }

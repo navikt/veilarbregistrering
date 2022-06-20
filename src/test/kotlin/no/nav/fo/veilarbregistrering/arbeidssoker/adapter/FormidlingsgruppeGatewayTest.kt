@@ -37,7 +37,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
     }
 
     @Test
-    fun `skal hente formidlingsgruppe for gitt person`() {
+    fun `skal hente formidlingsgruppe for gitt person og filtrere bort formidlingshistorikk med IARBS og ISERV`() {
         val json = FileToJson.toJson("/arbeidssoker/formidlingshistorikk.json")
 
         mockServer.`when`(
@@ -58,17 +58,9 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
         assertThat(arbeidssokerperioder).isEqualTo(
                 arbeidssokerperioder()
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
-                                .medIserv()
-                                .fra(LocalDate.of(2020, 1, 11))
-                                .til(LocalDate.of(2020, 1, 12)))
-                        .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
                                 .medArbs()
                                 .fra(LocalDate.of(2020, 1, 12))
                                 .til(LocalDate.of(2020, 2, 20)))
-                        .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
-                                .medIserv()
-                                .fra(LocalDate.of(2020, 2, 21))
-                                .til(LocalDate.of(2020, 3, 11)))
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
                                 .medArbs()
                                 .fra(LocalDate.of(2020, 3, 12))

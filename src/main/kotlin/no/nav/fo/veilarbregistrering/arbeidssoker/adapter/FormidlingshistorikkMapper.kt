@@ -5,10 +5,10 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
 
 internal object FormidlingshistorikkMapper {
-    fun map(response: FormidlingsgruppeResponseDto): List<Arbeidssokerperiode> =
-        response.formidlingshistorikk?.map(::map) ?: emptyList()
+    fun hentArbeidssokerperioderOgMap(response: FormidlingsgruppeResponseDto): List<Arbeidssokerperiode> =
+        response.formidlingshistorikk?.filter{ erArbeidssoker(it) }?.map(::tilArbeidssokerperiode) ?: emptyList()
 
-    private fun map(formidlingshistorikkDto: FormidlingshistorikkDto): Arbeidssokerperiode {
+    private fun tilArbeidssokerperiode(formidlingshistorikkDto: FormidlingshistorikkDto): Arbeidssokerperiode {
         return Arbeidssokerperiode(
             Formidlingsgruppe(formidlingshistorikkDto.formidlingsgruppeKode),
             Periode(
@@ -16,5 +16,9 @@ internal object FormidlingshistorikkMapper {
                 formidlingshistorikkDto.tilDato
             )
         )
+    }
+
+    private fun erArbeidssoker(formidlingshistorikkDto: FormidlingshistorikkDto): Boolean {
+        return formidlingshistorikkDto.formidlingsgruppeKode == "ARBS"
     }
 }
