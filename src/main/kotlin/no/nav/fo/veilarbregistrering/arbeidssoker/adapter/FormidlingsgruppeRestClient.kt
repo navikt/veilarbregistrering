@@ -24,7 +24,7 @@ class FormidlingsgruppeRestClient internal constructor(
     private val arenaOrdsTokenProvider: Supplier<String>
 ) : HealthCheck, TimedMetric(metricsService) {
 
-    fun hentFormidlingshistorikkVersjon2(
+    fun hentFormidlingshistorikk(
         foedselsnummer: Foedselsnummer,
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
