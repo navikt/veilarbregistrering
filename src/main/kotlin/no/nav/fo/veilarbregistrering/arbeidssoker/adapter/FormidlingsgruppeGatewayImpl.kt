@@ -19,7 +19,7 @@ class FormidlingsgruppeGatewayImpl(
         val arbeidssokerperioder: List<Arbeidssokerperiode> =
             formidlingsgruppeResponseDto
                 ?.formidlingshistorikk
-                ?.filter { it -> erArbeidssoker(it) }
+                ?.filter(::erArbeidssoker)
                 ?.map(FormidlingshistorikkMapper::map)
                 ?: emptyList()
 
