@@ -15,26 +15,18 @@ class FormidlingsgruppeGatewayImpl(
 ) :
     FormidlingsgruppeGateway {
     override fun finnArbeissokerperioder(foedselsnummer: Foedselsnummer, periode: Periode): Arbeidssokerperioder {
-        if (unleashClient.isEnabled("veilarbregistrering.formidlingshistorikk_v2")) {
-            LOG.info("Henter formidlingshistorikk via ny client")
+        LOG.info("Henter formidlingshistorikk via ny client")
 
-            val formidlingsgruppeResponseDto =
-                formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
-            logger.info("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: $formidlingsgruppeResponseDto")
+        val formidlingsgruppeResponseDto =
+            formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
+        logger.info("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: $formidlingsgruppeResponseDto")
 
-            val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
-                formidlingsgruppeResponseDto
-                    ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap)
-                    ?: emptyList()
+        val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
+            formidlingsgruppeResponseDto
+                ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap)
+                ?: emptyList()
 
-            return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
-        }
-
-        val arbeidssokerperioder: List<Arbeidssokerperiode> =
-            formidlingsgruppeRestClient.hentFormidlingshistorikk(foedselsnummer, periode)
-                ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
-
-        return Arbeidssokerperioder(arbeidssokerperioder)
+        return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
     }
 
     companion object {
