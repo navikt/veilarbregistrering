@@ -17,7 +17,15 @@ class FormidlingsgruppeGatewayImpl(
         if (unleashClient.isEnabled("veilarbregistrering.formidlingshistorikk_v2")) {
             try {
                 LOG.info("Henter formidlingshistorikk via ny client")
-                formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
+
+                val arbeidssokerperioder2: List<Arbeidssokerperiode> =
+                    formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
+                        ?.let(FormidlingshistorikkMapper::map) ?: emptyList()
+
+                LOG.info("Returnerer formidlingshistorikk fra ny client")
+
+                return Arbeidssokerperioder(arbeidssokerperioder2)
+
             } catch (e : RuntimeException) {
                 LOG.warn("Integrasjon mot ARENA ORDS feilet. Har ikke betydning for flyt.", e)
             }
