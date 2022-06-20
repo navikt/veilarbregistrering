@@ -19,9 +19,8 @@ class ArbeidssokerService(
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
-        val arbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
-        logger.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt))
-
+        val arbeidssokerperioderLokalt =
+            formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
 
@@ -29,35 +28,30 @@ class ArbeidssokerService(
         val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)
         val lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS)
+
         metricsService.registrer(
             Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
             if (lokalErLikOrds) JaNei.JA else JaNei.NEI
         )
+
         if (!lokalErLikOrds) {
             logger.warn(
-                String.format(
-                    "Periodelister fra lokal cache og Arena-ORDS er ikke like\nForespurt periode: %s\nLokalt: %s\nArena-ORDS: %s",
-                    forespurtPeriode, overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS
-                )
-            )
+                "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
+                        "Forespurt periode: $forespurtPeriode\n" +
+                        "Lokalt: $overlappendeArbeidssokerperioderLokalt\n" +
+                        "Arena-ORDS: $overlappendeHistoriskePerioderORDS")
         }
+
         if (dekkerHele && brukLokalCache()) {
             metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL)
-            logger.info(
-                String.format(
-                    "Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: %s",
-                    overlappendeArbeidssokerperioderLokalt
-                )
-            )
+            logger.info("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: "
+                    + "$overlappendeArbeidssokerperioderLokalt")
             return overlappendeArbeidssokerperioderLokalt
         }
+
         metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
         logger.info(
-            String.format(
-                "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: %s",
-                overlappendeHistoriskePerioderORDS
-            )
-        )
+                "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten: $overlappendeHistoriskePerioderORDS")
         return overlappendeHistoriskePerioderORDS
     }
 
