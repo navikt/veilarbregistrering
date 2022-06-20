@@ -21,14 +21,10 @@ class ArbeidssokerService(
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
         val arbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
         logger.info(String.format("Fant følgende arbeidssokerperioder i egen database: %s", arbeidssokerperioderLokalt))
+
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
-        logger.info(
-            String.format(
-                "Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: %s",
-                arbeidssokerperioderORDS
-            )
-        )
+
         val dekkerHele = arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode)
         val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)

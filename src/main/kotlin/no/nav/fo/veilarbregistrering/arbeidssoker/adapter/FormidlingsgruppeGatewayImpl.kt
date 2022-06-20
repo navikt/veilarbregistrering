@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.log.logger
 import org.slf4j.LoggerFactory
 
 class FormidlingsgruppeGatewayImpl(
@@ -17,11 +18,14 @@ class FormidlingsgruppeGatewayImpl(
         if (unleashClient.isEnabled("veilarbregistrering.formidlingshistorikk_v2")) {
             LOG.info("Henter formidlingshistorikk via ny client")
 
-            val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
+            val formidlingsgruppeResponseDto =
                 formidlingsgruppeRestClient.hentFormidlingshistorikkVersjon2(foedselsnummer, periode)
-                    ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap) ?: emptyList()
+            logger.info("Fikk følgende arbeidssokerperioder fra Arena sin ORDS-tjeneste: $formidlingsgruppeResponseDto")
 
-            LOG.info("Returnerer formidlingshistorikk fra ny client")
+            val arbeidssokerperioderFraVersjon2: List<Arbeidssokerperiode> =
+                formidlingsgruppeResponseDto
+                    ?.let(FormidlingshistorikkMapper::hentArbeidssokerperioderOgMap)
+                    ?: emptyList()
 
             return Arbeidssokerperioder(arbeidssokerperioderFraVersjon2)
         }
