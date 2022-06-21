@@ -20,7 +20,7 @@ class ArbeidssokerService(
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
         val arbeidssokerperioderLokalt =
-            formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
+            formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
 

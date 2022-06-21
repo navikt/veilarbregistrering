@@ -18,7 +18,7 @@ class TidslinjeAggregator(
         val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.aktorId, listOf(Status.OVERFORT_ARENA))
         val sykmeldtRegistreringer = sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(bruker.aktorId)
         val reaktiveringer = reaktiveringRepository.finnReaktiveringer(bruker.aktorId)
-        val arbeidssokerperioder = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
+        val arbeidssokerperioder = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
 
         val sykmeldtTidslinje = SykmeldtTidslinje(sykmeldtRegistreringer)
         val ordinaerRegistreringTidslinje = OrdinaerRegistreringTidslinje(ordinaerBrukerregistreringer)

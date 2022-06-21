@@ -38,7 +38,7 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
         val id = formidlingsgruppeRepository.lagre(command)
         Assertions.assertThat(id).isNotNull
-        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupper(listOf(FOEDSELSNUMMER))
+        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(listOf(FOEDSELSNUMMER))
         val arbeidssokerperiode = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }
@@ -52,7 +52,7 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
         formidlingsgruppeRepository.lagre(command3)
         val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
-        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupper(bruker.alleFoedselsnummer())
+        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 

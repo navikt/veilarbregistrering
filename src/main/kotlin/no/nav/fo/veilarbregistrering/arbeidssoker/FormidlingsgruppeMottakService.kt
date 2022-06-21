@@ -29,7 +29,7 @@ class FormidlingsgruppeMottakService(
             return
         }
 
-        val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupper(
+        val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
             listOf(foedselsnummer)
         )
 

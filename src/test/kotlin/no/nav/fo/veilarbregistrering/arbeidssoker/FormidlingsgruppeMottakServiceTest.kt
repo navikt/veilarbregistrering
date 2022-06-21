@@ -28,7 +28,7 @@ class FormidlingsgruppeMottakServiceTest {
     fun `endringer fra 2010 skal persisteres`() {
         val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0))
         every { formidlingsgruppeRepository.lagre(any()) } returns 1L
-        every { formidlingsgruppeRepository.finnFormidlingsgrupper(any()) } returns Arbeidssokerperioder(emptyList())
+        every { formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(any()) } returns Arbeidssokerperioder(emptyList())
         formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
         verify(exactly = 1) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
     }

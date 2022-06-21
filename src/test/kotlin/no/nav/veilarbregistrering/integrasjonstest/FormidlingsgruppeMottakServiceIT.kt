@@ -43,7 +43,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
     @Test
     fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
         eksisterendeFormidlingsgrupper.map { formidlingsgruppeRepository.lagre(it) }
-        val eksisterendeArbeidssokerPerioder = formidlingsgruppeRepository.finnFormidlingsgrupper(listOf(fnr))
+        val eksisterendeArbeidssokerPerioder = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(listOf(fnr))
         val nyttFormidlingsgruppeEvent = FormidlingsgruppeEvent(
             foedselsnummer = fnr,
             personId = pid,

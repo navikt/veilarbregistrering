@@ -149,7 +149,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             return 0
         }
 
-        override fun finnFormidlingsgrupper(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
+        override fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
             return mapOf(
                 FOEDSELSNUMMER_3 to Arbeidssokerperioder(
                     listOf(

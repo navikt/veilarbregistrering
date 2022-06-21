@@ -12,6 +12,42 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class ArbeidssokerperioderMapperTest {
+
+    @Test
+    fun kun_perioder_med_arbs_skal_være_med_i_arbeidssokerperioder() {
+        val arbeidssokerperioder = map(
+            listOf(
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "ISERV",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "IARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                ),
+            )
+        )
+        Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(2)
+        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.kode).isEqualTo("ARBS")
+        Assertions.assertThat(arbeidssokerperioder.asList()[1].formidlingsgruppe.kode).isEqualTo("ARBS")
+    }
+
     @Test
     fun kun_siste_periode_kan_ha_blank_tildato() {
         val arbeidssokerperioder = map(
@@ -34,16 +70,21 @@ class ArbeidssokerperioderMapperTest {
                     "AKTIV",
                     Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
                 ),
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                ),
             )
         )
 
         Assertions.assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isNotNull
-        Assertions.assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isNotNull
         Assertions.assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull()
     }
 
     @Test
-    fun foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_periode_sin_fradato() {
+    fun foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_formidlingsgruppeendring_sin_fradato() {
         val arbeidssokerperioder = map(
             listOf(
                 Formidlingsgruppeendring(
@@ -62,7 +103,6 @@ class ArbeidssokerperioderMapperTest {
         )
 
         Assertions.assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20))
-        Assertions.assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull()
     }
 
     @Test
@@ -74,6 +114,12 @@ class ArbeidssokerperioderMapperTest {
                     4397692,
                     "AKTIV",
                     Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "IARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 6, 12).atStartOfDay())
                 ),
                 Formidlingsgruppeendring(
                     "ARBS",
@@ -91,11 +137,9 @@ class ArbeidssokerperioderMapperTest {
         )
 
         Assertions.assertThat(funnetFraDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 3, 19))
-        Assertions.assertThat(funnetFraDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 21))
-        Assertions.assertThat(funnetFraDatoForIndeks(2, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 30))
+        Assertions.assertThat(funnetFraDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 30))
         Assertions.assertThat(funnetTilDatoForIndeks(0, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 4, 20))
-        Assertions.assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 5, 29))
-        Assertions.assertThat(funnetTilDatoForSistePeriode(arbeidssokerperioder)).isNull()
+        Assertions.assertThat(funnetTilDatoForIndeks(1, arbeidssokerperioder)).isEqualTo(LocalDate.of(2020, 6, 11))
     }
 
     private fun funnetFraDatoForIndeks(indeks: Int, arbeidssokerperioder: Arbeidssokerperioder): LocalDate {
@@ -115,7 +159,7 @@ class ArbeidssokerperioderMapperTest {
         val now = LocalDateTime.now()
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)),
+                Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now)),
                 Formidlingsgruppeendring(
                     "ARBS",
                     4397692,
@@ -123,7 +167,7 @@ class ArbeidssokerperioderMapperTest {
                     Timestamp.valueOf(now.plusSeconds(2))
                 ),
                 Formidlingsgruppeendring(
-                    "IARBS",
+                    "ARBS",
                     4397692,
                     "AKTIV",
                     Timestamp.valueOf(now.plusSeconds(4))
@@ -132,7 +176,6 @@ class ArbeidssokerperioderMapperTest {
         )
 
         Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(1)
-        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.kode).isEqualTo("IARBS")
         Assertions.assertThat(arbeidssokerperioder.asList()[0].periode.fra).isEqualTo(now.toLocalDate())
     }
 
@@ -143,13 +186,13 @@ class ArbeidssokerperioderMapperTest {
             listOf(
                 Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)),
                 Formidlingsgruppeendring(
-                    "ARBS",
+                    "IARBS",
                     4397692,
                     "AKTIV",
                     Timestamp.valueOf(now.plusSeconds(2))
                 ),
                 Formidlingsgruppeendring(
-                    "IARBS",
+                    "ARBS",
                     4397692,
                     "AKTIV",
                     Timestamp.valueOf(now.plusSeconds(4))
@@ -170,30 +213,28 @@ class ArbeidssokerperioderMapperTest {
                     "ISERV",
                     4397692,
                     "AKTIV",
-                    Timestamp.valueOf(now.plusDays(50))
+                    Timestamp.valueOf(now.plusMonths(1))
                 ),
                 Formidlingsgruppeendring(
                     "ARBS",
                     4397692,
                     "AKTIV",
-                    Timestamp.valueOf(now.plusDays(50).plusSeconds(2))
+                    Timestamp.valueOf(now.plusMonths(1).plusSeconds(2))
                 ),
                 Formidlingsgruppeendring(
                     "ISERV",
                     4397692,
                     "AKTIV",
-                    Timestamp.valueOf(now.plusDays(50).plusSeconds(5))
+                    Timestamp.valueOf(now.plusMonths(1).plusSeconds(5))
                 ),
             )
         )
 
-        Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(3)
-        Assertions.assertThat(arbeidssokerperioder.asList()[0].formidlingsgruppe.kode).isEqualTo("IARBS")
-        Assertions.assertThat(arbeidssokerperioder.asList()[1].formidlingsgruppe.kode).isEqualTo("ARBS")
-        Assertions.assertThat(arbeidssokerperioder.asList()[2].formidlingsgruppe.kode).isEqualTo("ISERV")
+        Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(2)
         Assertions.assertThat(arbeidssokerperioder.asList()[0].periode.fra).isEqualTo(now.toLocalDate())
         Assertions.assertThat(arbeidssokerperioder.asList()[1].periode.fra).isEqualTo(now.plusDays(7).toLocalDate())
-        Assertions.assertThat(arbeidssokerperioder.asList()[2].periode.fra).isEqualTo(now.plusDays(50).toLocalDate())
+        Assertions.assertThat(arbeidssokerperioder.asList()[0].periode.til).isEqualTo(now.plusDays(6).toLocalDate())
+        Assertions.assertThat(arbeidssokerperioder.asList()[1].periode.til).isEqualTo(now.plusMonths(1).minusDays(1).toLocalDate())
     }
 
     @Test
@@ -228,16 +269,9 @@ class ArbeidssokerperioderMapperTest {
             )
         )
 
-        val iservAktiv = Arbeidssokerperiode.of(
-            Formidlingsgruppe("ISERV"),
-            Periode(LocalDate.of(2019, 3, 6), LocalDate.of(2019, 12, 8))
-        )
         val arbsAktiv =
             Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2019, 12, 9), null))
-        Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
-            iservAktiv,
-            arbsAktiv
-        )
+        Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(arbsAktiv)
     }
 
     @Test
@@ -273,6 +307,7 @@ class ArbeidssokerperioderMapperTest {
             Periode(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8))
         )
         val arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 9, 9), null))
+
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1,
             arbs2
@@ -311,44 +346,6 @@ class ArbeidssokerperioderMapperTest {
         arbs1 = Arbeidssokerperiode.of(Formidlingsgruppe("ARBS"), Periode(LocalDate.of(2020, 8, 14), null))
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbs1
-        )
-    }
-
-    @Test
-    fun skal_filtrere_bort_tekniske_ISERVendringer_med_IARBS() {
-        val arbeidssokerperioder = map(
-            listOf(
-                Formidlingsgruppeendring(
-                    "IARBS", 4685858, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
-                ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4685858, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
-                ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4685858, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2020, 9, 9, 9, 9, 9)
-                    )
-                ),
-                Formidlingsgruppeendring(
-                    "IARBS", 4685858, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2020, 9, 9, 9, 9, 9)
-                    )
-                ),
-            )
-        )
-
-        val arbs1 = Arbeidssokerperiode.of(
-            Formidlingsgruppe("IARBS"),
-            Periode(LocalDate.of(2020, 8, 14), LocalDate.of(2020, 9, 8))
-        )
-        val arbs2 = Arbeidssokerperiode.of(Formidlingsgruppe("IARBS"), Periode(LocalDate.of(2020, 9, 9), null))
-        Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
-            arbs1,
-            arbs2
         )
     }
 }

@@ -17,6 +17,7 @@ internal object ArbeidssokerperioderMapper {
                     .run(::slettTekniskeISERVEndringer)
                     .run(::beholdKunSisteEndringPerDagIListen)
                     .run(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
+                    .filter { it.formidlingsgruppe.erArbeidssoker() }
                     .sortedWith(EldsteFoerst())
         )
     }
