@@ -78,7 +78,7 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     @ExceptionHandler(UnauthorizedException::class)
     fun handleUnauthorizedException(feil: UnauthorizedException): ResponseEntity<String> {
         logger.warn(feil.message, feil)
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(feil.message)
+        return ResponseEntity.status(UNAUTHORIZED).body(feil.message)
     }
 
     @ExceptionHandler(RuntimeException::class)

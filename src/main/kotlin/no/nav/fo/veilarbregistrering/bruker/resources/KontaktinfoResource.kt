@@ -23,4 +23,6 @@ class KontaktinfoResource(
         val kontaktinfo = kontaktinfoService.hentKontaktinfo(bruker)
         return map(kontaktinfo)
     }
+
+
 }

@@ -16,7 +16,8 @@ interface ArbeidssokerApi {
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "Ok"),
         ApiResponse(responseCode = "400", description = "Ugyldig periode - fra og med dato må være før til dato"),
-        ApiResponse(responseCode = "403", description = "Ingen tilgang"),
+        ApiResponse(responseCode = "401", description = "Unauthorized - bruker er ikke autorisert"),
+        ApiResponse(responseCode = "403", description = "Forbidden - ingen tilgang"),
         ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
     fun hentArbeidssokerperioder(
@@ -29,7 +30,8 @@ interface ArbeidssokerApi {
     @ApiResponses(
             ApiResponse(responseCode = "200", description = "Ok"),
             ApiResponse(responseCode = "400", description = "Ugyldig periode - fra og med dato må være før til dato"),
-            ApiResponse(responseCode = "403", description = "Ingen tilgang"),
+            ApiResponse(responseCode = "401", description = "Unauthorized - bruker er ikke autorisert"),
+            ApiResponse(responseCode = "403", description = "Forbidden - ingen tilgang"),
             ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
     fun hentArbeidssokerperioder(
