@@ -40,7 +40,7 @@ class RegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.aktorId)
+        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
         val veileder = navVeileder()
         val opprettetRegistrering =

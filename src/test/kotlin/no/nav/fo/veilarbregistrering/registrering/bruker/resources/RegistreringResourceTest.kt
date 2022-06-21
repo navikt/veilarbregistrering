@@ -218,7 +218,7 @@ class RegistreringResourceTest(
             )
         } returns ordinaerBrukerRegistrering
         registreringResource.registrerBruker(ordinaerBrukerRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<AktorId>()) }
+        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
     }
 
     companion object {

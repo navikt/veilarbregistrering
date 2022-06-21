@@ -27,7 +27,6 @@ open class AutorisasjonService(
     fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkLesetilgangTilBruker(bruker: AktorId) = sjekkLesetilgangTilBruker(tilEksternId(bruker))
     fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
-    fun sjekkSkrivetilgangTilBruker(bruker: AktorId) = sjekkSkrivetilgangTilBruker(tilEksternId(bruker))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
     private fun tilEksternId(bruker: AktorId) = no.nav.common.types.identer.AktorId(bruker.aktorId)
