@@ -34,25 +34,29 @@ open class AutorisasjonService(
 
     private fun sjekkLesetilgangTilBruker(brukerId: EksternBrukerId) {
         if (rolle() == UserRole.SYSTEM) return
-        if (!harTilgang(ActionId.READ, brukerId)) throw AutorisasjonException("Bruker mangler lesetilgang til subjektet")
+        sjekkTilgang(ActionId.READ, brukerId)
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun sjekkSkrivetilgangTilBruker(brukerId: EksternBrukerId) {
-        if (!harTilgang(ActionId.WRITE, brukerId)) throw AutorisasjonException("Bruker mangler skrivetilgang til subjektet")
+        sjekkTilgang(ActionId.WRITE, brukerId)
     }
 
-    private fun harTilgang(handling: ActionId, bruker: EksternBrukerId): Boolean {
+    private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
         val navIdent = navIdentClaim()
-        return if (navIdent != null) {
+
+        if (navIdent != null) {
             LOG.info("harVeilederTilgangTilPerson utfører $handling for ${rolle()}-rolle")
             registrerAutorisationEvent(true, handling, rolle())
-            veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker)
+            if (!veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker))
+                throw AutorisasjonException("Veileder mangler $handling-tilgang til ekstern bruker")
+
         } else {
             LOG.info("harTilgangTilPerson utfører $handling for ${rolle()}-rolle")
             registrerAutorisationEvent(false, handling, rolle())
-            veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)
+            if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker))
+                throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
     }
 

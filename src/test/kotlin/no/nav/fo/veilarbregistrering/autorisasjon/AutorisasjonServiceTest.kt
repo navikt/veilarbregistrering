@@ -49,7 +49,7 @@ class AutorisasjonServiceTest {
             autorisasjonService.sjekkLesetilgangTilBruker(aremark())
         }
 
-        assertEquals("Bruker mangler lesetilgang til subjektet", exception.message)
+        assertEquals("Veileder mangler READ-tilgang til ekstern bruker", exception.message)
     }
 
     @Test
@@ -73,7 +73,7 @@ class AutorisasjonServiceTest {
             autorisasjonService.sjekkSkrivetilgangTilBruker(aremark())
         }
 
-        assertEquals("Bruker mangler skrivetilgang til subjektet", exception.message)
+        assertEquals("Veileder mangler WRITE-tilgang til ekstern bruker", exception.message)
     }
 
     @Test
@@ -99,7 +99,7 @@ class AutorisasjonServiceTest {
             autorisasjonService.sjekkLesetilgangTilBruker(aremark())
         }
 
-        assertEquals("Bruker mangler lesetilgang til subjektet", exception.message)
+        assertEquals("Bruker mangler READ-tilgang til ekstern bruker", exception.message)
     }
 
     @Test
@@ -125,7 +125,7 @@ class AutorisasjonServiceTest {
             autorisasjonService.sjekkSkrivetilgangTilBruker(aremark())
         }
 
-        assertEquals("Bruker mangler skrivetilgang til subjektet", exception.message)
+        assertEquals("Bruker mangler WRITE-tilgang til ekstern bruker", exception.message)
     }
 
 
