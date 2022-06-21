@@ -25,7 +25,7 @@ class GjelderFraServiceTest {
 
     @Test
     fun `returnerer dato for bruker`() {
-        val gjelderFraDato = GjelderFraDato(bruker, OK_REGISTRERING, LocalDate.of(2022, 6, 6))
+        val gjelderFraDato = GjelderFraDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
         every { gjelderFraRepository.hentDatoFor(bruker) } returns gjelderFraDato
         val resultat = gjelderFraService.hentDato(bruker)
 
@@ -34,12 +34,12 @@ class GjelderFraServiceTest {
 
     @Test
     fun `oppretter dato for bruker & registrering`() {
-        val gjelderFraDato = GjelderFraDato(bruker, OK_REGISTRERING, LocalDate.of(2022, 6, 6))
+        val gjelderFraDato = GjelderFraDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
         every {
-            gjelderFraService.opprettDato(bruker, OK_REGISTRERING, LocalDate.of(2022, 6, 6))
+            gjelderFraService.opprettDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
         } returns gjelderFraDato
 
-        val resultat = gjelderFraService.opprettDato(bruker, OK_REGISTRERING, LocalDate.of(2022, 6, 6))
+        val resultat = gjelderFraService.opprettDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
 
         assertEquals(gjelderFraDato, resultat)
     }
@@ -52,7 +52,7 @@ class GjelderFraServiceTest {
         private val igaar = LocalDateTime.now().minusDays(1)
 
         private val profilering = ProfileringTestdataBuilder.lagProfilering()
-        private val OK_REGISTRERING = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
+        private val ordinaerBrukerRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
             opprettetDato = igaar,
             profilering = profilering
         )

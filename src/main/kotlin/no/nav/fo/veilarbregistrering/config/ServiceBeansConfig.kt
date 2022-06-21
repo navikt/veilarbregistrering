@@ -449,8 +449,9 @@ class ServiceBeansConfig {
     fun gjelderFraDatoResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
-        hentRegistreringService: HentRegistreringService
+        hentRegistreringService: HentRegistreringService,
+        gjelderFraService: GjelderFraService
     ): GjelderFraDatoResource {
-        return GjelderFraDatoResource(autorisasjonService, userService, hentRegistreringService)
+        return GjelderFraDatoResource(autorisasjonService, userService, hentRegistreringService, gjelderFraService)
     }
 }
