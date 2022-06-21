@@ -47,6 +47,7 @@ import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFr
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBrukerRegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
@@ -196,20 +197,31 @@ class ServiceBeansConfig {
     }
 
     @Bean
+    fun ordinaerBrukerRegistrering(
+        autorisasjonsService: AutorisasjonService,
+        userService: UserService,
+        brukerRegistreringService: BrukerRegistreringService,
+        unleashClient: UnleashClient
+    ): OrdinaerBrukerRegistreringResource {
+        return OrdinaerBrukerRegistreringResource(
+            autorisasjonsService,
+            userService,
+            brukerRegistreringService,
+            unleashClient
+        )
+    }
+
+    @Bean
     fun registreringResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
-        brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
-        unleashClient: UnleashClient,
         startRegistreringStatusService: StartRegistreringStatusService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
             userService,
-            brukerRegistreringService,
             hentRegistreringService,
-            unleashClient,
             startRegistreringStatusService
         )
     }

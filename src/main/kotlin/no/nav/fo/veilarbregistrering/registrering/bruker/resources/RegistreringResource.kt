@@ -1,15 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory.create
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -18,9 +14,7 @@ import org.springframework.web.bind.annotation.*
 class RegistreringResource(
     private val autorisasjonsService: AutorisasjonService,
     private val userService: UserService,
-    private val brukerRegistreringService: BrukerRegistreringService,
     private val hentRegistreringService: HentRegistreringService,
-    private val unleashClient: UnleashClient,
     private val startRegistreringStatusService: StartRegistreringStatusService
 ) : RegistreringApi {
 
@@ -30,22 +24,6 @@ class RegistreringResource(
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
-    }
-
-    @PostMapping("/startregistrering")
-    override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
-        if (tjenesteErNede()) {
-            brukerRegistreringService.registrerAtArenaHarPlanlagtNedetid()
-            throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
-        }
-        val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-
-        val veileder = navVeileder()
-        val opprettetRegistrering =
-            brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder)
-        brukerRegistreringService.overforArena(opprettetRegistrering.id, bruker, veileder)
-        return opprettetRegistrering
     }
 
     @GetMapping("/registrering")
@@ -69,15 +47,4 @@ class RegistreringResource(
         }
         return ResponseEntity.ok(brukerRegistreringWrapper)
     }
-
-    private fun navVeileder(): NavVeileder? {
-        return if (!autorisasjonsService.erVeileder()) {
-            null
-        } else NavVeileder(
-            autorisasjonsService.innloggetVeilederIdent,
-            userService.getEnhetIdFromUrlOrThrow()
-        )
-    }
-
-    private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
 }
