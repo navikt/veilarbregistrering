@@ -66,21 +66,30 @@ class ArbeidssokerperioderTest {
     }
 
     @Test
-    fun `gitt flere perioder skal de periodene hvor en er arbs returneres`() {
+    fun `gitt flere perioder, skal kun de som overlapper med forespurt periode returneres`() {
         val arbeidssokerperioder = arbeidssokerperioder()
+            .periode(
+                medArbs()
+                    .fra(LocalDate.of(2020, 1, 19))
+                    .til(LocalDate.of(2020, 2, 20))
+            )
             .periode(
                 medArbs()
                     .fra(LocalDate.of(2020, 3, 19))
                     .til(LocalDate.of(2020, 4, 20))
             )
             .periode(
-                medIserv()
+                medArbs()
                     .fra(LocalDate.of(2020, 4, 21))
                     .til(LocalDate.of(2020, 4, 29))
             )
             .periode(
                 medArbs()
                     .fra(LocalDate.of(2020, 4, 30))
+            )
+            .periode(
+                medArbs()
+                    .fra(LocalDate.of(2020, 8, 30))
             )
             .build()
         val arbeidssokerperiodes = arbeidssokerperioder.overlapperMed(
@@ -89,7 +98,7 @@ class ArbeidssokerperioderTest {
                 LocalDate.of(2020, 6, 28)
             )
         )
-        assertThat(arbeidssokerperiodes.asList()).hasSize(2)
+        assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 
     companion object {
