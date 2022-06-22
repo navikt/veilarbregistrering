@@ -23,6 +23,10 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
         return arbeidssokerperioder
     }
 
+    fun nyestePeriode(): Arbeidssokerperiode? {
+        return this.eldsteFoerst().lastOrNull()
+    }
+
     fun eldsteFoerst(): List<Arbeidssokerperiode> {
         return arbeidssokerperioder.sortedBy{ it.periode.fra }
     }
