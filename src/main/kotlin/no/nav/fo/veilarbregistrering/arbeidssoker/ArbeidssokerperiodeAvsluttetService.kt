@@ -8,27 +8,15 @@ class ArbeidssokerperiodeAvsluttetService(
         endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
         arbeidssokerperioder: Arbeidssokerperioder
     ) {
-        if (erAvslutningAvArbeidssokerperiode(endretFormidlingsgruppeCommand, arbeidssokerperioder)) {
-            val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
-            arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(endretFormidlingsgruppeCommand, sistePeriode)
-        }
-    }
-
-    private fun erAvslutningAvArbeidssokerperiode(
-        endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
-        arbeidssokerperioder: Arbeidssokerperioder
-    ): Boolean {
-        if (arbeidssokerperioder.asList().isEmpty()) return false
         endretFormidlingsgruppeCommand.foedselsnummer?.let {
-            val sistePeriode = arbeidssokerperioder.eldsteFoerst().last()
-            if (harNaavaerendePeriodeMedARBS(sistePeriode) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
-                return true
+            arbeidssokerperioder.nyestePeriode()?.let {
+                if (it.erGjeldende() && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
+                    arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(
+                        endretFormidlingsgruppeCommand,
+                        it
+                    )
+                }
             }
-            return false
         }
-        return false
     }
-
-    private fun harNaavaerendePeriodeMedARBS(sistePeriode: Arbeidssokerperiode): Boolean =
-        sistePeriode.formidlingsgruppe.kode == "ARBS" && sistePeriode.erGjeldende()
 }
