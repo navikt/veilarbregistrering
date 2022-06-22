@@ -39,28 +39,8 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
     }
 
     @Test
-    fun `Skal ikke publisere hendelse når arbeidssokerperiode går fra IARBS til ARBS`() {
-        val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS, NÅVÆRENDE_IARBS))
-        val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ARBS"))
-
-        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
-
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
-    }
-
-    @Test
     fun `Skal ikke publisere hendelse når arbeidssokerperiode med ARBS allerede er avsluttet`() {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS))
-        val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
-
-        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
-
-        verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
-    }
-
-    @Test
-    fun `Skal ikke publisere hendelse når arbeidssokerperiode med IARBS allerede er avsluttet`() {
-        val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_IARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
@@ -96,17 +76,9 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
         )
-        val AVSLUTTET_IARBS = Arbeidssokerperiode(
-            Formidlingsgruppe("IARBS"),
-            Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
-        )
         val NÅVÆRENDE_ARBS = Arbeidssokerperiode(
             Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 2, 1), null)
-        )
-        val NÅVÆRENDE_IARBS = Arbeidssokerperiode(
-            Formidlingsgruppe("IARBS"),
-            Periode(LocalDate.of(2020, 3, 1), null)
         )
     }
 }
