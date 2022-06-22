@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -19,7 +18,6 @@ class FormidlingshistorikkMapperTest {
         )
 
         val expectedArbeidssøkerperiode = Arbeidssokerperiode(
-            Formidlingsgruppe("ARBS"),
             Periode(
                 LocalDate.of(2020, 1, 12),
                 LocalDate.of(2020, 2, 20)
@@ -38,7 +36,6 @@ class FormidlingshistorikkMapperTest {
         )
 
         val expectedArbeidssøkerperiode2 = Arbeidssokerperiode(
-            Formidlingsgruppe("ARBS"),
             Periode(
                 LocalDate.of(2020, 3, 12),
                 null

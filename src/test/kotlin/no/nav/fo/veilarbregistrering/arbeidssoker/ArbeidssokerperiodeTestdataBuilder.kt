@@ -8,7 +8,7 @@ class ArbeidssokerperiodeTestdataBuilder private constructor() :
     private var fra: LocalDate? = null
     private var til: LocalDate? = null
     override fun build(): Arbeidssokerperiode {
-        return Arbeidssokerperiode(Formidlingsgruppe("ARBS"), Periode.gyldigPeriode(fra, til))
+        return Arbeidssokerperiode(Periode.gyldigPeriode(fra, til))
     }
 
     fun fra(fra: LocalDate?): ArbeidssokerperiodeTestdataBuilder {

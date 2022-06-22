@@ -102,11 +102,9 @@ class ArbeidssokerperioderTest {
 
     companion object {
         private val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
-            Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2016, 9, 24), null)
         )
         private val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
-            Formidlingsgruppe("ARBS"),
             Periode(LocalDate.of(2020, 1, 1), null)
         )
     }

@@ -17,9 +17,15 @@ internal object ArbeidssokerperioderMapper {
                     .run(::slettTekniskeISERVEndringer)
                     .run(::beholdKunSisteEndringPerDagIListen)
                     .run(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
-                    .filter { it.formidlingsgruppe.erArbeidssoker() }
+                    .run(::tilArbeidssokerperioder)
                     .sortedWith(EldsteFoerst())
         )
+    }
+
+    private fun tilArbeidssokerperioder(formidlingsgruppeperioder: List<Formidlingsgruppeperiode>): List<Arbeidssokerperiode> {
+        return formidlingsgruppeperioder
+            .filter { it.formidlingsgruppe.erArbeidssoker() }
+            .map { Arbeidssokerperiode(it.periode) }
     }
 
     private fun slettTekniskeISERVEndringer(formidlingsgruppeendringer: List<Formidlingsgruppeendring>) =
@@ -27,8 +33,8 @@ internal object ArbeidssokerperioderMapper {
             .values.flatMap { samtidigeEndringer -> if (samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
             .sortedWith(NyesteFoerst.nyesteFoerst())
 
-    private fun beholdKunSisteEndringPerDagIListen(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): List<Arbeidssokerperiode> {
-        val arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
+    private fun beholdKunSisteEndringPerDagIListen(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): List<Formidlingsgruppeperiode> {
+        val formidlingsgruppeperioder: MutableList<Formidlingsgruppeperiode> = mutableListOf()
 
         var forrigeEndretDato = LocalDate.MAX
         for (formidlingsgruppeendring in formidlingsgruppeendringer) {
@@ -36,8 +42,8 @@ internal object ArbeidssokerperioderMapper {
             if (endretDato.isEqual(forrigeEndretDato)) {
                 continue
             }
-            arbeidssokerperioder.add(
-                Arbeidssokerperiode(
+            formidlingsgruppeperioder.add(
+                Formidlingsgruppeperiode(
                     Formidlingsgruppe(formidlingsgruppeendring.formidlingsgruppe),
                     Periode(
                         endretDato,
@@ -48,12 +54,27 @@ internal object ArbeidssokerperioderMapper {
             forrigeEndretDato = endretDato
         }
 
-        return arbeidssokerperioder
+        return formidlingsgruppeperioder
     }
 
-    private fun populerTilDatoMedNestePeriodesFraDatoMinusEn(arbeidssokerperioder: List<Arbeidssokerperiode>): List<Arbeidssokerperiode> =
-        arbeidssokerperioder.mapIndexed { index, arbeidssokerperiode ->
-            val forrigePeriodesFraDato = if (index > 0) arbeidssokerperioder[index - 1].periode.fra else null
-            arbeidssokerperiode.tilOgMed(forrigePeriodesFraDato?.minusDays(1))
+    private fun populerTilDatoMedNestePeriodesFraDatoMinusEn(formidlingsgruppeperioder: List<Formidlingsgruppeperiode>): List<Formidlingsgruppeperiode> =
+        formidlingsgruppeperioder.mapIndexed { index, formidlingsgruppeperiode ->
+            val forrigePeriodesFraDato = if (index > 0) formidlingsgruppeperioder[index - 1].periode.fra else null
+            formidlingsgruppeperiode.tilOgMed(forrigePeriodesFraDato?.minusDays(1))
         }
+}
+
+internal data class Formidlingsgruppeperiode (val formidlingsgruppe: Formidlingsgruppe, val periode: Periode) {
+    fun tilOgMed(tilDato: LocalDate?): Formidlingsgruppeperiode {
+        return of(
+            formidlingsgruppe,
+            periode.tilOgMed(tilDato)
+        )
+    }
+
+    companion object {
+        fun of(formidlingsgruppe: Formidlingsgruppe, periode: Periode): Formidlingsgruppeperiode {
+            return Formidlingsgruppeperiode(formidlingsgruppe, periode)
+        }
+    }
 }
