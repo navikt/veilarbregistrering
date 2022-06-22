@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.resources
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.Companion.medArbs
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.Companion.arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import org.assertj.core.api.Assertions.assertThat
@@ -124,12 +124,12 @@ class ArbeidssokerResourceConfig {
         every { arbeidssokerService.hentArbeidssokerperioder(any(), any()) } returns
                 arbeidssokerperioder()
                         .arbeidssokerperiode(
-                                medArbs()
+                                arbeidssokerperiode()
                                         .fra(LocalDate.of(2020, 1, 12))
                                         .til(LocalDate.of(2020, 2, 20))
                         )
                         .arbeidssokerperiode(
-                                medArbs()
+                                arbeidssokerperiode()
                                         .fra(LocalDate.of(2020, 3, 12))
                                         .til(null)
                         )

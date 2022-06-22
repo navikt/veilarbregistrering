@@ -58,11 +58,11 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
         assertThat(arbeidssokerperioder).isEqualTo(
                 arbeidssokerperioder()
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
-                                .medArbs()
+                                .arbeidssokerperiode()
                                 .fra(LocalDate.of(2020, 1, 12))
                                 .til(LocalDate.of(2020, 2, 20)))
                         .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
-                                .medArbs()
+                                .arbeidssokerperiode()
                                 .fra(LocalDate.of(2020, 3, 12))
                                 .til(null))
                         .build())

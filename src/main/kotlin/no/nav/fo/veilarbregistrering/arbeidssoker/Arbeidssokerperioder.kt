@@ -9,7 +9,7 @@ class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
 
     fun overlapperMed(forespurtPeriode: Periode): Arbeidssokerperioder {
         return Arbeidssokerperioder(arbeidssokerperioder
-            .filter { it.periode.overlapperMed(forespurtPeriode) && it.formidlingsgruppe.erArbeidssoker() }
+            .filter { it.periode.overlapperMed(forespurtPeriode) }
         )
     }
 
