@@ -19,7 +19,7 @@ import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRep
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.gjelderfra.GjelderFraRepositoryImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
