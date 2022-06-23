@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
+import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
 import okhttp3.Request
 import org.springframework.http.HttpStatus
 import java.io.IOException

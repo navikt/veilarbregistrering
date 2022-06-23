@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
-import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.SammensattOppfolgingStatusException
+import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.KanIkkeReaktiveresException
 import org.springframework.http.HttpStatus.*

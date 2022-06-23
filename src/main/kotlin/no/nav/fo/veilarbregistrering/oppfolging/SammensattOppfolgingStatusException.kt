@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena
+package no.nav.fo.veilarbregistrering.oppfolging
 
 
 class SammensattOppfolgingStatusException: RuntimeException {
