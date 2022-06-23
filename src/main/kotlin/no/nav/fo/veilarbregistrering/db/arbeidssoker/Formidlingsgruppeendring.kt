@@ -8,9 +8,6 @@ internal class Formidlingsgruppeendring(
     val personIdStatus: String,
     val formidlingsgruppeEndret: Timestamp
 ) {
-    fun erARBS(): Boolean {
-        return formidlingsgruppe == "ARBS"
-    }
 
     fun erISERV(): Boolean {
         return formidlingsgruppe == "ISERV"
@@ -27,17 +24,5 @@ internal class Formidlingsgruppeendring(
                 ", personIdStatus='" + personIdStatus + '\'' +
                 ", formidlingsgruppeEndret=" + formidlingsgruppeEndret +
                 '}'
-    }
-
-    internal class NyesteFoerst : Comparator<Formidlingsgruppeendring> {
-        override fun compare(t0: Formidlingsgruppeendring, t1: Formidlingsgruppeendring): Int {
-            return t1.formidlingsgruppeEndret.compareTo(t0.formidlingsgruppeEndret)
-        }
-
-        companion object {
-            fun nyesteFoerst(): NyesteFoerst {
-                return NyesteFoerst()
-            }
-        }
     }
 }

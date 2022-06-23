@@ -48,6 +48,48 @@ class ArbeidssokerperioderMapperTest {
     }
 
     @Test
+    fun perioder_skal_være_sortert_med_eldste_først() {
+        val arbeidssokerperioder = map(
+            listOf(
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "ISERV",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "IARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                ),
+                Formidlingsgruppeendring(
+                    "ARBS",
+                    4397692,
+                    "AKTIV",
+                    Timestamp.valueOf(LocalDate.of(2020, 8, 13).atStartOfDay())
+                ),
+            )
+        )
+
+        Assertions.assertThat(arbeidssokerperioder.asList().size).isEqualTo(3)
+        Assertions.assertThat(arbeidssokerperioder.asList())
+            .isEqualTo(arbeidssokerperioder.asList().sortedBy { it.periode.fra })
+    }
+
+    @Test
     fun kun_siste_periode_kan_ha_blank_tildato() {
         val arbeidssokerperioder = map(
             listOf(

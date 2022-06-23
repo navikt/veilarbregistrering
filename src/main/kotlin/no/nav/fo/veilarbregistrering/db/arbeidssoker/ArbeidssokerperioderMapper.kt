@@ -2,23 +2,21 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.EldsteFoerst
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.Formidlingsgruppeendring.NyesteFoerst
 import java.time.LocalDate
 
 internal object ArbeidssokerperioderMapper {
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
         return Arbeidssokerperioder(
                 formidlingsgruppeendringer
-                    .sortedWith(NyesteFoerst.nyesteFoerst())
+                    .sortedByDescending { it.formidlingsgruppeEndret }
                     .filter(Formidlingsgruppeendring::erAktiv)
                     .run(::slettTekniskeISERVEndringer)
                     .run(::beholdKunSisteEndringPerDagIListen)
                     .run(::populerTilDatoMedNestePeriodesFraDatoMinusEn)
                     .run(::tilArbeidssokerperioder)
-                    .sortedWith(EldsteFoerst())
+                    .sortedBy { it.periode.fra }
         )
     }
 
@@ -31,7 +29,7 @@ internal object ArbeidssokerperioderMapper {
     private fun slettTekniskeISERVEndringer(formidlingsgruppeendringer: List<Formidlingsgruppeendring>) =
         formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
             .values.flatMap { samtidigeEndringer -> if (samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
-            .sortedWith(NyesteFoerst.nyesteFoerst())
+            .sortedByDescending { it.formidlingsgruppeEndret }
 
     private fun beholdKunSisteEndringPerDagIListen(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): List<Formidlingsgruppeperiode> {
         val formidlingsgruppeperioder: MutableList<Formidlingsgruppeperiode> = mutableListOf()
