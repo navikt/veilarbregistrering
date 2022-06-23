@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.feil
 
-import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.HentArbeidsforholdException
+import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.bruker.feil.*

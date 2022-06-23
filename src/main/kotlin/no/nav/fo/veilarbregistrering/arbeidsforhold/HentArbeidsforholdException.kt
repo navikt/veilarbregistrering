@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
+package no.nav.fo.veilarbregistrering.arbeidsforhold
 
 class HentArbeidsforholdException : RuntimeException {
     constructor(message: String) : super(message)

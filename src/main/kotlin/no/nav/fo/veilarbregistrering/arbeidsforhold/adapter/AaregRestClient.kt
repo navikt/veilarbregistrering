@@ -8,6 +8,7 @@ import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
