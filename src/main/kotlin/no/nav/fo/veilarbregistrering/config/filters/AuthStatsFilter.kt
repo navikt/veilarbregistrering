@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.config.filters
 
+import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTParser
 import io.micrometer.core.instrument.Tag
 import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import java.text.ParseException
@@ -26,7 +26,7 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         val headerValue = request.getHeader(HttpHeaders.AUTHORIZATION)        
         val bearerToken = headerValue?.substring("Bearer ".length)
         val type = when {
-            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "AADB2C"
+            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "ID-PORTEN"
             Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> "AAD"
             !bearerToken.isNullOrBlank() -> checkBearerTokenForType(bearerToken)
             else -> null
@@ -47,10 +47,20 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
     private fun checkBearerTokenForType(token: String): String =
         try {
             val jwt = JWTParser.parse(token)
-            if (jwt.jwtClaimsSet.issuer.contains("microsoftonline.com")) "AAD" else "STS"
+            when {
+                jwt.erAzureAdToken() -> "AAD"
+                jwt.erIdPortenToken() -> "ID-PORTEN"
+                jwt.erTokenXToken() -> "TOKENX"
+                else -> "STS"
+            }
         } catch (e: ParseException) {
             log.warn("Couldnt parse token $token")
-            if (token.contains("microsoftonline.com")) "AAD" else "STS"
+            when {
+                token.contains("microsoftonline.com") -> "AAD"
+                token.contains("difi.no") -> "ID-PORTEN"
+                token.contains("tokendings") -> "TOKENX"
+                else -> "STS"
+            }
         }
 
     companion object {
@@ -60,3 +70,7 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         private fun getConsumerId(request: HttpServletRequest) = request.getHeader("Nav-Consumer-Id")
     }
 }
+
+fun JWT.erAzureAdToken(): Boolean = this.jwtClaimsSet.issuer.contains("microsoftonline.com")
+fun JWT.erIdPortenToken(): Boolean = this.jwtClaimsSet.issuer.contains("difi.no")
+fun JWT.erTokenXToken(): Boolean = this.jwtClaimsSet.issuer.contains("tokendings")
