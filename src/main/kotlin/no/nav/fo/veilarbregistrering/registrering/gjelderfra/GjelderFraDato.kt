@@ -1,7 +1,13 @@
 package no.nav.fo.veilarbregistrering.registrering.gjelderfra
 
-import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistrering
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDate
+import java.time.LocalDateTime
 
-data class GjelderFraDato(val bruker: Bruker, val brukerRegistrering: BrukerRegistrering, val dato: LocalDate)
+data class GjelderFraDato(
+    val id: Long,
+    val foedselsnummer: Foedselsnummer,
+    val dato: LocalDate,
+    val brukerRegistreringId: Long,
+    val opprettetDato: LocalDateTime
+    )

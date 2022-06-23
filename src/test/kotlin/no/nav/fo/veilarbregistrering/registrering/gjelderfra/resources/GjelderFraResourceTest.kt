@@ -4,18 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import no.nav.fo.veilarbregistrering.bruker.AktorId
-import no.nav.fo.veilarbregistrering.bruker.Bruker
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
-import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapper
+import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraDato
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,7 +30,6 @@ import kotlin.test.assertEquals
 @ContextConfiguration(classes = [GjelderFraDatoResourceConfig::class])
 class GjelderFraResourceTest (
     @Autowired private val mvc: MockMvc,
-    @Autowired private val hentRegistreringService: HentRegistreringService,
     @Autowired private val gjelderFraService: GjelderFraService
     ) {
 
@@ -58,12 +50,18 @@ class GjelderFraResourceTest (
             .andReturn()
             .response.contentAsString
 
-        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoDto(null)))
+        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoResponseDto(null)))
     }
 
     @Test
     fun `GET - returnerer gjelderFraDato`() {
-        val gjelderFraDato = GjelderFraDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2020, 6, 20))
+        val gjelderFraDato = GjelderFraDato(
+            id = 1,
+            foedselsnummer = Foedselsnummer("11"),
+            dato = LocalDate.of(2020, 6, 20),
+            brukerRegistreringId = 42,
+            opprettetDato = LocalDateTime.now()
+        )
 
         every { gjelderFraService.hentDato(any()) } returns gjelderFraDato
 
@@ -75,33 +73,11 @@ class GjelderFraResourceTest (
             .response.contentAsString
 
         assertThat(responseBody)
-            .isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoDto(LocalDate.of(2020, 6, 20))))
-    }
-
-    @Test
-    fun `POST - returnerer 400 når bruker ikke har aktiv registrering`() {
-        every { hentRegistreringService.hentBrukerregistreringUtenMetrics(any()) } returns null
-
-        mvc.post("/api/registrering/gjelder-fra") {
-                contentType = MediaType.APPLICATION_JSON
-                content = """{ "dato": null }"""
-            }
-            .andExpect {
-                status {
-                    isBadRequest()
-                }
-            }.andReturn()
+            .isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoResponseDto(LocalDate.of(2020, 6, 20))))
     }
 
     @Test
     fun `POST - returnerer 400 når sender ugyldig dato`() {
-        every { hentRegistreringService.hentBrukerregistreringUtenMetrics(any()) } returns BrukerRegistreringWrapper(ordinaerBrukerRegistrering)
-        every { gjelderFraService.opprettDato(any(), any(), any()) } returns GjelderFraDato(
-            bruker,
-            ordinaerBrukerRegistrering,
-            LocalDate.of(2022, 6, 21)
-        )
-
         mvc.post("/api/registrering/gjelder-fra") {
             contentType = MediaType.APPLICATION_JSON
             content = """{ "dato": null }"""
@@ -117,14 +93,9 @@ class GjelderFraResourceTest (
     fun `POST - returnerer 201 når registrering går OK`() {
         val postetDato = slot<LocalDate>()
 
-        every { hentRegistreringService.hentBrukerregistreringUtenMetrics(any()) } returns BrukerRegistreringWrapper(ordinaerBrukerRegistrering)
         every {
-            gjelderFraService.opprettDato(any(), ordinaerBrukerRegistrering, capture(postetDato))
-        } returns GjelderFraDato(
-            bruker,
-            ordinaerBrukerRegistrering,
-            LocalDate.of(2022, 6, 21)
-        )
+            gjelderFraService.opprettDato(any(), capture(postetDato))
+        } just Runs
 
         mvc.post("/api/registrering/gjelder-fra") {
             contentType = MediaType.APPLICATION_JSON
@@ -141,10 +112,9 @@ class GjelderFraResourceTest (
 
     @Test
     fun `POST - returnerer 500 når lagring feiler`() {
-        every { hentRegistreringService.hentBrukerregistreringUtenMetrics(any()) } returns BrukerRegistreringWrapper(ordinaerBrukerRegistrering)
         every {
-            gjelderFraService.opprettDato(any(), ordinaerBrukerRegistrering, any())
-        } throws Exception("Noe gikk veldig galt")
+            gjelderFraService.opprettDato(any(), any())
+        } throws RuntimeException("Noe gikk veldig galt")
 
         mvc.post("/api/registrering/gjelder-fra") {
             contentType = MediaType.APPLICATION_JSON
@@ -157,31 +127,20 @@ class GjelderFraResourceTest (
             }.andReturn()
     }
 
-    companion object {
-        private val fnr = Foedselsnummer("11017724129")
-        private val aktorId = AktorId("12311")
-        private val bruker = Bruker(fnr, aktorId)
-
-        private val igaar = LocalDateTime.now().minusDays(1)
-
-        private val profilering = ProfileringTestdataBuilder.lagProfilering()
-        private val ordinaerBrukerRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
-            opprettetDato = igaar,
-            profilering = profilering
-        )
-    }
 }
 
 @Configuration
 class GjelderFraDatoResourceConfig {
     @Bean
     fun gjelderFraDatoResource() : GjelderFraDatoResource {
-        return GjelderFraDatoResource(mockk(relaxed = true), mockk(relaxed = true), hentRegistreringService(), hentGjelderFraService())
+        return GjelderFraDatoResource(mockk(relaxed = true), mockk(relaxed = true), gjelderFraService())
     }
 
     @Bean
-    fun hentRegistreringService(): HentRegistreringService = mockk()
+    fun gjelderFraService(): GjelderFraService = mockk<GjelderFraService>()
 
     @Bean
-    fun hentGjelderFraService(): GjelderFraService = mockk<GjelderFraService>()
+    fun feilhandtering() : FeilHandtering {
+        return FeilHandtering()
+    }
 }

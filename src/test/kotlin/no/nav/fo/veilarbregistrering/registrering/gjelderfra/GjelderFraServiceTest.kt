@@ -1,11 +1,10 @@
 package no.nav.fo.veilarbregistrering.registrering.gjelderfra
 
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,18 +14,28 @@ import kotlin.test.assertEquals
 
 class GjelderFraServiceTest {
     private lateinit var gjelderFraRepository: GjelderFraRepository
+    private lateinit var brukerRegistreringRepository: BrukerRegistreringRepository
     private lateinit var gjelderFraService: GjelderFraService
 
     @BeforeEach
     fun setUp() {
         gjelderFraRepository = mockk()
-        gjelderFraService = GjelderFraService(gjelderFraRepository)
+        brukerRegistreringRepository = mockk()
+        gjelderFraService = GjelderFraService(gjelderFraRepository, brukerRegistreringRepository)
     }
 
     @Test
     fun `returnerer dato for bruker`() {
-        val gjelderFraDato = GjelderFraDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
+        val gjelderFraDato = GjelderFraDato(
+            id = 1,
+            foedselsnummer = Foedselsnummer("11"),
+            dato = LocalDate.of(2022, 6, 20),
+            brukerRegistreringId = 42,
+            opprettetDato = LocalDateTime.now()
+        )
+
         every { gjelderFraRepository.hentDatoFor(bruker) } returns gjelderFraDato
+
         val resultat = gjelderFraService.hentDato(bruker)
 
         assertEquals(gjelderFraDato, resultat)
@@ -34,27 +43,33 @@ class GjelderFraServiceTest {
 
     @Test
     fun `oppretter dato for bruker & registrering`() {
-        val gjelderFraDato = GjelderFraDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
+        val gjelderFraDato = GjelderFraDato(
+            id = 1,
+            foedselsnummer = Foedselsnummer("11"),
+            dato = LocalDate.of(2022, 6, 20),
+            brukerRegistreringId = 42,
+            opprettetDato = LocalDateTime.now()
+        )
+
+        every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(any(), any())} returns listOf(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering())
+
+        var brukerSlot = slot<Bruker>()
+        var registreringsIdSlot = slot<Long>()
+        var datoSlot = slot<LocalDate>()
+
         every {
-            gjelderFraService.opprettDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
-        } returns gjelderFraDato
+            gjelderFraRepository.opprettDatoFor(capture(brukerSlot), capture(registreringsIdSlot), capture(datoSlot))
+        } just Runs
 
-        val resultat = gjelderFraService.opprettDato(bruker, ordinaerBrukerRegistrering, LocalDate.of(2022, 6, 6))
-
-        assertEquals(gjelderFraDato, resultat)
+        gjelderFraService.opprettDato(bruker, LocalDate.of(2022, 6, 6))
+        assertEquals(bruker, brukerSlot.captured)
+        assertEquals(0, registreringsIdSlot.captured)
+        assertEquals(LocalDate.of(2022, 6, 6), datoSlot.captured)
     }
 
     companion object {
         private val fnr = Foedselsnummer("11017724129")
         private val aktorId = AktorId("12311")
         private val bruker = Bruker(fnr, aktorId)
-
-        private val igaar = LocalDateTime.now().minusDays(1)
-
-        private val profilering = ProfileringTestdataBuilder.lagProfilering()
-        private val ordinaerBrukerRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
-            opprettetDato = igaar,
-            profilering = profilering
-        )
     }
 }

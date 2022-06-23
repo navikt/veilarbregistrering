@@ -71,7 +71,7 @@ class RepositoryConfig {
     }
 
     @Bean
-    fun gjeøderFraDato(db: NamedParameterJdbcTemplate): GjelderFraRepository {
+    fun gjelderFraDato(db: NamedParameterJdbcTemplate): GjelderFraRepository {
         return GjelderFraRepositoryImpl(db)
     }
 }

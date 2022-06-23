@@ -1,14 +1,15 @@
 package no.nav.fo.veilarbregistrering.registrering.gjelderfra
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistrering
-import org.springframework.stereotype.Service
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-@Service
-class GjelderFraService(
-    private val gjelderFraRepository: GjelderFraRepository
+open class GjelderFraService(
+    private val gjelderFraRepository: GjelderFraRepository,
+    private val brukerRegistreringRepository: BrukerRegistreringRepository,
 ) {
 
     fun hentDato(bruker: Bruker): GjelderFraDato? {
@@ -16,8 +17,25 @@ class GjelderFraService(
     }
 
     @Transactional
-    fun opprettDato(bruker: Bruker, brukerRegistrering: BrukerRegistrering, dato: LocalDate): GjelderFraDato? {
-        return gjelderFraRepository.opprettDatoFor(bruker, brukerRegistrering, dato)
+    open fun opprettDato(bruker: Bruker, dato: LocalDate) {
+        val brukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)
+
+        if (brukerRegistrering == null) {
+            throw Exception("Ingen brukerregistrering")
+        }
+
+        gjelderFraRepository.opprettDatoFor(bruker, brukerRegistrering.id, dato)
     }
 
+    private fun hentOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? {
+        return brukerRegistreringRepository
+            .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                bruker.aktorId, listOf(
+                    Status.OVERFORT_ARENA,
+                    Status.PUBLISERT_KAFKA,
+                    Status.OPPRINNELIG_OPPRETTET_UTEN_TILSTAND
+                )
+            )
+            .firstOrNull()
+    }
 }

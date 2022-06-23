@@ -13,35 +13,23 @@ import org.springframework.web.bind.annotation.*
 class GjelderFraDatoResource(
     private val autorisasjonService: AutorisasjonService,
     private val userService: UserService,
-    private val hentRegistreringService: HentRegistreringService,
     private val gjelderFraService: GjelderFraService
 ) : GjelderFraDatoApi {
 
     @GetMapping("/gjelder-fra")
-    override fun hentGjelderFraDato(): GjelderFraDatoDto? {
+    override fun hentGjelderFraDato(): GjelderFraDatoResponseDto? {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
-        val gjelderFraDato = gjelderFraService.hentDato(bruker)
-        return GjelderFraDatoDto.fra(gjelderFraDato)
+        return GjelderFraDatoResponseDto.fra(gjelderFraService.hentDato(bruker))
     }
 
     @PostMapping("/gjelder-fra")
-    override fun lagreGjelderFraDato(@RequestBody datoDto: GjelderFraDatoDto): Any {
+    override fun lagreGjelderFraDato(@RequestBody datoDto: GjelderFraDatoRequestDto): ResponseEntity<Nothing> {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
-        val brukerregistrering = hentRegistreringService.hentBrukerregistreringUtenMetrics(bruker)
-
-        if (brukerregistrering == null || datoDto.dato == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
-        }
-
-        return try {
-            gjelderFraService.opprettDato(bruker, brukerregistrering.registrering, datoDto.dato)
-            ResponseEntity.status(HttpStatus.CREATED).body(null)
-        } catch(exception: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
-        }
+        gjelderFraService.opprettDato(bruker, datoDto.dato)
+        return ResponseEntity.status(HttpStatus.CREATED).body(null)
     }
 }
