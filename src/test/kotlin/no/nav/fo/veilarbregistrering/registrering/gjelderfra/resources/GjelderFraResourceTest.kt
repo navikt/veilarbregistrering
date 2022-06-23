@@ -43,7 +43,7 @@ class GjelderFraResourceTest (
     fun `GET - Svarer med 200 - dato=null når det ikke fins noen dato`(){
         every { gjelderFraService.hentDato(any()) } returns null
 
-        val responseBody = mvc.get("/api/registrering/gjelder-fra")
+        val responseBody = mvc.get("/api/registrering/gjelderfra")
             .andExpect {
                 status { isOk() }
             }
@@ -65,7 +65,7 @@ class GjelderFraResourceTest (
 
         every { gjelderFraService.hentDato(any()) } returns gjelderFraDato
 
-        val responseBody = mvc.get("/api/registrering/gjelder-fra")
+        val responseBody = mvc.get("/api/registrering/gjelderfra")
             .andExpect {
                 status { isOk() }
             }
@@ -78,7 +78,7 @@ class GjelderFraResourceTest (
 
     @Test
     fun `POST - returnerer 400 når sender ugyldig dato`() {
-        mvc.post("/api/registrering/gjelder-fra") {
+        mvc.post("/api/registrering/gjelderfra") {
             contentType = MediaType.APPLICATION_JSON
             content = """{ "dato": null }"""
         }
@@ -97,7 +97,7 @@ class GjelderFraResourceTest (
             gjelderFraService.opprettDato(any(), capture(postetDato))
         } just Runs
 
-        mvc.post("/api/registrering/gjelder-fra") {
+        mvc.post("/api/registrering/gjelderfra") {
             contentType = MediaType.APPLICATION_JSON
             content = """{ "dato": "2022-06-21" }"""
         }
@@ -116,7 +116,7 @@ class GjelderFraResourceTest (
             gjelderFraService.opprettDato(any(), any())
         } throws RuntimeException("Noe gikk veldig galt")
 
-        mvc.post("/api/registrering/gjelder-fra") {
+        mvc.post("/api/registrering/gjelderfra") {
             contentType = MediaType.APPLICATION_JSON
             content = """{ "dato": "2022-06-21" }"""
         }

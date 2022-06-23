@@ -16,7 +16,7 @@ class GjelderFraDatoResource(
     private val gjelderFraService: GjelderFraService
 ) : GjelderFraDatoApi {
 
-    @GetMapping("/gjelder-fra")
+    @GetMapping("/gjelderfra")
     override fun hentGjelderFraDato(): GjelderFraDatoResponseDto? {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
@@ -24,7 +24,7 @@ class GjelderFraDatoResource(
         return GjelderFraDatoResponseDto.fra(gjelderFraService.hentDato(bruker))
     }
 
-    @PostMapping("/gjelder-fra")
+    @PostMapping("/gjelderfra")
     override fun lagreGjelderFraDato(@RequestBody datoDto: GjelderFraDatoRequestDto): ResponseEntity<Nothing> {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
