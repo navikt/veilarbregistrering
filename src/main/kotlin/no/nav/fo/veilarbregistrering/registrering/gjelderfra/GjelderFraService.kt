@@ -5,10 +5,12 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-open class GjelderFraService(
+@Service
+class GjelderFraService(
     private val gjelderFraRepository: GjelderFraRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
 ) {
@@ -26,7 +28,7 @@ open class GjelderFraService(
     }
 
     @Transactional
-    open fun opprettDato(bruker: Bruker, dato: LocalDate) {
+    fun opprettDato(bruker: Bruker, dato: LocalDate) {
         val brukerRegistrering = hentOrdinaerBrukerRegistrering(bruker) ?: throw RuntimeException("Ingen brukerregistrering funnet")
         logger.info("gjelderFraRepository: $gjelderFraRepository")
         gjelderFraRepository.opprettDatoFor(bruker, brukerRegistrering.id, dato)
