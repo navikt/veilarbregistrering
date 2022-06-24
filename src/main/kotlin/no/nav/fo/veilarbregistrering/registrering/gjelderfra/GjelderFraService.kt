@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.gjelderfra
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
@@ -13,16 +14,17 @@ open class GjelderFraService(
 ) {
 
     fun hentDato(bruker: Bruker): GjelderFraDato? {
-        return gjelderFraRepository.hentDatoFor(bruker)
+        return try {
+            gjelderFraRepository.hentDatoFor(bruker)
+        } catch (e: Exception) {
+            logger.warn("Feil ved henting av gjelder fra dato", e.message)
+            null
+        }
     }
 
     @Transactional
     open fun opprettDato(bruker: Bruker, dato: LocalDate) {
-        val brukerRegistrering = hentOrdinaerBrukerRegistrering(bruker)
-
-        if (brukerRegistrering == null) {
-            throw Exception("Ingen brukerregistrering")
-        }
+        val brukerRegistrering = hentOrdinaerBrukerRegistrering(bruker) ?: throw RuntimeException("Ingen brukerregistrering funnet")
 
         gjelderFraRepository.opprettDatoFor(bruker, brukerRegistrering.id, dato)
     }

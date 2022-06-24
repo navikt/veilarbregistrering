@@ -43,19 +43,11 @@ class GjelderFraServiceTest {
 
     @Test
     fun `oppretter dato for bruker & registrering`() {
-        val gjelderFraDato = GjelderFraDato(
-            id = 1,
-            foedselsnummer = Foedselsnummer("11"),
-            dato = LocalDate.of(2022, 6, 20),
-            brukerRegistreringId = 42,
-            opprettetDato = LocalDateTime.now()
-        )
-
         every { brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(any(), any())} returns listOf(OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering())
 
-        var brukerSlot = slot<Bruker>()
-        var registreringsIdSlot = slot<Long>()
-        var datoSlot = slot<LocalDate>()
+        val brukerSlot = slot<Bruker>()
+        val registreringsIdSlot = slot<Long>()
+        val datoSlot = slot<LocalDate>()
 
         every {
             gjelderFraRepository.opprettDatoFor(capture(brukerSlot), capture(registreringsIdSlot), capture(datoSlot))
