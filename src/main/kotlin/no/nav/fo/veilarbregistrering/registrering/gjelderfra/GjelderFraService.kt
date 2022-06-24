@@ -15,7 +15,7 @@ open class GjelderFraService(
 
     fun hentDato(bruker: Bruker): GjelderFraDato? {
         return try {
-            logger.info("gjelderFraRepository: ${gjelderFraRepository != null}")
+            logger.info("gjelderFraRepository: $gjelderFraRepository")
             val hentDatoFor = gjelderFraRepository.hentDatoFor(bruker)
             logger.info("gjelderFraDato: $hentDatoFor")
             hentDatoFor
@@ -28,7 +28,7 @@ open class GjelderFraService(
     @Transactional
     open fun opprettDato(bruker: Bruker, dato: LocalDate) {
         val brukerRegistrering = hentOrdinaerBrukerRegistrering(bruker) ?: throw RuntimeException("Ingen brukerregistrering funnet")
-
+        logger.info("gjelderFraRepository: $gjelderFraRepository")
         gjelderFraRepository.opprettDatoFor(bruker, brukerRegistrering.id, dato)
     }
 
