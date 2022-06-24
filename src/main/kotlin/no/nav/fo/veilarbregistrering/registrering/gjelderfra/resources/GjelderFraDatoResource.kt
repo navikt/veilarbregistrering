@@ -21,7 +21,8 @@ class GjelderFraDatoResource(
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
-        return GjelderFraDatoResponseDto.fra(gjelderFraService.hentDato(bruker))
+        val gjelderFraDato = gjelderFraService.hentDato(bruker)
+        return GjelderFraDatoResponseDto.fra(gjelderFraDato)
     }
 
     @PostMapping("/gjelderfra")

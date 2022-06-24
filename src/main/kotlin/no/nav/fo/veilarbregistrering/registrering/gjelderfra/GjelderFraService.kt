@@ -15,7 +15,10 @@ open class GjelderFraService(
 
     fun hentDato(bruker: Bruker): GjelderFraDato? {
         return try {
-            gjelderFraRepository.hentDatoFor(bruker)
+            logger.info("gjelderFraRepository: ${gjelderFraRepository != null}")
+            val hentDatoFor = gjelderFraRepository.hentDatoFor(bruker)
+            logger.info("gjelderFraDato: $hentDatoFor")
+            hentDatoFor
         } catch (e: Exception) {
             logger.warn("Feil ved henting av gjelder fra dato", e)
             null
