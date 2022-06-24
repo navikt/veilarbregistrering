@@ -453,7 +453,7 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun gjelderFraDatoService(gjelderFraRepository: GjelderFraRepository, brukerRegistreringRepository: BrukerRegistreringRepository): GjelderFraService {
+    fun gjelderFraService(gjelderFraRepository: GjelderFraRepository, brukerRegistreringRepository: BrukerRegistreringRepository): GjelderFraService {
         return GjelderFraService(gjelderFraRepository, brukerRegistreringRepository)
     }
 
