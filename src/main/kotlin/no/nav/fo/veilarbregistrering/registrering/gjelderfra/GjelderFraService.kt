@@ -17,7 +17,7 @@ open class GjelderFraService(
         return try {
             gjelderFraRepository.hentDatoFor(bruker)
         } catch (e: Exception) {
-            logger.warn("Feil ved henting av gjelder fra dato", e.message)
+            logger.warn("Feil ved henting av gjelder fra dato", e)
             null
         }
     }
