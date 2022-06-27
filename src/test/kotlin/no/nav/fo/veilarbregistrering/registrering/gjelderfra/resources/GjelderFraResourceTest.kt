@@ -58,7 +58,7 @@ class GjelderFraResourceTest (
         val gjelderFraDato = GjelderFraDato(
             id = 1,
             foedselsnummer = Foedselsnummer("11"),
-            dato = LocalDate.of(2020, 6, 20),
+            dato = LocalDate.of(2022, 6, 20),
             brukerRegistreringId = 42,
             opprettetDato = LocalDateTime.now()
         )
@@ -73,7 +73,7 @@ class GjelderFraResourceTest (
             .response.contentAsString
 
         assertThat(responseBody)
-            .isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoResponseDto(LocalDate.of(2020, 6, 20))))
+            .isEqualTo(objectMapper.writeValueAsString(GjelderFraDatoResponseDto("2022-06-20")))
     }
 
     @Test
