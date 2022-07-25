@@ -62,6 +62,7 @@ class FilterConfig {
                 createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
                 createAadTokenConfig(),
+                createTokenXConfig()
             )
         )
         registration.filter = authenticationFilter
@@ -70,7 +71,7 @@ class FilterConfig {
         return registration
     }
 
-    private fun createVeilarbloginAADConfig(): OidcAuthenticatorConfig? {
+    private fun createVeilarbloginAADConfig(): OidcAuthenticatorConfig {
         val discoveryUrl = requireProperty("AAD_DISCOVERY_URL")
         val clientId = requireProperty("VEILARBLOGIN_AAD_CLIENT_ID")
         return OidcAuthenticatorConfig()
@@ -80,7 +81,7 @@ class FilterConfig {
             .withUserRole(UserRole.INTERN)
     }
 
-    private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig? {
+    private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig {
         val discoveryUrl = requireProperty("LOGINSERVICE_IDPORTEN_DISCOVERY_URL")
         val clientId = requireProperty("LOGINSERVICE_IDPORTEN_AUDIENCE")
         return OidcAuthenticatorConfig()
@@ -94,13 +95,22 @@ class FilterConfig {
     * 24.01.2022 : This config should work for aad tokens obtained with both
     * client-credentials- and on-behalf-of flow
     */
-    private fun createAadTokenConfig(): OidcAuthenticatorConfig? {
+    private fun createAadTokenConfig(): OidcAuthenticatorConfig {
         val discoveryUrl = requireProperty("AZURE_APP_WELL_KNOWN_URL")
         val allowedAudience = requireProperty("AZURE_APP_CLIENT_ID")
         return OidcAuthenticatorConfig()
             .withDiscoveryUrl(discoveryUrl)
             .withClientId(allowedAudience)
             .withUserRoleResolver(AzureAdUserRoleResolver())
+    }
+
+    private fun createTokenXConfig(): OidcAuthenticatorConfig {
+        val discoveryUrl = requireProperty("TOKEN_X_WELL_KNOWN_URL")
+        val allowedAudience = requireProperty("TOKEN_X_CLIENT_ID")
+        return OidcAuthenticatorConfig()
+            .withDiscoveryUrl(discoveryUrl)
+            .withClientId(allowedAudience)
+            .withUserRole(UserRole.EKSTERN)
     }
 
     @Bean
