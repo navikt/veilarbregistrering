@@ -18,17 +18,26 @@ import javax.servlet.http.HttpServletRequest
 
 class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 
+    private val ID_PORTEN = "ID-PORTEN"
+    private val AAD = "AAD"
+    private val TOKEN_X = "TOKENX"
+    private val STS = "STS"
+
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request: HttpServletRequest = servletRequest as HttpServletRequest
         val consumerId = getConsumerId(request)
 
         val cookieNames = request.cookies?.map { it.name } ?: emptyList()
-        val headerValue = request.getHeader(HttpHeaders.AUTHORIZATION)        
+        val headerValue = request.getHeader(HttpHeaders.AUTHORIZATION)
         val bearerToken = headerValue?.substring("Bearer ".length)
+        val selvbetjeningToken =
+            request.cookies?.filter { it.name == Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME }?.map { it.value }
+                ?.firstOrNull()
         val type = when {
-            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> "ID-PORTEN"
-            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> "AAD"
-            !bearerToken.isNullOrBlank() -> checkBearerTokenForType(bearerToken)
+            Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> selvbetjeningToken?.let { checkTokenForType(it) }
+                ?: ID_PORTEN
+            Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> AAD
+            !bearerToken.isNullOrBlank() -> checkTokenForType(bearerToken)
             else -> null
         }
 
@@ -44,22 +53,22 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         }
     }
 
-    private fun checkBearerTokenForType(token: String): String =
+    private fun checkTokenForType(token: String): String =
         try {
             val jwt = JWTParser.parse(token)
             when {
-                jwt.erAzureAdToken() -> "AAD"
-                jwt.erIdPortenToken() -> "ID-PORTEN"
-                jwt.erTokenXToken() -> "TOKENX"
-                else -> "STS"
+                jwt.erAzureAdToken() -> AAD
+                jwt.erIdPortenToken() -> ID_PORTEN
+                jwt.erTokenXToken() -> TOKEN_X
+                else -> STS
             }
         } catch (e: ParseException) {
             log.warn("Couldnt parse token $token")
             when {
-                token.contains("microsoftonline.com") -> "AAD"
-                token.contains("difi.no") -> "ID-PORTEN"
-                token.contains("tokendings") -> "TOKENX"
-                else -> "STS"
+                token.contains("microsoftonline.com") -> AAD
+                token.contains("difi.no") -> ID_PORTEN
+                token.contains("tokendings") -> TOKEN_X
+                else -> STS
             }
         }
 
