@@ -9,6 +9,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
+import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
@@ -131,8 +132,3 @@ open class AaregRestClient(
 
     override fun value() = "aareg"
 }
-
-fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
-
-fun AuthContextHolder.hentIssuer(): String =
-    this.requireIdTokenClaims().issuer

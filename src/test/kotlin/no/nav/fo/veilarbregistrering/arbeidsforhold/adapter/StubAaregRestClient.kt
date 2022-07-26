@@ -6,6 +6,7 @@ import io.mockk.mockkStatic
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.FileToJson.toJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 
 internal class StubAaregRestClient : AaregRestClient(mockk(relaxed = true), "/test.nav.no", mockk(), mockAuthContextHolder(), { "token" }) {
     override fun utforRequest(fnr: Foedselsnummer) = toJson("/arbeidsforhold/arbeidsforhold.json")
@@ -14,7 +15,7 @@ internal class StubAaregRestClient : AaregRestClient(mockk(relaxed = true), "/te
 
 fun mockAuthContextHolder(): AuthContextHolder {
     val mockAuthContextHolder = mockk<AuthContextHolder>()
-    mockkStatic("no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClientKt")
-    every{mockAuthContextHolder.hentIssuer()} returns ""
+    mockkStatic("no.nav.fo.veilarbregistrering.tokenveksling.TokenResolverKt")
+    every { mockAuthContextHolder.erAADToken() } returns false
     return mockAuthContextHolder
 }

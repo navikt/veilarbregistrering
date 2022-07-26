@@ -29,7 +29,6 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <common.version>2.2022.05.23_12.46-977371188b0d</common.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
-        <token.support.version>1.3.10</token.support.version>
         <mockserver.version>5.13.2</mockserver.version>
     </properties>
 
@@ -83,6 +82,11 @@
             <version>${common.version}</version>
         </dependency>
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>token-client</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.arbeid</groupId>
             <artifactId>veilarbregistrering-skjema</artifactId>
             <version>1.202010190947-866fe12</version>
@@ -96,11 +100,6 @@
             <groupId>no.nav.common</groupId>
             <artifactId>auth</artifactId>
             <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.security</groupId>
-            <artifactId>token-client-core</artifactId>
-            <version>${token.support.version}</version>
         </dependency>
 
         <!-- ymse -->
