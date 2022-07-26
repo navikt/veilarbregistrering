@@ -4,6 +4,7 @@ import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTParser
 import io.micrometer.core.instrument.Tag
 import no.nav.common.auth.Constants
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -37,6 +38,11 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 MDC.put(TOKEN_TYPE, type)
                 metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
+            }
+            if (isDevelopment()) {
+                val cookieToken = request.cookies?.filter {it.name == Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME}?.map { it.value }
+                log.info("Token fra cookie: $cookieToken")
+                log.info("Token fra authorization-header: $bearerToken")
             }
             chain.doFilter(servletRequest, servletResponse)
         } finally {
