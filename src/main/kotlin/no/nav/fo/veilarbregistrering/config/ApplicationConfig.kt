@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeConfig
 import org.springframework.web.server.UnsupportedMediaTypeStatusException
 
 
@@ -57,7 +58,8 @@ import org.springframework.web.server.UnsupportedMediaTypeStatusException
     PubliseringSchedulerConfig::class,
     HelsesjekkConfig::class,
     ObjectMapperConfig::class,
-    SwaggerConfig::class
+    SwaggerConfig::class,
+    TokenExchangeConfig::class
 )
 @EnableScheduling
 class ApplicationConfig {
