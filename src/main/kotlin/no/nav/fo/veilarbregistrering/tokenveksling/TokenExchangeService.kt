@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.tokenveksling
 
 import no.nav.common.token_client.builder.AzureAdTokenClientBuilder
 import no.nav.common.token_client.builder.TokenXTokenClientBuilder
+import no.nav.fo.veilarbregistrering.log.logger
 
 class TokenExchangeService(private val tokenResolver: TokenResolver) {
 
@@ -27,6 +28,7 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
     }
 
     private fun exchangeTokenXToken(api: DownstreamApi, opprinneligToken: String): String {
+        logger.info("Veksler TokenX-token mot ${api.appName}")
         return tokendingsClient.exchangeOnBehalfOfToken(
             "${api.cluster}:${api.namespace}:${api.appName}",
             opprinneligToken
@@ -34,6 +36,7 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
     }
 
     private fun exchangeAadOboToken(api: DownstreamApi, opprinneligToken: String): String {
+        logger.info("Veksler Azure AD-token mot ${api.appName}")
         return aadOnBehalfOfTokenClient.exchangeOnBehalfOfToken(
             "api://${api.cluster}.${api.namespace}.${api.appName}/.default",
             opprinneligToken
