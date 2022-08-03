@@ -63,11 +63,11 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 else -> STS
             }
         } catch (e: ParseException) {
-            log.warn("Couldnt parse token $token")
+            log.warn("Couldn't parse token $token")
             when {
                 token.contains("microsoftonline.com") -> AAD
                 token.contains("difi.no") -> ID_PORTEN
-                token.contains("no/nav/fo/veilarbregistrering/tokenveksling/tokendings") -> TOKEN_X
+                token.contains("tokendings") -> TOKEN_X
                 else -> STS
             }
         }
@@ -82,4 +82,4 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 
 fun JWT.erAzureAdToken(): Boolean = this.jwtClaimsSet.issuer.contains("microsoftonline.com")
 fun JWT.erIdPortenToken(): Boolean = this.jwtClaimsSet.issuer.contains("difi.no")
-fun JWT.erTokenXToken(): Boolean = this.jwtClaimsSet.issuer.contains("no/nav/fo/veilarbregistrering/tokenveksling/tokendings")
+fun JWT.erTokenXToken(): Boolean = this.jwtClaimsSet.issuer.contains("tokendings")
