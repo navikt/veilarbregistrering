@@ -24,7 +24,7 @@
     </repositories>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
         <kotlin.version>1.7.10</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <common.version>2.2022.07.01_07.12-6a0864fa6938</common.version>
