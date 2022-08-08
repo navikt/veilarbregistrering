@@ -53,7 +53,7 @@ jobs:
     name: Deploy to dev FSS
     needs: test-build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feature/flyway-upgrade'
     steps:
       - uses: actions/checkout@v1
 
@@ -90,7 +90,7 @@ jobs:
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: prod-fss
-        DRY_RUN: false
+        DRY_RUN: true
         RESOURCE: nais/nais-prod-fss.yaml
 
   release:
