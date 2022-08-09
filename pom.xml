@@ -24,7 +24,7 @@
     </repositories>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <kotlin.version>1.7.10</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <common.version>2.2022.07.01_07.12-6a0864fa6938</common.version>
@@ -150,7 +150,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.7.9</version>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
