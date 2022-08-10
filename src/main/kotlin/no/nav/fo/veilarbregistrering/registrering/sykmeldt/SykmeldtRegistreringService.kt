@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
 import org.slf4j.LoggerFactory
@@ -27,6 +28,7 @@ open class SykmeldtRegistreringService(
         lagreManuellRegistrering(id, navVeileder)
         registrerOverfortStatistikk(navVeileder)
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering)
+        metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.SYKMELDT_REGISTRERING)
         metricsService.registrer(Events.SYKMELDT_BESVARELSE_EVENT)
         return id
     }
