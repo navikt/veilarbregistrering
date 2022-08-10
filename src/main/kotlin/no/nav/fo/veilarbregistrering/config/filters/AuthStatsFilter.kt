@@ -44,7 +44,7 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         try {
             type?.let {
                 MDC.put(TOKEN_TYPE, type)
-                metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type))
+                metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type), Tag.of("consumerId", consumerId))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
             }
             chain.doFilter(servletRequest, servletResponse)
