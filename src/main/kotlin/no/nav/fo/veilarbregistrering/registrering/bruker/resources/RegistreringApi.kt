@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity
 interface RegistreringApi {
 
     @Operation(summary = "Henter oppfølgingsinformasjon om arbeidssøker.")
-    fun hentStartRegistreringStatus(): StartRegistreringStatusDto
+    fun hentStartRegistreringStatus(consumerId: String): StartRegistreringStatusDto
 
     @Operation(summary = "Henter siste registrering av bruker.")
     fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper>

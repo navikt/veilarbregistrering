@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.util.*
@@ -42,6 +43,7 @@ class RegistreringResourceTest(
     @Autowired private val startRegistreringStatusService: StartRegistreringStatusService,
 ) {
     private lateinit var request: HttpServletRequest
+    private val CONSUMER_ID_TEST = "TEST"
 
     @BeforeEach
     fun setup() {
@@ -58,10 +60,10 @@ class RegistreringResourceTest(
     fun `serialiserer startregistrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns START_REGISTRERING_STATUS
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns START_REGISTRERING_STATUS
         val expected = FileToJson.toJson("/registrering/startregistrering.json")
 
-        val result = mvc.get("/api/startregistrering")
+        val result = mvc.get("/api/startregistrering") { header("Nav-Consumer-Id", CONSUMER_ID_TEST) }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
 
@@ -156,16 +158,16 @@ class RegistreringResourceTest(
 
     @Test
     fun skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
-        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns StartRegistreringStatusDto()
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        registreringResource.hentStartRegistreringStatus()
+        registreringResource.hentStartRegistreringStatus(CONSUMER_ID_TEST)
         //verify(exactly = 1) { autorisasjonService.sjekkLesetilgangMedAktorId(any()) }
     }
 
     @Test
     fun skalFeileVedHentingAvStartRegistreringsstatusMedUgyldigFnr() {
-        every { startRegistreringStatusService.hentStartRegistreringStatus(any()) } returns StartRegistreringStatusDto()
+        every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns StartRegistreringStatusDto()
 
         assertThrows<RuntimeException>("Fødselsnummer ikke gyldig.") { registreringResource.hentRegistrering() }
         verify { autorisasjonService wasNot Called }
