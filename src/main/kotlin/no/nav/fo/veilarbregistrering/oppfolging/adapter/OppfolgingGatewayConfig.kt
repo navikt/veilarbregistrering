@@ -5,10 +5,10 @@ import no.nav.common.sts.ServiceToServiceTokenProvider
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.oauth2.AadOboService
-import no.nav.fo.veilarbregistrering.oauth2.DownstreamApi
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
+import no.nav.fo.veilarbregistrering.tokenveksling.DownstreamApi
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -20,7 +20,7 @@ class OppfolgingGatewayConfig {
         objectMapper: ObjectMapper,
         metricsService: MetricsService,
         tokenProvider: ServiceToServiceTokenProvider,
-        aadOboService: AadOboService,
+        tokenExchangeService: TokenExchangeService,
     ): OppfolgingClient {
         val propertyName = "VEILARBOPPFOLGINGAPI_URL"
 
@@ -28,7 +28,7 @@ class OppfolgingGatewayConfig {
             objectMapper,
             metricsService,
             requireProperty(propertyName),
-            aadOboService,
+            tokenExchangeService,
         ) {
             tokenProvider.getServiceToken(
                 oppfolgingAppNavn,

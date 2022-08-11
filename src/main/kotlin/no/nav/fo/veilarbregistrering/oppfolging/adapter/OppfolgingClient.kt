@@ -16,10 +16,10 @@ import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
-import no.nav.fo.veilarbregistrering.oauth2.AadOboService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -31,7 +31,7 @@ open class OppfolgingClient(
     private val objectMapper: ObjectMapper,
     private val metricsService: MetricsService,
     private val baseUrl: String,
-    private val aadOboService: AadOboService,
+    private val tokenExchangeService: TokenExchangeService,
     private val tokenProvider: () -> String,
 
     ) : TimedMetric(metricsService), HealthCheck {
@@ -141,8 +141,8 @@ open class OppfolgingClient(
     }
 
     private fun getAuthorizationFromCookieOrResolveOboToken(): List<Pair<String, String>> {
-        if (aadOboService.erAzureAdToken()) {
-            return listOf(("Authorization" to "Bearer ${aadOboService.getAccessToken(oppfolgingApi)}"))
+        if (tokenExchangeService.tokenSkalVeksles()) {
+            return listOf(("Authorization" to "Bearer ${tokenExchangeService.exchangeToken(oppfolgingApi)}"))
         }
 
         return listOf(

@@ -12,6 +12,8 @@ spec:
       claims:
         extra:
           - "NAVident"
+  tokenx:
+    enabled: true
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}

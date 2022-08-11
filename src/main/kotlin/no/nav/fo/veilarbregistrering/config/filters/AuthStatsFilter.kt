@@ -63,7 +63,7 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 else -> STS
             }
         } catch (e: ParseException) {
-            log.warn("Couldnt parse token $token")
+            log.warn("Couldn't parse token $token")
             when {
                 token.contains("microsoftonline.com") -> AAD
                 token.contains("difi.no") -> ID_PORTEN
