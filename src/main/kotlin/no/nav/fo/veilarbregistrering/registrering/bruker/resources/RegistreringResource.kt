@@ -19,11 +19,11 @@ class RegistreringResource(
 ) : RegistreringApi {
 
     @GetMapping("/startregistrering")
-    override fun hentStartRegistreringStatus(): StartRegistreringStatusDto {
+    override fun hentStartRegistreringStatus(@RequestHeader("Nav-Consumer-Id") consumerId: String): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
         autorisasjonsService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
-        return startRegistreringStatusService.hentStartRegistreringStatus(bruker)
+        return startRegistreringStatusService.hentStartRegistreringStatus(bruker, consumerId)
     }
 
     @GetMapping("/registrering")

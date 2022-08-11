@@ -25,6 +25,8 @@ class StartRegistreringStatusServiceTest {
     private lateinit var oppfolgingClient: OppfolgingClient
     private lateinit var veilarbarenaClient: VeilarbarenaClient
     private lateinit var pdlOppslagGateway: PdlOppslagGateway
+
+    private val CONSUMER_ID_TEST = "TEST"
     @BeforeEach
     fun setup() {
         arbeidsforholdGateway = mockk()
@@ -46,7 +48,7 @@ class StartRegistreringStatusServiceTest {
         mockArbeidssokerSomHarAktivOppfolging()
         every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
 
-        val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN)
+        val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN, CONSUMER_ID_TEST)
 
         Assertions.assertThat(startRegistreringStatus.registreringType == RegistreringType.ALLEREDE_REGISTRERT).isTrue
     }
@@ -57,7 +59,7 @@ class StartRegistreringStatusServiceTest {
         mockArbeidssforholdSomOppfyllerBetingelseOmArbeidserfaring()
         every { pdlOppslagGateway.hentGeografiskTilknytning(any()) } returns GeografiskTilknytning("030109")
 
-        val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN)
+        val startRegistreringStatus = brukerRegistreringService.hentStartRegistreringStatus(BRUKER_INTERN, CONSUMER_ID_TEST)
 
         Assertions.assertThat(startRegistreringStatus.jobbetSeksAvTolvSisteManeder).isTrue
     }
@@ -151,7 +153,7 @@ class StartRegistreringStatusServiceTest {
     }
 
     private fun getStartRegistreringStatus(bruker: Bruker = BRUKER_INTERN): StartRegistreringStatusDto {
-        return brukerRegistreringService.hentStartRegistreringStatus(bruker)
+        return brukerRegistreringService.hentStartRegistreringStatus(bruker, CONSUMER_ID_TEST)
     }
 
     private fun arbeidsforholdSomOppfyllerKrav(): List<Arbeidsforhold> {

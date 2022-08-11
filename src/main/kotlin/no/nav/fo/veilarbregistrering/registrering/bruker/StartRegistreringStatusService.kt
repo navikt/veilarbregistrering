@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
+import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.GeografiskTilknytning
@@ -17,9 +18,9 @@ class StartRegistreringStatusService(
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val metricsService: MetricsService
 ) {
-    fun hentStartRegistreringStatus(bruker: Bruker): StartRegistreringStatusDto {
+    fun hentStartRegistreringStatus(bruker: Bruker, consumerId: String): StartRegistreringStatusDto {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
-        registrerFunksjonelleMetrikker(brukersTilstand)
+        registrerFunksjonelleMetrikker(brukersTilstand, consumerId)
         val muligGeografiskTilknytning = hentGeografiskTilknytning(bruker)
         val registreringType = brukersTilstand.registreringstype
 
@@ -50,8 +51,12 @@ class StartRegistreringStatusService(
         return geografiskTilknytning
     }
 
-    private fun registrerFunksjonelleMetrikker(brukersTilstand: BrukersTilstand) {
-        metricsService.registrer(Events.REGISTRERING_REGISTERINGSTYPE, brukersTilstand.registreringstype)
+    private fun registrerFunksjonelleMetrikker(brukersTilstand: BrukersTilstand, consumerId: String) {
+        metricsService.registrer(
+            Events.REGISTRERING_REGISTERINGSTYPE,
+            Tag.of(brukersTilstand.registreringstype.fieldName(), brukersTilstand.registreringstype.value()),
+            Tag.of("consumerId", consumerId)
+        )
         brukersTilstand.servicegruppe?.let {
             metricsService.registrer(Events.REGISTRERING_SERVICEGRUPPE, it)
         }

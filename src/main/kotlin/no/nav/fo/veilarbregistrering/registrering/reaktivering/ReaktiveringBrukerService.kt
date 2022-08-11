@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import org.springframework.transaction.annotation.Transactional
 
 open class ReaktiveringBrukerService(
@@ -26,6 +27,7 @@ open class ReaktiveringBrukerService(
         if (erVeileder) {
             metricsService.registrer(Events.MANUELL_REAKTIVERING_EVENT)
         }
+        metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.REAKTIVERING)
     }
 
     companion object {
