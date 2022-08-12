@@ -54,8 +54,10 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(KanIkkeReaktiveresException::class)
-    fun handleKanIkkeReaktiveresException(feil: KanIkkeReaktiveresException) =
-        ResponseEntity.status(BAD_REQUEST).body(feil.message)
+    fun handleKanIkkeReaktiveresException(feil: KanIkkeReaktiveresException): ResponseEntity<String> {
+        logger.error(feil.message, feil)
+        return ResponseEntity.status(BAD_REQUEST).body(feil.message)
+    }
 
     @ExceptionHandler(SammensattOppfolgingStatusException::class)
     fun handleSammensattOppfolgingStatusException(feil: SammensattOppfolgingStatusException): ResponseEntity<String> {
