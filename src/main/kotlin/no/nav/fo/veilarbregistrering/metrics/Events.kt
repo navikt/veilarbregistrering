@@ -28,6 +28,7 @@ enum class Events(override val key: String) : Event {
     REGISTRERING_NEDETID_ARENA("registrering.nedetid.arena"),
     REGISTRERING_RETTIGHETSGRUPPE("registrering.rettighetsgruppe"),
     REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe"),
+    REGISTRERING_TILSTANDSFEIL("registrering.tilstandsfeil")
 }
 
 interface Event {

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
+import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -71,6 +72,7 @@ open class BrukerRegistreringService(
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.isUnderOppfolging) {
             secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "ALLEREDE_UNDER_OPPFOLGING"))
             throw RuntimeException("Bruker allerede under oppfølging.")
         }
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {

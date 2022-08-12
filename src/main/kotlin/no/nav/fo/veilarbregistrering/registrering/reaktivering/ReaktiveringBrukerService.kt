@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
+import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
@@ -19,6 +20,7 @@ open class ReaktiveringBrukerService(
     open fun reaktiverBruker(bruker: Bruker, erVeileder: Boolean) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (!brukersTilstand.kanReaktiveres()) {
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "KAN_IKKE_REAKTIVERES"))
             throw KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.")
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker.aktorId)
