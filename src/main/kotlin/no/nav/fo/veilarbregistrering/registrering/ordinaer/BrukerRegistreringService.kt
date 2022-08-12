@@ -48,10 +48,12 @@ open class BrukerRegistreringService(
         validerBrukerRegistrering(ordinaerBrukerRegistrering, bruker)
         val opprettetBrukerRegistrering = brukerRegistreringRepository.lagre(ordinaerBrukerRegistrering, bruker)
         lagreManuellRegistrering(opprettetBrukerRegistrering, veileder)
+
         val profilering =
             profilerBrukerTilInnsatsgruppe(bruker.gjeldendeFoedselsnummer, opprettetBrukerRegistrering.besvarelse)
         profileringRepository.lagreProfilering(opprettetBrukerRegistrering.id, profilering)
         metricsService.registrer(Events.PROFILERING_EVENT, profilering.innsatsgruppe)
+
         val registreringTilstand = medStatus(Status.MOTTATT, opprettetBrukerRegistrering.id)
         registreringTilstandRepository.lagre(registreringTilstand)
         LOG.info(
@@ -61,7 +63,35 @@ open class BrukerRegistreringService(
             profilering
         )
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.ORDINAER_REGISTRERING)
+
         return opprettetBrukerRegistrering
+    }
+
+    private fun validerBrukerRegistrering(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering, bruker: Bruker) {
+        val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
+        if (brukersTilstand.isUnderOppfolging) {
+            secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
+            throw RuntimeException("Bruker allerede under oppfølging.")
+        }
+        if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
+            throw RuntimeException(
+                String.format(
+                    "Brukeren kan ikke registreres ordinært fordi utledet registreringstype er %s.",
+                    brukersTilstand.registreringstype
+                )
+            )
+        }
+        try {
+            validerBrukerRegistrering(ordinaerBrukerRegistrering)
+        } catch (e: RuntimeException) {
+            LOG.warn(
+                "Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}",
+                ordinaerBrukerRegistrering.besvarelse,
+                ordinaerBrukerRegistrering.sisteStilling
+            )
+            metricsService.registrer(Events.INVALID_REGISTRERING_EVENT)
+            throw e
+        }
     }
 
     private fun lagreManuellRegistrering(brukerRegistrering: OrdinaerBrukerRegistrering, veileder: NavVeileder?) {
@@ -73,6 +103,14 @@ open class BrukerRegistreringService(
             veileder.enhetsId
         )
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
+    }
+
+    private fun profilerBrukerTilInnsatsgruppe(fnr: Foedselsnummer, besvarelse: Besvarelse): Profilering {
+        return profileringService.profilerBruker(
+            fnr.alder(LocalDate.now()),
+            fnr,
+            besvarelse
+        )
     }
 
     @Transactional(noRollbackFor = [AktiverBrukerException::class])
@@ -108,41 +146,6 @@ open class BrukerRegistreringService(
     private fun registrerOverfortStatistikk(veileder: NavVeileder?) {
         if (veileder == null) return
         metricsService.registrer(Events.MANUELL_REGISTRERING_EVENT, BrukerRegistreringType.ORDINAER)
-    }
-
-    private fun validerBrukerRegistrering(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering, bruker: Bruker) {
-        val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
-        if (brukersTilstand.isUnderOppfolging) {
-            secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
-            throw RuntimeException("Bruker allerede under oppfølging.")
-        }
-        if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
-            throw RuntimeException(
-                String.format(
-                    "Brukeren kan ikke registreres ordinært fordi utledet registreringstype er %s.",
-                    brukersTilstand.registreringstype
-                )
-            )
-        }
-        try {
-            validerBrukerRegistrering(ordinaerBrukerRegistrering)
-        } catch (e: RuntimeException) {
-            LOG.warn(
-                "Ugyldig innsendt registrering. Besvarelse: {} Stilling: {}",
-                ordinaerBrukerRegistrering.besvarelse,
-                ordinaerBrukerRegistrering.sisteStilling
-            )
-            metricsService.registrer(Events.INVALID_REGISTRERING_EVENT)
-            throw e
-        }
-    }
-
-    private fun profilerBrukerTilInnsatsgruppe(fnr: Foedselsnummer, besvarelse: Besvarelse): Profilering {
-        return profileringService.profilerBruker(
-            fnr.alder(LocalDate.now()),
-            fnr,
-            besvarelse
-        )
     }
 
     fun registrerAtArenaHarPlanlagtNedetid() {
