@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources
 
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

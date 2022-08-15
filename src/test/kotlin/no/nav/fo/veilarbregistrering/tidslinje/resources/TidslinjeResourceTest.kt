@@ -30,11 +30,11 @@ import javax.servlet.http.HttpServletRequest
 @WebMvcTest
 @ContextConfiguration(classes = [TidslinjeResourceConfig::class])
 class TidslinjeResourceTest(
-        @Autowired private val mvc: MockMvc,
-        @Autowired private val autorisasjonService: AutorisasjonService,
-        @Autowired private val authContextHolder: AuthContextHolder,
-        @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
-        @Autowired private val tidslinjeAggregator: TidslinjeAggregator) {
+    @Autowired private val mvc: MockMvc,
+    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val authContextHolder: AuthContextHolder,
+    @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
+    @Autowired private val tidslinjeAggregator: TidslinjeAggregator) {
 
     private lateinit var request: HttpServletRequest
 
@@ -92,9 +92,9 @@ private open class TidslinjeResourceConfig {
 
     @Bean
     fun tidslinjeResource(
-            autorisasjonService: AutorisasjonService,
-            userService: UserService,
-            tidslinjeAggregator: TidslinjeAggregator
+        autorisasjonService: AutorisasjonService,
+        userService: UserService,
+        tidslinjeAggregator: TidslinjeAggregator
     ) = TidslinjeResource(autorisasjonService, userService, tidslinjeAggregator)
 
     @Bean

@@ -68,7 +68,7 @@ class SykmeldtRegistreringServiceTest {
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(any(), any())
         } returns 5L
-        every { autorisasjonService.erInternBruker() } returns false
+        every { autorisasjonService.erVeileder() } returns false
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
         val id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null)
         org.assertj.core.api.Assertions.assertThat(id).isEqualTo(5)
@@ -78,7 +78,7 @@ class SykmeldtRegistreringServiceTest {
     @Test
     fun gitt_at_veileder_er_angitt_skal_registrering_lagres_med_navident() {
         mockSykmeldtMedArbeidsgiver()
-        every { autorisasjonService.erInternBruker() } returns true
+        every { autorisasjonService.erVeileder() } returns true
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(
                 any(),

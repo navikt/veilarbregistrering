@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdReso
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
@@ -426,7 +427,7 @@ class ServiceBeansConfig {
         authContextHolder: AuthContextHolder,
         metricsService: MetricsService
     ): AutorisasjonService {
-        return AutorisasjonService(veilarbPep, authContextHolder, metricsService)
+        return DefaultAutorisasjonService(veilarbPep, authContextHolder, metricsService)
     }
 
     @Bean

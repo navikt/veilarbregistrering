@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/tidslinje")
 class TidslinjeResource(
-        private val autorisasjonService: AutorisasjonService,
-        private val userService: UserService,
-        private val tidslinjeAggregator: TidslinjeAggregator) : TidslinjeApi {
+    private val autorisasjonService: AutorisasjonService,
+    private val userService: UserService,
+    private val tidslinjeAggregator: TidslinjeAggregator) : TidslinjeApi {
 
     @GetMapping
     override fun tidslinje() : TidslinjeDto {
