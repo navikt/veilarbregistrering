@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt
 
+import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -35,7 +36,12 @@ open class SykmeldtRegistreringService(
 
     private fun sjekkAtBrukerKanRegistreres(bruker: Bruker) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
-        if (brukersTilstand.ikkeErSykemeldtRegistrering()) throw RuntimeException("Bruker kan ikke registreres.")
+        if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "IKKE_SYKEMELDT_REGISTRERING"))
+            throw RuntimeException(
+                    "Brukeren kan ikke sykemeldtregistreres fordi utledet registreringstype er ${brukersTilstand.registreringstype}"
+            )
+        }
     }
 
     private fun lagreManuellRegistrering(id: Long, veileder: NavVeileder?) {
