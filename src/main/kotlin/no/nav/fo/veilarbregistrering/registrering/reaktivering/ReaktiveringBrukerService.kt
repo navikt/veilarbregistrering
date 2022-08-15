@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
-import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
+import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +20,7 @@ open class ReaktiveringBrukerService(
     open fun reaktiverBruker(bruker: Bruker, erVeileder: Boolean) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (!brukersTilstand.kanReaktiveres()) {
-            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "KAN_IKKE_REAKTIVERES"))
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.KAN_IKKE_REAKTIVERES)
             throw KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.")
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker.aktorId)

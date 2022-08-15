@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
-import io.micrometer.core.instrument.Tag
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -14,6 +13,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
+import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
@@ -72,11 +72,11 @@ open class BrukerRegistreringService(
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.isUnderOppfolging) {
             secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
-            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "ALLEREDE_UNDER_OPPFOLGING"))
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.ALLEREDE_UNDER_OPPFOLGING)
             throw RuntimeException("Bruker allerede under oppfølging.")
         }
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
-            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "IKKE_ORDINAER_REGISTRERING"))
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.IKKE_ORDINAER_REGISTRERING)
             throw RuntimeException(
                     "Brukeren kan ikke registreres ordinært fordi utledet registreringstype er ${brukersTilstand.registreringstype}"
             )
