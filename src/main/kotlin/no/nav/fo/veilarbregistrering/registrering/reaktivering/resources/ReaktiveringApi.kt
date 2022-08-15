@@ -13,4 +13,12 @@ interface ReaktiveringApi {
                 "uten at saksbehandler manuelt vurderer reaktiveringen via en arbeidsprosess."
     )
     fun reaktivering()
+
+    @Operation(
+        summary = "Sjekker om bruker kan reaktiveres som arbeidssøker.",
+        description = "Tjenesten sjekker om bruker har blitt inaktivert i løpet av de siste 28 dagene. " +
+                "Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
+                "uten at saksbehandler manuelt vurderer reaktiveringen via en arbeidsprosess."
+    )
+    fun kanReaktiveres(): KanReaktiveresResponseDto
 }

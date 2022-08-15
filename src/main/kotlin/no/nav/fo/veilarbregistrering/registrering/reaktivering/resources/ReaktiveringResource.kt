@@ -5,10 +5,7 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +27,14 @@ class ReaktiveringResource(
         autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
         reaktiveringBrukerService.reaktiverBruker(bruker, autorisasjonsService.erVeileder())
+    }
+
+    @GetMapping("/kanreaktiveres")
+    override fun kanReaktiveres(): KanReaktiveresResponseDto {
+        val bruker = userService.finnBrukerGjennomPdl()
+        autorisasjonsService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+
+        return KanReaktiveresResponseDto(reaktiveringBrukerService.kanReaktiveres(bruker))
     }
 
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")

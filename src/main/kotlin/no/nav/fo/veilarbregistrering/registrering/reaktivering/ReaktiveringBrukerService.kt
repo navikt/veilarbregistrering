@@ -32,6 +32,11 @@ open class ReaktiveringBrukerService(
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.REAKTIVERING)
     }
 
+    fun kanReaktiveres(bruker: Bruker): Boolean {
+        val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
+        return brukersTilstand.kanReaktiveres()
+    }
+
     companion object {
         private val LOG = loggerFor<ReaktiveringBrukerService>()
     }

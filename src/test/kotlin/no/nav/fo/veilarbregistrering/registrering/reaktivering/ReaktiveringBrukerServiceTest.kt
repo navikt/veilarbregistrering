@@ -55,6 +55,21 @@ class ReaktiveringBrukerServiceTest {
         verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 
+    @Test
+    fun kanReaktiveresGirSammeSvarSomVeilarbarenaNårBrukerKanReaktiveres() {
+        mockInaktivBrukerSomSkalReaktiveres()
+        val kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(BRUKER_INTERN)
+        Assertions.assertTrue(kanReaktiveres)
+    }
+
+
+    @Test
+    fun kanReaktiveresGirSammeSvarSomVeilarbarenaNårBrukerIkkeKanReaktiveres() {
+        mockBrukerSomIkkeSkalReaktiveres()
+        val kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(BRUKER_INTERN)
+        Assertions.assertFalse(kanReaktiveres)
+    }
+
     private fun mockInaktivBrukerSomSkalReaktiveres() {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
