@@ -76,6 +76,7 @@ open class BrukerRegistreringService(
             throw RuntimeException("Bruker allerede under oppfølging.")
         }
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
+            metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tag.of("type", "IKKE_ORDINAER_REGISTRERING"))
             throw RuntimeException(
                 String.format(
                     "Brukeren kan ikke registreres ordinært fordi utledet registreringstype er %s.",
