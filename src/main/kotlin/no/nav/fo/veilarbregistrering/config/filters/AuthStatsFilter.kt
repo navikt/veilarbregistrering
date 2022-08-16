@@ -5,6 +5,7 @@ import com.nimbusds.jwt.JWTParser
 import io.micrometer.core.instrument.Tag
 import no.nav.common.auth.Constants
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.MDC
@@ -46,6 +47,9 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 MDC.put(TOKEN_TYPE, type)
                 metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type), Tag.of("consumerId", consumerId))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
+                if (type == STS) {
+                    secureLogger.info("Bruk av STS-token mot $consumerId. Token fra cookie: $selvbetjeningToken Token fra Auth-header: $bearerToken")
+                }
             }
             chain.doFilter(servletRequest, servletResponse)
         } finally {
