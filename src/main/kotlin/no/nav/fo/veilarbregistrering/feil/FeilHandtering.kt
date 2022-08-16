@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.feil
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonValideringException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
@@ -75,6 +76,12 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun handleAutorisasjonException(feil: AutorisasjonException): ResponseEntity<Any> {
         logger.warn(feil.message, feil)
         return ResponseEntity.status(FORBIDDEN).body(feil.message)
+    }
+
+    @ExceptionHandler(AutorisasjonValideringException::class)
+    fun handleAutorisasjonException(feil: AutorisasjonValideringException): ResponseEntity<Any> {
+        logger.error(feil.message, feil)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(feil.message)
     }
 
     @ExceptionHandler(UnauthorizedException::class)
