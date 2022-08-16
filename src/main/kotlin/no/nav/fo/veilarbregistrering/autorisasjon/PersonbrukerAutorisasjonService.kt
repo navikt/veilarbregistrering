@@ -25,12 +25,15 @@ open class PersonbrukerAutorisasjonService(
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
+        if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for personbruker med rolle ${rolle()}")
         LOG.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
         registrerAutorisationEvent(handling)
+
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker))
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
-
     }
+
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun registrerAutorisationEvent(handling: ActionId) {
         metricsService.registrer(

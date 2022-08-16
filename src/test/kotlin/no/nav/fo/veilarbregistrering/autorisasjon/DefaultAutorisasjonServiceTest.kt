@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 
-class AutorisasjonServiceTest {
+class DefaultAutorisasjonServiceTest {
 
     private val pep : Pep = mockk()
     private val authContextHolder : AuthContextHolder = mockk()

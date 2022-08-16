@@ -24,8 +24,9 @@ open class SystembrukerAutorisasjonService(
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun sjekkSkrivetilgangTilBruker() {
+        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.WRITE)
-        throw AutorisasjonValideringException("Rolle ${UserRole.SYSTEM} har ikke skrivetilgang til bruker")
+        throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
     }
 
     private fun registrerAutorisationEvent(handling: ActionId) {

@@ -28,6 +28,9 @@ open class VeilederAutorisasjonService(
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
+
+        if (rolle() != UserRole.INTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for veileder med rolle ${rolle()}")
+
         val navIdent = navIdentClaim()
             ?: throw AutorisasjonValideringException("Fant ikke NAV-ident fra claim i tilgangskontroll for veileder.")
 
@@ -36,6 +39,8 @@ open class VeilederAutorisasjonService(
         if (!veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker))
             throw AutorisasjonException("Veileder mangler $handling-tilgang til ekstern bruker")
     }
+
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun registrerAutorisationEvent(handling: ActionId) {
         metricsService.registrer(
