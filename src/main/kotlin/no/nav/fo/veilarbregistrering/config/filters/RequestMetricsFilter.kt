@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.config.filters
 
 import io.micrometer.core.instrument.Tag
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.common.auth.context.UserRole
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import javax.servlet.Filter
@@ -20,13 +21,13 @@ class RequestMetricsFilter(
 
         val consumerId = request.getHeader("Nav-Consumer-Id")
         val endepunkt = request.servletPath
-        val rolle = authContextHolder.requireRole()
+        val rolle: UserRole? = authContextHolder.role.orElse(null)
 
         metricsService.registrer(
             Events.INNKOMMENDE_REQUEST_EVENT,
             Tag.of("consumerId", consumerId),
             Tag.of("endepunkt", endepunkt),
-            Tag.of("rolle", rolle.name)
+            Tag.of("rolle", rolle?.name ?: "UKJENT")
         )
 
         chain.doFilter(servletRequest, servletResponse)

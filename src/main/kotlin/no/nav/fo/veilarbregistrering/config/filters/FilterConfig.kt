@@ -50,7 +50,7 @@ class FilterConfig {
         return FilterRegistrationBean<Filter>().apply {
             filter = AuthStatsFilter(metricsService)
             order = 3
-            addUrlPatterns("/*")
+            addUrlPatterns("/api/*")
         }
     }
 
