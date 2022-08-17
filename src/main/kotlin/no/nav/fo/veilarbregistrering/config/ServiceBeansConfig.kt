@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdReso
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
@@ -239,11 +240,15 @@ class ServiceBeansConfig {
     fun arbeidsforholdResource(
         autorisasjonService: AutorisasjonService,
         userService: UserService,
+        unleashClient: UnleashClient,
+        tilgangskontrollService: TilgangskontrollService,
         arbeidsforholdGateway: ArbeidsforholdGateway
     ): ArbeidsforholdResource {
         return ArbeidsforholdResource(
             autorisasjonService,
             userService,
+            unleashClient,
+            tilgangskontrollService,
             arbeidsforholdGateway
         )
     }

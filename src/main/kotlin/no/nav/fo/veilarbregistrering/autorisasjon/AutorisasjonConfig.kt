@@ -36,7 +36,7 @@ class AutorisasjonConfig {
         return try {
             String(Files.readAllBytes(Paths.get(Application.SECRETS_PATH, path)), StandardCharsets.UTF_8)
         } catch (e: Exception) {
-            throw IllegalStateException(String.format("Klarte ikke laste property fra vault for path: %s", path), e)
+            throw IllegalStateException("Klarte ikke laste property fra vault for path: $path", e)
         }
     }
 
