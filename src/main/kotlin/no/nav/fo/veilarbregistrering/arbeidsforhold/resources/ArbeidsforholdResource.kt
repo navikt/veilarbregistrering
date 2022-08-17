@@ -31,6 +31,7 @@ class ArbeidsforholdResource(
                 tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
                 true
             } catch (e: Exception) {
+                logger.info("Ny tilgangskontroll avviste tilgang til bruker.", e)
                 false
             }
         }
