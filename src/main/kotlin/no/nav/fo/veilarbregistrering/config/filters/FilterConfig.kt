@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.config.filters
 
 import no.nav.common.auth.Constants
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.oidc.filter.AzureAdUserRoleResolver
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
@@ -11,7 +12,6 @@ import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireApplicationName
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -120,5 +120,14 @@ class FilterConfig {
         registration.order = 5
         registration.addUrlPatterns("/*")
         return registration
+    }
+
+    @Bean
+    fun requestMetricsFilter(authContextHolder: AuthContextHolder, metricsService: MetricsService): FilterRegistrationBean<*> {
+        return FilterRegistrationBean<Filter>().apply {
+            filter = RequestMetricsFilter(authContextHolder, metricsService)
+            order = 6
+            addUrlPatterns("/*")
+        }
     }
 }
