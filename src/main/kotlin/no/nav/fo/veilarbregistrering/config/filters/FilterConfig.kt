@@ -127,7 +127,7 @@ class FilterConfig {
         return FilterRegistrationBean<Filter>().apply {
             filter = RequestMetricsFilter(authContextHolder, metricsService)
             order = 6
-            addUrlPatterns("/*")
+            addUrlPatterns("/api/*")
         }
     }
 }
