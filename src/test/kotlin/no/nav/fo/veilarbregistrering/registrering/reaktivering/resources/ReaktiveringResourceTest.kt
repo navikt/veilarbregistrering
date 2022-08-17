@@ -7,6 +7,7 @@ import io.mockk.mockkStatic
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
@@ -75,11 +76,13 @@ private class ReaktiveringResourceConfig {
         autorisasjonService: AutorisasjonService,
         userService: UserService,
         unleashClient: UnleashClient,
+        tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ) = ReaktiveringResource(
         autorisasjonService,
         userService,
         unleashClient,
+        tilgangskontrollService,
         reaktiveringBrukerService,
     )
 
@@ -98,6 +101,9 @@ private class ReaktiveringResourceConfig {
     @Bean
     fun userService(pdlOppslagGateway: PdlOppslagGateway, authContextHolder: AuthContextHolder): UserService =
         UserService(pdlOppslagGateway, authContextHolder)
+
+    @Bean
+    fun tilgangskontrollService(): TilgangskontrollService = mockk()
 
     @Bean
     fun reaktiveringBrukerService(): ReaktiveringBrukerService = mockk(relaxed = true)

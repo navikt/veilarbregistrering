@@ -186,12 +186,14 @@ class ServiceBeansConfig {
         autorisasjonService: AutorisasjonService,
         userService: UserService,
         unleashClient: UnleashClient,
+        tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ) : ReaktiveringResource {
         return ReaktiveringResource(
             autorisasjonService,
             userService,
             unleashClient,
+            tilgangskontrollService,
             reaktiveringBrukerService
         )
     }
