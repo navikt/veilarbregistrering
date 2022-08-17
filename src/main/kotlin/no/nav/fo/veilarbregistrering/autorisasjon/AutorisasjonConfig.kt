@@ -5,8 +5,8 @@ import no.nav.common.abac.VeilarbPepFactory
 import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
-import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.Application
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -50,42 +50,15 @@ class AutorisasjonConfig {
     }
 
     @Bean
-    fun personBrukerAutorisasjonService(
-        veilarbPep: Pep,
-        authContextHolder: AuthContextHolder,
-        metricsService: MetricsService
-    ): PersonbrukerAutorisasjonService {
-        return PersonbrukerAutorisasjonService(veilarbPep, authContextHolder, metricsService)
-    }
-
-    @Bean
-    fun veilederAutorisasjonService(
-        veilarbPep: Pep,
-        authContextHolder: AuthContextHolder,
-        metricsService: MetricsService
-    ): VeilederAutorisasjonService {
-        return VeilederAutorisasjonService(veilarbPep, authContextHolder, metricsService)
-    }
-
-    @Bean
-    fun systembrukerAutorisasjonService(
-        authContextHolder: AuthContextHolder,
-        metricsService: MetricsService
-    ): SystembrukerAutorisasjonService {
-        return SystembrukerAutorisasjonService(authContextHolder, metricsService)
-    }
-
-    @Bean
     fun tilgangskontrollService(
+        veilarbPep: Pep,
         authContextHolder: AuthContextHolder,
-        personbrukerAutorisasjonService: PersonbrukerAutorisasjonService,
-        veilederAutorisasjonService: VeilederAutorisasjonService,
-        systembrukerAutorisasjonService: SystembrukerAutorisasjonService
+        metricsService: MetricsService
     ): TilgangskontrollService {
         val autorisasjonServiceMap = mapOf(
-            UserRole.EKSTERN to personbrukerAutorisasjonService,
-            UserRole.INTERN to veilederAutorisasjonService,
-            UserRole.SYSTEM to systembrukerAutorisasjonService
+            UserRole.EKSTERN to PersonbrukerAutorisasjonService(veilarbPep, authContextHolder, metricsService),
+            UserRole.INTERN to VeilederAutorisasjonService(veilarbPep, authContextHolder, metricsService),
+            UserRole.SYSTEM to SystembrukerAutorisasjonService(authContextHolder, metricsService)
         )
 
         return TilgangskontrollService(authContextHolder, autorisasjonServiceMap)
