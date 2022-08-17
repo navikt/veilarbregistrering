@@ -46,11 +46,11 @@ class FilterConfig {
     }
 
     @Bean
-    fun loginStatsFilter(metricsService: MetricsService): FilterRegistrationBean<*> {
+    fun authStatsFilter(metricsService: MetricsService): FilterRegistrationBean<*> {
         return FilterRegistrationBean<Filter>().apply {
             filter = AuthStatsFilter(metricsService)
             order = 3
-            addUrlPatterns("/*")
+            addUrlPatterns("/api/*")
         }
     }
 
