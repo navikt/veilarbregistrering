@@ -19,7 +19,7 @@ class RequestMetricsFilter(
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request: HttpServletRequest = servletRequest as HttpServletRequest
 
-        val consumerId = request.getHeader("Nav-Consumer-Id")
+        val consumerId = request.getHeader("Nav-Consumer-Id") ?: "UKJENT"
         val endepunkt = request.servletPath
         val rolle: UserRole? = authContextHolder.role.orElse(null)
 
