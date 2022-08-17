@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.config
 
-import no.nav.common.abac.Pep
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
@@ -9,7 +8,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdReso
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
-import no.nav.fo.veilarbregistrering.autorisasjon.DefaultAutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
@@ -420,15 +418,6 @@ class ServiceBeansConfig {
 
     @Bean
     fun internalUserResource(userService: UserService) = InternalUserResource(userService)
-
-    @Bean
-    fun autorisasjonService(
-        veilarbPep: Pep,
-        authContextHolder: AuthContextHolder,
-        metricsService: MetricsService
-    ): AutorisasjonService {
-        return DefaultAutorisasjonService(veilarbPep, authContextHolder, metricsService)
-    }
 
     @Bean
     fun internalRegistreringTilstandServlet(registreringTilstandService: RegistreringTilstandService): InternalRegistreringStatusoversiktResource {

@@ -6,7 +6,7 @@ import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
-import no.nav.fo.veilarbregistrering.autorisasjon.PepConfig
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig
 import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
@@ -43,7 +43,7 @@ import org.springframework.web.server.UnsupportedMediaTypeStatusException
     DatabaseConfig::class,
     RepositoryConfig::class,
     KafkaConfig::class,
-    PepConfig::class,
+    AutorisasjonConfig::class,
     Norg2GatewayConfig::class,
     CacheConfig::class,
     UnleashConfig::class,
