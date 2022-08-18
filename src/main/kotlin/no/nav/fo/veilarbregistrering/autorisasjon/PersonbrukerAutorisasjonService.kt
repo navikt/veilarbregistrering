@@ -8,9 +8,12 @@ import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
+import java.util.*
+import kotlin.math.log
 
 
 open class PersonbrukerAutorisasjonService(
@@ -20,7 +23,8 @@ open class PersonbrukerAutorisasjonService(
 ) : AutorisasjonService {
 
     override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(bruker))
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, tilEksternId(bruker))
+    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) =
+        sjekkTilgang(ActionId.WRITE, tilEksternId(bruker))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
@@ -28,6 +32,16 @@ open class PersonbrukerAutorisasjonService(
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for personbruker med rolle ${rolle()}")
         LOG.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
         registrerAutorisationEvent(handling)
+
+        if (isDevelopment()) {
+            LOG.info("Forsøker å hente innloggingsnivå")
+            try {
+                val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
+                LOG.info("Fant innloggsnivå med nivå $innloggingsnivå")
+            } catch (e: RuntimeException) {
+                LOG.error("Uthenting av innloggingsnivå feilet.", e)
+            }
+        }
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker))
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
@@ -42,6 +56,10 @@ open class PersonbrukerAutorisasjonService(
             Tag.of("handling", handling.id),
             Tag.of("rolle", UserRole.EKSTERN.name.lowercase())
         )
+    }
+
+    fun AuthContextHolder.hentInnloggingsnivå(): Optional<String> {
+        return idTokenClaims.flatMap { getStringClaim(it, "acr") }
     }
 
     private val innloggetBrukerToken: String
