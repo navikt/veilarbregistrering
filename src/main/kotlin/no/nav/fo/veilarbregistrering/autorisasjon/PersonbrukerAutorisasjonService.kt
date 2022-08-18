@@ -12,8 +12,6 @@ import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
-import java.util.*
-import kotlin.math.log
 
 
 open class PersonbrukerAutorisasjonService(
@@ -33,18 +31,30 @@ open class PersonbrukerAutorisasjonService(
         LOG.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
         registrerAutorisationEvent(handling)
 
-        if (isDevelopment()) {
-            LOG.info("Forsøker å hente innloggingsnivå")
-            try {
-                val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
-                LOG.info("Fant innloggsnivå med nivå $innloggingsnivå")
-            } catch (e: RuntimeException) {
-                LOG.error("Uthenting av innloggingsnivå feilet.", e)
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
+            if (isDevelopment()) {
+                if (innloggetMedNivå3()) throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker pga level 3")
             }
+            throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
+        }
+    }
+
+    private fun innloggetMedNivå3(): Boolean{
+        LOG.info("Forsøker å hente innloggingsnivå")
+        try {
+            val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
+            innloggingsnivå.let {
+                LOG.info("Fant innloggsnivå med nivå $it")
+                if ("Level3" == it) {
+                    return true
+                }
+            }
+
+        } catch (e: RuntimeException) {
+            LOG.error("Uthenting av innloggingsnivå feilet.", e)
         }
 
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker))
-            throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
+        return false
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
@@ -58,8 +68,8 @@ open class PersonbrukerAutorisasjonService(
         )
     }
 
-    fun AuthContextHolder.hentInnloggingsnivå(): Optional<String> {
-        return idTokenClaims.flatMap { getStringClaim(it, "acr") }
+    private fun AuthContextHolder.hentInnloggingsnivå(): String? {
+        return idTokenClaims.flatMap { getStringClaim(it, "acr") }.map { it }.orElse(null)
     }
 
     private val innloggetBrukerToken: String
