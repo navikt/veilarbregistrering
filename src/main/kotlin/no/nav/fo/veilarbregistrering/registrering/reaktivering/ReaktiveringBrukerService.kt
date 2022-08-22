@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -20,9 +21,11 @@ open class ReaktiveringBrukerService(
     open fun reaktiverBruker(bruker: Bruker, erVeileder: Boolean) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (!brukersTilstand.kanReaktiveres()) {
+            secureLogger.warn("Bruker, ${bruker.aktorId}, kan ikke reaktiveres fordi utledet registreringstype er ${brukersTilstand.registreringstype}")
             metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.KAN_IKKE_REAKTIVERES)
             throw KanIkkeReaktiveresException(
-                "Bruker kan ikke reaktiveres fordi utledet registreringstype er ${brukersTilstand.registreringstype}")
+                "Bruker kan ikke reaktiveres fordi utledet registreringstype er ${brukersTilstand.registreringstype}"
+            )
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker.aktorId)
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)

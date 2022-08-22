@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -37,6 +38,7 @@ open class SykmeldtRegistreringService(
     private fun sjekkAtBrukerKanRegistreres(bruker: Bruker) {
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (brukersTilstand.ikkeErSykemeldtRegistrering()) {
+            secureLogger.warn("Bruker, ${bruker.aktorId}, kan ikke sykemeldtregistreres fordi utledet registreringstype er ${brukersTilstand.registreringstype}")
             metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.IKKE_SYKEMELDT_REGISTRERING)
             throw RuntimeException(
                     "Brukeren kan ikke sykemeldtregistreres fordi utledet registreringstype er ${brukersTilstand.registreringstype}"
