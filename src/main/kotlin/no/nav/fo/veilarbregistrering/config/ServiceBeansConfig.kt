@@ -214,12 +214,16 @@ class ServiceBeansConfig {
     @Bean
     fun registreringResource(
         autorisasjonService: AutorisasjonService,
+        unleashClient: UnleashClient,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         hentRegistreringService: HentRegistreringService,
         startRegistreringStatusService: StartRegistreringStatusService
     ): RegistreringResource {
         return RegistreringResource(
             autorisasjonService,
+            unleashClient,
+            tilgangskontrollService,
             userService,
             hentRegistreringService,
             startRegistreringStatusService

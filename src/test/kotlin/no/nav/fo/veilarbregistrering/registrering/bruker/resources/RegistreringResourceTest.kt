@@ -5,6 +5,7 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
@@ -211,13 +212,16 @@ private class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
         autorisasjonService: AutorisasjonService,
+        unleashClient: UnleashClient,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
-        unleashClient: UnleashClient,
         startRegistreringStatusService: StartRegistreringStatusService
     ) = RegistreringResource(
         autorisasjonService,
+        unleashClient,
+        tilgangskontrollService,
         userService,
         hentRegistreringService,
         startRegistreringStatusService
@@ -228,6 +232,9 @@ private class RegistreringResourceConfig {
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)
+
+    @Bean
+    fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)
 
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
