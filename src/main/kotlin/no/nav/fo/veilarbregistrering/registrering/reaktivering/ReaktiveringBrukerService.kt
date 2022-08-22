@@ -21,7 +21,8 @@ open class ReaktiveringBrukerService(
         val brukersTilstand = brukerTilstandService.hentBrukersTilstand(bruker)
         if (!brukersTilstand.kanReaktiveres()) {
             metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.KAN_IKKE_REAKTIVERES)
-            throw KanIkkeReaktiveresException("Bruker kan ikke reaktiveres.")
+            throw KanIkkeReaktiveresException(
+                "Bruker kan ikke reaktiveres fordi utledet registreringstype er ${brukersTilstand.registreringstype}")
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker.aktorId)
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)

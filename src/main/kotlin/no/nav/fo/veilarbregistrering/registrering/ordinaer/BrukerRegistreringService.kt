@@ -73,7 +73,7 @@ open class BrukerRegistreringService(
         if (brukersTilstand.isUnderOppfolging) {
             secureLogger.warn("Bruker, ${bruker.aktorId}, allerede under oppfølging.")
             metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.ALLEREDE_UNDER_OPPFOLGING)
-            throw RuntimeException("Bruker allerede under oppfølging.")
+            throw RuntimeException("Bruker kan ikke registreres ordinært fordi hen allerede er under oppfølging.")
         }
         if (brukersTilstand.ikkeErOrdinaerRegistrering()) {
             metricsService.registrer(Events.REGISTRERING_TILSTANDSFEIL, Tilstandsfeil.IKKE_ORDINAER_REGISTRERING)
