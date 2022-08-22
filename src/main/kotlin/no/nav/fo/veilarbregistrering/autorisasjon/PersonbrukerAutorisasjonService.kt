@@ -8,7 +8,6 @@ import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
@@ -32,18 +31,16 @@ open class PersonbrukerAutorisasjonService(
         registrerAutorisationEvent(handling)
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
-            if (isDevelopment()) {
-                if (innloggetMedNivå3()) throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker pga level 3")
-            }
+            if (innloggetMedNivå3()) throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker pga level 3")
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
     }
 
-    private fun innloggetMedNivå3(): Boolean{
+    private fun innloggetMedNivå3(): Boolean {
         LOG.info("Forsøker å hente innloggingsnivå")
         try {
             val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
-            innloggingsnivå.let {
+            innloggingsnivå?.let {
                 LOG.info("Fant innloggsnivå med nivå $it")
                 if ("Level3" == it) {
                     return true
