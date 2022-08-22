@@ -57,8 +57,6 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.Reaktiv
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources.SykmeldtResource
-import no.nav.fo.veilarbregistrering.tidslinje.TidslinjeAggregator
-import no.nav.fo.veilarbregistrering.tidslinje.resources.TidslinjeResource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -397,30 +395,6 @@ class ServiceBeansConfig {
         autorisasjonService: AutorisasjonService
     ): KontaktinfoResource {
         return KontaktinfoResource(userService, kontaktinfoService, autorisasjonService)
-    }
-
-    @Bean
-    fun tidslinjeAggregator(
-        brukerRegistreringRepository: BrukerRegistreringRepository,
-        sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
-        reaktiveringRepository: ReaktiveringRepository,
-        formidlingsgruppeRepository: FormidlingsgruppeRepository
-    ): TidslinjeAggregator {
-        return TidslinjeAggregator(
-            brukerRegistreringRepository,
-            sykmeldtRegistreringRepository,
-            reaktiveringRepository,
-            formidlingsgruppeRepository
-        )
-    }
-
-    @Bean
-    fun tidslinjeResource(
-        autorisasjonService: AutorisasjonService,
-        userService: UserService,
-        tidslinjeAggregator: TidslinjeAggregator
-    ): TidslinjeResource {
-        return TidslinjeResource(autorisasjonService, userService, tidslinjeAggregator)
     }
 
     @Bean
