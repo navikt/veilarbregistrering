@@ -5,6 +5,7 @@ import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 
@@ -17,6 +18,7 @@ open class SystembrukerAutorisasjonService(
     override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
 
     private fun sjekkLesetilgangTilBruker() {
+        logger.info("harTilgangTilPerson utfører ${ActionId.READ} for ${UserRole.SYSTEM}-rolle")
         if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.READ)
     }
@@ -24,6 +26,7 @@ open class SystembrukerAutorisasjonService(
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun sjekkSkrivetilgangTilBruker() {
+        logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
         if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.WRITE)
         throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
