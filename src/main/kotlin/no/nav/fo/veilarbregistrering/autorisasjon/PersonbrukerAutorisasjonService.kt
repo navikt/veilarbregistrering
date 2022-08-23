@@ -39,18 +39,15 @@ open class PersonbrukerAutorisasjonService(
     private fun innloggetMedNivå3(): Boolean {
         LOG.info("Forsøker å hente innloggingsnivå")
         try {
-            val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
-            innloggingsnivå?.let {
+            authContextHolder.hentInnloggingsnivå()?.let {
                 LOG.info("Fant innloggsnivå med nivå $it")
                 if ("Level3" == it) {
                     return true
                 }
             }
-
         } catch (e: RuntimeException) {
             LOG.error("Uthenting av innloggingsnivå feilet.", e)
         }
-
         return false
     }
 
@@ -66,7 +63,7 @@ open class PersonbrukerAutorisasjonService(
     }
 
     private fun AuthContextHolder.hentInnloggingsnivå(): String? {
-        return idTokenClaims.flatMap { getStringClaim(it, "acr") }.map { it }.orElse(null)
+        return idTokenClaims.flatMap { getStringClaim(it, "acr") }.orElse(null)
     }
 
     private val innloggetBrukerToken: String
