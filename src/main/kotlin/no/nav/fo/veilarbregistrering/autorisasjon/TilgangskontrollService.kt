@@ -18,6 +18,11 @@ class TilgangskontrollService(
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
+    fun erVeileder(): Boolean {
+        return autorisasjonServiceMap[hentRolle()]?.erVeileder()
+            ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+    }
+
     private fun hentRolle(): UserRole {
         return authContextHolder.role.orElseThrow { AutorisasjonValideringException("Fant ikke rolle for bruker") }
     }

@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.resources
 
 import io.mockk.*
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdTestdata
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -16,27 +14,19 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class ArbeidsforholdResourceTest {
-    private lateinit var autorisasjonService: AutorisasjonService
     private lateinit var arbeidsforholdResource: ArbeidsforholdResource
     private lateinit var userService: UserService
     private lateinit var arbeidsforholdGateway: ArbeidsforholdGateway
-    private lateinit var unleashClient: UnleashClient
     private lateinit var tilgangskontrollService: TilgangskontrollService
 
     @BeforeEach
     fun setup() {
-        autorisasjonService = mockk()
-        every { autorisasjonService.sjekkLesetilgangTilBruker(any<Foedselsnummer>()) } just Runs
         tilgangskontrollService = mockk()
         every { tilgangskontrollService.sjekkLesetilgangTilBruker(any()) } just Runs
-        unleashClient = mockk()
-        every { unleashClient.isEnabled(any())} returns true
         userService = mockk()
         arbeidsforholdGateway = mockk()
         arbeidsforholdResource = ArbeidsforholdResource(
-            autorisasjonService,
             userService,
-            unleashClient,
             tilgangskontrollService,
             arbeidsforholdGateway
         )
@@ -47,7 +37,7 @@ internal class ArbeidsforholdResourceTest {
         every { userService.finnBrukerGjennomPdl() } returns Bruker(IDENT, AktorId("1234"))
         every { arbeidsforholdGateway.hentArbeidsforhold(IDENT) } returns flereArbeidsforhold()
         arbeidsforholdResource.hentSisteArbeidsforhold()
-        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(any<Foedselsnummer>()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any()) }
     }
 
     private fun flereArbeidsforhold(): FlereArbeidsforhold {

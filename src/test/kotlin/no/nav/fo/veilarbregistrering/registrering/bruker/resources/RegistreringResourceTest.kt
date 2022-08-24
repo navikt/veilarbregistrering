@@ -2,9 +2,7 @@ package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
 import io.mockk.*
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
@@ -36,7 +34,7 @@ import javax.servlet.http.HttpServletRequest
 class RegistreringResourceTest(
     @Autowired private val mvc: MockMvc,
     @Autowired private val registreringResource: RegistreringResource,
-    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val tilgangskontrollService: TilgangskontrollService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val hentRegistreringService: HentRegistreringService,
@@ -51,7 +49,7 @@ class RegistreringResourceTest(
         mockkStatic(RequestContext::class)
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
-        every { autorisasjonService.erVeileder() } returns true
+        every { tilgangskontrollService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
         every { authContextHolder.idTokenClaims } returns Optional.empty()
     }
@@ -170,7 +168,7 @@ class RegistreringResourceTest(
         every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns StartRegistreringStatusDto()
 
         assertThrows<RuntimeException>("Fødselsnummer ikke gyldig.") { registreringResource.hentRegistrering() }
-        verify { autorisasjonService wasNot Called }
+        verify { tilgangskontrollService wasNot Called }
     }
 
     @Test
@@ -182,7 +180,7 @@ class RegistreringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentRegistrering()
-        verify(exactly = 1) { autorisasjonService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeFnr()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeFnr()) }
     }
 
     companion object {
@@ -211,27 +209,17 @@ class RegistreringResourceTest(
 private class RegistreringResourceConfig {
     @Bean
     fun registreringResource(
-        autorisasjonService: AutorisasjonService,
-        unleashClient: UnleashClient,
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         hentRegistreringService: HentRegistreringService,
         startRegistreringStatusService: StartRegistreringStatusService
     ) = RegistreringResource(
-        autorisasjonService,
-        unleashClient,
         tilgangskontrollService,
         userService,
         hentRegistreringService,
         startRegistreringStatusService
     )
-
-    @Bean
-    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
-
-    @Bean
-    fun unleashClient(): UnleashClient = mockk(relaxed = true)
 
     @Bean
     fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)

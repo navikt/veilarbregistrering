@@ -34,7 +34,7 @@ class ReaktiveringResource(
         var nyTilgangskontrollSierOK = true
         if (unleashClient.isEnabled("veilarbregistrering.ny-tilgangskontroll")) {
             nyTilgangskontrollSierOK = try {
-                tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+                tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
                 true
             } catch (e: Exception) {
                 logger.info("Ny tilgangskontroll avviste tilgang til bruker.", e)
