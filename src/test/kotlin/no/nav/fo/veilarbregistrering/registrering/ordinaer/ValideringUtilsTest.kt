@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.registrering.bruker
+package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder.gyldigBesvarelse

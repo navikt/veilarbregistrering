@@ -17,7 +17,7 @@ import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
-import no.nav.fo.veilarbregistrering.registrering.bruker.ValideringUtils.validerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.ValideringUtils.validerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand.Companion.medStatus
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
