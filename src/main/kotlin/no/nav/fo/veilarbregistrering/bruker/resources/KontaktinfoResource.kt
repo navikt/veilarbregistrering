@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoMapper.map
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController
 class KontaktinfoResource(
     private val userService: UserService,
     private val kontaktinfoService: KontaktinfoService,
-    private val autorisasjonService: AutorisasjonService
+    private val tilgangskontrollService: TilgangskontrollService
 ) : KontaktinfoApi {
 
     @GetMapping("/kontaktinfo")
     override fun hentKontaktinfo(): KontaktinfoDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
         val kontaktinfo = kontaktinfoService.hentKontaktinfo(bruker)
         return map(kontaktinfo)
     }

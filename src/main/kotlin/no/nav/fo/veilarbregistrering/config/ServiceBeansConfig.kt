@@ -324,9 +324,9 @@ class ServiceBeansConfig {
     fun arbeidssokerResource(
         arbeidssokerService: ArbeidssokerService,
         userService: UserService,
-        autorisasjonService: AutorisasjonService
+        tilgangskontrollService: TilgangskontrollService
     ): ArbeidssokerResource {
-        return ArbeidssokerResource(arbeidssokerService, userService, autorisasjonService)
+        return ArbeidssokerResource(arbeidssokerService, userService, tilgangskontrollService)
     }
 
     @Bean
@@ -365,10 +365,10 @@ class ServiceBeansConfig {
     @Bean
     fun profileringResource(
         userService: UserService,
-        autorisasjonService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         profilertInnsatsgruppeService: ProfilertInnsatsgruppeService
     ): ProfileringApi {
-        return ProfileringResource(userService, autorisasjonService, profilertInnsatsgruppeService)
+        return ProfileringResource(userService, tilgangskontrollService, profilertInnsatsgruppeService)
     }
 
     @Bean
@@ -388,9 +388,9 @@ class ServiceBeansConfig {
     fun kontaktinfoResource(
         userService: UserService,
         kontaktinfoService: KontaktinfoService,
-        autorisasjonService: AutorisasjonService
+        tilgangskontrollService: TilgangskontrollService
     ): KontaktinfoResource {
-        return KontaktinfoResource(userService, kontaktinfoService, autorisasjonService)
+        return KontaktinfoResource(userService, kontaktinfoService, tilgangskontrollService)
     }
 
     @Bean
@@ -426,10 +426,10 @@ class ServiceBeansConfig {
 
     @Bean
     fun gjelderFraDatoResource(
-        autorisasjonService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         gjelderFraService: GjelderFraService
     ): GjelderFraDatoResource {
-        return GjelderFraDatoResource(autorisasjonService, userService, gjelderFraService)
+        return GjelderFraDatoResource(tilgangskontrollService, userService, gjelderFraService)
     }
 }
