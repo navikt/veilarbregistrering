@@ -2,7 +2,6 @@ package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
@@ -77,9 +76,6 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
             formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService
         )
-
-        @Bean
-        fun pepClient(): AutorisasjonService = mockk(relaxed = true)
     }
 
     companion object {

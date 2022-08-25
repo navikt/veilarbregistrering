@@ -4,7 +4,6 @@ import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -78,7 +77,6 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         @Bean
         fun arbeidssokerService(
             formidlingsgruppeRepository: FormidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService
@@ -88,9 +86,6 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             unleashClient,
             metricsService
         )
-
-        @Bean
-        fun pepClient(): AutorisasjonService = mockk(relaxed = true)
     }
 
     companion object {

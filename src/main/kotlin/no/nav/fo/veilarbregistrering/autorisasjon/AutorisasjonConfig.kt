@@ -41,15 +41,6 @@ class AutorisasjonConfig {
     }
 
     @Bean
-    fun autorisasjonService(
-        veilarbPep: Pep,
-        authContextHolder: AuthContextHolder,
-        metricsService: MetricsService
-    ): AutorisasjonService {
-        return DefaultAutorisasjonService(veilarbPep, authContextHolder, metricsService)
-    }
-
-    @Bean
     fun tilgangskontrollService(
         veilarbPep: Pep,
         authContextHolder: AuthContextHolder,
