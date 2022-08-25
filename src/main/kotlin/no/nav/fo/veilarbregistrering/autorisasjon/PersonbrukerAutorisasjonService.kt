@@ -31,7 +31,7 @@ open class PersonbrukerAutorisasjonService(
         registrerAutorisationEvent(handling)
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
-            if (innloggetMedNivå3()) throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker pga level 3")
+            if (innloggetMedNivå3()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
     }
