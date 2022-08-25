@@ -160,7 +160,7 @@ class RegistreringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentStartRegistreringStatus(CONSUMER_ID_TEST)
-        //verify(exactly = 1) { tilgangskontroll.sjekkLesetilgangMedAktorId(any()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any()) }
     }
 
     @Test
