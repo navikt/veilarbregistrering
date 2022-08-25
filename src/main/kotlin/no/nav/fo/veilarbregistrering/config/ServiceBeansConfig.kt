@@ -7,7 +7,6 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway
@@ -167,13 +166,13 @@ class ServiceBeansConfig {
 
     @Bean
     fun sykmeldtResource(
-        autorisasjonService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         unleashClient: UnleashClient,
         sykmeldtRegistreringService: SykmeldtRegistreringService
     ) : SykmeldtResource {
         return SykmeldtResource(
-            autorisasjonService,
+            tilgangskontrollService,
             userService,
             unleashClient,
             sykmeldtRegistreringService)
@@ -181,14 +180,12 @@ class ServiceBeansConfig {
 
     @Bean
     fun reaktiveringResource(
-        autorisasjonService: AutorisasjonService,
         userService: UserService,
         unleashClient: UnleashClient,
         tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ) : ReaktiveringResource {
         return ReaktiveringResource(
-            autorisasjonService,
             userService,
             unleashClient,
             tilgangskontrollService,
@@ -198,13 +195,13 @@ class ServiceBeansConfig {
 
     @Bean
     fun ordinaerBrukerRegistrering(
-        autorisasjonsService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         unleashClient: UnleashClient
     ): OrdinaerBrukerRegistreringResource {
         return OrdinaerBrukerRegistreringResource(
-            autorisasjonsService,
+            tilgangskontrollService,
             userService,
             brukerRegistreringService,
             unleashClient
@@ -285,9 +282,9 @@ class ServiceBeansConfig {
     fun oppgaveResource(
         userService: UserService,
         oppgaveService: OppgaveService,
-        autorisasjonService: AutorisasjonService
+        tilgangskontrollService: TilgangskontrollService
     ): OppgaveResource {
-        return OppgaveResource(userService, oppgaveService, autorisasjonService)
+        return OppgaveResource(userService, oppgaveService, tilgangskontrollService)
     }
 
     @Bean

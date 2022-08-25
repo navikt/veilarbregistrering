@@ -6,7 +6,6 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
@@ -30,7 +29,7 @@ import javax.servlet.http.HttpServletRequest
 @ContextConfiguration(classes = [ReaktiveringResourceConfig::class])
 class ReaktiveringResourceTest(
     @Autowired private val mvc: MockMvc,
-    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val tilgangskontrollService: TilgangskontrollService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
 ) {
@@ -42,7 +41,7 @@ class ReaktiveringResourceTest(
         mockkStatic(RequestContext::class)
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
-        every { autorisasjonService.erVeileder() } returns true
+        every { tilgangskontrollService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
         every { authContextHolder.idTokenClaims } returns Optional.empty()
     }
@@ -73,21 +72,16 @@ class ReaktiveringResourceTest(
 private class ReaktiveringResourceConfig {
     @Bean
     fun reaktiveringResource(
-        autorisasjonService: AutorisasjonService,
         userService: UserService,
         unleashClient: UnleashClient,
         tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ) = ReaktiveringResource(
-        autorisasjonService,
         userService,
         unleashClient,
         tilgangskontrollService,
         reaktiveringBrukerService,
     )
-
-    @Bean
-    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)
@@ -103,7 +97,7 @@ private class ReaktiveringResourceConfig {
         UserService(pdlOppslagGateway, authContextHolder)
 
     @Bean
-    fun tilgangskontrollService(): TilgangskontrollService = mockk()
+    fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)
 
     @Bean
     fun reaktiveringBrukerService(): ReaktiveringBrukerService = mockk(relaxed = true)

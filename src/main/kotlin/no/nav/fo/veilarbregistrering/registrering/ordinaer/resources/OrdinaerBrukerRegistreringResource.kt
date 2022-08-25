@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api")
 class OrdinaerBrukerRegistreringResource(
-    private val autorisasjonsService: AutorisasjonService,
+    private val tilgangskontrollService: TilgangskontrollService,
     private val userService: UserService,
     private val brukerRegistreringService: BrukerRegistreringService,
     private val unleashClient: UnleashClient
@@ -27,7 +27,7 @@ class OrdinaerBrukerRegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        autorisasjonsService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
         val veileder = navVeileder()
         val opprettetRegistrering =
@@ -37,10 +37,10 @@ class OrdinaerBrukerRegistreringResource(
     }
 
     private fun navVeileder(): NavVeileder? {
-        return if (!autorisasjonsService.erVeileder()) {
+        return if (!tilgangskontrollService.erVeileder()) {
             null
         } else NavVeileder(
-            autorisasjonsService.innloggetVeilederIdent,
+            tilgangskontrollService.innloggetVeilederIdent,
             userService.getEnhetIdFromUrlOrThrow()
         )
     }

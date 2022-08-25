@@ -4,7 +4,7 @@ import io.mockk.*
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest
 @ContextConfiguration(classes = [SykmeldtResourceConfig::class])
 class SykmeldtResourceTest(
     @Autowired private val mvc: MockMvc,
-    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val tilgangskontrollService: TilgangskontrollService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val sykmeldtResource: SykmeldtResource
@@ -45,7 +45,7 @@ class SykmeldtResourceTest(
         mockkStatic(RequestContext::class)
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
-        every { autorisasjonService.erVeileder() } returns true
+        every { tilgangskontrollService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
         every { authContextHolder.idTokenClaims } returns Optional.empty()
     }
@@ -61,7 +61,7 @@ class SykmeldtResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         sykmeldtResource.registrerSykmeldt(sykmeldtRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any()) }
     }
 
 
@@ -94,19 +94,19 @@ class SykmeldtResourceTest(
 private class SykmeldtResourceConfig {
     @Bean
     fun sykmeldtResource(
-        autorisasjonService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         unleashClient: UnleashClient,
         sykmeldtRegistreringService: SykmeldtRegistreringService
     ) = SykmeldtResource(
-        autorisasjonService,
+        tilgangskontrollService,
         userService,
         unleashClient,
         sykmeldtRegistreringService
     )
 
     @Bean
-    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
+    fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 import io.mockk.*
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
+import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
 import no.nav.fo.veilarbregistrering.bruker.*
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest
 class OrdinaerBrukerRegistreringResourceTest(
     @Autowired private val mvc: MockMvc,
     @Autowired private val ordinaerBrukerRegistreringResource: OrdinaerBrukerRegistreringResource,
-    @Autowired private val autorisasjonService: AutorisasjonService,
+    @Autowired private val tilgangskontrollService: TilgangskontrollService,
     @Autowired private val authContextHolder: AuthContextHolder,
     @Autowired private val pdlOppslagGateway: PdlOppslagGateway,
     @Autowired private val brukerRegistreringService: BrukerRegistreringService
@@ -43,7 +43,7 @@ class OrdinaerBrukerRegistreringResourceTest(
         mockkStatic(RequestContext::class)
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
-        every { autorisasjonService.erVeileder() } returns true
+        every { tilgangskontrollService.erVeileder() } returns true
         every { authContextHolder.subject} returns Optional.of("sub")
         every { authContextHolder.idTokenClaims } returns Optional.empty()
     }
@@ -77,7 +77,7 @@ class OrdinaerBrukerRegistreringResourceTest(
             )
         } returns ordinaerBrukerRegistrering
         ordinaerBrukerRegistreringResource.registrerBruker(ordinaerBrukerRegistrering)
-        verify(exactly = 1) { autorisasjonService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
     }
 
     companion object {
@@ -98,19 +98,19 @@ class OrdinaerBrukerRegistreringResourceTest(
 private class OrdinaerBrukerRegistreringResourceConfig {
     @Bean
     fun ordinaerBrukerRegistreringResource(
-        autorisasjonService: AutorisasjonService,
+        tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         unleashClient: UnleashClient
     ) = OrdinaerBrukerRegistreringResource(
-        autorisasjonService,
+        tilgangskontrollService,
         userService,
         brukerRegistreringService,
         unleashClient
     )
 
     @Bean
-    fun autorisasjonService(): AutorisasjonService = mockk(relaxed = true)
+    fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)

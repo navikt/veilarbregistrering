@@ -4,7 +4,6 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -13,10 +12,10 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,7 +29,6 @@ class SykmeldtRegistreringServiceTest {
     private val manuellRegistreringRepository: ManuellRegistreringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
-    private val autorisasjonService: AutorisasjonService = mockk()
     private val metricsService: MetricsService = mockk(relaxed = true)
 
     @BeforeEach
@@ -68,7 +66,6 @@ class SykmeldtRegistreringServiceTest {
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(any(), any())
         } returns 5L
-        every { autorisasjonService.erVeileder() } returns false
         val sykmeldtRegistrering = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering()
         val id = sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, BRUKER_INTERN, null)
         org.assertj.core.api.Assertions.assertThat(id).isEqualTo(5)
@@ -78,7 +75,6 @@ class SykmeldtRegistreringServiceTest {
     @Test
     fun gitt_at_veileder_er_angitt_skal_registrering_lagres_med_navident() {
         mockSykmeldtMedArbeidsgiver()
-        every { autorisasjonService.erVeileder() } returns true
         every {
             sykmeldtRegistreringRepository.lagreSykmeldtBruker(
                 any(),
