@@ -43,7 +43,7 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalR
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBrukerRegistreringResource

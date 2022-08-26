@@ -10,8 +10,8 @@ import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 

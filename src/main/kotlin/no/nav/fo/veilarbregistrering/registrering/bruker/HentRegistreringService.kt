@@ -14,8 +14,8 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistr
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.manuell.Veileder
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.Veileder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.kanResendes

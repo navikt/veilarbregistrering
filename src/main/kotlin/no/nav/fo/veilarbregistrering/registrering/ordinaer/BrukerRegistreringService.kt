@@ -23,8 +23,8 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.Companion.from
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate

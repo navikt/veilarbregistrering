@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.SQLException

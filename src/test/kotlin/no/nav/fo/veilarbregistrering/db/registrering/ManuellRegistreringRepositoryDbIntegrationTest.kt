@@ -3,8 +3,8 @@ package no.nav.fo.veilarbregistrering.db.registrering
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistrering
-import no.nav.fo.veilarbregistrering.registrering.manuell.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
