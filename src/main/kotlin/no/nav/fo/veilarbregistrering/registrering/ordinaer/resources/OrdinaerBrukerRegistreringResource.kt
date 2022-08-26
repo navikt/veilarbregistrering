@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import org.springframework.web.bind.annotation.PostMapping
@@ -37,12 +37,10 @@ class OrdinaerBrukerRegistreringResource(
     }
 
     private fun navVeileder(): NavVeileder? {
-        return if (!tilgangskontrollService.erVeileder()) {
-            null
-        } else NavVeileder(
+        if (!tilgangskontrollService.erVeileder()) { return null }
+        return NavVeileder(
             tilgangskontrollService.innloggetVeilederIdent,
-            userService.getEnhetIdFromUrlOrThrow()
-        )
+            userService.getEnhetIdFromUrlOrThrow())
     }
 
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")

@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import org.junit.jupiter.api.Assertions

@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType.SYKMELDT
 import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository

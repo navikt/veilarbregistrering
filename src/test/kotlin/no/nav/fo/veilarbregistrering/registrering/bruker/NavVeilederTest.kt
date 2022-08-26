@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

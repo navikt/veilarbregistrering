@@ -15,7 +15,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.NavVeileder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.ValideringUtils.validerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
