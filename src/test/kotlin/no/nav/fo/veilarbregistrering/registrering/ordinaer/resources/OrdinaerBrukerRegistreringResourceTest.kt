@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -101,16 +102,23 @@ private class OrdinaerBrukerRegistreringResourceConfig {
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
+        navVeilederService: NavVeilederService,
         unleashClient: UnleashClient
     ) = OrdinaerBrukerRegistreringResource(
         tilgangskontrollService,
         userService,
         brukerRegistreringService,
+        navVeilederService,
         unleashClient
     )
 
     @Bean
     fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)
+
+    @Bean
+    fun navVeilederService(tilgangskontrollService: TilgangskontrollService, userService: UserService): NavVeilederService {
+        return NavVeilederService(tilgangskontrollService, userService)
+    }
 
     @Bean
     fun unleashClient(): UnleashClient = mockk(relaxed = true)

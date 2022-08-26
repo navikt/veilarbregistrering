@@ -56,6 +56,7 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.Reaktiv
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources.SykmeldtResource
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -79,6 +80,11 @@ class ServiceBeansConfig {
             norg2Gateway,
             metricsService
         )
+    }
+
+    @Bean
+    fun navVeilederService(tilgangskontrollService: TilgangskontrollService, userService: UserService): NavVeilederService {
+        return NavVeilederService(tilgangskontrollService, userService)
     }
 
     @Bean
@@ -169,13 +175,15 @@ class ServiceBeansConfig {
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         unleashClient: UnleashClient,
-        sykmeldtRegistreringService: SykmeldtRegistreringService
+        sykmeldtRegistreringService: SykmeldtRegistreringService,
+        navVeilederService: NavVeilederService,
     ) : SykmeldtResource {
         return SykmeldtResource(
             tilgangskontrollService,
             userService,
             unleashClient,
-            sykmeldtRegistreringService)
+            sykmeldtRegistreringService,
+            navVeilederService)
     }
 
     @Bean
@@ -198,12 +206,14 @@ class ServiceBeansConfig {
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
+        navVeilederService: NavVeilederService,
         unleashClient: UnleashClient
     ): OrdinaerBrukerRegistreringResource {
         return OrdinaerBrukerRegistreringResource(
             tilgangskontrollService,
             userService,
             brukerRegistreringService,
+            navVeilederService,
             unleashClient
         )
     }

@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -97,13 +98,20 @@ private class SykmeldtResourceConfig {
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
         unleashClient: UnleashClient,
-        sykmeldtRegistreringService: SykmeldtRegistreringService
+        sykmeldtRegistreringService: SykmeldtRegistreringService,
+        navVeilederService: NavVeilederService
     ) = SykmeldtResource(
         tilgangskontrollService,
         userService,
         unleashClient,
-        sykmeldtRegistreringService
+        sykmeldtRegistreringService,
+        navVeilederService
     )
+
+    @Bean
+    fun navVeilederService(tilgangskontrollService: TilgangskontrollService, userService: UserService): NavVeilederService {
+        return NavVeilederService(tilgangskontrollService, userService)
+    }
 
     @Bean
     fun tilgangskontrollService(): TilgangskontrollService = mockk(relaxed = true)

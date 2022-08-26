@@ -3,9 +3,9 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,6 +17,7 @@ class OrdinaerBrukerRegistreringResource(
     private val tilgangskontrollService: TilgangskontrollService,
     private val userService: UserService,
     private val brukerRegistreringService: BrukerRegistreringService,
+    private val navVeilederService: NavVeilederService,
     private val unleashClient: UnleashClient
 ) : OrdinaerBrukerRegistreringApi {
 
@@ -29,18 +30,11 @@ class OrdinaerBrukerRegistreringResource(
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
 
-        val veileder = navVeileder()
+        val veileder = navVeilederService.navVeileder()
         val opprettetRegistrering =
             brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder)
         brukerRegistreringService.overforArena(opprettetRegistrering.id, bruker, veileder)
         return opprettetRegistrering
-    }
-
-    private fun navVeileder(): NavVeileder? {
-        if (!tilgangskontrollService.erVeileder()) { return null }
-        return NavVeileder(
-            tilgangskontrollService.innloggetVeilederIdent,
-            userService.getEnhetIdFromUrlOrThrow())
     }
 
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
