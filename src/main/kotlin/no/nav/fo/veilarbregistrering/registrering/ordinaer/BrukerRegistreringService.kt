@@ -102,7 +102,13 @@ open class BrukerRegistreringService(
             veileder.veilederIdent,
             veileder.enhetsId
         )
-        manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
+
+        try {
+            manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
+        } catch (e: RuntimeException) {
+            LOG.error("Lagring av veilederinfo feilet: ${manuellRegistrering.veilederEnhetId}")
+            throw e
+        }
     }
 
     private fun profilerBrukerTilInnsatsgruppe(fnr: Foedselsnummer, besvarelse: Besvarelse): Profilering {
