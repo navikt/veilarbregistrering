@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -38,6 +39,7 @@ class UserService(
         val fnr: String = servletRequest().getParameter("fnr")?.also { logger.info("Hentet FNR fra url") }
             ?: hentFnrFraToken()
         if (!FodselsnummerValidator.isValid(fnr)) {
+            secureLogger.warn("Fødselsnummer, $fnr, hentet fra URL eller token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
             throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL eller token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
         return Foedselsnummer(fnr)
