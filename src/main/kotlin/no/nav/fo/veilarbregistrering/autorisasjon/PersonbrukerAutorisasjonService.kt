@@ -32,7 +32,6 @@ open class PersonbrukerAutorisasjonService(
         if (listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4).contains(innloggingsnivå)) return
 
         throw AutorisasjonException("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har $innloggingsnivå - vi krever $INNLOGGINGSNIVÅ_3 eller $INNLOGGINGSNIVÅ_4")
-
     }
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
@@ -47,14 +46,9 @@ open class PersonbrukerAutorisasjonService(
         registrerAutorisationEvent(handling)
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
-            if (innloggetMedNivå3()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
+            if (INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
-    }
-
-    private fun innloggetMedNivå3(): Boolean {
-        LOG.info("Forsøker å hente innloggingsnivå")
-        return INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
