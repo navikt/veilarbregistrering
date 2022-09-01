@@ -24,14 +24,15 @@ open class PersonbrukerAutorisasjonService(
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (foedselsnummerFraToken != fnr.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
-        validereInnloggingsnivå()
+        validerInnloggingsnivå()
     }
 
-    private fun validereInnloggingsnivå() {
-        authContextHolder.hentInnloggingsnivå()?.let {
-            if (!listOf("Level3", "Level4").contains(it)) throw AutorisasjonException("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har $it - vi krever Level3 eller Level4")
-            
-        }
+    private fun validerInnloggingsnivå() {
+        val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
+        if (listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4).contains(innloggingsnivå)) return
+
+        throw AutorisasjonException("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har $innloggingsnivå - vi krever $INNLOGGINGSNIVÅ_3 eller $INNLOGGINGSNIVÅ_4")
+
     }
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
@@ -53,7 +54,7 @@ open class PersonbrukerAutorisasjonService(
 
     private fun innloggetMedNivå3(): Boolean {
         LOG.info("Forsøker å hente innloggingsnivå")
-        return "Level3" == authContextHolder.hentInnloggingsnivå()
+        return INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
@@ -70,11 +71,11 @@ open class PersonbrukerAutorisasjonService(
     private fun AuthContextHolder.hentInnloggingsnivå(): String {
         return idTokenClaims.flatMap { getStringClaim(it, "acr") }
             .also { LOG.info("Fant innloggsnivå med nivå $it") }
-            .orElseThrow{AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
+            .orElseThrow { AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
     }
 
     private fun AuthContextHolder.hentFoedselsnummer(): String {
-        return idTokenClaims.flatMap {getStringClaim(it, ID_PORTEN_PID_CLAIM) }
+        return idTokenClaims.flatMap { getStringClaim(it, ID_PORTEN_PID_CLAIM) }
             .orElseThrow { AutorisasjonValideringException("Fant ikke fødselsnummer i token (pid claim) for innlogget personbruker") }
     }
 
@@ -91,5 +92,7 @@ open class PersonbrukerAutorisasjonService(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PersonbrukerAutorisasjonService::class.java)
+        private val INNLOGGINGSNIVÅ_3 = "Level3"
+        private val INNLOGGINGSNIVÅ_4 = "Level4"
     }
 }
