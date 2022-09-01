@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
@@ -26,6 +27,7 @@ class ArbeidssokerResource(
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
+        logger.info("hentArbeidssokerperioder med fnr i request param - deprecated metode")
         val bruker = userService.finnBrukerGjennomPdl()
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
@@ -36,6 +38,7 @@ class ArbeidssokerResource(
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
+        logger.info("hentArbeidssokerperioder med fnr i body")
         val bruker = if (fnr != null) userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr)) else userService.finnBrukerGjennomPdl()
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
