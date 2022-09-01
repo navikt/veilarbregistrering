@@ -8,6 +8,12 @@ class TilgangskontrollService(
     private val authContextHolder: AuthContextHolder,
     private val autorisasjonServiceMap: Map<UserRole, AutorisasjonService>
 ) {
+
+    fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(fnr)
+            ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+    }
+
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
         autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(fnr)
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
@@ -32,4 +38,5 @@ class TilgangskontrollService(
     private fun hentRolle(): UserRole {
         return authContextHolder.role.orElseThrow { AutorisasjonValideringException("Fant ikke rolle for bruker") }
     }
+
 }

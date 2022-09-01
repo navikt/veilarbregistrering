@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.autorisasjon
 import io.micrometer.core.instrument.Tag
 import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
+import no.nav.common.auth.Constants.ID_PORTEN_PID_CLAIM
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.EksternBrukerId
@@ -19,9 +20,23 @@ open class PersonbrukerAutorisasjonService(
     private val metricsService: MetricsService
 ) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(bruker))
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) =
-        sjekkTilgang(ActionId.WRITE, tilEksternId(bruker))
+    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+        if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
+        val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
+        if (foedselsnummerFraToken != fnr.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
+        validereInnloggingsnivå()
+    }
+
+    private fun validereInnloggingsnivå() {
+        authContextHolder.hentInnloggingsnivå()?.let {
+            if (!listOf("Level3", "Level4").contains(it)) throw AutorisasjonException("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har $it - vi krever Level3 eller Level4")
+            
+        }
+    }
+
+    override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
+    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) =
+        sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
@@ -38,17 +53,7 @@ open class PersonbrukerAutorisasjonService(
 
     private fun innloggetMedNivå3(): Boolean {
         LOG.info("Forsøker å hente innloggingsnivå")
-        try {
-            authContextHolder.hentInnloggingsnivå()?.let {
-                LOG.info("Fant innloggsnivå med nivå $it")
-                if ("Level3" == it) {
-                    return true
-                }
-            }
-        } catch (e: RuntimeException) {
-            LOG.error("Uthenting av innloggingsnivå feilet.", e)
-        }
-        return false
+        return "Level3" == authContextHolder.hentInnloggingsnivå()
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
@@ -62,8 +67,15 @@ open class PersonbrukerAutorisasjonService(
         )
     }
 
-    private fun AuthContextHolder.hentInnloggingsnivå(): String? {
-        return idTokenClaims.flatMap { getStringClaim(it, "acr") }.orElse(null)
+    private fun AuthContextHolder.hentInnloggingsnivå(): String {
+        return idTokenClaims.flatMap { getStringClaim(it, "acr") }
+            .also { LOG.info("Fant innloggsnivå med nivå $it") }
+            .orElseThrow{AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
+    }
+
+    private fun AuthContextHolder.hentFoedselsnummer(): String {
+        return idTokenClaims.flatMap {getStringClaim(it, ID_PORTEN_PID_CLAIM) }
+            .orElseThrow { AutorisasjonValideringException("Fant ikke fødselsnummer i token (pid claim) for innlogget personbruker") }
     }
 
     private val innloggetBrukerToken: String

@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
 @Tag(name = "ArbeidssokerResource")
@@ -38,5 +41,10 @@ interface ArbeidssokerApi {
             @RequestBody(description = "Fødselsnummer") fnr: Fnr?,
             @Parameter(required = true, description = "Fra og med dato") fraOgMed: LocalDate,
             @Parameter(description = "Til og med dato") tilOgMed: LocalDate?
+    ): ArbeidssokerperioderDto
+
+    fun hentArbeidssokerperioderMedNivå3(
+        @RequestParam(value = "fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
+        @RequestParam(required = false, value = "tilOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto
 }
