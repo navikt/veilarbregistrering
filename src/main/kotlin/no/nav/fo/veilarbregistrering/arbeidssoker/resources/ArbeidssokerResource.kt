@@ -21,6 +21,16 @@ class ArbeidssokerResource(
     private val tilgangskontrollService: TilgangskontrollService
 ) : ArbeidssokerApi {
 
+    @GetMapping("/perioder/niva3")
+    override fun hentArbeidssokerperioderMedNivå3(
+        @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
+        @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
+    ): ArbeidssokerperioderDto {
+        val bruker = userService.finnBrukerGjennomPdl()
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker.gjeldendeFoedselsnummer)
+        return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
+    }
+
     @GetMapping("/perioder")
     override fun hentArbeidssokerperioder(
         @RequestParam("fnr") fnr: String,
@@ -29,6 +39,7 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i request param - deprecated metode")
         val bruker = userService.finnBrukerGjennomPdl()
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -40,13 +51,14 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i body")
         val bruker = if (fnr != null) userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr)) else userService.finnBrukerGjennomPdl()
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
     private fun hentArbeidssokerperioder(bruker: Bruker,
                                          fraOgMed: LocalDate,
                                          tilOgMed: LocalDate?): ArbeidssokerperioderDto {
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(
             bruker, Periode.gyldigPeriode(fraOgMed, tilOgMed)
         )

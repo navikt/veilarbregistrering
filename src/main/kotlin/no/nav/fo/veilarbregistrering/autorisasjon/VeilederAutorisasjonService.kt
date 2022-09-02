@@ -22,8 +22,11 @@ open class VeilederAutorisasjonService(
     private val metricsService: MetricsService
 ) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(bruker))
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, tilEksternId(bruker))
+    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+        throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for veileder")
+    }
+    override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
+    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
 
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 

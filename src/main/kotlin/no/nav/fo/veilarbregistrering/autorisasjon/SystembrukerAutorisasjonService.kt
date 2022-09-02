@@ -14,8 +14,12 @@ open class SystembrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBruker(bruker: Foedselsnummer) = sjekkLesetilgangTilBruker()
-    override fun sjekkSkrivetilgangTilBruker(bruker: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
+    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+        throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for systembruker")
+    }
+
+    override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkLesetilgangTilBruker()
+    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
 
     private fun sjekkLesetilgangTilBruker() {
         logger.info("harTilgangTilPerson utfører ${ActionId.READ} for ${UserRole.SYSTEM}-rolle")
