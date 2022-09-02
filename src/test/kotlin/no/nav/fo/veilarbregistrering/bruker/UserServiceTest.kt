@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.bruker
 
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import no.bekk.bekkopen.person.FodselsnummerValidator
 import no.nav.common.auth.context.AuthContextHolder
+import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 class UserServiceTest {
@@ -32,6 +29,48 @@ class UserServiceTest {
     }
 
     @Test
+    fun skalHenteFnrFraTokenForPersonbruker() {
+        mockkStatic("no.nav.fo.veilarbregistrering.bruker.UserServiceKt")
+        val request: HttpServletRequest = mockk()
+        mockkStatic(RequestContext::class)
+        every { RequestContext.servletRequest() } returns request
+        every { authContextHolder.erEksternBruker() } returns true
+        every { authContextHolder.hentFnrFraPid() } returns aremark().stringValue()
+        every { pdlOppslagGateway.hentIdenter(aremark()) } returns
+                Identer(
+                    listOf(
+                        Ident(aremark().stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
+                        Ident("22222222222", false, Gruppe.AKTORID)
+                    )
+                )
+
+        userService.finnBrukerGjennomPdl()
+
+        verify { request wasNot called }
+    }
+
+    @Test
+    fun skalHenteFnrFraUrlForVeilederOgSystembruker() {
+        mockkStatic("no.nav.fo.veilarbregistrering.bruker.UserServiceKt")
+        val request: HttpServletRequest = mockk()
+        mockkStatic(RequestContext::class)
+        every { RequestContext.servletRequest() } returns request
+        every { request.getParameter("fnr") } returns aremark().stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
+        every { pdlOppslagGateway.hentIdenter(aremark()) } returns
+                Identer(
+                    listOf(
+                        Ident(aremark().stringValue(), false, Gruppe.FOLKEREGISTERIDENT),
+                        Ident("22222222222", false, Gruppe.AKTORID)
+                    )
+                )
+
+        userService.finnBrukerGjennomPdl()
+
+        verify(exactly = 0) { authContextHolder.hentFnrFraPid() }
+    }
+
+    @Test
     fun skalHenteEnhetIdFraUrl() {
         val enhetId = "1234"
         val request: HttpServletRequest = mockk()
@@ -42,7 +81,7 @@ class UserServiceTest {
         assertThat(enhetIdFraUrl).isEqualTo(enhetId)
     }
 
-    @Test()
+    @Test
     fun skalFeileHvisUrlIkkeHarEnhetId() {
         val request: HttpServletRequest = mockk()
         every { request.getParameter("enhetId") } returns null
@@ -53,7 +92,7 @@ class UserServiceTest {
     fun skalFinneBrukerGjennomPdl() {
         every { pdlOppslagGateway.hentIdenter(Foedselsnummer("11111111111")) } returns
             Identer(
-                Arrays.asList(
+                listOf(
                     Ident("11111111111", false, Gruppe.FOLKEREGISTERIDENT),
                     Ident("22222222222", false, Gruppe.AKTORID),
                     Ident("33333333333", false, Gruppe.NPID)
@@ -69,6 +108,6 @@ class UserServiceTest {
     @ValueSource(strings = ["63867500393", "01927397621", "05815598832", "03837197367", "03818197224"])
     fun `syntetiske foedselsnummer fra testfamilien skal IKKE funke som default`(input: String) {
         //syntetiske fødselsnummer enables ved å instansiere UserService m/ enableSyntetiskeFnr=true
-        assertFalse(FodselsnummerValidator.isValid(input));
+        assertFalse(FodselsnummerValidator.isValid(input))
     }
 }

@@ -9,7 +9,6 @@ import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserService(
@@ -20,14 +19,21 @@ class UserService(
     init {
         if (enableSyntetiskeFnr) {
             logger.warn("Enabler syntetiske fødselsnummer")
-            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = true;
+            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = true
         } else {
             logger.warn("Disabler syntetiske fødselsnummer")
-            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = false;
+            FodselsnummerValidator.ALLOW_SYNTHETIC_NUMBERS = false
         }
     }
 
-    fun finnBrukerGjennomPdl(): Bruker = finnBrukerGjennomPdl(hentFnrFraUrlEllerToken())
+    fun finnBrukerGjennomPdl(): Bruker {
+        val fnr = if (authContextHolder.erEksternBruker()) {
+            hentFnrFraToken()
+        } else {
+            hentFnrFraUrl()
+        }
+        return finnBrukerGjennomPdl(fnr)
+    }
     fun finnBrukerGjennomPdl(fnr: Foedselsnummer): Bruker = map(pdlOppslagGateway.hentIdenter(fnr))
 
     fun hentBruker(aktorId: AktorId): Bruker = map(pdlOppslagGateway.hentIdenter(aktorId))
@@ -35,24 +41,25 @@ class UserService(
     fun getEnhetIdFromUrlOrThrow(): String =
         servletRequest().getParameter("enhetId") ?: throw ManglendeBrukerInfoException("Mangler enhetId")
 
-    private fun hentFnrFraUrlEllerToken(): Foedselsnummer {
-        val fnr: String = servletRequest().getParameter("fnr")?.also { logger.info("Hentet FNR fra url") }
-            ?: hentFnrFraToken()
+    private fun hentFnrFraUrl(): Foedselsnummer {
+        val fnr: String = servletRequest().getParameter("fnr")
+            ?: throw IllegalStateException("Fant ikke fødselsnummer i URL for kall i veileder- eller system-kontekst. Kan ikke gjøre oppslag i PDL.")
+
         if (!FodselsnummerValidator.isValid(fnr)) {
-            secureLogger.warn("Fødselsnummer, $fnr, hentet fra URL eller token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
-            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL eller token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
+            secureLogger.warn("Fødselsnummer, $fnr, hentet fra URL er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
+            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
         return Foedselsnummer(fnr)
     }
 
-    private fun hentFnrFraToken(): String {
-        return if (authContextHolder.hentFnrFraPid().isPresent) {
-            logger.info("Henter FNR fra PID-claim")
-            authContextHolder.hentFnrFraPid()
-        } else {
-            logger.info("Henter FNR fra subject-claim")
-            authContextHolder.hentFnrFraSubject()
-        }.orElseThrow { IllegalStateException("Fant ikke FNR hverken i PID-claim eller subject i token for ekstern bruker. Kan ikke gjøre oppslag i PDL") }
+    private fun hentFnrFraToken(): Foedselsnummer {
+        val fnr = authContextHolder.hentFnrFraPid()
+
+        if (!FodselsnummerValidator.isValid(fnr)) {
+            secureLogger.warn("Fødselsnummer, $fnr, hentet fra token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
+            throw ManglendeBrukerInfoException("Fødselsnummer hentet fra token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
+        }
+        return Foedselsnummer(fnr)
     }
 
     companion object {
@@ -66,10 +73,7 @@ class UserService(
     }
 }
 
-fun AuthContextHolder.hentFnrFraPid(): Optional<String> {
+fun AuthContextHolder.hentFnrFraPid(): String {
     return idTokenClaims.flatMap { getStringClaim(it, Constants.ID_PORTEN_PID_CLAIM) }
-}
-
-fun AuthContextHolder.hentFnrFraSubject(): Optional<String> {
-    return subject
+        .orElseThrow { IllegalStateException("Fant ikke fødselsnummer i token (pid-claim) for personbruker-kontekst. Kan ikke gjøre oppslag i PDL.") }
 }

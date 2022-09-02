@@ -22,7 +22,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
@@ -45,8 +44,7 @@ class OrdinaerBrukerRegistreringResourceTest(
         request = mockk(relaxed = true)
         every { RequestContext.servletRequest() } returns request
         every { tilgangskontrollService.erVeileder() } returns true
-        every { authContextHolder.subject} returns Optional.of("sub")
-        every { authContextHolder.idTokenClaims } returns Optional.empty()
+        every { authContextHolder.erEksternBruker() } returns false
     }
 
     @Test

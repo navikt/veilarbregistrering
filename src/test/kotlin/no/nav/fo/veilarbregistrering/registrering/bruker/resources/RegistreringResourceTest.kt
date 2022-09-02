@@ -57,6 +57,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer startregistrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns START_REGISTRERING_STATUS
         val expected = FileToJson.toJson("/registrering/startregistrering.json")
@@ -71,6 +72,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer tom registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { hentRegistreringService.hentBrukerregistrering(any()) } returns null
 
@@ -86,6 +88,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { hentRegistreringService.hentBrukerregistrering(any()) } returns BrukerRegistreringWrapperFactory.create(
             GYLDIG_BRUKERREGISTRERING,
@@ -105,6 +108,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer registrering med profilering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { hentRegistreringService.hentBrukerregistrering(any()) } returns BrukerRegistreringWrapperFactory.create(
             GYLDIG_BRUKERREGISTRERING_M_PROF,
@@ -124,6 +128,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer ingen igangsatt registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(any()) } returns null
         every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
@@ -140,6 +145,7 @@ class RegistreringResourceTest(
     @Test
     fun `serialiserer igangsatt registrering riktig`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         every { hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(any()) } returns GYLDIG_BRUKERREGISTRERING
         every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
@@ -158,6 +164,7 @@ class RegistreringResourceTest(
     fun skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns StartRegistreringStatusDto()
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentStartRegistreringStatus(CONSUMER_ID_TEST)
         verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any()) }
@@ -178,6 +185,7 @@ class RegistreringResourceTest(
         )
         every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
         every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentRegistrering()
         verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeFnr()) }
