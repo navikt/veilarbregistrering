@@ -4,6 +4,7 @@ spring:
     allow-bean-definition-overriding: true
   flyway:
     table: schema_version
+    locations: classpath:db/migration/veilarbregistreringDB
   datasource:
     url: ${VEILARBREGISTRERINGDB_URL}
     username: ${VEILARBREGISTRERINGDB_USERNAME}

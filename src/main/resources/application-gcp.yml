@@ -1,3 +1,3 @@
 spring:
   flyway:
-    locations: classpath:db/migration/veilarbregistreringDB/postgres
+    locations: classpath:db/migration/postgres
