@@ -16,6 +16,7 @@ spec:
     enabled: true
   envFrom:
     - configmap: loginservice-idporten
+    - secret: veilarbregistrering
   image: {{image}}
   env:
     - name: AAREG_REST_API
