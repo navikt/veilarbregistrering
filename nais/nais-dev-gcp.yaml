@@ -62,6 +62,8 @@ spec:
       value: https://arena-ords-q1.nais.preprod.local/arena/api
     - name: ARENA_ORDS_TOKEN_PROVIDER
       value: https://arena-ords-q1.nais.preprod.local/arena/api/oauth/token
+    - name: SPRING_PROFILES_ACTIVE
+      value: gcp
   leaderElection: true
   kafka:
     pool: nav-dev
