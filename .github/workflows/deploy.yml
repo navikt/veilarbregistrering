@@ -71,6 +71,28 @@ jobs:
           DRY_RUN: false
           RESOURCE: nais/nais-dev-fss.yaml
 
+  deploy-dev-gcp:
+    name: Deploy to dev gcp
+    needs: test-build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Lag tag for image
+        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Lag full image referanse
+        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
+
+      - name: Deploy to Dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          DRY_RUN: true
+          RESOURCE: nais/nais-dev-gcp.yaml
+
   deploy-prod:
     name: Deploy to prod-fss
     needs: deploy-dev
