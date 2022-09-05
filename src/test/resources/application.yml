@@ -3,6 +3,7 @@ spring:
     banner-mode: off
   flyway:
     table: schema_version
+    locations: classpath:db/migration/veilarbregistreringDB
   datasource:
     url: "jdbc:h2:mem:veilarbregistrering;DB_CLOSE_DELAY=-1;MODE=Oracle"
     username: "sa"
