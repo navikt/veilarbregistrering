@@ -21,6 +21,7 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
     fun exchangeToken(api: DownstreamApi): String {
         val opprinneligToken = tokenResolver.token()
         return when {
+            tokenResolver.erIdPortenToken() -> exchangeTokenXToken(api, opprinneligToken)
             tokenResolver.erTokenXToken() -> exchangeTokenXToken(api, opprinneligToken)
             tokenResolver.erAzureAdToken() -> exchangeAadOboToken(api, opprinneligToken)
             else -> throw IllegalStateException("Prøver å veksle et token som ikke er AAD OBO eller TokenX")
