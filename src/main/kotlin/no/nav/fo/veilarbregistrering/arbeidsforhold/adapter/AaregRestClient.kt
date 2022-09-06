@@ -17,6 +17,7 @@ import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -31,6 +32,7 @@ open class AaregRestClient(
     private val baseUrl: String,
     private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,
+    private val tokenExchangeService: TokenExchangeService,
     private val aadTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
     /**
@@ -79,6 +81,29 @@ open class AaregRestClient(
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${authContextHolder.requireIdTokenString()}")
             .header(NAV_CONSUMER_TOKEN, "Bearer ${systemUserTokenProvider.systemUserToken}")
+            .header(NAV_PERSONIDENT, fnr.stringValue())
+            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
+            .build()
+
+        return doTimedCall {
+            try {
+                defaultHttpClient().newCall(request).execute().use { response -> behandleResponse(response) }
+            } catch (e: IOException) {
+                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
+            }
+        }
+    }
+
+    protected open fun utforRequestTokenX(fnr: Foedselsnummer): String {
+        val request = Request.Builder()
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
+                    .addQueryParameter("regelverk", "A_ORDNINGEN")
+                    .build()
+            )
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${tokenExchangeService.exchangeToken(aaregApi)}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()

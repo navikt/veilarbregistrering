@@ -8,7 +8,7 @@ import no.nav.fo.veilarbregistrering.FileToJson.toJson
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 
-internal class StubAaregRestClient : AaregRestClient(mockk(relaxed = true), "/test.nav.no", mockk(), mockAuthContextHolder(), { "token" }) {
+internal class StubAaregRestClient : AaregRestClient(mockk(relaxed = true), "/test.nav.no", mockk(), mockAuthContextHolder(), mockk(), { "token" }) {
     override fun utforRequest(fnr: Foedselsnummer) = toJson("/arbeidsforhold/arbeidsforhold.json")
     override fun utfoerRequestAad(fnr: Foedselsnummer) = toJson("/arbeidsforhold/arbeidsforhold.json")
 }

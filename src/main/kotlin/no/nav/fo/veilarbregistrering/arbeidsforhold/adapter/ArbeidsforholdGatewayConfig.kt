@@ -9,6 +9,8 @@ import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.tokenveksling.DownstreamApi
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -19,14 +21,16 @@ class ArbeidsforholdGatewayConfig {
         metricsService: MetricsService,
         systemUserTokenProvider: SystemUserTokenProvider,
         authContextHolder: AuthContextHolder,
-        serviceToServiceTokenProvider: ServiceToServiceTokenProvider
+        serviceToServiceTokenProvider: ServiceToServiceTokenProvider,
+        tokenExchangeService: TokenExchangeService
     ): AaregRestClient {
         val aaregCluster = requireClusterName()
         return AaregRestClient(
             metricsService,
             requireProperty(REST_URL),
             systemUserTokenProvider,
-            authContextHolder
+            authContextHolder,
+            tokenExchangeService
         ) {
             try {
                 val serviceName = if (isDevelopment()) "aareg-services-nais-q1" else "aareg-services-nais"
@@ -47,3 +51,5 @@ class ArbeidsforholdGatewayConfig {
         private const val REST_URL = "AAREG_REST_API"
     }
 }
+
+val aaregApi = DownstreamApi(requireProperty("AAREG_CLUSTER"), "arbeidsforhold", requireProperty("AAREG_APPNAME"))
