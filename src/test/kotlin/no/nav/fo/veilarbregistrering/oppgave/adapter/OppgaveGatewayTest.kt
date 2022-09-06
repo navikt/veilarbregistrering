@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.oppgave.Oppgave
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
@@ -23,12 +22,10 @@ import javax.servlet.http.HttpServletRequest
 internal class OppgaveGatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): OppgaveRestClient {
-        val systemUserTokenProvider: SystemUserTokenProvider = mockk()
         val httpServletRequestProvider: Provider<HttpServletRequest> = mockk()
         val httpServletRequest: HttpServletRequest = mockk()
         every { httpServletRequestProvider.get() } returns httpServletRequest
         every { httpServletRequest.getHeader(any()) } returns ""
-        every { systemUserTokenProvider.systemUserToken } returns "testToken"
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
         return OppgaveRestClient(baseUrl, mockk(relaxed = true)) { "testToken" }
     }

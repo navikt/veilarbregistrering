@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppgave.adapter
 
 import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Configuration
 class OppgaveGatewayConfig {
     @Bean
     fun oppgaveRestClient(
-        systemUserTokenProvider: SystemUserTokenProvider,
         metricsService: MetricsService,
         tokenProvider: ServiceToServiceTokenProvider
     ): OppgaveRestClient {
@@ -21,11 +19,7 @@ class OppgaveGatewayConfig {
         val serviceName = if (isProduction()) "oppgave" else "oppgave-q1"
 
         return OppgaveRestClient(requireProperty(OPPGAVE_PROPERTY_NAME), metricsService) {
-            tokenProvider.getServiceToken(
-                serviceName,
-                "oppgavehandtering",
-                cluster
-            )
+            tokenProvider.getServiceToken(serviceName, "oppgavehandtering", cluster)
         }
     }
 
