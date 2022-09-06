@@ -43,8 +43,6 @@ class Application {
                     "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
                 )
 
-                requireProperty("SERVICEUSER_USERNAME")
-                requireProperty("SERVICEUSER_PASSWORD")
             } else {
                 System.setProperty("SERVICEUSER_USERNAME", getVaultSecret("serviceuser_creds/username"))
                 System.setProperty("SERVICEUSER_PASSWORD", getVaultSecret("serviceuser_creds/password"))

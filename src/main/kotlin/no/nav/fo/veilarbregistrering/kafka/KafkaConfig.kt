@@ -9,6 +9,7 @@ import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import org.apache.kafka.clients.CommonClientConfigs
@@ -120,8 +121,8 @@ class KafkaConfig {
             this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_PLAINTEXT"
             this[SaslConfigs.SASL_JAAS_CONFIG] =
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" +
-                        System.getProperty("SERVICEUSER_USERNAME") + "\" password=\"" +
-                        System.getProperty("SERVICEUSER_PASSWORD") + "\";"
+                        requireProperty("SERVICEUSER_USERNAME") + "\" password=\"" +
+                        requireProperty("SERVICEUSER_PASSWORD") + "\";"
             if (System.getenv("NAV_TRUSTSTORE_PATH") != null) {
                 this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_SSL"
                 this[SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG] =
