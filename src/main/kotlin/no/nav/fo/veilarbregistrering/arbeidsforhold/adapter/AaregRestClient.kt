@@ -9,9 +9,7 @@ import no.nav.common.rest.client.RestUtils
 import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
-import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
@@ -19,6 +17,7 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
+import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -43,15 +42,19 @@ open class AaregRestClient(
         return if (authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
         } else {
-            if (isDevelopment()) {
-                try {
-                    parse(utforRequestTokenX(fnr))
-                    logger.info("Kall til Aareg med TokenX-veksling er OK")
-                } catch (e: Exception) {
-                    logger.warn("Feil i request mot Aareg med TokenX-veksling: ${e.message}", e)
-                }
+            var nyAaregRespons: List<ArbeidsforholdDto>? = null
+            try {
+                nyAaregRespons = parse(utforRequestTokenX(fnr))
+                logger.info("Kall til Aareg med TokenX-veksling er OK")
+            } catch (e: Exception) {
+                logger.warn("Feil i request mot Aareg med TokenX-veksling: ${e.message}", e)
             }
-            parse(utforRequest(fnr))
+
+            val opprinneligRespons = parse(utforRequest(fnr))
+            if (nyAaregRespons != opprinneligRespons) {
+                logger.warn("Avvik i respons fra Aareg med og uten tokenX-veksling. Med tokenX: $nyAaregRespons, opprinnelig kall: $opprinneligRespons")
+            }
+            opprinneligRespons
         }
     }
 
@@ -138,9 +141,9 @@ open class AaregRestClient(
             ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg")
             throw HentArbeidsforholdException(feilmelding)
         }
-        return RestUtils.getBodyStr(response).orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
+        return RestUtils.getBodyStr(response)
+            .orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
     }
-
 
 
     companion object {
