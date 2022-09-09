@@ -40,17 +40,17 @@ open class AaregRestClient(
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
         return if (authContextHolder.erAADToken()) {
-            parse(utfoerRequestAad(fnr))
+            parse(utfoerRequest(buildRequestAzureAD(fnr)))
         } else {
             var nyAaregRespons: List<ArbeidsforholdDto>? = null
             try {
-                nyAaregRespons = parse(utforRequestTokenX(fnr))
+                nyAaregRespons = parse(utfoerRequest(buildRequestTokenX(fnr)))
                 logger.info("Kall til Aareg med TokenX-veksling er OK")
             } catch (e: Exception) {
                 logger.warn("Feil i request mot Aareg med TokenX-veksling: ${e.message}", e)
             }
 
-            val opprinneligRespons = parse(utforRequest(fnr))
+            val opprinneligRespons = parse(utfoerRequest(buildRequestSTS(fnr)))
             if (nyAaregRespons?.sortedBy { it.ansettelsesperiode?.periode?.fom } != opprinneligRespons.sortedBy { it.ansettelsesperiode?.periode?.fom }) {
                 logger.warn("Avvik i respons fra Aareg med og uten tokenX-veksling. Med tokenX: $nyAaregRespons, opprinnelig kall: $opprinneligRespons")
             }
@@ -58,8 +58,19 @@ open class AaregRestClient(
         }
     }
 
-    protected open fun utfoerRequestAad(fnr: Foedselsnummer): String {
-        val request = Request.Builder()
+    protected open fun utfoerRequest(request: Request): String {
+        return doTimedCall {
+            try {
+                defaultHttpClient().newCall(request).execute()
+                    .use { response -> behandleResponse(response) }
+            } catch (e: IOException) {
+                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
+            }
+        }
+    }
+
+    protected open fun buildRequestAzureAD(fnr: Foedselsnummer): Request {
+        return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v1/arbeidstaker/arbeidsforhold")
@@ -71,19 +82,10 @@ open class AaregRestClient(
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
-
-        return doTimedCall {
-            try {
-                defaultHttpClient().newCall(request).execute()
-                    .use { response -> behandleResponse(response) }
-            } catch (e: IOException) {
-                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
-            }
-        }
     }
 
-    protected open fun utforRequest(fnr: Foedselsnummer): String {
-        val request = Request.Builder()
+    protected open fun buildRequestSTS(fnr: Foedselsnummer): Request {
+        return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v1/arbeidstaker/arbeidsforhold")
@@ -96,18 +98,10 @@ open class AaregRestClient(
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
-
-        return doTimedCall {
-            try {
-                defaultHttpClient().newCall(request).execute().use { response -> behandleResponse(response) }
-            } catch (e: IOException) {
-                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
-            }
-        }
     }
 
-    protected open fun utforRequestTokenX(fnr: Foedselsnummer): String {
-        val request = Request.Builder()
+    protected open fun buildRequestTokenX(fnr: Foedselsnummer): Request {
+        return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
                     .addPathSegments("v1/arbeidstaker/arbeidsforhold")
@@ -119,14 +113,6 @@ open class AaregRestClient(
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()
-
-        return doTimedCall {
-            try {
-                defaultHttpClient().newCall(request).execute().use { response -> behandleResponse(response) }
-            } catch (e: IOException) {
-                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
-            }
-        }
     }
 
     @Throws(IOException::class)

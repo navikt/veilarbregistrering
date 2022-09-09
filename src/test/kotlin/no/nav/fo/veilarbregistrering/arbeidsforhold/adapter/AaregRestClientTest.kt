@@ -8,7 +8,6 @@ class AaregRestClientTest {
 
     private val aaregRestClient: AaregRestClient = StubAaregRestClient()
 
-
     @Test
     fun `skal parse formidlingshistorikkResponse`() {
         val arbeidsforholdDtos = aaregRestClient.finnArbeidsforhold(Foedselsnummer("12345678910"))
