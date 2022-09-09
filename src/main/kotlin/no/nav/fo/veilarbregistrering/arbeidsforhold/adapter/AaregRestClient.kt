@@ -11,6 +11,7 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.MDCConstants
@@ -42,6 +43,14 @@ open class AaregRestClient(
         return if (authContextHolder.erAADToken()) {
             parse(utfoerRequestAad(fnr))
         } else {
+            if (isDevelopment()) {
+                try {
+                    parse(utforRequestTokenX(fnr))
+                    logger.info("Kall til Aareg med TokenX-veksling er OK")
+                } catch (e: Exception) {
+                    logger.warn("Feil i request mot Aareg med TokenX-veksling: ${e.message}", e)
+                }
+            }
             parse(utforRequest(fnr))
         }
     }
