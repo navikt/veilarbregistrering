@@ -51,7 +51,7 @@ open class AaregRestClient(
             }
 
             val opprinneligRespons = parse(utforRequest(fnr))
-            if (nyAaregRespons != opprinneligRespons) {
+            if (nyAaregRespons?.sortedBy { it.ansettelsesperiode?.periode?.fom } != opprinneligRespons.sortedBy { it.ansettelsesperiode?.periode?.fom }) {
                 logger.warn("Avvik i respons fra Aareg med og uten tokenX-veksling. Med tokenX: $nyAaregRespons, opprinnelig kall: $opprinneligRespons")
             }
             opprinneligRespons
