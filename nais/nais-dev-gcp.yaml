@@ -121,6 +121,8 @@ spec:
         - application: aareg-services-nais-q1
           namespace: arbeidsforhold
           cluster: dev-fss
+        - application: digdir-krr-proxy
+          namespace: team-rocket
   gcp:
     sqlInstances:
       - type: POSTGRES_12
