@@ -20,7 +20,7 @@ spec:
   image: {{image}}
   env:
     - name: AAREG_REST_API
-      value: https://aareg-services-q1.dev.intern.nav.no/api
+      value: https://aareg-services-q1.dev-fss-pub.nais.io/api
     - name: AAREG_CLUSTER
       value: dev-fss
     - name: AAREG_APPNAME
@@ -36,7 +36,7 @@ spec:
     - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
       value: srvdp-arbeidssoker-o
     - name: VEILARBOPPFOLGINGAPI_URL
-      value: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
+      value: https://veilarboppfolging.dev-fss-pub.nais.io/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: dev-fss
     - name: VEILARBARENA_URL
@@ -50,9 +50,9 @@ spec:
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL
-      value: https://app-q1.adeo.no/norg2
+      value: https://norg2.dev-fss-pub.nais.io/
     - name: OPPGAVE_URL
-      value: https://oppgave.nais.preprod.local
+      value: https://oppgave-q1.dev-fss-pub.nais.io
     - name: OPPGAVE_CLUSTER
       value: dev-fss
     - name: DIGDIR_KRR_PROXY_BASE_URL
@@ -60,11 +60,11 @@ spec:
     - name: DIGDIR_KRR_CLUSTER
       value: dev-gcp
     - name: PDL_URL
-      value: http://pdl-api.default.svc.nais.local
+      value: https://pdl-api-q1.dev-fss-pub.nais.io
     - name: PDL_CLUSTER
       value: dev-fss
     - name: ENHET_URL
-      value: https://modapp-q1.adeo.no/ereg
+      value: https://ereg-services-q1.dev-fss-pub.nais.io/
     - name: KAFKA_SERVERS
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: KAFKA_SCHEMA
