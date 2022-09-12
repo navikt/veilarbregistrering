@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate
 class DatabaseHelsesjekk(var jdbcTemplate: JdbcTemplate) : HealthCheck {
     override fun checkHealth(): HealthCheckResult {
         val pingQuery = if (isOnPrem()) "SELECT 1 FROM DUAL" else "SELECT 1"
-        try {
+        return try {
             jdbcTemplate.queryForObject(pingQuery, Long::class.java)
-            return HealthCheckResult.healthy()
+            HealthCheckResult.healthy()
         } catch (e: Exception) {
             HealthCheckResult.unhealthy("Fikk ikke kontakt med databasen", e)
         }
