@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.sts.ServiceToServiceTokenProvider
+import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireClusterName
@@ -19,7 +19,7 @@ class ArbeidsforholdGatewayConfig {
     fun aaregRestClient(
         metricsService: MetricsService,
         authContextHolder: AuthContextHolder,
-        serviceToServiceTokenProvider: ServiceToServiceTokenProvider,
+        machineToMachineTokenClient: AzureAdMachineToMachineTokenClient,
         tokenExchangeService: TokenExchangeService
     ): AaregRestClient {
         val aaregCluster = requireClusterName()
@@ -31,7 +31,7 @@ class ArbeidsforholdGatewayConfig {
         ) {
             try {
                 val serviceName = if (isDevelopment()) "aareg-services-nais-q1" else "aareg-services-nais"
-                serviceToServiceTokenProvider.getServiceToken(serviceName, "arbeidsforhold", aaregCluster)
+                machineToMachineTokenClient.createMachineToMachineToken("api://$aaregCluster.arbeidsforhold.$serviceName/.default")
             } catch (e: Exception) {
                 logger.warn("Henting av token for aad-kall til aareg feilet: ", e)
                 "no token"
