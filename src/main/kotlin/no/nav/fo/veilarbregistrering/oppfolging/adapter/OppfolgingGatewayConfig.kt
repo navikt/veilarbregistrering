@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.fo.veilarbregistrering.config.isDevelopment
+import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -19,7 +18,7 @@ class OppfolgingGatewayConfig {
     fun oppfolgingClient(
         objectMapper: ObjectMapper,
         metricsService: MetricsService,
-        tokenProvider: ServiceToServiceTokenProvider,
+        tokenProvider: AzureAdMachineToMachineTokenClient,
         tokenExchangeService: TokenExchangeService,
     ): OppfolgingClient {
         val propertyName = "VEILARBOPPFOLGINGAPI_URL"
@@ -30,38 +29,27 @@ class OppfolgingGatewayConfig {
             requireProperty(propertyName),
             tokenExchangeService,
         ) {
-            tokenProvider.getServiceToken(
-                oppfolgingAppNavn,
-                oppfolgingNamespace,
-                oppfolgingCluster
-            )
+            tokenProvider.createMachineToMachineToken("api://$oppfolgingCluster.$oppfolgingNamespace.$oppfolgingAppNavn/.default")
         }
     }
 
     @Bean
     fun veilarbarenaClient(
-        tokenProvider: ServiceToServiceTokenProvider,
+        tokenProvider: AzureAdMachineToMachineTokenClient,
         metricsService: MetricsService
     ): VeilarbarenaClient {
         val baseUrl = requireProperty("VEILARBARENA_URL")
         val veilarbarenaCluster = requireProperty("VEILARBARENA_CLUSTER")
         val veilarbarenaTokenProvider = {
             try {
-                tokenProvider.getServiceToken(
-                    "veilarbarena",
-                    "pto",
-                    veilarbarenaCluster
-                )
+                tokenProvider.createMachineToMachineToken("api://$veilarbarenaCluster.pto.veilarbarena/.default")
             } catch (e: Exception) {
                 "no token"
             }
         }
         val proxyTokenProvider = {
-            tokenProvider.getServiceToken(
-                "paw-proxy",
-                "paw",
-                if (isDevelopment()) "dev-fss" else "prod-fss"
-            )
+            val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
+            tokenProvider.createMachineToMachineToken("api://$pawProxyCluster.paw.paw-proxy/.default")
         }
         return VeilarbarenaClient(baseUrl, metricsService, veilarbarenaTokenProvider, proxyTokenProvider)
     }

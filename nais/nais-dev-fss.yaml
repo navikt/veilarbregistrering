@@ -47,6 +47,8 @@ spec:
       value: http://paw-proxy.paw.svc.nais.local/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
       value: dev-fss
+    - name: PAW_PROXY_CLUSTER
+      value: dev-fss
     - name: ABAC_PDP_ENDPOINT_URL
       value: https://abac-veilarb-q1.dev.intern.nav.no/application/asm-pdp/authorize
     - name: UNLEASH_API_URL

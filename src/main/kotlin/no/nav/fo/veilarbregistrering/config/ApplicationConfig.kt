@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.config
 
-import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
@@ -21,7 +19,6 @@ import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig
 import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeConfig
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
@@ -61,13 +58,6 @@ import org.springframework.web.server.UnsupportedMediaTypeStatusException
 )
 @EnableScheduling
 class ApplicationConfig {
-    
-    @Bean
-    fun serviceToServiceTokenProvider(): ServiceToServiceTokenProvider {
-        return AzureAdServiceTokenProviderBuilder.builder()
-            .withEnvironmentDefaults()
-            .build()
-    }
 
     @ControllerAdvice
     class ControllerConfig {
