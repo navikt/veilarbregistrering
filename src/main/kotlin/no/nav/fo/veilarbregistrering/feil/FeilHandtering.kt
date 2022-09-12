@@ -6,18 +6,14 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonLevel3Exception
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonValideringException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
-import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.KanIkkeReaktiveresException
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.server.UnsupportedMediaTypeStatusException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
@@ -106,12 +102,6 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun handleRuntimeException(r: RuntimeException): ResponseEntity<Any> {
         logger.error(r.message ?: "Uventet feil", r)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<Any> {
-        logger.warn("Klarte ikke lese request: ${e.message}", e)
-        return ResponseEntity.status(BAD_REQUEST).build()
     }
 
     @ExceptionHandler(UnsupportedMediaTypeStatusException::class)
