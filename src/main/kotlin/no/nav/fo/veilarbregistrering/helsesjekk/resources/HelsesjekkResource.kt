@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.helsesjekk.resources
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestUtils
 import no.nav.common.health.selftest.SelfTestUtils.checkAll
+import no.nav.common.health.selftest.SelfTestUtils.checkAllParallel
 import no.nav.common.health.selftest.SelftTestCheckResult
 import no.nav.common.health.selftest.SelftestHtmlGenerator
 import no.nav.fo.veilarbregistrering.log.logger
@@ -32,7 +33,7 @@ class HelsesjekkResource(@Autowired private val selfTestChecks: SelfTestChecks) 
 
     @GetMapping("/isReadyGcp")
     fun isReadyGcp(): ResponseEntity<Any> {
-        val healthCheckOk = checkAll(selfTestChecks.selfTestChecks)
+        val healthCheckOk = checkAllParallel(selfTestChecks.selfTestChecks.filter { it.isCritical })
             .filter { it.selfTestCheck.isCritical }
             .all { it.checkResult.isHealthy }
         return if (healthCheckOk) {
