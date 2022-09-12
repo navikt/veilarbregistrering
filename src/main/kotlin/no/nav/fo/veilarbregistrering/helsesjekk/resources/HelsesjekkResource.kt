@@ -5,7 +5,9 @@ import no.nav.common.health.selftest.SelfTestUtils
 import no.nav.common.health.selftest.SelfTestUtils.checkAll
 import no.nav.common.health.selftest.SelftTestCheckResult
 import no.nav.common.health.selftest.SelftestHtmlGenerator
+import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,6 +28,20 @@ class HelsesjekkResource(@Autowired private val selfTestChecks: SelfTestChecks) 
         checkAll(selfTestChecks.selfTestChecks)
             .filter { it.selfTestCheck.isCritical }
             .all { it.checkResult.isHealthy }
+    }
+
+    @GetMapping("/isReadyGcp")
+    fun isReadyGcp(): ResponseEntity<Any> {
+        val healthCheckOk = checkAll(selfTestChecks.selfTestChecks)
+            .filter { it.selfTestCheck.isCritical }
+            .all { it.checkResult.isHealthy }
+        return if (healthCheckOk) {
+            logger.info("Helsesjekk OK")
+            ResponseEntity.ok().build()
+        } else {
+            logger.info("Feil i helsesjekk")
+            ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
+        }
     }
 
     @GetMapping("/selftest")
