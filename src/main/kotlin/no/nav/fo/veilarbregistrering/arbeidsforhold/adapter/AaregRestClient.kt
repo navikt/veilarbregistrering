@@ -6,7 +6,6 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestUtils
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -30,7 +29,6 @@ import java.io.IOException
 open class AaregRestClient(
     metricsService: MetricsService,
     private val baseUrl: String,
-    private val systemUserTokenProvider: SystemUserTokenProvider,
     private val authContextHolder: AuthContextHolder,
     private val tokenExchangeService: TokenExchangeService,
     private val aadTokenProvider: () -> String
@@ -39,23 +37,12 @@ open class AaregRestClient(
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        return if (authContextHolder.erAADToken()) {
-            parse(utfoerRequest(buildRequestAzureAD(fnr)))
+        val request = if (authContextHolder.erAADToken()) {
+            buildRequestAzureAD(fnr)
         } else {
-            var nyAaregRespons: List<ArbeidsforholdDto>? = null
-            try {
-                nyAaregRespons = parse(utfoerRequest(buildRequestTokenX(fnr)))
-                logger.info("Kall til Aareg med TokenX-veksling er OK")
-            } catch (e: Exception) {
-                logger.warn("Feil i request mot Aareg med TokenX-veksling: ${e.message}", e)
-            }
-
-            val opprinneligRespons = parse(utfoerRequest(buildRequestSTS(fnr)))
-            if (nyAaregRespons?.sortedBy { it.ansettelsesperiode?.periode?.fom } != opprinneligRespons.sortedBy { it.ansettelsesperiode?.periode?.fom }) {
-                logger.warn("Avvik i respons fra Aareg med og uten tokenX-veksling. Med tokenX: $nyAaregRespons, opprinnelig kall: $opprinneligRespons")
-            }
-            opprinneligRespons
+            buildRequestTokenX(fnr)
         }
+        return parse(utfoerRequest(request))
     }
 
     protected open fun utfoerRequest(request: Request): String {
@@ -79,22 +66,6 @@ open class AaregRestClient(
             )
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${aadTokenProvider()}")
-            .header(NAV_PERSONIDENT, fnr.stringValue())
-            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-            .build()
-    }
-
-    protected open fun buildRequestSTS(fnr: Foedselsnummer): Request {
-        return Request.Builder()
-            .url(
-                HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
-                    .addQueryParameter("regelverk", "A_ORDNINGEN")
-                    .build()
-            )
-            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${authContextHolder.requireIdTokenString()}")
-            .header(NAV_CONSUMER_TOKEN, "Bearer ${systemUserTokenProvider.systemUserToken}")
             .header(NAV_PERSONIDENT, fnr.stringValue())
             .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
             .build()

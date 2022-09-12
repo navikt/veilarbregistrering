@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.requireClusterName
@@ -19,7 +18,6 @@ class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
         metricsService: MetricsService,
-        systemUserTokenProvider: SystemUserTokenProvider,
         authContextHolder: AuthContextHolder,
         serviceToServiceTokenProvider: ServiceToServiceTokenProvider,
         tokenExchangeService: TokenExchangeService
@@ -28,7 +26,6 @@ class ArbeidsforholdGatewayConfig {
         return AaregRestClient(
             metricsService,
             requireProperty(REST_URL),
-            systemUserTokenProvider,
             authContextHolder,
             tokenExchangeService
         ) {

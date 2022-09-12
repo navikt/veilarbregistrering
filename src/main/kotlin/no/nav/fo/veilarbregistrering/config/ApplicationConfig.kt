@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.config
 
-import no.nav.common.sts.NaisSystemUserTokenProvider
 import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.common.sts.utils.AzureAdServiceTokenProviderBuilder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
@@ -16,11 +14,13 @@ import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig
 import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig
+import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -30,8 +30,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
-import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeConfig
 import org.springframework.web.server.UnsupportedMediaTypeStatusException
 
 
@@ -63,14 +61,6 @@ import org.springframework.web.server.UnsupportedMediaTypeStatusException
 )
 @EnableScheduling
 class ApplicationConfig {
-    @Bean
-    fun systemUserTokenProvider(): SystemUserTokenProvider? {
-        return NaisSystemUserTokenProvider(
-            requireProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL"),
-            requireProperty("SERVICEUSER_USERNAME"),
-            requireProperty("SERVICEUSER_PASSWORD")
-        )
-    }
     
     @Bean
     fun serviceToServiceTokenProvider(): ServiceToServiceTokenProvider {

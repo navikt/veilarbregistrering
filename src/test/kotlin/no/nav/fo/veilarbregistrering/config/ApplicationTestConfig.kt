@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.config
 import io.mockk.mockk
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.sts.ServiceToServiceTokenProvider
-import no.nav.common.sts.SystemUserTokenProvider
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
@@ -21,9 +20,6 @@ class ApplicationTestConfig : ApplicationConfig() {
     fun userServiceStub(): UserService {
         return StubUserService()
     }
-
-    @Bean
-    override fun systemUserTokenProvider(): SystemUserTokenProvider = mockk()
 
     @Bean
     override fun serviceToServiceTokenProvider(): ServiceToServiceTokenProvider = mockk()
