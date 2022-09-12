@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig
 import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
-import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
@@ -21,13 +20,7 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.Publiser
 import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.http.HttpStatus
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.server.UnsupportedMediaTypeStatusException
 
 
 @Configuration
@@ -57,22 +50,4 @@ import org.springframework.web.server.UnsupportedMediaTypeStatusException
     TokenExchangeConfig::class
 )
 @EnableScheduling
-class ApplicationConfig {
-
-    @ControllerAdvice
-    class ControllerConfig {
-        @ExceptionHandler
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        fun handle(e: HttpMessageNotReadableException?) {
-            logger.warn("Returning HTTP 400 Bad Request", e)
-            throw e!!
-        }
-
-        @ExceptionHandler
-        @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-        fun handle(e: UnsupportedMediaTypeStatusException) {
-            logger.warn("Returning HTTP 415 Unsupported Media Type", e)
-            throw e!!
-        }
-    }
-}
+class ApplicationConfig
