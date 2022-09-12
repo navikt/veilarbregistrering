@@ -104,11 +104,6 @@ open class AaregRestClient(
 
 
     companion object {
-        /**
-         * Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering
-         * og autorisasjon for tjenestekall - angis med ‘Bearer + mellomrom + token’
-         */
-        private const val NAV_CONSUMER_TOKEN = "Nav-Consumer-Token"
 
         /**
          * Identifikator for arbeidstaker (FNR/DNR/Aktør-id)
