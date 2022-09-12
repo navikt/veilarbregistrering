@@ -50,7 +50,7 @@ spec:
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL
-      value: https://norg2.dev-fss-pub.nais.io/
+      value: https://norg2.dev-fss-pub.nais.io/norg2
     - name: OPPGAVE_URL
       value: https://oppgave-q1.dev-fss-pub.nais.io
     - name: OPPGAVE_CLUSTER
@@ -64,7 +64,7 @@ spec:
     - name: PDL_CLUSTER
       value: dev-fss
     - name: ENHET_URL
-      value: https://ereg-services-q1.dev-fss-pub.nais.io/
+      value: https://ereg-services-q1.dev-fss-pub.nais.io/ereg
     - name: KAFKA_SERVERS
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: KAFKA_SCHEMA
