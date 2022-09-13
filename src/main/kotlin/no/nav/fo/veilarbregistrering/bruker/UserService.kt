@@ -6,6 +6,7 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.springframework.stereotype.Service
@@ -55,7 +56,7 @@ class UserService(
     private fun hentFnrFraToken(): Foedselsnummer {
         val fnr = authContextHolder.hentFnrFraPid()
 
-        if (!FodselsnummerValidator.isValid(fnr)) {
+        if (isProduction() && !FodselsnummerValidator.isValid(fnr)) {
             secureLogger.warn("Fødselsnummer, $fnr, hentet fra token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
             throw ManglendeBrukerInfoException("Fødselsnummer hentet fra token er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
