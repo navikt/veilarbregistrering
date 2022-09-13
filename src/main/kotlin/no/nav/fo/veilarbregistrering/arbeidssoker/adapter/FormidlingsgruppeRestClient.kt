@@ -23,14 +23,15 @@ import java.util.function.Supplier
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,
     metricsService: MetricsService,
-    private val arenaOrdsTokenProvider: Supplier<String>
+    private val arenaOrdsTokenProvider: () -> String,
+    private val proxyTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
 
     fun hentFormidlingshistorikk(
         foedselsnummer: Foedselsnummer,
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
-        val request = buildRequest(foedselsnummer, periode)
+        val request = if (isOnPrem()) buildRequest(foedselsnummer, periode) else buildRequestGcp(foedselsnummer, periode)
         val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
         return doTimedCall {
             httpClient.newCall(request).execute().use {
@@ -61,7 +62,22 @@ class FormidlingsgruppeRestClient internal constructor(
                     .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
                     .build()
             )
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${arenaOrdsTokenProvider()}")
+            .build()
+    }
+
+    private fun buildRequestGcp(foedselsnummer: Foedselsnummer, periode: Periode): Request {
+        return Request.Builder()
+            .url(
+                HttpUrl.parse(baseUrl)!!.newBuilder()
+                    .addPathSegments("arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
+                    .addQueryParameter("fnr", foedselsnummer.stringValue())
+                    .addQueryParameter("fraDato", periode.fraDatoSomUtcString())
+                    .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
+                    .build()
+            )
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${proxyTokenProvider()}")
+            .header("Downstream-Authorization", "Bearer ${arenaOrdsTokenProvider()}")
             .build()
     }
 

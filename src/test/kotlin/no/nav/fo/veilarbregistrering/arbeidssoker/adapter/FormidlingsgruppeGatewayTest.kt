@@ -33,7 +33,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): FormidlingsgruppeRestClient {
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        return FormidlingsgruppeRestClient(baseUrl, mockk(relaxed = true)) { "arenaOrdsTokenProvider" }
+        return FormidlingsgruppeRestClient(baseUrl, mockk(relaxed = true), {"proxyTokenProvider"}, { "arenaOrdsTokenProvider" })
     }
 
     @Test

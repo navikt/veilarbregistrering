@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
+import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -15,12 +16,21 @@ class FormidlingsgruppeGatewayConfig {
     @Bean
     fun formidlingsgruppeRestClient(
         arenaOrdsTokenProviderClient: ArenaOrdsTokenProviderClient,
+        azureAdMachineToMachineTokenProvider: AzureAdMachineToMachineTokenClient,
         metricsService: MetricsService
-    ) =
-        FormidlingsgruppeRestClient(
+    ): FormidlingsgruppeRestClient {
+        val proxyTokenProvider = {
+            val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
+            azureAdMachineToMachineTokenProvider.createMachineToMachineToken("api://$pawProxyCluster.paw.paw-proxy/.default")
+        }
+        val arenaTokenProvider = { arenaOrdsTokenProviderClient.token }
+        return FormidlingsgruppeRestClient(
             requireProperty(ARENA_ORDS_API),
             metricsService,
-        ) { arenaOrdsTokenProviderClient.token }
+            arenaTokenProvider,
+            proxyTokenProvider
+        )
+    }
 
     @Bean
     fun formidlingsgruppeGateway(
