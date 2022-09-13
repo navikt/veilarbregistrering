@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import okhttp3.HttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -29,7 +30,7 @@ class ArenaOrdsTokenProviderClient(
 
     private fun getRefreshedToken(): OrdsToken {
         val request = Request.Builder()
-            .url(arenaOrdsUrl)
+            .url(HttpUrl.parse(arenaOrdsUrl)!!.newBuilder().addPathSegments("arena/api/oauth/token").build())
             .header(HttpHeaders.CACHE_CONTROL, "no-cache")
             .header(HttpHeaders.AUTHORIZATION, basicAuth)
             .post(

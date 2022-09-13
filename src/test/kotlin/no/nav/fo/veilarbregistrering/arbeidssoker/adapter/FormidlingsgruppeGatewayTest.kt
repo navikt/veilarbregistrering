@@ -44,7 +44,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                 HttpRequest
                         .request()
                         .withMethod("GET")
-                        .withPath("/v1/person/arbeidssoeker/formidlingshistorikk"))
+                        .withPath("arena/api/v1/person/arbeidssoeker/formidlingshistorikk"))
                 .respond(response()
                         .withStatusCode(200)
                         .withBody(json, MediaType.JSON_UTF_8))
@@ -76,7 +76,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
             HttpRequest
                 .request()
                 .withMethod("GET")
-                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+                .withPath("arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
         )
             .respond(
                 response()
@@ -99,7 +99,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
             HttpRequest
                 .request()
                 .withMethod("GET")
-                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+                .withPath("arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
         )
             .respond(
                 response()
@@ -120,7 +120,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
             HttpRequest
                 .request()
                 .withMethod("GET")
-                .withPath("/v1/person/arbeidssoeker/formidlingshistorikk")
+                .withPath("arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
                 .withQueryStringParameter("fnr", "11118035157"))
             .respond(response()
                 .withStatusCode(404))

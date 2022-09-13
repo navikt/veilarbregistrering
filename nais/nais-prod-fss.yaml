@@ -73,9 +73,9 @@ spec:
     - name: KAFKA_SCHEMA
       value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
-      value: https://arena-ords-readonly.intern.nav.no/arena/api
+      value: https://arena-ords-readonly.intern.nav.no
     - name: ARENA_ORDS_TOKEN_PROVIDER
-      value: https://arena-ords.intern.nav.no/arena/api/oauth/token
+      value: https://arena-ords.intern.nav.no
   leaderElection: true
   kafka:
     pool: nav-prod
