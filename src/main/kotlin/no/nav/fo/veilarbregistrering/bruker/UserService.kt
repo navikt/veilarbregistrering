@@ -46,7 +46,7 @@ class UserService(
         val fnr: String = servletRequest().getParameter("fnr")
             ?: throw IllegalStateException("Fant ikke fødselsnummer i URL for kall i veileder- eller system-kontekst. Kan ikke gjøre oppslag i PDL.")
 
-        if (!FodselsnummerValidator.isValid(fnr)) {
+        if (isProduction() && !FodselsnummerValidator.isValid(fnr)) {
             secureLogger.warn("Fødselsnummer, $fnr, hentet fra URL er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
             throw ManglendeBrukerInfoException("Fødselsnummer hentet fra URL er ikke gyldig. Kan ikke gjøre oppslag i PDL.")
         }
