@@ -6,10 +6,12 @@ import io.micrometer.core.instrument.binder.MeterBinder
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestUtils
+import no.nav.fo.veilarbregistrering.log.logger
 import java.util.function.Supplier
 
 class SelfTestStatusMeterBinder(private val selfTestChecks: SelfTestChecks): MeterBinder {
     override fun bindTo(registry: MeterRegistry) {
+        logger.info("Pinger baksystemer og registrerer metrikk")
         selfTestChecks.selfTestChecks.map { selfTestCheck ->
             Gauge.builder("selftest_status", selfTestChecker(selfTestCheck)).tag("id", selfTestCheck.description)
         }.forEach { it.register(registry) }
