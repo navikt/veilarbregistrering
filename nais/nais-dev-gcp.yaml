@@ -72,7 +72,7 @@ spec:
     - name: ARENA_ORDS_API
       value: https://paw-proxy.dev-fss-pub.nais.io
     - name: ARENA_ORDS_TOKEN_PROVIDER
-      value: https://arena-ords-q1.nais.preprod.local
+      value: https://paw-proxy.dev-fss-pub.nais.io
     - name: SPRING_PROFILES_ACTIVE
       value: gcp
   leaderElection: true

@@ -10,8 +10,12 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class FormidlingsgruppeGatewayConfig {
     @Bean
-    fun arenaOrdsTokenProviderClient(): ArenaOrdsTokenProviderClient =
-        ArenaOrdsTokenProviderClient(requireProperty(ARENA_ORDS_TOKEN_PROVIDER))
+    fun arenaOrdsTokenProviderClient(tokenProvider: AzureAdMachineToMachineTokenClient): ArenaOrdsTokenProviderClient {
+        return ArenaOrdsTokenProviderClient(requireProperty(ARENA_ORDS_TOKEN_PROVIDER)) {
+            val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
+            tokenProvider.createMachineToMachineToken("api://$pawProxyCluster.paw.paw-proxy/.default")
+        }
+    }
 
     @Bean
     fun formidlingsgruppeRestClient(

@@ -21,6 +21,7 @@ class ArenaOrdsTokenProviderClientTest(private val mockServer: ClientAndServer) 
         mockServer.reset()
         System.setProperty("ARENA_ORDS_CLIENT_ID", "1")
         System.setProperty("ARENA_ORDS_CLIENT_SECRET", "1")
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
     }
 
     @Test
@@ -45,7 +46,7 @@ class ArenaOrdsTokenProviderClientTest(private val mockServer: ClientAndServer) 
 
 
     private fun buildClient(): ArenaOrdsTokenProviderClient = mockServer.remoteAddress().let {
-        ArenaOrdsTokenProviderClient("http://${it.hostName}:${it.port}")
+        ArenaOrdsTokenProviderClient("http://${it.hostName}:${it.port}") { "testToken" }
     }
 }
 
