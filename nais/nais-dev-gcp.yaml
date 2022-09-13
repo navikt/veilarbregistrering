@@ -70,7 +70,7 @@ spec:
     - name: KAFKA_SCHEMA
       value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
-      value: https://arena-ords-q1.nais.preprod.local
+      value: https://paw-proxy.dev-fss-pub.nais.io
     - name: ARENA_ORDS_TOKEN_PROVIDER
       value: https://arena-ords-q1.nais.preprod.local
     - name: SPRING_PROFILES_ACTIVE

@@ -7,6 +7,7 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
@@ -65,7 +66,8 @@ class FormidlingsgruppeRestClient internal constructor(
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "arena/api/v1/test/ping"), defaultHttpClient())
+        val path = if (isOnPrem()) "arena/api/v1/test/ping" else "arena/ping"
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, path), defaultHttpClient())
     }
 
     companion object {
