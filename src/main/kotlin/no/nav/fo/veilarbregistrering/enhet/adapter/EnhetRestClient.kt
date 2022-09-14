@@ -42,7 +42,11 @@ open class EnhetRestClient(val baseUrl: String): HealthCheck {
     }
 
     override fun checkHealth(): HealthCheckResult {
-        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/ping"), RestClient.baseClient())
+        val request = Request.Builder()
+            .url(UrlUtils.joinPaths(baseUrl, "/api/ping"))
+            .header("Nav-Consumer-Id", "veilarbregistrering")
+            .build()
+        return HealthCheckUtils.pingUrl(request, RestClient.baseClient())
     }
 
     companion object {
