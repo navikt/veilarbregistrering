@@ -8,6 +8,7 @@ import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.DigDirKrrProxyClient
+import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
@@ -28,18 +29,20 @@ class HelsesjekkConfig {
             krrClient: DigDirKrrProxyClient,
             aaregRestClient: AaregRestClient,
             oppgaveRestClient: OppgaveRestClient,
-            norg2RestClient: Norg2RestClient
+            norg2RestClient: Norg2RestClient,
+            pdlOppslagClient: PdlOppslagClient
     ): SelfTestChecks {
         val selfTestChecks = listOf(
-                SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),
-                SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
-                SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashClient),
-                SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
-                SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
-                SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
-                SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
-                SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),
-                SelfTestCheck("Ping Norg2 API", false, norg2RestClient)
+            SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),
+            SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
+            SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashClient),
+            SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
+            SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
+            SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
+            SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
+            SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),
+            SelfTestCheck("Ping Norg2 API", false, norg2RestClient),
+            SelfTestCheck("Ping PDL", false, pdlOppslagClient)
         )
         return SelfTestChecks(selfTestChecks)
     }

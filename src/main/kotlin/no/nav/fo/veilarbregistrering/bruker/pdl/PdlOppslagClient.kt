@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.common.health.HealthCheck
+import no.nav.common.health.HealthCheckResult
+import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
@@ -22,7 +25,7 @@ import java.nio.charset.StandardCharsets
 open class PdlOppslagClient(
     private val baseUrl: String,
     private val tokenProvider: () -> String = { "default" }
-) {
+): HealthCheck {
 
     private val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -153,5 +156,13 @@ open class PdlOppslagClient(
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
         private const val OPPFOLGING_TEMA_HEADERVERDI = "OPP"
+    }
+
+    override fun checkHealth(): HealthCheckResult {
+        val request = Request.Builder()
+            .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
+            .method("OPTIONS", null)
+            .build()
+        return HealthCheckUtils.pingUrl(request, RestClient.baseClient())
     }
 }
