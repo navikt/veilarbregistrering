@@ -21,26 +21,17 @@ import org.springframework.web.bind.annotation.RestController
 class HelsesjekkResource(@Autowired private val selfTestChecks: SelfTestChecks) {
 
     @GetMapping("/isAlive")
-    fun isAlive() {
+    fun isAlive(): ResponseEntity<Any> {
+        return ResponseEntity.ok().build()
     }
 
     @GetMapping("/isReady")
-    fun isReady() {
-        checkAll(selfTestChecks.selfTestChecks)
-            .filter { it.selfTestCheck.isCritical }
-            .all { it.checkResult.isHealthy }
-    }
-
-    @GetMapping("/isReadyGcp")
     fun isReadyGcp(): ResponseEntity<Any> {
         val healthCheckOk = checkAllParallel(selfTestChecks.selfTestChecks.filter { it.isCritical })
-            .filter { it.selfTestCheck.isCritical }
             .all { it.checkResult.isHealthy }
         return if (healthCheckOk) {
-            logger.info("Helsesjekk OK")
             ResponseEntity.ok().build()
         } else {
-            logger.info("Feil i helsesjekk")
             ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
         }
     }

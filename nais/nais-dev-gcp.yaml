@@ -88,7 +88,7 @@ spec:
     path: veilarbregistrering/internal/prometheus
   readiness:
     initialDelay: 60
-    path: veilarbregistrering/internal/isReadyGcp
+    path: veilarbregistrering/internal/isReady
     port: 8080
   replicas:
     cpuThresholdPercentage: 85
