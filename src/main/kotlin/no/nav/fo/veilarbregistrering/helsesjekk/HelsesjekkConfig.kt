@@ -10,6 +10,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestC
 import no.nav.fo.veilarbregistrering.bruker.krr.DigDirKrrProxyClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
+import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetRestClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2RestClient
@@ -28,6 +29,7 @@ class HelsesjekkConfig {
             formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
             krrClient: DigDirKrrProxyClient,
             aaregRestClient: AaregRestClient,
+            enhetRestClient: EnhetRestClient,
             oppgaveRestClient: OppgaveRestClient,
             norg2RestClient: Norg2RestClient,
             pdlOppslagClient: PdlOppslagClient
@@ -40,6 +42,7 @@ class HelsesjekkConfig {
             SelfTestCheck("Ping Arena med ORDS-tjenesten", false, formidlingsgruppeRestClient),
             SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
             SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
+            SelfTestCheck("Ping Enhetsregisteret", false, enhetRestClient),
             SelfTestCheck("Ping Oppgave API", false, oppgaveRestClient),
             SelfTestCheck("Ping Norg2 API", false, norg2RestClient),
             SelfTestCheck("Ping PDL", false, pdlOppslagClient)

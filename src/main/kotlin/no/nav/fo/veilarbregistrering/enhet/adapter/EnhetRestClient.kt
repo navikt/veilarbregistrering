@@ -1,7 +1,11 @@
 package no.nav.fo.veilarbregistrering.enhet.adapter
 
+import no.nav.common.health.HealthCheck
+import no.nav.common.health.HealthCheckResult
+import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestClient
 import no.nav.common.rest.client.RestUtils
+import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.arbeidsforhold.Organisasjonsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.log.loggerFor
@@ -10,7 +14,7 @@ import okhttp3.Request
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-open class EnhetRestClient(val baseUrl: String) {
+open class EnhetRestClient(val baseUrl: String): HealthCheck {
     private val url: String = "$baseUrl/api/v1/organisasjon/"
 
     open fun hentOrganisasjon(organisasjonsnummer: Organisasjonsnummer): OrganisasjonDetaljerDto? {
@@ -35,6 +39,10 @@ open class EnhetRestClient(val baseUrl: String) {
         } catch (e: IOException) {
             throw RuntimeException("Hent organsisasjon feilet", e)
         }
+    }
+
+    override fun checkHealth(): HealthCheckResult {
+        return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(baseUrl, "/api/ping"), RestClient.baseClient())
     }
 
     companion object {
