@@ -32,12 +32,6 @@ spec:
       value: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
     - name: VEILARBLOGIN_AAD_CLIENT_ID
       value: ed3e3651-aa09-4d11-bc92-46736b5a75ec
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://sts.adeo.no/SecurityTokenServiceProvider/
-    - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
-      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITY_TOKEN_SERVICE_CLIENT_ID
-      value: srvdp-arbeidssoker-o
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging.nais.adeo.no/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
