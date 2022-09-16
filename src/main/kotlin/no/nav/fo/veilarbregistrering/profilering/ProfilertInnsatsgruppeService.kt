@@ -30,10 +30,10 @@ class ProfilertInnsatsgruppeService(
     fun erStandardInnsats(bruker: Bruker): Boolean {
         val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
 
-        return if (servicegruppe?.value() === "IVURD") {
-            innsatsgruppe === Innsatsgruppe.STANDARD_INNSATS
+        return if (servicegruppe?.value() == "IVURD") {
+            innsatsgruppe == Innsatsgruppe.STANDARD_INNSATS
         } else {
-            servicegruppe?.value() === "IKVAL"
+            servicegruppe?.value() == "IKVAL"
         }
     }
 }
