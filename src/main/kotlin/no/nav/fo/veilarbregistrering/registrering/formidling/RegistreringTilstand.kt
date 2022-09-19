@@ -6,7 +6,7 @@ import java.time.LocalDateTime
  * RegistreringTilstand representerer tilstanden til en BrukerRegistrering på vei mot Arena.
  * Status sier noe om hvor langt registreringen har kommet ift. overføring til Arena og evt. response derfra.
  */
-class RegistreringTilstand private constructor(
+class RegistreringTilstand internal constructor(
     val id: Long,
     val brukerRegistreringId: Long,
     val opprettet: LocalDateTime,
