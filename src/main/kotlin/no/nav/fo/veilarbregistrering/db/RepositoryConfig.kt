@@ -20,6 +20,7 @@ import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringReposito
 import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
 import no.nav.fo.veilarbregistrering.db.gjelderfra.GjelderFraRepositoryImpl
+import no.nav.fo.veilarbregistrering.postgres.migrering.MigrateRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -68,6 +69,11 @@ class RepositoryConfig {
     @Bean
     fun migreringRepository(db: NamedParameterJdbcTemplate): MigreringRepositoryImpl {
         return MigreringRepositoryImpl(db)
+    }
+
+    @Bean
+    fun migrateRepository(db: NamedParameterJdbcTemplate): MigrateRepository {
+        return MigrateRepository(db)
     }
 
     @Bean

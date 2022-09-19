@@ -28,6 +28,8 @@ import no.nav.fo.veilarbregistrering.oppgave.OppgaveRouter
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService
 import no.nav.fo.veilarbregistrering.oppgave.resources.OppgaveResource
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
+import no.nav.fo.veilarbregistrering.postgres.migrering.MigrationStatusService
+import no.nav.fo.veilarbregistrering.postgres.migrering.StatusResource
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
