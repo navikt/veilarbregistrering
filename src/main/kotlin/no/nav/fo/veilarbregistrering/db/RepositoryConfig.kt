@@ -17,7 +17,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
 import no.nav.fo.veilarbregistrering.db.gjelderfra.GjelderFraRepositoryImpl
 import org.springframework.context.annotation.Bean

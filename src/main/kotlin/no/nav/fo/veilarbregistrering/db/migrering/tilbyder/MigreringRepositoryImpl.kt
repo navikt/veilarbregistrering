@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.migrering
+package no.nav.fo.veilarbregistrering.db.migrering.tilbyder
 
 import no.nav.fo.veilarbregistrering.migrering.TabellNavn.*
 import no.nav.fo.veilarbregistrering.log.loggerFor

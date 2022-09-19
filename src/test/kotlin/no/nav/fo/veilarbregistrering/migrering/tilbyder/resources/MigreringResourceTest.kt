@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.migrering
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.migrering.tilbyder.Secrets
-import no.nav.fo.veilarbregistrering.db.migrering.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.tilbyder.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
