@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.migrering.konsument.scheduler
 
 import no.nav.common.job.leader_election.LeaderElectionClient
+import no.nav.fo.veilarbregistrering.config.isOnPrem
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
 
 class MigrateWorker(
@@ -10,9 +12,10 @@ class MigrateWorker(
 
     //@Scheduled(fixedDelay = 20000)
     fun migrate() {
-        // Lese pg-db, finne tabeller og kolonnenavn
-        // Autorisasjon (header som leses) - hentes i veilarbregistrering fra Google secret manager
-        // Proxy-er
+        if (isOnPrem()) {
+            logger.warn("Migreringsjobb for GCP ble forsøkt kjørt fra FSS")
+            return
+        }
 
         if (!leaderElectionClient.isLeader) {
             return
