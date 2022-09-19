@@ -90,8 +90,6 @@ private class MigreringResourceConfig {
         registreringTilstandRepository: RegistreringTilstandRepository,
             ) = MigreringResource(
         migreringRepositoryImpl,
-        brukerRegistreringRepository,
-        registreringTilstandRepository,
     )
     @Bean
     fun migreringRepositoryImpl(): MigreringRepositoryImpl = mockk(relaxed = true)

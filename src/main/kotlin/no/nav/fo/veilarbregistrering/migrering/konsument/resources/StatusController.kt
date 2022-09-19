@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/internal")
-class StatusController(
-    private val migrationStatusService: MigrationStatusService)
-{
-    
+class StatusController(private val migrationStatusService: MigrationStatusService) {
+
     @GetMapping("/compareDatabases")
     fun compareDatabases(): List<Tabellsjekk> = migrationStatusService.compareDatabaseStatus()
 }

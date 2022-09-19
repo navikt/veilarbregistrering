@@ -12,19 +12,7 @@ import java.sql.SQLException
 import java.sql.Timestamp
 import java.time.ZonedDateTime
 
-class MigrateRepository(
-    private val db: NamedParameterJdbcTemplate)
-{
-
-//    private fun kobleTilDB(): Connection = DriverManager.getConnection(
-//        "jdbc:postgresql://${getRequiredProperty("PAWVEILARBREGISTRERING_HOST")}:${getRequiredProperty("PAWVEILARBREGISTRERING_PORT")}/${
-//            getRequiredProperty(
-//                "PAWVEILARBREGISTRERING_DATABASE"
-//            )
-//        }",
-//        getRequiredProperty("PAWVEILARBREGISTRERING_USERNAME"),
-//        getRequiredProperty("PAWVEILARBREGISTRERING_PASSWORD"),
-//    )
+class MigrateRepository(private val db: NamedParameterJdbcTemplate) {
 
     fun hentStoersteId(tabellNavn: TabellNavn): Int {
 

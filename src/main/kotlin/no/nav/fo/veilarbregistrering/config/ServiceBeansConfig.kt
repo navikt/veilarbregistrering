@@ -420,9 +420,7 @@ class ServiceBeansConfig {
         registreringTilstandRepository: RegistreringTilstandRepository,
     ): MigreringResource {
         return MigreringResource(
-            migreringRepository,
-            brukerRegistreringRepository,
-            registreringTilstandRepository
+            migreringRepository
         )
     }
 
