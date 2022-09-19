@@ -12,8 +12,8 @@ class MigrationStatusService(
         val kilde = TabellNavn.values().associate { it to migrateClient.hentSjekkerForTabell(it)[0] }
         val destinasjon = TabellNavn.values().associate { it to migrateRepository.hentSjekkerForTabell(it)[0] }
 
-        logger.info("Hentet statuser fra veilarbregistrering: $kilde")
-        logger.info("Hentet status fra lokal database: $destinasjon")
+        logger.info("Hentet statuser fra FSS: $kilde")
+        logger.info("Hentet statuser fra GCP: $destinasjon")
 
         return kilde.map { (tabell, resultat) ->
             val kolonnerSomIkkeMatcher: List<String> = resultat.filterNot { (kolonne, verdi) ->
