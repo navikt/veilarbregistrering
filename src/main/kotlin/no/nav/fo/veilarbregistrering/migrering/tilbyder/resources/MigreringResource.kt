@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.migrering.tilbyder.resources
 
 import no.nav.fo.veilarbregistrering.migrering.tilbyder.Secrets
-import no.nav.fo.veilarbregistrering.migrering.tilbyder.TabellNavn
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.tilbyder.MigreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository

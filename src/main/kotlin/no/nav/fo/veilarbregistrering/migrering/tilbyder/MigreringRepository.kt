@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.migrering.tilbyder
 
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn
+
 interface MigreringRepository {
     fun nesteFraTabell(tabellNavn: TabellNavn, id: Long): List<Map<String, Any>>
     fun hentStatus(): List<Map<String, Any>>

@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.migrering.konsument
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.migrering.tilbyder.TabellNavn
+import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import okhttp3.MediaType
 import okhttp3.OkHttpClient

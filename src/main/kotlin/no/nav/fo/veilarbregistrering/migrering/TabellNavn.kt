@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.migrering.tilbyder
+package no.nav.fo.veilarbregistrering.migrering
 
 enum class TabellNavn(val idKolonneNavn: String) {
     BRUKER_REGISTRERING("BRUKER_REGISTRERING_ID"),
