@@ -14,9 +14,9 @@ import javax.ws.rs.ForbiddenException
 @RestController
 @RequestMapping("/api/migrering")
 class MigreringResource(
-    val migreringRepository: MigreringRepository,
-    val brukerRegistreringRepository: BrukerRegistreringRepository,
-    val registreringTilstandRepository: RegistreringTilstandRepository,
+    private val migreringRepository: MigreringRepository,
+    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+    private val registreringTilstandRepository: RegistreringTilstandRepository,
 ) {
     @GetMapping()
     fun hentNesteFraTabell(@RequestHeader("x-token") token: String, @RequestParam() tabellNavn: TabellNavn, @RequestParam() idSisthentet: Long): List<Map<String, Any>> {
