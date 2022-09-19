@@ -1,6 +1,8 @@
-package no.nav.fo.veilarbregistrering.config
+package no.nav.fo.veilarbregistrering.migrering.tilbyder
 
 import no.nav.fo.veilarbregistrering.Application
+import no.nav.fo.veilarbregistrering.config.isOnPrem
+import no.nav.fo.veilarbregistrering.config.requireClusterName
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths

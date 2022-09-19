@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.db.migrering
 
-import no.nav.fo.veilarbregistrering.migrering.TabellNavn.*
+import no.nav.fo.veilarbregistrering.migrering.tilbyder.TabellNavn.*
 import no.nav.fo.veilarbregistrering.log.loggerFor
-import no.nav.fo.veilarbregistrering.migrering.MigreringRepository
-import no.nav.fo.veilarbregistrering.migrering.TabellNavn
+import no.nav.fo.veilarbregistrering.migrering.tilbyder.MigreringRepository
+import no.nav.fo.veilarbregistrering.migrering.tilbyder.TabellNavn
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
 

@@ -20,7 +20,7 @@ import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResour
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.migrering.resources.MigreringResource
+import no.nav.fo.veilarbregistrering.migrering.tilbyder.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
