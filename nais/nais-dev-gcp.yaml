@@ -37,6 +37,8 @@ spec:
       value: https://paw-proxy.dev-fss-pub.nais.io/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
       value: dev-fss
+    - name: VEILARBREGISTRERING_ONPREM_URL
+      value: https://paw-proxy.dev-fss-pub.nais.io/veilarbregistrering
     - name: PAW_PROXY_CLUSTER
       value: dev-fss
     - name: ABAC_PDP_ENDPOINT_URL

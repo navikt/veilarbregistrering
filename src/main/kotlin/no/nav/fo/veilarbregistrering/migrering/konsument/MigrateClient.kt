@@ -111,6 +111,6 @@ class MigrateClient {
             .build()
 
         inline fun <reified T> Gson.fromJson(json: String): T = fromJson(json, object: TypeToken<T>() {}.type)
-        val VEILARBREGISTRERING_URL = System.getenv("VEILARBREGISTRERING_URL")!!
+        val VEILARBREGISTRERING_URL = System.getenv("VEILARBREGISTRERING_ONPREM_URL")!!
     }
 }
