@@ -13,10 +13,10 @@ import okhttp3.RequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class MigrateClientImpl : MigrateClient {
+class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
 
     override fun hentNesteBatchFraTabell(tabell: TabellNavn, sisteIndex: Int): List<MutableMap<String, Any>> {
-        val request: Request = buildRequest("$VEILARBREGISTRERING_URL/api/migrering?tabellNavn=${tabell.name}&idSisthentet=${sisteIndex}")
+        val request: Request = buildRequest("$baseUrl/api/migrering?tabellNavn=${tabell.name}&idSisthentet=${sisteIndex}")
 
         try {
             restClient.newCall(request).execute().use { response ->
@@ -43,7 +43,7 @@ class MigrateClientImpl : MigrateClient {
 
     override fun hentSjekkerForTabell(tabell: TabellNavn): List<Map<String, Any>> {
         try {
-            restClient.newCall(buildRequest("$VEILARBREGISTRERING_URL/api/migrering/sjekksum/${tabell.name}"))
+            restClient.newCall(buildRequest("$baseUrl/api/migrering/sjekksum/${tabell.name}"))
                 .execute().use { response ->
                     response.body()?.let { body ->
                         val str = body.string()
@@ -59,7 +59,7 @@ class MigrateClientImpl : MigrateClient {
     override fun hentAntallPotensieltOppdaterteTilstander(): Int =
         try {
             restClient.newCall(
-                buildRequest("$VEILARBREGISTRERING_URL/api/migrering/registrering-tilstand/antall-potensielt-oppdaterte")
+                buildRequest("$baseUrl/api/migrering/registrering-tilstand/antall-potensielt-oppdaterte")
             )
                 .execute().use { response ->
                     response.body()?.let { body ->
@@ -77,7 +77,7 @@ class MigrateClientImpl : MigrateClient {
 
         return try {
             restClient.newCall(
-                requestBuilder("$VEILARBREGISTRERING_URL/api/migrering/registrering-tilstand/hent-oppdaterte-statuser")
+                requestBuilder("$baseUrl/api/migrering/registrering-tilstand/hent-oppdaterte-statuser")
                     .post(RequestBody.create(MediaType.parse("application/json"), Gson().toJson(map)))
                     .build()
             ).execute().use { response ->
@@ -112,6 +112,5 @@ class MigrateClientImpl : MigrateClient {
             .build()
 
         inline fun <reified T> Gson.fromJson(json: String): T = fromJson(json, object: TypeToken<T>() {}.type)
-        val VEILARBREGISTRERING_URL = System.getenv("VEILARBREGISTRERING_ONPREM_URL")!!
     }
 }

@@ -14,12 +14,17 @@ import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.bruker.resources.InternalUserResource
 import no.nav.fo.veilarbregistrering.bruker.resources.KontaktinfoResource
-import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.enhet.EnhetGateway
 import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResource
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
+import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
+import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
+import no.nav.fo.veilarbregistrering.migrering.konsument.MigrationStatusService
+import no.nav.fo.veilarbregistrering.migrering.konsument.resources.StatusController
+import no.nav.fo.veilarbregistrering.migrering.tilbyder.MigreringRepository
 import no.nav.fo.veilarbregistrering.migrering.tilbyder.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
@@ -43,7 +48,6 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalR
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
 import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
-import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBrukerRegistreringResource
@@ -56,6 +60,7 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.Reaktiv
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources.SykmeldtResource
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -414,14 +419,23 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun migreringPostgressResource(
-        migreringRepository: MigreringRepositoryImpl,
-        brukerRegistreringRepository: BrukerRegistreringRepository,
-        registreringTilstandRepository: RegistreringTilstandRepository,
-    ): MigreringResource {
-        return MigreringResource(
-            migreringRepository
-        )
+    fun migreringPostgressResource(migreringRepository: MigreringRepository): MigreringResource {
+        return MigreringResource(migreringRepository)
+    }
+
+    @Bean
+    fun migrationStatusService(migrateClient: MigrateClient, migrateRepository: MigrateRepository): MigrationStatusService {
+        return MigrationStatusService(migrateClient, migrateRepository)
+    }
+
+    @Bean
+    fun statusController(migrationStatusService: MigrationStatusService): StatusController {
+        return StatusController(migrationStatusService)
+    }
+
+    @Bean
+    fun migrateService(repository: MigrateRepository, migrateClient: MigrateClient): MigrateService {
+        return MigrateService(repository, migrateClient)
     }
 
     @Bean

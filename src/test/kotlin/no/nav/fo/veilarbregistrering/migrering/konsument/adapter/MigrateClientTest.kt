@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.migrering.konsument
+package no.nav.fo.veilarbregistrering.migrering.konsument.adapter
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

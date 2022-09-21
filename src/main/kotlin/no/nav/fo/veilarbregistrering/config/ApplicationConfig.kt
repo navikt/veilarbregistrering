@@ -13,6 +13,7 @@ import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
+import no.nav.fo.veilarbregistrering.migrering.konsument.adapter.MigrateClientConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
@@ -31,6 +32,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     DatabaseConfig::class,
     RepositoryConfig::class,
     KafkaConfig::class,
+    MigrateClientConfig::class,
     AutorisasjonConfig::class,
     Norg2GatewayConfig::class,
     CacheConfig::class,
