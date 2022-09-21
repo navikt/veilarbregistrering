@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.migrering.konsument.adapter
 
+import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.config.isOnPrem
+import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,11 +11,17 @@ import org.springframework.context.annotation.Configuration
 class MigrateClientConfig {
 
     @Bean
-    fun migrateClient(): MigrateClient {
+    fun migrateClient(tokenProvider: AzureAdMachineToMachineTokenClient): MigrateClient {
         return if (isOnPrem()) {
             OnPremMigrationClient()
         } else {
-            GcpMigrateClient(System.getenv("VEILARBREGISTRERING_ONPREM_URL")!!)
+            val proxyTokenProvider = {
+                val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
+                tokenProvider.createMachineToMachineToken("api://$pawProxyCluster.paw.paw-proxy/.default")
+            }
+
+            val baseUrl = System.getenv("VEILARBREGISTRERING_ONPREM_URL")!!
+            GcpMigrateClient(baseUrl, proxyTokenProvider)
         }
     }
 }

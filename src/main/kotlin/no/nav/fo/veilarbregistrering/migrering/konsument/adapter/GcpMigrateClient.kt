@@ -14,10 +14,14 @@ import okhttp3.RequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
+class GcpMigrateClient(
+    private val baseUrl: String,
+    private val proxyTokenProvider: () -> String
+) : MigrateClient {
 
     override fun hentNesteBatchFraTabell(tabell: TabellNavn, sisteIndex: Int): List<MutableMap<String, Any>> {
-        val request: Request = buildRequest("$baseUrl/api/migrering?tabellNavn=${tabell.name}&idSisthentet=${sisteIndex}")
+        val request: Request = buildRequest(
+            "$baseUrl/api/migrering?tabellNavn=${tabell.name}&idSisthentet=${sisteIndex}", proxyTokenProvider())
 
         try {
             restClient.newCall(request).execute().use { response ->
@@ -45,7 +49,8 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
     override fun hentSjekkerForTabell(tabell: TabellNavn): List<Map<String, Any>> {
         logger.info("hentSjekkerForTabell for tabell $tabell")
         try {
-            restClient.newCall(buildRequest("$baseUrl/api/migrering/sjekksum/${tabell.name}"))
+            restClient.newCall(buildRequest(
+                "$baseUrl/api/migrering/sjekksum/${tabell.name}", proxyTokenProvider()))
                 .execute().use { response ->
                     response.body()?.let { body ->
                         val str = body.string()
@@ -61,8 +66,8 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
     override fun hentAntallPotensieltOppdaterteTilstander(): Int =
         try {
             restClient.newCall(
-                buildRequest("$baseUrl/api/migrering/registrering-tilstand/antall-potensielt-oppdaterte")
-            )
+                buildRequest(
+                    "$baseUrl/api/migrering/registrering-tilstand/antall-potensielt-oppdaterte", proxyTokenProvider()))
                 .execute().use { response ->
                     response.body()?.let { body ->
                         val bodyString = body.string()
@@ -79,7 +84,8 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
 
         return try {
             restClient.newCall(
-                requestBuilder("$baseUrl/api/migrering/registrering-tilstand/hent-oppdaterte-statuser")
+                requestBuilder(
+                    "$baseUrl/api/migrering/registrering-tilstand/hent-oppdaterte-statuser", proxyTokenProvider())
                     .post(RequestBody.create(MediaType.parse("application/json"), Gson().toJson(map)))
                     .build()
             ).execute().use { response ->
@@ -97,16 +103,18 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
     }
 
     companion object {
-        private fun buildRequest(url: String) =
-            requestBuilder(url)
+        private fun buildRequest(url: String, proxyTokenProvider: String) =
+            requestBuilder(url, proxyTokenProvider)
                 .build()
 
-        private fun requestBuilder(url: String) =
-            Request.Builder()
+        private fun requestBuilder(url: String, proxyTokenProvider: String): Request.Builder {
+            return Request.Builder()
                 .url(url)
                 .header("accept", "application/json")
                 .header("x_consumerId", "veilarbregistrering")
+                .header("Authorization", "Bearer $proxyTokenProvider")
                 .header("x-token", System.getenv("MIGRATION_TOKEN"))
+        }
 
         private val restClient = OkHttpClient.Builder()
             .readTimeout(240L, TimeUnit.SECONDS)
