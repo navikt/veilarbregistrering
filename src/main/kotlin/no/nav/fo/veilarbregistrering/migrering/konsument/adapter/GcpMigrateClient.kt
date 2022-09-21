@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.migrering.konsument.adapter
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import no.nav.fo.veilarbregistrering.http.LogInterceptor
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.TabellNavn
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
@@ -42,6 +43,7 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
     }
 
     override fun hentSjekkerForTabell(tabell: TabellNavn): List<Map<String, Any>> {
+        logger.info("hentSjekkerForTabell for tabell $tabell")
         try {
             restClient.newCall(buildRequest("$baseUrl/api/migrering/sjekksum/${tabell.name}"))
                 .execute().use { response ->
@@ -108,6 +110,7 @@ class GcpMigrateClient(private val baseUrl: String) : MigrateClient {
 
         private val restClient = OkHttpClient.Builder()
             .readTimeout(240L, TimeUnit.SECONDS)
+            .addInterceptor(LogInterceptor())
             .followRedirects(false)
             .build()
 
