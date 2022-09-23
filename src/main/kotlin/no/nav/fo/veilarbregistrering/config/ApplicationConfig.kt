@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
 import no.nav.fo.veilarbregistrering.migrering.konsument.adapter.MigrateClientConfig
+import no.nav.fo.veilarbregistrering.migrering.konsument.scheduler.MigrateWorkerConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
@@ -46,6 +47,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     KrrConfig::class,
     FormidlingsgruppeGatewayConfig::class,
     PubliseringSchedulerConfig::class,
+    MigrateWorkerConfig::class,
     HelsesjekkConfig::class,
     ObjectMapperConfig::class,
     SwaggerConfig::class,
