@@ -40,7 +40,7 @@ class ArenaOrdsTokenProviderClient(
                             ?.let { bodyString -> objectMapper.readValue<OrdsToken>(bodyString) }
                             ?: throw IOException("Token response body was null")
                     }
-                    else -> throw IOException("Unexpected response code from ords token refresh")
+                    else -> throw IOException("Unexpected response code (${response.code()}) from ords token refresh")
                 }
             }
         } catch (e: IOException) {
