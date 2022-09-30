@@ -58,7 +58,7 @@ spec:
     - name: DIGDIR_KRR_CLUSTER
       value: dev-gcp
     - name: PDL_URL
-      value: https://pdl-api-q1.dev-fss-pub.nais.io
+      value: https://pdl-api.dev-fss-pub.nais.io
     - name: PDL_CLUSTER
       value: dev-fss
     - name: ENHET_URL
