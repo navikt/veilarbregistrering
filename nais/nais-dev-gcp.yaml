@@ -44,7 +44,7 @@ spec:
     - name: PAW_PROXY_CLUSTER
       value: dev-fss
     - name: ABAC_PDP_ENDPOINT_URL
-      value: https://abac-veilarb-proxy.dev-fss-pub.nais.io
+      value: https://abac-veilarb-proxy.dev-fss-pub.nais.io/api/proxy/abac
     - name: ABAC_CLUSTER
       value: dev-fss
     - name: UNLEASH_API_URL
