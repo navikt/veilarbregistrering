@@ -1,10 +1,11 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
-import no.nav.common.abac.Pep
-import no.nav.common.abac.VeilarbPepFactory
-import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier
+import no.nav.common.abac.*
+import no.nav.common.abac.audit.AuditConfig
+import no.nav.common.abac.audit.NimbusSubjectProvider
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
+import no.nav.common.token_client.client.MachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
@@ -16,13 +17,26 @@ import org.springframework.context.annotation.Profile
 class GcpAutorisasjonConfig {
 
     @Bean
-    fun veilarbPep(): Pep {
-        return VeilarbPepFactory.get(
-            requireProperty("ABAC_PDP_ENDPOINT_URL"),
+    fun pep(abacClient: AbacClient): Pep {
+        return VeilarbPep(
             requireProperty("SERVICEUSER_USERNAME"),
-            requireProperty("SERVICEUSER_PASSWORD"),
-            SpringAuditRequestInfoSupplier()
+            abacClient,
+            NimbusSubjectProvider(),
+            AuditConfig(null, null, null)
         )
+    }
+
+    @Bean
+    fun abacClient(
+        machineToMachineTokenClient: MachineToMachineTokenClient
+    ): AbacClient {
+        val client = AbacHttpClient(requireProperty("ABAC_PDP_ENDPOINT_URL"))
+        {
+            val abacCluster = requireProperty("ABAC_CLUSTER")
+            "Bearer " + machineToMachineTokenClient.createMachineToMachineToken("api://$abacCluster.pto.abac-veilarb-proxy/.default")
+        }
+
+        return AbacCachedClient(client)
     }
 
     @Bean
