@@ -2,7 +2,8 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
-import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
+import no.nav.fo.veilarbregistrering.autorisasjon.GcpAutorisasjonConfig
+import no.nav.fo.veilarbregistrering.autorisasjon.OnPremAutorisasjonConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig
 import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
@@ -34,7 +35,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
     RepositoryConfig::class,
     KafkaConfig::class,
     MigrateClientConfig::class,
-    AutorisasjonConfig::class,
+    OnPremAutorisasjonConfig::class,
+    GcpAutorisasjonConfig::class,
     Norg2GatewayConfig::class,
     CacheConfig::class,
     UnleashConfig::class,
