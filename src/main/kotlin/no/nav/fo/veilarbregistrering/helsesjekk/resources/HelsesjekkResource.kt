@@ -6,7 +6,6 @@ import no.nav.common.health.selftest.SelfTestUtils.checkAll
 import no.nav.common.health.selftest.SelfTestUtils.checkAllParallel
 import no.nav.common.health.selftest.SelftTestCheckResult
 import no.nav.common.health.selftest.SelftestHtmlGenerator
-import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -26,7 +25,7 @@ class HelsesjekkResource(@Autowired private val selfTestChecks: SelfTestChecks) 
     }
 
     @GetMapping("/isReady")
-    fun isReadyGcp(): ResponseEntity<Any> {
+    fun isReady(): ResponseEntity<Any> {
         val healthCheckOk = checkAllParallel(selfTestChecks.selfTestChecks.filter { it.isCritical })
             .all { it.checkResult.isHealthy }
         return if (healthCheckOk) {
