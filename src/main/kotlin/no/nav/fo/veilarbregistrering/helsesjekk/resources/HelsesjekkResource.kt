@@ -35,6 +35,17 @@ class HelsesjekkResource(@Autowired private val selfTestChecks: SelfTestChecks) 
         }
     }
 
+    @GetMapping("/isReadyGcp")
+    fun isReadyGcp(): ResponseEntity<Any> {
+        val healthCheckOk = checkAllParallel(selfTestChecks.selfTestChecks.filter { it.isCritical && it.description != "Ping mot ABAC tilgangskontroll" })
+            .all { it.checkResult.isHealthy }
+        return if (healthCheckOk) {
+            ResponseEntity.ok().build()
+        } else {
+            ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
+        }
+    }
+
     @GetMapping("/selftest")
     fun selfTest(): ResponseEntity<String> {
         val checkResults: List<SelftTestCheckResult> = checkAll(selfTestChecks.selfTestChecks)
