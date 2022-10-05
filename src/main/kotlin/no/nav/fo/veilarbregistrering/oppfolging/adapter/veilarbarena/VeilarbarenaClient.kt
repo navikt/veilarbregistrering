@@ -22,14 +22,12 @@ class VeilarbarenaClient(
 ) : HealthCheck, TimedMetric(metricsService) {
 
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
-        val proxyToken = proxyTokenProvider()
         val veilarbarenaToken = veilarbarenaTokenProvider()
 
 
         val request = Request.Builder()
             .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
-            .header("Authorization", "Bearer $proxyToken")
-            .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
+            .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
         return doTimedCall {

@@ -36,7 +36,7 @@ spec:
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: dev-fss
     - name: VEILARBARENA_URL
-      value: https://paw-proxy.dev-fss-pub.nais.io/veilarbarena/api
+      value: https://veilarbarena.dev-fss-pub.nais.io/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
       value: dev-fss
     - name: VEILARBREGISTRERING_ONPREM_URL
