@@ -80,7 +80,7 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         private const val TOKEN_TYPE = "tokenType"
         private val log = loggerFor<AuthStatsFilter>()
 
-        private fun getConsumerId(request: HttpServletRequest) = request.getHeader("Nav-Consumer-Id")
+        private fun getConsumerId(request: HttpServletRequest): String = request.getHeader("Nav-Consumer-Id") ?: "UKJENT"
     }
 }
 
