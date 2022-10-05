@@ -23,6 +23,7 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import java.io.File
 import java.util.*
 
@@ -69,6 +70,7 @@ class KafkaConfig {
     }
 
     @Bean
+    @Profile("!gcp")
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient,
         formidlingsgruppeMottakService: FormidlingsgruppeMottakService
