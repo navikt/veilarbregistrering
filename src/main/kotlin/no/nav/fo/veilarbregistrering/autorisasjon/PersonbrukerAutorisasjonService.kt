@@ -9,8 +9,6 @@ import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isDevelopment
-import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.slf4j.LoggerFactory
@@ -50,13 +48,7 @@ open class PersonbrukerAutorisasjonService(
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
             if (INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
-            if (isDevelopment()) {
-                secureLogger.info("Feil mot ABAC for personbruker. Fnr: ${bruker.get()}, token: $innloggetBrukerToken")
-            }
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
-        }
-        if (isDevelopment()) {
-            secureLogger.info("ABAC OK for personbruker. Fnr: ${bruker.get()}, token: $innloggetBrukerToken")
         }
     }
 
