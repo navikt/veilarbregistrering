@@ -31,6 +31,16 @@ class ArbeidssokerResource(
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
+    @GetMapping("/perioder/test")
+    override fun hentArbeidssokerperioderTest(
+        @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
+        @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
+    ): ArbeidssokerperioderDto {
+        val bruker = userService.finnBrukerGjennomPdl()
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
+    }
+
     @GetMapping("/perioder")
     override fun hentArbeidssokerperioder(
         @RequestParam("fnr") fnr: String,
