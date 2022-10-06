@@ -55,6 +55,9 @@ open class PersonbrukerAutorisasjonService(
             }
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
+        if (isDevelopment()) {
+            secureLogger.info("ABAC OK for personbruker. Fnr: ${bruker.get()}, token: $innloggetBrukerToken")
+        }
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
