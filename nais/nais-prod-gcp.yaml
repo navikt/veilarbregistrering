@@ -1,0 +1,142 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: veilarbregistrering
+  namespace: paw
+  labels:
+    team: paw
+spec:
+  azure:
+    application:
+      enabled: true
+      claims:
+        extra:
+          - "NAVident"
+  tokenx:
+    enabled: true
+  envFrom:
+    - configmap: loginservice-idporten
+    - secret: veilarbregistrering
+  image: {{image}}
+  env:
+    - name: AAREG_REST_API
+      value:
+    - name: AAREG_CLUSTER
+      value: prod-fss
+    - name: AAREG_APPNAME
+      value:
+    - name: AAD_DISCOVERY_URL
+      value:
+    - name: VEILARBLOGIN_AAD_CLIENT_ID
+      value:
+    - name: VEILARBOPPFOLGINGAPI_URL
+      value:
+    - name: VEILARBOPPFOLGINGAPI_CLUSTER
+      value: prod-fss
+    - name: VEILARBARENA_URL
+      value:
+    - name: VEILARBARENA_CLUSTER
+      value: prod-fss
+    - name: VEILARBREGISTRERING_ONPREM_URL
+      value:
+    - name: PAW_PROXY_CLUSTER
+      value: prod-fss
+    - name: ABAC_PDP_ENDPOINT_URL
+      value:
+    - name: ABAC_CLUSTER
+      value: prod-fss
+    - name: UNLEASH_API_URL
+      value: https://unleash.nais.io/api/
+    - name: NORG2_URL
+      value:
+    - name: OPPGAVE_URL
+      value:
+    - name: OPPGAVE_CLUSTER
+      value: prod-fss
+    - name: DIGDIR_KRR_PROXY_BASE_URL
+      value:
+    - name: DIGDIR_KRR_CLUSTER
+      value: prod-gcp
+    - name: PDL_URL
+      value:
+    - name: PDL_CLUSTER
+      value: prod-fss
+    - name: ENHET_URL
+      value:
+    - name: KAFKA_SERVERS
+      value:
+    - name: KAFKA_SCHEMA
+      value:
+    - name: ARENA_ORDS_API
+      value:
+    - name: ARENA_ORDS_TOKEN_PROVIDER
+      value:
+    - name: SPRING_PROFILES_ACTIVE
+      value: gcp
+  leaderElection: true
+  kafka:
+    pool:
+  liveness:
+    initialDelay: 60
+    path: veilarbregistrering/internal/isAlive
+    port: 8080
+  port: 8080
+  prometheus:
+    enabled: true
+    path: veilarbregistrering/internal/prometheus
+  readiness:
+    initialDelay: 60
+    path: veilarbregistrering/internal/isReadyGcp
+    port: 8080
+  replicas:
+    cpuThresholdPercentage:
+    max:
+    min:
+  resources:
+    limits:
+      cpu:
+      memory:
+    requests:
+      cpu:
+      memory:
+  webproxy: true
+  secureLogs:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: arbeidssokerregistrering
+        - application: veilarbperson
+          namespace: pto
+        - application: veilarbdirigent
+          namespace: pto
+        - application: dp-oppslag-arbeidssoker
+          namespace: teamdagpenger
+        - application: familie-ef-proxy
+          namespace: teamfamilie
+          cluster: prod-fss
+    outbound:
+      rules:
+        - application:
+          namespace: arbeidsforhold
+          cluster: prod-fss
+        - application: abac-veilarb-proxy
+          namespace: pto
+          cluster: prod-fss
+        - application: digdir-krr-proxy
+          namespace: team-rocket
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        tier: db-f1-micro
+        diskSize: 10
+        diskAutoresize: true
+        pointInTimeRecovery: true
+        maintenance:
+          day: 1
+          hour: 4
+        databases:
+          - name: veilarbregistrering
+            envVarPrefix: PAWVEILARBREGISTRERING
+            users:
+              - name: dataprodukt_paw
