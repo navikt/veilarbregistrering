@@ -48,6 +48,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     @BeforeEach
     fun setup() {
         clearAllMocks()
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
     }
 
     @AfterEach

@@ -33,6 +33,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     @Autowired
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
 ) {
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+    }
 
     @Test
     fun registrerBruker() {

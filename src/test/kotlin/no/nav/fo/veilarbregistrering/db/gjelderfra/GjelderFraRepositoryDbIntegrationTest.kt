@@ -24,6 +24,9 @@ class GjelderFraRepositoryDbIntegrationTest(
     @Autowired private val gjelderFraRepository: GjelderFraRepository,
     @Autowired private val brukerRegistreringRepository: BrukerRegistreringRepository,
 ) {
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+    }
 
     @Test
     fun `skal returnere null når bruker ikke har registrert noen dato`() {

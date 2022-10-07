@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
@@ -90,7 +91,11 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
     }
 
     private fun nesteFraSekvens(sekvensNavn: String): Long {
-        return db.queryForObject("SELECT $sekvensNavn.nextval FROM DUAL", noParams, Long::class.java)!!
+        return if (isOnPrem()) {
+            db.queryForObject("SELECT $sekvensNavn.nextval FROM DUAL", noParams, Long::class.java)!!
+        } else {
+            db.queryForObject("SELECT nextVal('$sekvensNavn')", noParams, Long::class.java)!!
+        }
     }
 
     companion object {
