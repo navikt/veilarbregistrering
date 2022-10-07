@@ -17,13 +17,11 @@ import java.io.IOException
 class VeilarbarenaClient(
     private val baseUrl: String,
     metricsService: MetricsService,
-    private val veilarbarenaTokenProvider: () -> String,
-    private val proxyTokenProvider: () -> String
+    private val veilarbarenaTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
 
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
         val veilarbarenaToken = veilarbarenaTokenProvider()
-
 
         val request = Request.Builder()
             .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
@@ -47,13 +45,11 @@ class VeilarbarenaClient(
     }
 
     internal fun kanReaktiveres(fnr: Foedselsnummer): KanReaktiveresDto {
-        val proxyToken = proxyTokenProvider()
         val veilarbarenaToken = veilarbarenaTokenProvider()
 
         val request = Request.Builder()
             .url("$baseUrl/arena/kan-enkelt-reaktiveres?fnr=${fnr.stringValue()}")
-            .header("Authorization", "Bearer $proxyToken")
-            .header("Downstream-Authorization", "Bearer $veilarbarenaToken")
+            .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
         return doTimedCall {

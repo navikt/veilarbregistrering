@@ -47,11 +47,7 @@ class OppfolgingGatewayConfig {
                 "no token"
             }
         }
-        val proxyTokenProvider = {
-            val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
-            tokenProvider.createMachineToMachineToken("api://$pawProxyCluster.paw.paw-proxy/.default")
-        }
-        return VeilarbarenaClient(baseUrl, metricsService, veilarbarenaTokenProvider, proxyTokenProvider)
+        return VeilarbarenaClient(baseUrl, metricsService, veilarbarenaTokenProvider)
     }
 
     @Bean
