@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
 @Configuration
-@Profile("!gcp")
-class OnPremAutorisasjonConfig {
+@Profile("gcp")
+class GcpAutorisasjonConfig {
+
     @Bean
     fun pepClient(): Pep = mockk()
 
