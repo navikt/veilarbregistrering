@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
@@ -44,7 +45,8 @@ class ManuellRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempla
     }
 
     private fun nesteFraSekvens(): Long {
-        return db.queryForObject("SELECT $MANUELL_REGISTRERING_SEQ.nextval FROM DUAL", emptyMap<String, Any>(), Long::class.java)!!
+        val sql = if (isOnPrem()) "SELECT $MANUELL_REGISTRERING_SEQ.nextval FROM DUAL" else "SELECT nextVal('$MANUELL_REGISTRERING_SEQ')"
+        return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
     companion object {
