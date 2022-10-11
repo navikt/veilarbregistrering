@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
@@ -114,11 +115,8 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     private fun nesteFraSekvens(): Long {
-        return db.queryForObject(
-            "select $SEQ_TABLE_NAME.nextval from dual",
-            emptyMap<String, Any>(),
-            Long::class.java
-        )!!
+        val sql = if (isOnPrem()) "select $SEQ_TABLE_NAME.nextval from dual" else "select nextVal('$SEQ_TABLE_NAME')"
+        return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
     companion object {
