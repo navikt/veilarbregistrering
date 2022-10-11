@@ -1,0 +1,1 @@
+CREATE ROLE cloudsqliamuser LOGIN PASSWORD 'my_password';
