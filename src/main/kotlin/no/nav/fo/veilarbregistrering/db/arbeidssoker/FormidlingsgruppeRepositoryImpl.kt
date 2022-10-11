@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
@@ -70,7 +71,8 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
     }
 
     private fun nesteFraSekvens(): Long {
-        return db.queryForObject("SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL", emptyMap<String, Any>(), Long::class.java)!!
+        val sql = if (isOnPrem()) "SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL" else "SELECT nextVal('$FORMIDLINGSGRUPPE_SEQ')"
+        return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
     override fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {

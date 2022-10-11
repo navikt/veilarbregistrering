@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.db.oppgave
 
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveImpl
 import org.springframework.jdbc.core.RowMapper
@@ -33,7 +34,8 @@ class OppgaveRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Oppgav
     }
 
     private fun nesteFraSekvens(): Long {
-        return db.queryForObject("SELECT OPPGAVE_SEQ.nextval FROM DUAL", emptyMap<String, Any>(), Long::class.java)!!
+        val sql = if (isOnPrem()) "SELECT OPPGAVE_SEQ.nextval FROM DUAL" else "SELECT nextVal('OPPGAVE_SEQ')"
+        return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
     override fun hentOppgaverFor(aktorId: AktorId): List<OppgaveImpl> {
