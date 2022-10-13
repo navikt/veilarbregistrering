@@ -75,7 +75,7 @@ spec:
       value: gcp
   leaderElection: true
   kafka:
-    pool:
+    pool: nav-prod
   liveness:
     initialDelay: 60
     path: veilarbregistrering/internal/isAlive
@@ -89,16 +89,16 @@ spec:
     path: veilarbregistrering/internal/isReadyGcp
     port: 8080
   replicas:
-    cpuThresholdPercentage:
-    max:
-    min:
+    cpuThresholdPercentage: 85
+    max: 6
+    min: 2
   resources:
     limits:
-      cpu:
-      memory:
+      cpu: "3"
+      memory: 3048Mi
     requests:
-      cpu:
-      memory:
+      cpu: "1"
+      memory: 2048Mi
   webproxy: true
   secureLogs:
     enabled: true
