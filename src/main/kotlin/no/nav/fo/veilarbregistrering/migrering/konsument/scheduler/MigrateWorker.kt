@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.migrering.konsument.scheduler
 
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.config.isOnPrem
+import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
 import org.springframework.scheduling.annotation.Scheduled
@@ -13,7 +14,7 @@ class MigrateWorker(
 
     @Scheduled(fixedDelay = 20000)
     fun migrate() {
-        if (isOnPrem()) {
+        if (isOnPrem() || isProduction()) {
             logger.warn("Migreringsjobb for GCP ble forsøkt kjørt fra FSS")
             return
         }
