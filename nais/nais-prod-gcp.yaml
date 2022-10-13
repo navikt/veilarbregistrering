@@ -20,57 +20,57 @@ spec:
   image: {{image}}
   env:
     - name: AAREG_REST_API
-      value:
+      value: https://aareg-services.prod-fss-pub.nais.io/api
     - name: AAREG_CLUSTER
       value: prod-fss
     - name: AAREG_APPNAME
-      value:
+      value: aareg-services-nais
     - name: AAD_DISCOVERY_URL
-      value:
+      value: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
     - name: VEILARBLOGIN_AAD_CLIENT_ID
-      value:
+      value: ed3e3651-aa09-4d11-bc92-46736b5a75ec
     - name: VEILARBOPPFOLGINGAPI_URL
-      value:
+      value: https://veilarboppfolging.prod-fss-pub.nais.io/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: prod-fss
     - name: VEILARBARENA_URL
-      value:
+      value: https://veilarbarena.prod-fss-pub.nais.io/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
       value: prod-fss
     - name: VEILARBREGISTRERING_ONPREM_URL
-      value:
+      value: https://paw-proxy.prod-fss-pub.nais.io/veilarbregistrering
     - name: PAW_PROXY_CLUSTER
       value: prod-fss
     - name: ABAC_PDP_ENDPOINT_URL
-      value:
+      value: https://abac-veilarb-proxy.prod-fss-pub.nais.io/api/proxy/abac
     - name: ABAC_CLUSTER
       value: prod-fss
     - name: UNLEASH_API_URL
       value: https://unleash.nais.io/api/
     - name: NORG2_URL
-      value:
+      value: https://norg2.prod-fss-pub.nais.io/norg2
     - name: OPPGAVE_URL
-      value:
+      value: https://oppgave.prod-fss-pub.nais.io
     - name: OPPGAVE_CLUSTER
       value: prod-fss
     - name: DIGDIR_KRR_PROXY_BASE_URL
-      value:
+      value: https://digdir-krr-proxy.intern.nav.no/rest/
     - name: DIGDIR_KRR_CLUSTER
       value: prod-gcp
     - name: PDL_URL
-      value:
+      value: https://pdl-api.prod-fss-pub.nais.io
     - name: PDL_CLUSTER
       value: prod-fss
     - name: ENHET_URL
-      value:
+      value: https://ereg-services.prod-fss-pub.nais.io/ereg
     - name: KAFKA_SERVERS
-      value:
+      value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
     - name: KAFKA_SCHEMA
-      value:
+      value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
-      value:
+      value: https://paw-proxy.prod-fss-pub.nais.io
     - name: ARENA_ORDS_TOKEN_PROVIDER
-      value:
+      value: https://paw-proxy.prod-fss-pub.nais.io
     - name: SPRING_PROFILES_ACTIVE
       value: gcp
   leaderElection: true
