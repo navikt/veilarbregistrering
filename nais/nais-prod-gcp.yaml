@@ -117,7 +117,7 @@ spec:
           cluster: prod-fss
     outbound:
       rules:
-        - application:
+        - application: aareg-services-nais
           namespace: arbeidsforhold
           cluster: prod-fss
         - application: abac-veilarb-proxy
