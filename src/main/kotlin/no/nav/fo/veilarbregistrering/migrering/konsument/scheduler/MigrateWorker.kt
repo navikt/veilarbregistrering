@@ -14,7 +14,7 @@ class MigrateWorker(
 
     @Scheduled(cron = HVERT_TJUENDE_MINUTT)
     fun migrate() {
-        if (isOnPrem() || isProduction()) {
+        if (isOnPrem()) {
             logger.warn("Migreringsjobb for GCP ble forsøkt kjørt fra FSS")
             return
         }
