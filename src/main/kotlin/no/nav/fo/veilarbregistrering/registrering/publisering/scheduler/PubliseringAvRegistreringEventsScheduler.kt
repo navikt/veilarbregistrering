@@ -13,7 +13,7 @@ class PubliseringAvRegistreringEventsScheduler(
     private val leaderElectionClient: LeaderElectionClient,
     private val unleashClient: UnleashClient
 ) {
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = HVERT_TIENDE_SEKUND)
     fun publiserRegistreringEvents() {
         try {
             CallId.leggTilCallId()
@@ -32,5 +32,6 @@ class PubliseringAvRegistreringEventsScheduler(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PubliseringAvRegistreringEventsScheduler::class.java)
+        const val HVERT_TIENDE_SEKUND = "0/10 * * * * *"
     }
 }
