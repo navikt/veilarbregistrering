@@ -101,6 +101,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
             """
 
             db.batchUpdate(jpaSQL, rader.toTypedArray())
+            logger.info("Satt inn ${rader.size} rader i tabell ${tabell.name}")
 
         } catch (e: Exception) {
             logger.error(e.javaClass.name + ": " + e.message, e)

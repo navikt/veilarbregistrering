@@ -19,7 +19,7 @@ class MigrateService(
         if (migrateClient.hentAntallPotensieltOppdaterteTilstander() != antallSomKanTrengeOppdatering) {
             hentOgOppdaterRegistreringTilstander()
         } else {
-            logger.info("Fant ingen nye rader som trenger oppdatering i migreringsjobb")
+            logger.info("Fant ingen nye tilstander som trenger oppdatering i migreringsjobb")
         }
     }
 
