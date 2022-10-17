@@ -108,6 +108,7 @@ spec:
     inbound:
       rules:
         - application: arbeidssokerregistrering
+        - application: arbeidssokerregistrering-veileder
         - application: veilarbperson
           namespace: pto
         - application: veilarbdirigent
