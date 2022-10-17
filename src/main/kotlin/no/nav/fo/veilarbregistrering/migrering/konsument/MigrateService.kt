@@ -18,6 +18,8 @@ class MigrateService(
         val antallSomKanTrengeOppdatering = repository.antallRaderSomKanTrengeOppdatering()
         if (migrateClient.hentAntallPotensieltOppdaterteTilstander() != antallSomKanTrengeOppdatering) {
             hentOgOppdaterRegistreringTilstander()
+        } else {
+            logger.info("Fant ingen nye rader som trenger oppdatering i migreringsjobb")
         }
     }
 
