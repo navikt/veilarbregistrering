@@ -14,6 +14,10 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
         .withNaisDefaults()
         .buildOnBehalfOfTokenClient()
 
+    private val aadMachineToMachineTokenClient = AzureAdTokenClientBuilder.builder()
+        .withNaisDefaults()
+        .buildMachineToMachineTokenClient()
+
     fun tokenSkalVeksles(): Boolean {
         return tokenResolver.erTokenXToken() || tokenResolver.erAzureAdToken()
     }
@@ -23,7 +27,8 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
         return when {
             tokenResolver.erIdPortenToken() -> exchangeTokenXToken(api, opprinneligToken)
             tokenResolver.erTokenXToken() -> exchangeTokenXToken(api, opprinneligToken)
-            tokenResolver.erAzureAdToken() -> exchangeAadOboToken(api, opprinneligToken)
+            tokenResolver.erAzureAdOboToken() -> exchangeAadOboToken(api, opprinneligToken)
+            tokenResolver.erAzureAdSystemTilSystemToken() -> createAadMachineToMachineToken(api)
             else -> throw IllegalStateException("Prøver å veksle et token som ikke er AAD OBO eller TokenX")
         }
     }
@@ -37,10 +42,17 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
     }
 
     private fun exchangeAadOboToken(api: DownstreamApi, opprinneligToken: String): String {
-        logger.info("Veksler Azure AD-token mot ${api.appName}")
+        logger.info("Veksler Azure AD OBO-token mot ${api.appName}")
         return aadOnBehalfOfTokenClient.exchangeOnBehalfOfToken(
             "api://${api.cluster}.${api.namespace}.${api.appName}/.default",
             opprinneligToken
+        )
+    }
+
+    private fun createAadMachineToMachineToken(api: DownstreamApi): String {
+        logger.info("Lager nytt Azure AD M2M-token mot ${api.appName}")
+        return aadMachineToMachineTokenClient.createMachineToMachineToken(
+            "api://${api.cluster}.${api.namespace}.${api.appName}/.default"
         )
     }
 }

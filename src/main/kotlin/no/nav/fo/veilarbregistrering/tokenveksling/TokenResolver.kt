@@ -12,6 +12,14 @@ class TokenResolver(private val authContextHolder: AuthContextHolder) {
         return authContextHolder.erAADToken()
     }
 
+    fun erAzureAdOboToken(): Boolean {
+        return authContextHolder.erAADToken() && !authContextHolder.erSystemTilSystemToken()
+    }
+
+    fun erAzureAdSystemTilSystemToken(): Boolean {
+        return authContextHolder.erAADToken() && authContextHolder.erSystemTilSystemToken()
+    }
+
     fun erTokenXToken(): Boolean {
         return authContextHolder.erTokenXToken()
     }
@@ -22,6 +30,7 @@ class TokenResolver(private val authContextHolder: AuthContextHolder) {
 }
 
 fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
+private fun AuthContextHolder.erSystemTilSystemToken(): Boolean = this.subject == this.getStringClaim(this.idTokenClaims.get(),"oid")
 private fun AuthContextHolder.erTokenXToken(): Boolean = hentIssuer().contains("tokendings")
 private fun AuthContextHolder.erIdPortenToken(): Boolean = hentIssuer().contains("difi.no")
 private fun AuthContextHolder.hentIssuer(): String = this.requireIdTokenClaims().issuer

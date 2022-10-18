@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
 import com.fasterxml.jackson.core.type.TypeReference
-import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -16,7 +15,6 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
-import no.nav.fo.veilarbregistrering.tokenveksling.erAADToken
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -29,19 +27,13 @@ import java.io.IOException
 open class AaregRestClient(
     metricsService: MetricsService,
     private val baseUrl: String,
-    private val authContextHolder: AuthContextHolder,
-    private val tokenExchangeService: TokenExchangeService,
-    private val aadTokenProvider: () -> String
+    private val tokenExchangeService: TokenExchangeService
 ) : HealthCheck, TimedMetric(metricsService) {
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
     fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
-        val request = if (authContextHolder.erAADToken()) {
-            buildRequestAzureAD(fnr)
-        } else {
-            buildRequestTokenX(fnr)
-        }
+        val request = buildRequest(fnr)
         return parse(utfoerRequest(request))
     }
 
@@ -56,22 +48,7 @@ open class AaregRestClient(
         }
     }
 
-    protected open fun buildRequestAzureAD(fnr: Foedselsnummer): Request {
-        return Request.Builder()
-            .url(
-                HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("v1/arbeidstaker/arbeidsforhold")
-                    .addQueryParameter("regelverk", "A_ORDNINGEN")
-                    .build()
-            )
-            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${aadTokenProvider()}")
-            .header(NAV_PERSONIDENT, fnr.stringValue())
-            .header(NAV_CALL_ID_HEADER, MDC.get(MDCConstants.MDC_CALL_ID))
-            .build()
-    }
-
-    protected open fun buildRequestTokenX(fnr: Foedselsnummer): Request {
+    protected open fun buildRequest(fnr: Foedselsnummer): Request {
         return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()

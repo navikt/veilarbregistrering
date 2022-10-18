@@ -18,25 +18,14 @@ class ArbeidsforholdGatewayConfig {
     @Bean
     fun aaregRestClient(
         metricsService: MetricsService,
-        authContextHolder: AuthContextHolder,
         machineToMachineTokenClient: AzureAdMachineToMachineTokenClient,
         tokenExchangeService: TokenExchangeService
     ): AaregRestClient {
-        val aaregCluster = requireClusterName()
         return AaregRestClient(
             metricsService,
             requireProperty(REST_URL),
-            authContextHolder,
             tokenExchangeService
-        ) {
-            try {
-                val serviceName = if (isDevelopment()) "aareg-services-nais-q1" else "aareg-services-nais"
-                machineToMachineTokenClient.createMachineToMachineToken("api://$aaregCluster.arbeidsforhold.$serviceName/.default")
-            } catch (e: Exception) {
-                logger.warn("Henting av token for aad-kall til aareg feilet: ", e)
-                "no token"
-            }
-        }
+        )
     }
 
     @Bean
