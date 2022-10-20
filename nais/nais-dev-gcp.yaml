@@ -109,6 +109,7 @@ spec:
       rules:
         - application: arbeidssokerregistrering
         - application: arbeidssokerregistrering-veileder
+        - application: aia-backend
         - application: veilarbperson
           namespace: pto
         - application: veilarbdirigent
