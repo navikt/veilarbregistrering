@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil.Companion.fromStatus
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerTekniskException
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
@@ -119,7 +120,7 @@ open class BrukerRegistreringService(
         )
     }
 
-    @Transactional(noRollbackFor = [AktiverBrukerException::class])
+    @Transactional(noRollbackFor = [AktiverBrukerException::class, AktiverBrukerTekniskException::class])
     open fun overforArena(registreringId: Long, bruker: Bruker, veileder: NavVeileder?) {
         val registreringTilstand = overforArena(registreringId, bruker)
         if (registreringTilstand.status !== Status.OVERFORT_ARENA) {
@@ -136,6 +137,9 @@ open class BrukerRegistreringService(
             val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, from(e.aktiverBrukerFeil))
             LOG.info("Overføring av registrering (id: {}) til Arena feilet med {}", registreringId, e.aktiverBrukerFeil)
             return oppdatertRegistreringTilstand
+        } catch (e: RuntimeException) {
+            oppdaterRegistreringTilstand(registreringId, Status.UKJENT_TEKNISK_FEIL)
+            throw AktiverBrukerTekniskException(e)
         }
         val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA)
         LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId)

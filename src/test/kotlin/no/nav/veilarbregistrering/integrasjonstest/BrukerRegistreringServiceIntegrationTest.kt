@@ -59,7 +59,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `skal rulle tilbake database dersom overforing til arena feiler`() {
+    fun `skal ikke rulle tilbake database dersom overforing til arena feiler`() {
         every { oppfolgingGateway.aktiverBruker(any(), any()) } throws RuntimeException()
         val id = brukerRegistreringRepository.lagre(
             OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(),
@@ -73,7 +73,7 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         )
         val registreringTilstand = registreringTilstandRepository.hentTilstandFor(id)
         Assertions.assertThat(brukerRegistrering).isNotEmpty
-        Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.MOTTATT)
+        Assertions.assertThat(registreringTilstand.status).isEqualTo(Status.UKJENT_TEKNISK_FEIL)
     }
 
     @Test

@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonLevel3Exception
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonValideringException
 import no.nav.fo.veilarbregistrering.bruker.feil.*
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
+import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerTekniskException
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveAlleredeOpprettet
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.KanIkkeReaktiveresException
@@ -24,6 +25,12 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun aktiverBrukerException(f: AktiverBrukerException): ResponseEntity<FeilDto> {
         logger.warn(f.feilmelding)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(FeilDto(f.aktiverBrukerFeil.toString()))
+    }
+
+    @ExceptionHandler(AktiverBrukerTekniskException::class)
+    fun aktiverBrukerException(f: AktiverBrukerTekniskException): ResponseEntity<Any> {
+        logger.error(f)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).build()
     }
 
     @ExceptionHandler(KontaktinfoIngenTilgang::class)
