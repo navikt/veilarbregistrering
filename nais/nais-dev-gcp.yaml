@@ -116,6 +116,8 @@ spec:
           namespace: pto
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
+        - application: familie-ef-sak
+          namespace: teamfamilie
         - application: familie-ef-proxy
           namespace: teamfamilie
           cluster: dev-fss
