@@ -18,7 +18,7 @@ spec:
     - configmap: loginservice-idporten
   image: {{image}}
   ingresses:
-    - https://veilarbregistrering.dev.intern.nav.no
+    - https://veilarbregistrering-fss.dev.intern.nav.no
     - https://veilarbregistrering-q1.dev.adeo.no
     - https://veilarbregistrering-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbregistrering
