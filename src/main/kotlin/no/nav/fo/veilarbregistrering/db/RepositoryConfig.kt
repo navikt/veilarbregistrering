@@ -1,29 +1,23 @@
 package no.nav.fo.veilarbregistrering.db
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
-import no.nav.fo.veilarbregistrering.db.registrering.ReaktiveringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
-import no.nav.fo.veilarbregistrering.db.registrering.SykmeldtRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
-import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
-import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
-import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.db.registrering.ManuellRegistreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
-import no.nav.fo.veilarbregistrering.db.gjelderfra.GjelderFraRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.konsument.MigrateRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.registrering.*
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
+import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
+import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 @Configuration
 class RepositoryConfig {
@@ -65,11 +59,6 @@ class RepositoryConfig {
     @Bean
     fun manuellRegistreringRepository(db: NamedParameterJdbcTemplate): ManuellRegistreringRepository {
         return ManuellRegistreringRepositoryImpl(db)
-    }
-
-    @Bean
-    fun gjelderFraRepository(db: NamedParameterJdbcTemplate): GjelderFraRepository {
-        return GjelderFraRepositoryImpl(db)
     }
 
     @Bean

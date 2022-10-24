@@ -45,9 +45,6 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringR
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
 import no.nav.fo.veilarbregistrering.registrering.formidling.resources.InternalRegistreringStatusoversiktResource
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraRepository
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.GjelderFraService
-import no.nav.fo.veilarbregistrering.registrering.gjelderfra.resources.GjelderFraDatoResource
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBrukerRegistreringResource
@@ -436,19 +433,5 @@ class ServiceBeansConfig {
     @Bean
     fun migrateService(repository: MigrateRepository, migrateClient: MigrateClient): MigrateService {
         return MigrateService(repository, migrateClient)
-    }
-
-    @Bean
-    fun gjelderFraService(gjelderFraRepository: GjelderFraRepository, brukerRegistreringRepository: BrukerRegistreringRepository): GjelderFraService {
-        return GjelderFraService(gjelderFraRepository, brukerRegistreringRepository)
-    }
-
-    @Bean
-    fun gjelderFraDatoResource(
-        tilgangskontrollService: TilgangskontrollService,
-        userService: UserService,
-        gjelderFraService: GjelderFraService
-    ): GjelderFraDatoResource {
-        return GjelderFraDatoResource(tilgangskontrollService, userService, gjelderFraService)
     }
 }
