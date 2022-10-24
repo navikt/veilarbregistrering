@@ -114,6 +114,8 @@ spec:
           namespace: pto
         - application: veilarbdirigent
           namespace: pto
+        - application: behovsvurdering
+          namespace: pto
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
         - application: familie-ef-sak
