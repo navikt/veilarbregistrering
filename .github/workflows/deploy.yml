@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
 
     - name: Lag tag for image
       run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
@@ -21,7 +21,7 @@ jobs:
       run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
 
     - name: Set up Maven cache
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
