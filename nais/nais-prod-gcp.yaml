@@ -119,6 +119,13 @@ spec:
           cluster: prod-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
+          cluster: prod-fss
+        - application: dp-soknad-veileder
+          namespace: teamdagpenger
+        - application: dp-dagpenger
+          namespace: teamdagpenger
+        - application: dp-soknadsdialog
+          namespace: teamdagpenger
         - application: familie-ef-sak
           namespace: teamfamilie
         - application: familie-ef-proxy
