@@ -6,18 +6,6 @@ import no.nav.fo.veilarbregistrering.log.logger
 
 class TokenExchangeService(private val tokenResolver: TokenResolver) {
 
-    private val tokendingsClient = TokenXTokenClientBuilder.builder()
-        .withNaisDefaults()
-        .buildOnBehalfOfTokenClient()
-
-    private val aadOnBehalfOfTokenClient = AzureAdTokenClientBuilder.builder()
-        .withNaisDefaults()
-        .buildOnBehalfOfTokenClient()
-
-    private val aadMachineToMachineTokenClient = AzureAdTokenClientBuilder.builder()
-        .withNaisDefaults()
-        .buildMachineToMachineTokenClient()
-
     fun tokenSkalVeksles(): Boolean {
         return tokenResolver.erTokenXToken() || tokenResolver.erAzureAdToken()
     }
@@ -41,6 +29,10 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
         )
     }
 
+    private val tokendingsClient = TokenXTokenClientBuilder.builder()
+        .withNaisDefaults()
+        .buildOnBehalfOfTokenClient()
+
     private fun exchangeAadOboToken(api: DownstreamApi, opprinneligToken: String): String {
         logger.info("Veksler Azure AD OBO-token mot ${api.appName}")
         return aadOnBehalfOfTokenClient.exchangeOnBehalfOfToken(
@@ -49,10 +41,18 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
         )
     }
 
+    private val aadOnBehalfOfTokenClient = AzureAdTokenClientBuilder.builder()
+        .withNaisDefaults()
+        .buildOnBehalfOfTokenClient()
+
     private fun createAadMachineToMachineToken(api: DownstreamApi): String {
         logger.info("Lager nytt Azure AD M2M-token mot ${api.appName}")
         return aadMachineToMachineTokenClient.createMachineToMachineToken(
             "api://${api.cluster}.${api.namespace}.${api.appName}/.default"
         )
     }
+
+    private val aadMachineToMachineTokenClient = AzureAdTokenClientBuilder.builder()
+        .withNaisDefaults()
+        .buildMachineToMachineTokenClient()
 }
