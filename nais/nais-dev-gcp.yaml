@@ -112,10 +112,13 @@ spec:
         - application: aia-backend
         - application: veilarbperson
           namespace: pto
+          cluster: dev-fss
         - application: veilarbdirigent
           namespace: pto
+          cluster: dev-fss
         - application: behovsvurdering
           namespace: pto
+          cluster: dev-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
         - application: familie-ef-sak

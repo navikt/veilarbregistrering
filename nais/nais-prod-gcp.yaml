@@ -110,10 +110,13 @@ spec:
         - application: aia-backend
         - application: veilarbperson
           namespace: pto
+          cluster: prod-fss
         - application: veilarbdirigent
           namespace: pto
+          cluster: prod-fss
         - application: behovsvurdering
           namespace: pto
+          cluster: prod-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
         - application: familie-ef-sak
