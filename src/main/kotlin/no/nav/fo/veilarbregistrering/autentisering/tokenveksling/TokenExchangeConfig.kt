@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.tokenveksling
+package no.nav.fo.veilarbregistrering.autentisering.tokenveksling
 
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.token_client.builder.AzureAdTokenClientBuilder

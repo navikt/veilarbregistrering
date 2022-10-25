@@ -8,8 +8,8 @@ import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.tokenveksling.DownstreamApi
-import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.DownstreamApi
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

@@ -1,3 +1,3 @@
-package no.nav.fo.veilarbregistrering.tokenveksling
+package no.nav.fo.veilarbregistrering.autentisering.tokenveksling
 
 data class DownstreamApi(val cluster: String, val namespace: String, val appName: String)

@@ -14,7 +14,7 @@ import no.nav.fo.veilarbregistrering.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
-import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response

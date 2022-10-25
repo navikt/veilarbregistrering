@@ -19,7 +19,7 @@ import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
-import no.nav.fo.veilarbregistrering.tokenveksling.TokenExchangeService
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
