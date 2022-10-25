@@ -28,7 +28,7 @@ jobs:
         restore-keys: ${{ runner.os }}-maven-
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         java-version: 17
         distribution: 'adopt'
@@ -149,10 +149,10 @@ jobs:
         run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Create release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: release/prod@${{ env.TAG }}
-          release_name: Release to prod
+          name: Release to prod
           prerelease: false
