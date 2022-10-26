@@ -51,6 +51,7 @@ class HentRegistreringService(
         listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND)
     )
 
+    //TODO: Fjerne
     fun hentIgangsattOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? {
         val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(
             bruker,

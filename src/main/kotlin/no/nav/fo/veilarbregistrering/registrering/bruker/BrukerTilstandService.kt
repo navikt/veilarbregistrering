@@ -17,6 +17,7 @@ class BrukerTilstandService(
         return BrukersTilstand.create(oppfolgingsstatus, harIgangsattRegistreringSomKanGjenopptas)
     }
 
+    //TODO: Fikse
     private fun harIgangsattRegistreringSomKanGjenopptas(bruker: Bruker): Boolean =
         kanResendes(
             brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(

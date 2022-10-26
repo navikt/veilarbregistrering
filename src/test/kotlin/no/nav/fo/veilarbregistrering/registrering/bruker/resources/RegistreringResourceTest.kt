@@ -126,41 +126,6 @@ class RegistreringResourceTest(
     }
 
     @Test
-    fun `serialiserer ingen igangsatt registrering riktig`() {
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { authContextHolder.erEksternBruker() } returns false
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(any()) } returns null
-        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
-
-        val result = mvc.get("/api/igangsattregistrering")
-            .andExpect {
-                status { isNoContent() }
-            }
-            .andReturn().response.contentAsString
-
-        assertThat(result).isEqualTo("")
-    }
-
-    @Test
-    fun `serialiserer igangsatt registrering riktig`() {
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { authContextHolder.erEksternBruker() } returns false
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        every { hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(any()) } returns GYLDIG_BRUKERREGISTRERING
-        every { hentRegistreringService.hentSykmeldtRegistrering(any()) } returns null
-
-        val result = mvc.get("/api/igangsattregistrering")
-            .andExpect {
-                status { isOk() }
-                content { contentType("application/json") }
-            }
-            .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
-
-        assertThat(result).isEqualTo(REGISTRERING_RESPONSE)
-    }
-
-    @Test
     fun skalSjekkeTilgangTilBrukerVedHentingAvStartRegistreringsstatus() {
         every { startRegistreringStatusService.hentStartRegistreringStatus(any(), any()) } returns StartRegistreringStatusDto()
         every { request.getParameter("fnr") } returns IDENT.stringValue()

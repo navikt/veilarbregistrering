@@ -13,7 +13,4 @@ interface RegistreringApi {
     @Operation(summary = "Henter siste registrering av bruker.")
     fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
 
-    @Operation(summary = "Henter siste påbegynte registrering")
-    fun hentPaabegyntRegistrering(): ResponseEntity<BrukerRegistreringWrapper>
-
 }
