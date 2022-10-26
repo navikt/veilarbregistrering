@@ -12,6 +12,16 @@ class ProfilertInnsatsgruppeService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
 ) {
 
+    fun erStandardInnsats(bruker: Bruker): Boolean {
+        val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
+
+        return if (servicegruppe?.value() == "IVURD") {
+            innsatsgruppe == Innsatsgruppe.STANDARD_INNSATS
+        } else {
+            servicegruppe?.value() == "IKVAL"
+        }
+    }
+
     fun hentProfilering(bruker: Bruker): Pair<Innsatsgruppe?, Servicegruppe?> {
         val arenaStatus = oppfolgingGateway.arenaStatus(bruker.gjeldendeFoedselsnummer)
         val brukerregistrering = brukerRegistreringRepository
@@ -25,15 +35,5 @@ class ProfilertInnsatsgruppeService(
         val profilering = brukerregistrering?.let { profileringRepository.hentProfileringForId(brukerregistrering.id)  }
 
         return Pair(profilering?.innsatsgruppe, arenaStatus?.servicegruppe)
-    }
-
-    fun erStandardInnsats(bruker: Bruker): Boolean {
-        val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
-
-        return if (servicegruppe?.value() == "IVURD") {
-            innsatsgruppe == Innsatsgruppe.STANDARD_INNSATS
-        } else {
-            servicegruppe?.value() == "IKVAL"
-        }
     }
 }
