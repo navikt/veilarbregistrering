@@ -12,7 +12,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapper
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory
-import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
@@ -45,14 +44,11 @@ class HentRegistreringService(
         return brukerRegistreringWrapper
     }
 
-    fun hentOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? = hentOrdinaerBrukerRegistrering(
-        bruker,
-        listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND)
-    )
-
-    private fun hentOrdinaerBrukerRegistrering(bruker: Bruker, status: List<Status>): OrdinaerBrukerRegistrering? {
+    fun hentOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? {
         val ordinaerBrukerRegistrering = brukerRegistreringRepository
-            .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.aktorId, status)
+            .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+                bruker.aktorId,
+                listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND))
             .firstOrNull()
             ?: return null
 
