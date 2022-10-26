@@ -3,10 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
-import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
-import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
+import no.nav.fo.veilarbregistrering.oppfolging.*
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.ArenaStatusDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
@@ -21,6 +18,22 @@ class OppfolgingGatewayImpl(
         val arenastatus = veilarbarenaClient.arenaStatus(fodselsnummer)
         val kanReaktiveres = veilarbarenaClient.kanReaktiveres(fodselsnummer)
         return map(erUnderOppfolging, arenastatus, kanReaktiveres)
+    }
+
+    override fun arenaStatus(fodselsnummer: Foedselsnummer): ArenaStatus? {
+        val arenaStatus = veilarbarenaClient.arenaStatus(fodselsnummer) ?: return null
+        return ArenaStatus(
+            Servicegruppe(arenaStatus.kvalifiseringsgruppe),
+            Rettighetsgruppe(arenaStatus.rettighetsgruppe),
+            Formidlingsgruppe(arenaStatus.formidlingsgruppe))
+    }
+
+    override fun erUnderOppfolging(fodselsnummer: Foedselsnummer): Boolean {
+        return oppfolgingClient.erBrukerUnderOppfolging(fodselsnummer).erUnderOppfolging
+    }
+
+    override fun kanReaktiveres(fodselsnummer: Foedselsnummer): Boolean? {
+        return veilarbarenaClient.kanReaktiveres(fodselsnummer).kanEnkeltReaktiveres
     }
 
     override fun aktiverBruker(foedselsnummer: Foedselsnummer, innsatsgruppe: Innsatsgruppe) {
