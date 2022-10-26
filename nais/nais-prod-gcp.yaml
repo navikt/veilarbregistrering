@@ -114,9 +114,6 @@ spec:
         - application: veilarbdirigent
           namespace: pto
           cluster: prod-fss
-        - application: behovsvurdering
-          namespace: pto
-          cluster: prod-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
           cluster: prod-fss
