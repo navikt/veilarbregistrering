@@ -13,7 +13,7 @@ class ProfilertInnsatsgruppeService(
 ) {
 
     fun hentProfilering(bruker: Bruker): Pair<Innsatsgruppe?, Servicegruppe?> {
-        val oppfolgingsstatus = oppfolgingGateway.hentOppfolgingsstatus(bruker.gjeldendeFoedselsnummer)
+        val arenaStatus = oppfolgingGateway.arenaStatus(bruker.gjeldendeFoedselsnummer)
         val brukerregistrering = brukerRegistreringRepository
             .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.aktorId, listOf(
                 Status.OVERFORT_ARENA,
@@ -24,7 +24,7 @@ class ProfilertInnsatsgruppeService(
 
         val profilering = brukerregistrering?.let { profileringRepository.hentProfileringForId(brukerregistrering.id)  }
 
-        return Pair(profilering?.innsatsgruppe, oppfolgingsstatus.servicegruppe)
+        return Pair(profilering?.innsatsgruppe, arenaStatus?.servicegruppe)
     }
 
     fun erStandardInnsats(bruker: Bruker): Boolean {

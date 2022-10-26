@@ -2,12 +2,11 @@ package no.nav.fo.veilarbregistrering.profilering
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
-import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
-import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
+import no.nav.fo.veilarbregistrering.oppfolging.*
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.BeforeEach
@@ -37,12 +36,10 @@ internal class ProfilertInnsatsgruppeServiceTest {
 
     @Test
     fun `hentProfilering returner en Pair av Innsatsgruppe, Servicegruppe`() {
-        every { oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer("123")) } returns Oppfolgingsstatus(
-            false,
-            null,
-            null,
-            null,
-            Servicegruppe("IVURD")
+        every { oppfolgingGateway.arenaStatus(Foedselsnummer("123")) } returns ArenaStatus(
+            Servicegruppe("IVURD"),
+            Rettighetsgruppe("AAP"),
+            Formidlingsgruppe("ARBS")
         )
         every { profileringRepository.hentProfileringForId(0) } returns Profilering(
             Innsatsgruppe.STANDARD_INNSATS,
@@ -58,12 +55,10 @@ internal class ProfilertInnsatsgruppeServiceTest {
 
     @Test
     fun `erStandardInnsats bruker innsattsgruppe når servicegruppe er IVURD`() {
-        every { oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer("123")) } returns Oppfolgingsstatus(
-            false,
-            null,
-            null,
-            null,
-            Servicegruppe("IVURD")
+        every { oppfolgingGateway.arenaStatus(Foedselsnummer("123")) } returns ArenaStatus(
+            Servicegruppe("IVURD"),
+            Rettighetsgruppe("AAP"),
+            Formidlingsgruppe("ARBS")
         )
         every { profileringRepository.hentProfileringForId(0) } returns Profilering(
             Innsatsgruppe.STANDARD_INNSATS,
@@ -89,26 +84,20 @@ internal class ProfilertInnsatsgruppeServiceTest {
             42,
             true
         )
-        every { oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer("123")) } returns Oppfolgingsstatus(
-            false,
-            null,
-            null,
-            null,
-            Servicegruppe("BFORM")
+        every { oppfolgingGateway.arenaStatus(Foedselsnummer("123")) } returns ArenaStatus(
+            Servicegruppe("BFORM"),
+            Rettighetsgruppe("AAP"),
+            Formidlingsgruppe("ARBS")
         )
 
         assertFalse { profilertInnsatsgruppeService.erStandardInnsats(Bruker(Foedselsnummer("123"), AktorId("456"))) }
 
-        every { oppfolgingGateway.hentOppfolgingsstatus(Foedselsnummer("123")) } returns Oppfolgingsstatus(
-            false,
-            null,
-            null,
-            null,
-            Servicegruppe("IKVAL")
+        every { oppfolgingGateway.arenaStatus(Foedselsnummer("123")) } returns ArenaStatus(
+            Servicegruppe("IKVAL"),
+            Rettighetsgruppe("AAP"),
+            Formidlingsgruppe("ARBS")
         )
 
         assertTrue { profilertInnsatsgruppeService.erStandardInnsats(Bruker(Foedselsnummer("123"), AktorId("456"))) }
-
-
     }
 }
