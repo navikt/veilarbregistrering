@@ -18,6 +18,8 @@ spec:
     - configmap: loginservice-idporten
     - secret: veilarbregistrering
   image: {{image}}
+  ingresses:
+    - https://veilarbregistrering-gcp.intern.nav.no
   env:
     - name: AAREG_REST_API
       value: https://aareg-services.prod-fss-pub.nais.io/api
