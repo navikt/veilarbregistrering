@@ -61,35 +61,6 @@ internal class HentRegistreringServiceTest {
     }
 
     @Test
-    fun `returnerer tom registrering hvis igangsatt registrering er for gammel`() {
-        every {
-            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
-                aktorId,
-                any()
-            )
-        } returns listOf(GAMMEL_BRUKERREGISTRERING)
-        val igangsattOrdinaerBrukerRegistrering =
-            hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
-
-        assertThat(igangsattOrdinaerBrukerRegistrering).isNull()
-    }
-
-    @Test
-    fun `returnerer registrering hvis igangsatt registrering ikke er for gammel`() {
-        every {
-            brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
-                aktorId,
-                any()
-            )
-        } returns listOf(OK_IGANGSATT_REGISTRERING)
-        val igangsattOrdinaerBrukerRegistrering =
-            hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
-
-        requireNotNull(igangsattOrdinaerBrukerRegistrering)
-        assertThat(igangsattOrdinaerBrukerRegistrering.id).isEqualTo(OK_IGANGSATT_REGISTRERING.id)
-    }
-
-    @Test
     fun `returnerer registrering med profilering når det finnes`() {
         every {
             brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
@@ -97,25 +68,19 @@ internal class HentRegistreringServiceTest {
                 any()
             )
         } returns listOf(OK_IGANGSATT_REGISTRERING)
-        val igangsattOrdinaerBrukerRegistrering =
-            hentRegistreringService.hentIgangsattOrdinaerBrukerRegistrering(bruker)
+        val ordinaerBrukerRegistrering = hentRegistreringService.hentOrdinaerBrukerRegistrering(bruker)
 
-        requireNotNull(igangsattOrdinaerBrukerRegistrering)
-        assertThat(igangsattOrdinaerBrukerRegistrering.profilering).isNotNull
-        assertThat(igangsattOrdinaerBrukerRegistrering.id).isEqualTo(OK_REGISTRERING.id)
+        requireNotNull(ordinaerBrukerRegistrering)
+        assertThat(ordinaerBrukerRegistrering.profilering).isNotNull
+        assertThat(ordinaerBrukerRegistrering.id).isEqualTo(OK_REGISTRERING.id)
     }
 
     companion object {
         private val fnr = Foedselsnummer("11017724129")
         private val aktorId = AktorId("12311")
         private val bruker = Bruker(fnr, aktorId)
-        private val gammelDato = LocalDateTime.of(2020, 1, 11, 15, 50, 20)
         private val igaar = LocalDateTime.now().minusDays(1)
         private val profilering = lagProfilering()
-        private val GAMMEL_BRUKERREGISTRERING =
-            gyldigBrukerRegistrering(
-                opprettetDato = gammelDato
-            )
 
         private val OK_IGANGSATT_REGISTRERING = gyldigBrukerRegistrering(
             opprettetDato = igaar

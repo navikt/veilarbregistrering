@@ -14,13 +14,12 @@ import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistr
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.BrukerRegistreringWrapperFactory
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
-import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.veileder.Veileder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.kanResendes
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.Veileder
 
 class HentRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
@@ -50,15 +49,6 @@ class HentRegistreringService(
         bruker,
         listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND)
     )
-
-    //TODO: Fjerne
-    fun hentIgangsattOrdinaerBrukerRegistrering(bruker: Bruker): OrdinaerBrukerRegistrering? {
-        val ordinaerBrukerRegistrering = hentOrdinaerBrukerRegistrering(
-            bruker,
-            listOf(DOD_UTVANDRET_ELLER_FORSVUNNET, MANGLER_ARBEIDSTILLATELSE)
-        )
-        return if (kanResendes(ordinaerBrukerRegistrering)) ordinaerBrukerRegistrering else null
-    }
 
     private fun hentOrdinaerBrukerRegistrering(bruker: Bruker, status: List<Status>): OrdinaerBrukerRegistrering? {
         val ordinaerBrukerRegistrering = brukerRegistreringRepository
