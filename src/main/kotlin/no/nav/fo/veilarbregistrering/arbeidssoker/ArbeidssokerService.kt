@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
@@ -19,14 +20,22 @@ class ArbeidssokerService(
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
-        val arbeidssokerperioderLokalt =
-            formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
         val arbeidssokerperioderORDS =
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
-
-        val dekkerHele = arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode)
-        val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)
+
+        if (!isOnPrem()) {
+            metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
+            logger.info(
+                "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten uten sammenligning: $overlappendeHistoriskePerioderORDS")
+
+            return overlappendeHistoriskePerioderORDS
+        }
+
+        val arbeidssokerperioderLokalt =
+            formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
+        val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
+
         val lokalErLikOrds = overlappendeArbeidssokerperioderLokalt.equals(overlappendeHistoriskePerioderORDS)
 
         metricsService.registrer(
@@ -42,6 +51,7 @@ class ArbeidssokerService(
                         "Arena-ORDS: $overlappendeHistoriskePerioderORDS")
         }
 
+        val dekkerHele = arbeidssokerperioderLokalt.dekkerHele(forespurtPeriode)
         if (dekkerHele && brukLokalCache()) {
             metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.LOKAL)
             logger.info("Arbeidssokerperiodene fra egen database dekker hele perioden, og returneres: "
