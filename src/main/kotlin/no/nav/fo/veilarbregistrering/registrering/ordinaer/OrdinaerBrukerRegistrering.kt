@@ -39,7 +39,3 @@ data class OrdinaerBrukerRegistrering(
         )
     }
 }
-
-//TODO: Fjerne
-fun kanResendes(registrering: OrdinaerBrukerRegistrering?): Boolean =
-    registrering?.opprettetDato?.isAfter(LocalDateTime.now().minusDays(30)) ?: false

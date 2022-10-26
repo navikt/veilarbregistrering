@@ -24,8 +24,7 @@ class BrukerTilstandServiceTest {
         oppfolgingGateway = mockk()
         brukerRegistreringRepository = mockk(relaxed = true)
         brukerTilstandService = BrukerTilstandService(
-            oppfolgingGateway,
-            brukerRegistreringRepository
+            oppfolgingGateway
         )
     }
 

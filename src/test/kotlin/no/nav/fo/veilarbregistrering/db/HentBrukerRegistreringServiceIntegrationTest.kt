@@ -167,8 +167,7 @@ class HentBrukerRegistreringServiceIntegrationTest(
                 brukerRegistreringRepository: BrukerRegistreringRepository,
             ): BrukerTilstandService {
                 return BrukerTilstandService(
-                    oppfolgingGateway,
-                    brukerRegistreringRepository
+                    oppfolgingGateway
                 )
             }
 

@@ -4,12 +4,11 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Oppfolgingsstatus
 import no.nav.fo.veilarbregistrering.oppfolging.Rettighetsgruppe
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
-import java.util.*
 
 class BrukersTilstand private constructor(
     private val oppfolgingStatusData: Oppfolgingsstatus,
-    val registreringstype: RegistreringType,
-    val isHarIgangsattGjenopptagbarRegistrering: Boolean) {
+    val registreringstype: RegistreringType
+) {
 
     fun kanReaktiveres(): Boolean {
         return RegistreringType.REAKTIVERING == registreringstype
@@ -36,12 +35,8 @@ class BrukersTilstand private constructor(
     val rettighetsgruppe: Rettighetsgruppe? = oppfolgingStatusData.rettighetsgruppe
 
     companion object Factory {
-        fun create(oppfolgingsstatus: Oppfolgingsstatus, harIgangsattGjenopptagbarRegistrering: Boolean) : BrukersTilstand {
-            val registreringstype = beregnRegistreringType(oppfolgingsstatus)
-            return BrukersTilstand(
-                oppfolgingsstatus,
-                registreringstype,
-                registreringstype === RegistreringType.ORDINAER_REGISTRERING && harIgangsattGjenopptagbarRegistrering)
+        fun create(oppfolgingsstatus: Oppfolgingsstatus) : BrukersTilstand {
+            return BrukersTilstand(oppfolgingsstatus, beregnRegistreringType(oppfolgingsstatus))
         }
     }
 }

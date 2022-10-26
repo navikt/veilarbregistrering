@@ -37,7 +37,7 @@ class StartRegistreringStatusServiceTest {
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         brukerRegistreringService = StartRegistreringStatusService(
             arbeidsforholdGateway,
-            BrukerTilstandService(oppfolgingGateway, mockk(relaxed = true)),
+            BrukerTilstandService(oppfolgingGateway),
             pdlOppslagGateway,
             metricsService
         )

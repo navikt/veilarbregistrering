@@ -146,11 +146,8 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         fun profileringService(): ProfileringService  = mockk(relaxed = true)
 
         @Bean
-        fun hentBrukerTilstandService(
-                oppfolgingGateway: OppfolgingGateway,
-                brukerRegistreringRepository: BrukerRegistreringRepository
-        ): BrukerTilstandService {
-            return BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository)
+        fun hentBrukerTilstandService(oppfolgingGateway: OppfolgingGateway): BrukerTilstandService {
+            return BrukerTilstandService(oppfolgingGateway)
         }
 
         @Bean

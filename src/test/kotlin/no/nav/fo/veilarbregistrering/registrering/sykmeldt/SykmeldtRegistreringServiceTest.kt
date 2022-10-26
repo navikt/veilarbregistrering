@@ -38,8 +38,7 @@ class SykmeldtRegistreringServiceTest {
 
         sykmeldtRegistreringService = SykmeldtRegistreringService(
             BrukerTilstandService(
-                oppfolgingGateway,
-                brukerRegistreringRepository
+                oppfolgingGateway
             ),
             oppfolgingGateway,
             sykmeldtRegistreringRepository,

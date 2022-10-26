@@ -19,7 +19,7 @@ class BrukersTilstandTest {
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.SYKMELDT_REGISTRERING)
     }
@@ -34,7 +34,7 @@ class BrukersTilstandTest {
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.ALLEREDE_REGISTRERT)
     }
@@ -45,7 +45,7 @@ class BrukersTilstandTest {
             true,
             null, null, null, null, null
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.ALLEREDE_REGISTRERT)
     }
@@ -60,7 +60,7 @@ class BrukersTilstandTest {
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.REAKTIVERING)
     }
@@ -75,7 +75,7 @@ class BrukersTilstandTest {
             Servicegruppe("VURDI"),
             Rettighetsgruppe("IYT")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.REAKTIVERING)
     }
@@ -86,7 +86,7 @@ class BrukersTilstandTest {
             false,
             null, null, null, null, null
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val registreringType = brukersTilstand.registreringstype
         assertThat(registreringType).isEqualTo(RegistreringType.ORDINAER_REGISTRERING)
     }

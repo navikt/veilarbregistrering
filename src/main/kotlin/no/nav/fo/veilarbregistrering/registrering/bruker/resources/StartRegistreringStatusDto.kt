@@ -8,7 +8,7 @@ data class StartRegistreringStatusDto(
     val erSykmeldtMedArbeidsgiver: Boolean = false,
     val jobbetSeksAvTolvSisteManeder: Boolean? = null,
     val registreringType: RegistreringType? = null,
-    val harIgangsattRegistreringSomKanGjenopptas: Boolean = false,
+    val harIgangsattRegistreringSomKanGjenopptas: Boolean = false, //TODO: Fjerne om det ikke brukes av frontend
     val formidlingsgruppe: String? = null,
     val servicegruppe: String? = null,
     val rettighetsgruppe: String? = null,

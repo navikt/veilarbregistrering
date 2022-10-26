@@ -15,7 +15,7 @@ object StartRegistreringStatusDtoMapper {
         brukersTilstand.isErSykmeldtMedArbeidsgiver,
         oppfyllerBetingelseOmArbeidserfaring,
         brukersTilstand.registreringstype,
-        brukersTilstand.isHarIgangsattGjenopptagbarRegistrering,
+        false,
         brukersTilstand.formidlingsgruppe?.kode,
         brukersTilstand.servicegruppe?.kode,
         brukersTilstand.rettighetsgruppe?.kode,

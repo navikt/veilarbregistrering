@@ -31,8 +31,7 @@ class ReaktiveringBrukerServiceTest {
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         reaktiveringBrukerService = ReaktiveringBrukerService(
                 BrukerTilstandService(
-                    oppfolgingGateway,
-                    brukerRegistreringRepository
+                    oppfolgingGateway
                 ),
                 reaktiveringRepository,
                 oppfolgingGateway,

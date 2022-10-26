@@ -24,7 +24,7 @@ class StartRegistreringStatusDtoMapperTest {
             null,
             null
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val (maksDato, underOppfolging, erSykmeldtMedArbeidsgiver, jobbetSeksAvTolvSisteManeder, registreringType, _, formidlingsgruppe, servicegruppe, rettighetsgruppe, geografiskTilknytning) = map(
             brukersTilstand,
             null,
@@ -54,7 +54,7 @@ class StartRegistreringStatusDtoMapperTest {
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val (maksDato, underOppfolging, erSykmeldtMedArbeidsgiver, jobbetSeksAvTolvSisteManeder, registreringType, _, formidlingsgruppe, servicegruppe, rettighetsgruppe, geografiskTilknytning) = map(
             brukersTilstand,
             GeografiskTilknytning("030109"),
@@ -84,7 +84,7 @@ class StartRegistreringStatusDtoMapperTest {
             Servicegruppe("SERV"),
             Rettighetsgruppe("AAP")
         )
-        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus, false)
+        val brukersTilstand = BrukersTilstand.create(oppfolgingsstatus)
         val (_, _, erSykmeldtMedArbeidsgiver) = map(
             brukersTilstand,
             GeografiskTilknytning("030109"),

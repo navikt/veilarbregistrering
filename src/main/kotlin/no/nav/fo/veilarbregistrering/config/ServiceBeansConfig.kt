@@ -95,11 +95,8 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun brukerTilstandService(
-        oppfolgingGateway: OppfolgingGateway,
-        brukerRegistreringRepository: BrukerRegistreringRepository
-    ): BrukerTilstandService {
-        return BrukerTilstandService(oppfolgingGateway, brukerRegistreringRepository)
+    fun brukerTilstandService(oppfolgingGateway: OppfolgingGateway): BrukerTilstandService {
+        return BrukerTilstandService(oppfolgingGateway)
     }
 
     @Bean
