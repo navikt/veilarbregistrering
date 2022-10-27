@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import no.nav.fo.veilarbregistrering.log.logger
 import okhttp3.HttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
@@ -24,7 +25,9 @@ class ArenaOrdsTokenProviderClient(
     private var tokenCache: TokenCache? = null
     val token: String
         get() {
+            logger.info("Henter opp token for Arena ORDS")
             if (tokenIsSoonExpired()) {
+                logger.info("Token for Arena ORDS is-soon-expired")
                 tokenCache = TokenCache(getRefreshedToken())
             }
             return tokenCache!!.ordsToken.accessToken
@@ -32,6 +35,7 @@ class ArenaOrdsTokenProviderClient(
 
     private fun getRefreshedToken(): OrdsToken {
         val request = if (isOnPrem()) buildRequest() else buildRequestGcp()
+        logger.info("Henter nytt Arena ORDS Token")
         return try {
             defaultHttpClient().newCall(request).execute().use { response ->
                 when {
@@ -75,7 +79,13 @@ class ArenaOrdsTokenProviderClient(
         .build()
 
     private fun tokenIsSoonExpired(): Boolean {
-        return tokenCache == null || timeToRefresh().isBefore(LocalDateTime.now())
+        if (tokenCache == null) {
+            logger.info("tokenCache er tom")
+            return true
+        }
+
+        logger.info("timeToRefresh: ${timeToRefresh()} - erSoonExpired: ${timeToRefresh().isBefore(LocalDateTime.now())}")
+        return timeToRefresh().isBefore(LocalDateTime.now())
     }
 
     private fun timeToRefresh(): LocalDateTime {
@@ -88,7 +98,6 @@ class ArenaOrdsTokenProviderClient(
 
     private class TokenCache(val ordsToken: OrdsToken) {
         val time: LocalDateTime = LocalDateTime.now()
-
     }
 
     data class OrdsToken(
