@@ -30,7 +30,7 @@ class ArenaOrdsTokenProviderClient(
             if (tokenIsSoonExpired()) {
                 logger.info("Token for Arena ORDS is-soon-expired")
                 tokenCache = TokenCache(getRefreshedToken())
-                secureLogger.info("Token for Arena ORDS: ${tokenCache!!.ordsToken.accessToken}, tokenType: ${tokenCache!!.ordsToken.tokenType}, expires in: ${tokenCache!!.ordsToken.expiresIn}")
+                secureLogger.info("Token mot Arena ORDS: ${tokenCache!!.ordsToken.accessToken}")
             }
             return tokenCache!!.ordsToken.accessToken
         }
@@ -44,6 +44,7 @@ class ArenaOrdsTokenProviderClient(
                     response.isSuccessful -> {
                         response.body()?.string()
                             ?.let { bodyString -> objectMapper.readValue<OrdsToken>(bodyString) }
+                            .also { secureLogger.info("Refreshet token, hentet: ${it?.accessToken}, tokenType: ${it?.tokenType}, expires in: ${it?.expiresIn}") }
                             ?: throw IOException("Token response body was null")
                     }
                     else -> throw IOException("Unexpected response code (${response.code()}) from ords token refresh")
