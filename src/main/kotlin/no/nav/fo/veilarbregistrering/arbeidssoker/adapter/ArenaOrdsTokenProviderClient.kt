@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import okhttp3.HttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
@@ -29,6 +30,7 @@ class ArenaOrdsTokenProviderClient(
             if (tokenIsSoonExpired()) {
                 logger.info("Token for Arena ORDS is-soon-expired")
                 tokenCache = TokenCache(getRefreshedToken())
+                secureLogger.info("Token for Arena ORDS: ${tokenCache!!.ordsToken.accessToken}")
             }
             return tokenCache!!.ordsToken.accessToken
         }
