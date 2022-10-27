@@ -30,7 +30,7 @@ class ArenaOrdsTokenProviderClient(
             if (tokenIsSoonExpired()) {
                 logger.info("Token for Arena ORDS is-soon-expired")
                 tokenCache = TokenCache(getRefreshedToken())
-                secureLogger.info("Token for Arena ORDS: ${tokenCache!!.ordsToken.accessToken}")
+                secureLogger.info("Token for Arena ORDS: ${tokenCache!!.ordsToken.accessToken}, tokenType: ${tokenCache!!.ordsToken.tokenType}, expires in: ${tokenCache!!.ordsToken.expiresIn}")
             }
             return tokenCache!!.ordsToken.accessToken
         }
