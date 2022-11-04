@@ -62,6 +62,20 @@ class OrdinaerBrukerRegistreringResourceTest(
     }
 
     @Test
+    fun `Fullfoer ordinaer registrering ok`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        val responseString = mvc.post("/api/fullfoerordinaerregistrering") {
+            contentType = MediaType.APPLICATION_JSON
+            content = REGISTRERING_REQUEST
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsString
+
+        println(responseString)
+    }
+
+    @Test
     fun skalSjekkeTilgangTilBrukerVedRegistreringAvBruker() {
         val ordinaerBrukerRegistrering = OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering(
             besvarelse = Besvarelse(helseHinder = HelseHinderSvar.NEI)

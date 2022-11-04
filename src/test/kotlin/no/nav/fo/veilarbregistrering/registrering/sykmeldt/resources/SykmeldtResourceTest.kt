@@ -63,12 +63,25 @@ class SykmeldtResourceTest(
         verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any()) }
     }
 
-
     @Test
     fun `startregistrersykmeldt har riktig status og responsbody`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         val responseString = mvc.post("/api/startregistrersykmeldt") {
+            contentType = MediaType.APPLICATION_JSON
+            content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
+        }.andExpect {
+            status { isNoContent() }
+        }.andReturn().response.contentAsString
+
+        Assertions.assertThat(responseString).isNullOrEmpty()
+    }
+
+    @Test
+    fun `fullfoersykmeldtregistrering har riktig status og responsbody`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        val responseString = mvc.post("/api/fullfoersykmeldtregistrering") {
             contentType = MediaType.APPLICATION_JSON
             content = FileToJson.toJson("/registrering/startregistrersykmeldt.json")
         }.andExpect {

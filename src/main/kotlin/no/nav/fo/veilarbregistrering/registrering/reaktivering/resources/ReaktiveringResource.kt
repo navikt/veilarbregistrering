@@ -19,7 +19,7 @@ class ReaktiveringResource(
     private val reaktiveringBrukerService: ReaktiveringBrukerService
 ) : ReaktiveringApi {
 
-    @PostMapping("/startreaktivering")
+    @PostMapping(path=["/startreaktivering", "/fullfoerreaktivering"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun reaktivering() {
         if (tjenesteErNede()) {

@@ -55,6 +55,17 @@ class ReaktiveringResourceTest(
         Assertions.assertThat(responseString).isNullOrEmpty()
     }
 
+    @Test
+    fun `fullfoerreaktivering returnerer riktig status og responsbody`() {
+        every { request.getParameter("fnr") } returns IDENT.stringValue()
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        val responseString = mvc.post("/api/fullfoerreaktivering").andExpect {
+            status { isNoContent() }
+        }.andReturn().response.contentAsString
+
+        Assertions.assertThat(responseString).isNullOrEmpty()
+    }
+
     companion object {
         private val IDENT = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
         private val IDENTER = Identer(
