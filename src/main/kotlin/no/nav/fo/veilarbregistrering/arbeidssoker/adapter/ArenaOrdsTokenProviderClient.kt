@@ -6,8 +6,6 @@ import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
-import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.log.secureLogger
 import okhttp3.HttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
@@ -26,25 +24,20 @@ class ArenaOrdsTokenProviderClient(
     private var tokenCache: TokenCache? = null
     val token: String
         get() {
-            logger.info("Henter opp token for Arena ORDS")
             if (tokenIsSoonExpired()) {
-                logger.info("Token for Arena ORDS is-soon-expired")
                 tokenCache = TokenCache(getRefreshedToken())
-                secureLogger.info("Token mot Arena ORDS: ${tokenCache!!.ordsToken.accessToken}")
             }
             return tokenCache!!.ordsToken.accessToken
         }
 
     private fun getRefreshedToken(): OrdsToken {
         val request = if (isOnPrem()) buildRequest() else buildRequestGcp()
-        logger.info("Henter nytt Arena ORDS Token")
         return try {
             defaultHttpClient().newCall(request).execute().use { response ->
                 when {
                     response.isSuccessful -> {
                         response.body()?.string()
                             ?.let { bodyString -> objectMapper.readValue<OrdsToken>(bodyString) }
-                            .also { secureLogger.info("Refreshet token, hentet: ${it?.accessToken}, tokenType: ${it?.tokenType}, expires in: ${it?.expiresIn}") }
                             ?: throw IOException("Token response body was null")
                     }
                     else -> throw IOException("Unexpected response code (${response.code()}) from ords token refresh")
@@ -82,13 +75,7 @@ class ArenaOrdsTokenProviderClient(
         .build()
 
     private fun tokenIsSoonExpired(): Boolean {
-        if (tokenCache == null) {
-            logger.info("tokenCache er tom")
-            return true
-        }
-
-        logger.info("timeToRefresh: ${timeToRefresh()} - erSoonExpired: ${timeToRefresh().isBefore(LocalDateTime.now())}")
-        return timeToRefresh().isBefore(LocalDateTime.now())
+        return tokenCache == null || timeToRefresh().isBefore(LocalDateTime.now())
     }
 
     private fun timeToRefresh(): LocalDateTime {
