@@ -32,18 +32,12 @@ class KafkaConfig {
 
     @Bean
     fun arbeidssokerRegistrertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerRegistrertEvent>): ArbeidssokerRegistrertProducer {
-        return ArbeidssokerRegistrertKafkaProducer(
-            kafkaProducerAiven,
-            "paw.arbeidssoker-registrert-v1"
-        )
+        return ArbeidssokerRegistrertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-registrert-v1")
     }
 
     @Bean
     fun arbeidssokerProfilertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerProfilertEvent>): ArbeidssokerProfilertProducer {
-        return ArbeidssokerProfilertKafkaProducer(
-            kafkaProducerAiven,
-            "paw.arbeidssoker-profilert-v1"
-        )
+        return ArbeidssokerProfilertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-profilert-v1")
     }
 
     @Bean
@@ -88,10 +82,8 @@ class KafkaConfig {
         properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
         properties[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForFormidlingsgruppeConsumer
         properties[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
-        properties[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =
-            StringDeserializer::class.java
-        properties[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] =
-            StringDeserializer::class.java
+        properties[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+        properties[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         properties[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
         properties[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
         properties[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
