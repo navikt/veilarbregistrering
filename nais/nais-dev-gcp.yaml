@@ -65,10 +65,6 @@ spec:
       value: dev-fss
     - name: ENHET_URL
       value: https://ereg-services-q1.dev-fss-pub.nais.io/ereg
-    - name: KAFKA_SERVERS
-      value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-    - name: KAFKA_SCHEMA
-      value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
       value: https://paw-proxy.dev-fss-pub.nais.io
     - name: ARENA_ORDS_TOKEN_PROVIDER

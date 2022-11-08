@@ -65,10 +65,6 @@ spec:
       value: prod-fss
     - name: ENHET_URL
       value: https://ereg-services.prod-fss-pub.nais.io/ereg
-    - name: KAFKA_SERVERS
-      value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00149.adeo.no:8443
-    - name: KAFKA_SCHEMA
-      value: http://kafka-schema-registry.tpa.svc.nais.local:8081
     - name: ARENA_ORDS_API
       value: https://paw-proxy.prod-fss-pub.nais.io
     - name: ARENA_ORDS_TOKEN_PROVIDER

@@ -64,14 +64,14 @@ class KafkaConfig {
     }
 
     @Bean
-    @Profile("!gcp")
+    @Profile("gcp")
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient,
         formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     ): FormidlingsgruppeKafkaConsumer {
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
-            "gg-arena-formidlinggruppe-v1-$envSuffix",
+            "teamarenanais.aapen-arena-formidlingsgruppeendret-v1-q",
             formidlingsgruppeMottakService, unleashClient
         )
     }
@@ -79,17 +79,15 @@ class KafkaConfig {
     @Bean
     fun formidlingsgruppeKafkaConsumerProperties(): Properties {
         val properties = Properties()
-        properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_SERVERS")
+        properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_BROKERS")
         properties[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForFormidlingsgruppeConsumer
-        properties[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA")
+        properties[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA_REGISTRY")
         properties[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         properties[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         properties[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = true
         properties[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffsetResetStrategy
         properties[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        if (System.getProperty("SERVICEUSER_PASSWORD") != null) {
-            properties.putAll(securityConfig)
-        }
+        properties.putAll(aivenSecurityConfig)
         return properties
     }
 
@@ -108,21 +106,6 @@ class KafkaConfig {
             this[SslConfigs.SSL_KEYSTORE_TYPE_CONFIG] = "PKCS12"
             this[SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG] = System.getenv("KAFKA_KEYSTORE_PATH")
             this[SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG] = credstorePassword
-        }
-
-        private val securityConfig: Properties = Properties().apply {
-            this[SaslConfigs.SASL_MECHANISM] = "PLAIN"
-            this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_PLAINTEXT"
-            this[SaslConfigs.SASL_JAAS_CONFIG] =
-                "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" +
-                        requireProperty("SERVICEUSER_USERNAME") + "\" password=\"" +
-                        requireProperty("SERVICEUSER_PASSWORD") + "\";"
-            if (System.getenv("NAV_TRUSTSTORE_PATH") != null) {
-                this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_SSL"
-                this[SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG] =
-                    File(System.getenv("NAV_TRUSTSTORE_PATH")).absolutePath
-                this[SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG] = System.getenv("NAV_TRUSTSTORE_PASSWORD")
-            }
         }
 
         private val envSuffix: String = if (isProduction()) "p" else "q"
