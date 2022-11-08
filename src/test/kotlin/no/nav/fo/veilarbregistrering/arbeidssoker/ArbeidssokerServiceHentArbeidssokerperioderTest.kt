@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -82,6 +83,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         assertThat(arbeidssokerperiodes.asList()).isEmpty()
     }
 
+    @Disabled
     @Test
     fun `hentArbeidssokerperioder skal returnere alle perioder for person innenfor forespurt periode lokalt`() {
         every {
@@ -127,6 +129,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
     }
 
+    @Disabled
     @Test
     fun `returnerer alle perioder (uten datocutoff) for person som berører forespurt periode`() {
         every {
