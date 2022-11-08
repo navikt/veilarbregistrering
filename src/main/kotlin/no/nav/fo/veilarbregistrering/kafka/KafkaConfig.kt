@@ -71,7 +71,7 @@ class KafkaConfig {
     ): FormidlingsgruppeKafkaConsumer {
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
-            "teamarenanais.aapen-arena-formidlingsgruppeendret-v1-q",
+            "teamarenanais.aapen-arena-formidlingsgruppeendret-v1-$envSuffix",
             formidlingsgruppeMottakService, unleashClient
         )
     }
