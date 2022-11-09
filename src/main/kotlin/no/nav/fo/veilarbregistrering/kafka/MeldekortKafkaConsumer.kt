@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.kafka.meldekort.MeldekortEventDto
 import no.nav.fo.veilarbregistrering.log.CallId
@@ -18,7 +19,8 @@ import java.util.concurrent.TimeUnit
 class MeldekortKafkaConsumer internal constructor(
     private val kafkaConsumerProperties: Properties,
     private val topic: String,
-    private val unleashClient: UnleashClient
+    private val unleashClient: UnleashClient,
+    private val meldekortMottakService: MeldekortMottakService
 ) : Runnable {
     init {
         val forsinkelseIMinutterVedOppstart = 5
@@ -49,8 +51,6 @@ class MeldekortKafkaConsumer internal constructor(
                     logger.info("Leser {} events fra topic {}", consumerRecords.count(), topic)
                     consumerRecords.forEach { record: ConsumerRecord<String, String> ->
                         CallId.leggTilCallId()
-                        MDC.put(mdcOffsetKey, record.offset().toString())
-                        MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
                             behandleMeldekortEvent(record)
                         } catch (e: IllegalArgumentException) {
@@ -60,10 +60,9 @@ class MeldekortKafkaConsumer internal constructor(
                             throw e
                         } finally {
                             MDC.remove(MDCConstants.MDC_CALL_ID)
-                            MDC.remove(mdcOffsetKey)
-                            MDC.remove(mdcPartitionKey)
                         }
                     }
+                    logger.info("Nyeste offset er: ${consumerRecords.last().offset()}")
                     consumer.commitSync()
                 }
                 logger.info("Stopper lesing av topic etter at toggle `{}` er skrudd på",
@@ -78,16 +77,15 @@ class MeldekortKafkaConsumer internal constructor(
         }
     }
 
-    private fun behandleMeldekortEvent(event: ConsumerRecord<String, String>): MeldekortEventDto {
-        return objectMapper.readValue(event.value(), MeldekortEventDto::class.java)
+    private fun behandleMeldekortEvent(event: ConsumerRecord<String, String>) {
+        val meldekortEventDto = objectMapper.readValue(event.value(), MeldekortEventDto::class.java)
+        meldekortMottakService.behandleMeldekortEvent(meldekortEventDto.map())
     }
 
     private fun stopKonsumeringAvMeldekort() = unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME)
 
     companion object {
         private const val mdcTopicKey = "topic"
-        private const val mdcOffsetKey = "offset"
-        private const val mdcPartitionKey = "partition"
         private const val KILL_SWITCH_TOGGLE_NAME = "veilarbregistrering.stopKonsumeringAvMeldekort"
     }
 

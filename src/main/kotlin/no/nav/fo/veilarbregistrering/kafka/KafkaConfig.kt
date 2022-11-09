@@ -8,6 +8,7 @@ import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
@@ -81,12 +82,13 @@ class KafkaConfig {
 
     @Bean
     @Profile("gcp")
-    fun meldekortKafkaConsumer(unleashClient: UnleashClient): MeldekortKafkaConsumer {
+    fun meldekortKafkaConsumer(unleashClient: UnleashClient, meldekortMottakService: MeldekortMottakService): MeldekortKafkaConsumer {
         val envSuffix = if (isProduction()) "p" else "q1"
         return MeldekortKafkaConsumer(
             meldekortKafkaConsumerProperties(),
             "meldekort.aapen-meldeplikt-meldekortgodkjentalle-v1-$envSuffix",
-            unleashClient
+            unleashClient,
+            meldekortMottakService
         )
     }
 

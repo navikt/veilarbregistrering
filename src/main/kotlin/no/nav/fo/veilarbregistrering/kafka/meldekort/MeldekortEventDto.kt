@@ -1,5 +1,8 @@
 package no.nav.fo.veilarbregistrering.kafka.meldekort
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -23,4 +26,16 @@ data class MeldekortEventDto(
     val periodeTil: LocalDate,
     val kortType: String,
     val opprettet: LocalDateTime
-)
+) {
+    fun map(): MeldekortEvent {
+        return MeldekortEvent(
+            fnr = Foedselsnummer(fnr),
+            erArbeidssokerNestePeriode = arbeidssokerNestePeriode,
+            nåværendePeriode = MeldekortPeriode(periodeFra, periodeTil),
+            meldekorttype = Meldekorttype.from(kortType),
+            meldekortEventId = kontrollMeldekortRef,
+            eventOpprettet = opprettet
+        )
+    }
+}
+

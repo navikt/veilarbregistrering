@@ -123,6 +123,12 @@ object DateConfiguration {
         override fun from(value: LocalDateTime): ZonedDateTime {
             return value.atZone(DEFAULT_ZONE)
         }
+
+        override fun fromString(value: String?): LocalDateTime? {
+            return notNullOrEmpty(value)
+                ?.let { LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }
+                ?: super.fromString(value)
+        }
     }
 
     private class ZonedDateTimeProvider : BaseProvider<ZonedDateTime>(
