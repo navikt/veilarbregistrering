@@ -2,6 +2,8 @@ package no.nav.fo.veilarbregistrering.kafka
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants
+import no.nav.fo.veilarbregistrering.config.objectMapper
+import no.nav.fo.veilarbregistrering.kafka.meldekort.MeldekortEventDto
 import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
@@ -50,7 +52,7 @@ class MeldekortKafkaConsumer internal constructor(
                         MDC.put(mdcOffsetKey, record.offset().toString())
                         MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
-                            secureLogger.info("Lest melding fra meldekort-topic: ${record.value()}")
+                            behandleMeldekortEvent(record)
                         } catch (e: IllegalArgumentException) {
                             logger.warn("Behandling av record feilet: ${record.value()}", e)
                         } catch (e: RuntimeException) {
@@ -74,6 +76,10 @@ class MeldekortKafkaConsumer internal constructor(
             MDC.remove(MDCConstants.MDC_CALL_ID)
             MDC.remove(mdcTopicKey)
         }
+    }
+
+    private fun behandleMeldekortEvent(event: ConsumerRecord<String, String>): MeldekortEventDto {
+        return objectMapper.readValue(event.value(), MeldekortEventDto::class.java)
     }
 
     private fun stopKonsumeringAvMeldekort() = unleashClient.isEnabled(KILL_SWITCH_TOGGLE_NAME)
