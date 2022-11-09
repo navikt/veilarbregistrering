@@ -95,7 +95,7 @@ class KafkaConfig {
         // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
         // vil dette gi oss «eventual consistency».
         private const val autoOffsetResetStrategy: String = "earliest"
-        private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-02"
+        private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-03"
 
         private val aivenSecurityConfig: Properties = Properties().apply {
             val credstorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD")
