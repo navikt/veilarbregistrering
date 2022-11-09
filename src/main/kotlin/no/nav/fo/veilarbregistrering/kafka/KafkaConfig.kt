@@ -9,14 +9,12 @@ import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
-import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
-import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -24,7 +22,6 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import java.io.File
 import java.util.*
 
 @Configuration
@@ -69,6 +66,7 @@ class KafkaConfig {
         unleashClient: UnleashClient,
         formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     ): FormidlingsgruppeKafkaConsumer {
+        val envSuffix = if (isProduction()) "p" else "q"
         return FormidlingsgruppeKafkaConsumer(
             formidlingsgruppeKafkaConsumerProperties(),
             "teamarenanais.aapen-arena-formidlingsgruppeendret-v1-$envSuffix",
@@ -76,11 +74,31 @@ class KafkaConfig {
         )
     }
 
+    private fun formidlingsgruppeKafkaConsumerProperties(): Properties {
+        val groupIdForFormidlingsgruppeConsumer = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-03"
+        return kafkaConsumerProperties(groupIdForFormidlingsgruppeConsumer)
+    }
+
     @Bean
-    fun formidlingsgruppeKafkaConsumerProperties(): Properties {
+    @Profile("gcp")
+    fun meldekortKafkaConsumer(unleashClient: UnleashClient): MeldekortKafkaConsumer {
+        val envSuffix = if (isProduction()) "p" else "q1"
+        return MeldekortKafkaConsumer(
+            meldekortKafkaConsumerProperties(),
+            "meldekort.aapen-meldeplikt-meldekortgodkjentalle-v1-$envSuffix",
+            unleashClient
+        )
+    }
+
+    private fun meldekortKafkaConsumerProperties(): Properties {
+        val groupIdForMeldekortConsumer = "veilarbregistrering-MeldekortKafkaConsumer-01"
+        return kafkaConsumerProperties(groupIdForMeldekortConsumer)
+    }
+
+    private fun kafkaConsumerProperties(groupId: String): Properties {
         val properties = Properties()
         properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = System.getenv("KAFKA_BROKERS")
-        properties[ConsumerConfig.GROUP_ID_CONFIG] = groupIdForFormidlingsgruppeConsumer
+        properties[ConsumerConfig.GROUP_ID_CONFIG] = groupId
         properties[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = System.getenv("KAFKA_SCHEMA_REGISTRY")
         properties[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         properties[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
@@ -95,8 +113,6 @@ class KafkaConfig {
         // «earliest» gir oss «at least once»-prosessering av meldinger. Med idempotency-håndtering av meldingene,
         // vil dette gi oss «eventual consistency».
         private const val autoOffsetResetStrategy: String = "earliest"
-        private const val groupIdForFormidlingsgruppeConsumer: String = "veilarbregistrering-FormidlingsgruppeKafkaConsumer-03"
-
         private val aivenSecurityConfig: Properties = Properties().apply {
             val credstorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD")
             this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = SecurityProtocol.SSL.name
@@ -107,7 +123,5 @@ class KafkaConfig {
             this[SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG] = System.getenv("KAFKA_KEYSTORE_PATH")
             this[SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG] = credstorePassword
         }
-
-        private val envSuffix: String = if (isProduction()) "p" else "q"
     }
 }
