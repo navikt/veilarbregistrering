@@ -1,5 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

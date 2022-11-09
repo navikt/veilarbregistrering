@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
 
 internal class DeleteFormidlingsgruppeMapper : FormidlingsgruppeMapper() {

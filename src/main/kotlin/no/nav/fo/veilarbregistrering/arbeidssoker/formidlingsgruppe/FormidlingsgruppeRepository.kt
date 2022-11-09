@@ -1,5 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
 interface FormidlingsgruppeRepository {

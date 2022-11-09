@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.kafka
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants
-import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper.Companion.map
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import org.apache.kafka.clients.consumer.ConsumerRecord

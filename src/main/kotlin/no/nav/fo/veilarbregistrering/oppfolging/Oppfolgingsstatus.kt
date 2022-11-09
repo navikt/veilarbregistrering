@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 
 data class Oppfolgingsstatus(
     val isUnderOppfolging: Boolean,

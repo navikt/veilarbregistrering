@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import io.mockk.*
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
 import org.junit.jupiter.api.BeforeEach

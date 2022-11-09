@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import io.mockk.*
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import org.junit.jupiter.api.Test

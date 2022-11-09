@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.log.logger
 
 class ArbeidssokerperiodeAvsluttetProducer {

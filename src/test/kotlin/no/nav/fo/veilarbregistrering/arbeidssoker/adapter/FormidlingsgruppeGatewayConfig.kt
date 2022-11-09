@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
 
 import io.mockk.mockk
-import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

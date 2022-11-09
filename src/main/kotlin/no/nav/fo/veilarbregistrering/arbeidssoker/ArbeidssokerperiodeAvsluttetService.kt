@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
+
 class ArbeidssokerperiodeAvsluttetService(
     private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
 ) {

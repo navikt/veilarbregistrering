@@ -1,6 +1,9 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -25,7 +28,8 @@ import java.time.LocalDateTime
 class GcpFormidlingsgruppeRepositoryDbIntegrationTest(
 
     @Autowired
-    private val formidlingsgruppeRepository: FormidlingsgruppeRepository) {
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository
+) {
 
     init {
         System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")

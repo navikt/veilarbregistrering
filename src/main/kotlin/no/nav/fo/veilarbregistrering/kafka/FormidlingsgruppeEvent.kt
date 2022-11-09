@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.EndretFormidlingsgruppeCommand
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime

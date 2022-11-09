@@ -7,7 +7,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeMottakService
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer

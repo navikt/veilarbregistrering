@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.stereotype.Service

@@ -6,6 +6,9 @@ import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
