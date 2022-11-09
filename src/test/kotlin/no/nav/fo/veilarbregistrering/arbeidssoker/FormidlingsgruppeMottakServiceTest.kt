@@ -33,14 +33,6 @@ class FormidlingsgruppeMottakServiceTest {
         verify(exactly = 1) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
     }
 
-    @Test
-    fun `endringer før 2010 skal ikke persisteres`() {
-        val formidlingsgruppeEvent = testEvent(LocalDateTime.of(2009, Month.DECEMBER, 31, 23, 59, 59))
-        every { formidlingsgruppeRepository.lagre(any()) } returns 1L
-        formidlingsgruppeMottakService.behandle(formidlingsgruppeEvent)
-        verify(exactly = 0) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
-    }
-
     private fun testEvent(test: LocalDateTime): FormidlingsgruppeEvent {
         return FormidlingsgruppeEvent(
             Foedselsnummer("12345678910"),

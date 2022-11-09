@@ -22,11 +22,9 @@ class FormidlingsgruppeMottakService(
                             "= ${endretFormidlingsgruppeCommand.personId}")
             return
         }
-        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))) {
+        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00")) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS"){
             logger.warn(
-                "Foreldet formidlingsgruppe-endring (${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) " +
-                        "lest fra topic: 'gg-arena-formidlinggruppe-v1' - denne forkastes.")
-            return
+                "Fikk formidlingsgruppeendring fra før 2010 som ikke har formidlingsgruppe ARBS, formidlingsgruppe: ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}, dato: ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) ")
         }
 
         val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
