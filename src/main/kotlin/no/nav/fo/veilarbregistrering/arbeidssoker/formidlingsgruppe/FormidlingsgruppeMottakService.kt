@@ -14,15 +14,17 @@ class FormidlingsgruppeMottakService(
 
     @Transactional
     fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
-        val foedselsnummer = endretFormidlingsgruppeCommand.foedselsnummer
 
-        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00")) && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS"){
+        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
+            && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS"){
             logger.warn(
-                "Fikk formidlingsgruppeendring fra før 2010 som ikke har formidlingsgruppe ARBS, formidlingsgruppe: ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}, dato: ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) ")
+                "Fikk formidlingsgruppeendring fra før 2010 som ikke har formidlingsgruppe ARBS, " +
+                        "formidlingsgruppe: ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}, " +
+                        "dato: ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) ")
         }
 
         val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
-            listOf(foedselsnummer)
+            listOf(endretFormidlingsgruppeCommand.foedselsnummer)
         )
 
         formidlingsgruppeRepository.lagre(endretFormidlingsgruppeCommand)
