@@ -56,7 +56,7 @@ class MeldekortRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Meld
     }
 
     override fun hent(foedselsnummer: Foedselsnummer): List<MeldekortEvent> {
-        val params = mapOf("foedselsnummer" to foedselsnummer)
+        val params = mapOf("foedselsnummer" to foedselsnummer.foedselsnummer)
         val sql = "SELECT * FROM $MELDEKORT_TABELL WHERE foedselsnummer = :foedselsnummer"
         val meldekort = db.query(sql, params, meldekortEventMapper)
         return meldekort
