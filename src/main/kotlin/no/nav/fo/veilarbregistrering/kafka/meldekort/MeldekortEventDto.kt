@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka.meldekort
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDate

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka.meldekort
+package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort
 
 import java.time.LocalDate
 
