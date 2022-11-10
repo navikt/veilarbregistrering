@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
 
 @JdbcTest
@@ -66,6 +67,7 @@ internal class MeldekortRepositoryImplTest(@Autowired private val meldekortRepos
         assertFalse(melderkortEvent.isEmpty())
         assertEquals(melderkortEvent.first().meldekorttype, meldekort.meldekorttype)
         assertEquals(melderkortEvent.first().fnr, meldekort.fnr)
-        assertEquals(melderkortEvent.first().eventOpprettet, meldekort.eventOpprettet)
+        assertEquals(melderkortEvent.first().eventOpprettet.truncatedTo(ChronoUnit.MICROS), meldekort.eventOpprettet.truncatedTo(
+            ChronoUnit.MICROS))
     }
 }
