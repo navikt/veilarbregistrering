@@ -1,10 +1,13 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort
 
 import no.nav.fo.veilarbregistrering.log.logger
+import org.springframework.transaction.annotation.Transactional
 
-class MeldekortMottakService {
+open class MeldekortMottakService(private val meldekortRepository: MeldekortRepository) {
 
-    fun behandleMeldekortEvent(meldekortEvent: MeldekortEvent) {
+    @Transactional
+    open fun behandleMeldekortEvent(meldekortEvent: MeldekortEvent) {
         logger.info("Mottatt meldekort-event: ${meldekortEvent.eventOpprettet}, ${meldekortEvent.meldekorttype}")
+        meldekortRepository.lagre(meldekortEvent)
     }
 }

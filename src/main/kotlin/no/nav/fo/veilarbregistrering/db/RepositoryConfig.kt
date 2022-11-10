@@ -19,7 +19,6 @@ import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringR
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 @Configuration
@@ -50,7 +49,6 @@ class RepositoryConfig {
     }
 
     @Bean
-    @Profile("gcp")
     fun meldekortRepository(db: NamedParameterJdbcTemplate): MeldekortRepository {
         return MeldekortRepositoryImpl(db)
     }
