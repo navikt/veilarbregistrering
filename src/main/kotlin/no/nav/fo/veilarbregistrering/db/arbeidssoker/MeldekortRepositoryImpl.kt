@@ -5,13 +5,17 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isOnPrem
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
 
 class MeldekortRepositoryImpl(private val db: NamedParameterJdbcTemplate) : MeldekortRepository {
+
     override fun lagre(meldekort: MeldekortEvent): Long {
+        if (isOnPrem()) throw UnsupportedOperationException("Lagring av meldekort er ikke støttet i FSS")
+
         val id = nesteFraSekvens()
         val params = mapOf(
             "id" to id,
@@ -56,6 +60,8 @@ class MeldekortRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Meld
     }
 
     override fun hent(foedselsnummer: Foedselsnummer): List<MeldekortEvent> {
+        if (isOnPrem()) throw UnsupportedOperationException("Henting av meldekort er ikke støttet i FSS")
+
         val params = mapOf("foedselsnummer" to foedselsnummer.foedselsnummer)
         val sql = "SELECT * FROM $MELDEKORT_TABELL WHERE foedselsnummer = :foedselsnummer"
         val meldekort = db.query(sql, params, meldekortEventMapper)
