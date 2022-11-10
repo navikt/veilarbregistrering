@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -16,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -44,5 +46,26 @@ internal class MeldekortRepositoryImplTest(@Autowired private val meldekortRepos
 
     @Test
     fun hent() {
+
+        val fnr = Foedselsnummer("12345678911")
+        val meldekort = MeldekortEvent(
+            fnr,
+            true,
+            MeldekortPeriode(
+                LocalDate.now(),
+                LocalDate.now()
+            ),
+            Meldekorttype.MANUELL_ARENA,
+            123,
+            LocalDateTime.now()
+        )
+
+        meldekortRepository.lagre(meldekort)
+        val melderkortEvent = meldekortRepository.hent(fnr)
+
+        assertFalse(melderkortEvent.isEmpty())
+        assertEquals(melderkortEvent.first().meldekorttype, meldekort.meldekorttype)
+        assertEquals(melderkortEvent.first().fnr, meldekort.fnr)
+        assertEquals(melderkortEvent.first().eventOpprettet, meldekort.eventOpprettet)
     }
 }
