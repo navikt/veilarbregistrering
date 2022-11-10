@@ -18,9 +18,6 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
 
     override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
         val personId = command.personId
-        val fnr = command.foedselsnummer?.stringValue()
-            ?: throw IllegalStateException("Foedselsnummer var ikke satt. Skulle vært filtrert bort i forkant!")
-
         val formidlingsgruppe = command.formidlingsgruppe.kode
         val formidlingsgruppeEndret = Timestamp.valueOf(command.formidlingsgruppeEndret.truncatedTo(ChronoUnit.MICROS))
 
@@ -34,7 +31,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         val id = nesteFraSekvens()
         val params = mapOf(
             "id" to id,
-            "fnr" to fnr,
+            "fnr" to command.foedselsnummer.stringValue(),
             "person_id" to personId,
             "person_id_status" to command.personIdStatus,
             "operasjon" to command.operation.name,

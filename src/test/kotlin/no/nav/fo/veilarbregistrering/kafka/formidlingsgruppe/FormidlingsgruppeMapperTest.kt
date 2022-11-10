@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import kotlin.test.assertNull
 
 class FormidlingsgruppeMapperTest {
+
     @Test
     fun `Kaster exception ved manglende mod dato`() {
         val json = toJson("/kafka/formidlingsgruppe_uten_mod_dato.json")
@@ -40,15 +41,9 @@ class FormidlingsgruppeMapperTest {
     }
 
     @Test
-    fun `manglende fnr`() {
+    fun `manglende fnr skal kaste exception`() {
         val json = toJson("/kafka/formidlingsgruppe_uten_fnr.json")
-        val formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json)
-        assertNull(formidlingsgruppeEvent.foedselsnummer)
-        assertThat(formidlingsgruppeEvent.personId).isEqualTo("1652")
-        assertThat(formidlingsgruppeEvent.operation).isEqualTo(Operation.INSERT)
-        assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("ISERV"))
-        assertThat(formidlingsgruppeEvent.formidlingsgruppeEndret)
-            .isEqualTo(LocalDateTime.of(2007, 12, 3, 3, 5, 54))
+        assertThrows<IllegalArgumentException> { FormidlingsgruppeMapper.map(json) }
     }
 
     @Test
@@ -70,7 +65,7 @@ class FormidlingsgruppeMapperTest {
     fun `mapping av op type d for delete`() {
         val json = toJson("/kafka/formidlingsgruppe_op_type_D.json")
         val formidlingsgruppeEvent = FormidlingsgruppeMapper.map(json)
-        assertThat(formidlingsgruppeEvent.foedselsnummer).isNull()
+        assertThat(formidlingsgruppeEvent.foedselsnummer.stringValue()).isEqualTo("***********")
         assertThat(formidlingsgruppeEvent.personId).isEqualTo("1365747")
         assertThat(formidlingsgruppeEvent.operation).isEqualTo(Operation.DELETE)
         assertThat(formidlingsgruppeEvent.formidlingsgruppe).isEqualTo(Formidlingsgruppe("IJOBS"))

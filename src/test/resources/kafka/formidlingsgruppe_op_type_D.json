@@ -7,7 +7,7 @@
   "tokens": {},
   "before": {
     "PERSON_ID": 1365747,
-    "FODSELSNR": null,
+    "FODSELSNR": "***********",
     "FORMIDLINGSGRUPPEKODE": "IJOBS",
     "MOD_DATO": "2016-03-12 00:47:50",
     "PERSON_ID_STATUS": "AKTIV"

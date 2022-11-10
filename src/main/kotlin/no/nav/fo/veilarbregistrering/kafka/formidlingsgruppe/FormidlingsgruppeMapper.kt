@@ -13,8 +13,9 @@ import java.time.format.DateTimeFormatter
 abstract class FormidlingsgruppeMapper {
     internal abstract fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent
 
-    protected fun mapFoedselsnummer(fodselsnr: String?): Foedselsnummer? = fodselsnr
+    protected fun mapFoedselsnummer(fodselsnr: String?): Foedselsnummer = fodselsnr
         ?.let { Foedselsnummer(it) }
+        ?:throw IllegalArgumentException("Foedselsnummer i FormidlingsgruppeEvent er null")
 
     protected fun mapOperation(operation: String): Operation =
         when (operation) {

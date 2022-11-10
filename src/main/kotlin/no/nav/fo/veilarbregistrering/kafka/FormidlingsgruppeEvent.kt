@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime
 
 class FormidlingsgruppeEvent(
-    override val foedselsnummer: Foedselsnummer?,
+    override val foedselsnummer: Foedselsnummer,
     override val personId: String,
     override val personIdStatus: String,
     override val operation: Operation,
@@ -19,7 +19,7 @@ class FormidlingsgruppeEvent(
 
     override fun toString(): String {
         return "FormidlingsgruppeEvent{" +
-                "foedselsnummer=" + foedselsnummer?.maskert() +
+                "foedselsnummer=" + foedselsnummer.maskert() +
                 ", personId='" + personId + '\'' +
                 ", personIdStatus='" + personIdStatus + '\'' +
                 ", operation='" + operation + '\'' +

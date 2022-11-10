@@ -10,14 +10,12 @@ class ArbeidssokerperiodeAvsluttetService(
         endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand,
         arbeidssokerperioder: Arbeidssokerperioder
     ) {
-        endretFormidlingsgruppeCommand.foedselsnummer?.let {
-            arbeidssokerperioder.nyestePeriode()?.let {
-                if (it.erGjeldende() && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
-                    arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(
-                        endretFormidlingsgruppeCommand,
-                        it
-                    )
-                }
+        arbeidssokerperioder.nyestePeriode()?.let {
+            if (it.erGjeldende() && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS") {
+                arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(
+                    endretFormidlingsgruppeCommand,
+                    it
+                )
             }
         }
     }
