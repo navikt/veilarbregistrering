@@ -58,7 +58,7 @@ internal class MeldekortRepositoryImplTest(@Autowired private val meldekortRepos
             ),
             Meldekorttype.MANUELL_ARENA,
             123,
-            LocalDateTime.now()
+            LocalDateTime.of(2022, 1, 1, 12, 0, 0)
         )
 
         meldekortRepository.lagre(meldekort)
