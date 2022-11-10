@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
@@ -14,11 +15,11 @@ class MeldekortRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Meld
         val id = nesteFraSekvens()
         val params = mapOf(
             "id" to id,
-            "foedselsnummer" to meldekort.fnr,
+            "foedselsnummer" to meldekort.fnr.foedselsnummer,
             "er_arbeidssoker_neste_periode" to meldekort.erArbeidssokerNestePeriode,
             "periode_fra" to meldekort.nåværendePeriode.periodeFra,
             "periode_til" to meldekort.nåværendePeriode.periodeTil,
-            "meldekorttype" to meldekort.meldekorttype,
+            "meldekorttype" to meldekort.meldekorttype.name,
             "meldekort_event_id" to meldekort.meldekortEventId,
             "event_opprettet" to Timestamp.valueOf(meldekort.eventOpprettet)
         )
@@ -75,7 +76,10 @@ class MeldekortRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Meld
                 MeldekortPeriode(
                     rs.getDate("periode_fra").toLocalDate(),
                     rs.getDate("periode_til").toLocalDate(),
-                    )
+                    ),
+                Meldekorttype.from(rs.getString("meldekorttype")),
+                rs.getLong("meldekort_event_id"),
+                rs.getTimestamp("event_opprettet").toLocalDateTime()
             )
         }
     }
