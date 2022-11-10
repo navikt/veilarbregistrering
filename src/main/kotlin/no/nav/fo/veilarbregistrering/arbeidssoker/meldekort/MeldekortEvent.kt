@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort
 
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.kafka.meldekort.MeldekortPeriode
 import java.time.LocalDateTime
 
 data class MeldekortEvent(

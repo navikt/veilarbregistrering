@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.db
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.MeldekortRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.konsument.MigrateRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
@@ -17,6 +19,7 @@ import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringR
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 @Configuration
@@ -44,6 +47,12 @@ class RepositoryConfig {
     @Bean
     fun arbeidssokerRepository(db: NamedParameterJdbcTemplate): FormidlingsgruppeRepository {
         return FormidlingsgruppeRepositoryImpl(db)
+    }
+
+    @Bean
+    @Profile("gcp")
+    fun meldekortRepository(db: NamedParameterJdbcTemplate): MeldekortRepository {
+        return MeldekortRepositoryImpl(db)
     }
 
     @Bean
