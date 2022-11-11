@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
 import org.springframework.scheduling.annotation.Scheduled
+import kotlin.system.measureTimeMillis
 
 class MigrateWorker(
     private val leaderElectionClient: LeaderElectionClient,
@@ -22,7 +23,11 @@ class MigrateWorker(
             return
         }
         logger.info("Kjører migreringsjobb for data fra Oracle til Postgres")
-        migrateService.migrate()
+        val tidBrukt = measureTimeMillis {
+            migrateService.migrate()
+        }
+        val antallMinutterBrukt = tidBrukt.toFloat()/60000.0
+        logger.info("Migreringsjobb tok $antallMinutterBrukt minutter")
     }
 
     companion object {
