@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.migrering.konsument.scheduler
 
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.config.isOnPrem
-import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
 import org.springframework.scheduling.annotation.Scheduled
@@ -12,7 +11,7 @@ class MigrateWorker(
     private val migrateService: MigrateService
 ) {
 
-    @Scheduled(cron = HVERT_TJUENDE_MINUTT)
+    @Scheduled(cron = HVERT_TIENDE_MINUTT)
     fun migrate() {
         if (isOnPrem()) {
             logger.warn("Migreringsjobb for GCP ble forsøkt kjørt fra FSS")
@@ -22,12 +21,13 @@ class MigrateWorker(
         if (!leaderElectionClient.isLeader) {
             return
         }
-
+        logger.info("Kjører migreringsjobb for data fra Oracle til Postgres")
         migrateService.migrate()
     }
 
     companion object {
         const val HVERT_TJUENDE_MINUTT = "0 */20 * * * *"
+        const val HVERT_TIENDE_MINUTT = "0 */10 * * * *"
     }
 
 }
