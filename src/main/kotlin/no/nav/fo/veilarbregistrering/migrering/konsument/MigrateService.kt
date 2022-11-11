@@ -28,7 +28,7 @@ class MigrateService(
 
         val rader = migrateClient.hentOppdaterteRegistreringStatuser(trengerOppdatering)
 
-        logger.info("Hentet oppdaterte rader:", rader)
+        logger.info("Hentet oppdaterte rader: ${rader.size}")
         val antallOppdaterte = repository.oppdaterTilstander(rader)
 
         if (rader.size == antallOppdaterte.size) logger.info("Oppdaterte ${antallOppdaterte.size} rader")
