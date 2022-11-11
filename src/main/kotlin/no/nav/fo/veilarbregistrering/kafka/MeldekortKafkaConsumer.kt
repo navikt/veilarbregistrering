@@ -49,6 +49,12 @@ class MeldekortKafkaConsumer internal constructor(
                 while (!stopKonsumeringAvMeldekort()) {
                     val consumerRecords = consumer.poll(Duration.ofMinutes(2))
                     logger.info("Leser {} events fra topic {}", consumerRecords.count(), topic)
+
+                    if (consumerRecords.isEmpty) {
+                        logger.info("Ingen nye events - venter på neste poll ...")
+                        continue
+                    }
+
                     consumerRecords.forEach { record: ConsumerRecord<String, String> ->
                         CallId.leggTilCallId()
                         try {
