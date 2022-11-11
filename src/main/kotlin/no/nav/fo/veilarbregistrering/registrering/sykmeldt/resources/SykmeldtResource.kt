@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
@@ -22,6 +23,10 @@ class SykmeldtResource(
     @PostMapping(path=["/startregistrersykmeldt", "/fullfoersykmeldtregistrering"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun registrerSykmeldt(@RequestBody sykmeldtRegistrering: SykmeldtRegistrering) {
+        if (requireClusterName() == "prod-gcp") {
+            throw RuntimeException("POST for å fullføre registrering er ikke støttet i prod-gcp")
+        }
+
         if (tjenesteErNede()) {
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
