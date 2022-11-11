@@ -11,6 +11,7 @@ class MigrateService(
     fun migrate() {
         TabellNavn.values().forEach {
             val sisteIndex = repository.hentStoersteId(it)
+            logger.info("Største ID for $it er: $sisteIndex")
             val rader = migrateClient.hentNesteBatchFraTabell(it, sisteIndex)
             repository.settInnRader(it, rader)
         }
