@@ -20,6 +20,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         val rowSet = db.jdbcTemplate.queryForRowSet(
             "select ${tabellNavn.idKolonneNavn} " +
                     "from ${tabellNavn.name} " +
+                    "where ${tabellNavn.idKolonneNavn} < 10000000" +
                     "order by ${tabellNavn.idKolonneNavn} desc limit 1"
         )
 
