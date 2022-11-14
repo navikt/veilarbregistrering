@@ -20,7 +20,6 @@ class ArbeidssokerResource(
     private val userService: UserService,
     private val tilgangskontrollService: TilgangskontrollService
 ) : ArbeidssokerApi {
-
     @GetMapping("/perioder/niva3")
     override fun hentArbeidssokerperioderMedNivå3(
         @RequestParam("fraOgMed") @DateTimeFormat(pattern = "yyyy-MM-dd") fraOgMed: LocalDate,
