@@ -41,10 +41,10 @@ class MigreringResource(private val migreringRepository: MigreringRepository) {
 
         val results = tilstander.filterIndexed { index, rad ->
             if (index == 0) logger.info("Sammenlikner ${rad["STATUS"]} med ${sjekkDisse[rad["ID"].toString()]}")
-            if (rad["STATUS"] != sjekkDisse[rad["ID"].toString()]) {
+            if (rad["STATUS"] != sjekkDisse[rad["ID"].toString()]?.name) {
                 logger.info("Status i Oracle: ${rad["STATUS"]} er ulik status i Postgres: ${sjekkDisse[rad["ID"].toString()]}")
             }
-            rad["STATUS"] != sjekkDisse[rad["ID"].toString()]
+            rad["STATUS"] != sjekkDisse[rad["ID"].toString()]?.name
         }
 
         logger.info("Oppdatering av RegistreringTilstander: ${results.size} av ${sjekkDisse.size} hadde endret status")
