@@ -5,6 +5,7 @@ import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeMapper.Companion.map
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
+import no.nav.fo.veilarbregistrering.log.logger
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
@@ -53,10 +54,14 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
                 while (!stopKonsumeringAvFormidlingsgruppe()) {
                     val consumerRecords = consumer.poll(Duration.ofMinutes(2))
                     LOG.info("Leser {} events fra topic {}", consumerRecords.count(), topic)
+
+                    if (consumerRecords.isEmpty) {
+                        logger.info("Ingen nye events - venter på neste poll ...")
+                        continue
+                    }
+
                     consumerRecords.forEach(Consumer { record: ConsumerRecord<String, String> ->
                         leggTilCallId()
-                        MDC.put(mdcOffsetKey, record.offset().toString())
-                        MDC.put(mdcPartitionKey, record.partition().toString())
                         try {
                             behandleFormidlingsgruppeMelding(record)
                         } catch (e: IllegalArgumentException) {
@@ -66,10 +71,9 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
                             throw e
                         } finally {
                             MDC.remove(MDCConstants.MDC_CALL_ID)
-                            MDC.remove(mdcOffsetKey)
-                            MDC.remove(mdcPartitionKey)
                         }
                     })
+                    logger.info("Nyeste offset er: ${consumerRecords.last().offset()}")
                     consumer.commitSync()
                 }
                 LOG.info("Stopper lesing av topic etter at toggle `{}` er skrudd på", KILL_SWITCH_TOGGLE_NAME)
@@ -90,8 +94,6 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
     companion object {
         private val LOG = LoggerFactory.getLogger(FormidlingsgruppeKafkaConsumer::class.java)
         private const val mdcTopicKey = "topic"
-        private const val mdcOffsetKey = "offset"
-        private const val mdcPartitionKey = "partition"
         private const val KILL_SWITCH_TOGGLE_NAME = "veilarbregistrering.stopKonsumeringAvFormidlingsgruppe"
     }
 }
