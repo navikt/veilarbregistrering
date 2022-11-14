@@ -18,7 +18,6 @@ import java.time.LocalDateTime
   "opprettet": "2022-11-09T12:30:52.107"
 }
  */
-
 data class MeldekortEventDto(
     val fnr: String,
     val kontrollMeldekortRef: Long,

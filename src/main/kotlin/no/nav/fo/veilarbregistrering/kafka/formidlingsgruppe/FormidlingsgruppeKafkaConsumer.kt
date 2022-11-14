@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka
+package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants

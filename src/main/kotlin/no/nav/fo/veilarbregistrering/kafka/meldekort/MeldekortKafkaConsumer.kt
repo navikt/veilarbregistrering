@@ -1,13 +1,11 @@
-package no.nav.fo.veilarbregistrering.kafka
+package no.nav.fo.veilarbregistrering.kafka.meldekort
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.config.objectMapper
-import no.nav.fo.veilarbregistrering.kafka.meldekort.MeldekortEventDto
 import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.MDC

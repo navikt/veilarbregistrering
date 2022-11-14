@@ -4,6 +4,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
 interface FormidlingsgruppeRepository {
-    fun lagre(command: EndretFormidlingsgruppeCommand): Long
+    fun lagre(event: FormidlingsgruppeEvent): Long
     fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder
 }

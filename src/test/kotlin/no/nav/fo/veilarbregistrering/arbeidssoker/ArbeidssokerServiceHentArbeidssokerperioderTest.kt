@@ -4,7 +4,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
@@ -151,7 +151,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     }
 
     private class StubFormidlingsgruppeRepository : FormidlingsgruppeRepository {
-        override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
+        override fun lagre(event: FormidlingsgruppeEvent): Long {
             return 0
         }
 

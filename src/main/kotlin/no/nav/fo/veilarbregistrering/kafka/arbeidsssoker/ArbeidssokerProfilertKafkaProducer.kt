@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka
+package no.nav.fo.veilarbregistrering.kafka.arbeidsssoker
 
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.profilering.ProfilertTil

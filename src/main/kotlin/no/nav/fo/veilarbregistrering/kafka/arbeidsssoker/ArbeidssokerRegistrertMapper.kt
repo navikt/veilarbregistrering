@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka
+package no.nav.fo.veilarbregistrering.kafka.arbeidsssoker
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.fo.veilarbregistrering.besvarelse.UtdanningBestattSvar
@@ -18,9 +18,9 @@ internal object ArbeidssokerRegistrertMapper {
                 event.opprettetDato,
                 ZoneId.systemDefault()
             ).format(DateTimeFormatter.ISO_ZONED_DATE_TIME),
-            event.utdanningSvar?.let(::map),
-            event.utdanningBestattSvar?.let(::map),
-            event.utdanningGodkjentSvar?.let(::map)
+            event.utdanningSvar?.let(ArbeidssokerRegistrertMapper::map),
+            event.utdanningBestattSvar?.let(ArbeidssokerRegistrertMapper::map),
+            event.utdanningGodkjentSvar?.let(ArbeidssokerRegistrertMapper::map)
         )
     }
 

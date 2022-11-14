@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka
+package no.nav.fo.veilarbregistrering.kafka.arbeidssoker
 
 import no.nav.arbeid.soker.registrering.UtdanningBestattSvar
 import no.nav.arbeid.soker.registrering.UtdanningGodkjentSvar
@@ -6,6 +6,7 @@ import no.nav.arbeid.soker.registrering.UtdanningSvar
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder.gyldigBesvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.kafka.arbeidsssoker.ArbeidssokerRegistrertMapper
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

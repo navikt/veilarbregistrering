@@ -1,10 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -68,17 +65,17 @@ class GcpFormidlingsgruppeRepositoryDbIntegrationTest(
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 
-    private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): EndretFormidlingsgruppeCommand {
-        return object : EndretFormidlingsgruppeCommand {
-            override val foedselsnummer = foedselsnummer
-            override val personId = "123456"
-            override val personIdStatus = "AKTIV"
-            override val operation = Operation.UPDATE
-            override val formidlingsgruppe = Formidlingsgruppe("ARBS")
-            override val formidlingsgruppeEndret = tidspunkt
-            override val forrigeFormidlingsgruppe: Formidlingsgruppe? = null
-            override val forrigeFormidlingsgruppeEndret: LocalDateTime? = null
-        }
+    private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEvent {
+        return FormidlingsgruppeEvent(
+            foedselsnummer,
+            "123456",
+            "AKTIV",
+            Operation.UPDATE,
+            Formidlingsgruppe("ARBS"),
+            tidspunkt,
+            null,
+            null
+        )
     }
 
     companion object {

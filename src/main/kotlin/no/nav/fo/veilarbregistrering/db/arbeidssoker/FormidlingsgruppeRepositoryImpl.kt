@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
@@ -16,10 +16,10 @@ import java.time.temporal.ChronoUnit
 
 class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate) : FormidlingsgruppeRepository {
 
-    override fun lagre(command: EndretFormidlingsgruppeCommand): Long {
-        val personId = command.personId
-        val formidlingsgruppe = command.formidlingsgruppe.kode
-        val formidlingsgruppeEndret = Timestamp.valueOf(command.formidlingsgruppeEndret.truncatedTo(ChronoUnit.MICROS))
+    override fun lagre(event: FormidlingsgruppeEvent): Long {
+        val personId = event.personId
+        val formidlingsgruppe = event.formidlingsgruppe.kode
+        val formidlingsgruppeEndret = Timestamp.valueOf(event.formidlingsgruppeEndret.truncatedTo(ChronoUnit.MICROS))
 
         if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
             logger.info("Endringen er allerede lagret, denne forkastes. PersonID:" +
@@ -31,14 +31,14 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         val id = nesteFraSekvens()
         val params = mapOf(
             "id" to id,
-            "fnr" to command.foedselsnummer.stringValue(),
+            "fnr" to event.foedselsnummer.stringValue(),
             "person_id" to personId,
-            "person_id_status" to command.personIdStatus,
-            "operasjon" to command.operation.name,
+            "person_id_status" to event.personIdStatus,
+            "operasjon" to event.operation.name,
             "formidlingsgruppe" to formidlingsgruppe,
             "formidlingsgruppe_endret" to formidlingsgruppeEndret,
-            "forrige_formidlingsgruppe" to command.forrigeFormidlingsgruppe?.let(Formidlingsgruppe::kode),
-            "forrige_formidlingsgruppe_endret" to command.forrigeFormidlingsgruppeEndret?.let(Timestamp::valueOf),
+            "forrige_formidlingsgruppe" to event.forrigeFormidlingsgruppe?.let(Formidlingsgruppe::kode),
+            "forrige_formidlingsgruppe_endret" to event.forrigeFormidlingsgruppeEndret?.let(Timestamp::valueOf),
             "formidlingsgruppe_lest" to Timestamp.valueOf(LocalDateTime.now())
         )
         val sql = "INSERT INTO $FORMIDLINGSGRUPPE ($ID, $FOEDSELSNUMMER, $PERSON_ID, $PERSON_ID_STATUS, $OPERASJON," +
@@ -50,7 +50,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         try {
             db.update(sql, params)
         } catch (e: DataIntegrityViolationException) {
-            throw DataIntegrityViolationException("Lagring av følgende formidlingsgruppeendring feilet: $command", e)
+            throw DataIntegrityViolationException("Lagring av følgende formidlingsgruppeendring feilet: $event", e)
         }
         return id
     }

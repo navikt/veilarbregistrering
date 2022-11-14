@@ -1,14 +1,13 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.EndretFormidlingsgruppeCommand
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -61,17 +60,17 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
         verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
-    private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): EndretFormidlingsgruppeCommand {
-        return object : EndretFormidlingsgruppeCommand {
-            override val foedselsnummer = Foedselsnummer("10108000398")
-            override val personId = "123456"
-            override val personIdStatus = "AKTIV"
-            override val operation = Operation.UPDATE
-            override val formidlingsgruppe = formidlingsgruppe
-            override val formidlingsgruppeEndret = LocalDateTime.now()
-            override val forrigeFormidlingsgruppe: Formidlingsgruppe? = null
-            override val forrigeFormidlingsgruppeEndret: LocalDateTime? = null
-        }
+    private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): FormidlingsgruppeEvent {
+        return FormidlingsgruppeEvent(
+            Foedselsnummer("10108000398"),
+            "123456",
+            "AKTIV",
+            Operation.UPDATE,
+            formidlingsgruppe,
+            LocalDateTime.now(),
+            null,
+            null
+        )
     }
 
     companion object {
