@@ -1,7 +1,7 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation

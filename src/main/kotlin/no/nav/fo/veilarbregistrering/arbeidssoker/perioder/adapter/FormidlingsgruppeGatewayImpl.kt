@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger

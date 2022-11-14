@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer

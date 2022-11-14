@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.AktorId
