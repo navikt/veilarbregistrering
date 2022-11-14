@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +35,21 @@ internal class MeldekortResourceTest(@Autowired private val mvc: MockMvc) {
 
         Assertions.assertThat(responseBody).isNotNull
     }
+
+    @Test
+    fun `get - Svarer med en med siste meldekort`() {
+        val responseBody = mvc.get("/api/arbeidssoker/meldekort/siste")
+            .andExpect {
+                status { isOk() }
+            }
+            .andReturn()
+
+        val body = responseBody.response.contentAsString
+        val sisteMeldekort = objectMapper.readValue(body, MeldekortDto::class.java)
+
+        Assertions.assertThat(sisteMeldekort.erArbeidssokerNestePeriode).isTrue
+        Assertions.assertThat(responseBody).isNotNull
+    }
 }
 
 @Configuration
@@ -57,6 +73,17 @@ class MeldekortResourceConfig {
                 Meldekorttype.MANUELL_ARENA,
                 1,
                 LocalDateTime.now()
+            ),
+            MeldekortEvent(
+                FoedselsnummerTestdataBuilder.aremark(),
+                false,
+                MeldekortPeriode(
+                    LocalDate.now(),
+                    LocalDate.now()
+                ),
+                Meldekorttype.MANUELL_ARENA,
+                1,
+                LocalDateTime.now().minusDays(1)
             )
         )
         return meldekortService

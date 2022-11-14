@@ -15,4 +15,13 @@ interface MeldekortApi {
         ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
     fun hentMeldekort(): List<MeldekortDto>
+
+    @Operation(summary = "Henter siste meldekort for arbeidssøker.")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Ok"),
+        ApiResponse(responseCode = "401", description = "Unauthorized - bruker er ikke autorisert"),
+        ApiResponse(responseCode = "403", description = "Forbidden - ingen tilgang"),
+        ApiResponse(responseCode = "500", description = "Ukjent feil")
+    )
+    fun hentSisteMeldekort(): MeldekortDto
 }
