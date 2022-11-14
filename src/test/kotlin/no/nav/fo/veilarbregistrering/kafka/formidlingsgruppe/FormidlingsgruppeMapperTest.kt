@@ -2,12 +2,11 @@ package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.FileToJson.toJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import kotlin.test.assertNull
 
 class FormidlingsgruppeMapperTest {
 

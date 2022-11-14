@@ -18,6 +18,7 @@ internal class ArbeidssokerRegistrertKafkaProducer(
     private val producer: KafkaProducer<String, ArbeidssokerRegistrertEvent>,
     private val topic: String
 ) : ArbeidssokerRegistrertProducer {
+
     override fun publiserArbeidssokerRegistrert(
         event: ArbeidssokerRegistrertInternalEvent?
     ): Boolean {

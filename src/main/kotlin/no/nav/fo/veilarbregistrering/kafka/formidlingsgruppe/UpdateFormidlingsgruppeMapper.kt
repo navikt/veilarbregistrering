@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
 
 internal class UpdateFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
     override fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent {
