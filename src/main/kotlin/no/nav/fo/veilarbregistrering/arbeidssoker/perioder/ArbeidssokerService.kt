@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway

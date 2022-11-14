@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 class ArbeidssokerperioderTestdataBuilder private constructor() {
     private val arbeidssokerperioder: MutableList<Arbeidssokerperiode>

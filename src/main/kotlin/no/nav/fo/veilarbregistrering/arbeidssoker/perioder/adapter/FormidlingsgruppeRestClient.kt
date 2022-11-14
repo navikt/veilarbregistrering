@@ -4,7 +4,7 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
-import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.UnauthorizedException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.isOnPrem

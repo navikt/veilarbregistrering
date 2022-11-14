@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer

@@ -1,7 +1,7 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.Companion.arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeTestdataBuilder.Companion.arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

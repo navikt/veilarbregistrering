@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.util.Objects

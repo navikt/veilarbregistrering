@@ -1,8 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingshistorikkDto
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingshistorikkMapper
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

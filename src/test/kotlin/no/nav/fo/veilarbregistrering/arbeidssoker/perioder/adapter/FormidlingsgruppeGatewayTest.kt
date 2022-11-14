@@ -2,11 +2,9 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeTestdataBuilder
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingsgruppeGatewayImpl
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
@@ -60,11 +58,13 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
         assertThat(arbeidssokerperioder).isEqualTo(
                 arbeidssokerperioder()
-                        .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
+                        .arbeidssokerperiode(
+                            ArbeidssokerperiodeTestdataBuilder
                                 .arbeidssokerperiode()
                                 .fra(LocalDate.of(2020, 1, 12))
                                 .til(LocalDate.of(2020, 2, 20)))
-                        .arbeidssokerperiode(ArbeidssokerperiodeTestdataBuilder
+                        .arbeidssokerperiode(
+                            ArbeidssokerperiodeTestdataBuilder
                                 .arbeidssokerperiode()
                                 .fra(LocalDate.of(2020, 3, 12))
                                 .til(null))

@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.featuretoggle
 
 import no.finn.unleash.strategy.Strategy
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import org.slf4j.LoggerFactory
 
 class ByUserIdStrategy(private val authContextHolder: AuthContextHolder) : Strategy {
