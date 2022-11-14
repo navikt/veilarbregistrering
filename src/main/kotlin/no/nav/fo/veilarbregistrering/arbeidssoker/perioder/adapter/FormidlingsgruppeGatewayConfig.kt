@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway

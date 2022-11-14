@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
@@ -19,7 +19,6 @@ import okhttp3.Request
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import java.util.concurrent.TimeUnit
-import java.util.function.Supplier
 
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,

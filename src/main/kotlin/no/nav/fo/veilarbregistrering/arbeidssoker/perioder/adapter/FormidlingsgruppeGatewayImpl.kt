@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperioder

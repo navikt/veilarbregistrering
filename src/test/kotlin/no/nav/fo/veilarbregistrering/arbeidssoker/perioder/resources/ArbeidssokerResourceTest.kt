@@ -5,6 +5,8 @@ import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeTestdataBuilder.Companion.arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.ArbeidssokerResource
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.Fnr
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

@@ -11,7 +11,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.KrrGateway

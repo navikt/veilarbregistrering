@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.resources
+package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -35,9 +35,9 @@ interface ArbeidssokerApi {
             ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
     fun hentArbeidssokerperioder(
-            @RequestBody(description = "Fødselsnummer") fnr: Fnr?,
-            @Parameter(required = true, description = "Fra og med dato") fraOgMed: LocalDate,
-            @Parameter(description = "Til og med dato") tilOgMed: LocalDate?
+        @RequestBody(description = "Fødselsnummer") fnr: Fnr?,
+        @Parameter(required = true, description = "Fra og med dato") fraOgMed: LocalDate,
+        @Parameter(description = "Til og med dato") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto
 
     @Operation(summary = "Henter alle perioder hvor bruker er registrert som arbeidssøker. Denne skal kun brukes av personbrukere og støtter innlogging med nivå 3.")

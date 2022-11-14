@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.config
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeGatewayConfig
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.GcpAutorisasjonConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.OnPremAutorisasjonConfig
