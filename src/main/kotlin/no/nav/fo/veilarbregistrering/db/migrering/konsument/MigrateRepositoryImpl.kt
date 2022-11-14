@@ -112,7 +112,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
     override fun antallRaderSomKanTrengeOppdatering(): Int {
         return try {
             val sql = "select count(*) as antall from registrering_tilstand " +
-                    "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND')"
+                    "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND') AND id < 10000000"
             db.queryForObject(sql, emptyMap<String, Any>()) { rs: ResultSet, _ ->
                 rs.getInt("antall")
             }!!
@@ -124,7 +124,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
 
     override fun hentRaderSomKanTrengeOppdatering(): List<RegistreringTilstand> {
         val sql = "select * from registrering_tilstand " +
-                "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND') limit 1000"
+                "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND') AND id < 10000000 limit 1000"
 
         return db.query(sql, emptyMap<String, Any>(), registreringTilstandRowMapper)
     }
