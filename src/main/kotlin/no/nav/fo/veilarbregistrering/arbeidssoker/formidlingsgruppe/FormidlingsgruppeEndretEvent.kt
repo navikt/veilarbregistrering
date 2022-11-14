@@ -4,7 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime
 
-data class FormidlingsgruppeEvent(
+data class FormidlingsgruppeEndretEvent(
     val foedselsnummer: Foedselsnummer,
     val personId: String,
     val personIdStatus: String,

@@ -67,8 +67,8 @@ class GcpFormidlingsgruppeRepositoryDbIntegrationTest(
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 
-    private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEvent {
-        return FormidlingsgruppeEvent(
+    private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
+        return FormidlingsgruppeEndretEvent(
             foedselsnummer,
             "123456",
             "AKTIV",

@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
@@ -60,8 +60,8 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
         verify(exactly = 0) { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) }
     }
 
-    private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): FormidlingsgruppeEvent {
-        return FormidlingsgruppeEvent(
+    private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): FormidlingsgruppeEndretEvent {
+        return FormidlingsgruppeEndretEvent(
             Foedselsnummer("10108000398"),
             "123456",
             "AKTIV",

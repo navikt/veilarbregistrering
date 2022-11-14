@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit
 
 class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate) : FormidlingsgruppeRepository {
 
-    override fun lagre(event: FormidlingsgruppeEvent): Long {
+    override fun lagre(event: FormidlingsgruppeEndretEvent): Long {
         val personId = event.personId
         val formidlingsgruppe = event.formidlingsgruppe.kode
         val formidlingsgruppeEndret = Timestamp.valueOf(event.formidlingsgruppeEndret.truncatedTo(ChronoUnit.MICROS))

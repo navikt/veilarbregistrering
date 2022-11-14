@@ -36,8 +36,8 @@ class FormidlingsgruppeMottakServiceTest {
         verify(exactly = 1) { formidlingsgruppeRepository.lagre(formidlingsgruppeEvent) }
     }
 
-    private fun testEvent(test: LocalDateTime): FormidlingsgruppeEvent {
-        return FormidlingsgruppeEvent(
+    private fun testEvent(test: LocalDateTime): FormidlingsgruppeEndretEvent {
+        return FormidlingsgruppeEndretEvent(
             Foedselsnummer("12345678910"),
             "012345",
             "AKTIV",

@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 
 internal class DeleteFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
-    override fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent {
+    override fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEndretEvent {
         val before = ggArenaFormidlinggruppeDto.before ?: throw InvalidFormidlingsgruppeEvent("Delete op requires non null before-element")
-        return FormidlingsgruppeEvent(
+        return FormidlingsgruppeEndretEvent(
             mapFoedselsnummer(before.FODSELSNR),
             before.PERSON_ID,
             before.PERSON_ID_STATUS,

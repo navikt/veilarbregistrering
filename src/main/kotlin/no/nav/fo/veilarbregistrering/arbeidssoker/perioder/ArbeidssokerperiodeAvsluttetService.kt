@@ -1,19 +1,19 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 
 class ArbeidssokerperiodeAvsluttetService(
     private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
 ) {
 
     fun behandleAvslutningAvArbeidssokerperiode(
-        formidlingsgruppeEvent: FormidlingsgruppeEvent,
+        formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent,
         arbeidssokerperioder: Arbeidssokerperioder
     ) {
         arbeidssokerperioder.nyestePeriode()?.let {
-            if (it.erGjeldende() && formidlingsgruppeEvent.formidlingsgruppe.kode != "ARBS") {
+            if (it.erGjeldende() && formidlingsgruppeEndretEvent.formidlingsgruppe.kode != "ARBS") {
                 arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(
-                    formidlingsgruppeEvent,
+                    formidlingsgruppeEndretEvent,
                     it
                 )
             }

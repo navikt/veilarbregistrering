@@ -13,7 +13,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -101,7 +101,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)
 
         private val eksisterendeFormidlingsgrupper = listOf(
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -111,7 +111,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -121,7 +121,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -131,7 +131,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",

@@ -14,24 +14,24 @@ class FormidlingsgruppeMottakService(
 ) {
 
     @Transactional
-    fun behandle(formidlingsgruppeEvent: FormidlingsgruppeEvent) {
+    fun behandle(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
 
-        if (formidlingsgruppeEvent.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
-            && formidlingsgruppeEvent.formidlingsgruppe.kode != "ARBS"){
+        if (formidlingsgruppeEndretEvent.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
+            && formidlingsgruppeEndretEvent.formidlingsgruppe.kode != "ARBS"){
             logger.warn(
                 "Fikk formidlingsgruppeendring fra før 2010 som ikke har formidlingsgruppe ARBS, " +
-                        "formidlingsgruppe: ${formidlingsgruppeEvent.formidlingsgruppe.kode}, " +
-                        "dato: ${formidlingsgruppeEvent.formidlingsgruppeEndret}) ")
+                        "formidlingsgruppe: ${formidlingsgruppeEndretEvent.formidlingsgruppe.kode}, " +
+                        "dato: ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}) ")
         }
 
         val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
-            listOf(formidlingsgruppeEvent.foedselsnummer)
+            listOf(formidlingsgruppeEndretEvent.foedselsnummer)
         )
 
-        formidlingsgruppeRepository.lagre(formidlingsgruppeEvent)
+        formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-            formidlingsgruppeEvent,
+            formidlingsgruppeEndretEvent,
             eksisterendeArbeidssokerperioderLokalt
         )
     }
