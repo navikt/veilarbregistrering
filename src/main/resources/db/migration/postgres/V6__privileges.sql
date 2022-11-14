@@ -1,0 +1,2 @@
+GRANT ALL PRIVILEGES ON TABLE public.meldekort TO cloudsqliamuser;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloudsqliamuser;
