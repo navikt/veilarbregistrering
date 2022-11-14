@@ -6,12 +6,14 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
 import org.springframework.scheduling.annotation.Scheduled
 import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
 
 class MigrateWorker(
     private val leaderElectionClient: LeaderElectionClient,
     private val migrateService: MigrateService
 ) {
 
+    @ExperimentalTime
     @Scheduled(cron = HVERT_TIENDE_MINUTT)
     fun migrate() {
         if (isOnPrem()) {

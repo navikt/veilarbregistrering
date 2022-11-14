@@ -2,18 +2,26 @@ package no.nav.fo.veilarbregistrering.migrering.konsument
 
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.migrering.TabellNavn
+import kotlin.system.measureTimeMillis
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 class MigrateService(
     private val repository: MigrateRepository,
     private val migrateClient: MigrateClient
 ) {
 
+    @ExperimentalTime
     fun migrate() {
         TabellNavn.values().forEach {
             val sisteIndex = repository.hentStoersteId(it)
-            logger.info("Største ID for $it er: $sisteIndex")
-            val rader = migrateClient.hentNesteBatchFraTabell(it, sisteIndex)
-            repository.settInnRader(it, rader)
+            val (rader, tidsbruk) = measureTimedValue { migrateClient.hentNesteBatchFraTabell(it, sisteIndex) }
+            logger.info("Hentet ${rader.size} rader fra tabell $it i FSS-app. Tidsbruk: ${tidsbruk.inWholeSeconds} sekunder")
+            val insertTidsbrukIMin = measureTimeMillis {
+                repository.settInnRader(it, rader)
+            }.toFloat()/60000.0
+            logger.info("Brukte $insertTidsbrukIMin minutter på å sette inn ${rader.size} i tabell $it")
         }
 
         val antallSomKanTrengeOppdatering = repository.antallRaderSomKanTrengeOppdatering()
@@ -24,13 +32,15 @@ class MigrateService(
         }
     }
 
+    @ExperimentalTime
     private fun hentOgOppdaterRegistreringTilstander() {
         val trengerOppdatering = repository.hentRaderSomKanTrengeOppdatering()
 
-        val rader = migrateClient.hentOppdaterteRegistreringStatuser(trengerOppdatering)
+        val (rader, tidsbruk) = measureTimedValue { migrateClient.hentOppdaterteRegistreringStatuser(trengerOppdatering) }
+        logger.info("Hentet oppdaterte rader: ${rader.size} fra registrering_tilstand i FSS-app. Tidsbruk: ${tidsbruk.inWholeSeconds} sekunder")
 
-        logger.info("Hentet oppdaterte rader: ${rader.size}")
-        val antallOppdaterte = repository.oppdaterTilstander(rader)
+        val (antallOppdaterte, tidsbruk2) = measureTimedValue { repository.oppdaterTilstander(rader) }
+        logger.info("Oppdaterte $antallOppdaterte rader i registrering_tilstand. Tidsbruk: ${tidsbruk2.inWholeSeconds} sekunder")
 
         if (rader.size == antallOppdaterte.size) logger.info("Oppdaterte ${antallOppdaterte.size} rader")
         else logger.warn("Oppdaterte ${antallOppdaterte.size} rader, men mottok ${rader.size} fra oracle")
