@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer

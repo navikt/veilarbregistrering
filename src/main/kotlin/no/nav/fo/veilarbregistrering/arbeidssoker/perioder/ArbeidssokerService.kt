@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger

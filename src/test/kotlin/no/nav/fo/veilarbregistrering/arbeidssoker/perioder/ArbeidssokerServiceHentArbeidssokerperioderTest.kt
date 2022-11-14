@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEvent
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer

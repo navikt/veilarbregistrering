@@ -7,7 +7,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
