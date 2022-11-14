@@ -40,7 +40,7 @@ class MigrateService(
         logger.info("Hentet oppdaterte rader: ${rader.size} fra registrering_tilstand i FSS-app. Tidsbruk: ${tidsbruk.inWholeSeconds} sekunder")
 
         val (antallOppdaterte, tidsbruk2) = measureTimedValue { repository.oppdaterTilstander(rader) }
-        logger.info("Oppdaterte $antallOppdaterte rader i registrering_tilstand. Tidsbruk: ${tidsbruk2.inWholeSeconds} sekunder")
+        logger.info("Oppdaterte ${antallOppdaterte.size} rader i registrering_tilstand. Tidsbruk: ${tidsbruk2.inWholeSeconds} sekunder")
 
         if (rader.size == antallOppdaterte.size) logger.info("Oppdaterte ${antallOppdaterte.size} rader")
         else logger.warn("Oppdaterte ${antallOppdaterte.size} rader, men mottok ${rader.size} fra oracle")
