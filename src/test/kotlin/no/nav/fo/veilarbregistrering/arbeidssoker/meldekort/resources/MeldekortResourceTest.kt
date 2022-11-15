@@ -62,6 +62,19 @@ class MeldekortResourceConfig {
     @Bean
     fun meldekortService(): MeldekortService {
         val meldekortService = mockk<MeldekortService>()
+
+        every { meldekortService.hentSisteMeldekort(any()) } returns MeldekortEvent(
+            FoedselsnummerTestdataBuilder.aremark(),
+            true,
+            MeldekortPeriode(
+                LocalDate.now(),
+                LocalDate.now()
+            ),
+            Meldekorttype.MANUELL_ARENA,
+            1,
+            LocalDateTime.now()
+        )
+
         every { meldekortService.hentMeldekort(any()) } returns listOf(
             MeldekortEvent(
                 FoedselsnummerTestdataBuilder.aremark(),

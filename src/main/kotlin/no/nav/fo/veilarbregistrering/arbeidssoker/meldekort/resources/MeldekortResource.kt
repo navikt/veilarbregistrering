@@ -19,7 +19,6 @@ class MeldekortResource(
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
         return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
-            .sortedByDescending { it.nåværendePeriode.periodeFra }
             .map(MeldekortDto::map)
     }
 
@@ -27,9 +26,8 @@ class MeldekortResource(
     override fun hentSisteMeldekort(): MeldekortDto? {
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
-            .sortedByDescending { it.eventOpprettet }
-            .map(MeldekortDto::map)
-            .firstOrNull()
+        return meldekortService.hentSisteMeldekort(bruker.gjeldendeFoedselsnummer)?.let {
+            MeldekortDto.map(it)
+        }
     }
 }
