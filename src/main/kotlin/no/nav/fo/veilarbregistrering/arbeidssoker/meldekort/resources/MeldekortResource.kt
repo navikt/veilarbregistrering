@@ -18,7 +18,9 @@ class MeldekortResource(
     override fun hentMeldekort(): List<MeldekortDto> {
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
-        return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer).map(MeldekortDto::map)
+        return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
+            .sortedByDescending { it.nåværendePeriode.periodeFra }
+            .map(MeldekortDto::map)
     }
 
     @GetMapping("/meldekort/siste")
