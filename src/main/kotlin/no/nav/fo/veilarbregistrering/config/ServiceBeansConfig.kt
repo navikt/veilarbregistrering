@@ -11,6 +11,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources.MeldekortResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
@@ -234,6 +236,28 @@ class ServiceBeansConfig {
             userService,
             hentRegistreringService,
             startRegistreringStatusService
+        )
+    }
+
+    @Bean
+    fun meldekortResource(
+        userService: UserService,
+        tilgangskontrollService: TilgangskontrollService,
+        meldekortService: MeldekortService
+    ): MeldekortResource {
+        return MeldekortResource(
+            userService,
+            tilgangskontrollService,
+            meldekortService
+        )
+    }
+
+    @Bean
+    fun meldekortService(
+        meldekortRepository: MeldekortRepository
+    ): MeldekortService {
+        return MeldekortService(
+            meldekortRepository
         )
     }
 
