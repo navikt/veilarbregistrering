@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 
 internal class InsertFormidlingsgruppeMapper : FormidlingsgruppeMapper() {
-    override fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent {
+    override fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEndretEvent {
         val after = ggArenaFormidlinggruppeDto.after ?: throw InvalidFormidlingsgruppeEvent("Insert operation requires non null after-section")
-        return FormidlingsgruppeEvent(
+        return FormidlingsgruppeEndretEvent(
             mapFoedselsnummer(after.FODSELSNR),
             after.PERSON_ID,
             after.PERSON_ID_STATUS,

@@ -3,17 +3,18 @@ package no.nav.veilarbregistrering.integrasjonstest
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
@@ -100,7 +101,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)
 
         private val eksisterendeFormidlingsgrupper = listOf(
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -110,7 +111,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -120,7 +121,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -130,7 +131,7 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",

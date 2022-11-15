@@ -1,14 +1,16 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,7 +48,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
     fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
         eksisterendeFormidlingsgrupper.map { formidlingsgruppeRepository.lagre(it) }
         val eksisterendeArbeidssokerPerioder = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(listOf(fnr))
-        val nyttFormidlingsgruppeEvent = FormidlingsgruppeEvent(
+        val nyttFormidlingsgruppeEndretEvent = FormidlingsgruppeEndretEvent(
             foedselsnummer = fnr,
             personId = pid,
             personIdStatus = "AKTIV",
@@ -60,7 +62,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
         val arbeidssokerperioderSlot = slot<Arbeidssokerperioder>()
         every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), capture(arbeidssokerperioderSlot)) } just Runs
 
-        formidlingsgruppeMottakService.behandle(nyttFormidlingsgruppeEvent)
+        formidlingsgruppeMottakService.behandle(nyttFormidlingsgruppeEndretEvent)
 
         assertEquals(eksisterendeArbeidssokerPerioder, arbeidssokerperioderSlot.captured)
     }
@@ -89,7 +91,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
         private val third = LocalDateTime.of(2021, 10, 21, 13, 15, 1)
 
         private val eksisterendeFormidlingsgrupper = listOf(
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -99,7 +101,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -109,7 +111,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",
@@ -119,7 +121,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
                 null,
                 null
             ),
-            FormidlingsgruppeEvent(
+            FormidlingsgruppeEndretEvent(
                 fnr,
                 pid,
                 "AKTIV",

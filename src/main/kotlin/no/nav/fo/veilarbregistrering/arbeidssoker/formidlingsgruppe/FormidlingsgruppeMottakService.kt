@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeAvsluttetService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,24 +14,24 @@ class FormidlingsgruppeMottakService(
 ) {
 
     @Transactional
-    fun behandle(endretFormidlingsgruppeCommand: EndretFormidlingsgruppeCommand) {
+    fun behandle(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
 
-        if (endretFormidlingsgruppeCommand.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
-            && endretFormidlingsgruppeCommand.formidlingsgruppe.kode != "ARBS"){
+        if (formidlingsgruppeEndretEvent.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
+            && formidlingsgruppeEndretEvent.formidlingsgruppe.kode != "ARBS"){
             logger.warn(
                 "Fikk formidlingsgruppeendring fra før 2010 som ikke har formidlingsgruppe ARBS, " +
-                        "formidlingsgruppe: ${endretFormidlingsgruppeCommand.formidlingsgruppe.kode}, " +
-                        "dato: ${endretFormidlingsgruppeCommand.formidlingsgruppeEndret}) ")
+                        "formidlingsgruppe: ${formidlingsgruppeEndretEvent.formidlingsgruppe.kode}, " +
+                        "dato: ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}) ")
         }
 
         val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
-            listOf(endretFormidlingsgruppeCommand.foedselsnummer)
+            listOf(formidlingsgruppeEndretEvent.foedselsnummer)
         )
 
-        formidlingsgruppeRepository.lagre(endretFormidlingsgruppeCommand)
+        formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-            endretFormidlingsgruppeCommand,
+            formidlingsgruppeEndretEvent,
             eksisterendeArbeidssokerperioderLokalt
         )
     }

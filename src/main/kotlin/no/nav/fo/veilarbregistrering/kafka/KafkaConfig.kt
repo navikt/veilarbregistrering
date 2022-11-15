@@ -10,6 +10,10 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.config.isProduction
+import no.nav.fo.veilarbregistrering.kafka.arbeidsssoker.ArbeidssokerProfilertKafkaProducer
+import no.nav.fo.veilarbregistrering.kafka.arbeidsssoker.ArbeidssokerRegistrertKafkaProducer
+import no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe.FormidlingsgruppeKafkaConsumer
+import no.nav.fo.veilarbregistrering.kafka.meldekort.MeldekortKafkaConsumer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import org.apache.kafka.clients.CommonClientConfigs

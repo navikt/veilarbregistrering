@@ -6,7 +6,7 @@ import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.adapter.FormidlingsgruppeRestClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.DigDirKrrProxyClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
@@ -22,17 +22,17 @@ class HelsesjekkConfig {
 
     @Bean
     fun selfTestChecks(
-            dbHelsesjekk: DatabaseHelsesjekk,
-            veilarbPep: Pep,
-            unleashClient: UnleashClient,
-            oppfolgingClient: OppfolgingClient,
-            formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
-            krrClient: DigDirKrrProxyClient,
-            aaregRestClient: AaregRestClient,
-            enhetRestClient: EnhetRestClient,
-            oppgaveRestClient: OppgaveRestClient,
-            norg2RestClient: Norg2RestClient,
-            pdlOppslagClient: PdlOppslagClient
+        dbHelsesjekk: DatabaseHelsesjekk,
+        veilarbPep: Pep,
+        unleashClient: UnleashClient,
+        oppfolgingClient: OppfolgingClient,
+        formidlingsgruppeRestClient: FormidlingsgruppeRestClient,
+        krrClient: DigDirKrrProxyClient,
+        aaregRestClient: AaregRestClient,
+        enhetRestClient: EnhetRestClient,
+        oppgaveRestClient: OppgaveRestClient,
+        norg2RestClient: Norg2RestClient,
+        pdlOppslagClient: PdlOppslagClient
     ): SelfTestChecks {
         val selfTestChecks = listOf(
             SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),

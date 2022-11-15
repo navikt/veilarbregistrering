@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.fo.veilarbregistrering.arbeidssoker.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.kafka.FormidlingsgruppeEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 abstract class FormidlingsgruppeMapper {
-    internal abstract fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEvent
+    internal abstract fun map(ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto): FormidlingsgruppeEndretEvent
 
     protected fun mapFoedselsnummer(fodselsnr: String?): Foedselsnummer = fodselsnr
         ?.let { Foedselsnummer(it) }
@@ -48,7 +48,7 @@ abstract class FormidlingsgruppeMapper {
         private val json = jacksonObjectMapper().findAndRegisterModules()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-        fun map(record: String): FormidlingsgruppeEvent {
+        fun map(record: String): FormidlingsgruppeEndretEvent {
             val ggArenaFormidlinggruppeDto: GgArenaFormidlinggruppeDto = try {
                 json.readValue(record)
             } catch (e: JsonProcessingException) {

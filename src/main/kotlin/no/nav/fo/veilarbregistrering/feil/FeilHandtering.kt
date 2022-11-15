@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
-import no.nav.fo.veilarbregistrering.arbeidssoker.UnauthorizedException
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonLevel3Exception
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonValideringException
