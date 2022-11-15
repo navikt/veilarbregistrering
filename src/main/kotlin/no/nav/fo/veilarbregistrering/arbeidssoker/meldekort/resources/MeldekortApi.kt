@@ -23,5 +23,5 @@ interface MeldekortApi {
         ApiResponse(responseCode = "403", description = "Forbidden - ingen tilgang"),
         ApiResponse(responseCode = "500", description = "Ukjent feil")
     )
-    fun hentSisteMeldekort(): MeldekortDto
+    fun hentSisteMeldekort(): MeldekortDto?
 }

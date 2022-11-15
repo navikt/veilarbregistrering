@@ -24,12 +24,12 @@ class MeldekortResource(
     }
 
     @GetMapping("/meldekort/siste")
-    override fun hentSisteMeldekort(): MeldekortDto {
+    override fun hentSisteMeldekort(): MeldekortDto? {
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
         return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
             .sortedByDescending { it.eventOpprettet }
             .map(MeldekortDto::map)
-            .first()
+            .firstOrNull()
     }
 }
