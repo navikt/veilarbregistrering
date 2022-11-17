@@ -23,7 +23,8 @@ class FormidlingsgruppeMottakServiceTest {
         every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService
+            arbeidssokerperiodeAvsluttetService,
+            mockk(relaxed = true)
         )
     }
 

@@ -79,7 +79,8 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
             arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         ): FormidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService
+            arbeidssokerperiodeAvsluttetService,
+            mockk(relaxed = true)
         )
     }
 

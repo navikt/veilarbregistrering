@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.log.logger
@@ -10,7 +11,8 @@ import java.time.LocalDateTime
 @Service
 class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
-    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+    private val unleashClient: UnleashClient
 ) {
 
     @Transactional
@@ -24,15 +26,18 @@ class FormidlingsgruppeMottakService(
                         "dato: ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}) ")
         }
 
-        val eksisterendeArbeidssokerperioderLokalt = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
+        val skalUtledeAvslutningAvPeriode = unleashClient.isEnabled("veilarbregistrering.utled-avslutning-arbeidssokerperiode")
+        val eksisterendeArbeidssokerperioderLokalt = if (skalUtledeAvslutningAvPeriode) formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
             listOf(formidlingsgruppeEndretEvent.foedselsnummer)
-        )
+        ) else null
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
-        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-            formidlingsgruppeEndretEvent,
-            eksisterendeArbeidssokerperioderLokalt
-        )
+        if (skalUtledeAvslutningAvPeriode) {
+            arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
+                formidlingsgruppeEndretEvent,
+                eksisterendeArbeidssokerperioderLokalt!!
+            )
+        }
     }
 }

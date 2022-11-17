@@ -345,9 +345,10 @@ class ServiceBeansConfig {
     @Bean
     fun formidlingsgruppeMottakService(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
-        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
+        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+        unleashClient: UnleashClient
     ): FormidlingsgruppeMottakService {
-        return FormidlingsgruppeMottakService(formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService)
+        return FormidlingsgruppeMottakService(formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService, unleashClient)
     }
 
     @Bean
