@@ -51,7 +51,10 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
 
     override fun settInnRader(tabell: TabellNavn, rader: List<MutableMap<String, Any>>) {
         try {
-            if (rader.isEmpty()) return
+            if (rader.isEmpty()) {
+                logger.info("Fant ingen rader å sette inn i tabell ${tabell.name}")
+                return
+            }
 
             // Behandle kolonner vi vet må konverteres
             when (tabell) {
