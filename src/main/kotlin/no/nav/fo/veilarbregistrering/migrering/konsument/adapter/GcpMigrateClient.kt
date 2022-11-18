@@ -37,7 +37,7 @@ class GcpMigrateClient(
 
                 response.body()?.let { body ->
                     val databaserader = Gson().fromJson<List<MutableMap<String, Any>>>(body.string())
-                    logger.info("Hentet ${databaserader.size} rader for ${tabell} fra index ${sisteIndex}.")
+                    logger.info("Hentet ${databaserader.size} rader for $tabell fra index ${sisteIndex}.")
                     return databaserader
                 } ?: throw RuntimeException("Forventet respons med body, men mottok ingenting")
             }

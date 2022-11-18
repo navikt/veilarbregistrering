@@ -13,7 +13,13 @@ class MigrateService(
             val sisteIndex = repository.hentStoersteId(it)
             val rader = migrateClient.hentNesteBatchFraTabell(it, sisteIndex)
             logger.info("Hentet ${rader.size} rader fra tabell $it i FSS-app")
+            if (it == TabellNavn.REGISTRERING_TILSTAND) {
+              logger.info("Største ID for registrering_tilstand: $sisteIndex")
+            }
             repository.settInnRader(it, rader)
+            if (it == TabellNavn.REGISTRERING_TILSTAND) {
+                logger.info("Satt inn rader i REGISTRERING_TILSTAND")
+            }
         }
 
         val antallSomKanTrengeOppdatering = repository.antallRaderSomKanTrengeOppdatering()
