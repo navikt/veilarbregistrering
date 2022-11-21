@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Tag
 import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
@@ -14,7 +15,7 @@ open class SystembrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker) {
         throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for systembruker")
     }
 

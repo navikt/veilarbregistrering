@@ -8,6 +8,7 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -20,11 +21,11 @@ open class PersonbrukerAutorisasjonService(
     private val metricsService: MetricsService
 ) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker) {
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
         LOG.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
-        if (foedselsnummerFraToken != fnr.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
+        if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         validerInnloggingsnivå()
     }
 

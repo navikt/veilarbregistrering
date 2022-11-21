@@ -11,6 +11,8 @@ import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.types.identer.Fnr
+import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -35,7 +37,8 @@ class PersonbrukerAutorisasjonServiceTest {
         every { authContextHolder.getStringClaim(any(), "acr") } returns Optional.of("Level3")
         every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
 
-        assertDoesNotThrow { autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(aremark()) }
+        assertDoesNotThrow { autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
+            Bruker.of(aremark(), AktorId("100002345678"), emptyList())) }
     }
 
     @Test
@@ -47,7 +50,8 @@ class PersonbrukerAutorisasjonServiceTest {
         every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
 
         val exception = assertThrows(AutorisasjonException::class.java) {
-            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(aremark())
+            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
+                Bruker.of(aremark(), AktorId("100002345678"), emptyList()))
         }
 
         assertEquals("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har TEST - vi krever Level3 eller Level4", exception.message)
@@ -62,7 +66,8 @@ class PersonbrukerAutorisasjonServiceTest {
         every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
 
         val exception = assertThrows(AutorisasjonException::class.java) {
-            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(Foedselsnummer("12345678911"))
+            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
+                Bruker.of(Foedselsnummer("12345678911"), AktorId("100002345678"), emptyList()))
         }
 
         assertEquals("Personbruker ber om lesetilgang til noen andre enn seg selv.", exception.message)
@@ -155,7 +160,8 @@ class PersonbrukerAutorisasjonServiceTest {
         every { metricsService.registrer(any(), *anyVararg<Tag>()) } just Runs
 
         val exception = assertThrows(AutorisasjonValideringException::class.java) {
-            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(aremark())
+            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
+                Bruker.of(aremark(), AktorId("100002345678"), emptyList()))
         }
 
         assertEquals("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle INTERN", exception.message)

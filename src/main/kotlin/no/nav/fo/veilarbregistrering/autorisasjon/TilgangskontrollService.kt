@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.autorisasjon
 
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
 class TilgangskontrollService(
@@ -9,8 +10,8 @@ class TilgangskontrollService(
     private val autorisasjonServiceMap: Map<UserRole, AutorisasjonService>
 ) {
 
-    fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(fnr)
+    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker) {
+        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker)
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 

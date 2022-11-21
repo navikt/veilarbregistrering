@@ -10,6 +10,7 @@ import no.nav.common.auth.utils.IdentUtils
 import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -22,7 +23,7 @@ open class VeilederAutorisasjonService(
     private val metricsService: MetricsService
 ) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(fnr: Foedselsnummer) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker) {
         throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for veileder")
     }
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
