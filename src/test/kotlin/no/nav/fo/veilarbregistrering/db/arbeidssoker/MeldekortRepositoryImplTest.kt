@@ -28,6 +28,11 @@ import kotlin.test.assertEquals
 )
 @ActiveProfiles("gcp")
 internal class MeldekortRepositoryImplTest(@Autowired private val meldekortRepository: MeldekortRepository) {
+
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
+    }
+
     @Test
     fun lagre() {
         val meldekort = MeldekortEvent(
