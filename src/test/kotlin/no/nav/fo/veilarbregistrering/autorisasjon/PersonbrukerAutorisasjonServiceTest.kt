@@ -38,7 +38,9 @@ class PersonbrukerAutorisasjonServiceTest {
         every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
 
         assertDoesNotThrow { autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-            Bruker.of(aremark(), AktorId("100002345678"), emptyList())) }
+            Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+            "test"
+        ) }
     }
 
     @Test
@@ -51,7 +53,9 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(aremark(), AktorId("100002345678"), emptyList()))
+                Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+                "test"
+            )
         }
 
         assertEquals("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har TEST - vi krever Level3 eller Level4", exception.message)
@@ -67,7 +71,9 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(Foedselsnummer("12345678911"), AktorId("100002345678"), emptyList()))
+                Bruker.of(Foedselsnummer("12345678911"), AktorId("100002345678"), emptyList()),
+                "test"
+            )
         }
 
         assertEquals("Personbruker ber om lesetilgang til noen andre enn seg selv.", exception.message)
@@ -161,7 +167,9 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonValideringException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(aremark(), AktorId("100002345678"), emptyList()))
+                Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+                "test"
+            )
         }
 
         assertEquals("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle INTERN", exception.message)

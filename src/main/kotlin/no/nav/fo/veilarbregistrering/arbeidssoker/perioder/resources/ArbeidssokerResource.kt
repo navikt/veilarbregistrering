@@ -26,7 +26,7 @@ class ArbeidssokerResource(
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker)
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "Personbruker med ${bruker.gjeldendeFoedselsnummer} leser egne arbeidssøkerperioder")
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 

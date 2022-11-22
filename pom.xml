@@ -96,6 +96,11 @@
             <artifactId>auth</artifactId>
             <version>${common.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>audit-log</artifactId>
+            <version>${common.version}</version>
+        </dependency>
 
         <!-- ymse -->
         <dependency>

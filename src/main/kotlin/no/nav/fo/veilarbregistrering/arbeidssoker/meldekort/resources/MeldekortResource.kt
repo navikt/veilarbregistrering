@@ -17,7 +17,7 @@ class MeldekortResource(
     @GetMapping("/meldekort")
     override fun hentMeldekort(): List<MeldekortDto> {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker)
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "Personbruker med ${bruker.gjeldendeFoedselsnummer} leser egen meldekort informasjon")
         return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
             .map(MeldekortDto::map)
     }
@@ -25,7 +25,7 @@ class MeldekortResource(
     @GetMapping("/meldekort/siste")
     override fun hentSisteMeldekort(): MeldekortDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker)
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "Personbruker med ${bruker.gjeldendeFoedselsnummer} leser egen meldekort informasjon")
         return meldekortService.hentSisteMeldekort(bruker.gjeldendeFoedselsnummer)?.let {
             MeldekortDto.map(it)
         }

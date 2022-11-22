@@ -10,9 +10,10 @@ import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.log.AuditLogger
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import org.slf4j.LoggerFactory
 
 
 open class PersonbrukerAutorisasjonService(
@@ -20,10 +21,12 @@ open class PersonbrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService
 ) : AutorisasjonService {
+    val auditLogger = AuditLogger()
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, melding: String) {
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
-        LOG.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
+        logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
+        auditLogger.log(bruker.gjeldendeFoedselsnummer, melding)
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         validerInnloggingsnivå()
@@ -44,7 +47,7 @@ open class PersonbrukerAutorisasjonService(
 
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for personbruker med rolle ${rolle()}")
-        LOG.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
+        logger.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
         registrerAutorisationEvent(handling)
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
@@ -66,7 +69,7 @@ open class PersonbrukerAutorisasjonService(
 
     private fun AuthContextHolder.hentInnloggingsnivå(): String {
         return idTokenClaims.flatMap { getStringClaim(it, "acr") }
-            .also { LOG.info("Fant innloggsnivå med nivå $it") }
+            .also { logger.info("Fant innloggsnivå med nivå $it") }
             .orElseThrow { AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
     }
 
@@ -87,7 +90,6 @@ open class PersonbrukerAutorisasjonService(
     override fun erVeileder(): Boolean = false
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(PersonbrukerAutorisasjonService::class.java)
         private val INNLOGGINGSNIVÅ_3 = "Level3"
         private val INNLOGGINGSNIVÅ_4 = "Level4"
     }
