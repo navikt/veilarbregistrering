@@ -15,7 +15,7 @@ open class SystembrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, melding: String) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
         throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for systembruker")
     }
 

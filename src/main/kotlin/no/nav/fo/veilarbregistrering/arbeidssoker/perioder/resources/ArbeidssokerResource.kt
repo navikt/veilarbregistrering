@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -26,7 +27,8 @@ class ArbeidssokerResource(
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "Personbruker med ${bruker.gjeldendeFoedselsnummer} leser egne arbeidssøkerperioder")
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egne arbeidssøkerperioder", bruker.gjeldendeFoedselsnummer))
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 

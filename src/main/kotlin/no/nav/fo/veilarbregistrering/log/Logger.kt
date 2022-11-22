@@ -8,6 +8,7 @@ inline fun <reified T:Any> loggerFor(): Logger =
 
 inline val <reified T : Any> T.logger get() = getCachedLogger(T::class.java.name)
 inline val <reified T : Any> T.secureLogger get() = getLogger("SecureLog")
+inline val <reified T : Any> T.autitLogger get() = getLogger("AuditLogger")
 
 fun getCachedLogger(loggerName: String): Logger {
     return LoggerCache.getLogger(loggerName)

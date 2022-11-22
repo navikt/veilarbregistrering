@@ -1,15 +1,13 @@
-package no.nav.fo.veilarbregistrering.log
+package no.nav.fo.veilarbregistrering.autorisasjon
 
 import no.nav.common.audit_log.cef.CefMessage
 import no.nav.common.audit_log.cef.CefMessageEvent
 import no.nav.common.audit_log.cef.CefMessageSeverity
-import no.nav.common.audit_log.log.AuditLoggerImpl
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
-class AuditLogger {
-    val auditLogger = AuditLoggerImpl()
+class CefMelding(private val melding: String, private val foedselsnummer: Foedselsnummer) {
 
-    fun log(foedselsnummer: Foedselsnummer, melding: String) {
+    fun cefMessage() : String {
         val cefMessage = CefMessage.builder()
             .applicationName("veilarbregistrering")
             .event(CefMessageEvent.ACCESS)
@@ -19,6 +17,7 @@ class AuditLogger {
             .timeEnded(System.currentTimeMillis())
             .extension("msg", melding)
             .build()
-        auditLogger.log(cefMessage)
+
+        return cefMessage.toString()
     }
 }

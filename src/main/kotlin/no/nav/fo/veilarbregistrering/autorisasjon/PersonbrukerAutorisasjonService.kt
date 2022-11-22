@@ -10,7 +10,7 @@ import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.log.AuditLogger
+import no.nav.fo.veilarbregistrering.log.autitLogger
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -21,12 +21,10 @@ open class PersonbrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService
 ) : AutorisasjonService {
-    val auditLogger = AuditLogger()
-
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, melding: String) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
         logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
-        auditLogger.log(bruker.gjeldendeFoedselsnummer, melding)
+        autitLogger.info(cefMelding.cefMessage())
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         validerInnloggingsnivå()

@@ -10,8 +10,8 @@ class TilgangskontrollService(
     private val autorisasjonServiceMap: Map<UserRole, AutorisasjonService>
 ) {
 
-    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, melding: String) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, melding)
+    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
+        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, cefMelding)
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
