@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.bruker
 import no.bekk.bekkopen.person.FodselsnummerValidator
 import no.nav.common.auth.Constants
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.fo.veilarbregistrering.bruker.Bruker.Companion.of
 import no.nav.fo.veilarbregistrering.bruker.feil.ManglendeBrukerInfoException
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
 import no.nav.fo.veilarbregistrering.config.isProduction
@@ -65,7 +64,7 @@ class UserService(
 
     companion object {
         private fun map(identer: Identer): Bruker {
-            return of(
+            return Bruker(
                 identer.finnGjeldendeFnr(),
                 identer.finnGjeldendeAktorId(),
                 identer.finnHistoriskeFoedselsnummer()

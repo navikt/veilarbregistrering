@@ -5,16 +5,8 @@ data class Bruker(
     val aktorId: AktorId,
     val historiskeFoedselsnummer: List<Foedselsnummer> = emptyList()
 ) {
+    /**
+     * Returnerer en liste med fødselsnummer som inneholder både det som er gjeldende nå, og alle de historiske.
+     */
     fun alleFoedselsnummer(): List<Foedselsnummer> = listOf(gjeldendeFoedselsnummer) + historiskeFoedselsnummer
-
-    companion object {
-
-        fun of(
-            gjeldendeFoedselsnummer: Foedselsnummer,
-            gjeldendeAktorId: AktorId,
-            historiskeFoedselsnummer: List<Foedselsnummer> = emptyList()
-        ): Bruker {
-            return Bruker(gjeldendeFoedselsnummer, gjeldendeAktorId, historiskeFoedselsnummer)
-        }
-    }
 }
