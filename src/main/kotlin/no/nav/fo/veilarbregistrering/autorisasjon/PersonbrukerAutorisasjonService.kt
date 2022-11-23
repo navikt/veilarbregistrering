@@ -27,12 +27,9 @@ open class PersonbrukerAutorisasjonService(
         autitLogger.info(cefMelding.cefMessage())
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) {
-            logger.warn("Foedselsnummer fra token er ulikt siste foedselsnummer fra PDL")
             if (!bruker.historiskeFoedselsnummer.contains(Foedselsnummer(foedselsnummerFraToken))) {
                 throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
             }
-            logger.info("Foedselsnummer fra token matchet et historisk foedselsnummer fra PDL")
-
         }
         validerInnloggingsnivå()
     }
