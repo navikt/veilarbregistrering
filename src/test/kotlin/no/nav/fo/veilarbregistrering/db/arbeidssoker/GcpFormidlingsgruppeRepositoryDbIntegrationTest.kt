@@ -62,8 +62,9 @@ class GcpFormidlingsgruppeRepositoryDbIntegrationTest(
         formidlingsgruppeRepository.lagre(command2)
         val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
         formidlingsgruppeRepository.lagre(command3)
-        val bruker = Bruker.of(FOEDSELSNUMMER, AKTORID, listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
-        val arbeidssokerperiodes = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
+        val bruker = Bruker(FOEDSELSNUMMER, AKTORID, listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_3))
+        val arbeidssokerperiodes =
+            formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
     }
 

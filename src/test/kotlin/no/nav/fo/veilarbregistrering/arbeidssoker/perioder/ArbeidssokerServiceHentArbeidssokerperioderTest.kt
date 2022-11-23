@@ -91,7 +91,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
         } returns true
 
-        val bruker = Bruker.of(
+        val bruker = Bruker(
             FOEDSELSNUMMER_3,
             AktorId("100002345678"),
             listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
@@ -259,19 +259,8 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         val FOEDSELSNUMMER_2: Foedselsnummer = Foedselsnummer("11234567890")
         private val FOEDSELSNUMMER_3 = Foedselsnummer("22334455661")
         private val FOEDSELSNUMMER_4 = Foedselsnummer("99887766554")
-        private val BRUKER_1 = Bruker.of(
-            FOEDSELSNUMMER_3,
-            AktorId("100002345678"),
-            listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
-        )
-        private val BRUKER_3 = Bruker.of(
-            FOEDSELSNUMMER_3,
-            AktorId("100002345678"), emptyList()
-        )
-        private val BRUKER_2 = Bruker.of(
-            FOEDSELSNUMMER_4,
-            AktorId("100002339391"),
-            emptyList()
-        )
+        private val BRUKER_1 = Bruker(FOEDSELSNUMMER_3, AktorId("100002345678"), listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1))
+        private val BRUKER_2 = Bruker(FOEDSELSNUMMER_4, AktorId("100002339391"), emptyList())
+        private val BRUKER_3 = Bruker(FOEDSELSNUMMER_3, AktorId("100002345678"), emptyList())
     }
 }

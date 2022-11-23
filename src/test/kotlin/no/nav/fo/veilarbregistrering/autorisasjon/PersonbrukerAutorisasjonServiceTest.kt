@@ -38,7 +38,7 @@ class PersonbrukerAutorisasjonServiceTest {
         every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
 
         assertDoesNotThrow { autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-            Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+            Bruker(aremark(), AktorId("100002345678"), emptyList()),
             CefMelding("test", aremark())
         ) }
     }
@@ -53,7 +53,7 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+                Bruker(aremark(), AktorId("100002345678"), emptyList()),
                 CefMelding("test", aremark())
             )
         }
@@ -71,7 +71,7 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(Foedselsnummer("12345678911"), AktorId("100002345678"), emptyList()),
+                Bruker(Foedselsnummer("12345678911"), AktorId("100002345678"), emptyList()),
                 CefMelding("test", aremark())
             )
         }
@@ -167,7 +167,7 @@ class PersonbrukerAutorisasjonServiceTest {
 
         val exception = assertThrows(AutorisasjonValideringException::class.java) {
             autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
-                Bruker.of(aremark(), AktorId("100002345678"), emptyList()),
+                Bruker(aremark(), AktorId("100002345678"), emptyList()),
                 CefMelding("test", aremark())
             )
         }
