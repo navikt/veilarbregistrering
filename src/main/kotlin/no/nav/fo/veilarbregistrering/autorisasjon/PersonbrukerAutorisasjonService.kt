@@ -15,7 +15,6 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 
-
 open class PersonbrukerAutorisasjonService(
     private val veilarbPep: Pep,
     private val authContextHolder: AuthContextHolder,
@@ -25,11 +24,9 @@ open class PersonbrukerAutorisasjonService(
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
         logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
         autitLogger.info(cefMelding.cefMessage())
-        val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
-        if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) {
-            if (!bruker.historiskeFoedselsnummer.contains(Foedselsnummer(foedselsnummerFraToken))) {
-                throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
-            }
+        val foedselsnummerFraToken = Foedselsnummer(authContextHolder.hentFoedselsnummer())
+        if (!bruker.alleFoedselsnummer().contains(foedselsnummerFraToken)) {
+            throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         }
         validerInnloggingsnivå()
     }

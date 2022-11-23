@@ -44,6 +44,22 @@ class PersonbrukerAutorisasjonServiceTest {
     }
 
     @Test
+    fun `gitt at personbruker er logget inn og har lesetilgang til seg selv i 'historiske fødselsnummer' skal ingen exception kastes`() {
+        every { authContextHolder.role } returns Optional.of(UserRole.EKSTERN)
+        every { authContextHolder.idTokenString } returns Optional.of("innloggetBrukerIdToken")
+        every { authContextHolder.idTokenClaims } returns Optional.of(JWTClaimsSet.Builder().build())
+        every { authContextHolder.getStringClaim(any(), "acr") } returns Optional.of("Level3")
+        every { authContextHolder.getStringClaim(any(), "pid") } returns Optional.of(aremark().stringValue())
+
+        assertDoesNotThrow {
+            autorisasjonService.sjekkLesetilgangTilBrukerMedNivå3(
+                Bruker(Foedselsnummer("10108000000"), AktorId("100002345678"), listOf(aremark())),
+                CefMelding("test", aremark())
+            )
+        }
+    }
+
+    @Test
     fun `gitt at personbruker er logget inn med et annet innloggingsnivå enn Level3 og Level 4 skal exception kastes i tilgangskontroll for nivå 3`() {
         every { authContextHolder.role } returns Optional.of(UserRole.EKSTERN)
         every { authContextHolder.idTokenString } returns Optional.of("innloggetBrukerIdToken")
