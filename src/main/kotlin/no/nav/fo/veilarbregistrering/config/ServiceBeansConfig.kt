@@ -28,6 +28,7 @@ import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResour
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
@@ -352,8 +353,12 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun arbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer): ArbeidssokerperiodeAvsluttetService =
-        ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer)
+    fun arbeidssokerperiodeAvsluttetService(
+        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
+        meldekortService: MeldekortService,
+        metricsService: MetricsService
+    ): ArbeidssokerperiodeAvsluttetService =
+        ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer, meldekortService, metricsService)
 
     @Bean
     fun arbeidssokerperiodeAvsluttetProducer(): ArbeidssokerperiodeAvsluttetProducer = ArbeidssokerperiodeAvsluttetProducer()
