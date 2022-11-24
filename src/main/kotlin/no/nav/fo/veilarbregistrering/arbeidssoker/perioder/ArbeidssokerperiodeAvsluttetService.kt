@@ -32,14 +32,19 @@ class ArbeidssokerperiodeAvsluttetService(
     private fun sammenlignAvslutningMedMeldekortData(fnr: Foedselsnummer) {
         val meldekort = meldekortService.hentSisteMeldekort(fnr)
 
-        //TODO: Metrikk på de som har avslutning og ingen meldekort - da er avslutningen trigget av veileder i Arena eller ikke innsendt meldekort
-        meldekort?.let {
-            val sendtSiste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(it)
+        if (meldekort != null) {
+            val sendtSiste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(meldekort)
 
             metricsService.registrer(
-                Events.AVSLUTNING_VIA_MELDEKORT,
+                Events.AVSLUTNING_PERIODE_MELDEKORT,
                 Tag.of("erArbeidssokerNestePeriode", meldekort.erArbeidssokerNestePeriode.toString()),
-                Tag.of("sendtSiste14Dager", sendtSiste14Dager.toString())
+                Tag.of("sendtSiste14Dager", sendtSiste14Dager.toString()),
+                Tag.of("harInnsendteMeldekort", "true")
+            )
+        } else {
+            metricsService.registrer(
+                Events.AVSLUTNING_PERIODE_MELDEKORT,
+                Tag.of("harInnsendteMeldekort", "false")
             )
         }
     }

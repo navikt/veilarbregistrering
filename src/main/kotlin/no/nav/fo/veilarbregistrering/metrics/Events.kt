@@ -30,7 +30,7 @@ enum class Events(override val key: String) : Event {
     REGISTRERING_SERVICEGRUPPE("registrering.servicegruppe"),
     REGISTRERING_TILSTANDSFEIL("registrering.tilstandsfeil"),
     INNKOMMENDE_REQUEST_EVENT("registrering.innkommende.request"),
-    AVSLUTNING_VIA_MELDEKORT("arbeidssoker.avslutning.meldekort")
+    AVSLUTNING_PERIODE_MELDEKORT("arbeidssoker.avslutning.meldekort")
 }
 
 interface Event {

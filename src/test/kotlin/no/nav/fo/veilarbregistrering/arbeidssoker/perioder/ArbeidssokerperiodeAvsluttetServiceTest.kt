@@ -73,13 +73,13 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
     }
 
     @Test
-    fun `Skal ikke publisere event når bruker ikke har meldekort`() {
+    fun `Skal publisere event med rett tag når bruker ikke har meldekort`() {
         val arbeidssokerperioder = Arbeidssokerperioder(listOf(AVSLUTTET_ARBS, NÅVÆRENDE_ARBS))
         val formidlingsgruppeEventFraArena = endretFormdlingsgruppe(Formidlingsgruppe("ISERV"))
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 0) { metricsService.registrer(any(), *anyVararg<Tag>()) }
+        verify(exactly = 1) { metricsService.registrer(any(), Tag.of("harInnsendteMeldekort", "false")) }
     }
 
     @Test
@@ -102,7 +102,9 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         verify(exactly = 1) { metricsService.registrer(any(),
             Tag.of("erArbeidssokerNestePeriode", "true"),
-            Tag.of("sendtSiste14Dager", "true")) }
+            Tag.of("sendtSiste14Dager", "true"),
+            Tag.of("harInnsendteMeldekort", "true")
+        ) }
     }
 
     @Test
@@ -123,7 +125,11 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 1) { metricsService.registrer(any(), Tag.of("erArbeidssokerNestePeriode", "false"), Tag.of("sendtSiste14Dager", "true")) }
+        verify(exactly = 1) { metricsService.registrer(any(),
+            Tag.of("erArbeidssokerNestePeriode", "false"),
+            Tag.of("sendtSiste14Dager", "true"),
+            Tag.of("harInnsendteMeldekort", "true")
+        ) }
     }
 
     private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): FormidlingsgruppeEndretEvent {
