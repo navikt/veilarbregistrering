@@ -34,11 +34,13 @@ class ArbeidssokerperiodeAvsluttetService(
 
         //TODO: Metrikk på de som har avslutning og ingen meldekort - da er avslutningen trigget av veileder i Arena eller ikke innsendt meldekort
         meldekort?.let {
-            if (meldekort.erArbeidssokerNestePeriode) {
-                metricsService.registrer(Events.AVSLUTNING_VIA_MELDEKORT, Tag.of("erArbeidssokerNestePeriode", "true"))
-            } else {
-                metricsService.registrer(Events.AVSLUTNING_VIA_MELDEKORT, Tag.of("erArbeidssokerNestePeriode", "false"))
-            }
+            val sendtSiste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(it)
+
+            metricsService.registrer(
+                Events.AVSLUTNING_VIA_MELDEKORT,
+                Tag.of("erArbeidssokerNestePeriode", meldekort.erArbeidssokerNestePeriode.toString()),
+                Tag.of("sendtSiste14Dager", sendtSiste14Dager.toString())
+            )
         }
     }
 }

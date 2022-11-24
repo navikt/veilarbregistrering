@@ -28,6 +28,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
     fun setup() {
         every { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) } just Runs
         every { meldekortService.hentSisteMeldekort(any()) } returns null
+        every { meldekortService.sisteMeldekortErSendtInnSiste14Dager(any())} returns true
         every { metricsService.registrer(any(), *anyVararg<Tag>()) } just Runs
     }
 
@@ -99,7 +100,9 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 1) { metricsService.registrer(any(), Tag.of("erArbeidssokerNestePeriode", "true")) }
+        verify(exactly = 1) { metricsService.registrer(any(),
+            Tag.of("erArbeidssokerNestePeriode", "true"),
+            Tag.of("sendtSiste14Dager", "true")) }
     }
 
     @Test
@@ -120,7 +123,7 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
 
         arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(formidlingsgruppeEventFraArena, arbeidssokerperioder)
 
-        verify(exactly = 1) { metricsService.registrer(any(), Tag.of("erArbeidssokerNestePeriode", "false")) }
+        verify(exactly = 1) { metricsService.registrer(any(), Tag.of("erArbeidssokerNestePeriode", "false"), Tag.of("sendtSiste14Dager", "true")) }
     }
 
     private fun endretFormdlingsgruppe(formidlingsgruppe: Formidlingsgruppe): FormidlingsgruppeEndretEvent {
