@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
+import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.stereotype.Service
@@ -22,9 +23,30 @@ class ArbeidssokerService(
             formidlingsgruppeGateway.finnArbeissokerperioder(bruker.gjeldendeFoedselsnummer, forespurtPeriode!!)
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)
 
+        val arbeidssokerperioderLokalt =
+            formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(bruker.alleFoedselsnummer())
+        val overlappendeArbeidssokerperioderLokalt = arbeidssokerperioderLokalt.overlapperMed(forespurtPeriode)
+
+        val lokalErLikORDS = overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS
+
+        metricsService.registrer(
+            Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
+            if (lokalErLikORDS) JaNei.JA else JaNei.NEI
+        )
+
+        if (!lokalErLikORDS) {
+            logger.warn(
+                "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
+                    "Forespurt periode: $forespurtPeriode\n" +
+                    "Lokalt: $overlappendeArbeidssokerperioderLokalt\n" +
+                    "Arena-ORDS: $overlappendeHistoriskePerioderORDS"
+            )
+        }
+
         metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
         logger.info(
-            "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten uten sammenligning: $overlappendeHistoriskePerioderORDS")
+            "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten uten sammenligning: $overlappendeHistoriskePerioderORDS"
+        )
 
         return overlappendeHistoriskePerioderORDS
     }
