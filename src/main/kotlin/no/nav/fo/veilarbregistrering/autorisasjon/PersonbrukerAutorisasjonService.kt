@@ -15,7 +15,6 @@ import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 
-
 open class PersonbrukerAutorisasjonService(
     private val veilarbPep: Pep,
     private val authContextHolder: AuthContextHolder,
@@ -26,10 +25,8 @@ open class PersonbrukerAutorisasjonService(
         logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
         autitLogger.info(cefMelding.cefMessage())
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
-        if (foedselsnummerFraToken != bruker.gjeldendeFoedselsnummer.stringValue()) {
-            if (!bruker.historiskeFoedselsnummer.contains(Foedselsnummer(foedselsnummerFraToken))) {
-                throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
-            }
+        if (!bruker.alleFoedselsnummer().contains(foedselsnummerFraToken)) {
+            throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         }
         validerInnloggingsnivå()
     }
@@ -75,8 +72,8 @@ open class PersonbrukerAutorisasjonService(
             .orElseThrow { AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
     }
 
-    private fun AuthContextHolder.hentFoedselsnummer(): String {
-        return idTokenClaims.flatMap { getStringClaim(it, ID_PORTEN_PID_CLAIM) }
+    private fun AuthContextHolder.hentFoedselsnummer(): Foedselsnummer {
+        return idTokenClaims.flatMap { getStringClaim(it, ID_PORTEN_PID_CLAIM) }.map(::Foedselsnummer)
             .orElseThrow { AutorisasjonValideringException("Fant ikke fødselsnummer i token (pid claim) for innlogget personbruker") }
     }
 
