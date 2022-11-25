@@ -24,7 +24,7 @@ open class PersonbrukerAutorisasjonService(
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
         logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
         autitLogger.info(cefMelding.cefMessage())
-        val foedselsnummerFraToken = Foedselsnummer(authContextHolder.hentFoedselsnummer())
+        val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (!bruker.alleFoedselsnummer().contains(foedselsnummerFraToken)) {
             throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
         }
@@ -72,8 +72,8 @@ open class PersonbrukerAutorisasjonService(
             .orElseThrow { AutorisasjonValideringException("Fant ikke innloggingsnivå i token (acr claim) for innlogget personbruker") }
     }
 
-    private fun AuthContextHolder.hentFoedselsnummer(): String {
-        return idTokenClaims.flatMap { getStringClaim(it, ID_PORTEN_PID_CLAIM) }
+    private fun AuthContextHolder.hentFoedselsnummer(): Foedselsnummer {
+        return idTokenClaims.flatMap { getStringClaim(it, ID_PORTEN_PID_CLAIM) }.map(::Foedselsnummer)
             .orElseThrow { AutorisasjonValideringException("Fant ikke fødselsnummer i token (pid claim) for innlogget personbruker") }
     }
 
