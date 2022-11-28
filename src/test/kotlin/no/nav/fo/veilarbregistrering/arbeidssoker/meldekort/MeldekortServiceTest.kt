@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 internal class MeldekortServiceTest {
     private lateinit var meldekortRepository: MeldekortRepository
@@ -46,32 +44,4 @@ internal class MeldekortServiceTest {
             meldekortEvent
         )
     }
-
-    @Test
-    fun `Meldekort siste 14 dager`(){
-        val siste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(meldekortEvent)
-        assertTrue(siste14Dager)
-
-    }
-
-    @Test
-    fun `Meldekort eldre en 14 dager`(){
-        val meldekortEvent = MeldekortEvent(
-            FoedselsnummerTestdataBuilder.aremark(),
-            true,
-            MeldekortPeriode(
-                LocalDate.now(),
-                LocalDate.now()
-            ),
-            Meldekorttype.MANUELL_ARENA,
-            1,
-            LocalDateTime.now().minusMonths(1)
-        )
-
-        val siste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(meldekortEvent)
-        assertFalse(siste14Dager)
-
-
-    }
-
 }

@@ -30,14 +30,14 @@ class ArbeidssokerperiodeAvsluttetService(
     }
 
     private fun sammenlignAvslutningMedMeldekortData(fnr: Foedselsnummer) {
-        val meldekort = meldekortService.hentSisteMeldekort(fnr)
+        val sisteMeldekort = meldekortService.hentSisteMeldekort(fnr)
 
-        if (meldekort != null) {
-            val sendtSiste14Dager = meldekortService.sisteMeldekortErSendtInnSiste14Dager(meldekort)
+        if (sisteMeldekort != null) {
+            val sendtSiste14Dager = sisteMeldekort.erSendtInnSiste14Dager()
 
             metricsService.registrer(
                 Events.AVSLUTNING_PERIODE_MELDEKORT,
-                Tag.of("erArbeidssokerNestePeriode", meldekort.erArbeidssokerNestePeriode.toString()),
+                Tag.of("erArbeidssokerNestePeriode", sisteMeldekort.erArbeidssokerNestePeriode.toString()),
                 Tag.of("sendtSiste14Dager", sendtSiste14Dager.toString()),
                 Tag.of("harInnsendteMeldekort", "true")
             )

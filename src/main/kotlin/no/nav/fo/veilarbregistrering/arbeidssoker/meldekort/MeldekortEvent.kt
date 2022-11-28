@@ -10,7 +10,9 @@ data class MeldekortEvent(
     val meldekorttype: Meldekorttype,
     val meldekortEventId: Long,
     val eventOpprettet: LocalDateTime
-)
+) {
+    fun erSendtInnSiste14Dager(): Boolean = eventOpprettet.isAfter(LocalDateTime.now().minusDays(14))
+}
 
 enum class Meldekorttype {
     ORDINAER,

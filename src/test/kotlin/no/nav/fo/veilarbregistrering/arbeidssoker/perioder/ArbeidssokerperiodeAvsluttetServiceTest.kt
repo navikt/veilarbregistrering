@@ -28,7 +28,6 @@ internal class ArbeidssokerperiodeAvsluttetServiceTest {
     fun setup() {
         every { arbeidssokerperiodeAvsluttetProducer.publiserArbeidssokerperiodeAvsluttet(any(), any()) } just Runs
         every { meldekortService.hentSisteMeldekort(any()) } returns null
-        every { meldekortService.sisteMeldekortErSendtInnSiste14Dager(any())} returns true
         every { metricsService.registrer(any(), *anyVararg<Tag>()) } just Runs
     }
 
