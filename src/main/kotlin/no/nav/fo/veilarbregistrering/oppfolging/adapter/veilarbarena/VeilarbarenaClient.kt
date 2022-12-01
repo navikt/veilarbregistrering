@@ -1,11 +1,13 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
+import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
@@ -16,6 +18,7 @@ import java.io.IOException
 
 class VeilarbarenaClient(
     private val baseUrl: String,
+    private val unleashClient: UnleashClient,
     metricsService: MetricsService,
     private val veilarbarenaTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
@@ -28,9 +31,13 @@ class VeilarbarenaClient(
             .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
+        val httpClient = if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
+            buildHttpClient { retryOnConnectionFailure(true) }
+        } else { defaultHttpClient() }
+
         return doTimedCall {
             try {
-                defaultHttpClient().newCall(request).execute().use { response ->
+                httpClient.newCall(request).execute().use { response ->
                     when (response.code()) {
                         404 -> null
                         in 300..599 -> throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: ${response.code()} - $response")
@@ -52,9 +59,13 @@ class VeilarbarenaClient(
             .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
+        val httpClient = if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
+            buildHttpClient { retryOnConnectionFailure(true) }
+        } else { defaultHttpClient() }
+
         return doTimedCall {
             try {
-                defaultHttpClient().newCall(request).execute().use { response ->
+                httpClient.newCall(request).execute().use { response ->
                     if (response.code() != HttpStatus.OK.value()) {
                         throw SammensattOppfolgingStatusException("Henting av arena status for bruker feilet: " + response.code() + " - " + response)
                     } else {
