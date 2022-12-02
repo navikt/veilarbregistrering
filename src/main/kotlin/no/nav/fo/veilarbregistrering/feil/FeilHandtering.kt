@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.feil
 
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ForbiddenException
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
@@ -73,6 +74,12 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun handleSammensattOppfolgingStatusException(feil: SammensattOppfolgingStatusException): ResponseEntity<String> {
         logger.error(feil.message, feil)
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(feil.message)
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(feil: ForbiddenException): ResponseEntity<String> {
+        logger.warn(feil.message, feil)
+        return ResponseEntity.status(FORBIDDEN).body(feil.message)
     }
 
     @ExceptionHandler(HentArbeidsforholdException::class)

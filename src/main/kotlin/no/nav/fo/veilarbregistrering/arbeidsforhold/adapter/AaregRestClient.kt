@@ -6,6 +6,7 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestUtils
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.arbeidsforhold.ForbiddenException
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.objectMapper
@@ -64,20 +65,20 @@ open class AaregRestClient(
 
     @Throws(IOException::class)
     private fun behandle(response: Response): String? {
-        if (!response.isSuccessful) {
+        return if (response.isSuccessful) {
+            RestUtils.getBodyStr(response).orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
+
+        } else {
             logger.info("Feilmelding fra Aareg: Message: ${response.message()} Body: ${RestUtils.getBodyStr(response)}")
             when (val status = HttpStatus.valueOf(response.code())) {
                 HttpStatus.BAD_REQUEST -> throw HentArbeidsforholdException("Aareg: Ugyldig input")
                 HttpStatus.UNAUTHORIZED -> throw HentArbeidsforholdException("Aareg: Token mangler eller er ugyldig")
-                HttpStatus.FORBIDDEN -> throw HentArbeidsforholdException("Aareg: Ingen tilgang til forespurt ressurs")
+                HttpStatus.FORBIDDEN -> throw ForbiddenException("Aareg: Ingen tilgang til forespurt ressurs")
                 HttpStatus.NOT_FOUND -> null
                 else -> throw RuntimeException("Hent arbeidsforhold fra Aareg feilet med statuskode: $status")
             }
         }
-        return RestUtils.getBodyStr(response)
-            .orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
     }
-
 
     companion object {
 

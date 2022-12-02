@@ -62,8 +62,7 @@ class FormidlingsgruppeRestClient internal constructor(
         return doTimedCall {
             httpClient.newCall(request).execute().use {
                 if (it.isSuccessful) {
-                    it.body()?.string()?.let {
-                        objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
+                    it.body()?.string()?.let { objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
                     } ?: throw RuntimeException("Unexpected empty body")
 
                 } else {
