@@ -20,22 +20,27 @@ class RetryInterceptor : Interceptor {
             throwable = t
 
             while (throwable is SSLHandshakeException && tryCount < 4) {
-                tryCount++
 
                 try {
                     logger.info("Retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
-                    response?.close()
+                    if (response != null) {
+                        logger.info("Response i try-block er ikke null - closer")
+                        response.close()
+                    }
                     response = chain.proceed(chain.request())
 
                     !response.isSuccessful
 
                 } catch (t: Throwable) {
-                    response?.close()
+                    if (response != null) {
+                        logger.info("Response i catch-block er ikke null - closer")
+                        response.close()
+                    }
                     throwable = t
 
                 } finally {
-                    response?.close()
-                    logger.info("Nå kjøres finally")
+                    logger.info("Øker tryCount med 1 fra $tryCount")
+                    tryCount++
                 }
             }
         }
