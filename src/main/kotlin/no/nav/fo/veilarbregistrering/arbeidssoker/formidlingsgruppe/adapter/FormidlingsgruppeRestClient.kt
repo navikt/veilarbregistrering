@@ -34,29 +34,7 @@ class FormidlingsgruppeRestClient internal constructor(
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
         val request = buildRequest(foedselsnummer, periode)
-        val httpClient = buildHttpClient {
-            readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
-            if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
-                addInterceptor(RetryInterceptor())
-            }
-        }
-        return doTimedCall {
-            httpClient.newCall(request).execute().use {
-                if (it.isSuccessful) {
-                    it.body()?.string()?.let {
-                        objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
-                    } ?: throw RuntimeException("Unexpected empty body")
-
-                } else {
-                    val status = HttpStatus.valueOf(it.code())
-                    when (status) {
-                        HttpStatus.NOT_FOUND -> null
-                        HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
-                        else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
-                    }
-                }
-            }
-        }
+        return utfoer(request)
     }
 
     private fun buildRequest(foedselsnummer: Foedselsnummer, periode: Periode): Request {
@@ -72,6 +50,31 @@ class FormidlingsgruppeRestClient internal constructor(
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${proxyTokenProvider()}")
             .header("Downstream-Authorization", "Bearer ${arenaOrdsTokenProvider()}")
             .build()
+    }
+
+    private fun utfoer(request: Request): FormidlingsgruppeResponseDto? {
+        val httpClient = buildHttpClient {
+            readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
+            if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
+                addInterceptor(RetryInterceptor())
+            }
+        }
+        return doTimedCall {
+            httpClient.newCall(request).execute().use {
+                if (it.isSuccessful) {
+                    it.body()?.string()?.let {
+                        objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
+                    } ?: throw RuntimeException("Unexpected empty body")
+
+                } else {
+                    when (val status = HttpStatus.valueOf(it.code())) {
+                        HttpStatus.NOT_FOUND -> null
+                        HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
+                        else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
+                    }
+                }
+            }
+        }
     }
 
     override fun checkHealth(): HealthCheckResult {

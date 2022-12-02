@@ -32,20 +32,9 @@ open class AaregRestClient(
     /**
      * "Finn arbeidsforhold (detaljer) per arbeidstaker"
      */
-    fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
+    open fun finnArbeidsforhold(fnr: Foedselsnummer): List<ArbeidsforholdDto> {
         val request = buildRequest(fnr)
-        return parse(utfoerRequest(request))
-    }
-
-    protected open fun utfoerRequest(request: Request): String {
-        return doTimedCall {
-            try {
-                defaultHttpClient().newCall(request).execute()
-                    .use { response -> behandleResponse(response) }
-            } catch (e: IOException) {
-                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
-            }
-        }
+        return parse(utfoer(request))
     }
 
     protected open fun buildRequest(fnr: Foedselsnummer): Request {
@@ -63,17 +52,27 @@ open class AaregRestClient(
             .build()
     }
 
+    protected open fun utfoer(request: Request): String? {
+        return doTimedCall {
+            try {
+                defaultHttpClient().newCall(request).execute().use { response -> behandle(response) }
+            } catch (e: IOException) {
+                throw HentArbeidsforholdException("Noe gikk galt mot Aareg", e)
+            }
+        }
+    }
+
     @Throws(IOException::class)
-    private fun behandleResponse(response: Response): String {
+    private fun behandle(response: Response): String? {
         if (!response.isSuccessful) {
             logger.info("Feilmelding fra Aareg: Message: ${response.message()} Body: ${RestUtils.getBodyStr(response)}")
-            val feilmelding = mapOf(
-                HttpStatus.BAD_REQUEST to "Aareg: Ugyldig input",
-                HttpStatus.UNAUTHORIZED to "Aareg: Token mangler eller er ugyldig",
-                HttpStatus.FORBIDDEN to "Aareg: Ingen tilgang til forespurt ressurs",
-                HttpStatus.NOT_FOUND to "Søk på arbeidforhold gav ingen treff"
-            ).getOrDefault(HttpStatus.resolve(response.code()), "Noe gikk galt mot Aareg")
-            throw HentArbeidsforholdException(feilmelding)
+            when (val status = HttpStatus.valueOf(response.code())) {
+                HttpStatus.BAD_REQUEST -> throw HentArbeidsforholdException("Aareg: Ugyldig input")
+                HttpStatus.UNAUTHORIZED -> throw HentArbeidsforholdException("Aareg: Token mangler eller er ugyldig")
+                HttpStatus.FORBIDDEN -> throw HentArbeidsforholdException("Aareg: Ingen tilgang til forespurt ressurs")
+                HttpStatus.NOT_FOUND -> null
+                else -> throw RuntimeException("Hent arbeidsforhold fra Aareg feilet med statuskode: $status")
+            }
         }
         return RestUtils.getBodyStr(response)
             .orElseThrow { HentArbeidsforholdException("Klarte ikke lese respons fra Aareg") }
@@ -87,7 +86,8 @@ open class AaregRestClient(
          */
         private const val NAV_PERSONIDENT = "Nav-Personident"
         private const val NAV_CALL_ID_HEADER = "Nav-Call-Id"
-        private fun parse(json: String): List<ArbeidsforholdDto> {
+        private fun parse(json: String?): List<ArbeidsforholdDto> {
+            if (json == null) return emptyList()
             return objectMapper.readValue(json, object : TypeReference<List<ArbeidsforholdDto>>() {})
         }
     }
