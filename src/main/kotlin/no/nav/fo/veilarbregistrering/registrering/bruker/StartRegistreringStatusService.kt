@@ -26,9 +26,13 @@ class StartRegistreringStatusService(
 
         var oppfyllerBetingelseOmArbeidserfaring: Boolean? = null
         if (RegistreringType.ORDINAER_REGISTRERING == registreringType) {
-            oppfyllerBetingelseOmArbeidserfaring =
-                arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)
-                    .harJobbetSammenhengendeSeksAvTolvSisteManeder(LocalDate.now())
+            try {
+                oppfyllerBetingelseOmArbeidserfaring =
+                    arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)
+                        .harJobbetSammenhengendeSeksAvTolvSisteManeder(LocalDate.now())
+            } catch (e: RuntimeException) {
+                logger.error("Feil i hentStartRegistreringStatus ifm henting av arbeidsforhold fra aareg.", e)
+            }
         }
 
         logger.info("Brukers tilstand for {}: {}", bruker.aktorId, brukersTilstand)
