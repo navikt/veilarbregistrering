@@ -24,10 +24,18 @@ class RetryInterceptor : Interceptor {
 
                 try {
                     logger.info("Retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
+                    response?.close()
                     response = chain.proceed(chain.request())
 
+                    !response.isSuccessful
+
                 } catch (t: Throwable) {
+                    response?.close()
                     throwable = t
+
+                } finally {
+                    response?.close()
+                    logger.info("Nå kjøres finally")
                 }
             }
         }
