@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -9,6 +10,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
+import no.nav.fo.veilarbregistrering.http.RetryInterceptor
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,
     metricsService: MetricsService,
+    private val unleashClient: UnleashClient,
     private val arenaOrdsTokenProvider: () -> String,
     private val proxyTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
@@ -31,7 +34,12 @@ class FormidlingsgruppeRestClient internal constructor(
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
         val request = buildRequest(foedselsnummer, periode)
-        val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
+        val httpClient = buildHttpClient {
+            readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
+            if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
+                addInterceptor(RetryInterceptor())
+            }
+        }
         return doTimedCall {
             httpClient.newCall(request).execute().use {
                 if (it.isSuccessful) {
