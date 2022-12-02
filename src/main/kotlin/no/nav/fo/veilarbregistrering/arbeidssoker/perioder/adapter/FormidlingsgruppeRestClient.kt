@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
-import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
@@ -31,7 +30,7 @@ class FormidlingsgruppeRestClient internal constructor(
         foedselsnummer: Foedselsnummer,
         periode: Periode
     ): FormidlingsgruppeResponseDto? {
-        val request = if (isOnPrem()) buildRequest(foedselsnummer, periode) else buildRequestGcp(foedselsnummer, periode)
+        val request = buildRequest(foedselsnummer, periode)
         val httpClient = buildHttpClient { readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS) }
         return doTimedCall {
             httpClient.newCall(request).execute().use {
@@ -53,22 +52,6 @@ class FormidlingsgruppeRestClient internal constructor(
     }
 
     private fun buildRequest(foedselsnummer: Foedselsnummer, periode: Periode): Request {
-        val token = arenaOrdsTokenProvider()
-        secureLogger.info("Token brukt i request mot Arena: $token")
-        return Request.Builder()
-            .url(
-                HttpUrl.parse(baseUrl)!!.newBuilder()
-                    .addPathSegments("arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
-                    .addQueryParameter("fnr", foedselsnummer.stringValue())
-                    .addQueryParameter("fraDato", periode.fraDatoSomUtcString())
-                    .addQueryParameter("tilDato", periode.tilDatoSomUtcString())
-                    .build()
-            )
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
-            .build()
-    }
-
-    private fun buildRequestGcp(foedselsnummer: Foedselsnummer, periode: Periode): Request {
         return Request.Builder()
             .url(
                 HttpUrl.parse(baseUrl)!!.newBuilder()
