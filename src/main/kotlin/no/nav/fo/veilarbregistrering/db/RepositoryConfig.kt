@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.db
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.MeldekortRepositoryImpl

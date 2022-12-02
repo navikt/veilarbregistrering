@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck

@@ -1,10 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

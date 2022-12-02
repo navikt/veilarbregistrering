@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime
 

@@ -2,7 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import io.micrometer.core.instrument.Tag
 import io.mockk.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent

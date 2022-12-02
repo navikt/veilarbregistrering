@@ -1,12 +1,14 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayImpl
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId

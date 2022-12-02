@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
 interface FormidlingsgruppeRepository {

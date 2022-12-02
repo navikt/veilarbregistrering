@@ -3,9 +3,9 @@ package no.nav.veilarbregistrering.integrasjonstest
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker

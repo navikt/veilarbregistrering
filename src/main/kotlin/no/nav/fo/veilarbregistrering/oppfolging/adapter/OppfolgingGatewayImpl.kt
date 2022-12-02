@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.oppfolging.*

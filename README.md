@@ -31,7 +31,7 @@ Se https://miro.com/miroverse/the-bounded-context-canvas/ for eksempel
 ## Utgående kommunikasjon (outbound communication)
 | Melding | Query/Command/Event | Collaborator |
 | :--- | :--- | :--- |
-| Arbeidssokerperioder | query (REST/GET) | [Arena ORDS](src/main/kotlin/no/nav/fo/veilarbregistrering/arbeidssoker/perioder/adapter/README.md) |
+| Arbeidssokerperioder | query (REST/GET) | [Arena ORDS](src/main/kotlin/no/nav/fo/veilarbregistrering/arbeidssoker/formidlingsgruppe/adapter/README.md) |
 | Aktivering og reaktivering | Command (REST/POST) | veilarboppfolging (og Arena) |
 | Oppfølgingsstatus | Query (REST/GET) | veilarboppfolging (og Arena) |
 | Tilgangskontroll | --- | ABAC |

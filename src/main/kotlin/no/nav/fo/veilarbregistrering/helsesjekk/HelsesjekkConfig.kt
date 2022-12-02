@@ -6,7 +6,7 @@ import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter.FormidlingsgruppeRestClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.DigDirKrrProxyClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
 import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk

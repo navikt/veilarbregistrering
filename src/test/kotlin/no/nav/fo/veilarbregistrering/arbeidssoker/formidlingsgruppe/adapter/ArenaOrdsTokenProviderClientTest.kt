@@ -1,6 +1,7 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.ArenaOrdsTokenProviderClient
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

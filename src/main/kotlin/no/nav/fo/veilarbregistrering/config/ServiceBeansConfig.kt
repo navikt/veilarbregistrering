@@ -5,9 +5,9 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeGateway
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
@@ -28,7 +28,6 @@ import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResour
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.metrics.PrometheusMetricsService
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
 import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService

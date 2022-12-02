@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.adapter
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import java.time.LocalDate
 
