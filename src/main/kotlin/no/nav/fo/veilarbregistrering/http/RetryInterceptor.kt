@@ -8,22 +8,27 @@ import javax.net.ssl.SSLHandshakeException
 
 class RetryInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        return utforRequestMedRetry(chain, 0)
-    }
-
-    private fun utforRequestMedRetry(chain: Interceptor.Chain, tryCount: Int): Response {
         var response: Response? = null
         var throwable: Throwable? = null
+        var tryCount = 1
 
         try {
+            logger.info("Utfører request mot ${chain.request().url()} i forsøk nummer $tryCount")
             response = chain.proceed(chain.request())
 
         } catch (t: Throwable) {
             throwable = t
 
-            if (throwable is SSLHandshakeException && tryCount < 3) {
-                logger.info("Retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
-                utforRequestMedRetry(chain, tryCount + 1)
+            while (throwable is SSLHandshakeException && tryCount < 4) {
+                tryCount++
+
+                try {
+                    logger.info("Retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
+                    response = chain.proceed(chain.request())
+
+                } catch (t: Throwable) {
+                    throwable = t
+                }
             }
         }
 
