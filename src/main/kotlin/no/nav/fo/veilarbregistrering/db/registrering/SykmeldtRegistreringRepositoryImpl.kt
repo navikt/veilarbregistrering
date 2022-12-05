@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
@@ -18,13 +19,14 @@ import java.time.LocalDateTime
 
 class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : SykmeldtRegistreringRepository {
 
-    override fun lagreSykmeldtBruker(bruker: SykmeldtRegistrering, aktorId: AktorId): Long {
+    override fun lagreSykmeldtBruker(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker): Long {
         val id = nesteFraSekvens(SYKMELDT_REGISTRERING_SEQ)
-        val besvarelse = bruker.besvarelse
-        val teksterForBesvarelse = tilJson(bruker.teksterForBesvarelse)
+        val besvarelse = sykmeldtRegistrering.besvarelse
+        val teksterForBesvarelse = tilJson(sykmeldtRegistrering.teksterForBesvarelse)
         val params = mapOf(
                 "id" to id,
-                "aktor_id" to aktorId.aktorId,
+                "aktor_id" to bruker.aktorId.aktorId,
+                "foedselsnummer" to bruker.gjeldendeFoedselsnummer.foedselsnummer,
                 "opprettet" to Timestamp.valueOf(LocalDateTime.now()),
                 "tekster" to teksterForBesvarelse,
                 "fremtidig_situasjon" to besvarelse.fremtidigSituasjon?.toString(),
@@ -37,7 +39,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
 
         val sql = "INSERT INTO ${SYKMELDT_REGISTRERING}" +
                 " (${allSykmeldtColumns.joinToString(", ")})" +
-                " VALUES (:id, :aktor_id, :opprettet, :tekster, :fremtidig_situasjon, :tilbake_etter_52_uker," +
+                " VALUES (:id, :aktor_id, :foedselsnummer, :opprettet, :tekster, :fremtidig_situasjon, :tilbake_etter_52_uker," +
                 " :nus_kode, :utdanning_bestatt, :utdanning_godkjent, :andre_utfordringer)"
 
         db.update(sql, params)
@@ -71,18 +73,29 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         private const val SYKMELDT_REGISTRERING = "SYKMELDT_REGISTRERING"
         private const val SYKMELDT_REGISTRERING_SEQ = "SYKMELDT_REGISTRERING_SEQ"
         private const val SYKMELDT_REGISTRERING_ID = "SYKMELDT_REGISTRERING_ID"
+        private const val FREMTIDIG_SITUASJON = "FREMTIDIG_SITUASJON"
+        private const val TILBAKE_ETTER_52_UKER = "TILBAKE_ETTER_52_UKER"
+        private const val OPPRETTET_DATO = "OPPRETTET_DATO"
+        private const val NUS_KODE = "NUS_KODE"
+        private const val TEKSTER_FOR_BESVARELSE = "TEKSTER_FOR_BESVARELSE"
+        private const val ANDRE_UTFORDRINGER = "ANDRE_UTFORDRINGER"
+        private const val UTDANNING_BESTATT = "UTDANNING_BESTATT"
+        private const val UTDANNING_GODKJENT_NORGE = "UTDANNING_GODKJENT_NORGE"
+        private const val AKTOR_ID = "AKTOR_ID"
+        private const val FOEDSELSNUMMER = "FOEDSELSNUMMER"
 
         val allSykmeldtColumns = listOf(
                 SYKMELDT_REGISTRERING_ID,
-                BrukerRegistreringRepositoryImpl.AKTOR_ID,
-                BrukerRegistreringRepositoryImpl.OPPRETTET_DATO,
-                BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE,
-                BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON,
-                BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER,
-                BrukerRegistreringRepositoryImpl.NUS_KODE,
-                BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT,
-                BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE,
-                BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER
+                AKTOR_ID,
+                FOEDSELSNUMMER,
+                OPPRETTET_DATO,
+                TEKSTER_FOR_BESVARELSE,
+                FREMTIDIG_SITUASJON,
+                TILBAKE_ETTER_52_UKER,
+                NUS_KODE,
+                UTDANNING_BESTATT,
+                UTDANNING_GODKJENT_NORGE,
+                ANDRE_UTFORDRINGER
         )
 
         val rowMapperSykmeldt = RowMapper { rs, _ ->
@@ -90,21 +103,21 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
                 SykmeldtRegistrering(
                     id=(rs.getLong(SYKMELDT_REGISTRERING_ID)),
                     opprettetDato=(
-                        rs.getTimestamp(BrukerRegistreringRepositoryImpl.OPPRETTET_DATO).toLocalDateTime()
+                        rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime()
                     ),
-                    teksterForBesvarelse=(readListOf(rs.getString(BrukerRegistreringRepositoryImpl.TEKSTER_FOR_BESVARELSE))),
+                    teksterForBesvarelse=(readListOf(rs.getString(TEKSTER_FOR_BESVARELSE))),
                     besvarelse=(
                         Besvarelse(
-                            fremtidigSituasjon = rs.getString(BrukerRegistreringRepositoryImpl.FREMTIDIG_SITUASJON)
+                            fremtidigSituasjon = rs.getString(FREMTIDIG_SITUASJON)
                                 ?.let(FremtidigSituasjonSvar::valueOf),
-                            tilbakeIArbeid = rs.getString(BrukerRegistreringRepositoryImpl.TILBAKE_ETTER_52_UKER)
+                            tilbakeIArbeid = rs.getString(TILBAKE_ETTER_52_UKER)
                                 ?.let(TilbakeIArbeidSvar::valueOf),
-                            utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(BrukerRegistreringRepositoryImpl.NUS_KODE)),
-                            utdanningBestatt = rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_BESTATT)
+                            utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)),
+                            utdanningBestatt = rs.getString(UTDANNING_BESTATT)
                                 ?.let(UtdanningBestattSvar::valueOf),
-                            utdanningGodkjent = rs.getString(BrukerRegistreringRepositoryImpl.UTDANNING_GODKJENT_NORGE)
+                            utdanningGodkjent = rs.getString(UTDANNING_GODKJENT_NORGE)
                                 ?.let(UtdanningGodkjentSvar::valueOf),
-                            andreForhold = rs.getString(BrukerRegistreringRepositoryImpl.ANDRE_UTFORDRINGER)
+                            andreForhold = rs.getString(ANDRE_UTFORDRINGER)
                                 ?.let(AndreForholdSvar::valueOf),
                         )
                     ))

@@ -3,6 +3,8 @@ package no.nav.fo.veilarbregistrering.db.registrering
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
@@ -36,9 +38,9 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
                 tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING))
         val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
                 tilbakeIArbeid = TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
-        val registrering = sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(AKTOR_ID_11111)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, BRUKER)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, BRUKER)
+        val registrering = sykmeldtRegistreringRepository.hentSykmeldtregistreringForAktorId(BRUKER.aktorId)
         assertSykmeldtRegistrertBruker(bruker2, registrering!!)
     }
 
@@ -48,10 +50,10 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
                 tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING))
         val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
                 tilbakeIArbeid = TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, AKTOR_ID_11111)
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, AKTOR_ID_11111)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, BRUKER)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, BRUKER)
 
-        val ordinaerBrukerregistreringer = sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(AKTOR_ID_11111)
+        val ordinaerBrukerregistreringer = sykmeldtRegistreringRepository.finnSykmeldtRegistreringerFor(BRUKER.aktorId)
         assertThat(ordinaerBrukerregistreringer).hasSize(2)
     }
 
@@ -61,7 +63,8 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
     }
 
     companion object {
-        private val AKTOR_ID_11111 = AktorId("11111")
+        private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
+        private val BRUKER = Bruker(ident, AktorId("11111"))
     }
 
 }

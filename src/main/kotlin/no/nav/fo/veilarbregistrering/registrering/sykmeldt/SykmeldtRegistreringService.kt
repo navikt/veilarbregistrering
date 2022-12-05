@@ -26,7 +26,7 @@ open class SykmeldtRegistreringService(
     open fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker, navVeileder: NavVeileder?): Long {
         sjekkAtBrukerKanRegistreres(bruker)
         oppfolgingGateway.aktiverSykmeldt(bruker.gjeldendeFoedselsnummer, sykmeldtRegistrering.besvarelse)
-        val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker.aktorId)
+        val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker)
         lagreManuellRegistrering(id, navVeileder)
         registrerOverfortStatistikk(navVeileder)
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering)

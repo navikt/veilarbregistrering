@@ -88,13 +88,13 @@ class HentBrukerRegistreringServiceIntegrationTest(
             registreringTilstandRepository.lagre(RegistreringTilstand.medStatus(Status.OVERFORT_ARENA, id))
             profileringRepository.lagreProfilering(id, lagProfilering())
         }
-        sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER)
         assertEquals(BrukerRegistreringType.SYKMELDT, hentRegistreringService.hentBrukerregistrering(BRUKER)?.type )
     }
 
     @Test
     fun `hent sykmeldt med veileders enhet med navn`() {
-        val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER.aktorId)
+        val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(SYKMELDT_BRUKER, BRUKER)
         val manuellRegistrering = ManuellRegistrering(id, BrukerRegistreringType.SYKMELDT, "H114522", "0106")
         manuellRegistreringRepository.lagreManuellRegistrering(manuellRegistrering)
 
