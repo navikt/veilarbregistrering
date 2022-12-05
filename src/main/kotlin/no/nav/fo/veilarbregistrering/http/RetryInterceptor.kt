@@ -8,28 +8,35 @@ import javax.net.ssl.SSLHandshakeException
 
 class RetryInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        return utforRequestMedRetry(chain, 0)
-    }
-
-    private fun utforRequestMedRetry(chain: Interceptor.Chain, tryCount: Int): Response {
         var response: Response? = null
         var throwable: Throwable? = null
+        var tryCount = 1
 
         try {
-            logger.info("Utfører request mot ${chain.request().url()} - forsøk nummer $tryCount")
+            logger.info("Utfører initielt request mot ${chain.request().url()}")
             response = chain.proceed(chain.request())
 
         } catch (t: Throwable) {
             throwable = t
 
-            logger.info("Request mot ${chain.request().url()} feilet med ${t.message}: ", t)
-
-            if (throwable is SSLHandshakeException && tryCount < 4) {
-                if (response != null) {
-                    logger.info("Response i catch-block er ikke null - closer")
-                    response.close()
+            while (throwable is SSLHandshakeException && tryCount < 4) {
+                try {
+                    logger.info("Retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
+                    if (response != null) {
+                        logger.info("Response i try-block er ikke null - closer")
+                        response.close()
+                    }
+                    response = chain.proceed(chain.request())
+                    throwable = null
+                    logger.info("Vellykket response etter forsøk nummer $tryCount")
+                } catch (t: Throwable) {
+                    if (response != null) {
+                        logger.info("Response i catch-block er ikke null - closer")
+                        response.close()
+                    }
+                    throwable = t
                 }
-                utforRequestMedRetry(chain, tryCount + 1)
+                tryCount++
             }
         }
 
