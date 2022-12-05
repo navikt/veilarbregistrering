@@ -8,7 +8,6 @@ import javax.net.ssl.SSLHandshakeException
 
 class RetryInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        logger.info("Utfører request mot ${chain.request().url()}")
         return utforRequestMedRetry(chain, 0)
     }
 
@@ -17,13 +16,15 @@ class RetryInterceptor : Interceptor {
         var throwable: Throwable? = null
 
         try {
+            logger.info("Utfører request mot ${chain.request().url()} - forsøk nummer $tryCount")
             response = chain.proceed(chain.request())
 
         } catch (t: Throwable) {
             throwable = t
 
+            logger.info("Request mot ${chain.request().url()} feilet med ${t.message}: ", t)
+
             if (throwable is SSLHandshakeException && tryCount < 4) {
-                logger.info("Utfører retry mot ${chain.request().url()} pga SSLHandshakeException - forsøk nummer $tryCount")
                 if (response != null) {
                     logger.info("Response i catch-block er ikke null - closer")
                     response.close()
