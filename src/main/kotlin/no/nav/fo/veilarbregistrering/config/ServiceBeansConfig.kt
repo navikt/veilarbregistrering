@@ -49,6 +49,7 @@ import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringApi
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.PopulerFoedselsnummerScheduler
 import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
@@ -70,6 +71,7 @@ import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRe
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
 class ServiceBeansConfig {
@@ -471,5 +473,11 @@ class ServiceBeansConfig {
     @Bean
     fun meldekortMottakService(meldekortRepository: MeldekortRepository): MeldekortMottakService {
         return MeldekortMottakService(meldekortRepository)
+    }
+
+    @Bean
+    @Profile("gcp")
+    fun populerFoedselsnummerScheduler(pdlOppslagGateway: PdlOppslagGateway): PopulerFoedselsnummerScheduler {
+        return PopulerFoedselsnummerScheduler(pdlOppslagGateway)
     }
 }

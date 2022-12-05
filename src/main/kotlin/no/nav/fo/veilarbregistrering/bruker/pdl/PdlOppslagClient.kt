@@ -44,6 +44,13 @@ open class PdlOppslagClient(
         return response.data.hentIdenter
     }
 
+    fun hentIdenterBolk(aktorIder: List<AktorId>): List<PdlIdenterBolk> {
+        val request = PdlHentIdenterBolkRequest(hentIdenterBolkQuery(), HentIdenterBolkVariables(aktorIder.map { it.aktorId }))
+        val json = hentFraPdl(request, ekstraHeaders = lagAuthHeadersForSystembrukerKontekst())
+        val response = mapAndValidateResponse<PdlHentIdenterBolkResponse>(json)
+        return response.data.hentIdenterBolk
+    }
+
     open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
         return hentFraPdl(pdlHentIdenterRequest, ekstraHeaders = mapOf(
             NAV_PERSONIDENT_HEADER to personident,
@@ -110,7 +117,16 @@ open class PdlOppslagClient(
         )
     }
 
+    private fun lagAuthHeadersForSystembrukerKontekst(): Map<String, String> {
+        val aadToken = tokenProvider()
+        return mapOf(
+            "Authorization" to "Bearer $aadToken",
+            NAV_CONSUMER_TOKEN_HEADER to "Bearer $aadToken",
+        )
+    }
+
     private fun hentIdenterQuery() = hentRessursfil("pdl/hentIdenter.graphql")
+    private fun hentIdenterBolkQuery() = hentRessursfil("pdl/hentIdenterBolk.graphql")
     private fun hentPersonQuery() = hentRessursfil("pdl/hentPerson.graphql")
     private fun hentGeografisktilknytningQuery() = hentRessursfil("pdl/hentGeografiskTilknytning.graphql")
 

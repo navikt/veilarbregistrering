@@ -170,6 +170,10 @@ class OppgaveRouterTest {
             TODO("Not yet implemented")
         }
 
+        override fun hentIdenterBolk(aktorIder: List<AktorId>): Map<AktorId, Foedselsnummer> {
+            TODO("Not yet implemented")
+        }
+
         override fun hentGeografiskTilknytning(aktorId: AktorId) = geografiskTilknytning
 
     }
