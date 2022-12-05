@@ -84,6 +84,25 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
         assertThat(pdlIdenter).isNotNull
     }
 
+    @Test
+    fun `hentIdenterBolk skal lage en ny gyldig graphql-request`() {
+        val client = buildClient()
+
+        mockServer.`when`(
+            HttpRequest.request("/graphql")
+                .withMethod("POST")
+                .withHeader("Authorization", "Bearer $authToken")
+                .withHeader("Nav-Consumer-Token", "Bearer $authToken")
+                .withContentType(MediaType.JSON_UTF_8)
+        ).respond(response()
+            .withStatusCode(200)
+            .withBody(toJson(PdlOppslagClientTest.HENT_IDENTER_BOLK_OK_JSON), MediaType.JSON_UTF_8)
+        )
+
+        val identerBolk = client.hentIdenterBolk(listOf(AktorId("34211kd"), AktorId("422dasfda")))
+        assertThat(identerBolk.size).isEqualTo(2)
+    }
+
     private fun buildClient(): PdlOppslagClient {
         val baseUrl = "http://${mockServer.remoteAddress().address.hostName}:${mockServer.remoteAddress().port}"
         return PdlOppslagClient(baseUrl) { authToken }
