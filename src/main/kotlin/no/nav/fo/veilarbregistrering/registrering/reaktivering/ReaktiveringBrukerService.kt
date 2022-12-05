@@ -27,7 +27,7 @@ open class ReaktiveringBrukerService(
                 "Bruker kan ikke reaktiveres fordi utledet registreringstype er ${brukersTilstand.registreringstype}"
             )
         }
-        reaktiveringRepository.lagreReaktiveringForBruker(bruker.aktorId)
+        reaktiveringRepository.lagreReaktiveringForBruker(bruker)
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.aktorId)
         if (erVeileder) {

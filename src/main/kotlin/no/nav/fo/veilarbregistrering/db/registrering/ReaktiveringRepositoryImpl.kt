@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
@@ -12,16 +13,17 @@ import java.time.LocalDateTime
 
 class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : ReaktiveringRepository {
 
-    override fun lagreReaktiveringForBruker(aktorId: AktorId) {
+    override fun lagreReaktiveringForBruker(bruker: Bruker) {
         val params = mapOf(
                 "id" to nesteFraSekvens(BRUKER_REAKTIVERING_SEQ),
-                "aktor_id" to aktorId.aktorId,
+                "aktor_id" to bruker.aktorId.aktorId,
+                "foedselsnummer" to bruker.gjeldendeFoedselsnummer.foedselsnummer,
                 "reaktivering_dato" to Timestamp.valueOf(LocalDateTime.now())
         )
 
         val sql = "INSERT INTO ${BRUKER_REAKTIVERING}" +
-                "(${BRUKER_REAKTIVERING_ID}, ${BrukerRegistreringRepositoryImpl.AKTOR_ID}, ${REAKTIVERING_DATO})" +
-                "VALUES (:id, :aktor_id, :reaktivering_dato)"
+                "($BRUKER_REAKTIVERING_ID, $AKTOR_ID, $FOEDSELSNUMMER, $REAKTIVERING_DATO)" +
+                "VALUES (:id, :aktor_id, :foedselsnummer, :reaktivering_dato)"
 
         db.update(sql, params)
     }
@@ -41,6 +43,8 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
         private const val BRUKER_REAKTIVERING = "BRUKER_REAKTIVERING"
         private const val BRUKER_REAKTIVERING_ID = "BRUKER_REAKTIVERING_ID"
         private const val REAKTIVERING_DATO = "REAKTIVERING_DATO"
+        private const val AKTOR_ID = "AKTOR_ID"
+        private const val FOEDSELSNUMMER = "FOEDSELSNUMMER"
 
         private val noParams = emptyMap<String, Any>()
 

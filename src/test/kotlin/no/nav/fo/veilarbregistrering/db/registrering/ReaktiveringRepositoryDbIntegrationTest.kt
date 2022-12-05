@@ -26,7 +26,7 @@ class ReaktiveringRepositoryDbIntegrationTest(
     fun `finnReaktiveringer skal returnere liste med alle reaktiveringer for gitt aktørId`() {
         assertThat(reaktiveringRepository.finnReaktiveringer(BRUKER_1.aktorId)).hasSize(0)
 
-        reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_1.aktorId)
+        reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_1)
 
         assertThat(reaktiveringRepository.finnReaktiveringer(BRUKER_1.aktorId)).hasSize(1)
     }
