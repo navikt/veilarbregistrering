@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import no.nav.common.job.leader_election.LeaderElectionClient
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.logger
@@ -22,26 +23,38 @@ class PopulerFoedselsnummerScheduler(
             logger.info("Er ikke leader - avbryter")
             return
         }
-        logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
 
-        val aktorIdList =
-            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50)
-        logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
+        val denyList = mutableListOf<AktorId>()
 
-        if (aktorIdList.isEmpty()) return
+        var totalRowsUpdated = 1
 
-        val aktorIdFoedselsnummerMap = pdlOppslagGateway.hentIdenterBolk(aktorIdList)
-        if (aktorIdFoedselsnummerMap.isEmpty()) {
-            logger.info("Fant ingen identer fra hentIdenterBolk")
-            return
+        while (totalRowsUpdated != 0) {
+            logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
+
+            val aktorIdList =
+                sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50, denyList)
+            logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
+
+            if (aktorIdList.isEmpty()) return
+
+            val aktorIdFoedselsnummerMap = pdlOppslagGateway.hentIdenterBolk(aktorIdList)
+            if (aktorIdFoedselsnummerMap.isEmpty()) {
+                logger.info("Fant ingen identer fra hentIdenterBolk")
+                return
+            }
+            logger.info("Fikk følgende respons fra hentIdenterBolk: $aktorIdFoedselsnummerMap")
+
+            val aktorIdsDenied = aktorIdList.subtract(aktorIdFoedselsnummerMap.keys)
+            logger.info("Disse aktørId'ene fikk ikke treff i PDL, og er lagt til i denylist: $aktorIdsDenied")
+
+            denyList.addAll(aktorIdsDenied)
+
+            val oppdaterteSykmeldtRegistreringer =
+                sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(
+                    aktorIdFoedselsnummerMap,
+                )
+            totalRowsUpdated = oppdaterteSykmeldtRegistreringer.toList().sum()
+            logger.info("Oppdaterte totalt ${totalRowsUpdated} SykmeldtRegistrering")
         }
-        logger.info("Fikk følgende respons fra hentIdenterBolk: $aktorIdFoedselsnummerMap")
-
-        val oppdaterteSykmeldtRegistreringer =
-            sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(
-                aktorIdFoedselsnummerMap
-            )
-
-        logger.info("Oppdaterte totalt ${oppdaterteSykmeldtRegistreringer.toList().sum()} SykmeldtRegistrering")
     }
 }
