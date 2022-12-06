@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
@@ -479,8 +480,9 @@ class ServiceBeansConfig {
     @Profile("gcp")
     fun populerFoedselsnummerScheduler(
         pdlOppslagGateway: PdlOppslagGateway,
-        sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
+        sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
+        leaderElectionClient: LeaderElectionClient
     ): PopulerFoedselsnummerScheduler {
-        return PopulerFoedselsnummerScheduler(pdlOppslagGateway, sykmeldtRegistreringRepository)
+        return PopulerFoedselsnummerScheduler(pdlOppslagGateway, sykmeldtRegistreringRepository, leaderElectionClient)
     }
 }

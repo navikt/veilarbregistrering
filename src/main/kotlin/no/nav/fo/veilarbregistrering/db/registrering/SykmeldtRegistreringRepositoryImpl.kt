@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
@@ -69,8 +70,20 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
 
     override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId> {
         val sql = "SELECT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                "WHERE $FOEDSELSNUMMER IS NULL ORDER BY $OPPRETTET_DATO DESC FETCH NEXT $maksAntall ROWS ONLY"
+                "WHERE $FOEDSELSNUMMER IS NULL ORDER BY $OPPRETTET_DATO ASC LIMIT $maksAntall"
         return db.query(sql) { rs, _ -> AktorId(rs.getString("$AKTOR_ID")) }
+    }
+
+    override fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): List<Int> {
+        val sql = "UPDATE $SYKMELDT_REGISTRERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
+
+        val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
+            mapOf(
+                "aktorId" to aktorIdFoedselsnummer.key,
+                "foedselsnummer" to aktorIdFoedselsnummer.value)
+        }
+
+        return db.batchUpdate(sql, params.toTypedArray()).asList()
     }
 
     companion object {
