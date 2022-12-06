@@ -10,5 +10,5 @@ interface SykmeldtRegistreringRepository {
     fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering>
 
     fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId>
-    fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): List<Int>
+    fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray
 }

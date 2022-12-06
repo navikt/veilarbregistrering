@@ -77,6 +77,21 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
         assertThat(aktorIdList).isEmpty()
     }
 
+    @Test
+    fun `oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer`() {
+        val bruker1 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
+            tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING))
+        val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
+            tilbakeIArbeid = TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, BRUKER)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, BRUKER)
+
+        val antallOppdaterteRader =
+            sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(mapOf(BRUKER.aktorId to BRUKER.gjeldendeFoedselsnummer))
+
+        assertThat(antallOppdaterteRader[0]).isEqualTo(0)
+    }
+
     companion object {
         private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker(ident, AktorId("11111"))

@@ -74,16 +74,16 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql) { rs, _ -> AktorId(rs.getString("$AKTOR_ID")) }
     }
 
-    override fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): List<Int> {
+    override fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
         val sql = "UPDATE $SYKMELDT_REGISTRERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
 
         val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
             mapOf(
-                "aktorId" to aktorIdFoedselsnummer.key,
-                "foedselsnummer" to aktorIdFoedselsnummer.value)
+                "aktorId" to aktorIdFoedselsnummer.key.aktorId,
+                "foedselsnummer" to aktorIdFoedselsnummer.value.foedselsnummer)
         }
 
-        return db.batchUpdate(sql, params.toTypedArray()).asList()
+        return db.batchUpdate(sql, params.toTypedArray())
     }
 
     companion object {
