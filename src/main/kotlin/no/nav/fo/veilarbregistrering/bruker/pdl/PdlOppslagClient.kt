@@ -51,7 +51,7 @@ open class PdlOppslagClient(
         val json = hentFraPdl(request)
         val response = mapAndValidateResponse<PdlHentIdenterBolkResponse>(json)
         if (isDevelopment()) {
-            logger.info("Fikk følgende respons fra hentIdenterBolk: ${response}")
+            logger.info("Fikk følgende respons fra hentIdenterBolk: ${response.data.hentIdenterBolk}")
         }
         return response.data.hentIdenterBolk
     }

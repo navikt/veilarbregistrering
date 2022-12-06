@@ -68,10 +68,15 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 
-    override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId> {
-        val sql = "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
-        return db.query(sql) { rs, _ -> AktorId(rs.getString("$AKTOR_ID")) }
+    override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
+        val sql = if (aktorIdDenyList.isEmpty()) {
+            "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
+                    "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
+        } else {
+            "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
+                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",")} LIMIT $maksAntall"
+        }
+        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
     }
 
     override fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
