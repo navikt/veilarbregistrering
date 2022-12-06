@@ -15,8 +15,10 @@ class PopulerFoedselsnummerScheduler(
     @Scheduled(initialDelay = 1000 * 30, fixedDelay = Long.MAX_VALUE)
     fun populerFoedselsnummer() {
         if (isProduction()) return
+        logger.info("Starter populering av foedselsnummer")
 
         if (!leaderElectionClient.isLeader) {
+            logger.info("Er ikke leader - avbryter")
             return
         }
         logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
