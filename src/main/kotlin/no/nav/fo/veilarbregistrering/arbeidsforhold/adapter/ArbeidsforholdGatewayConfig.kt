@@ -1,15 +1,11 @@
 package no.nav.fo.veilarbregistrering.arbeidsforhold.adapter
 
-import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
-import no.nav.fo.veilarbregistrering.config.isDevelopment
-import no.nav.fo.veilarbregistrering.config.requireClusterName
-import no.nav.fo.veilarbregistrering.config.requireProperty
-import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.DownstreamApi
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
+import no.nav.fo.veilarbregistrering.config.requireProperty
+import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
