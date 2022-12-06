@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled
 class PopulerFoedselsnummerScheduler(
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
-    private val leaderElectionClient: LeaderElectionClient) {
+    private val leaderElectionClient: LeaderElectionClient
+) {
 
     @Scheduled(initialDelay = 1000 * 60 * 2, fixedDelay = Long.MAX_VALUE)
     fun populerFoedselsnummer() {
@@ -24,12 +25,16 @@ class PopulerFoedselsnummerScheduler(
         logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
 
         val aktorIdList =
-            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(10)
+            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50)
         logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
 
         if (aktorIdList.isEmpty()) return
 
         val aktorIdFoedselsnummerMap = pdlOppslagGateway.hentIdenterBolk(aktorIdList)
+        if (aktorIdFoedselsnummerMap.isEmpty()) {
+            logger.info("Fant ingen identer fra hentIdenterBolk")
+            return
+        }
         logger.info("Fikk følgende respons fra hentIdenterBolk: $aktorIdFoedselsnummerMap")
 
         val oppdaterteSykmeldtRegistreringer =
@@ -37,6 +42,6 @@ class PopulerFoedselsnummerScheduler(
                 aktorIdFoedselsnummerMap
             )
 
-        logger.info("Oppdaterte totalt $oppdaterteSykmeldtRegistreringer SykmeldtRegistrering")
+        logger.info("Oppdaterte totalt ${oppdaterteSykmeldtRegistreringer.toList().sum()} SykmeldtRegistrering")
     }
 }
