@@ -477,7 +477,10 @@ class ServiceBeansConfig {
 
     @Bean
     @Profile("gcp")
-    fun populerFoedselsnummerScheduler(pdlOppslagGateway: PdlOppslagGateway): PopulerFoedselsnummerScheduler {
-        return PopulerFoedselsnummerScheduler(pdlOppslagGateway)
+    fun populerFoedselsnummerScheduler(
+        pdlOppslagGateway: PdlOppslagGateway,
+        sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
+    ): PopulerFoedselsnummerScheduler {
+        return PopulerFoedselsnummerScheduler(pdlOppslagGateway, sykmeldtRegistreringRepository)
     }
 }

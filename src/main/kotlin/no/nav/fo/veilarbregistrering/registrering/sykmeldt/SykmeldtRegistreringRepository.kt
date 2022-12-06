@@ -8,4 +8,5 @@ interface SykmeldtRegistreringRepository {
     fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering?
     fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering>
 
+    fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId>
 }

@@ -62,6 +62,21 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
         assertThat(sykmeldtRegistrering.teksterForBesvarelse).isEqualTo(bruker.teksterForBesvarelse)
     }
 
+    @Test
+    fun `finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer skal returnere AktorId uten Foedselsnummer`() {
+        val bruker1 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
+            tilbakeIArbeid = TilbakeIArbeidSvar.JA_FULL_STILLING))
+        val bruker2 = SykmeldtRegistreringTestdataBuilder.gyldigSykmeldtRegistrering(besvarelse = BesvarelseTestdataBuilder.gyldigSykmeldtSkalTilbakeSammeJobbBesvarelse(
+            tilbakeIArbeid = TilbakeIArbeidSvar.JA_REDUSERT_STILLING))
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker1, BRUKER)
+        sykmeldtRegistreringRepository.lagreSykmeldtBruker(bruker2, BRUKER)
+
+        val aktorIdList =
+            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50)
+
+        assertThat(aktorIdList).isEmpty()
+    }
+
     companion object {
         private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
         private val BRUKER = Bruker(ident, AktorId("11111"))

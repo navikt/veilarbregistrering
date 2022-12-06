@@ -67,6 +67,12 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 
+    override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId> {
+        val sql = "SELECT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
+                "WHERE $FOEDSELSNUMMER IS NULL ORDER BY $OPPRETTET_DATO DESC FETCH NEXT $maksAntall ROWS ONLY"
+        return db.query(sql) { rs, _ -> AktorId(rs.getString("$AKTOR_ID")) }
+    }
+
     companion object {
         private val mapper = jacksonObjectMapper()
 
