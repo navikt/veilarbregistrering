@@ -92,7 +92,6 @@ class PdlOppslagClientGraphqlTest(private val mockServer: ClientAndServer) {
             HttpRequest.request("/graphql")
                 .withMethod("POST")
                 .withHeader("Authorization", "Bearer $authToken")
-                .withHeader("Nav-Consumer-Token", "Bearer $authToken")
                 .withContentType(MediaType.JSON_UTF_8)
         ).respond(response()
             .withStatusCode(200)

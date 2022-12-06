@@ -16,7 +16,6 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
-import no.nav.fo.veilarbregistrering.log.loggerFor
 import okhttp3.Headers
 import okhttp3.Request
 import java.io.IOException
@@ -46,7 +45,7 @@ open class PdlOppslagClient(
 
     fun hentIdenterBolk(aktorIder: List<AktorId>): List<PdlIdenterBolk> {
         val request = PdlHentIdenterBolkRequest(hentIdenterBolkQuery(), HentIdenterBolkVariables(aktorIder.map { it.aktorId }))
-        val json = hentFraPdl(request, ekstraHeaders = lagAuthHeadersForSystembrukerKontekst())
+        val json = hentFraPdl(request)
         val response = mapAndValidateResponse<PdlHentIdenterBolkResponse>(json)
         return response.data.hentIdenterBolk
     }
@@ -59,7 +58,7 @@ open class PdlOppslagClient(
 
     private fun hentFraPdl(
         graphqlRequest: Any,
-        ekstraHeaders: Map<String, String>
+        ekstraHeaders: Map<String, String> = emptyMap()
     ): String {
         val requestBody = RestUtils.toJsonRequestBody(graphqlRequest)
         val authHeaders = lagAuthHeaders()
@@ -117,14 +116,6 @@ open class PdlOppslagClient(
         )
     }
 
-    private fun lagAuthHeadersForSystembrukerKontekst(): Map<String, String> {
-        val aadToken = tokenProvider()
-        return mapOf(
-            "Authorization" to "Bearer $aadToken",
-            NAV_CONSUMER_TOKEN_HEADER to "Bearer $aadToken",
-        )
-    }
-
     private fun hentIdenterQuery() = hentRessursfil("pdl/hentIdenter.graphql")
     private fun hentIdenterBolkQuery() = hentRessursfil("pdl/hentIdenterBolk.graphql")
     private fun hentPersonQuery() = hentRessursfil("pdl/hentPerson.graphql")
@@ -167,8 +158,6 @@ open class PdlOppslagClient(
     }
 
     companion object {
-        private val logger = loggerFor<PdlOppslagClient>()
-        private const val NAV_CONSUMER_TOKEN_HEADER = "Nav-Consumer-Token"
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
         private const val OPPFOLGING_TEMA_HEADERVERDI = "OPP"
