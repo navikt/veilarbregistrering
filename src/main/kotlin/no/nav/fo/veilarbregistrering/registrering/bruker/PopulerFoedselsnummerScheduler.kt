@@ -12,7 +12,7 @@ class PopulerFoedselsnummerScheduler(
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     private val leaderElectionClient: LeaderElectionClient) {
 
-    @Scheduled(initialDelay = 1000 * 30, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 1000 * 60 * 2, fixedDelay = Long.MAX_VALUE)
     fun populerFoedselsnummer() {
         if (isProduction()) return
         logger.info("Starter populering av foedselsnummer")
