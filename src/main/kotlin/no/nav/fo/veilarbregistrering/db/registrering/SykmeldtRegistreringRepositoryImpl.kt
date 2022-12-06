@@ -69,8 +69,8 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int): List<AktorId> {
-        val sql = "SELECT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                "WHERE $FOEDSELSNUMMER IS NULL ORDER BY $OPPRETTET_DATO ASC LIMIT $maksAntall"
+        val sql = "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
+                "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
         return db.query(sql) { rs, _ -> AktorId(rs.getString("$AKTOR_ID")) }
     }
 
