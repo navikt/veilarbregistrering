@@ -40,8 +40,8 @@ class ArbeidssokerService(
             logger.warn(
                 "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
                     "Forespurt periode: $forespurtPeriode\n" +
-                    "Lokalt: $overlappendeArbeidssokerperioderLokalt\n" +
-                    "Arena-ORDS: $overlappendeHistoriskePerioderORDS"
+                    "Lokalt:\n$overlappendeArbeidssokerperioderLokalt\n" +
+                    "Arena-ORDS:\n$overlappendeHistoriskePerioderORDS"
             )
         }
 
