@@ -37,9 +37,12 @@ class PopulerFoedselsnummerScheduler(
 
             val aktorIdList =
                 sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50, denyList)
-            logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
 
-            if (aktorIdList.isEmpty()) break
+            if (aktorIdList.isEmpty()) {
+                logger.info("Fant ingen flere tilfeller av aktorId som manglet fødselnummer - avbryter")
+                break
+            }
+            logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
 
             val aktorIdFoedselsnummerMap = pdlOppslagGateway.hentIdenterBolk(aktorIdList)
             if (aktorIdFoedselsnummerMap.isEmpty()) {
@@ -48,9 +51,10 @@ class PopulerFoedselsnummerScheduler(
             }
 
             val aktorIdsDenied = aktorIdList.subtract(aktorIdFoedselsnummerMap.keys)
-            logger.info("Disse aktørId'ene fikk ikke treff i PDL, og er lagt til i denylist: $aktorIdsDenied")
-
-            denyList.addAll(aktorIdsDenied)
+            if (aktorIdsDenied.isNotEmpty()) {
+                logger.warn("Disse aktørId'ene fikk ikke treff i PDL, og er lagt til i denylist: $aktorIdsDenied")
+                denyList.addAll(aktorIdsDenied)
+            }
 
             val oppdaterteSykmeldtRegistreringer =
                 sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(
