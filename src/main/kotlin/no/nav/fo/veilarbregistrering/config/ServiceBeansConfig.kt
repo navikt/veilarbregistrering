@@ -481,8 +481,13 @@ class ServiceBeansConfig {
     fun populerFoedselsnummerScheduler(
         pdlOppslagGateway: PdlOppslagGateway,
         sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
-        leaderElectionClient: LeaderElectionClient
+        leaderElectionClient: LeaderElectionClient,
+        unleashClient: UnleashClient
     ): PopulerFoedselsnummerScheduler {
-        return PopulerFoedselsnummerScheduler(pdlOppslagGateway, sykmeldtRegistreringRepository, leaderElectionClient)
+        return PopulerFoedselsnummerScheduler(
+            pdlOppslagGateway,
+            sykmeldtRegistreringRepository,
+            leaderElectionClient,
+            unleashClient)
     }
 }
