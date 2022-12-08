@@ -56,5 +56,8 @@ class PopulerFoedselsnummerScheduler(
             totalRowsUpdated = oppdaterteSykmeldtRegistreringer.toList().sum()
             logger.info("Oppdaterte totalt ${totalRowsUpdated} SykmeldtRegistrering")
         }
+
+        logger.info("Avslutter populering av Foedselsnummer da det ikke var flere kjente aktørIder. " +
+                "Fant totalt ${denyList.size} aktorIder som ikke gav treff i PDL")
     }
 }

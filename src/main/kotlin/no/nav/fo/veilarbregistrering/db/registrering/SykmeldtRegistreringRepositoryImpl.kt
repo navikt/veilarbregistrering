@@ -74,7 +74,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
                     "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
         } else {
             "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",")} LIMIT $maksAntall"
+                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",") { t -> "'" + t.aktorId + "'" }}) LIMIT $maksAntall"
         }
         return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
     }
