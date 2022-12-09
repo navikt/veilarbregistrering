@@ -35,7 +35,7 @@ class PopulerFoedselsnummerScheduler(
             logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
 
             val aktorIdList =
-                populerFoedselsnummerRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50, denyList)
+                populerFoedselsnummerRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(100, denyList)
 
             if (aktorIdList.isEmpty()) {
                 logger.info("Fant ingen flere tilfeller av aktorId som manglet fødselnummer - avbryter")
