@@ -5,7 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.bruker.PopulerFoedselsnummerRepository
 
-interface SykmeldtRegistreringRepository : PopulerFoedselsnummerRepository {
+interface SykmeldtRegistreringRepository {
     fun lagreSykmeldtBruker(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker): Long
     fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering?
     fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering>

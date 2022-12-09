@@ -68,29 +68,6 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 
-    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
-        val sql = if (aktorIdDenyList.isEmpty()) {
-            "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
-        } else {
-            "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",") { t -> "'" + t.aktorId + "'" }}) LIMIT $maksAntall"
-        }
-        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
-    }
-
-    override fun oppdaterRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
-        val sql = "UPDATE $SYKMELDT_REGISTRERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
-
-        val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
-            mapOf(
-                "aktorId" to aktorIdFoedselsnummer.key.aktorId,
-                "foedselsnummer" to aktorIdFoedselsnummer.value.foedselsnummer)
-        }
-
-        return db.batchUpdate(sql, params.toTypedArray())
-    }
-
     companion object {
         private val mapper = jacksonObjectMapper()
 
