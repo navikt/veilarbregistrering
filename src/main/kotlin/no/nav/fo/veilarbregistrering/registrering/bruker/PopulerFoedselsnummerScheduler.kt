@@ -6,12 +6,11 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import org.springframework.scheduling.annotation.Scheduled
 
 class PopulerFoedselsnummerScheduler(
     private val pdlOppslagGateway: PdlOppslagGateway,
-    private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
+    private val populerFoedselsnummerRepository: PopulerFoedselsnummerRepository,
     private val leaderElectionClient: LeaderElectionClient,
     private val unleashClient: UnleashClient
 ) {
@@ -36,7 +35,7 @@ class PopulerFoedselsnummerScheduler(
             logger.info("Forsøker å finne sykmeldtRegistreringer som mangler foedselsnummer for populering...")
 
             val aktorIdList =
-                sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50, denyList)
+                populerFoedselsnummerRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50, denyList)
 
             if (aktorIdList.isEmpty()) {
                 logger.info("Fant ingen flere tilfeller av aktorId som manglet fødselnummer - avbryter")
@@ -57,7 +56,7 @@ class PopulerFoedselsnummerScheduler(
             }
 
             val oppdaterteSykmeldtRegistreringer =
-                sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(
+                populerFoedselsnummerRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
                     aktorIdFoedselsnummerMap,
                 )
             rowsUpdated = oppdaterteSykmeldtRegistreringer.toList().sum()

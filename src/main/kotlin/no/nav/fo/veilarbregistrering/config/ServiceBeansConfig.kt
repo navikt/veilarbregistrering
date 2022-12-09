@@ -48,10 +48,7 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringApi
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
-import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
-import no.nav.fo.veilarbregistrering.registrering.bruker.PopulerFoedselsnummerScheduler
-import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
+import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
@@ -480,13 +477,13 @@ class ServiceBeansConfig {
     @Profile("gcp")
     fun populerFoedselsnummerScheduler(
         pdlOppslagGateway: PdlOppslagGateway,
-        sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
+        populerFoedselsnummerRepository: PopulerFoedselsnummerRepository,
         leaderElectionClient: LeaderElectionClient,
         unleashClient: UnleashClient
     ): PopulerFoedselsnummerScheduler {
         return PopulerFoedselsnummerScheduler(
             pdlOppslagGateway,
-            sykmeldtRegistreringRepository,
+            populerFoedselsnummerRepository,
             leaderElectionClient,
             unleashClient)
     }

@@ -4,8 +4,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
@@ -81,7 +79,7 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
         jdbcTemplate.update("UPDATE SYKMELDT_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE SYKMELDT_REGISTRERING_ID = ?", sykmeldtId2)
 
         val aktorIdList =
-            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50)
+            sykmeldtRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50)
 
         assertThat(aktorIdList).hasSize(2)
     }
@@ -99,7 +97,7 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
         jdbcTemplate.update("UPDATE SYKMELDT_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE SYKMELDT_REGISTRERING_ID = ?", sykmeldtId2)
 
         val aktorIdList =
-            sykmeldtRegistreringRepository.finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(50, listOf(BRUKER2.aktorId))
+            sykmeldtRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50, listOf(BRUKER2.aktorId))
 
         assertThat(aktorIdList).hasSize(1)
     }
@@ -117,7 +115,7 @@ class GcpSykmeldtRegistreringRepositoryDbIntegrationTest(
         jdbcTemplate.update("UPDATE SYKMELDT_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE SYKMELDT_REGISTRERING_ID = ?", sykmeldtId2)
 
         val antallOppdaterteRader =
-            sykmeldtRegistreringRepository.oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(
+            sykmeldtRegistreringRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
                 mapOf(BRUKER.aktorId to BRUKER.gjeldendeFoedselsnummer))
 
         assertThat(antallOppdaterteRader[0]).isEqualTo(1)

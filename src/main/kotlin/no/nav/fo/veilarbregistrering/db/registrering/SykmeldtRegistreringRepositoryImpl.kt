@@ -68,7 +68,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 
-    override fun finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
+    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
         val sql = if (aktorIdDenyList.isEmpty()) {
             "SELECT DISTINCT $AKTOR_ID FROM $SYKMELDT_REGISTRERING " +
                     "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
@@ -79,7 +79,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
         return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
     }
 
-    override fun oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
+    override fun oppdaterRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
         val sql = "UPDATE $SYKMELDT_REGISTRERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
 
         val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
