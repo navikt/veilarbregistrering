@@ -21,22 +21,22 @@ open class SystembrukerAutorisasjonService(
     }
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
+        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.READ} for systembruker med rolle ${rolle()}")
         logger.info("harTilgangTilPerson utfører ${ActionId.READ} for ${UserRole.SYSTEM}-rolle")
-        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.READ)
     }
 
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) {
+        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.WRITE} for systembruker med rolle ${rolle()}")
         logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
-        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.WRITE)
         throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
     }
 
     override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.WRITE} for systembruker med rolle ${rolle()}")
         autitLogger.info(cefMelding.cefMessage())
         logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
-        if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for systembruker med rolle ${rolle()}")
         registrerAutorisationEvent(ActionId.WRITE)
     }
 

@@ -53,7 +53,7 @@ class SystembrukerAutorisasjonServiceTest {
             autorisasjonService.sjekkLesetilgangTilBruker(aremark())
         }
 
-        assertEquals("Kan ikke utføre tilgangskontroll for systembruker med rolle INTERN", exception.message)
+        assertEquals("Kan ikke utføre READ for systembruker med rolle INTERN", exception.message)
     }
 
     @Test
@@ -67,6 +67,6 @@ class SystembrukerAutorisasjonServiceTest {
             autorisasjonService.sjekkLesetilgangTilBruker(aremark())
         }
 
-        assertEquals("Kan ikke utføre tilgangskontroll for systembruker med rolle EKSTERN", exception.message)
+        assertEquals("Kan ikke utføre READ for systembruker med rolle EKSTERN", exception.message)
     }
 }
