@@ -6,9 +6,11 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.Fnr
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.*
 import no.nav.fo.veilarbregistrering.config.RequestContext
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -18,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -60,6 +63,22 @@ class ReaktiveringResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         val responseString = mvc.post("/api/fullfoerreaktivering").andExpect {
+            status { isNoContent() }
+        }.andReturn().response.contentAsString
+
+        Assertions.assertThat(responseString).isNullOrEmpty()
+    }
+
+    @Test
+    fun `fullfoerreaktivering for systembruker returnerer riktig status og responsbody`() {
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { tilgangskontrollService.erVeileder() } returns false
+        every { authContextHolder.erSystemBruker() } returns true
+
+        val responseString = mvc.post("/api/fullfoerreaktivering/systembruker") {
+            content = objectMapper.writeValueAsString(Fnr(IDENT.foedselsnummer))
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
             status { isNoContent() }
         }.andReturn().response.contentAsString
 

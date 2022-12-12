@@ -42,6 +42,10 @@ open class PersonbrukerAutorisasjonService(
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) =
         sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
 
+    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        throw AutorisasjonException("Personbruker kan ikke utføre tilgangskontroll for systembruker")
+    }
+
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {

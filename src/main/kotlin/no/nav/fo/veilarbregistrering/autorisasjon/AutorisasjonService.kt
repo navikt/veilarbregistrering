@@ -9,6 +9,8 @@ interface AutorisasjonService {
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer)
     fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer)
 
+    fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding)
+
     fun erVeileder(): Boolean
 
     val innloggetVeilederIdent: String
