@@ -2,9 +2,10 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.registrering.bruker.PopulerFoedselsnummerRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 
-interface BrukerRegistreringRepository {
+interface BrukerRegistreringRepository : PopulerFoedselsnummerRepository {
     fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering
     fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering
     fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(aktorId: AktorId, tilstander: List<Status>): List<OrdinaerBrukerRegistrering>

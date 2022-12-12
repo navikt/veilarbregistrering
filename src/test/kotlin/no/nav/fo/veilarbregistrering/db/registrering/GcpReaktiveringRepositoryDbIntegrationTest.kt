@@ -42,48 +42,6 @@ class GcpReaktiveringRepositoryDbIntegrationTest(
         assertThat(reaktiveringRepository.finnReaktiveringer(BRUKER_1.aktorId)).hasSize(1)
     }
 
-    @Test
-    fun `finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer skal returnere AktorId uten Foedselsnummer`() {
-        val reaktivering_id_1 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_1)
-        val reaktivering_id_2 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_1)
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_2)
-
-        val aktorIdList = reaktiveringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50)
-
-        assertThat(aktorIdList).hasSize(2)
-    }
-
-    @Test
-    fun `finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer skal ikke returnere AktorId som er svartelistet`() {
-        val reaktivering_id_1 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_1)
-        val reaktivering_id_2 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_1)
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_2)
-
-        val aktorIdList = reaktiveringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50, listOf(BRUKER_2.aktorId))
-
-        assertThat(aktorIdList).hasSize(1)
-    }
-
-    @Test
-    fun `oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer`() {
-        val reaktivering_id_1 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_1)
-        val reaktivering_id_2 = reaktiveringRepository.lagreReaktiveringForBruker(BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_1)
-        jdbcTemplate.update("UPDATE BRUKER_REAKTIVERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REAKTIVERING_ID = ?", reaktivering_id_2)
-
-        val antallOppdaterteRader =
-            reaktiveringRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
-                mapOf(BRUKER_1.aktorId to BRUKER_1.gjeldendeFoedselsnummer))
-
-        assertThat(antallOppdaterteRader[0]).isEqualTo(1)
-    }
-
-
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer("12345678911")
         private val AKTOR_ID_11111 = AktorId("11111")

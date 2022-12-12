@@ -34,7 +34,7 @@ class PopulerFoedselsnummerScheduler(
 
         while (rowsUpdated != 0 && unleashClient.isEnabled("veilarbregistrering.populerFoedselsnummer")) {
             val t1 = System.currentTimeMillis()
-            logger.info("Forsøker å finne Reaktivering som mangler foedselsnummer for populering...")
+            logger.info("Forsøker å finne Ordinære registreringer som mangler foedselsnummer for populering...")
 
             val aktorIdList =
                 populerFoedselsnummerRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(100, denyList)
@@ -63,11 +63,11 @@ class PopulerFoedselsnummerScheduler(
                 )
             rowsUpdated = oppdaterteSykmeldtRegistreringer.toList().sum()
             totalRowsUpdated += rowsUpdated
-            logger.info("Oppdaterte ${rowsUpdated} Reaktiveringer ila ${System.currentTimeMillis() - t1} ms")
+            logger.info("Oppdaterte ${rowsUpdated} Ordinære registreringer ila ${System.currentTimeMillis() - t1} ms")
         }
 
         logger.info("Avslutter populering av Foedselsnummer da det ikke var flere kjente aktørIder. " +
-                "Oppdaterte totalt ${totalRowsUpdated} Reaktiveringer ila ${System.currentTimeMillis() - t0} ms. " +
+                "Oppdaterte totalt ${totalRowsUpdated} Ordinære registreringer ila ${System.currentTimeMillis() - t0} ms. " +
                 "Fant totalt ${denyList.size} aktorIder som ikke gav treff i PDL")
     }
 }
