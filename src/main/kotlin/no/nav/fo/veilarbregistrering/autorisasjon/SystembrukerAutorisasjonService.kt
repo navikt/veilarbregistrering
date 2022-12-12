@@ -21,12 +21,6 @@ open class SystembrukerAutorisasjonService(
     }
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkLesetilgangTilBruker()
-    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
-
-    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
-        autitLogger.info(cefMelding.cefMessage())
-        sjekkSkrivetilgangTilBruker()
-    }
 
     private fun sjekkLesetilgangTilBruker() {
         logger.info("harTilgangTilPerson utfører ${ActionId.READ} for ${UserRole.SYSTEM}-rolle")
@@ -34,7 +28,7 @@ open class SystembrukerAutorisasjonService(
         registrerAutorisationEvent(ActionId.READ)
     }
 
-    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
+    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
 
     private fun sjekkSkrivetilgangTilBruker() {
         logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
@@ -42,6 +36,13 @@ open class SystembrukerAutorisasjonService(
         registrerAutorisationEvent(ActionId.WRITE)
         throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
     }
+
+    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        autitLogger.info(cefMelding.cefMessage())
+        sjekkSkrivetilgangTilBruker()
+    }
+
+    private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
     private fun registrerAutorisationEvent(handling: ActionId) {
         metricsService.registrer(
