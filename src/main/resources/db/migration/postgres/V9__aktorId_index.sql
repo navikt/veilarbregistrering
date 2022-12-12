@@ -1,0 +1,1 @@
+CREATE INDEX bruker_reaktivering_aktor_id_index ON bruker_reaktivering (aktor_id);
