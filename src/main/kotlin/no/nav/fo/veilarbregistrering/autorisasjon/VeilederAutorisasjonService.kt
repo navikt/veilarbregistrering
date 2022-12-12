@@ -29,6 +29,10 @@ open class VeilederAutorisasjonService(
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
 
+    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        throw AutorisasjonValideringException("Veileder kan ikke utføre tilgangskontroll for systembruker")
+    }
+
     private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
 
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {

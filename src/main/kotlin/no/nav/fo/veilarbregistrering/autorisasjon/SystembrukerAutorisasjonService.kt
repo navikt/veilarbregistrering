@@ -6,6 +6,7 @@ import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.log.autitLogger
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -21,6 +22,11 @@ open class SystembrukerAutorisasjonService(
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkLesetilgangTilBruker()
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkSkrivetilgangTilBruker()
+
+    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        autitLogger.info(cefMelding.cefMessage())
+        sjekkSkrivetilgangTilBruker()
+    }
 
     private fun sjekkLesetilgangTilBruker() {
         logger.info("harTilgangTilPerson utfører ${ActionId.READ} for ${UserRole.SYSTEM}-rolle")
