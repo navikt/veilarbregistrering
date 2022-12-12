@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
@@ -39,29 +38,6 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
     override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
         val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
         return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), reaktiveringMapper)
-    }
-
-    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
-        val sql = if (aktorIdDenyList.isEmpty()) {
-            "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REAKTIVERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
-        } else {
-            "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REAKTIVERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",") { t -> "'" + t.aktorId + "'" }}) LIMIT $maksAntall"
-        }
-        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
-    }
-
-    override fun oppdaterRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
-        val sql = "UPDATE $BRUKER_REAKTIVERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
-
-        val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
-            mapOf(
-                "aktorId" to aktorIdFoedselsnummer.key.aktorId,
-                "foedselsnummer" to aktorIdFoedselsnummer.value.foedselsnummer)
-        }
-
-        return db.batchUpdate(sql, params.toTypedArray())
     }
 
     companion object {

@@ -2,9 +2,8 @@ package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.registrering.bruker.PopulerFoedselsnummerRepository
 
-interface ReaktiveringRepository : PopulerFoedselsnummerRepository {
+interface ReaktiveringRepository {
 
     fun lagreReaktiveringForBruker(bruker: Bruker): Long
 
