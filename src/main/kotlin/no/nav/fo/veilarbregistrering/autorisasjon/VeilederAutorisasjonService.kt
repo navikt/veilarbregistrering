@@ -7,7 +7,6 @@ import no.nav.common.auth.Constants.AAD_NAV_IDENT_CLAIM
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.utils.IdentUtils
-import no.nav.common.types.identer.EksternBrukerId
 import no.nav.common.types.identer.Fnr
 import no.nav.common.types.identer.NavIdent
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -24,27 +23,21 @@ open class VeilederAutorisasjonService(
 ) : AutorisasjonService {
 
     override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
-        throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for veileder")
+        throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.READ} på nivå 3 for veileder")
     }
-    override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
-    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
+    override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, fnr)
 
-    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
-        throw AutorisasjonValideringException("Veileder kan ikke utføre tilgangskontroll for systembruker")
-    }
+    override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, fnr)
 
-    private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
-
-    private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
-
-        if (rolle() != UserRole.INTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for veileder med rolle ${rolle()}")
+    private fun sjekkTilgang(handling: ActionId, foedselsnummer: Foedselsnummer) {
+        if (rolle() != UserRole.INTERN) throw AutorisasjonValideringException("Kan ikke utføre $handling for veileder med rolle ${rolle()}")
 
         val navIdent = navIdentClaim()
             ?: throw AutorisasjonValideringException("Fant ikke NAV-ident fra claim i tilgangskontroll for veileder.")
 
         LOG.info("harVeilederTilgangTilPerson utfører $handling for ${UserRole.INTERN}-rolle")
         registrerAutorisationEvent(handling)
-        if (!veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, bruker))
+        if (!veilarbPep.harVeilederTilgangTilPerson(navIdent, handling, tilEksternId(foedselsnummer)))
             throw AutorisasjonException("Veileder mangler $handling-tilgang til ekstern bruker")
     }
 
@@ -57,6 +50,12 @@ open class VeilederAutorisasjonService(
             Tag.of("handling", handling.id),
             Tag.of("rolle", UserRole.INTERN.name.lowercase())
         )
+    }
+
+    private fun tilEksternId(bruker: Foedselsnummer) = Fnr(bruker.stringValue())
+
+    override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {
+        throw AutorisasjonValideringException("Veileder kan ikke utføre ${ActionId.WRITE} for systembruker")
     }
 
     private fun navIdentClaim(): NavIdent? = authContextHolder.hentNavIdForOboTokens()

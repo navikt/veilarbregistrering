@@ -90,7 +90,7 @@ class VeilederAutorisasjonServiceTest {
             autorisasjonService.sjekkSkrivetilgangTilBruker(aremark())
         }
 
-        assertEquals("Kan ikke utføre tilgangskontroll for veileder med rolle EKSTERN", exception.message)
+        assertEquals("Kan ikke utføre WRITE for veileder med rolle EKSTERN", exception.message)
     }
 
     @Test
@@ -107,7 +107,7 @@ class VeilederAutorisasjonServiceTest {
             autorisasjonService.sjekkLesetilgangTilBruker(aremark())
         }
 
-        assertEquals("Kan ikke utføre tilgangskontroll for veileder med rolle EKSTERN", exception.message)
+        assertEquals("Kan ikke utføre READ for veileder med rolle EKSTERN", exception.message)
     }
 
     companion object {
