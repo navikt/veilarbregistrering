@@ -27,14 +27,13 @@ class PopulerFoedselsnummerScheduler(
         }
 
         val denyList = mutableListOf<AktorId>()
-        var rowsUpdated = 1
         var totalRowsUpdated = 0
 
         val t0 = System.currentTimeMillis()
         var aktorIdList = populerFoedselsnummerRepository.finnAktorIdTilRegistrertUtenFoedselsnummer()
         logger.info("Fant ${aktorIdList.size} tilfeller av aktorId som manglet fødselsnummer")
 
-        while (rowsUpdated != 0 && unleashClient.isEnabled("veilarbregistrering.populerFoedselsnummer")) {
+        while (aktorIdList.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populerFoedselsnummer")) {
             val t1 = System.currentTimeMillis()
             logger.info("Forsøker å finne Ordinære registreringer som mangler foedselsnummer for populering...")
 
@@ -48,7 +47,7 @@ class PopulerFoedselsnummerScheduler(
             val aktorIdFoedselsnummerMap = pdlOppslagGateway.hentIdenterBolk(aktorIdForIterasjon)
             if (aktorIdFoedselsnummerMap.isEmpty()) {
                 logger.info("Fant ingen identer fra hentIdenterBolk")
-                break
+                continue
             }
             val aktorIdsDenied = aktorIdForIterasjon.subtract(aktorIdFoedselsnummerMap.keys)
             if (aktorIdsDenied.isNotEmpty()) {
@@ -60,13 +59,13 @@ class PopulerFoedselsnummerScheduler(
                 populerFoedselsnummerRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
                     aktorIdFoedselsnummerMap
                 )
-            rowsUpdated = oppdaterteRegistreringer.toList().sum()
+            val rowsUpdated = oppdaterteRegistreringer.toList().sum()
             totalRowsUpdated += rowsUpdated
             logger.info("Oppdaterte $rowsUpdated Ordinære registreringer ila ${System.currentTimeMillis() - t1} ms")
         }
 
         logger.info("Avslutter populering av Foedselsnummer da det ikke var flere kjente aktørIder. " +
-                "Oppdaterte totalt ${totalRowsUpdated} Ordinære registreringer ila ${System.currentTimeMillis() - t0} ms. " +
+                "Oppdaterte totalt $totalRowsUpdated Ordinære registreringer ila ${System.currentTimeMillis() - t0} ms. " +
                 "Fant totalt ${denyList.size} aktorIder som ikke gav treff i PDL")
     }
 }
