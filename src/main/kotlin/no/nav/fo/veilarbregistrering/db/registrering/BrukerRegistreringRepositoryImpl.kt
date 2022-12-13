@@ -90,7 +90,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         }!!
     }
 
-    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
+    override fun finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
         val sql = if (aktorIdDenyList.isEmpty()) {
             "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING " +
                     "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
@@ -98,6 +98,11 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING " +
                     "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",") { t -> "'" + t.aktorId + "'" }}) LIMIT $maksAntall"
         }
+        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
+    }
+
+    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(): List<AktorId> {
+        val sql = "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $FOEDSELSNUMMER IS NULL"
         return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
     }
 

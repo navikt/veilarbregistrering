@@ -113,7 +113,7 @@ class GcpBrukerRegistreringRepositoryDbIntegrationTest(
         jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_1.id)
         jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_2.id)
 
-        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50)
+        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(50)
 
         assertThat(aktorIdList).hasSize(2)
     }
@@ -126,7 +126,7 @@ class GcpBrukerRegistreringRepositoryDbIntegrationTest(
         jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_1.id)
         jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_2.id)
 
-        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummer(50, listOf(BRUKER_2.aktorId))
+        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(50, listOf(BRUKER_2.aktorId))
 
         assertThat(aktorIdList).hasSize(1)
     }
