@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
@@ -105,51 +104,9 @@ class GcpBrukerRegistreringRepositoryDbIntegrationTest(
         assertThat(ordinaerBrukerregistreringer).isEmpty()
     }
 
-    @Test
-    fun `finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer skal returnere AktorId uten Foedselsnummer`() {
-        val ordinaerBrukerRegistrering_1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1)
-        val ordinaerBrukerRegistrering_2 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_1.id)
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_2.id)
-
-        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(50)
-
-        assertThat(aktorIdList).hasSize(2)
-    }
-
-    @Test
-    fun `finnAktorIdTilSykmeldtRegistreringUtenFoedselsnummer skal ikke returnere AktorId som er svartelistet`() {
-        val ordinaerBrukerRegistrering_1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1)
-        val ordinaerBrukerRegistrering_2 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_1.id)
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_2.id)
-
-        val aktorIdList = brukerRegistreringRepository.finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(50, listOf(BRUKER_2.aktorId))
-
-        assertThat(aktorIdList).hasSize(1)
-    }
-
-    @Test
-    fun `oppdaterSykmeldtRegistreringerMedManglendeFoedselsnummer`() {
-        val ordinaerBrukerRegistrering_1 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1)
-        val ordinaerBrukerRegistrering_2 = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_2)
-
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_1.id)
-        jdbcTemplate.update("UPDATE BRUKER_REGISTRERING SET FOEDSELSNUMMER = NULL WHERE BRUKER_REGISTRERING_ID = ?", ordinaerBrukerRegistrering_2.id)
-
-        val antallOppdaterteRader =
-            brukerRegistreringRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
-                mapOf(BRUKER_1.aktorId to BRUKER_1.gjeldendeFoedselsnummer))
-
-        assertThat(antallOppdaterteRader[0]).isEqualTo(1)
-    }
-
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer("12345678911")
         private val AKTOR_ID_11111 = AktorId("11111")
         private val BRUKER_1 = Bruker(FOEDSELSNUMMER, AKTOR_ID_11111)
-        private val BRUKER_2 = Bruker(FoedselsnummerTestdataBuilder.aremark(), AktorId("22222"))
     }
 }

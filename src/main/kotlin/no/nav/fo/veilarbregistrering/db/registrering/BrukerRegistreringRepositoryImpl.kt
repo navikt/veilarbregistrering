@@ -90,34 +90,6 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         }!!
     }
 
-    override fun finnAktorIdTilRegistrertUtenFoedselsnummerMedGrense(maksAntall: Int, aktorIdDenyList: List<AktorId>): List<AktorId> {
-        val sql = if (aktorIdDenyList.isEmpty()) {
-            "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL LIMIT $maksAntall"
-        } else {
-            "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING " +
-                    "WHERE $FOEDSELSNUMMER IS NULL AND $AKTOR_ID NOT IN (${aktorIdDenyList.joinToString(",") { t -> "'" + t.aktorId + "'" }}) LIMIT $maksAntall"
-        }
-        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
-    }
-
-    override fun finnAktorIdTilRegistrertUtenFoedselsnummer(): List<AktorId> {
-        val sql = "SELECT DISTINCT $AKTOR_ID FROM $BRUKER_REGISTRERING WHERE $FOEDSELSNUMMER IS NULL"
-        return db.query(sql) { rs, _ -> AktorId(rs.getString(AKTOR_ID)) }
-    }
-
-    override fun oppdaterRegistreringerMedManglendeFoedselsnummer(aktorIdFoedselsnummerMap: Map<AktorId, Foedselsnummer>): IntArray {
-        val sql = "UPDATE $BRUKER_REGISTRERING SET $FOEDSELSNUMMER = :foedselsnummer WHERE $AKTOR_ID = :aktorId AND $FOEDSELSNUMMER IS NULL"
-
-        val params = aktorIdFoedselsnummerMap.map { aktorIdFoedselsnummer ->
-            mapOf(
-                "aktorId" to aktorIdFoedselsnummer.key.aktorId,
-                "foedselsnummer" to aktorIdFoedselsnummer.value.foedselsnummer)
-        }
-
-        return db.batchUpdate(sql, params.toTypedArray())
-    }
-
     private fun nesteFraSekvens(sekvensNavn: String): Long {
         val sql = if (isOnPrem()) "SELECT $sekvensNavn.nextval FROM DUAL" else "SELECT nextVal('$sekvensNavn')"
         return db.queryForObject(sql, noParams, Long::class.java)!!
