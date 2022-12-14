@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.Trigger
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.Stilling
 import no.nav.fo.veilarbregistrering.profilering.Profilering
@@ -17,10 +18,14 @@ data class OrdinaerBrukerRegistrering(
     val sisteStilling: Stilling,
     val profilering: Profilering? = null,
     override var manueltRegistrertAv: Veileder? = null,
-) : BrukerRegistrering() {
+) : BrukerRegistrering(), Trigger {
 
     override fun hentType(): BrukerRegistreringType {
         return BrukerRegistreringType.ORDINAER
+    }
+
+    override fun hentFraDato(): LocalDateTime {
+        return opprettetDato
     }
 
     override fun toString(): String {
