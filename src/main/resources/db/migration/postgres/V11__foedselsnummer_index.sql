@@ -1,0 +1,3 @@
+CREATE INDEX bruker_reg_foedselsnummer_index ON bruker_registrering(foedselsnummer);
+CREATE INDEX bruker_reaktivering_foedselsnummer_index ON bruker_reaktivering(foedselsnummer);
+CREATE INDEX sykmeldt_reg_foedselsnummer_index ON sykmeldt_registrering(foedselsnummer);
