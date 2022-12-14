@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
-import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
@@ -48,7 +47,9 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringApi
 import no.nav.fo.veilarbregistrering.profilering.resources.ProfileringResource
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
+import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
+import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
+import no.nav.fo.veilarbregistrering.registrering.bruker.StartRegistreringStatusService
 import no.nav.fo.veilarbregistrering.registrering.bruker.resources.RegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandService
@@ -69,7 +70,6 @@ import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRe
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 
 @Configuration
 class ServiceBeansConfig {
@@ -471,20 +471,5 @@ class ServiceBeansConfig {
     @Bean
     fun meldekortMottakService(meldekortRepository: MeldekortRepository): MeldekortMottakService {
         return MeldekortMottakService(meldekortRepository)
-    }
-
-    @Bean
-    @Profile("gcp")
-    fun populerFoedselsnummerScheduler(
-        pdlOppslagGateway: PdlOppslagGateway,
-        populerFoedselsnummerRepository: PopulerFoedselsnummerRepository,
-        leaderElectionClient: LeaderElectionClient,
-        unleashClient: UnleashClient
-    ): PopulerFoedselsnummerScheduler {
-        return PopulerFoedselsnummerScheduler(
-            pdlOppslagGateway,
-            populerFoedselsnummerRepository,
-            leaderElectionClient,
-            unleashClient)
     }
 }
