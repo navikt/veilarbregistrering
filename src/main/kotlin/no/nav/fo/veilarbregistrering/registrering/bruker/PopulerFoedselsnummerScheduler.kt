@@ -55,6 +55,7 @@ class PopulerFoedselsnummerScheduler(
                 denyList.addAll(aktorIdsDenied)
             }
 
+            /*
             val oppdaterteRegistreringer =
                 populerFoedselsnummerRepository.oppdaterRegistreringerMedManglendeFoedselsnummer(
                     aktorIdFoedselsnummerMap
@@ -62,6 +63,8 @@ class PopulerFoedselsnummerScheduler(
             val rowsUpdated = oppdaterteRegistreringer.toList().sum()
             totalRowsUpdated += rowsUpdated
             logger.info("Oppdaterte $rowsUpdated Ordinære registreringer ila ${System.currentTimeMillis() - t1} ms")
+            *(
+             */
         }
 
         logger.info("Avslutter populering av Foedselsnummer da det ikke var flere kjente aktørIder. " +

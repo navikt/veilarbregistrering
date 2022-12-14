@@ -15,8 +15,8 @@ class PdlOppslagGatewayImplTest {
     fun `skal returnere alle vellykkede identer`() {
         val pdlOppslagClient = mockk<PdlOppslagClient>(relaxed = true)
         every { pdlOppslagClient.hentIdenterBolk(any()) } returns listOf(
-            PdlIdenterBolk("2057713142949", listOf(PdlIdentBolk(aremark().foedselsnummer)), "ok"),
-            PdlIdenterBolk("2877772301361", listOf(PdlIdentBolk("12345678911")), "ok")
+            PdlIdenterBolk("2057713142949", listOf(PdlIdentBolk(aremark().foedselsnummer, false)), "ok"),
+            PdlIdenterBolk("2877772301361", listOf(PdlIdentBolk("12345678911", false)), "ok")
         )
 
         val pdlOppslagGatewayImpl = PdlOppslagGatewayImpl(pdlOppslagClient)
@@ -31,7 +31,7 @@ class PdlOppslagGatewayImplTest {
     fun `skal filtrere bort identer som fikk feilkode fra PDL`() {
         val pdlOppslagClient = mockk<PdlOppslagClient>(relaxed = true)
         every { pdlOppslagClient.hentIdenterBolk(any()) } returns listOf(
-            PdlIdenterBolk("2057713142949", listOf(PdlIdentBolk(aremark().foedselsnummer)), "ok"),
+            PdlIdenterBolk("2057713142949", listOf(PdlIdentBolk(aremark().foedselsnummer, false)), "ok"),
             PdlIdenterBolk("2877772301361", null, "not_found")
         )
 
