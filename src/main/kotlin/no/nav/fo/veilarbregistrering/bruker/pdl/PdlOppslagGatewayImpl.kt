@@ -56,18 +56,6 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         }
     }
 
-    override fun hentIdenterBolk(aktorIder: List<AktorId>): Map<AktorId, Foedselsnummer> {
-        val pdlIdenterBolk = pdlOppslagClient.hentIdenterBolk(aktorIder)
-        return pdlIdenterBolk
-            .filter { it.identer != null }
-            .associate {
-                AktorId(it.ident) to Foedselsnummer(
-                    it.identer?.first()?.ident
-                        ?: throw BrukerIkkeFunnetException("Fant ikke fnr for aktørid ${it.ident}")
-                )
-            }
-    }
-
     companion object {
         private val LOG = LoggerFactory.getLogger(PdlOppslagGatewayImpl::class.java)
     }

@@ -156,7 +156,6 @@ class PdlOppslagClientTest {
         internal const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
         internal const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"
         internal const val HENT_IDENTER_OK_JSON = "/pdl/hentIdenterOk.json"
-        internal const val HENT_IDENTER_BOLK_OK_JSON = "/pdl/hentIdenterBolkOk.json"
         internal const val HENT_IDENTER_MED_HISTORISK_OK_JSON = "/pdl/hentIdenterMedHistorikkOk.json"
         internal const val HENT_GEOGRAFISK_TILKNYTNING_OK_JSON = "/pdl/hentGeografiskTilknytningOk.json"
         internal const val HENT_GEOGRAFISK_TILKNYTNING_ERROR_JSON = "/pdl/hentGeografiskTilknytningError.json"
