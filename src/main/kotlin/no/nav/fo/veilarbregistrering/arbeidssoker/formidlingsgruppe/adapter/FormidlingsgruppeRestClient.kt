@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit
 class FormidlingsgruppeRestClient internal constructor(
     private val baseUrl: String,
     metricsService: MetricsService,
-    private val unleashClient: UnleashClient,
     private val arenaOrdsTokenProvider: () -> String,
     private val proxyTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
@@ -55,9 +53,7 @@ class FormidlingsgruppeRestClient internal constructor(
     private fun utfoer(request: Request): FormidlingsgruppeResponseDto? {
         val httpClient = buildHttpClient {
             readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
-            if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
-                addInterceptor(RetryInterceptor())
-            }
+            addInterceptor(RetryInterceptor())
         }
         return doTimedCall {
             httpClient.newCall(request).execute().use {

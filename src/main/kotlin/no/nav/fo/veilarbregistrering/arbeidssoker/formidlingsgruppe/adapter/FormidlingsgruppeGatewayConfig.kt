@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.config.requireProperty
@@ -22,8 +21,7 @@ class FormidlingsgruppeGatewayConfig {
     fun formidlingsgruppeRestClient(
         arenaOrdsTokenProviderClient: ArenaOrdsTokenProviderClient,
         azureAdMachineToMachineTokenProvider: AzureAdMachineToMachineTokenClient,
-        metricsService: MetricsService,
-        unleashClient: UnleashClient
+        metricsService: MetricsService
     ): FormidlingsgruppeRestClient {
         val proxyTokenProvider = {
             val pawProxyCluster = requireProperty("PAW_PROXY_CLUSTER")
@@ -33,7 +31,6 @@ class FormidlingsgruppeGatewayConfig {
         return FormidlingsgruppeRestClient(
             requireProperty(ARENA_ORDS_API),
             metricsService,
-            unleashClient,
             arenaTokenProvider,
             proxyTokenProvider
         )

@@ -10,7 +10,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayImpl
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.KanReaktiveresDto
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +18,6 @@ import java.time.LocalDate
 
 class ReaktiveringBrukerServiceTest {
     private lateinit var reaktiveringBrukerService: ReaktiveringBrukerService
-    private val brukerRegistreringRepository: BrukerRegistreringRepository = mockk(relaxed = true)
     private val reaktiveringRepository: ReaktiveringRepository = mockk(relaxed = true)
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)

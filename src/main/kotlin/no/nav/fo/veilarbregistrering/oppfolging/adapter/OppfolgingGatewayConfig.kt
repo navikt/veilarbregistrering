@@ -1,14 +1,13 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.DownstreamApi
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena.VeilarbarenaClient
-import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.DownstreamApi
-import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -37,8 +36,7 @@ class OppfolgingGatewayConfig {
     @Bean
     fun veilarbarenaClient(
         tokenProvider: AzureAdMachineToMachineTokenClient,
-        metricsService: MetricsService,
-        unleashClient: UnleashClient
+        metricsService: MetricsService
     ): VeilarbarenaClient {
         val baseUrl = requireProperty("VEILARBARENA_URL")
         val veilarbarenaCluster = requireProperty("VEILARBARENA_CLUSTER")
@@ -49,7 +47,7 @@ class OppfolgingGatewayConfig {
                 "no token"
             }
         }
-        return VeilarbarenaClient(baseUrl, unleashClient, metricsService, veilarbarenaTokenProvider)
+        return VeilarbarenaClient(baseUrl, metricsService, veilarbarenaTokenProvider)
     }
 
     @Bean

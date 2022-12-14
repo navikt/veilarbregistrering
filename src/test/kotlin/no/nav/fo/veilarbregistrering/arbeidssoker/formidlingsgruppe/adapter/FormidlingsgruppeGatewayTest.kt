@@ -1,14 +1,10 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
-import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayImpl
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeRestClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeTestdataBuilder
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperioderTestdataBuilder.Companion.arbeidssokerperioder
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
@@ -38,9 +34,10 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     private fun buildClient(): FormidlingsgruppeRestClient {
         val baseUrl = "http://" + mockServer.remoteAddress().address.hostName + ":" + mockServer.remoteAddress().port
-        val unleashClientMock = mockk<UnleashClient>()
-        every { unleashClientMock.isEnabled(any()) } returns true
-        return FormidlingsgruppeRestClient(baseUrl, mockk(relaxed = true), unleashClientMock,  {"proxyTokenProvider"}, { "arenaOrdsTokenProvider" })
+        return FormidlingsgruppeRestClient(
+            baseUrl,
+            mockk(relaxed = true),
+            {"proxyTokenProvider"}) { "arenaOrdsTokenProvider" }
     }
 
     @Test

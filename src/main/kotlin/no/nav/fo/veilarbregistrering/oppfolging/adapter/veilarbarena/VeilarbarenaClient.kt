@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.oppfolging.adapter.veilarbarena
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -19,7 +18,6 @@ import java.io.IOException
 
 class VeilarbarenaClient(
     private val baseUrl: String,
-    private val unleashClient: UnleashClient,
     metricsService: MetricsService,
     private val veilarbarenaTokenProvider: () -> String
 ) : HealthCheck, TimedMetric(metricsService) {
@@ -32,9 +30,7 @@ class VeilarbarenaClient(
             .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
-        val httpClient = if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
-            buildHttpClient { addInterceptor(RetryInterceptor()) }
-        } else { defaultHttpClient() }
+        val httpClient = buildHttpClient { addInterceptor(RetryInterceptor()) }
 
         return doTimedCall {
             try {
@@ -60,9 +56,7 @@ class VeilarbarenaClient(
             .header("Authorization", "Bearer $veilarbarenaToken")
             .build()
 
-        val httpClient = if (unleashClient.isEnabled("veilarbregistrering.client-retry")) {
-            buildHttpClient { addInterceptor(RetryInterceptor()) }
-        } else { defaultHttpClient() }
+        val httpClient = buildHttpClient { addInterceptor(RetryInterceptor()) }
 
         return doTimedCall {
             try {
