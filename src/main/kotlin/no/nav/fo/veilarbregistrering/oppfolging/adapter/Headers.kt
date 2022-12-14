@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.http
+package no.nav.fo.veilarbregistrering.oppfolging.adapter
 
 import okhttp3.Headers
 import javax.ws.rs.core.HttpHeaders

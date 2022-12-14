@@ -7,10 +7,9 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.utils.UrlUtils
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
-import no.nav.fo.veilarbregistrering.http.Headers
-import no.nav.fo.veilarbregistrering.http.Json
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
@@ -19,11 +18,7 @@ import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerException
 import no.nav.fo.veilarbregistrering.oppfolging.AktiverBrukerFeil
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
-import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Response
+import okhttp3.*
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.HttpHeaders
 
@@ -175,6 +170,7 @@ open class OppfolgingClient(
         val client: OkHttpClient = buildHttpClient {
             readTimeout(120L, TimeUnit.SECONDS)
         }
+        val Json = MediaType.parse("application/json; charset=utf-8")
     }
 }
 
