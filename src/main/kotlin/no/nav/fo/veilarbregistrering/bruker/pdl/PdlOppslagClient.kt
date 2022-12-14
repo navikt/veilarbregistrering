@@ -19,6 +19,7 @@ import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import okhttp3.Headers
 import okhttp3.Request
 import java.io.IOException
@@ -52,6 +53,8 @@ open class PdlOppslagClient(
         val response = mapAndValidateResponse<PdlHentIdenterBolkResponse>(json)
         if (isDevelopment()) {
             logger.info("Fikk følgende respons fra hentIdenterBolk: ${response.data.hentIdenterBolk}")
+        } else {
+            secureLogger.info("Fikk følgende respons fra hentIdenterBolk: ${response.data.hentIdenterBolk}")
         }
         return response.data.hentIdenterBolk
     }
