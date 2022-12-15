@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -42,5 +43,29 @@ class TilstandsberegnerTest {
 
         assertTrue(nyTilstand is AktivArbeidssoker)
         assertEquals(registreringsdato, nyTilstand.fraDato)
+    }
+
+    @Test
+    fun `skal overse formidlingsgruppeendring med ARBS når arbeidsøker allerede er aktiv`() {
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(LocalDateTime.now())
+        val registreringsdato = LocalDateTime.now().minusMinutes(5)
+        val eksisterendeTilstand = AktivArbeidssoker(fraDato = registreringsdato)
+
+        val nyTilstand = tilstandsberegner.beregnNyTilstand(formidlingsgruppeEndringEvent, eksisterendeTilstand)
+
+        assertTrue(nyTilstand is AktivArbeidssoker)
+        assertEquals(registreringsdato, nyTilstand.fraDato)
+    }
+
+    @Test
+    fun `skal bli aktiv arbeidssøker etter formidlingsgruppeendring med ARBS når arbeidsøker ikke var aktiv`() {
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt)
+        val eksisterendeTilstand = IkkeArbeidssoker()
+
+        val nyTilstand = tilstandsberegner.beregnNyTilstand(formidlingsgruppeEndringEvent, eksisterendeTilstand)
+
+        assertTrue(nyTilstand is AktivArbeidssoker)
+        assertEquals(formidlingsgruppeEndringTidspunkt, nyTilstand.fraDato)
     }
 }
