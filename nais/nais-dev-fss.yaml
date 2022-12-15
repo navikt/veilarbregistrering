@@ -127,6 +127,7 @@ spec:
         - application: familie-ef-proxy
           namespace: teamfamilie
           cluster: dev-fss
+        - application: paw-reaktiver-arbeidssoker
 
     outbound:
       rules:
