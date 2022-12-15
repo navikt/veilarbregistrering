@@ -14,16 +14,6 @@ class TilstandsberegnerTest {
     private val tilstandsberegner = Tilstandsberegner()
 
     @Test
-    fun `skal ha tilstand AKTIV_ARBEIDSSOKER ved ny registrering og ikke aktiv fra før`() {
-        val nyRegistrering = gyldigBrukerRegistrering()
-        val eksisterendeTilstand = IkkeArbeidssoker()
-
-        val nyTilstand = tilstandsberegner.beregnNyTilstand(nyRegistrering, eksisterendeTilstand)
-
-        assertTrue(nyTilstand is AktivArbeidssoker)
-    }
-
-    @Test
     fun `skal beholde tilstand AKTIV_ARBEIDSSOKER ved ny registrering og allerede aktiv`() {
         val registreringsdato = LocalDateTime.now().minusMonths(2)
         val nyRegistrering = gyldigBrukerRegistrering()
@@ -36,7 +26,7 @@ class TilstandsberegnerTest {
     }
 
     @Test
-    fun `skal starte ny periode ved ny registrering og ikke aktiv fra før`() {
+    fun `skal starte ny periode som aktiv arbeidssøker ved ny registrering og ikke aktiv fra før`() {
         val registreringsdato = LocalDateTime.now()
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = registreringsdato)
         val eksisterendeTilstand = IkkeArbeidssoker()
@@ -85,8 +75,22 @@ class TilstandsberegnerTest {
     }
 
     @Test
+    fun `skal overse formidlingsgruppe med ISERV når ikke aktiv arbeidssøker`() {
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
+        val eksisterendeTilstandTidspunkt = LocalDateTime.now().minusMinutes(20)
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
+        val eksisterendeTilstand = IkkeArbeidssoker(fraDato = eksisterendeTilstandTidspunkt)
+
+        val nyTilstand = tilstandsberegner.beregnNyTilstand(formidlingsgruppeEndringEvent, eksisterendeTilstand)
+
+        assertTrue(nyTilstand is IkkeArbeidssoker)
+        assertEquals(eksisterendeTilstandTidspunkt, nyTilstand.fraDato)
+    }
+
+    @Test
     fun `skal starte ny periode ved reaktivering og ikke arbeidssøker`() {
-        // TODO: Bør man ha IkkeArbeidssøker *med* fraDato for å få flipp via reaktivering? Evt sjekk på historiske tilstander?
+        // TODO: Bør man ha IkkeArbeidssøker *med* fraDato for å få flipp via reaktivering (for å skille fra "tom" init-tilstand)?
+        //  Evt sjekk på at bruker har en tidligere AktivArbeidssøker-tilstand?
         //  Man må jo ha vært aktiv arbeidssøker tidligere. Og hva med 28-dagers grense? Skal vi ikke hensynta den her (arenaspesifikk?)?
         val eksisterendeTilstand = IkkeArbeidssoker()
         val reaktiveringTidspunkt = LocalDateTime.now()
