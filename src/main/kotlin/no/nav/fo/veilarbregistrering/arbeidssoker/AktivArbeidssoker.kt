@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import java.time.LocalDateTime
 
 data class AktivArbeidssoker(val fraDato: LocalDateTime): Tilstand {
@@ -16,5 +17,9 @@ data class AktivArbeidssoker(val fraDato: LocalDateTime): Tilstand {
         } else {
             IkkeArbeidssoker(fraDato = formidlingsgruppeEndretEvent.hentFraDato())
         }
+    }
+
+    override fun håndter(reaktivering: Reaktivering): Tilstand {
+        return this
     }
 }
