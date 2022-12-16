@@ -5,10 +5,12 @@ import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.RetryInterceptor
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import no.nav.fo.veilarbregistrering.oppfolging.SammensattOppfolgingStatusException
@@ -24,6 +26,10 @@ class VeilarbarenaClient(
 
     internal fun arenaStatus(fnr: Foedselsnummer): ArenaStatusDto? {
         val veilarbarenaToken = veilarbarenaTokenProvider()
+
+        if (isDevelopment()) {
+            secureLogger.info("veilarbarenaToken: $veilarbarenaToken")
+        }
 
         val request = Request.Builder()
             .url("$baseUrl/arena/status?fnr=${fnr.stringValue()}")
