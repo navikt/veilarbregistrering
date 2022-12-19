@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.feil
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ForbiddenException
 import no.nav.fo.veilarbregistrering.arbeidsforhold.HentArbeidsforholdException
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeNoContentException
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.UnauthorizedException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonException
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonLevel3Exception
@@ -122,5 +123,11 @@ class FeilHandtering : ResponseEntityExceptionHandler() {
     fun handleUnsupportedMediaTypeStatusException(e: UnsupportedMediaTypeStatusException):ResponseEntity<Any> {
         logger.warn("Feil media-type i request: ${e.message}", e)
         return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE).build()
+    }
+
+    @ExceptionHandler(FormidlingsgruppeNoContentException::class)
+    fun handleFormidlingsgruppeNoContentException(feil: FormidlingsgruppeNoContentException): ResponseEntity<Any> {
+        logger.warn(feil.message)
+        return ResponseEntity.status(NO_CONTENT).build()
     }
 }

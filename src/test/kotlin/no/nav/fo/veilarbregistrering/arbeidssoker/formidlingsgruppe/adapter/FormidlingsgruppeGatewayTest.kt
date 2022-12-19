@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.log.CallId.leggTilCallId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.junit.jupiter.MockServerExtension
@@ -138,5 +139,25 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
                 LocalDate.of(2020, 1, 11)))
 
         assertThat(arbeidssokerperioder.asList()).isEmpty()
+    }
+
+    @Test
+    fun `skal kaste exception ved 204 fra arena`() {
+        mockServer.`when`(
+            HttpRequest
+                .request()
+                .withMethod("GET")
+                .withPath("/arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
+                .withQueryStringParameter("fnr", "11118035157"))
+            .respond(response()
+                .withStatusCode(204))
+
+        assertThrows<FormidlingsgruppeNoContentException> {
+            formidlingsgruppeGateway.finnArbeissokerperioder(
+                Foedselsnummer("11118035157"),
+                Periode(
+                    LocalDate.of(2020, 1, 10),
+                    LocalDate.of(2020, 1, 11)))
+        }
     }
 }

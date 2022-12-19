@@ -57,12 +57,14 @@ class FormidlingsgruppeRestClient internal constructor(
         }
         return doTimedCall {
             httpClient.newCall(request).execute().use {
+                val status = HttpStatus.valueOf(it.code())
                 if (it.isSuccessful) {
+                    if (status == HttpStatus.NO_CONTENT) throw FormidlingsgruppeNoContentException("Tomt svar fra Arena. Bruker finnes ikke i Arena.")
                     it.body()?.string()?.let { objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
                     } ?: throw RuntimeException("Unexpected empty body")
 
                 } else {
-                    when (val status = HttpStatus.valueOf(it.code())) {
+                    when (status) {
                         HttpStatus.NOT_FOUND -> null
                         HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
                         else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
