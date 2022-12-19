@@ -41,8 +41,14 @@ class Arbeidssoker {
         this.tilstand = AktivArbeidssokerState
         //publish event
     }
+
+    fun periode(): Arbeidssokerperiode? = fraDato?.let { Arbeidssokerperiode(it, tilDato) }
 }
 
+/**
+ * Ikke arbeidssøker betyr at du ikke er aktiv arbeidssøker.
+ * Det kan bety 1 av 2: Du har aldri vært arbeidssøker eller du har tidligere vært det, men er det ikke lenger.
+ */
 object IkkeArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetDato)
@@ -71,6 +77,9 @@ object IkkeArbeidssokerState : ArbeidssokerState {
     }
 }
 
+/**
+ * Aktiv arbeidssøker betyr at bruker har en åpen periode - at perioden ikke er avsluttet og at tildato er null.
+ */
 object AktivArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         logger.warn("Arbeidssøker er allerede aktiv")
