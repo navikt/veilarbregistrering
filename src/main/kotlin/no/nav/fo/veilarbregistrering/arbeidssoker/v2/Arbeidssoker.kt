@@ -11,8 +11,7 @@ class Arbeidssoker {
 
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
 
-    private var fraDato: LocalDateTime? = null
-    private var tilDato: LocalDateTime? = null
+    private var arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
 
     fun behandle(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         tilstand.behandle(this, ordinaerBrukerRegistrering)
@@ -30,19 +29,20 @@ class Arbeidssoker {
         tilstand.behandle(this, meldekortEvent)
     }
 
-    internal fun avsluttPeriode(tilDato: LocalDateTime) {
-        this.tilDato = tilDato
-        this.tilstand = IkkeArbeidssokerState
-        //publish event
-    }
-
     internal fun startPeriode(fraDato: LocalDateTime) {
-        this.fraDato = fraDato
+        this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
         this.tilstand = AktivArbeidssokerState
         //publish event
     }
 
-    fun periode(): Arbeidssokerperiode? = fraDato?.let { Arbeidssokerperiode(it, tilDato) }
+    internal fun avsluttPeriode(tilDato: LocalDateTime) {
+        this.arbeidssokerperioder.last().tilDato = tilDato
+        this.tilstand = IkkeArbeidssokerState
+        //publish event
+    }
+
+    fun sistePeriode(): Arbeidssokerperiode? = arbeidssokerperioder.lastOrNull()
+    fun perioder(): List<Arbeidssokerperiode> = arbeidssokerperioder
 }
 
 /**
@@ -55,6 +55,15 @@ object IkkeArbeidssokerState : ArbeidssokerState {
     }
 
     override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: Reaktivering) {
+        if (arbeidssoker.perioder().isEmpty()) {
+            logger.warn("Arbeidssøker har ingen tidligere arbeidssøkerperioder - kan derfor ikke reaktiveres")
+            return
+        }
+        //TODO: Er > riktig vei?
+        if (LocalDateTime.now().minusDays(28) > arbeidssoker.perioder().last().tilDato!!) {
+            logger.warn("Arbeidssøker har vært inaktiv mer enn 28 dager - kan derfor ikke reaktiveres")
+            return
+        }
         arbeidssoker.startPeriode(reaktivering.opprettetTidspunkt)
     }
 

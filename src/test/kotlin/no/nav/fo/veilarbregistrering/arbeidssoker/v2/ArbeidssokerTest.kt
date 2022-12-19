@@ -1,13 +1,13 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.v2
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.IkkeArbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class ArbeidssokerTest {
 
@@ -20,7 +20,7 @@ class ArbeidssokerTest {
 
         arbeidssoker.behandle(nyRegistrering)
 
-        assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeidssoker.periode())
+        assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -33,7 +33,7 @@ class ArbeidssokerTest {
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
         arbeidssoker.behandle(nyRegistrering)
 
-        assertEquals(Arbeidssokerperiode(gammelRegistreringsdato, null), arbeidssoker.periode())
+        assertEquals(Arbeidssokerperiode(gammelRegistreringsdato, null), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -45,7 +45,7 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(nyRegistreringsdato.plusMinutes(5))
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.periode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -54,7 +54,7 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt)
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeidssoker.periode())
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -67,7 +67,7 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.periode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -77,6 +77,53 @@ class ArbeidssokerTest {
 
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertNull(arbeidssoker.periode())
+        assertNull(arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `skal overse reaktivering når arbeidssøker er aktiv`() {
+        val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
+        val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
+        arbeidssoker.behandle(nyRegistrering)
+
+        val reaktiveringTidspunkt = LocalDateTime.now()
+        val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
+        arbeidssoker.behandle(reaktivering)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `skal reaktivere arbeidssoker når en har vært inaktiv i mindre enn 28 dager`() {
+        val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
+        val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
+        arbeidssoker.behandle(nyRegistrering)
+
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now().minusDays(10)
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
+
+        val reaktiveringTidspunkt = LocalDateTime.now()
+        val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
+        arbeidssoker.behandle(reaktivering)
+
+        assertEquals(Arbeidssokerperiode(reaktiveringTidspunkt, null), arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `skal overse reaktivering når arbeidssøker har vært inaktiv i mer enn 28 dager`() {
+        val nyRegistreringsdato = LocalDateTime.now().minusMonths(3)
+        val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
+        arbeidssoker.behandle(nyRegistrering)
+
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now().minusMonths(2)
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
+
+        val reaktiveringTidspunkt = LocalDateTime.now()
+        val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
+        arbeidssoker.behandle(reaktivering)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
     }
 }
