@@ -106,6 +106,7 @@ spec:
         - application: arbeidssokerregistrering
         - application: arbeidssokerregistrering-veileder
         - application: aia-backend
+        - application: paw-reaktiver-arbeidssoker
         - application: veilarbperson
           namespace: pto
           cluster: prod-fss
