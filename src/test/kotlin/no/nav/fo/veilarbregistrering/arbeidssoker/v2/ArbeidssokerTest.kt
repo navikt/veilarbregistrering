@@ -18,9 +18,13 @@ class ArbeidssokerTest {
         val registreringsdato = LocalDateTime.now().minusMonths(2)
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = registreringsdato)
 
+        var hendelse : String? = null
+
+        arbeidssoker.add(object : Observer { override fun update(event: String) { hendelse = event } })
         arbeidssoker.behandle(nyRegistrering)
 
         assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeidssoker.sistePeriode())
+        assertEquals("ArbeidssokerperiodeStartetEvent", hendelse)
     }
 
     @Test

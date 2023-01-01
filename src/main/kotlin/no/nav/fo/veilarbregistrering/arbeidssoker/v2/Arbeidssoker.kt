@@ -7,10 +7,13 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistr
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import java.time.LocalDateTime
 
-class Arbeidssoker {
+/**
+ * Root aggregate -
+ */
+class Arbeidssoker: Observable{
 
+    private val observers: MutableList<Observer> = mutableListOf()
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
-
     private var arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
 
     fun behandle(ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
@@ -33,23 +36,35 @@ class Arbeidssoker {
         this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
         this.tilstand = AktivArbeidssokerState
         //publish event
+        observers.forEach { it.update("ArbeidssokerperiodeStartetEvent") }
     }
 
     internal fun avsluttPeriode(tilDato: LocalDateTime) {
         this.arbeidssokerperioder.last().tilDato = tilDato
         this.tilstand = IkkeArbeidssokerState
         //publish event
+        observers.forEach { it.update("ArbeidssokerperiodeAvsluttetEvent") }
     }
 
-    fun sistePeriode(): Arbeidssokerperiode? = arbeidssokerperioder.lastOrNull()
+    fun sistePeriode(): Arbeidssokerperiode? = perioder().lastOrNull()
     fun perioder(): List<Arbeidssokerperiode> = arbeidssokerperioder
+
+    override fun add(observer: Observer) { observers.add(observer) }
+    override fun remove(observer: Observer) { observers.remove(observer) }
+}
+
+private interface ArbeidssokerState {
+    fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering)
+    fun behandle(arbeidssoker: Arbeidssoker, reaktivering: Reaktivering)
+    fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent)
+    fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEvent)
 }
 
 /**
  * Ikke arbeidssøker betyr at du ikke er aktiv arbeidssøker.
  * Det kan bety 1 av 2: Du har aldri vært arbeidssøker eller du har tidligere vært det, men er det ikke lenger.
  */
-object IkkeArbeidssokerState : ArbeidssokerState {
+private object IkkeArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetDato)
     }
@@ -89,7 +104,7 @@ object IkkeArbeidssokerState : ArbeidssokerState {
 /**
  * Aktiv arbeidssøker betyr at bruker har en åpen periode - at perioden ikke er avsluttet og at tildato er null.
  */
-object AktivArbeidssokerState : ArbeidssokerState {
+private object AktivArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         logger.warn("Arbeidssøker er allerede aktiv")
     }
@@ -117,3 +132,4 @@ object AktivArbeidssokerState : ArbeidssokerState {
     }
 
 }
+
