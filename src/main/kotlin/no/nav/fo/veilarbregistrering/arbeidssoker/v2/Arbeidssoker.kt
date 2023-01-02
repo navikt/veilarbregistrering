@@ -8,9 +8,9 @@ import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import java.time.LocalDateTime
 
 /**
- * Root aggregate -
+ * Root aggregate - all kommunikasjon mot Arbeidssøker og underliggende elementer skal gå via dette objektet.
  */
-class Arbeidssoker: Observable{
+class Arbeidssoker : Observable {
 
     private val observers: MutableList<Observer> = mutableListOf()
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
@@ -40,17 +40,33 @@ class Arbeidssoker: Observable{
     }
 
     internal fun avsluttPeriode(tilDato: LocalDateTime) {
-        this.arbeidssokerperioder.last().tilDato = tilDato
+        sistePeriode()?.avslutt(tilDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
         this.tilstand = IkkeArbeidssokerState
         //publish event
         observers.forEach { it.update("ArbeidssokerperiodeAvsluttetEvent") }
     }
 
-    fun sistePeriode(): Arbeidssokerperiode? = perioder().lastOrNull()
-    fun perioder(): List<Arbeidssokerperiode> = arbeidssokerperioder
+    fun accept(arbeidssokerVisitor: ArbeidssokerVisitor) {
+        arbeidssokerVisitor.visitSistePeriode(sistePeriode())
+        arbeidssokerVisitor.visitPerioder(arbeidssokerperioder)
+    }
 
-    override fun add(observer: Observer) { observers.add(observer) }
-    override fun remove(observer: Observer) { observers.remove(observer) }
+    internal fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
+
+    internal fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
+
+    private fun sistePeriode(): Arbeidssokerperiode? {
+        if (arbeidssokerperioder.isEmpty()) return null
+        return arbeidssokerperioder.sortedBy { it.fraDato }.last()
+    }
+
+    override fun add(observer: Observer) {
+        observers.add(observer)
+    }
+
+    override fun remove(observer: Observer) {
+        observers.remove(observer)
+    }
 }
 
 private interface ArbeidssokerState {
@@ -66,19 +82,20 @@ private interface ArbeidssokerState {
  */
 private object IkkeArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
+        logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
         arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetDato)
     }
 
     override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: Reaktivering) {
-        if (arbeidssoker.perioder().isEmpty()) {
+        if (arbeidssoker.ikkeHarTidligerePerioder()) {
             logger.warn("Arbeidssøker har ingen tidligere arbeidssøkerperioder - kan derfor ikke reaktiveres")
             return
         }
-        //TODO: Er > riktig vei?
-        if (LocalDateTime.now().minusDays(28) > arbeidssoker.perioder().last().tilDato!!) {
+        if (arbeidssoker.harVærtInaktivMerEnn28Dager()) {
             logger.warn("Arbeidssøker har vært inaktiv mer enn 28 dager - kan derfor ikke reaktiveres")
             return
         }
+        logger.info("Starter arbeidssøkerperiode som følge av reaktivering")
         arbeidssoker.startPeriode(reaktivering.opprettetTidspunkt)
     }
 

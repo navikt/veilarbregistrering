@@ -23,7 +23,10 @@ class ArbeidssokerTest {
         arbeidssoker.add(object : Observer { override fun update(event: String) { hendelse = event } })
         arbeidssoker.behandle(nyRegistrering)
 
-        assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeissokerVisitor.sisteArbeidsokerperiode())
         assertEquals("ArbeidssokerperiodeStartetEvent", hendelse)
     }
 
@@ -37,7 +40,10 @@ class ArbeidssokerTest {
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
         arbeidssoker.behandle(nyRegistrering)
 
-        assertEquals(Arbeidssokerperiode(gammelRegistreringsdato, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(gammelRegistreringsdato, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -49,7 +55,10 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(nyRegistreringsdato.plusMinutes(5))
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -58,7 +67,10 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt)
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -71,7 +83,10 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -81,7 +96,10 @@ class ArbeidssokerTest {
 
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertNull(arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertNull(arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -94,7 +112,10 @@ class ArbeidssokerTest {
         val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
         arbeidssoker.behandle(reaktivering)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -111,7 +132,10 @@ class ArbeidssokerTest {
         val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
         arbeidssoker.behandle(reaktivering)
 
-        assertEquals(Arbeidssokerperiode(reaktiveringTidspunkt, null), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(reaktiveringTidspunkt, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 
     @Test
@@ -128,6 +152,24 @@ class ArbeidssokerTest {
         val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
         arbeidssoker.behandle(reaktivering)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeissokerVisitor.sisteArbeidsokerperiode())
+    }
+}
+
+data class ArbeidssokerVisitorDto(private val arbeidssoker: Arbeidssoker): ArbeidssokerVisitor {
+
+    private var sisteArbeidssokerperiode: Arbeidssokerperiode? = null
+
+    fun sisteArbeidsokerperiode(): Arbeidssokerperiode? = sisteArbeidssokerperiode
+
+    init {
+        arbeidssoker.accept(this)
+    }
+
+    override fun visitSistePeriode(sisteArbeidssokerperiode: Arbeidssokerperiode?) {
+        this.sisteArbeidssokerperiode = sisteArbeidssokerperiode;
     }
 }
