@@ -36,7 +36,7 @@ open class ReaktiveringBrukerService(
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.REAKTIVERING)
     }
 
-    fun kanReaktiveres(bruker: Bruker): Boolean {
+    open fun kanReaktiveres(bruker: Bruker): Boolean {
         val kanReaktiveres = oppfolgingGateway.kanReaktiveres(bruker.gjeldendeFoedselsnummer)
         return kanReaktiveres ?: false
     }
