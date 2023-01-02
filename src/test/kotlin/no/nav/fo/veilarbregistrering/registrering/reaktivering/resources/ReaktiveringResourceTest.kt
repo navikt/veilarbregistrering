@@ -25,6 +25,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import javax.servlet.http.HttpServletRequest
+import kotlin.test.assertNotNull
 
 @AutoConfigureMockMvc
 @WebMvcTest
@@ -83,6 +84,22 @@ class ReaktiveringResourceTest(
         }.andReturn().response.contentAsString
 
         Assertions.assertThat(responseString).isNullOrEmpty()
+    }
+
+    @Test
+    fun `kanReaktiveres for systembruker returnerer riktig status og responsbody`() {
+        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
+        every { tilgangskontrollService.erVeileder() } returns false
+        every { authContextHolder.erSystemBruker() } returns true
+
+        val response = mvc.post("/api/kan-reaktiveres") {
+            content = objectMapper.writeValueAsString(Fnr(IDENT.foedselsnummer))
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsString
+
+        assertNotNull(response)
     }
 
     companion object {

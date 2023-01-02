@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ReaktiveringBrukerServiceTest {
     private lateinit var reaktiveringBrukerService: ReaktiveringBrukerService
@@ -52,6 +54,30 @@ class ReaktiveringBrukerServiceTest {
         verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 
+    @Test
+    fun `kanReaktiveres gir true for bruker som er inaktiv siste 28 dager`() {
+        mockInaktivBrukerSomSkalReaktiveres()
+        val kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(BRUKER_INTERN)
+
+        assertTrue(kanReaktiveres)
+    }
+
+    @Test
+    fun `kanReaktiveres gir false for bruker som ikke erinaktiv siste 28 dager`() {
+        mockBrukerSomIkkeSkalReaktiveres()
+        val kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(BRUKER_INTERN)
+
+        assertFalse(kanReaktiveres)
+    }
+
+    @Test
+    fun `kanReaktiveres gir false for bruker som ikke finnes i Arena`() {
+        mockBrukerSomIkkeFinnesIArena()
+        val kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(BRUKER_INTERN)
+
+        assertFalse(kanReaktiveres)
+    }
+
     private fun mockInaktivBrukerSomSkalReaktiveres() {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(true)
@@ -60,6 +86,11 @@ class ReaktiveringBrukerServiceTest {
     private fun mockBrukerSomIkkeSkalReaktiveres() {
         every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
         every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(false)
+    }
+
+    private fun mockBrukerSomIkkeFinnesIArena() {
+        every { oppfolgingClient.erBrukerUnderOppfolging(any()) } returns ErUnderOppfolgingDto(false)
+        every { veilarbarenaClient.kanReaktiveres(any()) } returns KanReaktiveresDto(null)
     }
 
     companion object {

@@ -58,5 +58,13 @@ class ReaktiveringResource(
         reaktiveringBrukerService.reaktiverBruker(bruker, false)
     }
 
+    @PostMapping("/kan-reaktiveres")
+    override fun kanReaktiveres(@RequestBody fnr: Fnr): KanReaktiveresDto {
+        val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr))
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+
+        return KanReaktiveresDto(kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(bruker))
+    }
+
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
 }

@@ -25,4 +25,10 @@ interface ReaktiveringApi {
     fun reaktiveringMedSystembruker(
         @RequestBody(description = "Fødselsnummer") fnr: Fnr,
     )
+
+    @Operation(
+        summary = "Sjekker om en bruker kan reaktiveres",
+        description = "Tjenesten sjekker om en bruker har blitt inaktivert i løpet av de siste 28 dagene. Hvis ja, kan bruker reaktiveres."
+    )
+    fun kanReaktiveres(@RequestBody(description = "Fødselsnummer") fnr: Fnr): KanReaktiveresDto
 }
