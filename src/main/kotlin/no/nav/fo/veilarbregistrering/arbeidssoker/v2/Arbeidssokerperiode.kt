@@ -8,4 +8,9 @@ data class Arbeidssokerperiode(var fraDato: LocalDateTime, var tilDato: LocalDat
         if (this.tilDato != null) throw IllegalStateException("Arbeidssokerperiode har allerede en tilDato - kan ikke avslutte en allerede avsluttet periode")
         this.tilDato = tilDato
     }
+
+    fun gjenåpne() {
+        if (tilDato == null) throw IllegalStateException("Arbeidssøkerperiode er allerede åpen, og kan derfor ikke gjenåpnes")
+        tilDato = null
+    }
 }

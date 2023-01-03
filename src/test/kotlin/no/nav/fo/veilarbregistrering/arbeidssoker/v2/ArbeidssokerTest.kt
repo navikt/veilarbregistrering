@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -156,6 +157,62 @@ class ArbeidssokerTest {
         arbeidssoker.accept(arbeissokerVisitor)
 
         assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeissokerVisitor.sisteArbeidsokerperiode())
+    }
+
+    @Test
+    fun `skal gjenåpne tidligere periode dersom (ordinær) registrering starter samme dag som forrige ble avsluttet`() {
+        val nyRegistreringsdato1 = LocalDateTime.now().minusYears(1).minusMonths(3)
+        val nyRegistrering1 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato1)
+        arbeidssoker.behandle(nyRegistrering1)
+
+        val formidlingsgruppeEndringTidspunkt1 = LocalDateTime.now().minusYears(1).minusMonths(2)
+        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
+
+        val nyRegistreringsdato2 = LocalDateTime.now().minusMonths(3)
+        val nyRegistrering2 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato2)
+        arbeidssoker.behandle(nyRegistrering2)
+
+        val formidlingsgruppeEndringTidspunkt2 = LocalDate.now().atTime(10, 12)
+        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
+
+        val nyRegistreringsdato3 = LocalDate.now().atTime(12, 12)
+        val nyRegistrering3 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato3)
+        arbeidssoker.behandle(nyRegistrering3)
+
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato2, null), arbeissokerVisitor.sisteArbeidsokerperiode())
+    }
+
+    @Test
+    fun `skal gjenåpne tidligere periode dersom (formidlingsgruppe) registrering starter samme dag som forrige ble avsluttet`() {
+        val nyRegistreringsdato1 = LocalDateTime.now().minusYears(1).minusMonths(3)
+        val nyRegistrering1 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato1)
+        arbeidssoker.behandle(nyRegistrering1)
+
+        val formidlingsgruppeEndringTidspunkt1 = LocalDateTime.now().minusYears(1).minusMonths(2)
+        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
+
+        val nyRegistreringsdato2 = LocalDateTime.now().minusMonths(3)
+        val nyRegistrering2 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato2)
+        arbeidssoker.behandle(nyRegistrering2)
+
+        val formidlingsgruppeEndringTidspunkt2 = LocalDate.now().atTime(10, 12)
+        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
+
+        val formidlingsgruppeEndringTidspunkt3 = LocalDate.now().atTime(12, 12)
+        val formidlingsgruppeEndringEvent3 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt3, "ARBS")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
+
+        var arbeissokerVisitor = ArbeidssokerVisitorDto(arbeidssoker)
+        arbeidssoker.accept(arbeissokerVisitor)
+
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato2, null), arbeissokerVisitor.sisteArbeidsokerperiode())
     }
 }
 

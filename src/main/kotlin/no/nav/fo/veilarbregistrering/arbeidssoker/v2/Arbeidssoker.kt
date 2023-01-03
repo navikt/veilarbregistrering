@@ -5,6 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
@@ -55,7 +56,7 @@ class Arbeidssoker : Observable {
 
     internal fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
 
-    private fun sistePeriode(): Arbeidssokerperiode? {
+    internal fun sistePeriode(): Arbeidssokerperiode? {
         if (arbeidssokerperioder.isEmpty()) return null
         return arbeidssokerperioder.sortedBy { it.fraDato }.last()
     }
@@ -78,7 +79,6 @@ private interface ArbeidssokerState {
 
 /**
  * Ikke arbeidssøker betyr at du aldri har vært arbeidssøker.
- * Det kan bety 1 av 2: Du har aldri vært arbeidssøker eller du har tidligere vært det, men er det ikke lenger.
  */
 private object IkkeArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
@@ -148,7 +148,13 @@ private object AktivArbeidssokerState : ArbeidssokerState {
 private object TidligereArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering) {
         logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
-        arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetDato)
+
+        if (kanSistePeriodeGjenåpnes(arbeidssoker, ordinaerBrukerRegistrering.opprettetDato.toLocalDate())) {
+            logger.info("Reåpner tidligere arbeidssøkerperiode som følge av ordinær registrering")
+            arbeidssoker.sistePeriode()!!.gjenåpne()
+        } else {
+            arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetDato)
+        }
     }
 
     override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: Reaktivering) {
@@ -165,16 +171,25 @@ private object TidligereArbeidssokerState : ArbeidssokerState {
 
     override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
         if (!formidlingsgruppeEndretEvent.formidlingsgruppe.erArbeidssoker()) {
-            logger.info("Avviser FormidlingsgruppeEndretEvent - Arbeidssøker er allerede inaktiv")
+            logger.info("Avviser FormidlingsgruppeEndretEvent ${formidlingsgruppeEndretEvent.formidlingsgruppe} - Arbeidssøker er allerede inaktiv")
             return
         }
-        logger.info("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
-        arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.formidlingsgruppeEndret)
+
+        if (kanSistePeriodeGjenåpnes(arbeidssoker, formidlingsgruppeEndretEvent.formidlingsgruppeEndret.toLocalDate())) {
+            logger.warn("Reåpner tidligere arbeidssøkerperiode som følge av formidlingsgruppe")
+            arbeidssoker.sistePeriode()!!.gjenåpne()
+        } else {
+            logger.warn("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
+            arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.formidlingsgruppeEndret)
+        }
     }
+
+    private fun kanSistePeriodeGjenåpnes(arbeidssoker: Arbeidssoker, registreringstidspunkt: LocalDate) =
+        arbeidssoker.sistePeriode()!!.tilDato?.toLocalDate() == registreringstidspunkt
 
     override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEvent) {
         if (!meldekortEvent.erArbeidssokerNestePeriode) {
-            logger.info("Avviser MeldekortEvent - Arbeidssøker er allerede inaktiv")
+            logger.info("Avviser MeldekortEventArbeidssøker er allerede inaktiv")
             return
         }
         logger.warn("Arbeidssøkerperioden ble initiert av et meldekort - ikke en ordinær/reaktivert registrering")
