@@ -1,8 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.v2.ArbeidssokerVisitor
 import no.nav.fo.veilarbregistrering.bruker.Periode
-import java.util.Objects
+import java.util.*
 
 class Arbeidssokerperioder(arbeidssokerperioder: List<Arbeidssokerperiode>?) {
 

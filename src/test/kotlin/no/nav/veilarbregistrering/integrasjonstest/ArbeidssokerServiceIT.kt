@@ -18,6 +18,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -83,12 +85,16 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             formidlingsgruppeRepository: FormidlingsgruppeRepository,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
-            metricsService: MetricsService
+            metricsService: MetricsService,
+            brukerRegistreringRepository: BrukerRegistreringRepository,
+            reaktiveringRepository: ReaktiveringRepository
         ): ArbeidssokerService = ArbeidssokerService(
             formidlingsgruppeRepository,
             formidlingsgruppeGateway,
             unleashClient,
-            metricsService
+            metricsService,
+            brukerRegistreringRepository,
+            reaktiveringRepository
         )
     }
 
