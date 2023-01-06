@@ -61,6 +61,10 @@ class Arbeidssoker : Observable {
         return arbeidssokerperioder.sortedBy { it.fraDato }.last()
     }
 
+    internal fun allePerioder(): List<Arbeidssokerperiode> {
+        return arbeidssokerperioder
+    }
+
     override fun add(observer: Observer) {
         observers.add(observer)
     }

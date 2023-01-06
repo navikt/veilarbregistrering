@@ -332,13 +332,17 @@ class ServiceBeansConfig {
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         unleashClient: UnleashClient,
-        metricsService: MetricsService
+        metricsService: MetricsService,
+        brukerRegistreringRepository: BrukerRegistreringRepository,
+        brukerReaktiveringRepository: ReaktiveringRepository
     ): ArbeidssokerService {
         return ArbeidssokerService(
             formidlingsgruppeRepository,
             formidlingsgruppeGateway,
             unleashClient,
-            metricsService
+            metricsService,
+            brukerRegistreringRepository,
+            brukerReaktiveringRepository
         )
     }
 

@@ -29,7 +29,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             StubFormidlingsgruppeRepository(),
             StubFormidlingsgruppeGateway(),
             unleashService,
-            metricsService,
+            metricsService
         )
     }
 

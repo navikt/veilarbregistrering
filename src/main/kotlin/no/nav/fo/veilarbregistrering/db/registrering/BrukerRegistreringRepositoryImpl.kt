@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
@@ -58,6 +59,13 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $BRUKER_REGISTRERING_ID = :id"
 
         return db.queryForObject(sql, mapOf("id" to brukerregistreringId), registreringMapper)!!
+    }
+
+    override fun hentBrukerregistreringForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<OrdinaerBrukerRegistrering> {
+        val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
+        val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
+
+        return db.query(sql, parameters, registreringMapper)
     }
 
     override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
