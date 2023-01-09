@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.arbeidssoker.v2
+package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
