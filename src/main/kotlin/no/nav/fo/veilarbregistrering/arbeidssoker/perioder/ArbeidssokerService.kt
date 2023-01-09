@@ -72,7 +72,7 @@ class ArbeidssokerService(
             Arbeidssokerperiode(
                 Periode(
                     it.fraDato.toLocalDate(),
-                    it.tilDato?.toLocalDate()
+                    it.tilDato?.toLocalDate()?.minusDays(1)
                 )
             )
         }
