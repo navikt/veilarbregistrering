@@ -12,6 +12,13 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
+import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -30,13 +37,15 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             StubFormidlingsgruppeGateway(),
             unleashService,
             metricsService,
+            StubBrukerRegistreringRepository(),
+            StubReaktiveringRepository()
         )
+
+        every { unleashService.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS") } returns true
     }
 
     @Test
     fun `hentArbeidssokerperioder skal returnere perioder sortert etter fradato`() {
-        every { unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE) } returns true
-
         val forespurtPeriode = Periode(
             LocalDate.of(2020, 1, 2),
             LocalDate.of(2020, 5, 1)
@@ -178,6 +187,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             ).entries.first { (fnr, _) -> fnr in foedselsnummerList }.value
         }
 
+        override fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
+            return emptyList()
+        }
+
         companion object {
             val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
@@ -254,6 +267,45 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
                 Periode(LocalDate.of(2020, 5, 10), null)
             )
         }
+    }
+
+    private class StubBrukerRegistreringRepository : BrukerRegistreringRepository {
+        override fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering {
+            throw UnsupportedOperationException("Ikke implementert i Stub")
+        }
+
+        override fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering {
+            throw UnsupportedOperationException("Ikke implementert i Stub")
+        }
+
+        override fun hentBrukerregistreringForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<OrdinaerBrukerRegistrering> {
+            return listOf(gyldigBrukerRegistrering())
+        }
+
+        override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+            aktorId: AktorId,
+            tilstander: List<Status>
+        ): List<OrdinaerBrukerRegistrering> {
+            throw UnsupportedOperationException("Ikke implementert i Stub")
+        }
+
+        override fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker = BRUKER_1
+
+    }
+
+    private class StubReaktiveringRepository : ReaktiveringRepository {
+        override fun lagreReaktiveringForBruker(bruker: Bruker): Long {
+            throw UnsupportedOperationException("Ikke implementert i Stub")
+        }
+
+        override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
+            throw UnsupportedOperationException("Ikke implementert i Stub")
+        }
+
+        override fun finnReaktiveringerForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<Reaktivering> {
+            return emptyList()
+        }
+
     }
 
     companion object {

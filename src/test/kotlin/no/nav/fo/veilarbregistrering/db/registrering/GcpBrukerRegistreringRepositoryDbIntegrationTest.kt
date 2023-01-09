@@ -20,18 +20,15 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import java.time.LocalDate
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
 @ActiveProfiles("gcp")
 class GcpBrukerRegistreringRepositoryDbIntegrationTest(
-
-    @Autowired
-    private val jdbcTemplate: JdbcTemplate,
 
     @Autowired
     private val registreringTilstandRepository: RegistreringTilstandRepository,
@@ -102,6 +99,17 @@ class GcpBrukerRegistreringRepositoryDbIntegrationTest(
 
         val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
         assertThat(ordinaerBrukerregistreringer).isEmpty()
+    }
+
+    @Test
+    fun `skal kunne hente brukerregistering på en liste av fødselsnummer`() {
+        val registrering1 = gyldigBrukerRegistrering(opprettetDato = LocalDate.now().atStartOfDay().minusMonths(3))
+        val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.OVERFORT_ARENA).build())
+
+        val ordinaerBrukerRegistrerings = brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(BRUKER_1.alleFoedselsnummer())
+
+        assertThat(ordinaerBrukerRegistrerings.size).isEqualTo(1)
     }
 
     companion object {

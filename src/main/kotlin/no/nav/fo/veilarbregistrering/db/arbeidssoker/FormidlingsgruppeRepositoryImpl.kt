@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
@@ -11,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -87,6 +89,21 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return ArbeidssokerperioderMapper.map(formidlingsgruppeendringer)
     }
 
+    override fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
+        val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
+        val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
+
+        val formidlingsgruppeendringer =
+            db.query(sql, parameters, fgruppeEndretEvent)
+        logger.info(
+            String.format(
+                "Fant følgende rådata med formidlingsgruppeendringer: %s",
+                formidlingsgruppeendringer.toString()
+            )
+        )
+        return formidlingsgruppeendringer
+    }
+
     companion object {
         const val FORMIDLINGSGRUPPE_SEQ = "FORMIDLINGSGRUPPE_SEQ"
         const val FORMIDLINGSGRUPPE = "FORMIDLINGSGRUPPE"
@@ -107,6 +124,19 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
                 rs.getString(PERSON_ID_STATUS),
                 rs.getTimestamp(FORMIDLINGSGRUPPE_ENDRET)
             )
+        }
+
+        private val fgruppeEndretEvent = RowMapper { rs, _ ->
+            FormidlingsgruppeEndretEvent(
+                Foedselsnummer(rs.getString(FOEDSELSNUMMER)),
+                rs.getString(PERSON_ID),
+                rs.getString(PERSON_ID_STATUS),
+                Operation.valueOf(rs.getString(OPERASJON)),
+                Formidlingsgruppe(rs.getString(FORMIDLINGSGRUPPE)),
+                rs.getTimestamp(FORMIDLINGSGRUPPE_ENDRET).toLocalDateTime(),
+                Formidlingsgruppe(rs.getString(FORR_FORMIDLINGSGRUPPE)),
+                rs.getTimestamp(FORR_FORMIDLINGSGRUPPE_ENDRET).toLocalDateTime(),
+                )
         }
     }
 }

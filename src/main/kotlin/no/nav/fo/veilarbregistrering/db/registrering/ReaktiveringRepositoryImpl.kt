@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.db.registrering
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
@@ -38,6 +39,13 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
     override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
         val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
         return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), reaktiveringMapper)
+    }
+
+    override fun finnReaktiveringerForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<Reaktivering> {
+        val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${FOEDSELSNUMMER} in (:foedselsnummer)"
+        val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
+
+        return db.query(sql, parameters, reaktiveringMapper)
     }
 
     companion object {
