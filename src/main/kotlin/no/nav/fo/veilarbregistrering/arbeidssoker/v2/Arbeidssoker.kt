@@ -47,11 +47,6 @@ class Arbeidssoker : Observable {
         observers.forEach { it.update("ArbeidssokerperiodeAvsluttetEvent") }
     }
 
-    fun accept(arbeidssokerVisitor: ArbeidssokerVisitor) {
-        arbeidssokerVisitor.visitSistePeriode(sistePeriode())
-        arbeidssokerVisitor.visitPerioder(arbeidssokerperioder)
-    }
-
     internal fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
 
     internal fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
