@@ -57,7 +57,7 @@ class ArbeidssokerService(
             brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
         val formidlingsgruppe =
             formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
-        //TODO: hente meldekort
+        //TODO: hente meldekort - vi avventer Meldekort til vi har lært litt mer om modellen.
 
         val listeMedArbeidssøkerEndringer = brukerRegistrering + brukerReaktivering + formidlingsgruppe
 
@@ -65,29 +65,6 @@ class ArbeidssokerService(
         listeMedArbeidssøkerEndringer.sortedBy { it.opprettetTidspunkt() }.forEach { arbeidssoker.behandle(it) }
 
         return arbeidssoker
-    }
-
-    private fun sammenlignNyOgGammelModell(
-        overlappendeArbeidssokerperioderLokalt: Arbeidssokerperioder,
-        overlappendeHistoriskePerioderORDS: Arbeidssokerperioder,
-        forespurtPeriode: Periode
-    ) {
-        val lokalErLikORDS =
-            overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS
-
-        metricsService.registrer(
-            Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
-            if (lokalErLikORDS) JaNei.JA else JaNei.NEI
-        )
-
-        if (!lokalErLikORDS) {
-            logger.warn(
-                "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
-                        "Forespurt periode: $forespurtPeriode\n" +
-                        "Lokalt:\n$overlappendeArbeidssokerperioderLokalt\n" +
-                        "Arena-ORDS:\n$overlappendeHistoriskePerioderORDS"
-            )
-        }
     }
 
     private fun map(arbeidssoker: Arbeidssoker) = Arbeidssokerperioder(
@@ -100,6 +77,25 @@ class ArbeidssokerService(
             )
         }
     )
+
+    private fun sammenlignNyOgGammelModell(
+        overlappendeArbeidssokerperioderLokalt: Arbeidssokerperioder,
+        overlappendeHistoriskePerioderORDS: Arbeidssokerperioder,
+        forespurtPeriode: Periode
+    ) {
+        if (overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS) {
+            metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, JaNei.JA)
+        } else {
+            logger.warn(
+                "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
+                        "Forespurt periode: $forespurtPeriode\n" +
+                        "Lokalt:\n$overlappendeArbeidssokerperioderLokalt\n" +
+                        "Arena-ORDS:\n$overlappendeHistoriskePerioderORDS"
+            )
+
+            metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, JaNei.NEI)
+        }
+    }
 
     private enum class Kilde : Metric {
         ORDS, LOKAL;
