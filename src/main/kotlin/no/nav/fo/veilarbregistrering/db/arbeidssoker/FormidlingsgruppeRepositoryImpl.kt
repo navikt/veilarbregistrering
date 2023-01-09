@@ -24,9 +24,10 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         val formidlingsgruppeEndret = Timestamp.valueOf(event.formidlingsgruppeEndret.truncatedTo(ChronoUnit.MICROS))
 
         if (erAlleredePersistentLagret(personId, formidlingsgruppe, formidlingsgruppeEndret)) {
-            logger.info("Endringen er allerede lagret, denne forkastes. PersonID:" +
-                    " $personId, Formidlingsgruppe: $formidlingsgruppe, Endret: $formidlingsgruppeEndret"
-                )
+            logger.info(
+                "Endringen er allerede lagret, denne forkastes. PersonID:" +
+                        " $personId, Formidlingsgruppe: $formidlingsgruppe, Endret: $formidlingsgruppeEndret"
+            )
             return -1
         }
 
@@ -70,7 +71,8 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
     }
 
     private fun nesteFraSekvens(): Long {
-        val sql = if (isOnPrem()) "SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL" else "SELECT nextVal('$FORMIDLINGSGRUPPE_SEQ')"
+        val sql =
+            if (isOnPrem()) "SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL" else "SELECT nextVal('$FORMIDLINGSGRUPPE_SEQ')"
         return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
@@ -134,9 +136,9 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
                 Operation.valueOf(rs.getString(OPERASJON)),
                 Formidlingsgruppe(rs.getString(FORMIDLINGSGRUPPE)),
                 rs.getTimestamp(FORMIDLINGSGRUPPE_ENDRET).toLocalDateTime(),
-                Formidlingsgruppe(rs.getString(FORR_FORMIDLINGSGRUPPE)),
-                rs.getTimestamp(FORR_FORMIDLINGSGRUPPE_ENDRET).toLocalDateTime(),
-                )
+                rs.getString(FORR_FORMIDLINGSGRUPPE)?.let { Formidlingsgruppe(it) },
+                rs.getTimestamp(FORR_FORMIDLINGSGRUPPE_ENDRET)?.toLocalDateTime(),
+            )
         }
     }
 }
