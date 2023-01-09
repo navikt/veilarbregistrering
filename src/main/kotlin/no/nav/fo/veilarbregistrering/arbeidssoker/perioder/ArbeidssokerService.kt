@@ -33,50 +33,13 @@ class ArbeidssokerService(
         val skalSammenlignePerioderORDS = unleashClient.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS")
 
         if (skalSammenlignePerioderORDS) {
-            val brukerRegistrering = brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
-            val brukerReaktivering = brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
-            val formidlingsgruppe =
-                formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
-
-            val arbeidssoker = Arbeidssoker()
-
-            brukerRegistrering.forEach { arbeidssoker.behandle(it) }
-            brukerReaktivering.forEach { arbeidssoker.behandle(it) }
-            formidlingsgruppe.forEach { arbeidssoker.behandle(it) }
-
-            // TODO: Må "spilles av" i riktig rekkefølge
-            val overlappendeArbeidssokerperioderLokalt = Arbeidssokerperioder(
-                arbeidssoker.allePerioder().map {
-                    Arbeidssokerperiode(
-                        Periode(
-                            it.fraDato.toLocalDate(),
-                            it.tilDato?.toLocalDate()
-                        )
-                    )
-                }
-            ).overlapperMed(forespurtPeriode)
-
-            val lokalErLikORDS =
-                overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS
-
-            metricsService.registrer(
-                Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
-                if (lokalErLikORDS) JaNei.JA else JaNei.NEI
-            )
-
-            if (!lokalErLikORDS) {
-                logger.warn(
-                    "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
-                            "Forespurt periode: $forespurtPeriode\n" +
-                            "Lokalt:\n$overlappendeArbeidssokerperioderLokalt\n" +
-                            "Arena-ORDS:\n$overlappendeHistoriskePerioderORDS"
-                )
+            try {
+                val arbeidssoker = populerNyArbeidssøkermodell(bruker)
+                val overlappendeArbeidssokerperioderLokalt = map(arbeidssoker).overlapperMed(forespurtPeriode)
+                sammenlignNyOgGammelModell(overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS, forespurtPeriode)
+            } catch (e: RuntimeException) {
+                logger.warn("Sammenligning av perioder feilet", e)
             }
-
-            metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
-            logger.info(
-                "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten uten sammenligning: $overlappendeHistoriskePerioderORDS"
-            )
         }
 
         metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDE, Kilde.ORDS)
@@ -86,6 +49,57 @@ class ArbeidssokerService(
 
         return overlappendeHistoriskePerioderORDS
     }
+
+    private fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
+        val brukerRegistrering =
+            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
+        val brukerReaktivering =
+            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
+        val formidlingsgruppe =
+            formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
+        //TODO: hente meldekort
+
+        val listeMedArbeidssøkerEndringer = brukerRegistrering + brukerReaktivering + formidlingsgruppe
+
+        val arbeidssoker = Arbeidssoker()
+        listeMedArbeidssøkerEndringer.sortedBy { it.opprettetTidspunkt() }.forEach { arbeidssoker.behandle(it) }
+
+        return arbeidssoker
+    }
+
+    private fun sammenlignNyOgGammelModell(
+        overlappendeArbeidssokerperioderLokalt: Arbeidssokerperioder,
+        overlappendeHistoriskePerioderORDS: Arbeidssokerperioder,
+        forespurtPeriode: Periode
+    ) {
+        val lokalErLikORDS =
+            overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS
+
+        metricsService.registrer(
+            Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR,
+            if (lokalErLikORDS) JaNei.JA else JaNei.NEI
+        )
+
+        if (!lokalErLikORDS) {
+            logger.warn(
+                "Periodelister fra lokal cache og Arena-ORDS er ikke like\n" +
+                        "Forespurt periode: $forespurtPeriode\n" +
+                        "Lokalt:\n$overlappendeArbeidssokerperioderLokalt\n" +
+                        "Arena-ORDS:\n$overlappendeHistoriskePerioderORDS"
+            )
+        }
+    }
+
+    private fun map(arbeidssoker: Arbeidssoker) = Arbeidssokerperioder(
+        arbeidssoker.allePerioder().map {
+            Arbeidssokerperiode(
+                Periode(
+                    it.fraDato.toLocalDate(),
+                    it.tilDato?.toLocalDate()
+                )
+            )
+        }
+    )
 
     private enum class Kilde : Metric {
         ORDS, LOKAL;

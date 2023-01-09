@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.FormidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime
 
@@ -12,7 +13,10 @@ data class FormidlingsgruppeEndretEvent(
     val formidlingsgruppeEndret: LocalDateTime,
     val forrigeFormidlingsgruppe: Formidlingsgruppe?,
     val forrigeFormidlingsgruppeEndret: LocalDateTime?
-) {
+): FormidlingsgruppeEndret {
+    override fun opprettetTidspunkt(): LocalDateTime = formidlingsgruppeEndret
+
+    override fun formidlingsgruppe(): Formidlingsgruppe = formidlingsgruppe
 
     override fun toString(): String {
         return "FormidlingsgruppeEvent{" +
