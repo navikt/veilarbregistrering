@@ -112,6 +112,17 @@ class GcpBrukerRegistreringRepositoryDbIntegrationTest(
         assertThat(ordinaerBrukerRegistrerings.size).isEqualTo(1)
     }
 
+    @Test
+    fun `skal ikke returnere registreringer som har feilet ved overføring til Arena`() {
+        val registrering1 = gyldigBrukerRegistrering(opprettetDato = LocalDate.now().atStartOfDay().minusMonths(3))
+        val lagretRegistrering1 = brukerRegistreringRepository.lagre(registrering1, BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering1.id).status(Status.MANGLER_ARBEIDSTILLATELSE).build())
+
+        val ordinaerBrukerRegistrerings = brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(BRUKER_1.alleFoedselsnummer())
+
+        assertThat(ordinaerBrukerRegistrerings.isEmpty()).isTrue()
+    }
+
     companion object {
         private val FOEDSELSNUMMER = Foedselsnummer("12345678911")
         private val AKTOR_ID_11111 = AktorId("11111")

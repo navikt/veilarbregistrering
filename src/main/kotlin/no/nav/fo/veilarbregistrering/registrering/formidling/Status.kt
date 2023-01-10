@@ -29,5 +29,9 @@ enum class Status(private val status: String) {
                 BRUKER_KAN_IKKE_REAKTIVERES_FORENKLET -> KAN_IKKE_REAKTIVERES_FORENKLET
                 BRUKER_ER_UKJENT -> UKJENT_BRUKER
             }
+
+        fun gyldigTilstand(): List<Status> {
+            return listOf(OVERFORT_ARENA, PUBLISERT_KAFKA, OPPRINNELIG_OPPRETTET_UTEN_TILSTAND)
+        }
     }
 }

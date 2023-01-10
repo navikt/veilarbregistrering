@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.BRUKER_REGISTRERING_ID
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
@@ -62,8 +63,16 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
     }
 
     override fun hentBrukerregistreringForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<OrdinaerBrukerRegistrering> {
-        val sql = "SELECT * FROM $BRUKER_REGISTRERING WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
-        val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
+        val sql = "SELECT * FROM $BRUKER_REGISTRERING" +
+                " LEFT JOIN $REGISTRERING_TILSTAND ON" +
+                " $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.BRUKER_REGISTRERING_ID} = $BRUKER_REGISTRERING.$BRUKER_REGISTRERING_ID" +
+                " WHERE $FOEDSELSNUMMER IN (:foedselsnummer)" +
+                " AND $REGISTRERING_TILSTAND.${RegistreringTilstandRepositoryImpl.STATUS} in (:tilstander)"
+
+        val parameters = mapOf(
+            "foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue),
+            "tilstander" to Status.gyldigTilstand().map { it.name }
+        )
 
         return db.query(sql, parameters, registreringMapper)
     }
