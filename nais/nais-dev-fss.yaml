@@ -19,9 +19,6 @@ spec:
   image: {{image}}
   ingresses:
     - https://veilarbregistrering-fss.dev.intern.nav.no
-    - https://veilarbregistrering-q1.dev.adeo.no
-    - https://veilarbregistrering-q1.nais.preprod.local
-    - https://app-q1.adeo.no/veilarbregistrering
   env:
     - name: AAREG_REST_API
       value: https://aareg-services-q1.dev.intern.nav.no/api

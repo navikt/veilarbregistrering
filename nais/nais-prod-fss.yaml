@@ -20,7 +20,6 @@ spec:
   ingresses:
     - https://veilarbregistrering.nais.adeo.no
     - https://veilarbregistrering.intern.nav.no
-    - https://app.adeo.no/veilarbregistrering
   env:
     - name: AAREG_REST_API
       value: https://aareg-services.intern.nav.no/api
