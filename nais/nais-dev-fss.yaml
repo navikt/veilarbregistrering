@@ -31,8 +31,6 @@ spec:
       value: aareg-services-nais-q1
     - name: AAD_DISCOVERY_URL
       value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration
-    - name: VEILARBLOGIN_AAD_CLIENT_ID
-      value: 65a379be-d708-4e63-b6a0-df52efdf695f
     - name: VEILARBOPPFOLGINGAPI_URL
       value: https://veilarboppfolging-q1.nais.preprod.local/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER

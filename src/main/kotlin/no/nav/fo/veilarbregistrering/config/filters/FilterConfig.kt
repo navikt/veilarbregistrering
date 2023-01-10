@@ -59,7 +59,6 @@ class FilterConfig {
         val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
         val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
             OidcAuthenticator.fromConfigs(
-                createVeilarbloginAADConfig(),
                 createAzureAdB2CConfig(),
                 createAadTokenConfig(),
                 createTokenXConfig()
@@ -69,16 +68,6 @@ class FilterConfig {
         registration.order = 4
         registration.addUrlPatterns("/api/*")
         return registration
-    }
-
-    private fun createVeilarbloginAADConfig(): OidcAuthenticatorConfig {
-        val discoveryUrl = requireProperty("AAD_DISCOVERY_URL")
-        val clientId = requireProperty("VEILARBLOGIN_AAD_CLIENT_ID")
-        return OidcAuthenticatorConfig()
-            .withDiscoveryUrl(discoveryUrl)
-            .withClientId(clientId)
-            .withIdTokenCookieName(Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME)
-            .withUserRole(UserRole.INTERN)
     }
 
     private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig {
