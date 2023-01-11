@@ -175,18 +175,18 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         private const val brukerReaktiveringSjekkSql = """
         select count(*) as antall_rader,
         count(distinct aktor_id) as unike_aktor_id
-        from bruker_reaktivering
+        from bruker_reaktivering where bruker_reaktivering_id < 10000000
         """
 
         private const val registreringstilstandSjekkSql = """
         select count(*) as antall_rader,
         count(distinct bruker_registrering_id) as unike_brukerregistrering_id,
         floor(avg(bruker_registrering_id)) as gjsnitt_bruker_registrering_id
-        from registrering_tilstand
+        from registrering_tilstand where bruker_registrering_id < 10000000
         """
         private const val profileringSjekkSql = """
         select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
-        from bruker_profilering          
+        from bruker_profilering where bruker_registrering_id < 10000000
         """
 
         private const val brukerRegistreringSjekkSql = """
@@ -196,7 +196,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         count(distinct jobbhistorikk) as unike_jobbhistorikk, 
         count(distinct yrkespraksis) as unike_yrkespraksis, 
         floor(avg(konsept_id)) as gjsnitt_konsept_id 
-        from bruker_registrering
+        from bruker_registrering where bruker_registrering_id < 10000000
         """
 
         private const val sykmeldtRegistreringSjekkSql = """
@@ -205,7 +205,8 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         count(distinct aktor_id) as unike_aktorer,
         count(distinct utdanning_bestatt) as unike_utdanning_bestatt,
         count(distinct andre_utfordringer) as unike_andre_utfordringer,
-        round(avg(cast(nus_kode as int)), 2) as gjsnitt_nus from sykmeldt_registrering
+        round(avg(cast(nus_kode as int)), 2) as gjsnitt_nus
+        from sykmeldt_registrering where sykmeldt_registrering_id < 10000000
         """
 
         private const val manuellRegistreringSjekkSql = """
@@ -213,7 +214,8 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         count(distinct veileder_ident) as unike_veiledere,
         count(distinct veileder_enhet_id) as unike_enheter,
         count(distinct registrering_id) as unike_registreringer, 
-        count(distinct bruker_registrering_type) as unike_reg_typer from manuell_registrering
+        count(distinct bruker_registrering_type) as unike_reg_typer
+        from manuell_registrering where manuell_registrering_id < 10000000
         """
 
         private const val oppgaveSjekkSql = """
@@ -221,7 +223,7 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         count(distinct aktor_id) as unike_aktorer,
         count(distinct oppgavetype) as unike_oppgavetyper,
         count(distinct ekstern_oppgave_id) as unike_oppgave_id,
-        floor(avg(ekstern_oppgave_id)) as gjsnitt_oppgave_id from oppgave
+        floor(avg(ekstern_oppgave_id)) as gjsnitt_oppgave_id from oppgave where id < 10000000
         """
 
         private val registreringTilstandRowMapper: RowMapper<RegistreringTilstand> = RowMapper { rs, _ ->
