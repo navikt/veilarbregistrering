@@ -27,8 +27,8 @@ class ReaktiveringResource(
     @PostMapping(path=["/startreaktivering", "/fullfoerreaktivering"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun reaktivering() {
-        if (requireClusterName() == "prod-gcp") {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i prod-gcp")
+        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
+            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
         }
 
         if (tjenesteErNede()) {
@@ -44,8 +44,8 @@ class ReaktiveringResource(
     @PostMapping("/fullfoerreaktivering/systembruker")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun reaktiveringMedSystembruker(@RequestBody fnr: Fnr) {
-        if (requireClusterName() == "prod-gcp") {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i prod-gcp")
+        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
+            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
         }
 
         if (tjenesteErNede()) {

@@ -24,8 +24,8 @@ class OrdinaerBrukerRegistreringResource(
 
     @PostMapping(path=["/startregistrering", "/fullfoerordinaerregistrering"])
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
-        if (requireClusterName() == "prod-gcp") {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i prod-gcp")
+        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
+            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
         }
         if (tjenesteErNede()) {
             brukerRegistreringService.registrerAtArenaHarPlanlagtNedetid()
