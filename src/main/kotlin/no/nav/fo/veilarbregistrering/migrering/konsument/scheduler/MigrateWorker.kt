@@ -12,7 +12,7 @@ class MigrateWorker(
     private val migrateService: MigrateService
 ) {
 
-    @Scheduled(cron = HVERT_TIENDE_MINUTT)
+    @Scheduled(cron = HVERT_TREDJE_MINUTT)
     fun migrate() {
         if (isOnPrem()) {
             logger.warn("Migreringsjobb for GCP ble forsøkt kjørt fra FSS")
@@ -32,6 +32,7 @@ class MigrateWorker(
 
     companion object {
         const val HVERT_TIENDE_MINUTT = "0 */10 * * * *"
+        const val HVERT_TREDJE_MINUTT = "0 */3 * * * *"
     }
 
 }
