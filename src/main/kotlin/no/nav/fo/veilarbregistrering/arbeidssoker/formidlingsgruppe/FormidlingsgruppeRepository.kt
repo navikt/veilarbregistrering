@@ -7,4 +7,5 @@ interface FormidlingsgruppeRepository {
     fun lagre(event: FormidlingsgruppeEndretEvent): Long
     fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder
     fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent>
+    fun hentUnikeFoedselsnummer(): List<Foedselsnummer>
 }

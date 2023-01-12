@@ -191,6 +191,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             return emptyList()
         }
 
+        override fun hentUnikeFoedselsnummer(): List<Foedselsnummer> {
+            return emptyList()
+        }
+
         companion object {
             val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
                 Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))

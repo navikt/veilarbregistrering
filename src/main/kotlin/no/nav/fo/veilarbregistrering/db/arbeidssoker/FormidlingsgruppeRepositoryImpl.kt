@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
@@ -12,7 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -104,6 +103,11 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
             )
         )
         return formidlingsgruppeendringer
+    }
+
+    override fun hentUnikeFoedselsnummer(): List<Foedselsnummer> {
+        val sql = "SELECT DISTINCT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE"
+        return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
     }
 
     companion object {
