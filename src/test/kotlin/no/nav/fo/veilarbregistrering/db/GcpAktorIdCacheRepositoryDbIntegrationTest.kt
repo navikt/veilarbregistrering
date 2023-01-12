@@ -29,10 +29,10 @@ class GcpAktorIdCacheRepositoryDbIntegrationTest(
         val FOEDSELSNUMMER = Foedselsnummer("01234567890")
         val AKTORID = AktorId("1000010000100")
 
-        aktorIdCacheRepository.lagre(AktorIdCache(FOEDSELSNUMMER.foedselsnummer, AKTORID.aktorId, LocalDateTime.now()))
+        aktorIdCacheRepository.lagre(AktorIdCache(FOEDSELSNUMMER, AKTORID, LocalDateTime.now()))
 
         val aktorIdCache = aktorIdCacheRepository.hentAktørId(FOEDSELSNUMMER)
         assertNotNull(aktorIdCache)
-        assertEquals(AKTORID.aktorId, aktorIdCache.aktorId)
+        assertEquals(AKTORID, aktorIdCache.aktorId)
     }
 }

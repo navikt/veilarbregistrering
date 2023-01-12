@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.db.aktorIdCache
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCache
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
+import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
@@ -12,8 +13,8 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
 
     override fun lagre(aktorIdCache: AktorIdCache) {
         val params = mapOf(
-            "foedselsnummer" to aktorIdCache.foedselsnummer,
-            "aktor_id" to aktorIdCache.aktorId,
+            "foedselsnummer" to aktorIdCache.foedselsnummer.foedselsnummer,
+            "aktor_id" to aktorIdCache.aktorId.aktorId,
             "opprettet_dato" to aktorIdCache.opprettetDato
         )
         val sqlForInsert = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)"
@@ -34,8 +35,8 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
     companion object {
         private val aktorIdCacheRowMapper = RowMapper { rs, _ ->
             AktorIdCache(
-                foedselsnummer = rs.getString("foedselsnummer"),
-                aktorId = rs.getString("aktor_id"),
+                foedselsnummer = Foedselsnummer(rs.getString("foedselsnummer")),
+                aktorId = AktorId(rs.getString("aktor_id")),
                 opprettetDato = rs.getTimestamp("opprettet_dato").toLocalDateTime()
             )
         }
