@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.db
 
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
+import no.nav.fo.veilarbregistrering.db.aktorIdCache.AktorIdCacheRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.MeldekortRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.migrering.konsument.MigrateRepositoryImpl
@@ -76,5 +78,10 @@ class RepositoryConfig {
     @Bean
     fun migrateRepository(db: NamedParameterJdbcTemplate): MigrateRepository {
         return MigrateRepositoryImpl(db)
+    }
+
+    @Bean
+    fun aktorIdCacheRepository(db: NamedParameterJdbcTemplate): AktorIdCacheRepository {
+        return AktorIdCacheRepositoryImpl(db)
     }
 }

@@ -1,15 +1,16 @@
 package no.nav.fo.veilarbregistrering.db.aktorIdCache
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCache
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
+class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): AktorIdCacheRepository {
 
-    fun lagre(aktorIdCache: AktorIdCache){
+    override fun lagre(aktorIdCache: AktorIdCache) {
         val params = mapOf(
             "foedselsnummer" to aktorIdCache.foedselsnummer,
             "aktor_id" to aktorIdCache.aktorId,
@@ -24,7 +25,7 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate) {
         }
     }
 
-    fun hentAktørId(fnr: Foedselsnummer): AktorIdCache? {
+    override fun hentAktørId(fnr: Foedselsnummer): AktorIdCache? {
         val sql = "SELECT * FROM aktor_id_cache WHERE foedselsnummer = :fnr"
         val params = mapOf("fnr" to fnr.foedselsnummer)
          return db.queryForObject(sql, params, aktorIdCacheRowMapper)
