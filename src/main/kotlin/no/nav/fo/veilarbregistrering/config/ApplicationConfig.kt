@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.config
 
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheConfig
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
@@ -54,7 +55,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
     HelsesjekkConfig::class,
     ObjectMapperConfig::class,
     SwaggerConfig::class,
-    TokenExchangeConfig::class
+    TokenExchangeConfig::class,
+    AktorIdCacheConfig::class
 )
 @EnableScheduling
 class ApplicationConfig
