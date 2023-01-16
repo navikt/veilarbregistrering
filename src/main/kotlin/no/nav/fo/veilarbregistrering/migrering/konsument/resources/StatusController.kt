@@ -16,4 +16,10 @@ class StatusController(private val migrationStatusService: MigrationStatusServic
         if (isOnPrem()) throw IllegalStateException("compareDatabases for GCP ble forsøkt kjørt fra FSS")
         return migrationStatusService.compareDatabaseStatus()
     }
+
+    @GetMapping("/compare-profilering")
+    fun finnManglendeProfilering(): List<Long> {
+        if (isOnPrem()) throw IllegalStateException("compareDatabases for GCP ble forsøkt kjørt fra FSS")
+        return migrationStatusService.compareProfilering()
+    }
 }

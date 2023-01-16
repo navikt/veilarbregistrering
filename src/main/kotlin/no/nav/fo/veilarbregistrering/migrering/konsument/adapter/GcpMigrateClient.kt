@@ -63,6 +63,24 @@ class GcpMigrateClient(
         }
     }
 
+    override fun hentSjekkerForProfilering(): List<Long> {
+        logger.info("hentSjekkerFor profilering")
+
+        try {
+            restClient.newCall(buildRequest(
+                "$baseUrl/api/migrering/sjekk-profilering", proxyTokenProvider()))
+                .execute().use { response ->
+                    response.body()?.let { body ->
+                        val str = body.string()
+                        logger.info("Profilering.json: $str")
+                        return Gson().fromJson(str)
+                    } ?: throw RuntimeException("Forventet respons med body, men mottok ingenting")
+                }
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+    }
+
     override fun hentAntallPotensieltOppdaterteTilstander(): Int =
         try {
             restClient.newCall(

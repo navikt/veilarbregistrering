@@ -9,5 +9,6 @@ interface MigrateRepository {
     fun antallRaderSomKanTrengeOppdatering(): Int
     fun hentRaderSomKanTrengeOppdatering(): List<RegistreringTilstand>
     fun hentSjekkerForTabell(tabellNavn: TabellNavn): List<Map<String, Any>>
+    fun hentSjekkerForProfilering(): List<Long>
     fun oppdaterTilstander(tilstander: List<Map<String, Any>>): List<Int>
 }

@@ -146,6 +146,10 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         return db.jdbcTemplate.queryForList(sql)
     }
 
+    override fun hentSjekkerForProfilering(): List<Long> {
+        return db.jdbcTemplate.queryForList(profileringSjekkSql2, Long::class.java)
+    }
+
     override fun oppdaterTilstander(tilstander: List<Map<String, Any>>): List<Int> {
         val params = tilstander.map { tilstand ->
             mapOf(
@@ -187,6 +191,9 @@ class MigrateRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migrat
         private const val profileringSjekkSql = """
         select count(*) as antall_rader, count(distinct verdi) as unike_verdier, count(distinct profilering_type) as unike_typer 
         from bruker_profilering where bruker_registrering_id < 10000000
+        """
+        private const val profileringSjekkSql2 = """
+        select distinct bruker_registrering_id from bruker_profilering where bruker_registrering_id < 10000000
         """
 
         private const val brukerRegistreringSjekkSql = """

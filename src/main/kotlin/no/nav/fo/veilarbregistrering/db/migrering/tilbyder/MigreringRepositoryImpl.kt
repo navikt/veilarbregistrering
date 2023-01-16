@@ -52,6 +52,10 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migr
         return result
     }
 
+    override fun hentSjekkForProfilering(): List<Long> {
+        return db.queryForList(profileringSjekkSql2, emptyMap<String, Any>(), Long::class.java)
+    }
+
     override fun hentAntallPotensieltOppdaterte(): Int {
         val sql = "select count(*) as antall from registrering_tilstand " +
                 "where status not in ('PUBLISERT_KAFKA', 'OPPRINNELIG_OPPRETTET_UTEN_TILSTAND')"
@@ -90,6 +94,7 @@ class MigreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : Migr
         count(distinct profilering_type) as unike_typer 
         from bruker_profilering          
         """
+        private const val profileringSjekkSql2 = "select distinct bruker_registrering_id from bruker_profilering"
 
         private const val brukerRegistreringSjekkSql = """
         select count(*) as antall_rader, 

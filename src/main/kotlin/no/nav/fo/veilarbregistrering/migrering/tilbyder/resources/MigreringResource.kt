@@ -54,6 +54,12 @@ class MigreringResource(private val migreringRepository: MigreringRepository) {
         return migreringRepository.hentSjekksumFor(tabellnavn)
     }
 
+    @GetMapping("sjekk-profilering")
+    fun hentSjekkForProfilering(@RequestHeader("x-token") token: String): List<Long> {
+        sjekkToken(token)
+        return migreringRepository.hentSjekkForProfilering()
+    }
+
     private fun sjekkToken(token: String) {
         val secret = Secrets["vault/migration-token"]
         if (!secret.equals(token)) throw ForbiddenException("Ugydlig token")

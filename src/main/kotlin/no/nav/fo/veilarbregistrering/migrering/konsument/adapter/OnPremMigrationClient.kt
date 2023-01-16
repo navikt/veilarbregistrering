@@ -13,6 +13,10 @@ class OnPremMigrationClient: MigrateClient {
         throw IllegalStateException("MigrateClient forsøkt benyttet i FSS")
     }
 
+    override fun hentSjekkerForProfilering(): List<Long> {
+        throw IllegalStateException("MigrateClient forsøkt benyttet i FSS")
+    }
+
     override fun hentAntallPotensieltOppdaterteTilstander(): Int {
         throw IllegalStateException("MigrateClient forsøkt benyttet i FSS")
     }

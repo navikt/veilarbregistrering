@@ -25,6 +25,18 @@ class MigrationStatusService(
         }
     }
 
+    fun compareProfilering(): List<Long> {
+        logger.info("Sammenligner profilering")
+
+        val gcpProfileringer = migrateRepository.hentSjekkerForProfilering()
+        val fssProfileringer = migrateClient.hentSjekkerForProfilering()
+
+        val profileringerIkkeIGcp = fssProfileringer.subtract(gcpProfileringer.toSet())
+
+        logger.info("Registreringer med profilering som ikke finnes i GCP: $profileringerIkkeIGcp")
+        return profileringerIkkeIGcp.toList()
+    }
+
     companion object {
         private fun sjekkSamsvar(verdiKilde: Any, verdiDestinasjon: Any?): Boolean =
             verdiKilde.toString().toDouble().compareTo(verdiDestinasjon?.toString()?.toDouble() ?: Double.MIN_VALUE) == 0
