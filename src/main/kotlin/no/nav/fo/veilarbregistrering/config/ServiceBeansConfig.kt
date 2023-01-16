@@ -28,13 +28,6 @@ import no.nav.fo.veilarbregistrering.featuretoggle.resources.FeaturetoggleResour
 import no.nav.fo.veilarbregistrering.feil.FeilHandtering
 import no.nav.fo.veilarbregistrering.helsesjekk.resources.HelsesjekkResource
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateClient
-import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
-import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateService
-import no.nav.fo.veilarbregistrering.migrering.konsument.MigrationStatusService
-import no.nav.fo.veilarbregistrering.migrering.konsument.resources.StatusController
-import no.nav.fo.veilarbregistrering.migrering.tilbyder.MigreringRepository
-import no.nav.fo.veilarbregistrering.migrering.tilbyder.resources.MigreringResource
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveGateway
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
@@ -450,26 +443,6 @@ class ServiceBeansConfig {
     @Bean
     fun feilHandtering(): FeilHandtering {
         return FeilHandtering()
-    }
-
-    @Bean
-    fun migreringPostgressResource(migreringRepository: MigreringRepository): MigreringResource {
-        return MigreringResource(migreringRepository)
-    }
-
-    @Bean
-    fun migrationStatusService(migrateClient: MigrateClient, migrateRepository: MigrateRepository): MigrationStatusService {
-        return MigrationStatusService(migrateClient, migrateRepository)
-    }
-
-    @Bean
-    fun statusController(migrationStatusService: MigrationStatusService): StatusController {
-        return StatusController(migrationStatusService)
-    }
-
-    @Bean
-    fun migrateService(repository: MigrateRepository, migrateClient: MigrateClient): MigrateService {
-        return MigrateService(repository, migrateClient)
     }
 
     @Bean

@@ -6,12 +6,9 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.db.aktorIdCache.AktorIdCacheRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.MeldekortRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering.konsument.MigrateRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.migrering.tilbyder.MigreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.*
-import no.nav.fo.veilarbregistrering.migrering.konsument.MigrateRepository
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
@@ -68,16 +65,6 @@ class RepositoryConfig {
     @Bean
     fun manuellRegistreringRepository(db: NamedParameterJdbcTemplate): ManuellRegistreringRepository {
         return ManuellRegistreringRepositoryImpl(db)
-    }
-
-    @Bean
-    fun migreringRepository(db: NamedParameterJdbcTemplate): MigreringRepositoryImpl {
-        return MigreringRepositoryImpl(db)
-    }
-
-    @Bean
-    fun migrateRepository(db: NamedParameterJdbcTemplate): MigrateRepository {
-        return MigrateRepositoryImpl(db)
     }
 
     @Bean

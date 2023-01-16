@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheConfig
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
+import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.GcpAutorisasjonConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.OnPremAutorisasjonConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
@@ -16,13 +17,10 @@ import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
 import no.nav.fo.veilarbregistrering.kafka.KafkaConfig
 import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
-import no.nav.fo.veilarbregistrering.migrering.konsument.adapter.MigrateClientConfig
-import no.nav.fo.veilarbregistrering.migrering.konsument.scheduler.MigrateWorkerConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig
-import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -36,7 +34,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
     DatabaseConfig::class,
     RepositoryConfig::class,
     KafkaConfig::class,
-    MigrateClientConfig::class,
     OnPremAutorisasjonConfig::class,
     GcpAutorisasjonConfig::class,
     Norg2GatewayConfig::class,
@@ -51,7 +48,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
     KrrConfig::class,
     FormidlingsgruppeGatewayConfig::class,
     PubliseringSchedulerConfig::class,
-    MigrateWorkerConfig::class,
     HelsesjekkConfig::class,
     ObjectMapperConfig::class,
     SwaggerConfig::class,
