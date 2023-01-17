@@ -4,6 +4,7 @@ import no.nav.common.auth.Constants
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.auth.context.UserRole
 import no.nav.common.auth.oidc.filter.AzureAdUserRoleResolver
+import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter
 import no.nav.common.auth.oidc.filter.OidcAuthenticator
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig
 import no.nav.common.log.LogFilter
@@ -56,8 +57,8 @@ class FilterConfig {
 
     @Bean
     fun authenticationFilterRegistrationBean(): FilterRegistrationBean<*> {
-        val registration = FilterRegistrationBean<OidcAuthenticationFilterMigreringBypass>()
-        val authenticationFilter = OidcAuthenticationFilterMigreringBypass(
+        val registration = FilterRegistrationBean<OidcAuthenticationFilter>()
+        val authenticationFilter = OidcAuthenticationFilter(
             OidcAuthenticator.fromConfigs(
                 createAzureAdB2CConfig(),
                 createAadTokenConfig(),
