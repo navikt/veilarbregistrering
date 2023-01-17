@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstan
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.*
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -20,18 +21,24 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.DuplicateKeyException
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@ActiveProfiles("gcp")
 class RegistreringTilstandRepositoryDbIntegrationTest(
 
     @Autowired
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     @Autowired
     private val registreringTilstandRepository: RegistreringTilstandRepository) {
+
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
+    }
 
     @Test
     fun `skal kaste DataIntegrityViolationException hvis registreringstilstand lagres uten at registrering er lagret`() {

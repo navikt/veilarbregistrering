@@ -5,21 +5,27 @@ import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest
-@AutoConfigureTestDatabase(replace= Replace.NONE)
-@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@ActiveProfiles("gcp")
 class ProfileringRepositoryDbIntegrationTest(
 
     @Autowired
     private val profileringRepository: ProfileringRepository) {
+
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
+    }
 
     @Test
     fun profilerBruker() {

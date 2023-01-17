@@ -4,27 +4,33 @@ import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration( classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
+@ActiveProfiles("gcp")
 class SykmeldtRegistreringRepositoryDbIntegrationTest(
 
     @Autowired
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
 ) {
+    init {
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
+    }
 
     @Test
     fun hentSykmeldtregistreringForAktorId() {
@@ -57,8 +63,7 @@ class SykmeldtRegistreringRepositoryDbIntegrationTest(
     }
 
     companion object {
-        private val ident = Foedselsnummer("10108000398") //Aremark fiktivt fnr.";
-        private val BRUKER = Bruker(ident, AktorId("11111"))
+        private val BRUKER = Bruker(aremark(), AktorId("11111"))
     }
 
 }

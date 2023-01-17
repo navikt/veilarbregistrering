@@ -19,7 +19,7 @@ import kotlin.test.assertNotNull
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
 @ActiveProfiles("gcp")
-class GcpAktorIdCacheRepositoryDbIntegrationTest(
+class AktorIdCacheRepositoryDbIntegrationTest(
     @Autowired
     private val aktorIdCacheRepository: AktorIdCacheRepository
 ) {
