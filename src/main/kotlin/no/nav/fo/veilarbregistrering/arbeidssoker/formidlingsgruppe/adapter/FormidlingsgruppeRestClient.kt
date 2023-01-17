@@ -12,6 +12,7 @@ import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.http.RetryInterceptor
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
+import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.metrics.TimedMetric
 import okhttp3.HttpUrl
@@ -57,16 +58,22 @@ class FormidlingsgruppeRestClient internal constructor(
         }
         return doTimedCall {
             httpClient.newCall(request).execute().use {
-                if (it.isSuccessful) {
-                    it.body()?.string()?.let { objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
-                    } ?: throw RuntimeException("Unexpected empty body")
-
-                } else {
-                    when (val status = HttpStatus.valueOf(it.code())) {
-                        HttpStatus.NOT_FOUND -> null
-                        HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
-                        else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
+                when (val status = HttpStatus.valueOf(it.code())) {
+                    HttpStatus.OK -> {
+                        it.body()?.string()?.let { objectMapper.readValue(it, FormidlingsgruppeResponseDto::class.java)
+                        } ?: throw RuntimeException("Unexpected empty body")
                     }
+                    HttpStatus.NO_CONTENT -> {
+                        logger.info("Mottok en 204 fra arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
+                        null
+                    }
+                    HttpStatus.NOT_FOUND -> {
+                        //TODO: Denne blir erstattet av NO_CONTENT - kjører meg begge i en overgang
+                        logger.info("Mottok en 404 fra arena/api/v1/person/arbeidssoeker/formidlingshistorikk")
+                        null
+                    }
+                    HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Hent formidlingshistorikk fra Arena feilet med 401 - UNAUTHORIZED")
+                    else -> throw RuntimeException("Hent formidlingshistorikk fra Arena feilet med statuskode: $status")
                 }
             }
         }
