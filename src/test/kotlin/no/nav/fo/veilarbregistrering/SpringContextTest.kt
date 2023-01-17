@@ -28,7 +28,7 @@ class SpringContextTest(
 
     @Test
     fun `selftest svarer med html`() {
-        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
         mvc.get("/internal/selftest").andExpect {
             status { isOk() }
         }

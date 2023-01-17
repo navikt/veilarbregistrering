@@ -34,7 +34,7 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository
 ) {
     init {
-        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
     }
 
     @Test

@@ -26,7 +26,7 @@ class FormidlingsgruppeGatewayTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
-        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
         leggTilCallId()
         mockServer.reset()
         formidlingsgruppeGateway = FormidlingsgruppeGatewayImpl(buildClient())

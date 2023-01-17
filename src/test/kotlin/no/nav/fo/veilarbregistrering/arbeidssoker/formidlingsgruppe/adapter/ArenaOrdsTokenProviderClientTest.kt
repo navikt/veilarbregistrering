@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import no.nav.fo.veilarbregistrering.FileToJson
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.ArenaOrdsTokenProviderClient
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +21,7 @@ class ArenaOrdsTokenProviderClientTest(private val mockServer: ClientAndServer) 
         mockServer.reset()
         System.setProperty("ARENA_ORDS_CLIENT_ID", "1")
         System.setProperty("ARENA_ORDS_CLIENT_SECRET", "1")
-        System.setProperty("NAIS_CLUSTER_NAME", "dev-fss")
+        System.setProperty("NAIS_CLUSTER_NAME", "dev-gcp")
     }
 
     @Test
@@ -32,7 +31,8 @@ class ArenaOrdsTokenProviderClientTest(private val mockServer: ClientAndServer) 
         mockServer.`when`(
             HttpRequest.request()
                 .withMethod("POST")
-                .withHeader("Authorization", mockBasicAuth)
+                .withHeader("Authorization", mockAuth)
+                .withHeader("Downstream-Authorization", mockBasicAuth)
                 .withContentType(MediaType.APPLICATION_FORM_URLENCODED.withCharset("utf-8"))
                 .withBody("grant_type=client_credentials")
         ).respond(
@@ -52,3 +52,4 @@ class ArenaOrdsTokenProviderClientTest(private val mockServer: ClientAndServer) 
 }
 
 private val mockBasicAuth: String = "Basic ${Base64.getEncoder().encodeToString("1:1".toByteArray())}"
+private const val mockAuth = "Bearer testToken"

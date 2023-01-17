@@ -34,7 +34,7 @@ internal class OppfolgingClientTest(private val mockServer: ClientAndServer) {
 
     @BeforeEach
     fun setup() {
-        System.setProperty("VEILARBOPPFOLGINGAPI_CLUSTER", "dev-fss")
+        System.setProperty("VEILARBOPPFOLGINGAPI_CLUSTER", "dev-gcp")
         mockServer.reset()
         httpServletRequest = mockk()
         oppfolgingClient = buildClient(jacksonObjectMapper().findAndRegisterModules())
