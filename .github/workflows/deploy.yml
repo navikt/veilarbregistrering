@@ -73,7 +73,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod-gcp
-    needs: deploy-dev-gcp
+    needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
