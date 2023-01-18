@@ -1,9 +1,10 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,7 +26,6 @@ import kotlin.test.assertTrue
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
-@ActiveProfiles("gcp")
 class FormidlingsgruppeRepositoryDbIntegrationTest(
 
     @Autowired

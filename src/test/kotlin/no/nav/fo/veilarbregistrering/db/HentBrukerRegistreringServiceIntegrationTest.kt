@@ -28,6 +28,7 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -43,7 +44,10 @@ import kotlin.test.assertNull
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class])
+@ContextConfiguration(
+    classes = [RepositoryConfig::class, DatabaseConfig::class, HentBrukerRegistreringServiceIntegrationTest.Companion.TestContext::class],
+    initializers = [DbContainerInitializer::class]
+)
 class HentBrukerRegistreringServiceIntegrationTest(
     @Autowired val brukerRegistreringRepository: BrukerRegistreringRepository,
     @Autowired val manuellRegistreringRepository: ManuellRegistreringRepository,

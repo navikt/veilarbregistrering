@@ -5,8 +5,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewa
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeConfig
-import no.nav.fo.veilarbregistrering.autorisasjon.GcpAutorisasjonConfig
-import no.nav.fo.veilarbregistrering.autorisasjon.OnPremAutorisasjonConfig
+import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig
 import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
@@ -34,8 +33,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     DatabaseConfig::class,
     RepositoryConfig::class,
     KafkaConfig::class,
-    OnPremAutorisasjonConfig::class,
-    GcpAutorisasjonConfig::class,
+    AutorisasjonConfig::class,
     Norg2GatewayConfig::class,
     CacheConfig::class,
     UnleashConfig::class,

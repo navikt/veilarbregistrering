@@ -7,11 +7,10 @@ import no.nav.common.auth.context.UserRole
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 
 @Configuration
-@Profile("!gcp")
-class OnPremAutorisasjonConfig {
+class AutorisasjonConfig {
+
     @Bean
     fun pepClient(): Pep = mockk()
 

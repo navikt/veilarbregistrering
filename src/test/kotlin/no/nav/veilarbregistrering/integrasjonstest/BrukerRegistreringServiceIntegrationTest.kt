@@ -22,6 +22,7 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.veilarbregistrering.integrasjonstest.BrukerRegistreringServiceIntegrationTest.BrukerregistreringConfigTest
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,10 @@ import java.util.*
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = [DatabaseConfig::class, RepositoryConfig::class, BrukerregistreringConfigTest::class])
+@ContextConfiguration(
+    classes = [DatabaseConfig::class, RepositoryConfig::class, BrukerregistreringConfigTest::class],
+    initializers = [DbContainerInitializer::class]
+)
 internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
     private val brukerRegistreringService: BrukerRegistreringService,
     private val oppfolgingGateway: OppfolgingGateway,

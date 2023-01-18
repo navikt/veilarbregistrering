@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,7 +25,6 @@ import kotlin.test.assertEquals
     initializers = [DbContainerInitializer::class],
     classes = [RepositoryConfig::class, DatabaseConfig::class]
 )
-@ActiveProfiles("gcp")
 internal class MeldekortRepositoryImplTest(@Autowired private val meldekortRepository: MeldekortRepository) {
 
     init {

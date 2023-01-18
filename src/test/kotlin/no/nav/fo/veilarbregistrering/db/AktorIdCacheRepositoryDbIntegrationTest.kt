@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
@@ -18,7 +17,6 @@ import kotlin.test.assertNotNull
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = [DbContainerInitializer::class], classes = [ RepositoryConfig::class, DatabaseConfig::class ])
-@ActiveProfiles("gcp")
 class AktorIdCacheRepositoryDbIntegrationTest(
     @Autowired
     private val aktorIdCacheRepository: AktorIdCacheRepository

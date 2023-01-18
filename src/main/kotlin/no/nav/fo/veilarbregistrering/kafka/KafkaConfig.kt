@@ -26,7 +26,6 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import java.util.*
 
 @Configuration
@@ -66,7 +65,6 @@ class KafkaConfig {
     }
 
     @Bean
-    @Profile("gcp")
     fun formidlingsgruppeKafkaConsumer(
         unleashClient: UnleashClient,
         formidlingsgruppeMottakService: FormidlingsgruppeMottakService
@@ -85,7 +83,6 @@ class KafkaConfig {
     }
 
     @Bean
-    @Profile("gcp")
     fun meldekortKafkaConsumer(unleashClient: UnleashClient, meldekortMottakService: MeldekortMottakService): MeldekortKafkaConsumer {
         val envSuffix = if (isProduction()) "p" else "q1"
         return MeldekortKafkaConsumer(

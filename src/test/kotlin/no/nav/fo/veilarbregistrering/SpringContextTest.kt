@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering
 
 import no.nav.fo.veilarbregistrering.config.ApplicationTestConfig
+import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.get
 @SpringBootTest
 @EnableAutoConfiguration
 @AutoConfigureMockMvc
-@SpringJUnitConfig(classes = [ApplicationTestConfig::class])
+@SpringJUnitConfig(classes = [ApplicationTestConfig::class], initializers = [DbContainerInitializer::class])
 class SpringContextTest(
     @Autowired private val context: ApplicationContext,
     @Autowired private val mvc: MockMvc,

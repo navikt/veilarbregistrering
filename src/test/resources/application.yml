@@ -3,9 +3,9 @@ spring:
     banner-mode: off
   flyway:
     table: schema_version
-    locations: classpath:db/migration/veilarbregistreringDB
+    locations: classpath:db/migration/postgres
   datasource:
-    url: "jdbc:h2:mem:veilarbregistrering;DB_CLOSE_DELAY=-1;MODE=Oracle"
+    url: "jdbc:h2:mem:veilarbregistrering;DB_CLOSE_DELAY=-1"
     username: "sa"
     password: "password"
     hikari:
