@@ -15,15 +15,16 @@ class PopulerAktorIdWorker(
     val unleashClient: UnleashClient
 ) {
     fun populereAktorId() {
-        val foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
+        var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
 
         var teller = 1
         while(foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")){
-            val foedselsnummer_bolk = foedselsnummer.take(100)
-            foedselsnummer.drop(100)
+            val foedselsnummerBolk = foedselsnummer.take(100)
+            foedselsnummer = foedselsnummer.drop(100)
 
-            val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummer_bolk)
-            val fnrUtenTreff = foedselsnummer_bolk.subtract(aktorIdFnrMap.keys)
+            val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummerBolk)
+            val fnrUtenTreff = foedselsnummerBolk.subtract(aktorIdFnrMap.keys)
+
             if (fnrUtenTreff.isNotEmpty()){
                 secureLogger.warn("Aktor_id ikke funnet for foedselsnummer $fnrUtenTreff i bolk $teller")
             }
