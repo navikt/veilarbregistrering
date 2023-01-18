@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration
 class AktorIdCacheConfig {
     @Bean
     fun populerAktorIdWorker(
-        aktorIdCacheRepository: AktorIdCacheRepository,
-        formidlingsgruppeRepository: FormidlingsgruppeRepository,
         pdlOppslagGateway: PdlOppslagGateway,
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
+        aktorIdCacheRepository: AktorIdCacheRepository,
         unleashClient: UnleashClient
     ): PopulerAktorIdWorker {
         return PopulerAktorIdWorker(
@@ -23,6 +23,15 @@ class AktorIdCacheConfig {
         )
 
     }
-
+    @Bean
+    fun aktorIdCacheService(
+        pdlOppslagGateway: PdlOppslagGateway,
+        aktorIdCacheRepository: AktorIdCacheRepository,
+    ): AktorIdCacheService {
+        return AktorIdCacheService(
+            pdlOppslagGateway,
+            aktorIdCacheRepository
+        )
+    }
 
 }

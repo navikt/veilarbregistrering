@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -38,7 +39,8 @@ open class BrukerRegistreringService(
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val brukerTilstandService: BrukerTilstandService,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
-    private val metricsService: MetricsService
+    private val metricsService: MetricsService,
+    private val aktorIdCacheService: AktorIdCacheService
 ) {
     @Transactional
     open fun registrerBrukerUtenOverforing(
@@ -65,6 +67,8 @@ open class BrukerRegistreringService(
             profilering
         )
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.ORDINAER_REGISTRERING)
+
+        aktorIdCacheService.settInnAktorIdHvisIkkeFinnes(bruker.gjeldendeFoedselsnummer, bruker.aktorId)
 
         return opprettetBrukerRegistrering
     }

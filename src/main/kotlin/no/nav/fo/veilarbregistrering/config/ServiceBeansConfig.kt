@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
@@ -157,7 +158,8 @@ class ServiceBeansConfig {
         registreringTilstandRepository: RegistreringTilstandRepository,
         brukerTilstandService: BrukerTilstandService,
         manuellRegistreringRepository: ManuellRegistreringRepository,
-        metricsService: MetricsService
+        metricsService: MetricsService,
+        aktorIdCacheService: AktorIdCacheService
     ): BrukerRegistreringService {
         return BrukerRegistreringService(
             brukerRegistreringRepository,
@@ -167,7 +169,8 @@ class ServiceBeansConfig {
             registreringTilstandRepository,
             brukerTilstandService,
             manuellRegistreringRepository,
-            metricsService
+            metricsService,
+            aktorIdCacheService
         )
     }
 

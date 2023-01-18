@@ -10,11 +10,11 @@ class AktorIdCacheService(
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val aktorIdCacheRepository: AktorIdCacheRepository,
 ) {
-    fun sjekkFoedselsnummerOgHvisNeiSettInn(foedselsnummer: Foedselsnummer) {
+    fun hentAktorIdFraPDLHvisIkkeFinnes(foedselsnummer: Foedselsnummer) {
         if (aktorIdCacheRepository.hentAktørId(foedselsnummer) != null) return
-        val identer = pdlOppslagGateway.hentIdenter(foedselsnummer)
 
         // hente ut
+        val identer = pdlOppslagGateway.hentIdenter(foedselsnummer)
         val aktorId = identer.identer.first { !it.isHistorisk && it.gruppe == Gruppe.AKTORID }.ident
         // sette inn
 
@@ -27,5 +27,16 @@ class AktorIdCacheService(
         aktorIdCacheRepository.lagre(aktorIdCache)
     }
 
+    fun settInnAktorIdHvisIkkeFinnes(foedselsnummer: Foedselsnummer, aktorId: AktorId) {
+        if (aktorIdCacheRepository.hentAktørId(foedselsnummer) != null) return
+
+        val aktorIdCache = AktorIdCache(
+            foedselsnummer = foedselsnummer,
+            aktorId = aktorId,
+            opprettetDato = LocalDateTime.now()
+        )
+
+        aktorIdCacheRepository.lagre(aktorIdCache)
+    }
 
 }
