@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
@@ -70,8 +69,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
     }
 
     private fun nesteFraSekvens(): Long {
-        val sql =
-            if (isOnPrem()) "SELECT $FORMIDLINGSGRUPPE_SEQ.nextval FROM DUAL" else "SELECT nextVal('$FORMIDLINGSGRUPPE_SEQ')"
+        val sql = "SELECT nextVal('$FORMIDLINGSGRUPPE_SEQ')"
         return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 

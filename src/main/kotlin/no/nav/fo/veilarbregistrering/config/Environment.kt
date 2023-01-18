@@ -19,6 +19,3 @@ fun isDevelopment(): Boolean = !isProduction()
 
 fun isProduction(): Boolean =
     getPropertyOrNull("NAIS_CLUSTER_NAME")?.contains("prod") ?: false
-
-fun isOnPrem(): Boolean =
-    !requireClusterName().endsWith("gcp")

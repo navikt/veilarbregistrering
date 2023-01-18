@@ -6,8 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
@@ -64,7 +62,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     private fun nesteFraSekvens(sekvensNavn: String): Long {
-        val sql = if (isOnPrem()) "SELECT $sekvensNavn.nextval FROM DUAL" else "SELECT nextVal('$sekvensNavn')"
+        val sql = "SELECT nextVal('$sekvensNavn')"
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 

@@ -7,14 +7,11 @@ import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.config.isOnPrem
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.BRUKER_REGISTRERING_ID
 import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException
@@ -108,7 +105,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
     }
 
     private fun nesteFraSekvens(sekvensNavn: String): Long {
-        val sql = if (isOnPrem()) "SELECT $sekvensNavn.nextval FROM DUAL" else "SELECT nextVal('$sekvensNavn')"
+        val sql = "SELECT nextVal('$sekvensNavn')"
         return db.queryForObject(sql, noParams, Long::class.java)!!
     }
 

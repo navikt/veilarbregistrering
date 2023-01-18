@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.config.requireProperty
 import no.nav.fo.veilarbregistrering.http.defaultHttpClient
@@ -31,7 +30,7 @@ class ArenaOrdsTokenProviderClient(
         }
 
     private fun getRefreshedToken(): OrdsToken {
-        val request = if (isOnPrem()) buildRequest() else buildRequestGcp()
+        val request = buildRequest()
         return try {
             defaultHttpClient().newCall(request).execute().use { response ->
                 when {
@@ -49,19 +48,6 @@ class ArenaOrdsTokenProviderClient(
     }
 
     private fun buildRequest() = Request.Builder()
-        .url(HttpUrl.parse(arenaOrdsUrl)!!.newBuilder().addPathSegments("arena/api/oauth/token").build())
-        .header(HttpHeaders.CACHE_CONTROL, "no-cache")
-        .header(HttpHeaders.AUTHORIZATION, basicAuth)
-        .post(
-            RequestBody.create(
-                MediaType.get("application/x-www-form-urlencoded"),
-                "grant_type=client_credentials"
-            )
-        )
-        .build()
-
-
-    private fun buildRequestGcp() = Request.Builder()
         .url(HttpUrl.parse(arenaOrdsUrl)!!.newBuilder().addPathSegments("arena/token").build())
         .header(HttpHeaders.CACHE_CONTROL, "no-cache")
         .header(HttpHeaders.AUTHORIZATION, "Bearer ${proxyTokenProvider()}")

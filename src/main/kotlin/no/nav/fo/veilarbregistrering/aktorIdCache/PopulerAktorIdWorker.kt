@@ -4,7 +4,6 @@ import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import java.time.LocalDateTime
@@ -16,9 +15,6 @@ class PopulerAktorIdWorker(
     val unleashClient: UnleashClient
 ) {
     fun populereAktorId() {
-        if (isOnPrem()){
-            return
-        }
         val foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
 
         var teller = 1

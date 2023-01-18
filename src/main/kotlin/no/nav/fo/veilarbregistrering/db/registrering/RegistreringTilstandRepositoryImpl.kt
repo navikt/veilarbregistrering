@@ -1,13 +1,11 @@
 package no.nav.fo.veilarbregistrering.db.registrering
 
-import no.nav.fo.veilarbregistrering.config.isOnPrem
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Timestamp
-import java.time.LocalDateTime
 
 class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTemplate) : RegistreringTilstandRepository {
 
@@ -115,7 +113,7 @@ class RegistreringTilstandRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     private fun nesteFraSekvens(): Long {
-        val sql = if (isOnPrem()) "select $SEQ_TABLE_NAME.nextval from dual" else "select nextVal('$SEQ_TABLE_NAME')"
+        val sql = "select nextVal('$SEQ_TABLE_NAME')"
         return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
