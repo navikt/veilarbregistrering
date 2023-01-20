@@ -7,9 +7,8 @@ import java.time.LocalDateTime
 /**
  * Root aggregate - all kommunikasjon mot Arbeidssøker og underliggende elementer skal gå via dette objektet.
  */
-class Arbeidssoker : Observable {
+class Arbeidssoker {
 
-    private val observers: MutableList<Observer> = mutableListOf()
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
     private var arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
 
@@ -25,15 +24,11 @@ class Arbeidssoker : Observable {
     internal fun startPeriode(fraDato: LocalDateTime) {
         this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
         this.tilstand = AktivArbeidssokerState
-        //publish event
-        observers.forEach { it.update("ArbeidssokerperiodeStartetEvent") }
     }
 
     internal fun avsluttPeriode(tilDato: LocalDateTime) {
         sistePeriode()?.avslutt(tilDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
         this.tilstand = TidligereArbeidssokerState
-        //publish event
-        observers.forEach { it.update("ArbeidssokerperiodeAvsluttetEvent") }
     }
 
     internal fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
@@ -47,14 +42,6 @@ class Arbeidssoker : Observable {
 
     internal fun allePerioder(): List<Arbeidssokerperiode> {
         return arbeidssokerperioder
-    }
-
-    override fun add(observer: Observer) {
-        observers.add(observer)
-    }
-
-    override fun remove(observer: Observer) {
-        observers.remove(observer)
     }
 }
 

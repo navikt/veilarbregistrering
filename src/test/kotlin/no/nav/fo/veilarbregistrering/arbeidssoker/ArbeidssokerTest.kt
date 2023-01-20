@@ -1,8 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.arbeidssoker.Observer
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
@@ -22,13 +19,9 @@ class ArbeidssokerTest {
         val registreringsdato = LocalDateTime.now().minusMonths(2)
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = registreringsdato)
 
-        var hendelse : String? = null
-
-        arbeidssoker.add(object : Observer { override fun update(event: String) { hendelse = event } })
         arbeidssoker.behandle(nyRegistrering)
 
         assertEquals(Arbeidssokerperiode(registreringsdato, null), arbeidssoker.sistePeriode())
-        assertEquals("ArbeidssokerperiodeStartetEvent", hendelse)
     }
 
     @Test
