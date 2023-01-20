@@ -68,7 +68,6 @@ open class BrukerRegistreringService(
         )
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.ORDINAER_REGISTRERING)
 
-        // TODO: Teste dette i dev før det deployes til prod
         aktorIdCacheService.settInnAktorIdHvisIkkeFinnes(bruker.gjeldendeFoedselsnummer, bruker.aktorId)
 
         return opprettetBrukerRegistrering
