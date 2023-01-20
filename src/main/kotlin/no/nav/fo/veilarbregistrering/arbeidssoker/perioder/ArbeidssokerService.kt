@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger
@@ -36,7 +36,11 @@ class ArbeidssokerService(
             try {
                 val arbeidssoker = populerNyArbeidssøkermodell(bruker)
                 val overlappendeArbeidssokerperioderLokalt = map(arbeidssoker).overlapperMed(forespurtPeriode)
-                sammenlignNyOgGammelModell(overlappendeArbeidssokerperioderLokalt, overlappendeHistoriskePerioderORDS, forespurtPeriode)
+                sammenlignNyOgGammelModell(
+                    overlappendeArbeidssokerperioderLokalt,
+                    overlappendeHistoriskePerioderORDS,
+                    forespurtPeriode
+                )
             } catch (e: RuntimeException) {
                 logger.warn("Sammenligning av perioder feilet", e)
             }
@@ -51,18 +55,12 @@ class ArbeidssokerService(
     }
 
     private fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
-        val brukerRegistrering =
-            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
-        val brukerReaktivering =
-            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
         val formidlingsgruppe =
             formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
-        //TODO: hente meldekort - vi avventer Meldekort til vi har lært litt mer om modellen.
-
-        val listeMedArbeidssøkerEndringer = brukerRegistrering + brukerReaktivering + formidlingsgruppe
 
         val arbeidssoker = Arbeidssoker()
-        listeMedArbeidssøkerEndringer.sortedBy { it.opprettetTidspunkt() }.forEach { arbeidssoker.behandle(it) }
+
+        formidlingsgruppe.sortedBy { it.opprettetTidspunkt() }.forEach { arbeidssoker.behandle(it) }
 
         return arbeidssoker
     }
