@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -33,4 +34,14 @@ class AktorIdCacheRepositoryDbIntegrationTest(
         assertNotNull(aktorIdCache)
         assertEquals(AKTORID, aktorIdCache.aktorId)
     }
+
+    @Test
+    fun `få null hvis aktorId ikke finnes`() {
+        val FOEDSELSNUMMER = Foedselsnummer("01234567890")
+        val aktorIdCache = aktorIdCacheRepository.hentAktørId(FOEDSELSNUMMER)
+        assertNull(aktorIdCache)
+    }
+
+
+
 }

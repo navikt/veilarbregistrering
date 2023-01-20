@@ -43,7 +43,7 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
     override fun hentAktørId(fnr: Foedselsnummer): AktorIdCache? {
         val sql = "SELECT * FROM aktor_id_cache WHERE foedselsnummer = :fnr"
         val params = mapOf("fnr" to fnr.foedselsnummer)
-         return db.queryForObject(sql, params, aktorIdCacheRowMapper)
+        return db.query(sql, params, aktorIdCacheRowMapper).firstOrNull()
     }
 
     companion object {
