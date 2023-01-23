@@ -38,7 +38,7 @@ class ArbeidssokerTest {
     }
 
     @Test
-    fun `skal overse formidlingsgruppeendring med ARBS når arbeidsøker allerede er aktiv`() {
+    fun `skal avslutte og starte ny periode når vi mottar formidlingsgruppeendring med ARBS og arbeidsøker allerede er aktiv`() {
         val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
         arbeidssoker.behandle(nyRegistrering)
@@ -46,7 +46,9 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(nyRegistreringsdato.plusMinutes(5))
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
+        assertEquals(2, arbeidssoker.allePerioder().size)
+        assertEquals(formidlingsgruppeEndringEvent.formidlingsgruppeEndret.toLocalDate().minusDays(1), arbeidssoker.allePerioder().get(0).tilDato?.toLocalDate())
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringEvent.formidlingsgruppeEndret, null), arbeidssoker.sistePeriode())
     }
 
     @Test

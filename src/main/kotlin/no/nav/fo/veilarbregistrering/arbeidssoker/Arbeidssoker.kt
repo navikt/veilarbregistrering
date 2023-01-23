@@ -21,6 +21,12 @@ class Arbeidssoker {
         }
     }
 
+    internal fun avsluttGammelOgStartNyPeriode(overgangsTidspunkt: LocalDateTime) {
+        sistePeriode()?.avslutt(overgangsTidspunkt.toLocalDate().atTime(23, 59, 59).minusDays(1))
+            ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        startPeriode(overgangsTidspunkt)
+    }
+
     internal fun startPeriode(fraDato: LocalDateTime) {
         this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
         this.tilstand = AktivArbeidssokerState
@@ -87,7 +93,7 @@ private object IkkeArbeidssokerState : ArbeidssokerState {
 }
 
 /**
-* Aktiv arbeidssøker betyr at bruker har en åpen periode - at perioden ikke er avsluttet og at tildato er null.
+ * Aktiv arbeidssøker betyr at bruker har en åpen periode - at perioden ikke er avsluttet og at tildato er null.
  */
 private object AktivArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
@@ -100,11 +106,14 @@ private object AktivArbeidssokerState : ArbeidssokerState {
 
     override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret) {
         if (formidlingsgruppeEndretEvent.formidlingsgruppe().erArbeidssoker()) {
-            logger.info("Avviser FormidlingsgruppeEndretEvent - Arbeidssøker er allerede aktiv")
-            return
+            logger.info("Avslutter arbeidssøkerperiode, og starter samtidig en ny som følge av " +
+                    "${formidlingsgruppeEndretEvent.formidlingsgruppe()} fordi arbeidssøker allerede var aktiv")
+            arbeidssoker.avsluttGammelOgStartNyPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
+
+        } else {
+            logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
+            arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
         }
-        logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
-        arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
     }
 
     override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret) {
@@ -119,7 +128,7 @@ private object AktivArbeidssokerState : ArbeidssokerState {
 
 /**
  * Tidligere arbeidssøker betyr at du tidligere har vært arbeidssøker, men ikke er det lenger.
-*/
+ */
 private object TidligereArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
         logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
