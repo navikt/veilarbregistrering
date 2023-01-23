@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt
 
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events
@@ -20,7 +21,8 @@ open class SykmeldtRegistreringService(
     private val oppfolgingGateway: OppfolgingGateway,
     private val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
-    private val metricsService: MetricsService
+    private val metricsService: MetricsService,
+    private val aktorIdCacheService: AktorIdCacheService
 ) {
     @Transactional
     open fun registrerSykmeldt(sykmeldtRegistrering: SykmeldtRegistrering, bruker: Bruker, navVeileder: NavVeileder?): Long {
@@ -29,6 +31,9 @@ open class SykmeldtRegistreringService(
         val id = sykmeldtRegistreringRepository.lagreSykmeldtBruker(sykmeldtRegistrering, bruker)
         lagreManuellRegistrering(id, navVeileder)
         registrerOverfortStatistikk(navVeileder)
+
+        aktorIdCacheService.settInnAktorIdHvisIkkeFinnes(bruker.gjeldendeFoedselsnummer, bruker.aktorId)
+
         LOG.info("Sykmeldtregistrering gjennomført med data {}", sykmeldtRegistrering)
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.SYKMELDT_REGISTRERING)
         metricsService.registrer(Events.SYKMELDT_BESVARELSE_EVENT)

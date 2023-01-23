@@ -4,6 +4,7 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -30,6 +31,8 @@ class SykmeldtRegistreringServiceTest {
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
     private val metricsService: MetricsService = mockk(relaxed = true)
+    private val aktorIdCacheService: AktorIdCacheService = mockk(relaxed = true)
+
 
     @BeforeEach
     fun setup() {
@@ -43,7 +46,8 @@ class SykmeldtRegistreringServiceTest {
             oppfolgingGateway,
             sykmeldtRegistreringRepository,
             manuellRegistreringRepository,
-            metricsService
+            metricsService,
+            aktorIdCacheService
         )
     }
 

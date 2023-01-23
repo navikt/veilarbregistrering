@@ -138,14 +138,16 @@ class ServiceBeansConfig {
         oppfolgingGateway: OppfolgingGateway,
         sykmeldtRegistreringRepository: SykmeldtRegistreringRepository,
         manuellRegistreringRepository: ManuellRegistreringRepository,
-        metricsService: MetricsService
+        metricsService: MetricsService,
+        aktorIdCacheService: AktorIdCacheService
     ): SykmeldtRegistreringService {
         return SykmeldtRegistreringService(
             brukerTilstandService,
             oppfolgingGateway,
             sykmeldtRegistreringRepository,
             manuellRegistreringRepository,
-            metricsService
+            metricsService,
+            aktorIdCacheService
         )
     }
 
