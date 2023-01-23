@@ -22,6 +22,7 @@ class FormidlingsgruppeMottakServiceTest {
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService,
+            mockk(relaxed = true),
             mockk(relaxed = true)
         )
     }

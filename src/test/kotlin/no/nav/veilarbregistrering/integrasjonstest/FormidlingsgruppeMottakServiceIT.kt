@@ -80,6 +80,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
         ): FormidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService,
+            mockk(relaxed = true),
             mockk(relaxed = true)
         )
     }

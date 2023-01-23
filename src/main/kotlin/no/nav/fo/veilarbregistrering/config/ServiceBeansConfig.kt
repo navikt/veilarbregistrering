@@ -348,9 +348,15 @@ class ServiceBeansConfig {
     fun formidlingsgruppeMottakService(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
-        unleashClient: UnleashClient
+        unleashClient: UnleashClient,
+        aktorIdCacheService: AktorIdCacheService
     ): FormidlingsgruppeMottakService {
-        return FormidlingsgruppeMottakService(formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService, unleashClient)
+        return FormidlingsgruppeMottakService(
+            formidlingsgruppeRepository,
+            arbeidssokerperiodeAvsluttetService,
+            unleashClient,
+            aktorIdCacheService
+        )
     }
 
     @Bean

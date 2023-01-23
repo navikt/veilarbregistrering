@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
@@ -11,7 +12,8 @@ import java.time.LocalDateTime
 class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
-    private val unleashClient: UnleashClient
+    private val unleashClient: UnleashClient,
+    private val aktorIdCacheService: AktorIdCacheService
 ) {
 
     @Transactional
@@ -31,6 +33,8 @@ class FormidlingsgruppeMottakService(
         ) else null
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
+
+        aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer)
 
         if (skalUtledeAvslutningAvPeriode) {
             arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
