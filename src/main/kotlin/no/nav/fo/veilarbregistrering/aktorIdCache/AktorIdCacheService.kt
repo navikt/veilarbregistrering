@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Gruppe
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.log.logger
 import java.time.LocalDateTime
 
 class AktorIdCacheService(
@@ -23,7 +24,7 @@ class AktorIdCacheService(
             aktorId = AktorId(aktorId),
             opprettetDato = LocalDateTime.now()
         )
-
+        logger.info("henter aktorId fra PDL og setter inn i cache")
         aktorIdCacheRepository.lagre(aktorIdCache)
     }
 
