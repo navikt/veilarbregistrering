@@ -34,9 +34,13 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
     }
 
     @Cacheable(CacheConfig.HENT_PERSONIDENTER)
-    override fun hentIdenter(fnr: Foedselsnummer): Identer {
+    override fun hentIdenter(fnr: Foedselsnummer, erSystemKontekst: Boolean): Identer {
         return try {
-            val pdlIdenter = pdlOppslagClient.hentIdenter(fnr)
+            val pdlIdenter = if (erSystemKontekst) {
+                pdlOppslagClient.hentIdenterForSystemkontekst(fnr)
+            } else {
+                pdlOppslagClient.hentIdenter(fnr)
+            }
             map(pdlIdenter)
         } catch (e: BrukerIkkeFunnetException) {
             throw e
@@ -63,11 +67,11 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         return pdlAktorIdListe
             .filter { it.identer != null }
             .associate {
-            Foedselsnummer(it.ident) to AktorId(it.identer?.first()?.ident
-                ?: throw BrukerIkkeFunnetException("Fant ikke AktørId for fødselsnummer i hentIdenterBolk").also {_ ->
-                secureLogger.warn("Fant ikke aktor_id for foedselsnummer ${it.ident} ")
-            })
-        }
+                Foedselsnummer(it.ident) to AktorId(it.identer?.first()?.ident
+                    ?: throw BrukerIkkeFunnetException("Fant ikke AktørId for fødselsnummer i hentIdenterBolk").also { _ ->
+                        secureLogger.warn("Fant ikke aktor_id for foedselsnummer ${it.ident} ")
+                    })
+            }
     }
 
     companion object {
