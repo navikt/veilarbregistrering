@@ -17,7 +17,8 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
             "aktor_id" to aktorIdCache.aktorId.aktorId,
             "opprettet_dato" to aktorIdCache.opprettetDato
         )
-        val sqlForInsert = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)"
+        val sqlForInsert = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)" +
+                " on conflict do nothing"
 
         try {
             db.update(sqlForInsert, params)
@@ -35,7 +36,8 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
             )
         }
 
-        val sql = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)"
+        val sql = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)" +
+                " on conflict do nothing"
 
         return db.batchUpdate(sql, params.toTypedArray()).sum()
     }
