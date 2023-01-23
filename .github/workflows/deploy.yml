@@ -90,7 +90,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          DRY_RUN: true
+          DRY_RUN: false
           RESOURCE: nais/nais-prod-gcp.yaml
 
   release:
