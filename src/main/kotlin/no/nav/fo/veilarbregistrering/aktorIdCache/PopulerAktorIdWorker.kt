@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.aktorIdCache
 
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
@@ -11,19 +12,23 @@ import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
 
 class PopulerAktorIdWorker(
-    val formidlingsgruppeRepository: FormidlingsgruppeRepository,
-    val pdlOppslagGateway: PdlOppslagGateway,
-    val aktorIdCacheRepository: AktorIdCacheRepository,
-    val unleashClient: UnleashClient
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
+    private val pdlOppslagGateway: PdlOppslagGateway,
+    private val aktorIdCacheRepository: AktorIdCacheRepository,
+    private val unleashClient: UnleashClient,
+    private val leaderElectionClient: LeaderElectionClient
 ) {
     @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 180000)
     fun populereAktorId() {
+        if (!leaderElectionClient.isLeader) {
+            return
+        }
         if (isProduction()) {
             return
         }
         logger.info("Startet jobb for å populere aktor_id_cache")
         var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
-
+        logger.info("Hentet ${foedselsnummer.size} unike foedselsnummer")
         var teller = 1
         while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
             val foedselsnummerBolk = foedselsnummer.take(100)
