@@ -170,7 +170,7 @@ class OppgaveRouterTest {
             TODO("Not yet implemented")
         }
 
-        override fun hentIdenterBolk(fnrListe: List<Foedselsnummer>): Map<Foedselsnummer, AktorId> {
+        override fun hentIdenterBolk(fnrListe: List<Foedselsnummer>, erSystemKontekst: Boolean): Map<Foedselsnummer, AktorId> {
             TODO("Not yet implemented")
         }
 

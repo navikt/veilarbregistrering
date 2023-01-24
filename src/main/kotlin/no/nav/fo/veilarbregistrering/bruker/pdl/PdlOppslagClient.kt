@@ -76,6 +76,19 @@ open class PdlOppslagClient(
         return response.data.hentIdenterBolk
     }
 
+
+    fun hentIdenterBolkForSystemkontekst(fnrListe: List<Foedselsnummer>): List<PdlIdenterForFoedselsnummer> {
+        val request = PdlHentIdenterBolkRequest(hentIdenterBolkQuery(), HentIdenterBolkVariables(fnrListe.map { it.foedselsnummer }))
+        val json = hentFraPdl(request, erSystemKontekst = true)
+        val response = mapAndValidateResponse<PdlHentIdenterBolkResponse>(json)
+        if (isDevelopment()) {
+            logger.info("Fikk følgende respons fra hentIdenterBolk: ${response.data.hentIdenterBolk}")
+        } else {
+            secureLogger.info("Fikk følgende respons fra hentIdenterBolk: ${response.data.hentIdenterBolk}")
+        }
+        return response.data.hentIdenterBolk
+    }
+
     private fun hentFraPdl(
         graphqlRequest: Any,
         ekstraHeaders: Map<String, String> = emptyMap(),

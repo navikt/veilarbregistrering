@@ -62,8 +62,14 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         }
     }
 
-    override fun hentIdenterBolk(fnrListe: List<Foedselsnummer>): Map<Foedselsnummer, AktorId> {
-        val pdlAktorIdListe = pdlOppslagClient.hentIdenterBolk(fnrListe)
+    override fun hentIdenterBolk(fnrListe: List<Foedselsnummer>, erSystemKontekst: Boolean): Map<Foedselsnummer, AktorId> {
+
+        val pdlAktorIdListe = if (erSystemKontekst) {
+            LOG.info("Henter bolk med identer fra PDL med systemkontekst")
+            pdlOppslagClient.hentIdenterBolkForSystemkontekst(fnrListe)
+        } else {
+            pdlOppslagClient.hentIdenterBolk(fnrListe)
+        }
 
         return pdlAktorIdListe
             .filter { it.identer != null }

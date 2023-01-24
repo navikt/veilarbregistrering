@@ -22,7 +22,7 @@ class PopulerAktorIdWorker(
             val foedselsnummerBolk = foedselsnummer.take(100)
             foedselsnummer = foedselsnummer.drop(100)
 
-            val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummerBolk)
+            val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummerBolk, true)
             val fnrUtenTreff = foedselsnummerBolk.subtract(aktorIdFnrMap.keys)
 
             if (fnrUtenTreff.isNotEmpty()){
