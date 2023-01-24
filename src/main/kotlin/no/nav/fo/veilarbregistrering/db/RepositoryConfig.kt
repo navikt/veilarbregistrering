@@ -1,9 +1,11 @@
 package no.nav.fo.veilarbregistrering.db
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.db.aktorIdCache.AktorIdCacheRepositoryImpl
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperiodeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.MeldekortRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
@@ -70,5 +72,10 @@ class RepositoryConfig {
     @Bean
     fun aktorIdCacheRepository(db: NamedParameterJdbcTemplate): AktorIdCacheRepository {
         return AktorIdCacheRepositoryImpl(db)
+    }
+
+    @Bean
+    fun arbeidssokerperiodeRepository(db: NamedParameterJdbcTemplate): ArbeidssokerperiodeRepository {
+        return ArbeidssokerperiodeRepositoryImpl(db)
     }
 }
