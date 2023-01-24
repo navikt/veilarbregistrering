@@ -88,7 +88,9 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun navVeilederService(tilgangskontrollService: TilgangskontrollService, userService: UserService): NavVeilederService {
+    fun navVeilederService(
+        tilgangskontrollService: TilgangskontrollService, userService: UserService
+    ): NavVeilederService {
         return NavVeilederService(tilgangskontrollService, userService)
     }
 
@@ -110,10 +112,7 @@ class ServiceBeansConfig {
         metricsService: MetricsService
     ): StartRegistreringStatusService {
         return StartRegistreringStatusService(
-            arbeidsforholdGateway,
-            brukerTilstandService,
-            pdlOppslagGateway,
-            metricsService
+            arbeidsforholdGateway, brukerTilstandService, pdlOppslagGateway, metricsService
         )
     }
 
@@ -125,10 +124,7 @@ class ServiceBeansConfig {
         metricsService: MetricsService
     ): ReaktiveringBrukerService {
         return ReaktiveringBrukerService(
-            brukerTilstandService,
-            reaktiveringRepository,
-            oppfolgingGateway,
-            metricsService
+            brukerTilstandService, reaktiveringRepository, oppfolgingGateway, metricsService
         )
     }
 
@@ -183,13 +179,10 @@ class ServiceBeansConfig {
         unleashClient: UnleashClient,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
         navVeilederService: NavVeilederService,
-    ) : SykmeldtResource {
+    ): SykmeldtResource {
         return SykmeldtResource(
-            tilgangskontrollService,
-            userService,
-            unleashClient,
-            sykmeldtRegistreringService,
-            navVeilederService)
+            tilgangskontrollService, userService, unleashClient, sykmeldtRegistreringService, navVeilederService
+        )
     }
 
     @Bean
@@ -198,12 +191,9 @@ class ServiceBeansConfig {
         unleashClient: UnleashClient,
         tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
-    ) : ReaktiveringResource {
+    ): ReaktiveringResource {
         return ReaktiveringResource(
-            userService,
-            unleashClient,
-            tilgangskontrollService,
-            reaktiveringBrukerService
+            userService, unleashClient, tilgangskontrollService, reaktiveringBrukerService
         )
     }
 
@@ -216,11 +206,7 @@ class ServiceBeansConfig {
         unleashClient: UnleashClient
     ): OrdinaerBrukerRegistreringResource {
         return OrdinaerBrukerRegistreringResource(
-            tilgangskontrollService,
-            userService,
-            brukerRegistreringService,
-            navVeilederService,
-            unleashClient
+            tilgangskontrollService, userService, brukerRegistreringService, navVeilederService, unleashClient
         )
     }
 
@@ -232,23 +218,16 @@ class ServiceBeansConfig {
         startRegistreringStatusService: StartRegistreringStatusService
     ): RegistreringResource {
         return RegistreringResource(
-            tilgangskontrollService,
-            userService,
-            hentRegistreringService,
-            startRegistreringStatusService
+            tilgangskontrollService, userService, hentRegistreringService, startRegistreringStatusService
         )
     }
 
     @Bean
     fun meldekortResource(
-        userService: UserService,
-        tilgangskontrollService: TilgangskontrollService,
-        meldekortService: MeldekortService
+        userService: UserService, tilgangskontrollService: TilgangskontrollService, meldekortService: MeldekortService
     ): MeldekortResource {
         return MeldekortResource(
-            userService,
-            tilgangskontrollService,
-            meldekortService
+            userService, tilgangskontrollService, meldekortService
         )
     }
 
@@ -278,9 +257,7 @@ class ServiceBeansConfig {
         arbeidsforholdGateway: ArbeidsforholdGateway
     ): ArbeidsforholdResource {
         return ArbeidsforholdResource(
-            userService,
-            tilgangskontrollService,
-            arbeidsforholdGateway
+            userService, tilgangskontrollService, arbeidsforholdGateway
         )
     }
 
@@ -292,10 +269,7 @@ class ServiceBeansConfig {
         metricsService: MetricsService
     ): OppgaveService {
         return OppgaveService(
-            oppgaveGateway,
-            oppgaveRepository,
-            oppgaveRouter,
-            metricsService
+            oppgaveGateway, oppgaveRepository, oppgaveRouter, metricsService
         )
     }
 
@@ -308,19 +282,13 @@ class ServiceBeansConfig {
         metricsService: MetricsService
     ): OppgaveRouter {
         return OppgaveRouter(
-            arbeidsforholdGateway,
-            enhetGateway,
-            norg2Gateway,
-            pdlOppslagGateway,
-            metricsService
+            arbeidsforholdGateway, enhetGateway, norg2Gateway, pdlOppslagGateway, metricsService
         )
     }
 
     @Bean
     fun oppgaveResource(
-        userService: UserService,
-        oppgaveService: OppgaveService,
-        tilgangskontrollService: TilgangskontrollService
+        userService: UserService, oppgaveService: OppgaveService, tilgangskontrollService: TilgangskontrollService
     ): OppgaveResource {
         return OppgaveResource(userService, oppgaveService, tilgangskontrollService)
     }
@@ -352,10 +320,7 @@ class ServiceBeansConfig {
         aktorIdCacheService: AktorIdCacheService
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
-            formidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService,
-            unleashClient,
-            aktorIdCacheService
+            formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService, unleashClient, aktorIdCacheService
         )
     }
 
@@ -368,7 +333,8 @@ class ServiceBeansConfig {
         ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer, meldekortService, metricsService)
 
     @Bean
-    fun arbeidssokerperiodeAvsluttetProducer(): ArbeidssokerperiodeAvsluttetProducer = ArbeidssokerperiodeAvsluttetProducer()
+    fun arbeidssokerperiodeAvsluttetProducer(): ArbeidssokerperiodeAvsluttetProducer =
+        ArbeidssokerperiodeAvsluttetProducer()
 
     @Bean
     fun arbeidssokerResource(
@@ -428,8 +394,7 @@ class ServiceBeansConfig {
 
     @Bean
     fun kontaktinfoService(
-        pdlOppslagGateway: PdlOppslagGateway,
-        krrGateway: KrrGateway
+        pdlOppslagGateway: PdlOppslagGateway, krrGateway: KrrGateway
     ): KontaktinfoService {
         return KontaktinfoService(pdlOppslagGateway, krrGateway)
     }
@@ -457,7 +422,9 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun meldekortMottakService(meldekortRepository: MeldekortRepository): MeldekortMottakService {
-        return MeldekortMottakService(meldekortRepository)
+    fun meldekortMottakService(
+        meldekortRepository: MeldekortRepository, aktorIdCacheService: AktorIdCacheService
+    ): MeldekortMottakService {
+        return MeldekortMottakService(meldekortRepository, aktorIdCacheService)
     }
 }
