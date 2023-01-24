@@ -37,6 +37,7 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
     override fun hentIdenter(fnr: Foedselsnummer, erSystemKontekst: Boolean): Identer {
         return try {
             val pdlIdenter = if (erSystemKontekst) {
+                LOG.info("Henter identer fra PDL med systemkontekst")
                 pdlOppslagClient.hentIdenterForSystemkontekst(fnr)
             } else {
                 pdlOppslagClient.hentIdenter(fnr)
