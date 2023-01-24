@@ -14,9 +14,11 @@ class PdlOppslagConfig {
     fun pdlOppslagClient(tokenExchangeService: TokenExchangeService): PdlOppslagClient {
         val baseUrl = requireProperty("PDL_URL")
 
-        return PdlOppslagClient(baseUrl) {
-            tokenExchangeService.exchangeToken(pdlApi)
-        }
+        return PdlOppslagClient(
+            baseUrl,
+            { tokenExchangeService.exchangeToken(pdlApi) },
+            { tokenExchangeService.createMachineToMachineToken(pdlApi) }
+        )
     }
 
     @Bean

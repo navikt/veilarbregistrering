@@ -162,7 +162,7 @@ class OppgaveRouterTest {
     private class StubPdlOppslagGateway(private val geografiskTilknytning: GeografiskTilknytning? = null ,private val users: Map<AktorId, Person> = emptyMap()) : PdlOppslagGateway {
         override fun hentPerson(aktorid: AktorId) = users[aktorid]
 
-        override fun hentIdenter(fnr: Foedselsnummer): Identer {
+        override fun hentIdenter(fnr: Foedselsnummer, erSystemKontekst: Boolean): Identer {
             TODO("Not yet implemented")
         }
 
