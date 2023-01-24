@@ -21,10 +21,6 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
         }
     }
 
-    fun createMachineToMachineToken(api: DownstreamApi): String {
-        return createAadMachineToMachineToken(api)
-    }
-
     private fun exchangeTokenXToken(api: DownstreamApi, opprinneligToken: String): String {
         logger.info("Veksler TokenX-token mot ${api.appName}")
         return tokendingsClient.exchangeOnBehalfOfToken(

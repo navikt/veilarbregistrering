@@ -34,7 +34,7 @@ class FormidlingsgruppeMottakService(
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
-        aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+        //aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer)
 
         if (skalUtledeAvslutningAvPeriode) {
             arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(

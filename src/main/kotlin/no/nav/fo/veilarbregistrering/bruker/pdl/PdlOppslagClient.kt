@@ -26,8 +26,7 @@ import java.nio.charset.StandardCharsets
 
 open class PdlOppslagClient(
     private val baseUrl: String,
-    private val tokenProvider: () -> String = { "default" },
-    private val systemTokenProvider: () -> String = { "default" },
+    private val tokenProvider: () -> String = { "default" }
 ): HealthCheck {
 
     private val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
@@ -40,13 +39,6 @@ open class PdlOppslagClient(
         return response.data.hentIdenter
     }
 
-    fun hentIdenterForSystemkontekst(fnr: Foedselsnummer): PdlIdenter {
-        val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(fnr.stringValue()))
-        val json = hentIdenterRequest(fnr.stringValue(), request, true)
-        val response = mapAndValidateResponse<PdlHentIdenterResponse>(json)
-        return response.data.hentIdenter
-    }
-
     fun hentIdenter(aktorId: AktorId): PdlIdenter {
         val request = PdlHentIdenterRequest(hentIdenterQuery(), HentIdenterVariables(aktorId.aktorId))
         val json = hentIdenterRequest(aktorId.aktorId, request)
@@ -54,14 +46,10 @@ open class PdlOppslagClient(
         return response.data.hentIdenter
     }
 
-    open fun hentIdenterRequest(
-        personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest, erSystemKontekst: Boolean = false
-    ): String {
-        return hentFraPdl(
-            pdlHentIdenterRequest, ekstraHeaders = mapOf(
-                NAV_PERSONIDENT_HEADER to personident,
-            ), erSystemKontekst
-        )
+    open fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
+        return hentFraPdl(pdlHentIdenterRequest, ekstraHeaders = mapOf(
+            NAV_PERSONIDENT_HEADER to personident,
+        ))
     }
 
     fun hentIdenterBolk(fnrListe: List<Foedselsnummer>): List<PdlIdenterForFoedselsnummer> {
@@ -78,11 +66,10 @@ open class PdlOppslagClient(
 
     private fun hentFraPdl(
         graphqlRequest: Any,
-        ekstraHeaders: Map<String, String> = emptyMap(),
-        erSystemKontekst: Boolean = false
+        ekstraHeaders: Map<String, String> = emptyMap()
     ): String {
         val requestBody = RestUtils.toJsonRequestBody(graphqlRequest)
-        val authHeaders = if (erSystemKontekst) lagAuthHeadersForSystem() else lagAuthHeaders()
+        val authHeaders = lagAuthHeaders()
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
             .headers(Headers.of(authHeaders + ekstraHeaders))
@@ -132,13 +119,6 @@ open class PdlOppslagClient(
 
     private fun lagAuthHeaders(): Map<String, String> {
         val aadToken = tokenProvider()
-        return mapOf(
-            "Authorization" to "Bearer $aadToken",
-        )
-    }
-
-    private fun lagAuthHeadersForSystem(): Map<String, String> {
-        val aadToken = systemTokenProvider()
         return mapOf(
             "Authorization" to "Bearer $aadToken",
         )

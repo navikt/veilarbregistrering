@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.bruker.feil.PdlException
 import no.nav.fo.veilarbregistrering.bruker.pdl.endepunkt.*
 import org.approvaltests.Approvals
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -102,8 +102,8 @@ class PdlOppslagClientTest {
 
     @Test
     fun `skal hente identer til person`() {
-        val client = object : PdlOppslagClient("", { TOKEN }, { TOKEN }) {
-            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest, erSystemKontekst: Boolean): String {
+        val client = object : PdlOppslagClient("", { TOKEN }) {
+            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_OK_JSON)
             }
         }
@@ -116,24 +116,9 @@ class PdlOppslagClientTest {
     }
 
     @Test
-    fun `skal hente identer til person for systemkontekst`() {
-        val client = object : PdlOppslagClient("", { TOKEN }, { SYSTEMTOKEN }) {
-            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest, erSystemKontekst: Boolean): String {
-                return toJson(HENT_IDENTER_OK_JSON)
-            }
-        }
-        val pdlIdenter = client.hentIdenterForSystemkontekst(Foedselsnummer("12345678910"))
-        assertThat(pdlIdenter.identer).hasSize(2)
-        assertTrue(pdlIdenter.identer
-            .any { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.FOLKEREGISTERIDENT && !pdlIdent.historisk })
-        assertTrue(pdlIdenter.identer
-            .any { pdlIdent: PdlIdent -> pdlIdent.gruppe == PdlGruppe.AKTORID && !pdlIdent.historisk })
-    }
-
-    @Test
     fun `skal hente identer med historikk til person`() {
-        val client = object : PdlOppslagClient("", { TOKEN }, { TOKEN }) {
-            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest, erSystemKontekst: Boolean): String {
+        val client = object : PdlOppslagClient("", { TOKEN }) {
+            override fun hentIdenterRequest(personident: String, pdlHentIdenterRequest: PdlHentIdenterRequest): String {
                 return toJson(HENT_IDENTER_MED_HISTORISK_OK_JSON)
             }
         }
@@ -167,7 +152,6 @@ class PdlOppslagClientTest {
 
     companion object {
         private const val TOKEN = "Token"
-        private const val SYSTEMTOKEN = "SystemToken"
         internal const val HENT_PERSON_OK_JSON = "/pdl/hentPersonOk.json"
         internal const val HENT_PERSON_FEIL_JSON = "/pdl/hentPersonError.json"
         internal const val HENT_PERSON_NOT_FOUND_JSON = "/pdl/hentPersonNotFound.json"

@@ -11,11 +11,11 @@ class AktorIdCacheService(
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val aktorIdCacheRepository: AktorIdCacheRepository,
 ) {
-    fun hentAktorIdFraPDLHvisIkkeFinnes(foedselsnummer: Foedselsnummer, erSystemKontekst: Boolean = false) {
+    fun hentAktorIdFraPDLHvisIkkeFinnes(foedselsnummer: Foedselsnummer) {
         if (aktorIdCacheRepository.hentAktørId(foedselsnummer) != null) return
 
         // hente ut
-        val identer = pdlOppslagGateway.hentIdenter(foedselsnummer, erSystemKontekst)
+        val identer = pdlOppslagGateway.hentIdenter(foedselsnummer)
         val aktorId = identer.identer.first { !it.isHistorisk && it.gruppe == Gruppe.AKTORID }.ident
         // sette inn
 
