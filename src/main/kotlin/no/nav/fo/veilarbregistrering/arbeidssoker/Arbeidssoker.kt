@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.log.logger
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
@@ -22,9 +21,14 @@ class Arbeidssoker {
     }
 
     internal fun avsluttGammelOgStartNyPeriode(overgangsTidspunkt: LocalDateTime) {
-        sistePeriode()?.avslutt(overgangsTidspunkt.toLocalDate().atTime(23, 59, 59).minusDays(1))
+        sistePeriode()
+            ?.avslutt(atTheEndOfYesterday(overgangsTidspunkt))
             ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
         startPeriode(overgangsTidspunkt)
+    }
+
+    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
+        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
     }
 
     internal fun startPeriode(fraDato: LocalDateTime) {
@@ -132,13 +136,7 @@ private object AktivArbeidssokerState : ArbeidssokerState {
 private object TidligereArbeidssokerState : ArbeidssokerState {
     override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
         logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
-
-        if (kanSistePeriodeGjenåpnes(arbeidssoker, ordinaerBrukerRegistrering.opprettetTidspunkt().toLocalDate())) {
-            logger.info("Reåpner tidligere arbeidssøkerperiode som følge av ordinær registrering")
-            arbeidssoker.sistePeriode()!!.gjenåpne()
-        } else {
-            arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetTidspunkt())
-        }
+        arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetTidspunkt())
     }
 
     override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: ReaktiverArbeidssøker) {
@@ -159,17 +157,13 @@ private object TidligereArbeidssokerState : ArbeidssokerState {
             return
         }
 
-        if (kanSistePeriodeGjenåpnes(arbeidssoker, formidlingsgruppeEndretEvent.opprettetTidspunkt().toLocalDate())) {
-            logger.warn("Reåpner tidligere arbeidssøkerperiode som følge av formidlingsgruppe")
-            arbeidssoker.sistePeriode()!!.gjenåpne()
-        } else {
-            logger.warn("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
-            arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
+        if (arbeidssoker.sistePeriode()!!.tilDato!!.toLocalDate() == formidlingsgruppeEndretEvent.opprettetTidspunkt().toLocalDate()) {
+            logger.info("Arbeidssøkerperiode ble endret samme dag. Forrige periode blir derfor negativ for at ikke tilDato på forrige periode skal være lik fraDato på neste.")
+            arbeidssoker.sistePeriode()!!.korrigerForNegativPeriode()
         }
+        logger.warn("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
+        arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
     }
-
-    private fun kanSistePeriodeGjenåpnes(arbeidssoker: Arbeidssoker, registreringstidspunkt: LocalDate) =
-        arbeidssoker.sistePeriode()!!.tilDato?.toLocalDate() == registreringstidspunkt
 
     override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret) {
         if (!meldekortEvent.erArbeidssokerNestePeriode()) {

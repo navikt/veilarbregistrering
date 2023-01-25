@@ -131,53 +131,22 @@ class ArbeidssokerTest {
     }
 
     @Test
-    fun `skal gjenåpne tidligere periode dersom (ordinær) registrering starter samme dag som forrige ble avsluttet`() {
-        val nyRegistreringsdato1 = LocalDateTime.now().minusYears(1).minusMonths(3)
-        val nyRegistrering1 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato1)
-        arbeidssoker.behandle(nyRegistrering1)
-
-        val formidlingsgruppeEndringTidspunkt1 = LocalDateTime.now().minusYears(1).minusMonths(2)
-        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ISERV")
+    fun `skal håndtere negativ periode hvor formidlingsgruppe blir endret samme dag - skal gi tilDato minus 1 dag`() {
+        val formidlingsgruppeEndringTidspunkt1 = LocalDate.of(2022, 8, 26).atStartOfDay()
+        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ARBS")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
 
-        val nyRegistreringsdato2 = LocalDateTime.now().minusMonths(3)
-        val nyRegistrering2 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato2)
-        arbeidssoker.behandle(nyRegistrering2)
-
-        val formidlingsgruppeEndringTidspunkt2 = LocalDate.now().atTime(10, 12)
+        val formidlingsgruppeEndringTidspunkt2 = LocalDate.of(2022, 12, 13).atTime(2,0, 53)
         val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
 
-        val nyRegistreringsdato3 = LocalDate.now().atTime(12, 12)
-        val nyRegistrering3 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato3)
-        arbeidssoker.behandle(nyRegistrering3)
-
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato2, null), arbeidssoker.sistePeriode())
-    }
-
-    @Test
-    fun `skal gjenåpne tidligere periode dersom (formidlingsgruppe) registrering starter samme dag som forrige ble avsluttet`() {
-        val nyRegistreringsdato1 = LocalDateTime.now().minusYears(1).minusMonths(3)
-        val nyRegistrering1 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato1)
-        arbeidssoker.behandle(nyRegistrering1)
-
-        val formidlingsgruppeEndringTidspunkt1 = LocalDateTime.now().minusYears(1).minusMonths(2)
-        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ISERV")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
-
-        val nyRegistreringsdato2 = LocalDateTime.now().minusMonths(3)
-        val nyRegistrering2 = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato2)
-        arbeidssoker.behandle(nyRegistrering2)
-
-        val formidlingsgruppeEndringTidspunkt2 = LocalDate.now().atTime(10, 12)
-        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
-
-        val formidlingsgruppeEndringTidspunkt3 = LocalDate.now().atTime(12, 12)
+        val formidlingsgruppeEndringTidspunkt3 = LocalDate.of(2022, 12, 13).atTime(15, 17,22)
         val formidlingsgruppeEndringEvent3 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt3, "ARBS")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato2, null), arbeidssoker.sistePeriode())
+        assertEquals(2, arbeidssoker.allePerioder().size)
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, formidlingsgruppeEndringTidspunkt2.minusDays(1)), arbeidssoker.allePerioder().get(0))
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt3, null), arbeidssoker.allePerioder().get(1))
     }
 }
 

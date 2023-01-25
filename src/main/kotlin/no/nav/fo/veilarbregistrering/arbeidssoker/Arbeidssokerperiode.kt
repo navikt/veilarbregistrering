@@ -9,8 +9,7 @@ data class Arbeidssokerperiode(var fraDato: LocalDateTime, var tilDato: LocalDat
         this.tilDato = tilDato
     }
 
-    fun gjenåpne() {
-        if (tilDato == null) throw IllegalStateException("Arbeidssøkerperiode er allerede åpen, og kan derfor ikke gjenåpnes")
-        tilDato = null
+    fun korrigerForNegativPeriode() {
+        this.tilDato = this.tilDato?.minusDays(1)?:throw IllegalStateException("Arbeidssøkerperiode må ha en verdi for å kunne korrigeres")
     }
 }
