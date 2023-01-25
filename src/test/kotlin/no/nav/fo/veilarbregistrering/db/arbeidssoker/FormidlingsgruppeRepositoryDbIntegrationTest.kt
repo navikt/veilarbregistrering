@@ -88,6 +88,35 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         assertTrue(foedselsnumre.contains(FOEDSELSNUMMER_3))
     }
 
+    @Test
+    fun `skal hente fødselsnummer i bolk`() {
+        val command = endretFormdlingsgruppe(FOEDSELSNUMMER_2, LocalDateTime.now().minusDays(50))
+        formidlingsgruppeRepository.lagre(command)
+        val command2 = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusDays(10))
+        formidlingsgruppeRepository.lagre(command2)
+        val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_2, LocalDateTime.now().minusDays(5))
+        formidlingsgruppeRepository.lagre(command3)
+        val command4 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(70))
+        formidlingsgruppeRepository.lagre(command4)
+        val command5 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
+        formidlingsgruppeRepository.lagre(command5)
+
+
+
+        val forste2Fnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(0, 2)
+        val neste2Fnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(2, 2)
+        val sisteFnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(4, 2)
+
+        assertEquals(2, forste2Fnr.size)
+        assertTrue(forste2Fnr.containsAll(listOf(command5.foedselsnummer, command4.foedselsnummer)))
+
+        assertEquals(2, neste2Fnr.size)
+        assertTrue(neste2Fnr.containsAll(listOf(command3.foedselsnummer, command2.foedselsnummer)))
+
+        assertEquals(1, sisteFnr.size)
+        assertTrue(sisteFnr.contains(command.foedselsnummer))
+    }
+
     private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
         return FormidlingsgruppeEndretEvent(
             foedselsnummer,

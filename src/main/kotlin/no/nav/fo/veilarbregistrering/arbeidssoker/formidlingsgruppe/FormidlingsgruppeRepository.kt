@@ -8,4 +8,5 @@ interface FormidlingsgruppeRepository {
     fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder
     fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent>
     fun hentUnikeFoedselsnummer(): List<Foedselsnummer>
+    fun hentFoedselsnummerIBolk(offset: Int, limit: Int): List<Foedselsnummer>
 }
