@@ -5,6 +5,7 @@ import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
@@ -22,6 +23,9 @@ class PopulerAktorIdWorker(
     @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 180000)
     fun populereAktorId() {
         if (!leaderElectionClient.isLeader) {
+            return
+        }
+        if (isProduction()) {
             return
         }
         try {
