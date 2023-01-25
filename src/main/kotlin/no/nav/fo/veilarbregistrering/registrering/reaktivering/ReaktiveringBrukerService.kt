@@ -29,6 +29,9 @@ open class ReaktiveringBrukerService(
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker)
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
+
+        // TODO: start periode
+
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.aktorId)
         if (erVeileder) {
             metricsService.registrer(Events.MANUELL_REAKTIVERING_EVENT)
