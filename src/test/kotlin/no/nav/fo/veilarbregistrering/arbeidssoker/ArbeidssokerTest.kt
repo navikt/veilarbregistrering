@@ -10,9 +10,55 @@ import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
+/**
+ * Forsøker å benytte et format av typen "given - when - then" for testene.
+ */
 class ArbeidssokerTest {
 
     val arbeidssoker = Arbeidssoker()
+
+    // Ulike use-case hvor vi kun fokuserer på formidlingsgruppe-events
+
+    @Test
+    fun `gitt at personen aldri har vært arbeidssøker tidligere, og vi mottar en ARBS så skal ny periode startes`() {
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ARBS")
+
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
+
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `gitt at person aldri har vært arbeiddssøker tidligere, og vi mottar en ISERV så skal denne meldingen ignoreres`() {
+        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
+
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
+
+        assertNull(arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `gitt at formidlingsgruppe blir endret samme dag (negativ periode), så skal forrige periode avsluttes en dag før`() {
+        val formidlingsgruppeEndringTidspunkt1 = LocalDate.of(2022, 8, 26).atStartOfDay()
+        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ARBS")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
+
+        val formidlingsgruppeEndringTidspunkt2 = LocalDate.of(2022, 12, 13).atTime(2,0, 53)
+        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
+
+        val formidlingsgruppeEndringTidspunkt3 = LocalDate.of(2022, 12, 13).atTime(15, 17,22)
+        val formidlingsgruppeEndringEvent3 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt3, "ARBS")
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
+
+        assertEquals(2, arbeidssoker.allePerioder().size)
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, formidlingsgruppeEndringTidspunkt2.minusDays(1)), arbeidssoker.allePerioder().get(0))
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt3, null), arbeidssoker.allePerioder().get(1))
+    }
+
+    // Ulike use-case hvor vi også inkluderer ordinær registrering
 
     @Test
     fun `skal starte ny periode som aktiv arbeidssøker ved ny registrering og ikke aktiv fra før`() {
@@ -52,15 +98,6 @@ class ArbeidssokerTest {
     }
 
     @Test
-    fun `skal starte ny arbeidssøkerperiode etter formidlingsgruppeendring med ARBS når arbeidsøker ikke var aktiv`() {
-        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
-        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt)
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
-
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt, null), arbeidssoker.sistePeriode())
-    }
-
-    @Test
     fun `skal avslutte gjeldende arbeidssøkerperiode etter formidlingsgruppe med ISERV når arbeidssøker er aktiv`() {
         val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
@@ -71,16 +108,6 @@ class ArbeidssokerTest {
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
         assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
-    }
-
-    @Test
-    fun `skal overse formidlingsgruppe med ISERV når arbeidssøker ikke er aktiv`() {
-        val formidlingsgruppeEndringTidspunkt = LocalDateTime.now()
-        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
-
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
-
-        assertNull(arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -130,23 +157,6 @@ class ArbeidssokerTest {
         assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
     }
 
-    @Test
-    fun `skal håndtere negativ periode hvor formidlingsgruppe blir endret samme dag - skal gi tilDato minus 1 dag`() {
-        val formidlingsgruppeEndringTidspunkt1 = LocalDate.of(2022, 8, 26).atStartOfDay()
-        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ARBS")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
 
-        val formidlingsgruppeEndringTidspunkt2 = LocalDate.of(2022, 12, 13).atTime(2,0, 53)
-        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
-
-        val formidlingsgruppeEndringTidspunkt3 = LocalDate.of(2022, 12, 13).atTime(15, 17,22)
-        val formidlingsgruppeEndringEvent3 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt3, "ARBS")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
-
-        assertEquals(2, arbeidssoker.allePerioder().size)
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, formidlingsgruppeEndringTidspunkt2.minusDays(1)), arbeidssoker.allePerioder().get(0))
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt3, null), arbeidssoker.allePerioder().get(1))
-    }
 }
 
