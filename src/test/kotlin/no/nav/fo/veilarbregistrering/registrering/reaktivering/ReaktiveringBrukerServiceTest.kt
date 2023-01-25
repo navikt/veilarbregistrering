@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import io.mockk.*
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -24,6 +25,7 @@ class ReaktiveringBrukerServiceTest {
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
     private val metricsService: MetricsService = mockk(relaxed = true)
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
@@ -35,7 +37,8 @@ class ReaktiveringBrukerServiceTest {
                 ),
                 reaktiveringRepository,
                 oppfolgingGateway,
-                metricsService
+                metricsService,
+                arbeidssokerperiodeService
         )
     }
 

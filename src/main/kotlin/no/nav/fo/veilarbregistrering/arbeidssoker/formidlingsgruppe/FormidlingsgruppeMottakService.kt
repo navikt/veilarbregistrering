@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
@@ -13,7 +14,8 @@ class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val unleashClient: UnleashClient,
-    private val aktorIdCacheService: AktorIdCacheService
+    private val aktorIdCacheService: AktorIdCacheService,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
 
     @Transactional
@@ -35,6 +37,12 @@ class FormidlingsgruppeMottakService(
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
         aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+
+        try {
+            arbeidssokerperiodeService.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent)
+        } catch (e: RuntimeException) {
+            logger.error("Feil ved behandling av formidlingsgruppe event", e)
+        }
 
         if (skalUtledeAvslutningAvPeriode) {
             arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(

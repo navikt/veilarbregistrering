@@ -2,6 +2,7 @@ package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -162,6 +163,9 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
         fun aktorIdCacheService(): AktorIdCacheService = mockk(relaxed = true)
 
         @Bean
+        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService = mockk(relaxed = true)
+
+        @Bean
         fun brukerRegistreringService(
             brukerRegistreringRepository: BrukerRegistreringRepository,
             profileringRepository: ProfileringRepository,
@@ -171,7 +175,8 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
             brukerTilstandService: BrukerTilstandService,
             manuellRegistreringRepository: ManuellRegistreringRepository,
             metricsService: MetricsService,
-            aktorIdCacheService: AktorIdCacheService
+            aktorIdCacheService: AktorIdCacheService,
+            arbeidssokerperiodeService: ArbeidssokerperiodeService
         ): BrukerRegistreringService {
             return BrukerRegistreringService(
                 brukerRegistreringRepository,
@@ -182,7 +187,8 @@ internal class BrukerRegistreringServiceIntegrationTest @Autowired constructor(
                 brukerTilstandService,
                 manuellRegistreringRepository,
                 metricsService,
-                aktorIdCacheService
+                aktorIdCacheService,
+                arbeidssokerperiodeService
             )
         }
     }
