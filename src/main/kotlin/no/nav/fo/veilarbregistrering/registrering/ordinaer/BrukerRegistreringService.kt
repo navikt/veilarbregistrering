@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -41,7 +42,8 @@ open class BrukerRegistreringService(
     private val brukerTilstandService: BrukerTilstandService,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
     private val metricsService: MetricsService,
-    private val aktorIdCacheService: AktorIdCacheService
+    private val aktorIdCacheService: AktorIdCacheService,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
     @Transactional
     open fun registrerBrukerUtenOverforing(
@@ -147,7 +149,11 @@ open class BrukerRegistreringService(
             throw AktiverBrukerTekniskException(e)
         }
 
-        // TODO: start periode
+        try {
+            arbeidssokerperiodeService.startPeriode(bruker.gjeldendeFoedselsnummer)
+        } catch (e: RuntimeException) {
+            LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
+        }
 
         val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA)
         LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId)
