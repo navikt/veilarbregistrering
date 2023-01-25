@@ -16,7 +16,6 @@ class Arbeidssoker {
             is RegistrerArbeidssøker -> tilstand.behandle(this, endreArbeidssøker)
             is ReaktiverArbeidssøker -> tilstand.behandle(this, endreArbeidssøker)
             is FormidlingsgruppeEndret -> tilstand.behandle(this, endreArbeidssøker)
-            is MeldekortEndret -> tilstand.behandle(this, endreArbeidssøker)
         }
     }
 
@@ -59,7 +58,6 @@ private interface ArbeidssokerState {
     fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker)
     fun behandle(arbeidssoker: Arbeidssoker, reaktivering: ReaktiverArbeidssøker)
     fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret)
-    fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret)
 }
 
 /**
@@ -85,15 +83,6 @@ private object IkkeArbeidssokerState : ArbeidssokerState {
         logger.info("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
         arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
     }
-
-    override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret) {
-        if (!meldekortEvent.erArbeidssokerNestePeriode()) {
-            logger.info("Arbeidssøker er allerede inaktiv")
-            return
-        }
-        logger.warn("Arbeidssøkerperioden ble initiert av et meldekort - ikke en ordinær/reaktivert registrering")
-        arbeidssoker.startPeriode(meldekortEvent.opprettetTidspunkt())
-    }
 }
 
 /**
@@ -118,15 +107,6 @@ private object AktivArbeidssokerState : ArbeidssokerState {
             logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
             arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
         }
-    }
-
-    override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret) {
-        if (meldekortEvent.erArbeidssokerNestePeriode()) {
-            logger.info("Arbeidssøker ønsker å stå som aktiv også neste periode")
-            return
-        }
-        logger.info("Avslutter arbeidssøkerperiode som følge av NEI i meldekortet")
-        arbeidssoker.avsluttPeriode(meldekortEvent.opprettetTidspunkt())
     }
 }
 
@@ -164,15 +144,5 @@ private object TidligereArbeidssokerState : ArbeidssokerState {
         logger.warn("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
         arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
     }
-
-    override fun behandle(arbeidssoker: Arbeidssoker, meldekortEvent: MeldekortEndret) {
-        if (!meldekortEvent.erArbeidssokerNestePeriode()) {
-            logger.info("Avviser MeldekortEventArbeidssøker er allerede inaktiv")
-            return
-        }
-        logger.warn("Arbeidssøkerperioden ble initiert av et meldekort - ikke en ordinær/reaktivert registrering")
-        arbeidssoker.startPeriode(meldekortEvent.opprettetTidspunkt())
-    }
-
 }
 
