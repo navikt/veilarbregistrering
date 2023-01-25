@@ -39,6 +39,7 @@ class PopulerAktorIdWorker(
 
             if (fnrUtenTreff.isNotEmpty()) {
                 secureLogger.warn("Aktor_id ikke funnet for foedselsnummer $fnrUtenTreff i bolk $teller")
+                logger.info("${fnrUtenTreff.size} fødselsnummer manglet aktorId i PDL for bolk nr $teller")
             }
             if (aktorIdFnrMap.isEmpty()) {
                 teller += 1
