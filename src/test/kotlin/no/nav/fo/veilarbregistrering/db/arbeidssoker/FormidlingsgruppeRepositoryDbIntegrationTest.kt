@@ -106,6 +106,7 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         val forste2Fnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(0, 2)
         val neste2Fnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(2, 2)
         val sisteFnr = formidlingsgruppeRepository.hentFoedselsnummerIBolk(4, 2)
+        val offsetUtenforRange = formidlingsgruppeRepository.hentFoedselsnummerIBolk(6, 2)
 
         assertEquals(2, forste2Fnr.size)
         assertTrue(forste2Fnr.containsAll(listOf(command5.foedselsnummer, command4.foedselsnummer)))
@@ -115,6 +116,8 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
 
         assertEquals(1, sisteFnr.size)
         assertTrue(sisteFnr.contains(command.foedselsnummer))
+
+        assertEquals(0, offsetUtenforRange.size)
     }
 
     private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
