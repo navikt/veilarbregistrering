@@ -27,10 +27,10 @@ class PopulerAktorIdWorker(
             return
         }
         logger.info("Startet jobb for å populere aktor_id_cache")
-        var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
+        var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer().distinct()
         logger.info("Hentet ${foedselsnummer.size} unike foedselsnummer")
         var teller = 1
-        while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
+        /*while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
             val foedselsnummerBolk = foedselsnummer.take(100)
             foedselsnummer = foedselsnummer.drop(100)
 
@@ -58,7 +58,7 @@ class PopulerAktorIdWorker(
 
             logger.info("Oppdaterte $oppdaterteRader i jobb som populerer AktørId-cache for bolk nr $teller")
             teller += 1
-        }
+        }*/
 
     }
 
