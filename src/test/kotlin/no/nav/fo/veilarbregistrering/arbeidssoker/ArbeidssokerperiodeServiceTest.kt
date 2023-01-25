@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.Assertions.*
@@ -31,7 +32,13 @@ internal class ArbeidssokerperiodeServiceTest {
 
     @Test
     fun `starter periode for bruker`() {
-        // TODO
+        val fnr = Foedselsnummer("42")
+        every { repository.hentPerioder(any()) } returns emptyList()
+        every { repository.startPeriode(any(), any()) } returns Unit
+
+        service.startPeriode(fnr)
+
+        verify(exactly = 1) { repository.startPeriode(foedselsnummer = fnr, any())}
     }
 
 }
