@@ -6,8 +6,10 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.config.isProduction
+import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
+import org.slf4j.MDC
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
 
@@ -26,11 +28,13 @@ class PopulerAktorIdWorker(
         if (isProduction()) {
             return
         }
-        logger.info("Startet jobb for å populere aktor_id_cache")
-        var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer().distinct()
-        logger.info("Hentet ${foedselsnummer.size} unike foedselsnummer")
-        var teller = 1
-        /*while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
+        try {
+            CallId.leggTilCallId()
+            logger.info("Startet jobb for å populere aktor_id_cache")
+            var foedselsnummer: List<Foedselsnummer> = formidlingsgruppeRepository.hentUnikeFoedselsnummer().distinct()
+            logger.info("Hentet ${foedselsnummer.size} unike foedselsnummer")
+            var teller = 1
+            /*while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
             val foedselsnummerBolk = foedselsnummer.take(100)
             foedselsnummer = foedselsnummer.drop(100)
 
@@ -59,7 +63,10 @@ class PopulerAktorIdWorker(
             logger.info("Oppdaterte $oppdaterteRader i jobb som populerer AktørId-cache for bolk nr $teller")
             teller += 1
         }*/
-        logger.info("Jobb for å populere aktor_id_cache er nå fullført")
+            logger.info("Jobb for å populere aktor_id_cache er nå fullført")
+        } finally {
+            MDC.clear()
+        }
     }
 
 }
