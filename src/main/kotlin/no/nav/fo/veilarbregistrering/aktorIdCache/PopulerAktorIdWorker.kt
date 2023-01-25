@@ -59,7 +59,7 @@ class PopulerAktorIdWorker(
             logger.info("Oppdaterte $oppdaterteRader i jobb som populerer AktørId-cache for bolk nr $teller")
             teller += 1
         }*/
-
+        logger.info("Jobb for å populere aktor_id_cache er nå fullført")
     }
 
 }
