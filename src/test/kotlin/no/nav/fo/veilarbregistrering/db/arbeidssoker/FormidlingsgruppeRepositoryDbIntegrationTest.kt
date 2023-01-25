@@ -82,7 +82,7 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
 
         val foedselsnumre = formidlingsgruppeRepository.hentUnikeFoedselsnummer()
 
-        assertEquals(4, foedselsnumre.size)
+        assertEquals(3, foedselsnumre.size)
         assertTrue(foedselsnumre.contains(FOEDSELSNUMMER))
         assertTrue(foedselsnumre.contains(FOEDSELSNUMMER_2))
         assertTrue(foedselsnumre.contains(FOEDSELSNUMMER_3))

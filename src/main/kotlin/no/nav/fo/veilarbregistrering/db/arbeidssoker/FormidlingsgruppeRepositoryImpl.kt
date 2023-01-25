@@ -104,7 +104,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
     }
 
     override fun hentUnikeFoedselsnummer(): List<Foedselsnummer> {
-        val sql = "SELECT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE"
+        val sql = "SELECT DISTINCT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE"
         return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
     }
 
