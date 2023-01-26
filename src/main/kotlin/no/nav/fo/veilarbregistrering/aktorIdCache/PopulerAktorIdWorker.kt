@@ -35,7 +35,7 @@ class PopulerAktorIdWorker(
             val EN_MILLION = 1000000
             var foedselsnummer =
                 formidlingsgruppeRepository.hentFoedselsnummerIBolk(foedselsnummerOffset, EN_MILLION).distinct()
-            while (foedselsnummer.isNotEmpty()) {
+            while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
                 populerAktørIdForBolk(foedselsnummer, foedselsnummerOffset)
                 logger.info("Har hentet og oppdatert aktørId for offset $foedselsnummerOffset")
 
@@ -52,7 +52,7 @@ class PopulerAktorIdWorker(
     private fun populerAktørIdForBolk(fnr: List<Foedselsnummer>, offset: Int) {
         var teller = 1
         var foedselsnummer = fnr
-        while (foedselsnummer.isNotEmpty() && unleashClient.isEnabled("veilarbregistrering.populere-aktorid")) {
+        while (foedselsnummer.isNotEmpty()) {
             val foedselsnummerBolk = foedselsnummer.take(100)
             foedselsnummer = foedselsnummer.drop(100)
 
