@@ -5,12 +5,10 @@ import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
-import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.log.logger
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.slf4j.MDC
-import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
 
 class PopulerAktorIdWorker(
@@ -20,7 +18,7 @@ class PopulerAktorIdWorker(
     private val unleashClient: UnleashClient,
     private val leaderElectionClient: LeaderElectionClient
 ) {
-    @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 180000)
+
     fun populereAktorId() {
         if (!leaderElectionClient.isLeader) {
             return
