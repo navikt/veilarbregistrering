@@ -25,9 +25,9 @@ class PopulerAktorIdWorker(
         if (!leaderElectionClient.isLeader) {
             return
         }
-        if (isProduction()) {
+/*        if (isProduction()) {
             return
-        }
+        }*/
         try {
             CallId.leggTilCallId()
             logger.info("Startet jobb for å populere aktor_id_cache")
@@ -56,30 +56,38 @@ class PopulerAktorIdWorker(
             val foedselsnummerBolk = foedselsnummer.take(100)
             foedselsnummer = foedselsnummer.drop(100)
 
-            val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummerBolk, true)
-            val fnrUtenTreff = foedselsnummerBolk.subtract(aktorIdFnrMap.keys)
+            try{
+                val aktorIdFnrMap = pdlOppslagGateway.hentIdenterBolk(foedselsnummerBolk, true)
 
-            if (fnrUtenTreff.isNotEmpty()) {
-                secureLogger.warn("Aktor_id ikke funnet for foedselsnummer $fnrUtenTreff i iterasjon $teller i bolk $offset")
-                logger.info("${fnrUtenTreff.size} fødselsnummer manglet aktorId i PDL for iterasjon nr $teller i bolk $offset")
-            }
-            if (aktorIdFnrMap.isEmpty()) {
+                val fnrUtenTreff = foedselsnummerBolk.subtract(aktorIdFnrMap.keys)
+
+                if (fnrUtenTreff.isNotEmpty()) {
+                    secureLogger.warn("Aktor_id ikke funnet for foedselsnummer $fnrUtenTreff i iterasjon $teller i bolk $offset")
+                    logger.info("${fnrUtenTreff.size} fødselsnummer manglet aktorId i PDL for iterasjon nr $teller i bolk $offset")
+                }
+                if (aktorIdFnrMap.isEmpty()) {
+                    teller += 1
+                    logger.info("Fant ingen identer fra hentIdenterBolk i iterasjon nr $teller i bolk $offset")
+                    continue
+                }
+
+                val oppdaterteRader =
+                    aktorIdCacheRepository.lagreBolk(aktorIdFnrMap.map {
+                        AktorIdCache(
+                            it.key,
+                            it.value,
+                            LocalDateTime.now()
+                        )
+                    })
+
+                logger.info("Oppdaterte $oppdaterteRader i jobb som populerer AktørId-cache for iterasjon nr $teller i bolk $offset")
                 teller += 1
-                logger.info("Fant ingen identer fra hentIdenterBolk i iterasjon nr $teller i bolk $offset")
+            }   catch(e:Exception){
+                logger.info("Fikk feil mot pdl", e)
+                teller += 1
                 continue
             }
 
-            val oppdaterteRader =
-                aktorIdCacheRepository.lagreBolk(aktorIdFnrMap.map {
-                    AktorIdCache(
-                        it.key,
-                        it.value,
-                        LocalDateTime.now()
-                    )
-                })
-
-            logger.info("Oppdaterte $oppdaterteRader i jobb som populerer AktørId-cache for iterasjon nr $teller i bolk $offset")
-            teller += 1
         }
     }
 }
