@@ -3,6 +3,7 @@ package no.nav.veilarbregistrering.integrasjonstest
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
@@ -81,20 +82,25 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             mockk(relaxed = true)
 
         @Bean
+        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService = mockk(relaxed = true)
+
+        @Bean
         fun arbeidssokerService(
             formidlingsgruppeRepository: FormidlingsgruppeRepository,
             unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
             metricsService: MetricsService,
             brukerRegistreringRepository: BrukerRegistreringRepository,
-            reaktiveringRepository: ReaktiveringRepository
+            reaktiveringRepository: ReaktiveringRepository,
+            arbeidssokerperiodeService: ArbeidssokerperiodeService
         ): ArbeidssokerService = ArbeidssokerService(
             formidlingsgruppeRepository,
             formidlingsgruppeGateway,
             unleashClient,
             metricsService,
             brukerRegistreringRepository,
-            reaktiveringRepository
+            reaktiveringRepository,
+            arbeidssokerperiodeService
         )
     }
 

@@ -4,6 +4,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
@@ -29,6 +30,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     private lateinit var arbeidssokerService: ArbeidssokerService
     private val unleashService = mockk<UnleashClient>()
     private val metricsService = mockk<MetricsService>(relaxed = true)
+    private val arbeidssokerperiodeService = mockk<ArbeidssokerperiodeService>(relaxed = true)
 
     @BeforeEach
     fun setup() {
@@ -38,10 +40,12 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             unleashService,
             metricsService,
             StubBrukerRegistreringRepository(),
-            StubReaktiveringRepository()
+            StubReaktiveringRepository(),
+            arbeidssokerperiodeService
         )
 
         every { unleashService.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS") } returns true
+        every { arbeidssokerperiodeService.hentPerioder(any())} returns emptyList()
     }
 
     @Test

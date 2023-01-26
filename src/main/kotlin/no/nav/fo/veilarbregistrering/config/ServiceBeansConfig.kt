@@ -338,7 +338,8 @@ class ServiceBeansConfig {
         unleashClient: UnleashClient,
         metricsService: MetricsService,
         brukerRegistreringRepository: BrukerRegistreringRepository,
-        brukerReaktiveringRepository: ReaktiveringRepository
+        brukerReaktiveringRepository: ReaktiveringRepository,
+        arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             formidlingsgruppeRepository,
@@ -346,7 +347,8 @@ class ServiceBeansConfig {
             unleashClient,
             metricsService,
             brukerRegistreringRepository,
-            brukerReaktiveringRepository
+            brukerReaktiveringRepository,
+            arbeidssokerperiodeService
         )
     }
 

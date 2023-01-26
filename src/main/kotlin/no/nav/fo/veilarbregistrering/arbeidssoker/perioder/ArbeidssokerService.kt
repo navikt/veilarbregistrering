@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -22,7 +23,8 @@ class ArbeidssokerService(
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val brukerReaktiveringRepository: ReaktiveringRepository
+    private val brukerReaktiveringRepository: ReaktiveringRepository,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
@@ -31,6 +33,9 @@ class ArbeidssokerService(
         val overlappendeHistoriskePerioderORDS = arbeidssokerperioderORDS.overlapperMed(forespurtPeriode)
 
         val skalSammenlignePerioderORDS = unleashClient.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS")
+
+        val lagredePerioder = arbeidssokerperiodeService.hentPerioder(bruker.gjeldendeFoedselsnummer)
+        val allePerioder = konkatinerLagredeOgHistoriskePerioder(lagredePerioder, overlappendeHistoriskePerioderORDS)
 
         if (skalSammenlignePerioderORDS) {
             try {
@@ -42,7 +47,6 @@ class ArbeidssokerService(
                     forespurtPeriode
                 )
 
-                //arbeidsokerperioderRepository.lagre(arbeidssoker)
 
             } catch (e: RuntimeException) {
                 logger.warn("Sammenligning av perioder feilet", e)
@@ -54,7 +58,13 @@ class ArbeidssokerService(
             "Returnerer arbeidssokerperioder fra Arena sin ORDS-tjenesten uten sammenligning: $overlappendeHistoriskePerioderORDS"
         )
 
-        return overlappendeHistoriskePerioderORDS
+        return allePerioder
+    }
+
+    private fun konkatinerLagredeOgHistoriskePerioder(lagredePerioder: List<Periode>, ordsPerioder: Arbeidssokerperioder): Arbeidssokerperioder {
+        val lagredeArbeidssokerperioder = Arbeidssokerperioder.of(lagredePerioder.map { Arbeidssokerperiode(it) })
+        val allePerioder = (ordsPerioder.asList() + lagredeArbeidssokerperioder.asList()).distinct()
+        return Arbeidssokerperioder(allePerioder)
     }
 
     private fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {

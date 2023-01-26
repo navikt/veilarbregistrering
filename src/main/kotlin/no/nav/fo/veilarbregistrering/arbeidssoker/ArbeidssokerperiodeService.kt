@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.time.LocalDateTime
 
 class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) {
@@ -24,6 +25,10 @@ class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) 
         }
 
         repository.avsluttPeriode(foedselsnummer = formidlingsgruppeEndretEvent.foedselsnummer, LocalDateTime.now())
+    }
+
+    fun hentPerioder(foedselsnummer: Foedselsnummer): List<Periode> {
+        return repository.hentPerioder(foedselsnummer).map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
     }
 
     private fun harAktivPeriode(foedselsnummer: Foedselsnummer): Boolean {
