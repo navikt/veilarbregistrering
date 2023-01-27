@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import io.mockk.*
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
@@ -24,18 +25,20 @@ class ReaktiveringBrukerServiceTest {
     private val oppfolgingClient: OppfolgingClient = mockk(relaxed = true)
     private val veilarbarenaClient: VeilarbarenaClient = mockk(relaxed = true)
     private val metricsService: MetricsService = mockk(relaxed = true)
+    private val aktorIdCacheService: AktorIdCacheService = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         every { oppfolgingClient.reaktiverBruker(any()) } just Runs
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         reaktiveringBrukerService = ReaktiveringBrukerService(
-                BrukerTilstandService(
-                    oppfolgingGateway
-                ),
-                reaktiveringRepository,
-                oppfolgingGateway,
-                metricsService
+            BrukerTilstandService(
+                oppfolgingGateway
+            ),
+            reaktiveringRepository,
+            oppfolgingGateway,
+            metricsService,
+            aktorIdCacheService
         )
     }
 
@@ -50,7 +53,11 @@ class ReaktiveringBrukerServiceTest {
     @Test
     fun reaktiveringAvBrukerOver28DagerSkalGiException() {
         mockBrukerSomIkkeSkalReaktiveres()
-        Assertions.assertThrows(RuntimeException::class.java, { reaktiveringBrukerService.reaktiverBruker(BRUKER_INTERN, false) }, "Bruker kan ikke reaktiveres.")
+        Assertions.assertThrows(
+            RuntimeException::class.java,
+            { reaktiveringBrukerService.reaktiverBruker(BRUKER_INTERN, false) },
+            "Bruker kan ikke reaktiveres."
+        )
         verify(exactly = 0) { reaktiveringRepository.lagreReaktiveringForBruker(any()) }
     }
 
@@ -95,7 +102,7 @@ class ReaktiveringBrukerServiceTest {
 
     companion object {
         private val FNR_OPPFYLLER_KRAV =
-                FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears(LocalDate.now(), 40)
+            FoedselsnummerTestdataBuilder.fodselsnummerOnDateMinusYears(LocalDate.now(), 40)
         private val BRUKER_INTERN = Bruker(FNR_OPPFYLLER_KRAV, AktorId("AKTØRID"))
     }
 }

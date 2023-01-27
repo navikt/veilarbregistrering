@@ -121,10 +121,11 @@ class ServiceBeansConfig {
         brukerTilstandService: BrukerTilstandService,
         reaktiveringRepository: ReaktiveringRepository,
         oppfolgingGateway: OppfolgingGateway,
-        metricsService: MetricsService
+        metricsService: MetricsService,
+        aktorIdCacheService: AktorIdCacheService
     ): ReaktiveringBrukerService {
         return ReaktiveringBrukerService(
-            brukerTilstandService, reaktiveringRepository, oppfolgingGateway, metricsService
+            brukerTilstandService, reaktiveringRepository, oppfolgingGateway, metricsService, aktorIdCacheService
         )
     }
 

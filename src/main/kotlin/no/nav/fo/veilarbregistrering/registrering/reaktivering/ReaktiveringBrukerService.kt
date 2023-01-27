@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
+import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.log.secureLogger
@@ -15,7 +16,8 @@ open class ReaktiveringBrukerService(
     private val brukerTilstandService: BrukerTilstandService,
     private val reaktiveringRepository: ReaktiveringRepository,
     private val oppfolgingGateway: OppfolgingGateway,
-    private val metricsService: MetricsService
+    private val metricsService: MetricsService,
+    private val aktorIdCacheService: AktorIdCacheService
 ) {
     @Transactional
     open fun reaktiverBruker(bruker: Bruker, erVeileder: Boolean) {
@@ -28,6 +30,9 @@ open class ReaktiveringBrukerService(
             )
         }
         reaktiveringRepository.lagreReaktiveringForBruker(bruker)
+
+        aktorIdCacheService.settInnAktorIdHvisIkkeFinnes(bruker.gjeldendeFoedselsnummer, bruker.aktorId)
+
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.aktorId)
         if (erVeileder) {
