@@ -20,7 +20,6 @@ class PopulerAktorIdWorker(
     private val unleashClient: UnleashClient,
     private val leaderElectionClient: LeaderElectionClient
 ) {
-    @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 180000)
     fun populereAktorId() {
         if (!leaderElectionClient.isLeader) {
             return
