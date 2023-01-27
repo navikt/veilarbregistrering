@@ -36,11 +36,15 @@ class FormidlingsgruppeMottakService(
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
-        aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+        try {
+            aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+        } catch (e: Exception) {
+            logger.error("Feil med aktorId fra PDL", e)
+        }
 
         try {
             arbeidssokerperiodeService.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent)
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             logger.error("Feil ved behandling av formidlingsgruppe event", e)
         }
 
