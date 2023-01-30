@@ -54,7 +54,7 @@ class ArbeidssokerTest {
         arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
 
         assertEquals(2, arbeidssoker.allePerioder().size)
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, formidlingsgruppeEndringTidspunkt2.minusDays(1)), arbeidssoker.allePerioder().get(0))
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt2)), arbeidssoker.allePerioder().get(0))
         assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt3, null), arbeidssoker.allePerioder().get(1))
     }
 
@@ -107,7 +107,7 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt)), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -154,9 +154,12 @@ class ArbeidssokerTest {
         val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
         arbeidssoker.behandle(reaktivering)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt)), arbeidssoker.sistePeriode())
     }
 
+    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
+        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
+    }
 
 }
 

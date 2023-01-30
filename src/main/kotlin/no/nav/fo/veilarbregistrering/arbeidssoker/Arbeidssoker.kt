@@ -20,14 +20,8 @@ class Arbeidssoker {
     }
 
     internal fun avsluttGammelOgStartNyPeriode(overgangsTidspunkt: LocalDateTime) {
-        sistePeriode()
-            ?.avslutt(atTheEndOfYesterday(overgangsTidspunkt))
-            ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        avsluttPeriode(overgangsTidspunkt)
         startPeriode(overgangsTidspunkt)
-    }
-
-    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
-        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
     }
 
     internal fun startPeriode(fraDato: LocalDateTime) {

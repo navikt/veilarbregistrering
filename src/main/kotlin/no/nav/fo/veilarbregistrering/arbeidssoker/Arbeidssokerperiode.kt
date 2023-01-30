@@ -6,7 +6,11 @@ data class Arbeidssokerperiode(var fraDato: LocalDateTime, var tilDato: LocalDat
 
     fun avslutt(tilDato: LocalDateTime) {
         if (this.tilDato != null) throw IllegalStateException("Arbeidssokerperiode har allerede en tilDato - kan ikke avslutte en allerede avsluttet periode")
-        this.tilDato = tilDato
+        this.tilDato = atTheEndOfYesterday(tilDato)
+    }
+
+    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
+        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
     }
 
     fun korrigerForNegativPeriode() {
