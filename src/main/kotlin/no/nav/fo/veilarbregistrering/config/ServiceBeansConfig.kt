@@ -16,6 +16,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources.MeldekortR
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
@@ -311,6 +312,18 @@ class ServiceBeansConfig {
             brukerRegistreringRepository,
             brukerReaktiveringRepository
         )
+    }
+
+    @Bean
+    fun populerArbeidssokerperioderService(
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
+        brukerRegistreringRepository: BrukerRegistreringRepository,
+        brukerReaktiveringRepository: ReaktiveringRepository
+    ): PopulerArbeidssokerperioderService {
+        return PopulerArbeidssokerperioderService(
+            formidlingsgruppeRepository,
+            brukerRegistreringRepository,
+            brukerReaktiveringRepository)
     }
 
     @Bean
