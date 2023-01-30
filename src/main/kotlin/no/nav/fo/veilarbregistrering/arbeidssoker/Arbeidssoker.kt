@@ -46,6 +46,10 @@ class Arbeidssoker {
     internal fun allePerioder(): List<Arbeidssokerperiode> {
         return arbeidssokerperioder
     }
+
+    fun droppSistePeriode() {
+        arbeidssokerperioder.remove(sistePeriode())
+    }
 }
 
 private interface ArbeidssokerState {
@@ -98,8 +102,15 @@ private object AktivArbeidssokerState : ArbeidssokerState {
             arbeidssoker.avsluttGammelOgStartNyPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
 
         } else {
-            logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
-            arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
+            if (arbeidssoker.sistePeriode()!!.fraDato.toLocalDate() == formidlingsgruppeEndretEvent.opprettetTidspunkt().toLocalDate()) {
+                logger.warn("Dropper siste periode som følge av at vi mottar " +
+                        "${formidlingsgruppeEndretEvent.formidlingsgruppe()} samme dag som perioden ble startet.")
+                arbeidssoker.droppSistePeriode()
+
+            } else {
+                logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
+                arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
+            }
         }
     }
 }
