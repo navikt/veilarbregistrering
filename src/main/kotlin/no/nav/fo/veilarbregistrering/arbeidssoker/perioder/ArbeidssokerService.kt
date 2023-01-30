@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.log.logger
@@ -11,18 +10,14 @@ import no.nav.fo.veilarbregistrering.metrics.Events
 import no.nav.fo.veilarbregistrering.metrics.JaNei
 import no.nav.fo.veilarbregistrering.metrics.Metric
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.springframework.stereotype.Service
 
 @Service
 class ArbeidssokerService(
-    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val formidlingsgruppeGateway: FormidlingsgruppeGateway,
+    private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
     private val unleashClient: UnleashClient,
-    private val metricsService: MetricsService,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val brukerReaktiveringRepository: ReaktiveringRepository
+    private val metricsService: MetricsService
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
@@ -34,7 +29,7 @@ class ArbeidssokerService(
 
         if (skalSammenlignePerioderORDS) {
             try {
-                val arbeidssoker = populerNyArbeidssøkermodell(bruker)
+                val arbeidssoker = populerArbeidssokerperioderService.populerNyArbeidssøkermodell(bruker)
                 val overlappendeArbeidssokerperioderLokalt = map(arbeidssoker).overlapperMed(forespurtPeriode)
                 sammenlignNyOgGammelModell(
                     overlappendeArbeidssokerperioderLokalt,
@@ -55,17 +50,6 @@ class ArbeidssokerService(
         )
 
         return overlappendeHistoriskePerioderORDS
-    }
-
-    private fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
-        val formidlingsgruppe =
-            formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
-
-        val arbeidssoker = Arbeidssoker()
-
-        formidlingsgruppe.sortedBy { it.opprettetTidspunkt() }.forEach { arbeidssoker.behandle(it) }
-
-        return arbeidssoker
     }
 
     private fun map(arbeidssoker: Arbeidssoker) = Arbeidssokerperioder(
@@ -97,13 +81,8 @@ class ArbeidssokerService(
     private enum class Kilde : Metric {
         ORDS, LOKAL;
 
-        override fun fieldName(): String {
-            return "kilde"
-        }
-
-        override fun value(): Any {
-            return this.toString()
-        }
+        override fun fieldName(): String = "kilde"
+        override fun value(): Any = this.toString()
     }
 
     companion object {

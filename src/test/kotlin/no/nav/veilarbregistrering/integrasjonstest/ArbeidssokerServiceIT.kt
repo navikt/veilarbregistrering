@@ -15,6 +15,7 @@ import no.nav.fo.veilarbregistrering.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
@@ -40,6 +41,8 @@ import java.time.LocalDateTime
 internal class ArbeidssokerServiceIT @Autowired constructor(
     private val arbeidssokerService: ArbeidssokerService,
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
+    private val brukerRegistreringRepository: BrukerRegistreringRepository,
+    private val reaktiveringRepository: ReaktiveringRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
@@ -82,19 +85,20 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
 
         @Bean
         fun arbeidssokerService(
-            formidlingsgruppeRepository: FormidlingsgruppeRepository,
-            unleashClient: UnleashClient,
             formidlingsgruppeGateway: FormidlingsgruppeGateway,
+            unleashClient: UnleashClient,
             metricsService: MetricsService,
+            formidlingsgruppeRepository: FormidlingsgruppeRepository,
             brukerRegistreringRepository: BrukerRegistreringRepository,
             reaktiveringRepository: ReaktiveringRepository
         ): ArbeidssokerService = ArbeidssokerService(
-            formidlingsgruppeRepository,
             formidlingsgruppeGateway,
+            PopulerArbeidssokerperioderService(
+                formidlingsgruppeRepository,
+                brukerRegistreringRepository,
+                reaktiveringRepository),
             unleashClient,
-            metricsService,
-            brukerRegistreringRepository,
-            reaktiveringRepository
+            metricsService
         )
     }
 

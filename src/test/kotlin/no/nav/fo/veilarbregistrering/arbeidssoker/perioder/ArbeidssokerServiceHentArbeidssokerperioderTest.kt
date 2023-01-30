@@ -15,7 +15,6 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
@@ -33,12 +32,14 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     @BeforeEach
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
-            StubFormidlingsgruppeRepository(),
             StubFormidlingsgruppeGateway(),
+            PopulerArbeidssokerperioderService(
+                StubFormidlingsgruppeRepository(),
+                StubBrukerRegistreringRepository(),
+                StubReaktiveringRepository()
+            ),
             unleashService,
-            metricsService,
-            StubBrukerRegistreringRepository(),
-            StubReaktiveringRepository()
+            metricsService
         )
 
         every { unleashService.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS") } returns true

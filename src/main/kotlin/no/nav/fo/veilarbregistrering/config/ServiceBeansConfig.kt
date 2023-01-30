@@ -297,20 +297,16 @@ class ServiceBeansConfig {
 
     @Bean
     fun arbeidssokerService(
-        formidlingsgruppeRepository: FormidlingsgruppeRepository,
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
+        populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         unleashClient: UnleashClient,
-        metricsService: MetricsService,
-        brukerRegistreringRepository: BrukerRegistreringRepository,
-        brukerReaktiveringRepository: ReaktiveringRepository
+        metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
-            formidlingsgruppeRepository,
             formidlingsgruppeGateway,
+            populerArbeidssokerperioderService,
             unleashClient,
-            metricsService,
-            brukerRegistreringRepository,
-            brukerReaktiveringRepository
+            metricsService
         )
     }
 
