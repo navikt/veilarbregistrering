@@ -70,12 +70,7 @@ class ArbeidssokerService(
 
     private fun map(arbeidssoker: Arbeidssoker) = Arbeidssokerperioder(
         arbeidssoker.allePerioder().map {
-            Arbeidssokerperiode(
-                Periode(
-                    it.fraDato.toLocalDate(),
-                    it.tilDato?.toLocalDate()
-                )
-            )
+            Arbeidssokerperiode(Periode(it.fraDato.toLocalDate(), it.tilDato?.toLocalDate()))
         }
     )
 
@@ -85,6 +80,7 @@ class ArbeidssokerService(
         forespurtPeriode: Periode
     ) {
         if (overlappendeArbeidssokerperioderLokalt == overlappendeHistoriskePerioderORDS) {
+            logger.info("Periodelister fra lokal cache og Arena-ORDS er like. Forespurt periode: $forespurtPeriode")
             metricsService.registrer(Events.HENT_ARBEIDSSOKERPERIODER_KILDER_GIR_SAMME_SVAR, JaNei.JA)
         } else {
             logger.warn(

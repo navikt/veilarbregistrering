@@ -47,7 +47,7 @@ class Arbeidssoker {
         return arbeidssokerperioder
     }
 
-    fun droppSistePeriode() {
+    internal fun droppSistePeriode() {
         arbeidssokerperioder.remove(sistePeriode())
     }
 }
