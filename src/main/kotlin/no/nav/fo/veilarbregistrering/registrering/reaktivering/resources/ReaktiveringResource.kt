@@ -6,14 +6,9 @@ import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
@@ -27,10 +22,6 @@ class ReaktiveringResource(
     @PostMapping(path=["/startreaktivering", "/fullfoerreaktivering"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun reaktivering() {
-        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
-        }
-
         if (tjenesteErNede()) {
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
@@ -44,10 +35,6 @@ class ReaktiveringResource(
     @PostMapping("/fullfoerreaktivering/systembruker")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun reaktiveringMedSystembruker(@RequestBody fnr: Fnr) {
-        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
-        }
-
         if (tjenesteErNede()) {
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }

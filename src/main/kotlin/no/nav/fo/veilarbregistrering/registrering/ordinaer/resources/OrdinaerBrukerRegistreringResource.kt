@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
-import no.nav.fo.veilarbregistrering.config.requireClusterName
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
@@ -24,9 +23,6 @@ class OrdinaerBrukerRegistreringResource(
 
     @PostMapping(path=["/startregistrering", "/fullfoerordinaerregistrering"])
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
-        if (unleashClient.isEnabled("veilarbregistrering.fullfoer-registrering.off")) {
-            throw RuntimeException("POST for å fullføre registrering er ikke støttet i ${requireClusterName()}")
-        }
         if (tjenesteErNede()) {
             brukerRegistreringService.registrerAtArenaHarPlanlagtNedetid()
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
