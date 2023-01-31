@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.db
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode

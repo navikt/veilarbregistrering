@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db
 
 import java.sql.Timestamp
 

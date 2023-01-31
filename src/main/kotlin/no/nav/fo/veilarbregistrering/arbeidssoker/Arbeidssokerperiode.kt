@@ -4,6 +4,9 @@ import java.time.LocalDateTime
 
 data class Arbeidssokerperiode(var fraDato: LocalDateTime, var tilDato: LocalDateTime?) {
 
+    /**
+     * Setter tilDato = dagen før kl. 23:59:59
+     */
     fun avslutt(tilDato: LocalDateTime) {
         if (this.tilDato != null) throw IllegalStateException("Arbeidssokerperiode har allerede en tilDato - kan ikke avslutte en allerede avsluttet periode")
         this.tilDato = atTheEndOfYesterday(tilDato)

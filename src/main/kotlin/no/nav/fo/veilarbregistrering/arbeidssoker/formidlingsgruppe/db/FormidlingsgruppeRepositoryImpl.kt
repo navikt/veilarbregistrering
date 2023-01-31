@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
@@ -109,7 +110,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
     }
 
     override fun hentFoedselsnummerIBolk(offset: Int, limit: Int): List<Foedselsnummer> {
-        val sql = "SELECT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE ORDER BY ${FORMIDLINGSGRUPPE_ENDRET} DESC " +
+        val sql = "SELECT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE ORDER BY $FORMIDLINGSGRUPPE_ENDRET DESC " +
                 "LIMIT $limit OFFSET $offset"
         return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
     }

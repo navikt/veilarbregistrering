@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.Formidlingsgruppeendring
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.time.LocalDate
 
