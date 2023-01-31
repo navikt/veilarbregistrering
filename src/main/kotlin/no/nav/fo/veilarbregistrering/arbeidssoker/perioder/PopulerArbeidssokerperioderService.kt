@@ -24,10 +24,16 @@ class PopulerArbeidssokerperioderService(
     fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
         val formidlingsgruppe =
             formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
+        val ordinaerBrukerRegistreringer =
+            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
+        val reaktiveringer =
+            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
+
+        val listeMedArbeidssøkerEndringer = formidlingsgruppe + ordinaerBrukerRegistreringer + reaktiveringer
 
         val arbeidssoker = Arbeidssoker()
 
-        formidlingsgruppe
+        listeMedArbeidssøkerEndringer
             .sortedBy { it.opprettetTidspunkt() }
             .forEach { arbeidssoker.behandle(it) }
 
