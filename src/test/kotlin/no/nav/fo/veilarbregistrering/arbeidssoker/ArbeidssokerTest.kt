@@ -97,7 +97,21 @@ class ArbeidssokerTest {
     }
 
     @Test
-    fun `skal avslutte og starte ny periode når vi mottar formidlingsgruppeendring med ARBS og arbeidsøker allerede er aktiv`() {
+    fun `skal avslutte og starte ny periode når vi mottar formidlingsgruppeendring med ARBS og arbeidsøker har vært aktiv i mer enn en dag`() {
+        val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
+        val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
+        arbeidssoker.behandle(nyRegistrering)
+
+        val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(nyRegistreringsdato.plusDays(3).plusMinutes(5))
+        arbeidssoker.behandle(formidlingsgruppeEndringEvent)
+
+        assertEquals(2, arbeidssoker.allePerioder().size)
+        assertEquals(formidlingsgruppeEndringEvent.formidlingsgruppeEndret.toLocalDate().minusDays(1), arbeidssoker.allePerioder().get(0).tilDato?.toLocalDate())
+        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringEvent.formidlingsgruppeEndret, null), arbeidssoker.sistePeriode())
+    }
+
+    @Test
+    fun `skal forkaste formidlingsgruppeendring med ARBS når arbeidsøkerperiode ble startet tidligere samme dag`() {
         val nyRegistreringsdato = LocalDateTime.now().minusMonths(1)
         val nyRegistrering = gyldigBrukerRegistrering(opprettetDato = nyRegistreringsdato)
         arbeidssoker.behandle(nyRegistrering)
@@ -105,10 +119,10 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(nyRegistreringsdato.plusMinutes(5))
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(2, arbeidssoker.allePerioder().size)
-        assertEquals(formidlingsgruppeEndringEvent.formidlingsgruppeEndret.toLocalDate().minusDays(1), arbeidssoker.allePerioder().get(0).tilDato?.toLocalDate())
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringEvent.formidlingsgruppeEndret, null), arbeidssoker.sistePeriode())
+        assertEquals(1, arbeidssoker.allePerioder().size)
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, null), arbeidssoker.sistePeriode())
     }
+
 
     @Test
     fun `skal avslutte gjeldende arbeidssøkerperiode etter formidlingsgruppe med ISERV når arbeidssøker er aktiv`() {

@@ -44,6 +44,9 @@ class Arbeidssoker {
 
     private fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
 
+    private fun sistePeriodeStartetSammeDag(opprettetTidspunkt: LocalDateTime): Boolean =
+        sistePeriode()!!.fraDato.toLocalDate() == opprettetTidspunkt.toLocalDate()
+
     internal fun sistePeriode(): Arbeidssokerperiode? {
         if (arbeidssokerperioder.isEmpty()) return null
         return arbeidssokerperioder.sortedBy { it.fraDato }.last()
@@ -102,6 +105,11 @@ class Arbeidssoker {
 
         override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret) {
             if (formidlingsgruppeEndretEvent.formidlingsgruppe().erArbeidssoker()) {
+                if (arbeidssoker.sistePeriodeStartetSammeDag(formidlingsgruppeEndretEvent.opprettetTidspunkt())) {
+                    logger.info("${arbeidssoker.id()} - Avviser formidlingsgruppeendretEvent (ARBS) fordi vi allerede har startet " +
+                            "arbeidssøkerperiode samme dag ((${formater(formidlingsgruppeEndretEvent.opprettetTidspunkt())})")
+                    return
+                }
                 logger.info("${arbeidssoker.id()} - Avslutter (${formater(formidlingsgruppeEndretEvent.opprettetTidspunkt())}) " +
                         "arbeidssøkerperiode, og starter samtidig en ny som følge av " +
                         "${formidlingsgruppeEndretEvent.formidlingsgruppe()} fordi arbeidssøker allerede var aktiv")
@@ -109,7 +117,7 @@ class Arbeidssoker {
                 arbeidssoker nyTilstand AktivArbeidssokerState
 
             } else {
-                if (arbeidssoker.sistePeriode()!!.fraDato.toLocalDate() == formidlingsgruppeEndretEvent.opprettetTidspunkt().toLocalDate()) {
+                if (arbeidssoker.sistePeriodeStartetSammeDag(formidlingsgruppeEndretEvent.opprettetTidspunkt())) {
                     logger.warn("${arbeidssoker.id()} - Dropper siste periode som følge av at vi mottar " +
                             "${formidlingsgruppeEndretEvent.formidlingsgruppe()} samme dag " +
                             "${formater(formidlingsgruppeEndretEvent.opprettetTidspunkt())} som perioden ble startet.")
