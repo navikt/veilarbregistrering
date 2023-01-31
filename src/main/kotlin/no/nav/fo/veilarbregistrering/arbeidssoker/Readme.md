@@ -35,4 +35,21 @@ Vi eier fremdeles ikke slutten - den fanger vi opp ved å lytte på formidlingsg
 Fremtidsbildet:
 [start på en periode utledes av ordinær registrering (våre data) .... slutt på periode utledes utmelding (våre data)] [ ]
 
+# Batch-jobb
+
+### Algoritme:
+
+---
+For hver unike bruker:
+- utled alle perioder for bruker
+- hvis perioden har startDato ETTER cutoff-dato :
+  - behold hvis sluttDato=null (åpen periode)
+  - forkast hvis sluttDato != null (allerede lagret i basen)
+- lagre alle perioder
+
+[cutoff-dato] = første start-dato for lagrede perioder
+
+[unike brukere] = alle brukere med IARBS? 
+
+---
 
