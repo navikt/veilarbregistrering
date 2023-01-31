@@ -8,8 +8,11 @@ import java.time.LocalDateTime
  */
 class Arbeidssoker {
 
+    private var id: Int = 0
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
     private var arbeidssokerperioder: MutableList<Arbeidssokerperiode> = mutableListOf()
+
+    private fun id(): Int = id++
 
     fun behandle(endreArbeidssøker: EndreArbeidssøker) {
         when (endreArbeidssøker) {
@@ -19,26 +22,26 @@ class Arbeidssoker {
         }
     }
 
-    internal fun avsluttGammelOgStartNyPeriode(overgangsTidspunkt: LocalDateTime) {
+    private fun avsluttGammelOgStartNyPeriode(overgangsTidspunkt: LocalDateTime) {
         avsluttPeriode(overgangsTidspunkt)
         startPeriode(overgangsTidspunkt)
     }
 
-    internal fun startPeriode(fraDato: LocalDateTime) {
+    private fun startPeriode(fraDato: LocalDateTime) {
         this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
     }
 
-    internal fun avsluttPeriode(tilDato: LocalDateTime) {
+    private fun avsluttPeriode(tilDato: LocalDateTime) {
         sistePeriode()?.avslutt(tilDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
     }
 
-    internal fun droppSistePeriode() {
+    private fun droppSistePeriode() {
         arbeidssokerperioder.remove(sistePeriode())
     }
 
-    internal fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
+    private fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
 
-    internal fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
+    private fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
 
     internal fun sistePeriode(): Arbeidssokerperiode? {
         if (arbeidssokerperioder.isEmpty()) return null
@@ -58,23 +61,23 @@ class Arbeidssoker {
      */
     private object IkkeArbeidssokerState : ArbeidssokerState {
         override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
-            logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
+            logger.info("${arbeidssoker.id()} - Starter arbeidssøkerperiode som følge av ordinær registrering")
             arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetTidspunkt())
             arbeidssoker nyTilstand AktivArbeidssokerState
         }
 
         override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: ReaktiverArbeidssøker) {
-            logger.warn("Arbeidssøker har ingen tidligere arbeidssøkerperioder - kan derfor ikke reaktiveres")
+            logger.warn("${arbeidssoker.id()} - Arbeidssøker har ingen tidligere arbeidssøkerperioder - kan derfor ikke reaktiveres")
             return
         }
 
         override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret) {
             if (!formidlingsgruppeEndretEvent.formidlingsgruppe().erArbeidssoker()) {
-                logger.warn("Forkaster formidlingsgruppeEndretEvent med " +
+                logger.warn("${arbeidssoker.id()} - Forkaster formidlingsgruppeEndretEvent med " +
                         "${formidlingsgruppeEndretEvent.formidlingsgruppe()} da Arbeidssøker ikke har noe historikk")
                 return
             }
-            logger.info("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
+            logger.info("${arbeidssoker.id()} - Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
             arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
             arbeidssoker nyTilstand AktivArbeidssokerState
         }
@@ -85,28 +88,28 @@ class Arbeidssoker {
      */
     private object AktivArbeidssokerState : ArbeidssokerState {
         override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
-            logger.warn("Avviser OrdinaerBrukerRegistrering - Arbeidssøker er allerede aktiv")
+            logger.warn("${arbeidssoker.id()} - Avviser OrdinaerBrukerRegistrering - Arbeidssøker er allerede aktiv")
         }
 
         override fun behandle(arbeidssoker: Arbeidssoker, reaktivering: ReaktiverArbeidssøker) {
-            logger.warn("Avviser Reaktivering - Arbeidssøker er allerede aktiv")
+            logger.warn("${arbeidssoker.id()} - Avviser Reaktivering - Arbeidssøker er allerede aktiv")
         }
 
         override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret) {
             if (formidlingsgruppeEndretEvent.formidlingsgruppe().erArbeidssoker()) {
-                logger.info("Avslutter arbeidssøkerperiode, og starter samtidig en ny som følge av " +
+                logger.info("${arbeidssoker.id()} - Avslutter arbeidssøkerperiode, og starter samtidig en ny som følge av " +
                         "${formidlingsgruppeEndretEvent.formidlingsgruppe()} fordi arbeidssøker allerede var aktiv")
                 arbeidssoker.avsluttGammelOgStartNyPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
                 arbeidssoker nyTilstand AktivArbeidssokerState
 
             } else {
                 if (arbeidssoker.sistePeriode()!!.fraDato.toLocalDate() == formidlingsgruppeEndretEvent.opprettetTidspunkt().toLocalDate()) {
-                    logger.warn("Dropper siste periode som følge av at vi mottar " +
+                    logger.warn("${arbeidssoker.id()} - Dropper siste periode som følge av at vi mottar " +
                             "${formidlingsgruppeEndretEvent.formidlingsgruppe()} samme dag som perioden ble startet.")
                     arbeidssoker.droppSistePeriode()
 
                 } else {
-                    logger.info("Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
+                    logger.info("${arbeidssoker.id()} - Avslutter arbeiddssøkerperiode som følge av ${formidlingsgruppeEndretEvent.formidlingsgruppe()}")
                     arbeidssoker.avsluttPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
                 }
 
@@ -124,7 +127,7 @@ class Arbeidssoker {
      */
     private object TidligereArbeidssokerState : ArbeidssokerState {
         override fun behandle(arbeidssoker: Arbeidssoker, ordinaerBrukerRegistrering: RegistrerArbeidssøker) {
-            logger.info("Starter arbeidssøkerperiode som følge av ordinær registrering")
+            logger.info("${arbeidssoker.id()} - Starter arbeidssøkerperiode som følge av ordinær registrering")
             arbeidssoker.startPeriode(ordinaerBrukerRegistrering.opprettetTidspunkt())
             arbeidssoker nyTilstand AktivArbeidssokerState
         }
@@ -134,21 +137,21 @@ class Arbeidssoker {
                 throw IllegalStateException("Tilstanden er feil - TidligereArbeidssokerState skal alltid ha tidligere perioder.")
 
             if (arbeidssoker.harVærtInaktivMerEnn28Dager()) {
-                logger.warn("Arbeidssøker har vært inaktiv mer enn 28 dager - kan derfor ikke reaktiveres")
+                logger.warn("${arbeidssoker.id()} - Arbeidssøker har vært inaktiv mer enn 28 dager - kan derfor ikke reaktiveres")
                 return
             }
-            logger.info("Starter arbeidssøkerperiode som følge av reaktivering")
+            logger.info("${arbeidssoker.id()} - Starter arbeidssøkerperiode som følge av reaktivering")
             arbeidssoker.startPeriode(reaktivering.opprettetTidspunkt())
             arbeidssoker nyTilstand AktivArbeidssokerState
         }
 
         override fun behandle(arbeidssoker: Arbeidssoker, formidlingsgruppeEndretEvent: FormidlingsgruppeEndret) {
             if (!formidlingsgruppeEndretEvent.formidlingsgruppe().erArbeidssoker()) {
-                logger.info("Avviser FormidlingsgruppeEndretEvent ${formidlingsgruppeEndretEvent.formidlingsgruppe()} - Arbeidssøker er allerede inaktiv")
+                logger.info("${arbeidssoker.id()} - Avviser FormidlingsgruppeEndretEvent ${formidlingsgruppeEndretEvent.formidlingsgruppe()} - Arbeidssøker er allerede inaktiv")
                 return
             }
 
-            logger.warn("Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
+            logger.warn("${arbeidssoker.id()} - Arbeidssøkerperioden ble initiert av en formidlingsgruppe - ikke en ordinær/reaktivert registrering")
             arbeidssoker.startPeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
             arbeidssoker nyTilstand AktivArbeidssokerState
         }
