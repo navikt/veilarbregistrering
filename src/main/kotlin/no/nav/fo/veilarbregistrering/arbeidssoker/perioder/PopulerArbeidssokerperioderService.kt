@@ -23,7 +23,7 @@ class PopulerArbeidssokerperioderService(
 
     fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
         val formidlingsgruppe =
-            formidlingsgruppeRepository.hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(bruker.alleFoedselsnummer())
+            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(bruker.alleFoedselsnummer())
         val ordinaerBrukerRegistreringer =
             brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
         val reaktiveringer =

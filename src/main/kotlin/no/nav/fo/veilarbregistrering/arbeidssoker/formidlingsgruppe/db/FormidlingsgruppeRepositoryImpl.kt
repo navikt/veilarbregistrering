@@ -89,9 +89,12 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return ArbeidssokerperioderMapper.map(formidlingsgruppeendringer)
     }
 
-    override fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
-        val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
-        val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
+    override fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
+        val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer) AND $PERSON_ID_STATUS = :personIdStatus"
+        val parameters = mapOf(
+            "foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue),
+            "personIdStatus" to "AKTIV"
+        )
 
         val formidlingsgruppeendringer =
             db.query(sql, parameters, fgruppeEndretEvent)

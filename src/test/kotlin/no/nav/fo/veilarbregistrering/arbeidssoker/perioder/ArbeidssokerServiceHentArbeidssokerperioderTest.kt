@@ -188,7 +188,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             ).entries.first { (fnr, _) -> fnr in foedselsnummerList }.value
         }
 
-        override fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
+        override fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
             return emptyList()
         }
 

@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 interface FormidlingsgruppeRepository {
     fun lagre(event: FormidlingsgruppeEndretEvent): Long
     fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder
-    fun hentFormidlingsgrupperOgMapTilFormidlingsgruppeEndretEvent(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent>
+    fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent>
     fun hentUnikeFoedselsnummer(): List<Foedselsnummer>
     fun hentFoedselsnummerIBolk(offset: Int, limit: Int): List<Foedselsnummer>
 }
