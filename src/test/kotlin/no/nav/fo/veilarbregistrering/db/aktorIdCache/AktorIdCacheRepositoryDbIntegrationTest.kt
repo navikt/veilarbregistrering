@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
@@ -31,7 +32,7 @@ class AktorIdCacheRepositoryDbIntegrationTest(
         val FOEDSELSNUMMER = Foedselsnummer("01234567890")
         val AKTORID = AktorId("1000010000100")
 
-        aktorIdCacheRepository.lagre(AktorIdCache(FOEDSELSNUMMER, AKTORID, LocalDateTime.now()))
+        aktorIdCacheRepository.lagre(AktorIdCache(FOEDSELSNUMMER, AKTORID, LocalDate.now().atStartOfDay()))
 
         val aktorIdCache = aktorIdCacheRepository.hentAktørId(FOEDSELSNUMMER)
         assertNotNull(aktorIdCache)
@@ -47,8 +48,8 @@ class AktorIdCacheRepositoryDbIntegrationTest(
 
     @Test
     fun `ikke gjøre endring ved insetting av eksisterende bruker`(){
-        val opprettetDatoOriginal = LocalDateTime.now().minusDays(1)
-        val opprettetDatoNy = LocalDateTime.now()
+        val opprettetDatoOriginal = LocalDate.now().atStartOfDay().minusDays(1)
+        val opprettetDatoNy = LocalDate.now().atStartOfDay()
 
         val FOEDSELSNUMMER = Foedselsnummer("01234567890")
         val AKTORID = AktorId("1000010000100")
