@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.time.LocalDate
 
 internal object ArbeidssokerperioderMapper {
+
     fun map(formidlingsgruppeendringer: List<Formidlingsgruppeendring>): Arbeidssokerperioder {
         return Arbeidssokerperioder(
                 formidlingsgruppeendringer

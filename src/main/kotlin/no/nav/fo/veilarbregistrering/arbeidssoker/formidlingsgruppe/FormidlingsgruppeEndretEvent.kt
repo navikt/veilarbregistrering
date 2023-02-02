@@ -18,6 +18,14 @@ data class FormidlingsgruppeEndretEvent(
 
     override fun formidlingsgruppe(): Formidlingsgruppe = formidlingsgruppe
 
+    fun erISERV(): Boolean {
+        return formidlingsgruppe.kode == "ISERV"
+    }
+
+    fun erAktiv(): Boolean {
+        return personIdStatus == "AKTIV"
+    }
+
     override fun toString(): String {
         return "FormidlingsgruppeEvent{" +
                 "foedselsnummer=" + foedselsnummer.maskert() +

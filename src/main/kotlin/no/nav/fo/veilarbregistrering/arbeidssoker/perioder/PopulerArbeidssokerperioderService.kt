@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
@@ -29,7 +30,7 @@ class PopulerArbeidssokerperioderService(
         val reaktiveringer =
             brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
 
-        val listeMedArbeidssøkerEndringer = formidlingsgruppe + ordinaerBrukerRegistreringer + reaktiveringer
+        val listeMedArbeidssøkerEndringer = filterTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
 
         val arbeidssoker = Arbeidssoker()
 
@@ -39,4 +40,16 @@ class PopulerArbeidssokerperioderService(
 
         return arbeidssoker
     }
+
+    private fun filterTekniskeISERVEndringer(formidlingsgruppeendringer: List<FormidlingsgruppeEndretEvent>): List<FormidlingsgruppeEndretEvent> {
+        return formidlingsgruppeendringer
+            .sortedByDescending { it.formidlingsgruppeEndret }
+            .filter(FormidlingsgruppeEndretEvent::erAktiv)
+            .run(::slettTekniskeISERVEndringer)
+    }
+
+    private fun slettTekniskeISERVEndringer(formidlingsgruppeendringer: List<FormidlingsgruppeEndretEvent>) =
+        formidlingsgruppeendringer.groupBy { it.formidlingsgruppeEndret }
+            .values.flatMap { samtidigeEndringer -> if (samtidigeEndringer.size > 1) samtidigeEndringer.filter { !it.erISERV() } else samtidigeEndringer }
+            .sortedByDescending { it.formidlingsgruppeEndret }
 }
