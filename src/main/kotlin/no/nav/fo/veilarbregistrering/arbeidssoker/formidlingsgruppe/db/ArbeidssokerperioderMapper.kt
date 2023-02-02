@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 internal object ArbeidssokerperioderMapper {
 
-    fun filterTekniskeISERVEndringer(formidlingsgruppeendringer: List<FormidlingsgruppeEndretEvent>): List<FormidlingsgruppeEndretEvent> {
+    fun filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer(formidlingsgruppeendringer: List<FormidlingsgruppeEndretEvent>): List<FormidlingsgruppeEndretEvent> {
         return formidlingsgruppeendringer
             .sortedByDescending { it.formidlingsgruppeEndret }
             .filter(FormidlingsgruppeEndretEvent::erAktiv)

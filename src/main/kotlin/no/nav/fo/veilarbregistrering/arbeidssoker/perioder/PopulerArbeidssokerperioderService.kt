@@ -1,11 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.filterTekniskeISERVEndringer
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 
@@ -32,7 +30,7 @@ class PopulerArbeidssokerperioderService(
         val reaktiveringer =
             brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
 
-        val listeMedArbeidssøkerEndringer = filterTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
+        val listeMedArbeidssøkerEndringer = filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
 
         val arbeidssoker = Arbeidssoker()
 

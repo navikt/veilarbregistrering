@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,7 +48,7 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
     @Test
     fun `skal hente opp eksisterende arbeidssøkerperioder før ny formidlingsgruppe persisteres`() {
         eksisterendeFormidlingsgrupper.map { formidlingsgruppeRepository.lagre(it) }
-        val eksisterendeArbeidssokerPerioder = formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(listOf(fnr))
+        val eksisterendeArbeidssokerPerioder = ArbeidssokerperioderMapper.map(formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(listOf(fnr)))
         val nyttFormidlingsgruppeEndretEvent = FormidlingsgruppeEndretEvent(
             foedselsnummer = fnr,
             personId = pid,

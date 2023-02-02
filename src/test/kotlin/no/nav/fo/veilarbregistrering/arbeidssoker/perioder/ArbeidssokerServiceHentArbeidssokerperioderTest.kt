@@ -4,23 +4,14 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
-import no.nav.fo.veilarbregistrering.registrering.formidling.Status
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
-import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -33,16 +24,12 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
     fun setup() {
         arbeidssokerService = ArbeidssokerService(
             StubFormidlingsgruppeGateway(),
-            PopulerArbeidssokerperioderService(
-                StubFormidlingsgruppeRepository(),
-                StubBrukerRegistreringRepository(),
-                StubReaktiveringRepository()
-            ),
+            mockk(),
             unleashService,
             metricsService
         )
 
-        every { unleashService.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS") } returns true
+        every { unleashService.isEnabled("veilarbregistrering.stopSammenlignePerioderORDS") } returns false
     }
 
     @Test
@@ -53,10 +40,10 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         )
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_1,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_2,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_3,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_4
+            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_1,
+            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_2,
+            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_3,
+            StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_4
         )
     }
 
@@ -96,32 +83,6 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
         assertThat(arbeidssokerperiodes.asList()).isEmpty()
     }
 
-    @Disabled
-    @Test
-    fun `hentArbeidssokerperioder skal returnere alle perioder for person innenfor forespurt periode lokalt`() {
-        every {
-            unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
-        } returns true
-
-        val bruker = Bruker(
-            FOEDSELSNUMMER_3,
-            AktorId("100002345678"),
-            listOf(FOEDSELSNUMMER_2, FOEDSELSNUMMER_1)
-        )
-        val forespurtPeriode = Periode(
-            LocalDate.of(2020, 3, 20),
-            LocalDate.of(2020, 6, 10)
-        )
-        val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(bruker, forespurtPeriode)
-        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_3,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_4,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_5,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_6,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_7
-        )
-    }
-
     @Test
     fun `hentArbeidssokerperioder skal returnere alle perioder for person innenfor forespurt periode ords`() {
         every {
@@ -140,98 +101,6 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_4,
             StubFormidlingsgruppeGateway.ARBEIDSSOKERPERIODE_5
         )
-    }
-
-    @Disabled
-    @Test
-    fun `returnerer alle perioder (uten datocutoff) for person som berører forespurt periode`() {
-        every {
-            unleashService.isEnabled(ArbeidssokerService.VEILARBREGISTRERING_FORMIDLINGSGRUPPE_LOCALCACHE)
-        } returns true
-
-        val forespurtPeriode = Periode(
-            LocalDate.of(2021, 10, 1),
-            LocalDate.of(2021, 10, 31)
-        )
-        val arbeidssokerperioder = arbeidssokerService.hentArbeidssokerperioder(BRUKER_2, forespurtPeriode)
-        assertThat(arbeidssokerperioder.eldsteFoerst()).containsExactly(
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_9,
-            StubFormidlingsgruppeRepository.ARBEIDSSOKERPERIODE_10,
-        )
-    }
-
-    private class StubFormidlingsgruppeRepository : FormidlingsgruppeRepository {
-        override fun lagre(event: FormidlingsgruppeEndretEvent): Long {
-            return 0
-        }
-
-        override fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
-            return mapOf(
-                FOEDSELSNUMMER_3 to Arbeidssokerperioder(
-                    listOf(
-                        ARBEIDSSOKERPERIODE_3,
-                        ARBEIDSSOKERPERIODE_1,
-                        ARBEIDSSOKERPERIODE_4,
-                        ARBEIDSSOKERPERIODE_2,
-                        ARBEIDSSOKERPERIODE_6,
-                        ARBEIDSSOKERPERIODE_5,
-                        ARBEIDSSOKERPERIODE_7,
-                        ARBEIDSSOKERPERIODE_8,
-                    )
-                ),
-                FOEDSELSNUMMER_4 to Arbeidssokerperioder(
-                    listOf(
-                        ARBEIDSSOKERPERIODE_9,
-                        ARBEIDSSOKERPERIODE_10,
-                    ),
-                )
-            ).entries.first { (fnr, _) -> fnr in foedselsnummerList }.value
-        }
-
-        override fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
-            return emptyList()
-        }
-
-        override fun hentUnikeFoedselsnummer(): List<Foedselsnummer> {
-            return emptyList()
-        }
-
-        override fun hentFoedselsnummerIBolk(offset: Int, limit: Int): List<Foedselsnummer> {
-            return emptyList()
-        }
-
-        companion object {
-            val ARBEIDSSOKERPERIODE_1 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31))
-            )
-            val ARBEIDSSOKERPERIODE_2 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 2, 1), LocalDate.of(2020, 2, 29))
-            )
-            val ARBEIDSSOKERPERIODE_3 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 3, 31))
-            )
-            val ARBEIDSSOKERPERIODE_4 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 4, 1), LocalDate.of(2020, 5, 2))
-            )
-            val ARBEIDSSOKERPERIODE_5 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 5, 3), LocalDate.of(2020, 5, 9))
-            )
-            val ARBEIDSSOKERPERIODE_6 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 5, 10), LocalDate.of(2020, 5, 29))
-            )
-            val ARBEIDSSOKERPERIODE_7 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 5, 30), LocalDate.of(2020, 6, 30))
-            )
-            val ARBEIDSSOKERPERIODE_8 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2020, 7, 1), null)
-            )
-            val ARBEIDSSOKERPERIODE_9 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 10, 5))
-            )
-            val ARBEIDSSOKERPERIODE_10 = Arbeidssokerperiode(
-                Periode(LocalDate.of(2021, 10, 17), null)
-            )
-        }
     }
 
     private class StubFormidlingsgruppeGateway : FormidlingsgruppeGateway {
@@ -276,45 +145,6 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
                 Periode(LocalDate.of(2020, 5, 10), null)
             )
         }
-    }
-
-    private class StubBrukerRegistreringRepository : BrukerRegistreringRepository {
-        override fun lagre(registrering: OrdinaerBrukerRegistrering, bruker: Bruker): OrdinaerBrukerRegistrering {
-            throw UnsupportedOperationException("Ikke implementert i Stub")
-        }
-
-        override fun hentBrukerregistreringForId(brukerregistreringId: Long): OrdinaerBrukerRegistrering {
-            throw UnsupportedOperationException("Ikke implementert i Stub")
-        }
-
-        override fun hentBrukerregistreringForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<OrdinaerBrukerRegistrering> {
-            return listOf(gyldigBrukerRegistrering())
-        }
-
-        override fun finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
-            aktorId: AktorId,
-            tilstander: List<Status>
-        ): List<OrdinaerBrukerRegistrering> {
-            throw UnsupportedOperationException("Ikke implementert i Stub")
-        }
-
-        override fun hentBrukerTilknyttet(brukerRegistreringId: Long): Bruker = BRUKER_1
-
-    }
-
-    private class StubReaktiveringRepository : ReaktiveringRepository {
-        override fun lagreReaktiveringForBruker(bruker: Bruker): Long {
-            throw UnsupportedOperationException("Ikke implementert i Stub")
-        }
-
-        override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
-            throw UnsupportedOperationException("Ikke implementert i Stub")
-        }
-
-        override fun finnReaktiveringerForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<Reaktivering> {
-            return emptyList()
-        }
-
     }
 
     companion object {

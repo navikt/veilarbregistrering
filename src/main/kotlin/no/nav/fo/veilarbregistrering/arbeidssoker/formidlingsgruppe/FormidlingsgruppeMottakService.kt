@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
+import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,9 +29,13 @@ class FormidlingsgruppeMottakService(
         }
 
         val skalUtledeAvslutningAvPeriode = unleashClient.isEnabled("veilarbregistrering.utled-avslutning-arbeidssokerperiode")
-        val eksisterendeArbeidssokerperioderLokalt = if (skalUtledeAvslutningAvPeriode) formidlingsgruppeRepository.finnFormidlingsgrupperOgMapTilArbeidssokerperioder(
-            listOf(formidlingsgruppeEndretEvent.foedselsnummer)
-        ) else null
+        val eksisterendeArbeidssokerperioderLokalt = if (skalUtledeAvslutningAvPeriode) {
+            val eksisterendeFormidlingsgruppeEndretEvents =
+                formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(
+                    listOf(formidlingsgruppeEndretEvent.foedselsnummer)
+                )
+            ArbeidssokerperioderMapper.map(eksisterendeFormidlingsgruppeEndretEvents)
+        } else null
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 

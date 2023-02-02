@@ -4,9 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
@@ -74,36 +72,13 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return db.queryForObject(sql, emptyMap<String, Any>(), Long::class.java)!!
     }
 
-    override fun finnFormidlingsgrupperOgMapTilArbeidssokerperioder(foedselsnummerList: List<Foedselsnummer>): Arbeidssokerperioder {
+    override fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
         val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer)"
         val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
 
-        val formidlingsgruppeendringer =
-            db.query(sql, parameters, fgruppeEndretEvent)
-        logger.info(
-            String.format(
-                "Fant følgende rådata med formidlingsgruppeendringer: %s",
-                formidlingsgruppeendringer.toString()
-            )
-        )
-        return ArbeidssokerperioderMapper.map(formidlingsgruppeendringer)
-    }
+        val formidlingsgruppeendringer = db.query(sql, parameters, fgruppeEndretEvent)
 
-    override fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent> {
-        val sql = "SELECT * FROM $FORMIDLINGSGRUPPE WHERE $FOEDSELSNUMMER IN (:foedselsnummer) AND $PERSON_ID_STATUS = :personIdStatus"
-        val parameters = mapOf(
-            "foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue),
-            "personIdStatus" to "AKTIV"
-        )
-
-        val formidlingsgruppeendringer =
-            db.query(sql, parameters, fgruppeEndretEvent)
-        logger.info(
-            String.format(
-                "Fant følgende rådata med formidlingsgruppeendringer: %s",
-                formidlingsgruppeendringer.toString()
-            )
-        )
+        logger.info(String.format("Fant følgende rådata med formidlingsgruppeendringer: %s", formidlingsgruppeendringer.toString()))
         return formidlingsgruppeendringer
     }
 

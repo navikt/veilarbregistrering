@@ -37,8 +37,6 @@ class ArbeidssokerService(
                     forespurtPeriode
                 )
 
-                //arbeidsokerperioderRepository.lagre(arbeidssoker)
-
             } catch (e: RuntimeException) {
                 logger.warn("Sammenligning av perioder feilet", e)
             }
