@@ -65,7 +65,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
                 " AND $FORMIDLINGSGRUPPE = :formidlingsgruppe " +
                 " AND $FORMIDLINGSGRUPPE_ENDRET = :endret"
 
-        val formidlingsgruppeendringer = db.query(sql, params, fgruppeMapper)
+        val formidlingsgruppeendringer = db.query(sql, params, fgruppeEndretEvent)
         return formidlingsgruppeendringer.isNotEmpty()
     }
 
@@ -79,7 +79,7 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
 
         val formidlingsgruppeendringer =
-            db.query(sql, parameters, fgruppeMapper)
+            db.query(sql, parameters, fgruppeEndretEvent)
         logger.info(
             String.format(
                 "Fant følgende rådata med formidlingsgruppeendringer: %s",
@@ -130,15 +130,6 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         private const val FORR_FORMIDLINGSGRUPPE = "FORR_FORMIDLINGSGRUPPE"
         private const val FORR_FORMIDLINGSGRUPPE_ENDRET = "FORR_FORMIDLINGSGRUPPE_ENDRET"
         private const val FORMIDLINGSGRUPPE_LEST = "FORMIDLINGSGRUPPE_LEST"
-
-        private val fgruppeMapper = RowMapper { rs, _ ->
-            Formidlingsgruppeendring(
-                rs.getString(FORMIDLINGSGRUPPE),
-                rs.getInt(PERSON_ID),
-                rs.getString(PERSON_ID_STATUS),
-                rs.getTimestamp(FORMIDLINGSGRUPPE_ENDRET)
-            )
-        }
 
         private val fgruppeEndretEvent = RowMapper { rs, _ ->
             FormidlingsgruppeEndretEvent(

@@ -1,13 +1,12 @@
 package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.Formidlingsgruppeendring
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.map
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -17,29 +16,29 @@ class ArbeidssokerperioderMapperTest {
     fun kun_perioder_med_arbs_skal_være_med_i_arbeidssokerperioder() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                    LocalDate.of(2020, 3, 19).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                    LocalDate.of(2020, 4, 21).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "IARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                    LocalDate.of(2020, 5, 30).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                    LocalDate.of(2020, 6, 13).atStartOfDay()
                 ),
             )
         )
@@ -52,35 +51,35 @@ class ArbeidssokerperioderMapperTest {
     fun perioder_skal_være_sortert_med_eldste_først() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                    LocalDate.of(2020, 3, 19).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                    LocalDate.of(2020, 4, 21).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                    LocalDate.of(2020, 5, 30).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "IARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                    LocalDate.of(2020, 6, 13).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 8, 13).atStartOfDay())
+                    LocalDate.of(2020, 8, 13).atStartOfDay()
                 ),
             )
         )
@@ -94,29 +93,29 @@ class ArbeidssokerperioderMapperTest {
     fun kun_siste_periode_kan_ha_blank_tildato() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                    LocalDate.of(2020, 3, 19).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                    LocalDate.of(2020, 4, 21).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                    LocalDate.of(2020, 5, 30).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 6, 13).atStartOfDay())
+                    LocalDate.of(2020, 6, 13).atStartOfDay()
                 ),
             )
         )
@@ -129,17 +128,17 @@ class ArbeidssokerperioderMapperTest {
     fun foerste_periode_skal_ha_tildato_lik_dagen_foer_andre_formidlingsgruppeendring_sin_fradato() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                    LocalDate.of(2020, 3, 19).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                    LocalDate.of(2020, 4, 21).atStartOfDay()
                 ),
             )
         )
@@ -151,29 +150,29 @@ class ArbeidssokerperioderMapperTest {
     fun skal_populere_tildato_korrekt_selv_om_listen_kommer_usortert() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 5, 30).atStartOfDay())
+                    LocalDate.of(2020, 5, 30).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "IARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 6, 12).atStartOfDay())
+                    LocalDate.of(2020, 6, 12).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 3, 19).atStartOfDay())
+                    LocalDate.of(2020, 3, 19).atStartOfDay()
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(LocalDate.of(2020, 4, 21).atStartOfDay())
+                    LocalDate.of(2020, 4, 21).atStartOfDay()
                 )
             )
         )
@@ -201,18 +200,18 @@ class ArbeidssokerperioderMapperTest {
         val now = LocalDateTime.now()
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring("ARBS", 4397692, "AKTIV", Timestamp.valueOf(now)),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret("ARBS", "4397692", "AKTIV", now),
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusSeconds(2))
+                    now.plusSeconds(2)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusSeconds(4))
+                    now.plusSeconds(4)
                 ),
             )
         )
@@ -226,48 +225,48 @@ class ArbeidssokerperioderMapperTest {
         val now = LocalDateTime.now()
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring("ISERV", 4397692, "AKTIV", Timestamp.valueOf(now)),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret("ISERV", "4397692", "AKTIV", now),
+                formidlingsgruppeEndret(
                     "IARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusSeconds(2))
+                    now.plusSeconds(2)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusSeconds(4))
+                    now.plusSeconds(4)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusDays(7))
+                    now.plusDays(7)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusDays(7).plusSeconds(3))
+                    now.plusDays(7).plusSeconds(3)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusMonths(1))
+                    now.plusMonths(1)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ARBS",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusMonths(1).plusSeconds(2))
+                    now.plusMonths(1).plusSeconds(2)
                 ),
-                Formidlingsgruppeendring(
+                formidlingsgruppeEndret(
                     "ISERV",
-                    4397692,
+                    "4397692",
                     "AKTIV",
-                    Timestamp.valueOf(now.plusMonths(1).plusSeconds(5))
+                    now.plusMonths(1).plusSeconds(5)
                 ),
             )
         )
@@ -283,30 +282,36 @@ class ArbeidssokerperioderMapperTest {
     fun skal_filtrere_bort_endringer_for_duplikate_identer() {
         val arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
-                    "ISERV", 4397692, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2019, 3, 6, 10, 10)
-                    )
+                formidlingsgruppeEndret(
+                    "ISERV",
+                    "4397692",
+                    "AKTIV",
+                    LocalDateTime.of(2019, 3, 6, 10, 10)
                 ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(
-                        LocalDateTime.of(2019, 9, 11, 10, 10)
-                    )
+                formidlingsgruppeEndret(
+                    "ISERV",
+                    "4451554",
+                    "DUPLIKAT_TIL_BEH",
+                    LocalDateTime.of(2019, 9, 11, 10, 10)
                 ),
-                Formidlingsgruppeendring(
-                    "ARBS", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(
-                        LocalDateTime.of(2019, 9, 11, 10, 10)
-                    )
+                formidlingsgruppeEndret(
+                    "ARBS",
+                    "4451554",
+                    "DUPLIKAT_TIL_BEH",
+                    LocalDateTime.of(2019, 9, 11, 10, 10)
                 ),
-                Formidlingsgruppeendring(
-                    "ARBS", 4397692, "AKTIV", Timestamp.valueOf(
-                        LocalDateTime.of(2019, 12, 9, 10, 10)
-                    )
+                formidlingsgruppeEndret(
+                    "ARBS",
+                    "4397692",
+                    "AKTIV",
+                    LocalDateTime.of(2019, 12, 9, 10, 10)
                 ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4451554, "DUPLIKAT_TIL_BEH", Timestamp.valueOf(
-                        LocalDateTime.of(2019, 12, 18, 10, 10)
-                    )
+                formidlingsgruppeEndret(
+                    "ISERV",
+                    "4451554",
+                    "DUPLIKAT_TIL_BEH",
+
+                    LocalDateTime.of(2019, 12, 18, 10, 10)
                 )
             )
         )
@@ -321,25 +326,21 @@ class ArbeidssokerperioderMapperTest {
 
         var arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
-                    "ARBS", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ARBS", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
                 ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ISERV", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
                 ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ISERV", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 9, 9, 9, 9, 9)
-                    )
                 ),
-                Formidlingsgruppeendring(
-                    "ARBS", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ARBS", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 9, 9, 9, 9, 9)
-                    )
                 ),
             )
         )
@@ -356,15 +357,13 @@ class ArbeidssokerperioderMapperTest {
 
         arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
-                    "ARBS", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ARBS", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
                 ),
-                Formidlingsgruppeendring(
-                    "ISERV", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ISERV", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
                 ),
             )
         )
@@ -372,10 +371,9 @@ class ArbeidssokerperioderMapperTest {
 
         arbeidssokerperioder = map(
             listOf(
-                Formidlingsgruppeendring(
-                    "ARBS", 4685858, "AKTIV", Timestamp.valueOf(
+                formidlingsgruppeEndret(
+                    "ARBS", "4685858", "AKTIV",
                         LocalDateTime.of(2020, 8, 14, 22, 7, 15)
-                    )
                 ),
             )
         )

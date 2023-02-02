@@ -17,4 +17,21 @@ object FormidlingsgruppeEndretEventTestdataBuilder {
             null
         )
     }
+
+    fun formidlingsgruppeEndret(
+        formidlingsgruppe: String = "ARBS",
+        personId: String = "012345",
+        personIdStatus: String = "AKTIV",
+        tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
+        return FormidlingsgruppeEndretEvent(
+            Foedselsnummer("12345678910"),
+            personId,
+            personIdStatus,
+            Operation.INSERT,
+            Formidlingsgruppe(formidlingsgruppe),
+            tidspunkt,
+            null,
+            null
+        )
+    }
 }
