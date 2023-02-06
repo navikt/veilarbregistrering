@@ -29,7 +29,7 @@ class ArbeidssokerService(
 
         if (skalSammenlignePerioderORDS) {
             try {
-                val arbeidssoker = populerArbeidssokerperioderService.populerNyArbeidssøkermodell(bruker)
+                val arbeidssoker = populerArbeidssokerperioderService.hentArbeidssøker(bruker)
                 val overlappendeArbeidssokerperioderLokalt = map(arbeidssoker).overlapperMed(forespurtPeriode)
                 sammenlignNyOgGammelModell(
                     overlappendeArbeidssokerperioderLokalt,

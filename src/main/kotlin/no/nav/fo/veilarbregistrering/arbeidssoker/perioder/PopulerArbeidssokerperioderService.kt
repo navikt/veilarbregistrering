@@ -4,6 +4,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.ArbeidssokerperioderMapper.filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 
@@ -21,16 +22,24 @@ class PopulerArbeidssokerperioderService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val brukerReaktiveringRepository: ReaktiveringRepository
 ) {
+    /**
+     * Hent arbeidssøker er ment å abstrahere bort detaljene for hvordan en arbeidssøker fremstilles. Om det er
+     * populering on-the-fly, eller om det er henting av allere populert og persisterte perioder i databasen.
+     */
+    fun hentArbeidssøker(bruker: Bruker): Arbeidssoker {
+        return populerArbeidssøker(bruker.alleFoedselsnummer())
+    }
 
-    fun populerNyArbeidssøkermodell(bruker: Bruker): Arbeidssoker {
+    private fun populerArbeidssøker(foedselsnummer: List<Foedselsnummer>): Arbeidssoker {
         val formidlingsgruppe =
-            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(bruker.alleFoedselsnummer())
+            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(foedselsnummer)
         val ordinaerBrukerRegistreringer =
-            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(bruker.alleFoedselsnummer())
+            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(foedselsnummer)
         val reaktiveringer =
-            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(bruker.alleFoedselsnummer())
+            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(foedselsnummer)
 
-        val listeMedArbeidssøkerEndringer = filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
+        val listeMedArbeidssøkerEndringer =
+            filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
 
         val arbeidssoker = Arbeidssoker()
 
@@ -40,4 +49,5 @@ class PopulerArbeidssokerperioderService(
 
         return arbeidssoker
     }
+
 }
