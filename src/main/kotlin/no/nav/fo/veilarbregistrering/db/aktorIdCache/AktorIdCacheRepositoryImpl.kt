@@ -27,21 +27,6 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
         }
     }
 
-    override fun lagreBolk(aktorIdCacheListe: List<AktorIdCache>): Int {
-        val params = aktorIdCacheListe.map {
-            mapOf(
-                "foedselsnummer" to it.foedselsnummer.foedselsnummer,
-                "aktor_id" to it.aktorId.aktorId,
-                "opprettet_dato" to it.opprettetDato
-            )
-        }
-
-        val sql = "INSERT INTO aktor_id_cache (foedselsnummer, aktor_id, opprettet_dato) values (:foedselsnummer, :aktor_id, :opprettet_dato)" +
-                " on conflict do nothing"
-
-        return db.batchUpdate(sql, params.toTypedArray()).sum()
-    }
-
     override fun hentAktørId(fnr: Foedselsnummer): AktorIdCache? {
         val sql = "SELECT * FROM aktor_id_cache WHERE foedselsnummer = :fnr"
         val params = mapOf("fnr" to fnr.foedselsnummer)
