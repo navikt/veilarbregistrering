@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.ArbeidssokerperioderMapper.filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper.filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 

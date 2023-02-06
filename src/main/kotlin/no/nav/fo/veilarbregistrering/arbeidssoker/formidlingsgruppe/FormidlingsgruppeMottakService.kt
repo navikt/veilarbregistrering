@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
-import no.nav.fo.veilarbregistrering.db.arbeidssoker.ArbeidssokerperioderMapper
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

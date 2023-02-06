@@ -1,9 +1,6 @@
-package no.nav.fo.veilarbregistrering.db.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -50,7 +47,9 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusSeconds(20))
         val id = formidlingsgruppeRepository.lagre(command)
         Assertions.assertThat(id).isNotNull
-        val arbeidssokerperiodes = ArbeidssokerperioderMapper.map(formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(listOf(FOEDSELSNUMMER)))
+        val arbeidssokerperiodes = ArbeidssokerperioderMapper.map(formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(listOf(
+            FOEDSELSNUMMER
+        )))
         val arbeidssokerperiode = Arbeidssokerperiode.of(Periode(LocalDate.now(), null))
         Assertions.assertThat(arbeidssokerperiodes.asList()).containsOnly(arbeidssokerperiode)
     }

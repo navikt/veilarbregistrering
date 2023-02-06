@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.arbeidssoker
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
