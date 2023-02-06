@@ -15,13 +15,3 @@ data class PdlHentIdenterRequest(val query: String, val variables: HentIdenterVa
 class HentIdenterVariables(val ident: String)
 
 class PdlHentIdenterResponse(val data: PdlHentIdenter)
-
-data class PdlHentIdenterBolk(val hentIdenterBolk: List<PdlIdenterForFoedselsnummer>)
-data class PdlIdenterForFoedselsnummer(val ident: String, val identer: List<AktoerIdIdent>?, val code: String)
-data class AktoerIdIdent(val ident: String)
-
-data class PdlHentIdenterBolkRequest(val query: String, val variables: HentIdenterBolkVariables)
-
-class HentIdenterBolkVariables(val identer: List<String>)
-
-class PdlHentIdenterBolkResponse(val data: PdlHentIdenterBolk)

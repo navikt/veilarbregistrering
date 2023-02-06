@@ -5,7 +5,6 @@ import no.nav.fo.veilarbregistrering.bruker.feil.BrukerIkkeFunnetException
 import no.nav.fo.veilarbregistrering.bruker.feil.HentIdenterException
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagMapper.map
 import no.nav.fo.veilarbregistrering.config.CacheConfig
-import no.nav.fo.veilarbregistrering.log.secureLogger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 
@@ -60,25 +59,6 @@ open class PdlOppslagGatewayImpl(private val pdlOppslagClient: PdlOppslagClient)
         } catch (e: RuntimeException) {
             throw HentIdenterException(e.message!!)
         }
-    }
-
-    override fun hentIdenterBolk(fnrListe: List<Foedselsnummer>, erSystemKontekst: Boolean): Map<Foedselsnummer, AktorId> {
-
-        val pdlAktorIdListe = if (erSystemKontekst) {
-            LOG.info("Henter bolk med identer fra PDL med systemkontekst")
-            pdlOppslagClient.hentIdenterBolkForSystemkontekst(fnrListe)
-        } else {
-            pdlOppslagClient.hentIdenterBolk(fnrListe)
-        }
-
-        return pdlAktorIdListe
-            .filter { it.identer != null }
-            .associate {
-                Foedselsnummer(it.ident) to AktorId(it.identer?.first()?.ident
-                    ?: throw BrukerIkkeFunnetException("Fant ikke AktørId for fødselsnummer i hentIdenterBolk").also { _ ->
-                        secureLogger.warn("Fant ikke aktor_id for foedselsnummer ${it.ident} ")
-                    })
-            }
     }
 
     companion object {
