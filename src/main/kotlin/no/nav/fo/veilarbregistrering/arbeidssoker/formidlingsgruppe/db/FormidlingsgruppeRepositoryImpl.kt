@@ -82,17 +82,6 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return formidlingsgruppeendringer
     }
 
-    override fun hentUnikeFoedselsnummer(): List<Foedselsnummer> {
-        val sql = "SELECT DISTINCT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE"
-        return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
-    }
-
-    override fun hentFoedselsnummerIBolk(offset: Int, limit: Int): List<Foedselsnummer> {
-        val sql = "SELECT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE ORDER BY $FORMIDLINGSGRUPPE_ENDRET DESC " +
-                "LIMIT $limit OFFSET $offset"
-        return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
-    }
-
     companion object {
         const val FORMIDLINGSGRUPPE_SEQ = "FORMIDLINGSGRUPPE_SEQ"
         const val FORMIDLINGSGRUPPE = "FORMIDLINGSGRUPPE"
