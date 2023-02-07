@@ -116,8 +116,6 @@ spec:
           cluster: dev-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
-        - application: dp-soknad-veileder
-          namespace: teamdagpenger
         - application: dp-dagpenger
           namespace: teamdagpenger
         - application: dp-soknadsdialog
