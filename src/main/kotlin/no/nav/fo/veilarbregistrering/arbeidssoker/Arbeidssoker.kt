@@ -8,7 +8,9 @@ import java.time.format.DateTimeFormatter
 /**
  * Root aggregate - all kommunikasjon mot Arbeidssøker og underliggende elementer skal gå via dette objektet.
  */
-class Arbeidssoker(private val foedselsnummer: Foedselsnummer) {
+class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
+
+    private val observers: MutableList<Observer> = mutableListOf()
 
     private var id: Int = 0
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState
@@ -31,10 +33,13 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer) {
 
     private fun startPeriode(fraDato: LocalDateTime) {
         this.arbeidssokerperioder.add(Arbeidssokerperiode(fraDato, null))
+        this.observers.forEach { it.update(ArbeidssøkerperiodeStartetEvent(foedselsnummer, fraDato.toLocalDate()))}
     }
 
     private fun avsluttPeriode(tilDato: LocalDateTime) {
-        sistePeriode()?.avslutt(atTheEndOfYesterday(tilDato)) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        val tilOgMedDato = atTheEndOfYesterday(tilDato)
+        sistePeriode()?.avslutt(tilOgMedDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        this.observers.forEach { it.update(ArbeidssøkerperiodeAvsluttetEvent(foedselsnummer, tilOgMedDato.toLocalDate()))}
     }
 
     private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
@@ -63,6 +68,14 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer) {
 
     private infix fun nyTilstand(tilstand: ArbeidssokerState) {
         this.tilstand = tilstand
+    }
+
+    override fun add(observer: Observer) {
+        this.observers.add(observer)
+    }
+
+    override fun remove(observer: Observer) {
+        this.observers.remove(observer)
     }
 
     /**
