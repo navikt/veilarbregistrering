@@ -33,7 +33,11 @@ class Arbeidssoker {
     }
 
     private fun avsluttPeriode(tilDato: LocalDateTime) {
-        sistePeriode()?.avslutt(tilDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        sistePeriode()?.avslutt(atTheEndOfYesterday(tilDato)) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+    }
+
+    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
+        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
     }
 
     private fun droppSistePeriode() {
