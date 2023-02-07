@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -7,7 +8,7 @@ import java.time.format.DateTimeFormatter
 /**
  * Root aggregate - all kommunikasjon mot Arbeidssøker og underliggende elementer skal gå via dette objektet.
  */
-class Arbeidssoker {
+class Arbeidssoker(private val foedselsnummer: Foedselsnummer) {
 
     private var id: Int = 0
     private var tilstand: ArbeidssokerState = IkkeArbeidssokerState

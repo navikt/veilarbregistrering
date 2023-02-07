@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringTestdataBuilder.gyldigReaktivering
 import org.junit.jupiter.api.Test
@@ -15,7 +16,7 @@ import kotlin.test.assertNull
  */
 class ArbeidssokerTest {
 
-    val arbeidssoker = Arbeidssoker()
+    val arbeidssoker = Arbeidssoker(aremark())
 
     // Ulike use-case hvor vi kun fokuserer på formidlingsgruppe-events
 

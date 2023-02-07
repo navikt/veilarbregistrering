@@ -27,21 +27,22 @@ class PopulerArbeidssokerperioderService(
      * populering on-the-fly, eller om det er henting av allere populert og persisterte perioder i databasen.
      */
     fun hentArbeidssøker(bruker: Bruker): Arbeidssoker {
-        return populerArbeidssøker(bruker.alleFoedselsnummer())
+        return populerArbeidssøker(bruker.gjeldendeFoedselsnummer, bruker.historiskeFoedselsnummer)
     }
 
-    private fun populerArbeidssøker(foedselsnummer: List<Foedselsnummer>): Arbeidssoker {
+    private fun populerArbeidssøker(gjeldendeFoedselsnummer: Foedselsnummer, historiskeFoedselsnummer: List<Foedselsnummer>): Arbeidssoker {
+        val alleFoedselsnummer = historiskeFoedselsnummer + gjeldendeFoedselsnummer
         val formidlingsgruppe =
-            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(foedselsnummer)
+            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(alleFoedselsnummer)
         val ordinaerBrukerRegistreringer =
-            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(foedselsnummer)
+            brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(alleFoedselsnummer)
         val reaktiveringer =
-            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(foedselsnummer)
+            brukerReaktiveringRepository.finnReaktiveringerForFoedselsnummer(alleFoedselsnummer)
 
         val listeMedArbeidssøkerEndringer =
             filterBortIkkeAktivePersonIdOgTekniskeISERVEndringer(formidlingsgruppe) + ordinaerBrukerRegistreringer + reaktiveringer
 
-        val arbeidssoker = Arbeidssoker()
+        val arbeidssoker = Arbeidssoker(gjeldendeFoedselsnummer)
 
         listeMedArbeidssøkerEndringer
             .sortedBy { it.opprettetTidspunkt() }
