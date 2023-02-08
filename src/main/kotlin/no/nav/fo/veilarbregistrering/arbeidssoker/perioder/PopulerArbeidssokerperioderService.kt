@@ -30,7 +30,11 @@ class PopulerArbeidssokerperioderService(
         return populerArbeidssøker(bruker.gjeldendeFoedselsnummer, bruker.historiskeFoedselsnummer)
     }
 
-    private fun populerArbeidssøker(gjeldendeFoedselsnummer: Foedselsnummer, historiskeFoedselsnummer: List<Foedselsnummer>): Arbeidssoker {
+    fun hentArbeidssøker(foedselsnummer: Foedselsnummer): Arbeidssoker {
+        return populerArbeidssøker(foedselsnummer)
+    }
+
+    private fun populerArbeidssøker(gjeldendeFoedselsnummer: Foedselsnummer, historiskeFoedselsnummer: List<Foedselsnummer> = emptyList()): Arbeidssoker {
         val alleFoedselsnummer = historiskeFoedselsnummer + gjeldendeFoedselsnummer
         val formidlingsgruppe =
             formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(alleFoedselsnummer)

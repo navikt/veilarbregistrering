@@ -18,7 +18,7 @@ class ArbeidssøkerperiodeStartetEvent(
 
 class ArbeidssøkerperiodeAvsluttetEvent(
     private val foedselsnummer: Foedselsnummer,
-    private val tilOgMedDato: LocalDate): ArbeidssøkerDomainEvent {
+    val tilOgMedDato: LocalDate): ArbeidssøkerDomainEvent {
 
     override fun fødselsnummer(): Foedselsnummer = foedselsnummer
 }

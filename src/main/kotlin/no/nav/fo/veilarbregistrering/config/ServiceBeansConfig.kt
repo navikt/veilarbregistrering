@@ -327,10 +327,17 @@ class ServiceBeansConfig {
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         unleashClient: UnleashClient,
-        aktorIdCacheService: AktorIdCacheService
+        aktorIdCacheService: AktorIdCacheService,
+        populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
+        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
-            formidlingsgruppeRepository, arbeidssokerperiodeAvsluttetService, unleashClient, aktorIdCacheService
+            formidlingsgruppeRepository,
+            arbeidssokerperiodeAvsluttetService,
+            unleashClient,
+            aktorIdCacheService,
+            populerArbeidssokerperioderService,
+            arbeidssokerperiodeAvsluttetProducer
         )
     }
 
