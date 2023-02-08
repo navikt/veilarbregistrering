@@ -26,25 +26,20 @@ class FormidlingsgruppeMottakService(
                         "formidlingsgruppe: ${formidlingsgruppeEndretEvent.formidlingsgruppe.kode}, " +
                         "dato: ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}) ")
         }
-
-        val skalUtledeAvslutningAvPeriode = unleashClient.isEnabled("veilarbregistrering.utled-avslutning-arbeidssokerperiode")
-        val eksisterendeArbeidssokerperioderLokalt = if (skalUtledeAvslutningAvPeriode) {
-            val eksisterendeFormidlingsgruppeEndretEvents =
+         val eksisterendeFormidlingsgruppeEndretEvents =
                 formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(
                     listOf(formidlingsgruppeEndretEvent.foedselsnummer)
                 )
-            ArbeidssokerperioderMapper.map(eksisterendeFormidlingsgruppeEndretEvents)
-        } else null
+
+        val eksisterendeArbeidssokerperioderLokalt = ArbeidssokerperioderMapper.map(eksisterendeFormidlingsgruppeEndretEvents)
 
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
         aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
 
-        if (skalUtledeAvslutningAvPeriode) {
-            arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-                formidlingsgruppeEndretEvent,
-                eksisterendeArbeidssokerperioderLokalt!!
-            )
+        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
+            formidlingsgruppeEndretEvent,
+            eksisterendeArbeidssokerperioderLokalt
         }
     }
 }
