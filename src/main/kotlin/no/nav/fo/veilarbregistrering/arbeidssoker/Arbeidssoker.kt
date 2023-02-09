@@ -46,8 +46,9 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
         return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
     }
 
-    private fun droppSistePeriode() {
+    private fun droppSistePeriode(opprettetTidspunkt: LocalDateTime) {
         arbeidssokerperioder.remove(sistePeriode())
+        this.observers.forEach { it.update(ArbeidssøkerperiodeAvsluttetEvent(foedselsnummer, opprettetTidspunkt.toLocalDate()))}
     }
 
     private fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
@@ -139,7 +140,7 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
                     logger.warn("${arbeidssoker.id()} - Dropper siste periode som følge av at vi mottar " +
                             "${formidlingsgruppeEndretEvent.formidlingsgruppe()} samme dag " +
                             "${formater(formidlingsgruppeEndretEvent.opprettetTidspunkt())} som perioden ble startet.")
-                    arbeidssoker.droppSistePeriode()
+                    arbeidssoker.droppSistePeriode(formidlingsgruppeEndretEvent.opprettetTidspunkt())
 
                 } else {
                     logger.info("${arbeidssoker.id()} - Avslutter (${formater(formidlingsgruppeEndretEvent.opprettetTidspunkt())}) " +
