@@ -71,6 +71,7 @@ class FormidlingsgruppeMottakService(
     private fun behandle(arbeidssøker: Arbeidssoker?, formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
         if (arbeidssøker == null) return
         try {
+            logger.info("Behandler mottak av $formidlingsgruppeEndretEvent")
             arbeidssøker.behandle(formidlingsgruppeEndretEvent)
             arbeidssøker.remove(arbeidssokerperiodeAvsluttetProducer)
         } catch (e: RuntimeException) {
