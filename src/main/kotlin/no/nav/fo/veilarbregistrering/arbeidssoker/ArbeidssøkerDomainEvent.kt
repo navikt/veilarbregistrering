@@ -10,7 +10,7 @@ interface ArbeidssøkerDomainEvent {
 
 class ArbeidssøkerperiodeStartetEvent(
     private val foedselsnummer: Foedselsnummer,
-    private val fraOgMedDato: LocalDate
+     val fraOgMedDato: LocalDate
 ): ArbeidssøkerDomainEvent {
 
     override fun fødselsnummer(): Foedselsnummer = foedselsnummer
