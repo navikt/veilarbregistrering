@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.db
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
-import no.nav.fo.veilarbregistrering.db.aktorIdCache.AktorIdCacheRepositoryImpl
+import no.nav.fo.veilarbregistrering.aktorIdCache.db.AktorIdCacheRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.db.MeldekortRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl

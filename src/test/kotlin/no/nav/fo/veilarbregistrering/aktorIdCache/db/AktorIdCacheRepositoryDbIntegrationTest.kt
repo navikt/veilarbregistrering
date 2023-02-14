@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.aktorIdCache
+package no.nav.fo.veilarbregistrering.aktorIdCache.db
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCache
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
