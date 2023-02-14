@@ -3,8 +3,8 @@ package no.nav.veilarbregistrering.integrasjonstest
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.*
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import org.junit.jupiter.api.AfterEach

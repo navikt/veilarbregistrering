@@ -3,8 +3,8 @@ package no.nav.fo.veilarbregistrering.registrering.reaktivering.db
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions.assertThat

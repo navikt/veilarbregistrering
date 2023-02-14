@@ -4,8 +4,8 @@ import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCache
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

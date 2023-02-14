@@ -5,8 +5,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

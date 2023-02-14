@@ -6,8 +6,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigSt
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
 import no.nav.fo.veilarbregistrering.metrics.MetricsService

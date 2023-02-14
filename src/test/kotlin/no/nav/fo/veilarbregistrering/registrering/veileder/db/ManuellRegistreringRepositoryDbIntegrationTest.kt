@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.veileder.db
 
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository

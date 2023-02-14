@@ -5,8 +5,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder.aremark
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder

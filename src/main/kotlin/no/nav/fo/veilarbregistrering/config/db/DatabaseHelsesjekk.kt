@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db
+package no.nav.fo.veilarbregistrering.config.db
 
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult

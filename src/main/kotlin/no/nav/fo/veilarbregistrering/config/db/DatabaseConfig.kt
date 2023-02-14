@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db
+package no.nav.fo.veilarbregistrering.config.db
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

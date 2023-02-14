@@ -5,7 +5,7 @@ import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
-import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
+import no.nav.fo.veilarbregistrering.config.db.DatabaseHelsesjekk
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate

@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.profilering.db
 
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository

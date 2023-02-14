@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering
 import no.nav.common.utils.SslUtils
 import no.nav.fo.veilarbregistrering.config.ApplicationConfig
 import no.nav.fo.veilarbregistrering.config.requireProperty
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import

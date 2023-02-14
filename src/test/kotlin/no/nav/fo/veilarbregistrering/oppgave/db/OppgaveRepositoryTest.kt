@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.oppgave.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
-import no.nav.fo.veilarbregistrering.db.DatabaseConfig
-import no.nav.fo.veilarbregistrering.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveType.OPPHOLDSTILLATELSE
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer

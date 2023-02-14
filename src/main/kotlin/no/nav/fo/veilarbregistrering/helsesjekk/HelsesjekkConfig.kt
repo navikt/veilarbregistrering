@@ -9,7 +9,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.AaregRestClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeRestClient
 import no.nav.fo.veilarbregistrering.bruker.krr.DigDirKrrProxyClient
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagClient
-import no.nav.fo.veilarbregistrering.db.DatabaseHelsesjekk
+import no.nav.fo.veilarbregistrering.config.db.DatabaseHelsesjekk
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetRestClient
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingClient
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveRestClient
