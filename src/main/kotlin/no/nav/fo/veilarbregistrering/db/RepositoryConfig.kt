@@ -6,7 +6,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.aktorIdCache.db.AktorIdCacheRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.db.MeldekortRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.oppgave.OppgaveRepositoryImpl
+import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.*
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository

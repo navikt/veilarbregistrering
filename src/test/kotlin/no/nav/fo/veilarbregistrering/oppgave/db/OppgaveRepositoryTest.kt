@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.oppgave
+package no.nav.fo.veilarbregistrering.oppgave.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.db.DatabaseConfig
