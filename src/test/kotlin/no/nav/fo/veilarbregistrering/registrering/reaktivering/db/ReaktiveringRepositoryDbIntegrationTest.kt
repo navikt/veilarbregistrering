@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.reaktivering.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 @JdbcTest

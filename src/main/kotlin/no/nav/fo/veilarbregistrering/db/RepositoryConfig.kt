@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
+import no.nav.fo.veilarbregistrering.registrering.reaktivering.db.ReaktiveringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.springframework.context.annotation.Bean

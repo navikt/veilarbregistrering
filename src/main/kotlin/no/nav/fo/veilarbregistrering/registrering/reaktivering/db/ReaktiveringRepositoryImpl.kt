@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.reaktivering.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.springframework.jdbc.core.RowMapper
@@ -22,7 +23,7 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
                 "reaktivering_dato" to Timestamp.valueOf(LocalDateTime.now())
         )
 
-        val sql = "INSERT INTO ${BRUKER_REAKTIVERING}" +
+        val sql = "INSERT INTO $BRUKER_REAKTIVERING" +
                 "($BRUKER_REAKTIVERING_ID, $AKTOR_ID, $FOEDSELSNUMMER, $REAKTIVERING_DATO)" +
                 "VALUES (:id, :aktor_id, :foedselsnummer, :reaktivering_dato)"
 
@@ -36,12 +37,12 @@ class ReaktiveringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : R
     }
 
     override fun finnReaktiveringer(aktorId: AktorId): List<Reaktivering> {
-        val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
+        val sql = "SELECT * FROM $BRUKER_REAKTIVERING WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
         return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), reaktiveringMapper)
     }
 
     override fun finnReaktiveringerForFoedselsnummer(foedselsnummerList: List<Foedselsnummer>): List<Reaktivering> {
-        val sql = "SELECT * FROM ${BRUKER_REAKTIVERING} WHERE ${FOEDSELSNUMMER} in (:foedselsnummer)"
+        val sql = "SELECT * FROM $BRUKER_REAKTIVERING WHERE $FOEDSELSNUMMER in (:foedselsnummer)"
         val parameters = mapOf("foedselsnummer" to foedselsnummerList.map(Foedselsnummer::stringValue))
 
         return db.query(sql, parameters, reaktiveringMapper)
