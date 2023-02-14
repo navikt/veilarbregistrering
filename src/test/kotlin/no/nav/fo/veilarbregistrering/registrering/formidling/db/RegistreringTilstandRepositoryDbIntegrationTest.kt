@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.formidling.db
 
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker

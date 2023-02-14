@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.formidling.db
 
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository

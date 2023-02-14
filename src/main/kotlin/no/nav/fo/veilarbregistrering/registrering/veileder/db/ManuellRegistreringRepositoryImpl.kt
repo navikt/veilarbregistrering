@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.veileder.db
 
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering

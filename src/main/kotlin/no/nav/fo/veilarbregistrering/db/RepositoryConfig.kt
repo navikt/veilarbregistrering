@@ -12,11 +12,13 @@ import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
+import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.db.ReaktiveringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.db.ManuellRegistreringRepositoryImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate

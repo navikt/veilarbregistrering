@@ -7,9 +7,10 @@ import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
+import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import org.springframework.jdbc.core.RowMapper
