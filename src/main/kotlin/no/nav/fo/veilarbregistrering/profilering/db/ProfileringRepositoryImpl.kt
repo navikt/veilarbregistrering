@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.profilering
+package no.nav.fo.veilarbregistrering.profilering.db
 
 import no.nav.fo.veilarbregistrering.profilering.Innsatsgruppe
 import no.nav.fo.veilarbregistrering.profilering.Profilering

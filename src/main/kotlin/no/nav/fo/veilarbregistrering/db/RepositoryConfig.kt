@@ -1,16 +1,16 @@
 package no.nav.fo.veilarbregistrering.db
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.aktorIdCache.db.AktorIdCacheRepositoryImpl
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.FormidlingsgruppeRepositoryImpl
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.db.MeldekortRepositoryImpl
-import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.profilering.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.db.registrering.*
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
+import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
+import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository

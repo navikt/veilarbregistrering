@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.profilering
+package no.nav.fo.veilarbregistrering.profilering.db
 
 import io.mockk.mockk
 import io.mockk.verify
