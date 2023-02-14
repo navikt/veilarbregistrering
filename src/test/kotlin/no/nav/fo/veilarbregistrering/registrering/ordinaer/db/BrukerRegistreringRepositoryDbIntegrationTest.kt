@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.ordinaer.db
 
 import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
@@ -81,7 +81,8 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         val lagretRegistrering2 = brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
         registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(lagretRegistrering2.id).status(Status.OVERFORT_ARENA).build())
 
-        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+            BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
         assertThat(ordinaerBrukerregistreringer).hasSize(2)
     }
 
@@ -95,7 +96,8 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
                 andreForhold = AndreForholdSvar.NEI)))
         brukerRegistreringRepository.lagre(registrering2, BRUKER_1)
 
-        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
+        val ordinaerBrukerregistreringer = brukerRegistreringRepository.finnOrdinaerBrukerregistreringForAktorIdOgTilstand(
+            BRUKER_1.aktorId, listOf(Status.OVERFORT_ARENA))
         assertThat(ordinaerBrukerregistreringer).isEmpty()
     }
 

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db
+package no.nav.fo.veilarbregistrering.registrering.bruker
 
 import io.mockk.every
 import io.mockk.mockk
@@ -6,6 +6,8 @@ import no.nav.fo.veilarbregistrering.besvarelse.StillingTestdataBuilder.gyldigSt
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.db.DatabaseConfig
+import no.nav.fo.veilarbregistrering.db.RepositoryConfig
 import no.nav.fo.veilarbregistrering.enhet.Kommune
 import no.nav.fo.veilarbregistrering.enhet.Kommune.KommuneMedBydel.STAVANGER
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -18,7 +20,6 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
-import no.nav.fo.veilarbregistrering.registrering.bruker.*
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status

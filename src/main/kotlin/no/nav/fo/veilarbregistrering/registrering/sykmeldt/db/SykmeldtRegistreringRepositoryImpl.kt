@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.sykmeldt.db
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -6,6 +6,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.fo.veilarbregistrering.besvarelse.*
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.db.BrukerRegistreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningUtils
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
@@ -36,7 +38,7 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
                 "andre_utfordringer" to besvarelse.andreForhold?.toString()
         )
 
-        val sql = "INSERT INTO ${SYKMELDT_REGISTRERING}" +
+        val sql = "INSERT INTO $SYKMELDT_REGISTRERING" +
                 " (${allSykmeldtColumns.joinToString(", ")})" +
                 " VALUES (:id, :aktor_id, :foedselsnummer, :opprettet, :tekster, :fremtidig_situasjon, :tilbake_etter_52_uker," +
                 " :nus_kode, :utdanning_bestatt, :utdanning_godkjent, :andre_utfordringer)"
@@ -46,16 +48,16 @@ class SykmeldtRegistreringRepositoryImpl(private val db: NamedParameterJdbcTempl
     }
 
     override fun hentSykmeldtregistreringForAktorId(aktorId: AktorId): SykmeldtRegistrering? {
-        val sql = "SELECT * FROM ${SYKMELDT_REGISTRERING}" +
+        val sql = "SELECT * FROM $SYKMELDT_REGISTRERING" +
                 " WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id " +
-                " ORDER BY ${SYKMELDT_REGISTRERING_ID} DESC" +
+                " ORDER BY $SYKMELDT_REGISTRERING_ID DESC" +
                 " FETCH NEXT 1 ROWS ONLY"
 
         return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), rowMapperSykmeldt).firstOrNull()
     }
 
     override fun finnSykmeldtRegistreringerFor(aktorId: AktorId): List<SykmeldtRegistrering> {
-        val sql = "SELECT * FROM ${SYKMELDT_REGISTRERING}" +
+        val sql = "SELECT * FROM $SYKMELDT_REGISTRERING" +
                 " WHERE ${BrukerRegistreringRepositoryImpl.AKTOR_ID} = :aktor_id"
 
         return db.query(sql, mapOf("aktor_id" to aktorId.aktorId), rowMapperSykmeldt)

@@ -1,7 +1,6 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.besvarelse
 
-import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar
-
+//TODO: Denne burde kunne erstattes ved å inkludere verdien i UtdanningSvar
 internal object UtdanningUtils {
 
     private val nuskodeMap: Map<UtdanningSvar, String> = mapOf(

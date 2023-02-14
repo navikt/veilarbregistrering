@@ -3,7 +3,7 @@ package no.nav.fo.veilarbregistrering.registrering.reaktivering.db
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.db.registrering.BrukerRegistreringRepositoryImpl
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.db.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.Reaktivering
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import org.springframework.jdbc.core.RowMapper

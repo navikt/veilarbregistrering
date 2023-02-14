@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.db.registrering
+package no.nav.fo.veilarbregistrering.registrering.sykmeldt.db
 
 import no.nav.fo.veilarbregistrering.besvarelse.BesvarelseTestdataBuilder
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar

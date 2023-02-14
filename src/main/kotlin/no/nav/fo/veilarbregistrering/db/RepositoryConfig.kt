@@ -6,7 +6,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.db.FormidlingsgruppeRepositoryImpl
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.db.MeldekortRepositoryImpl
-import no.nav.fo.veilarbregistrering.db.registrering.*
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveRepository
 import no.nav.fo.veilarbregistrering.oppgave.db.OppgaveRepositoryImpl
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
@@ -14,9 +13,11 @@ import no.nav.fo.veilarbregistrering.profilering.db.ProfileringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.db.BrukerRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.db.ReaktiveringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.sykmeldt.db.SykmeldtRegistreringRepositoryImpl
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.veileder.db.ManuellRegistreringRepositoryImpl
 import org.springframework.context.annotation.Bean
