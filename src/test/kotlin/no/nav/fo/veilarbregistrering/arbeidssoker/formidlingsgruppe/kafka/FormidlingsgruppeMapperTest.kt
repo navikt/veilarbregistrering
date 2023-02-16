@@ -1,8 +1,9 @@
-package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka
 
 import no.nav.fo.veilarbregistrering.FileToJson.toJson
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Operation
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

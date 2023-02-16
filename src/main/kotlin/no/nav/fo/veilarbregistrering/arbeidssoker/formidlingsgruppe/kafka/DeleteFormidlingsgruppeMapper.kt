@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent

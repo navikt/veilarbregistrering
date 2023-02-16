@@ -1,6 +1,6 @@
-package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka
 
-internal data class BeforeDto(
+internal class AfterDto(
     val PERSON_ID: String,
     val PERSON_ID_STATUS: String,
     val FODSELSNR: String?,

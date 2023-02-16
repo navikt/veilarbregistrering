@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka.formidlingsgruppe
+package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka
 
 /**
   GgArenaFormidlingsgruppe representerer Json som publiseres på `gg-arena-formidlingsgruppe-v1`

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka.meldekort
+package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode

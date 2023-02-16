@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbregistrering.kafka.meldekort
+package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.log.MDCConstants

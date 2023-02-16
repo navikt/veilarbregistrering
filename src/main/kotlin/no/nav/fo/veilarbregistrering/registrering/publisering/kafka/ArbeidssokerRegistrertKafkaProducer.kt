@@ -1,8 +1,8 @@
-package no.nav.fo.veilarbregistrering.kafka.arbeidsssoker
+package no.nav.fo.veilarbregistrering.registrering.publisering.kafka
 
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.log.MDCConstants
-import no.nav.fo.veilarbregistrering.kafka.arbeidsssoker.ArbeidssokerRegistrertMapper.map
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertMapper.map
 import no.nav.fo.veilarbregistrering.log.CallId.correlationIdAsBytes
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEvent
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
