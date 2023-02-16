@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort
 
-import no.nav.fo.veilarbregistrering.arbeidssoker.MeldekortEndret
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import java.time.LocalDateTime
 
@@ -11,10 +10,8 @@ data class MeldekortEvent(
     val meldekorttype: Meldekorttype,
     val meldekortEventId: Long,
     val eventOpprettet: LocalDateTime
-): MeldekortEndret {
+) {
     fun erSendtInnSiste14Dager(): Boolean = eventOpprettet.isAfter(LocalDateTime.now().minusDays(14))
-    override fun erArbeidssokerNestePeriode(): Boolean = erArbeidssokerNestePeriode
-    override fun opprettetTidspunkt(): LocalDateTime = eventOpprettet
 }
 
 enum class Meldekorttype {

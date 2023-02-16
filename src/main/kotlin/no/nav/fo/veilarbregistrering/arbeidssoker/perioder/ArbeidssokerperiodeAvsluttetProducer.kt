@@ -13,7 +13,6 @@ class ArbeidssokerperiodeAvsluttetProducer: Observer {
         when (event) {
             is ArbeidssøkerperiodeStartetEvent -> behandle(event)
             is ArbeidssøkerperiodeAvsluttetEvent -> behandle(event)
-            else -> return
         }
     }
 
