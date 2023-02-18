@@ -34,4 +34,17 @@ object FormidlingsgruppeEndretEventTestdataBuilder {
             null
         )
     }
+
+    fun testEvent(test: LocalDateTime, operation: Operation): FormidlingsgruppeEndretEvent {
+        return FormidlingsgruppeEndretEvent(
+            Foedselsnummer("12345678910"),
+            "012345",
+            "AKTIV",
+            operation,
+            Formidlingsgruppe("ISERV"),
+            test,
+            Formidlingsgruppe("ARBS"),
+            test.minusDays(1)
+        )
+    }
 }

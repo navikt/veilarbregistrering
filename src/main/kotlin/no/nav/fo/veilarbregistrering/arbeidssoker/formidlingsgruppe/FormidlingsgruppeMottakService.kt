@@ -33,6 +33,13 @@ class FormidlingsgruppeMottakService(
                         "formidlingsgruppe: ${formidlingsgruppeEndretEvent.formidlingsgruppe.kode}, " +
                         "dato: ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}) ")
         }
+
+        if (formidlingsgruppeEndretEvent.operation != Operation.UPDATE) {
+            logger.info("Forkaster melding som ikke er UPDATE, men lagrer for ettertid - $formidlingsgruppeEndretEvent")
+            formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
+            return
+        }
+
         val eksisterendeArbeidssokerperioderLokalt = hentArbeidssøkerperioder(formidlingsgruppeEndretEvent)
         val arbeidssøker = hentArbeidssøker(formidlingsgruppeEndretEvent.foedselsnummer)
 
