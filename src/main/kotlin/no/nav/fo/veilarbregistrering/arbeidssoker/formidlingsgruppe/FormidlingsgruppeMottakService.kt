@@ -35,6 +35,9 @@ class FormidlingsgruppeMottakService(
 
         if (formidlingsgruppeEndretEvent.operation != Operation.UPDATE) {
             logger.info("Forkaster melding som ikke er UPDATE, men lagrer for ettertid - $formidlingsgruppeEndretEvent")
+            if (formidlingsgruppeEndretEvent.formidlingsgruppe.kode != "ISERV") {
+                logger.error("Mottok en INSERT-melding med formidlingsgruppe ${formidlingsgruppeEndretEvent.formidlingsgruppe} - vi skal kun få INSERT med ISERV")
+            }
             formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
             return
         }
