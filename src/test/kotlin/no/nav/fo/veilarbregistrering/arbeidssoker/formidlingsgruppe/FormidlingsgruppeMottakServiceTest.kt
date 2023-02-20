@@ -3,7 +3,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 import io.mockk.*
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.testEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -22,7 +21,6 @@ class FormidlingsgruppeMottakServiceTest {
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             arbeidssokerperiodeAvsluttetService,
-            mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true)

@@ -78,7 +78,6 @@ internal class FormidlingsgruppeMottakServiceIT @Autowired constructor(
             arbeidssokerperiodeAvsluttetService,
             mockk(relaxed = true),
             mockk(relaxed = true),
-            mockk(relaxed = true),
             mockk(relaxed = true)
         )
     }
