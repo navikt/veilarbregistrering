@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.ArbeidssokerperioderMapper.filtrerBortIkkeAktivPersonIdOgInitielleISERVInserts
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.ArbeidssokerperioderMapper.map
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.formidlingsgruppeEndret
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
@@ -9,6 +10,8 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class ArbeidssokerperioderMapperTest {
 
@@ -382,5 +385,100 @@ class ArbeidssokerperioderMapperTest {
         Assertions.assertThat(arbeidssokerperioder.asList()).containsExactly(
             arbeidssokerperiode1
         )
+    }
+
+    @Test
+    fun `skal filtrere bort initielle ISERV-endringer for person med innslag både før og etter datalast`() {
+        val initiellISERV = formidlingsgruppeEndret(
+            "ISERV", "4685858", "AKTIV",
+            LocalDateTime.of(2020, 8, 14, 22, 7, 13)
+        )
+        val formidlingsgrupperFørDatalast = listOf(
+            initiellISERV,
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 8, 14, 22, 7, 15)
+            ),
+            formidlingsgruppeEndret(
+                "ISERV", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 9, 9, 9, 9, 9)
+            ),
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 10, 9, 10, 9, 9)
+            ),
+        )
+        val formidlingsgrupperEtterDatalast = listOf(
+            formidlingsgruppeEndret(
+                "ISERV", "4685858", "AKTIV",
+                LocalDateTime.of(2023, 1, 14, 22, 7, 13),
+                Operation.UPDATE
+            ),
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2023, 2, 9, 10, 9, 9),
+                Operation.UPDATE
+            )
+        )
+
+
+        val formidlingsgrupper = filtrerBortIkkeAktivPersonIdOgInitielleISERVInserts(formidlingsgrupperFørDatalast + formidlingsgrupperEtterDatalast)
+        assertEquals(5, formidlingsgrupper.size)
+        assertFalse(formidlingsgrupper.contains(initiellISERV))
+    }
+
+    @Test
+    fun `skal filtrere bort initiell ISERV-endring for person med innslag etter datalast`() {
+        val initiellISERV = formidlingsgruppeEndret(
+            "ISERV", "4685858", "AKTIV",
+            LocalDateTime.of(2023, 1, 14, 22, 7, 13),
+            Operation.INSERT
+        )
+        val formidlingsgrupperEtterDatalast = listOf(
+            initiellISERV,
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2023, 1, 14, 22, 7, 15),
+                Operation.UPDATE
+            ),
+            formidlingsgruppeEndret(
+                "ISERV", "4685858", "AKTIV",
+                LocalDateTime.of(2023, 2, 20, 10, 7, 15),
+                Operation.UPDATE
+            )
+        )
+
+        val formidlingsgrupper = filtrerBortIkkeAktivPersonIdOgInitielleISERVInserts(formidlingsgrupperEtterDatalast)
+
+        assertEquals(2, formidlingsgrupper.size)
+        assertFalse(formidlingsgrupper.contains(initiellISERV))
+    }
+
+    @Test
+    fun `skal filtrere bort initiell ISERV-endring for person med innslag før datalast`() {
+        val initiellISERV = formidlingsgruppeEndret(
+            "ISERV", "4685858", "AKTIV",
+            LocalDateTime.of(2020, 8, 14, 22, 7, 28)
+        )
+        val formidlingsgrupperFørDatalast = listOf(
+            initiellISERV,
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 8, 14, 22, 7, 35)
+            ),
+            formidlingsgruppeEndret(
+                "ISERV", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 9, 9, 9, 9, 9)
+            ),
+            formidlingsgruppeEndret(
+                "ARBS", "4685858", "AKTIV",
+                LocalDateTime.of(2020, 10, 9, 10, 9, 9)
+            ),
+        )
+
+        val formidlingsgrupper = filtrerBortIkkeAktivPersonIdOgInitielleISERVInserts(formidlingsgrupperFørDatalast)
+
+        assertEquals(3, formidlingsgrupper.size)
+        assertFalse(formidlingsgrupper.contains(initiellISERV))
     }
 }

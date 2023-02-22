@@ -22,12 +22,13 @@ object FormidlingsgruppeEndretEventTestdataBuilder {
         formidlingsgruppe: String = "ARBS",
         personId: String = "012345",
         personIdStatus: String = "AKTIV",
-        tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
+        tidspunkt: LocalDateTime,
+        operation: Operation = Operation.INSERT): FormidlingsgruppeEndretEvent {
         return FormidlingsgruppeEndretEvent(
             Foedselsnummer("12345678910"),
             personId,
             personIdStatus,
-            Operation.INSERT,
+            operation,
             Formidlingsgruppe(formidlingsgruppe),
             tidspunkt,
             null,
