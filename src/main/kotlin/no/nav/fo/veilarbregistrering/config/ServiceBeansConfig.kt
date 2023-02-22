@@ -15,7 +15,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources.MeldekortResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
@@ -325,27 +324,17 @@ class ServiceBeansConfig {
     @Bean
     fun formidlingsgruppeMottakService(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
-        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
         aktorIdCacheService: AktorIdCacheService,
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService,
             aktorIdCacheService,
             populerArbeidssokerperioderService,
             arbeidssokerperiodeAvsluttetProducer
         )
     }
-
-    @Bean
-    fun arbeidssokerperiodeAvsluttetService(
-        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
-        meldekortService: MeldekortService,
-        metricsService: MetricsService
-    ): ArbeidssokerperiodeAvsluttetService =
-        ArbeidssokerperiodeAvsluttetService(arbeidssokerperiodeAvsluttetProducer, meldekortService, metricsService)
 
     @Bean
     fun arbeidssokerperiodeAvsluttetProducer(): ArbeidssokerperiodeAvsluttetProducer =

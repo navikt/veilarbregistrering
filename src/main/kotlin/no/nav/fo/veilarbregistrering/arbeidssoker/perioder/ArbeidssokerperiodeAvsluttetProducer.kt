@@ -4,7 +4,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssøkerDomainEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssøkerperiodeAvsluttetEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssøkerperiodeStartetEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.Observer
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.log.logger
 
 class ArbeidssokerperiodeAvsluttetProducer: Observer {
@@ -22,16 +21,6 @@ class ArbeidssokerperiodeAvsluttetProducer: Observer {
 
     fun behandle(arbeidssøkerperiodeAvsluttetEvent: ArbeidssøkerperiodeAvsluttetEvent) {
         logger.info("Avslutter en eksisterende arbeidssøkerperiode ${arbeidssøkerperiodeAvsluttetEvent.tilOgMedDato}")
-    }
-
-    fun publiserArbeidssokerperiodeAvsluttet(
-        formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent,
-        sisteArbeidssokerperiode: Arbeidssokerperiode
-    ) {
-
-        logger.info("Ny formidlingsgruppe for person: ${formidlingsgruppeEndretEvent.formidlingsgruppe} - " +
-                "arbeidssøkerperiode avsluttet ${formidlingsgruppeEndretEvent.formidlingsgruppeEndret}. " +
-                "Nyeste arbeidssøkerperiode før denne endringen er: $sisteArbeidssokerperiode.")
     }
 
 }

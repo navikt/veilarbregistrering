@@ -1,8 +1,9 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEventTestdataBuilder.testEvent
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -11,16 +12,12 @@ import java.time.Month
 class FormidlingsgruppeMottakServiceTest {
     private lateinit var formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     private lateinit var formidlingsgruppeRepository: FormidlingsgruppeRepository
-    private lateinit var arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService
 
     @BeforeEach
     fun setup() {
         formidlingsgruppeRepository = mockk()
-        arbeidssokerperiodeAvsluttetService = mockk()
-        every { arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(any(), any()) } just Runs
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
-            arbeidssokerperiodeAvsluttetService,
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true)

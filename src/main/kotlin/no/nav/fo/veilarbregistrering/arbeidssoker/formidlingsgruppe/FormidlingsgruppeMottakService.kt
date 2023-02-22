@@ -1,11 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperioder
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
@@ -16,7 +13,6 @@ import java.time.LocalDateTime
 @Service
 class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
-    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
     private val aktorIdCacheService: AktorIdCacheService,
     private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
     private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
@@ -42,9 +38,7 @@ class FormidlingsgruppeMottakService(
             return
         }
 
-        val eksisterendeArbeidssokerperioderLokalt = hentArbeidssøkerperioder(formidlingsgruppeEndretEvent)
         val arbeidssøker = hentArbeidssøker(formidlingsgruppeEndretEvent.foedselsnummer)
-
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 
         try {
@@ -53,21 +47,7 @@ class FormidlingsgruppeMottakService(
             logger.warn("Klarte ikke populere aktørid-cache for innkommende formidlingsgruppe", e)
         }
 
-        arbeidssokerperiodeAvsluttetService.behandleAvslutningAvArbeidssokerperiode(
-            formidlingsgruppeEndretEvent,
-            eksisterendeArbeidssokerperioderLokalt
-        )
-
         behandle(arbeidssøker, formidlingsgruppeEndretEvent)
-    }
-
-    private fun hentArbeidssøkerperioder(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent): Arbeidssokerperioder {
-        val eksisterendeFormidlingsgruppeEndretEvents =
-            formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(
-                listOf(formidlingsgruppeEndretEvent.foedselsnummer)
-            )
-
-        return ArbeidssokerperioderMapper.map(eksisterendeFormidlingsgruppeEndretEvents)
     }
 
     private fun hentArbeidssøker(foedselsnummer: Foedselsnummer): Arbeidssoker? {
