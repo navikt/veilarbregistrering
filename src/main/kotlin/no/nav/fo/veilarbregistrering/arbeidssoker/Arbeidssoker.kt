@@ -51,7 +51,8 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
         this.observers.forEach { it.update(ArbeidssøkerperiodeAvsluttetEvent(foedselsnummer, opprettetTidspunkt.toLocalDate()))}
     }
 
-    private fun harVærtInaktivMerEnn28Dager() = sistePeriode()!!.tilDato!!.isBefore(LocalDateTime.now().minusDays(28))
+    private fun harVærtInaktivMerEnn28DagerFør(tidspunkt: LocalDateTime) =
+        sistePeriode()!!.tilDato!!.isBefore(tidspunkt.minusDays(28))
 
     private fun ikkeHarTidligerePerioder(): Boolean = arbeidssokerperioder.isEmpty()
 
@@ -172,7 +173,7 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
             if (arbeidssoker.ikkeHarTidligerePerioder())
                 throw IllegalStateException("${arbeidssoker.id()} - Tilstanden er feil - TidligereArbeidssokerState skal alltid ha tidligere perioder.")
 
-            if (arbeidssoker.harVærtInaktivMerEnn28Dager()) {
+            if (arbeidssoker.harVærtInaktivMerEnn28DagerFør(reaktivering.opprettetTidspunkt())) {
                 logger.warn("${arbeidssoker.id()} - Arbeidssøker har vært inaktiv mer enn 28 dager - kan derfor ikke reaktiveres")
                 return
             }
