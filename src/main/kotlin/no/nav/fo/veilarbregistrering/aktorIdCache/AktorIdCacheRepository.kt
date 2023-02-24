@@ -6,4 +6,6 @@ interface AktorIdCacheRepository {
 
     fun lagre(aktorIdCache: AktorIdCache)
     fun hentAktørId(fnr: Foedselsnummer): AktorIdCache?
+
+    fun hentTilfeldigFnr(antall: Int): List<AktorIdCache>
 }

@@ -33,6 +33,11 @@ class AktorIdCacheRepositoryImpl(private val db: NamedParameterJdbcTemplate): Ak
         return db.query(sql, params, aktorIdCacheRowMapper).firstOrNull()
     }
 
+    override fun hentTilfeldigFnr(antall: Int): List<AktorIdCache> {
+        val sql = "SELECT * FROM aktor_id_cache ORDER BY random() limit $antall"
+        return db.query(sql, aktorIdCacheRowMapper)
+    }
+
     companion object {
         private val aktorIdCacheRowMapper = RowMapper { rs, _ ->
             AktorIdCache(
