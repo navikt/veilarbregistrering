@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
@@ -327,12 +328,14 @@ class ServiceBeansConfig {
     fun populerArbeiddsokerPerioderScheduler(
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         pdlOppslagGateway: PdlOppslagGateway,
-        aktorIdCacheRepository: AktorIdCacheRepository
+        aktorIdCacheRepository: AktorIdCacheRepository,
+        leaderElectionClient: LeaderElectionClient
     ): PopulerHistoriskePerioderScheduler {
         return PopulerHistoriskePerioderScheduler(
             populerArbeidssokerperioderService,
             pdlOppslagGateway,
-            aktorIdCacheRepository
+            aktorIdCacheRepository,
+            leaderElectionClient
         )
     }
 
