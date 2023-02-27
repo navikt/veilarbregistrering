@@ -17,9 +17,6 @@ class PopulerHistoriskePerioderScheduler(
 
     @Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
     fun populerHistoriskePerioder() {
-        if (!leaderElectionClient.isLeader) {
-            return
-        }
 
         logger.info("Starter jobb for å populere arbeidssøkerperioder")
         val tilfeldigeFnr = aktorIdCacheRepository.hentTilfeldigFnr(5)
