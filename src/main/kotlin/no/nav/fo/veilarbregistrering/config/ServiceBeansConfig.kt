@@ -342,16 +342,18 @@ class ServiceBeansConfig {
     fun populerArbeiddsokerPerioderScheduler(
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         pdlOppslagGateway: PdlOppslagGateway,
-        aktorIdCacheRepository: AktorIdCacheRepository,
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
-        leaderElectionClient: LeaderElectionClient
+        arbeidssokerperiodeService: ArbeidssokerperiodeService,
+        leaderElectionClient: LeaderElectionClient,
+        unleashClient: UnleashClient
     ): PopulerHistoriskePerioderScheduler {
         return PopulerHistoriskePerioderScheduler(
             populerArbeidssokerperioderService,
             pdlOppslagGateway,
-            aktorIdCacheRepository,
             formidlingsgruppeRepository,
-            leaderElectionClient
+            arbeidssokerperiodeService,
+            leaderElectionClient,
+            unleashClient
         )
     }
 
