@@ -12,7 +12,7 @@ class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) 
             throw IllegalStateException("Bruker har allerede en aktiv periode")
         }
 
-        //repository.startPeriode(foedselsnummer, LocalDateTime.now())
+        repository.startPeriode(foedselsnummer, LocalDateTime.now())
     }
 
     fun behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
@@ -24,7 +24,7 @@ class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) 
             return
         }
 
-        //repository.avsluttPeriode(foedselsnummer = formidlingsgruppeEndretEvent.foedselsnummer, LocalDateTime.now())
+        repository.avsluttPeriode(foedselsnummer = formidlingsgruppeEndretEvent.foedselsnummer, LocalDateTime.now())
     }
 
     fun hentPerioder(foedselsnummer: Foedselsnummer): List<Periode> {
