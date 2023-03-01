@@ -1,6 +1,7 @@
 package no.nav.veilarbregistrering.integrasjonstest
 
 import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.mockk
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
@@ -83,7 +84,11 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             mockk(relaxed = true)
 
         @Bean
-        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService = mockk(relaxed = true)
+        fun arbeidssokerperiodeService(): ArbeidssokerperiodeService {
+            val arbeidssokerperiodeService: ArbeidssokerperiodeService = mockk(relaxed = true)
+            every { arbeidssokerperiodeService.hentPerioder(any()) } returns emptyList<Periode>()
+            return arbeidssokerperiodeService
+        }
 
         @Bean
         fun arbeidssokerService(

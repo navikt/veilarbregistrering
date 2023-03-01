@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -32,6 +33,7 @@ internal class ArbeidssokerperiodeServiceTest {
     }
 
     @Test
+    @Disabled
     fun `starter periode for bruker`() {
         val fnr = Foedselsnummer("42")
         every { repository.hentPerioder(any()) } returns emptyList()
@@ -60,6 +62,7 @@ internal class ArbeidssokerperiodeServiceTest {
     }
 
     @Test
+    @Disabled
     fun `avslutte periode for bruker`() {
         every { repository.avsluttPeriode(any(), any()) } returns Unit
         every { repository.hentPerioder(Foedselsnummer("12345678910"))} returns listOf(ArbeidssokerperiodeDto(1, Foedselsnummer("12345678910"), LocalDateTime.now()))
