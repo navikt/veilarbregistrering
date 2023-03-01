@@ -34,14 +34,14 @@ class ReaktiveringBrukerServiceTest {
         every { oppfolgingClient.reaktiverBruker(any()) } just Runs
         val oppfolgingGateway = OppfolgingGatewayImpl(oppfolgingClient, veilarbarenaClient)
         reaktiveringBrukerService = ReaktiveringBrukerService(
-                BrukerTilstandService(
-                    oppfolgingGateway
-                ),
-                reaktiveringRepository,
-                oppfolgingGateway,
-                metricsService,
-                arbeidssokerperiodeService,
-            aktorIdCacheService
+            BrukerTilstandService(
+                oppfolgingGateway
+            ),
+            reaktiveringRepository,
+            oppfolgingGateway,
+            metricsService,
+            aktorIdCacheService,
+            arbeidssokerperiodeService
         )
     }
 

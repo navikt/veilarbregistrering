@@ -19,8 +19,6 @@ class ArbeidssokerService(
     private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
     private val unleashClient: UnleashClient,
     private val metricsService: MetricsService,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val brukerReaktiveringRepository: ReaktiveringRepository,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
 

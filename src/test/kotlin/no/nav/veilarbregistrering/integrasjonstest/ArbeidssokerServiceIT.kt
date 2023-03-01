@@ -42,8 +42,6 @@ import java.time.LocalDateTime
 internal class ArbeidssokerServiceIT @Autowired constructor(
     private val arbeidssokerService: ArbeidssokerService,
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
-    private val brukerRegistreringRepository: BrukerRegistreringRepository,
-    private val reaktiveringRepository: ReaktiveringRepository,
     private val jdbcTemplate: JdbcTemplate,
 ) {
     @BeforeEach
@@ -98,17 +96,13 @@ internal class ArbeidssokerServiceIT @Autowired constructor(
             arbeidssokerperiodeService: ArbeidssokerperiodeService
         ): ArbeidssokerService = ArbeidssokerService(
             formidlingsgruppeGateway,
-            unleashClient,
-            metricsService,
-            brukerRegistreringRepository,
-            reaktiveringRepository,
-            arbeidssokerperiodeService
             PopulerArbeidssokerperioderService(
                 formidlingsgruppeRepository,
                 brukerRegistreringRepository,
                 reaktiveringRepository),
             unleashClient,
-            metricsService
+            metricsService,
+            arbeidssokerperiodeService
         )
     }
 

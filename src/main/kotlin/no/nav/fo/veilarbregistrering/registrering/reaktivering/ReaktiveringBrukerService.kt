@@ -19,7 +19,7 @@ open class ReaktiveringBrukerService(
     private val reaktiveringRepository: ReaktiveringRepository,
     private val oppfolgingGateway: OppfolgingGateway,
     private val metricsService: MetricsService,
-    private val aktorIdCacheService: AktorIdCacheService
+    private val aktorIdCacheService: AktorIdCacheService,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
     @Transactional

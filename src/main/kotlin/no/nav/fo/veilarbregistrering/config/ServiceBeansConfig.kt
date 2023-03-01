@@ -127,6 +127,7 @@ class ServiceBeansConfig {
         reaktiveringRepository: ReaktiveringRepository,
         oppfolgingGateway: OppfolgingGateway,
         metricsService: MetricsService,
+        aktorIdCacheService: AktorIdCacheService,
         arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): ReaktiveringBrukerService {
         return ReaktiveringBrukerService(
@@ -134,6 +135,7 @@ class ServiceBeansConfig {
             reaktiveringRepository,
             oppfolgingGateway,
             metricsService,
+            aktorIdCacheService,
             arbeidssokerperiodeService
         )
     }
@@ -314,7 +316,6 @@ class ServiceBeansConfig {
         brukerRegistreringRepository: BrukerRegistreringRepository,
         brukerReaktiveringRepository: ReaktiveringRepository,
         arbeidssokerperiodeService: ArbeidssokerperiodeService
-        metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             formidlingsgruppeGateway,
@@ -357,8 +358,7 @@ class ServiceBeansConfig {
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         aktorIdCacheService: AktorIdCacheService,
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
-        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
-        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
         unleashClient: UnleashClient,
         arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): FormidlingsgruppeMottakService {
@@ -366,8 +366,7 @@ class ServiceBeansConfig {
             formidlingsgruppeRepository,
             aktorIdCacheService,
             populerArbeidssokerperioderService,
-            arbeidssokerperiodeAvsluttetProducer
-            arbeidssokerperiodeAvsluttetService,
+            arbeidssokerperiodeAvsluttetProducer,
             unleashClient,
             arbeidssokerperiodeService
         )

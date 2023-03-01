@@ -2,12 +2,7 @@ package no.nav.fo.veilarbregistrering.db.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeDto
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRepository
-import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortEvent
-import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortPeriode
-import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.Meldekorttype
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.bruker.Periode
-import no.nav.fo.veilarbregistrering.db.registrering.RegistreringTilstandRepositoryImpl
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate

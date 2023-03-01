@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
+import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
@@ -17,8 +17,7 @@ class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val aktorIdCacheService: AktorIdCacheService,
     private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
-    private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
-    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+    private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
     private val unleashClient: UnleashClient,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
