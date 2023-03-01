@@ -41,25 +41,6 @@ class ArbeidssokerTest {
     }
 
     @Test
-    fun `gitt at formidlingsgruppe blir endret samme dag (negativ periode), så skal forrige periode avsluttes en dag før`() {
-        val formidlingsgruppeEndringTidspunkt1 = LocalDate.of(2022, 8, 26).atStartOfDay()
-        val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ARBS")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent1)
-
-        val formidlingsgruppeEndringTidspunkt2 = LocalDate.of(2022, 12, 13).atTime(2,0, 53)
-        val formidlingsgruppeEndringEvent2 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt2, "ISERV")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent2)
-
-        val formidlingsgruppeEndringTidspunkt3 = LocalDate.of(2022, 12, 13).atTime(15, 17,22)
-        val formidlingsgruppeEndringEvent3 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt3, "ARBS")
-        arbeidssoker.behandle(formidlingsgruppeEndringEvent3)
-
-        assertEquals(2, arbeidssoker.allePerioder().size)
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt1, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt2)), arbeidssoker.allePerioder().get(0))
-        assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringTidspunkt3, null), arbeidssoker.allePerioder().get(1))
-    }
-
-    @Test
     fun `gitt at formidlingsgruppe blir inaktivert samme dag som den ble aktivert, så skal forrige periode droppes`() {
         val formidlingsgruppeEndringTidspunkt1 = LocalDate.of(2022, 8, 26).atTime(10,19, 53)
         val formidlingsgruppeEndringEvent1 = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt1, "ARBS")
@@ -107,7 +88,7 @@ class ArbeidssokerTest {
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
         assertEquals(2, arbeidssoker.allePerioder().size)
-        assertEquals(formidlingsgruppeEndringEvent.formidlingsgruppeEndret.toLocalDate().minusDays(1), arbeidssoker.allePerioder().get(0).tilDato?.toLocalDate())
+        assertEquals(formidlingsgruppeEndringEvent.formidlingsgruppeEndret.toLocalDate(), arbeidssoker.allePerioder().get(0).tilDato?.toLocalDate())
         assertEquals(Arbeidssokerperiode(formidlingsgruppeEndringEvent.formidlingsgruppeEndret, null), arbeidssoker.sistePeriode())
     }
 
@@ -135,7 +116,7 @@ class ArbeidssokerTest {
         val formidlingsgruppeEndringEvent = formidlingsgruppeEndret(formidlingsgruppeEndringTidspunkt, "ISERV")
         arbeidssoker.behandle(formidlingsgruppeEndringEvent)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt)), arbeidssoker.sistePeriode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
     }
 
     @Test
@@ -182,7 +163,7 @@ class ArbeidssokerTest {
         val reaktivering = gyldigReaktivering(AktorId("1234"), reaktiveringTidspunkt)
         arbeidssoker.behandle(reaktivering)
 
-        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, atTheEndOfYesterday(formidlingsgruppeEndringTidspunkt)), arbeidssoker.sistePeriode())
+        assertEquals(Arbeidssokerperiode(nyRegistreringsdato, formidlingsgruppeEndringTidspunkt), arbeidssoker.sistePeriode())
     }
 
     private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {

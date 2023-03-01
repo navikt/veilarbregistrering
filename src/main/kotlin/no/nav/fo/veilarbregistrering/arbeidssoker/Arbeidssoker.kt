@@ -37,13 +37,8 @@ class Arbeidssoker(private val foedselsnummer: Foedselsnummer): Observable {
     }
 
     private fun avsluttPeriode(tilDato: LocalDateTime) {
-        val tilOgMedDato = atTheEndOfYesterday(tilDato)
-        sistePeriode()?.avslutt(tilOgMedDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
-        this.observers.forEach { it.update(ArbeidssøkerperiodeAvsluttetEvent(foedselsnummer, tilOgMedDato.toLocalDate()))}
-    }
-
-    private fun atTheEndOfYesterday(localDateTime: LocalDateTime): LocalDateTime {
-        return localDateTime.toLocalDate().atTime(23, 59, 59).minusDays(1)
+        sistePeriode()?.avslutt(tilDato) ?: throw IllegalStateException("Kan ikke avslutte en periode som ikke finnes")
+        this.observers.forEach { it.update(ArbeidssøkerperiodeAvsluttetEvent(foedselsnummer, tilDato.toLocalDate()))}
     }
 
     private fun droppSistePeriode(opprettetTidspunkt: LocalDateTime) {

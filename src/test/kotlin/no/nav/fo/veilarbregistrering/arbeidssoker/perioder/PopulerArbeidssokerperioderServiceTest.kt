@@ -53,9 +53,9 @@ class PopulerArbeidssokerperioderServiceTest {
 
         assertEquals(3, arbeidssoker.allePerioder().size)
         assertEquals(LocalDate.of(2015, 5, 15), arbeidssoker.allePerioder().first().fraDato.toLocalDate())
-        assertEquals(LocalDate.of(2018, 6, 13), arbeidssoker.allePerioder().first().tilDato?.toLocalDate())
+        assertEquals(LocalDate.of(2018, 6, 14), arbeidssoker.allePerioder().first().tilDato?.toLocalDate())
         assertEquals(LocalDate.of(2019, 3, 12), arbeidssoker.allePerioder()[1].fraDato.toLocalDate())
-        assertEquals(LocalDate.of(2022, 12, 9), arbeidssoker.allePerioder()[1].tilDato?.toLocalDate())
+        assertEquals(LocalDate.of(2022, 12, 10), arbeidssoker.allePerioder()[1].tilDato?.toLocalDate())
         assertEquals(LocalDate.of(2023, 1, 1), arbeidssoker.sistePeriode()?.fraDato?.toLocalDate())
         assertNull(arbeidssoker.sistePeriode()?.tilDato)
     }
