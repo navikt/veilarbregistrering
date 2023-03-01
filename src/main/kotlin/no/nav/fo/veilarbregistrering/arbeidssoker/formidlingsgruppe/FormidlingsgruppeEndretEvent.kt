@@ -18,6 +18,12 @@ data class FormidlingsgruppeEndretEvent(
 
     override fun formidlingsgruppe(): Formidlingsgruppe = formidlingsgruppe
 
+
+    fun erArbeidssoker(): Boolean {
+        return formidlingsgruppe.erArbeidssoker()
+    }
+
+
     fun erISERV(): Boolean {
         return formidlingsgruppe.kode == "ISERV"
     }

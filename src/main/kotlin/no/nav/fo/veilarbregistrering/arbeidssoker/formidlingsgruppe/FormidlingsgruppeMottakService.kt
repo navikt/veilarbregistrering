@@ -1,6 +1,8 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetService
 import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
@@ -16,6 +18,9 @@ class FormidlingsgruppeMottakService(
     private val aktorIdCacheService: AktorIdCacheService,
     private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
     private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
+    private val arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+    private val unleashClient: UnleashClient,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
 
     @Transactional
@@ -38,6 +43,17 @@ class FormidlingsgruppeMottakService(
             return
         }
 
+        try {
+            aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+        } catch (e: Exception) {
+            logger.error("Feil med aktorId fra PDL", e)
+        }
+
+        try {
+            arbeidssokerperiodeService.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent)
+        } catch (e: Exception) {
+            logger.error("Feil ved behandling av formidlingsgruppe event", e)
+        }
         val arbeidssøker = hentArbeidssøker(formidlingsgruppeEndretEvent.foedselsnummer)
         formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
 

@@ -8,6 +8,8 @@ import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeGateway
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
@@ -125,10 +127,14 @@ class ServiceBeansConfig {
         reaktiveringRepository: ReaktiveringRepository,
         oppfolgingGateway: OppfolgingGateway,
         metricsService: MetricsService,
-        aktorIdCacheService: AktorIdCacheService
+        arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): ReaktiveringBrukerService {
         return ReaktiveringBrukerService(
-            brukerTilstandService, reaktiveringRepository, oppfolgingGateway, metricsService, aktorIdCacheService
+            brukerTilstandService,
+            reaktiveringRepository,
+            oppfolgingGateway,
+            metricsService,
+            arbeidssokerperiodeService
         )
     }
 
@@ -161,7 +167,8 @@ class ServiceBeansConfig {
         brukerTilstandService: BrukerTilstandService,
         manuellRegistreringRepository: ManuellRegistreringRepository,
         metricsService: MetricsService,
-        aktorIdCacheService: AktorIdCacheService
+        aktorIdCacheService: AktorIdCacheService,
+        arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): BrukerRegistreringService {
         return BrukerRegistreringService(
             brukerRegistreringRepository,
@@ -172,7 +179,8 @@ class ServiceBeansConfig {
             brukerTilstandService,
             manuellRegistreringRepository,
             metricsService,
-            aktorIdCacheService
+            aktorIdCacheService,
+            arbeidssokerperiodeService
         )
     }
 
@@ -302,13 +310,18 @@ class ServiceBeansConfig {
         formidlingsgruppeGateway: FormidlingsgruppeGateway,
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         unleashClient: UnleashClient,
+        metricsService: MetricsService,
+        brukerRegistreringRepository: BrukerRegistreringRepository,
+        brukerReaktiveringRepository: ReaktiveringRepository,
+        arbeidssokerperiodeService: ArbeidssokerperiodeService
         metricsService: MetricsService
     ): ArbeidssokerService {
         return ArbeidssokerService(
             formidlingsgruppeGateway,
             populerArbeidssokerperioderService,
             unleashClient,
-            metricsService
+            metricsService,
+            arbeidssokerperiodeService
         )
     }
 
@@ -345,12 +358,18 @@ class ServiceBeansConfig {
         aktorIdCacheService: AktorIdCacheService,
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer
+        arbeidssokerperiodeAvsluttetService: ArbeidssokerperiodeAvsluttetService,
+        unleashClient: UnleashClient,
+        arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             aktorIdCacheService,
             populerArbeidssokerperioderService,
             arbeidssokerperiodeAvsluttetProducer
+            arbeidssokerperiodeAvsluttetService,
+            unleashClient,
+            arbeidssokerperiodeService
         )
     }
 
@@ -448,5 +467,10 @@ class ServiceBeansConfig {
         meldekortRepository: MeldekortRepository, aktorIdCacheService: AktorIdCacheService
     ): MeldekortMottakService {
         return MeldekortMottakService(meldekortRepository, aktorIdCacheService)
+    }
+
+    @Bean
+    fun arbeidssokerperiodeService(arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository): ArbeidssokerperiodeService {
+        return ArbeidssokerperiodeService(arbeidssokerperiodeRepository)
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -30,6 +31,7 @@ import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRe
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 open class BrukerRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
@@ -40,7 +42,8 @@ open class BrukerRegistreringService(
     private val brukerTilstandService: BrukerTilstandService,
     private val manuellRegistreringRepository: ManuellRegistreringRepository,
     private val metricsService: MetricsService,
-    private val aktorIdCacheService: AktorIdCacheService
+    private val aktorIdCacheService: AktorIdCacheService,
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
     @Transactional
     open fun registrerBrukerUtenOverforing(
@@ -145,6 +148,13 @@ open class BrukerRegistreringService(
             oppdaterRegistreringTilstand(registreringId, Status.UKJENT_TEKNISK_FEIL)
             throw AktiverBrukerTekniskException(e)
         }
+
+        try {
+            arbeidssokerperiodeService.startPeriode(bruker.gjeldendeFoedselsnummer)
+        } catch (e: RuntimeException) {
+            LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
+        }
+
         val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA)
         LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId)
         return oppdatertRegistreringTilstand

@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.log.secureLogger
@@ -10,6 +11,7 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import org.springframework.transaction.annotation.Transactional
 
 open class ReaktiveringBrukerService(
@@ -18,6 +20,7 @@ open class ReaktiveringBrukerService(
     private val oppfolgingGateway: OppfolgingGateway,
     private val metricsService: MetricsService,
     private val aktorIdCacheService: AktorIdCacheService
+    private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
     @Transactional
     open fun reaktiverBruker(bruker: Bruker, erVeileder: Boolean) {
@@ -34,6 +37,13 @@ open class ReaktiveringBrukerService(
         aktorIdCacheService.settInnAktorIdHvisIkkeFinnes(bruker.gjeldendeFoedselsnummer, bruker.aktorId)
 
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
+
+        try {
+            arbeidssokerperiodeService.startPeriode(bruker.gjeldendeFoedselsnummer)
+        } catch (e: RuntimeException) {
+            LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
+        }
+
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.aktorId)
         if (erVeileder) {
             metricsService.registrer(Events.MANUELL_REAKTIVERING_EVENT)
