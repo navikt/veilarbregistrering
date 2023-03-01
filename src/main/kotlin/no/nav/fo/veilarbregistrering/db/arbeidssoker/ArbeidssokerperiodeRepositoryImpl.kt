@@ -13,11 +13,11 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
     override fun startPeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime) {
         val params = mapOf(
             "foedselsnummer" to foedselsnummer.foedselsnummer,
-            "fra" to fraDato
+            "fraOgMed" to fraDato
         )
 
         val sql =
-            """INSERT INTO $ARBEIDSSOKERPERIODE_TABELL("foedselsnummer", "fra") VALUES (:foedselsnummer, :fra)""".trimMargin()
+            """INSERT INTO $ARBEIDSSOKERPERIODE_TABELL("foedselsnummer", "fra_og_med") VALUES (:foedselsnummer, :fraOgMed)""".trimMargin()
 
         try {
             db.update(sql, params)
@@ -28,10 +28,10 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
 
     override fun avsluttPeriode(foedselsnummer: Foedselsnummer, tilDato: LocalDateTime) {
         val params = mapOf(
-            "til" to tilDato,
+            "tilOgMed" to tilDato,
             "foedselsnummer" to foedselsnummer.foedselsnummer
         )
-        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til = :til WHERE til IS NULL AND foedselsnummer = :foedselsnummer"
+        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed WHERE til_og_med IS NULL AND foedselsnummer = :foedselsnummer"
         try {
             db.update(sql, params)
         } catch (e: DataIntegrityViolationException) {
@@ -51,8 +51,8 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
             ArbeidssokerperiodeDto(
                 rs.getInt("id"),
                 Foedselsnummer(rs.getString("foedselsnummer")),
-                rs.getTimestamp("fra").toLocalDateTime(),
-                rs.getTimestamp("til")?.let(Timestamp::toLocalDateTime)
+                rs.getTimestamp("fra_og_med").toLocalDateTime(),
+                rs.getTimestamp("til_og_med")?.let(Timestamp::toLocalDateTime)
             )
         }
     }
