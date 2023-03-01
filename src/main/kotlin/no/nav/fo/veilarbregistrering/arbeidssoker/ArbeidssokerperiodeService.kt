@@ -27,6 +27,10 @@ class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) 
         repository.avsluttPeriode(foedselsnummer = formidlingsgruppeEndretEvent.foedselsnummer, LocalDateTime.now())
     }
 
+    fun lagrePeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime, tilDato: LocalDateTime?) {
+        repository.lagrePeriode(foedselsnummer, fraDato, tilDato)
+    }
+
     fun hentPerioder(foedselsnummer: Foedselsnummer): List<Periode> {
         return repository.hentPerioder(foedselsnummer).map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
     }

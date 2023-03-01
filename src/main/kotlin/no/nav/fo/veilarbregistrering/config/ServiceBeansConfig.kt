@@ -343,12 +343,14 @@ class ServiceBeansConfig {
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         pdlOppslagGateway: PdlOppslagGateway,
         aktorIdCacheRepository: AktorIdCacheRepository,
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
         leaderElectionClient: LeaderElectionClient
     ): PopulerHistoriskePerioderScheduler {
         return PopulerHistoriskePerioderScheduler(
             populerArbeidssokerperioderService,
             pdlOppslagGateway,
             aktorIdCacheRepository,
+            formidlingsgruppeRepository,
             leaderElectionClient
         )
     }

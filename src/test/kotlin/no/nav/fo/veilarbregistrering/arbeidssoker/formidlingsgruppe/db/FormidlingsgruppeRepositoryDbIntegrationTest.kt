@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -64,6 +65,19 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
         val arbeidssokerperiodes =
             ArbeidssokerperioderMapper.map(formidlingsgruppeRepository.finnFormidlingsgruppeEndretEventFor(bruker.alleFoedselsnummer()))
         Assertions.assertThat(arbeidssokerperiodes.asList()).hasSize(3)
+    }
+
+    @Test
+    fun `skal hente distinkte fødselsnumre for arbeidssøkere`() {
+        val command = endretFormdlingsgruppe(FOEDSELSNUMMER, LocalDateTime.now().minusDays(10))
+        formidlingsgruppeRepository.lagre(command)
+        val command2 = endretFormdlingsgruppe(FOEDSELSNUMMER_2, LocalDateTime.now().minusDays(50))
+        formidlingsgruppeRepository.lagre(command2)
+        val command3 = endretFormdlingsgruppe(FOEDSELSNUMMER_3, LocalDateTime.now().minusSeconds(20))
+        formidlingsgruppeRepository.lagre(command3)
+
+        val distinkteFnr = formidlingsgruppeRepository.hentDistinkteFnrForArbeidssokere()
+        assertEquals(3, distinkteFnr.size)
     }
 
     private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {

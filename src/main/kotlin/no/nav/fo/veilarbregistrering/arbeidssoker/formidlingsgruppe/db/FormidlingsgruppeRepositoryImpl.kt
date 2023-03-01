@@ -82,6 +82,12 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return formidlingsgruppeendringer
     }
 
+    override fun hentDistinkteFnrForArbeidssokere(): List<Foedselsnummer> {
+        val sql = "SELECT DISTINCT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE WHERE $FORMIDLINGSGRUPPE = 'ARBS'"
+
+        return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
+    }
+
     companion object {
         const val FORMIDLINGSGRUPPE_SEQ = "FORMIDLINGSGRUPPE_SEQ"
         const val FORMIDLINGSGRUPPE = "FORMIDLINGSGRUPPE"

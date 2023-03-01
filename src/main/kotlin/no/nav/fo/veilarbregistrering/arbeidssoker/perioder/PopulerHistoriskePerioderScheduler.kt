@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder
 
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.log.logger
@@ -12,6 +13,7 @@ class PopulerHistoriskePerioderScheduler(
     private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
     private val pdlOppslagGateway: PdlOppslagGateway,
     private val aktorIdCacheRepository: AktorIdCacheRepository,
+    private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val leaderElectionClient: LeaderElectionClient
 ) {
 
