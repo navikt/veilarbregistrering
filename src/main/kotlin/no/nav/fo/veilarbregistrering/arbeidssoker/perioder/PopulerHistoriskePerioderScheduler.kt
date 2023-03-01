@@ -25,6 +25,7 @@ class PopulerHistoriskePerioderScheduler(
     fun populerHistoriskePerioder() {
 
         if (!leaderElectionClient.isLeader) {
+            logger.info("Starter ikke jobb for å populere perioder, pod er ikke leader")
             return
         }
 
