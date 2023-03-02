@@ -23,7 +23,7 @@ class PopulerHistoriskePerioderScheduler(
     private val unleashClient: UnleashClient
 ) {
 
-    //@Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
     fun populerHistoriskePerioder() {
         try {
             CallId.leggTilCallId()
