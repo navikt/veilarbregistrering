@@ -3,8 +3,6 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
-import no.nav.common.job.leader_election.LeaderElectionClient
-import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheRepository
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
@@ -20,7 +18,6 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources.MeldekortR
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerHistoriskePerioderScheduler
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.ArbeidssokerResource
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
@@ -337,26 +334,6 @@ class ServiceBeansConfig {
             brukerRegistreringRepository,
             brukerReaktiveringRepository)
     }
-
-    @Bean
-    fun populerArbeiddsokerPerioderScheduler(
-        populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
-        pdlOppslagGateway: PdlOppslagGateway,
-        formidlingsgruppeRepository: FormidlingsgruppeRepository,
-        arbeidssokerperiodeService: ArbeidssokerperiodeService,
-        leaderElectionClient: LeaderElectionClient,
-        unleashClient: UnleashClient
-    ): PopulerHistoriskePerioderScheduler {
-        return PopulerHistoriskePerioderScheduler(
-            populerArbeidssokerperioderService,
-            pdlOppslagGateway,
-            formidlingsgruppeRepository,
-            arbeidssokerperiodeService,
-            leaderElectionClient,
-            unleashClient
-        )
-    }
-
     @Bean
     fun formidlingsgruppeMottakService(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
