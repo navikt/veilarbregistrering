@@ -64,10 +64,6 @@ spec:
       value: prod-fss
     - name: ENHET_URL
       value: https://ereg-services.prod-fss-pub.nais.io/ereg
-    - name: ARENA_ORDS_API
-      value: https://paw-proxy.prod-fss-pub.nais.io
-    - name: ARENA_ORDS_TOKEN_PROVIDER
-      value: https://paw-proxy.prod-fss-pub.nais.io
     - name: SPRING_PROFILES_ACTIVE
       value: gcp
   leaderElection: true

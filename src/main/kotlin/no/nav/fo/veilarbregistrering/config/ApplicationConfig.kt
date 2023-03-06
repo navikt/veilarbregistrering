@@ -2,15 +2,14 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheConfig
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
-import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.adapter.FormidlingsgruppeGatewayConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
 import no.nav.fo.veilarbregistrering.bruker.krr.KrrConfig
 import no.nav.fo.veilarbregistrering.bruker.pdl.PdlOppslagConfig
-import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
 import no.nav.fo.veilarbregistrering.config.db.DatabaseConfig
 import no.nav.fo.veilarbregistrering.config.db.RepositoryConfig
+import no.nav.fo.veilarbregistrering.config.filters.FilterConfig
 import no.nav.fo.veilarbregistrering.enhet.adapter.EnhetGatewayConfig
 import no.nav.fo.veilarbregistrering.featuretoggle.UnleashConfig
 import no.nav.fo.veilarbregistrering.helsesjekk.HelsesjekkConfig
@@ -44,7 +43,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
     PdlOppslagConfig::class,
     EnhetGatewayConfig::class,
     KrrConfig::class,
-    FormidlingsgruppeGatewayConfig::class,
     PubliseringSchedulerConfig::class,
     HelsesjekkConfig::class,
     ObjectMapperConfig::class,
