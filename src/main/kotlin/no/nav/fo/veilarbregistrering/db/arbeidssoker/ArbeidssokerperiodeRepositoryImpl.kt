@@ -39,23 +39,6 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
         }
     }
 
-    override fun lagrePeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime, tilDato: LocalDateTime?) {
-        val params = mapOf(
-            "fraOgMed" to fraDato,
-            "tilOgMed" to tilDato,
-            "foedselsnummer" to foedselsnummer.foedselsnummer
-        )
-
-        val sql =
-            """INSERT INTO $ARBEIDSSOKERPERIODE_TABELL("foedselsnummer", "fra_og_med", "til_og_med") VALUES (:foedselsnummer, :fraOgMed, :tilOgMed)""".trimMargin()
-
-        try {
-            db.update(sql, params)
-        } catch (e: DataIntegrityViolationException) {
-            throw DataIntegrityViolationException("Lagring av følgende arbeidssøkerperiode feilet", e)
-        }
-    }
-
     override fun hentPerioder(foedselsnummer: Foedselsnummer): List<ArbeidssokerperiodeDto> {
         val params = mapOf("foedselsnummer" to foedselsnummer.foedselsnummer)
         val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE foedselsnummer = :foedselsnummer ORDER BY id DESC"

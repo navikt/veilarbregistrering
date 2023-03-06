@@ -6,7 +6,5 @@ import java.time.LocalDateTime
 interface ArbeidssokerperiodeRepository {
     fun startPeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime)
     fun avsluttPeriode(foedselsnummer: Foedselsnummer, tilDato: LocalDateTime)
-
-    fun lagrePeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime, tilDato: LocalDateTime?)
     fun hentPerioder(foedselsnummer: Foedselsnummer): List<ArbeidssokerperiodeDto>
 }
