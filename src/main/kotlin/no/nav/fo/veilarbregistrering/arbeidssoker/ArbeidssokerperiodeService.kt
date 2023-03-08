@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
+import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import java.time.LocalDateTime
@@ -29,6 +30,11 @@ class ArbeidssokerperiodeService(val repository: ArbeidssokerperiodeRepository) 
 
     fun hentPerioder(foedselsnummer: Foedselsnummer): List<Periode> {
         return repository.hentPerioder(foedselsnummer).map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
+    }
+
+    fun hentPerioder(bruker: Bruker): List<Periode> {
+        return repository.hentPerioder(bruker.gjeldendeFoedselsnummer, bruker.historiskeFoedselsnummer)
+            .map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
     }
 
     private fun harAktivPeriode(foedselsnummer: Foedselsnummer): Boolean {

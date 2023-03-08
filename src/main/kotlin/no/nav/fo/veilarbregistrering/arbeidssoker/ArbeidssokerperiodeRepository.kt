@@ -7,4 +7,5 @@ interface ArbeidssokerperiodeRepository {
     fun startPeriode(foedselsnummer: Foedselsnummer, fraDato: LocalDateTime)
     fun avsluttPeriode(foedselsnummer: Foedselsnummer, tilDato: LocalDateTime)
     fun hentPerioder(foedselsnummer: Foedselsnummer): List<ArbeidssokerperiodeDto>
+    fun hentPerioder(gjeldendeFoedselsnummer: Foedselsnummer, historiskeFoedselsnummer: List<Foedselsnummer>): List<ArbeidssokerperiodeDto>
 }

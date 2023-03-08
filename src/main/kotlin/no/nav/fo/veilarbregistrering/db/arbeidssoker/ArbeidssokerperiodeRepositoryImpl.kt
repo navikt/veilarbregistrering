@@ -45,6 +45,16 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
         return db.query(sql, params, arbeidssokerperiodeMapper)
     }
 
+    override fun hentPerioder(
+        gjeldendeFoedselsnummer: Foedselsnummer,
+        historiskeFoedselsnummer: List<Foedselsnummer>
+    ): List<ArbeidssokerperiodeDto> {
+        val foedselsnummerList = historiskeFoedselsnummer + gjeldendeFoedselsnummer
+        val params = mapOf("foedselsnummerList" to foedselsnummerList.map(Foedselsnummer::stringValue))
+        val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE foedselsnummer IN (:foedselsnummerList)"
+        return db.query(sql, params, arbeidssokerperiodeMapper)
+    }
+
     companion object {
         const val ARBEIDSSOKERPERIODE_TABELL = "arbeidssokerperiode"
         private val arbeidssokerperiodeMapper = RowMapper { rs, _ ->
