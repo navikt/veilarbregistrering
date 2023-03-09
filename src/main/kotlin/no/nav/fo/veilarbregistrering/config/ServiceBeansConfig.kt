@@ -327,15 +327,11 @@ class ServiceBeansConfig {
     fun formidlingsgruppeMottakService(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         aktorIdCacheService: AktorIdCacheService,
-        populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
-        arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
         arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             aktorIdCacheService,
-            populerArbeidssokerperioderService,
-            arbeidssokerperiodeAvsluttetProducer,
             arbeidssokerperiodeService
         )
     }

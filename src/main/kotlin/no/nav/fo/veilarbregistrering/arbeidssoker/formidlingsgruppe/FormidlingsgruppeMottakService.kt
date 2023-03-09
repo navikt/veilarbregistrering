@@ -1,11 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
-import no.nav.fo.veilarbregistrering.arbeidssoker.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerperiodeAvsluttetProducer
-import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.PopulerArbeidssokerperioderService
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,14 +11,30 @@ import java.time.LocalDateTime
 class FormidlingsgruppeMottakService(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val aktorIdCacheService: AktorIdCacheService,
-    private val populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
-    private val arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
 
     @Transactional
     fun behandle(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
 
+        if(vaskFormidlingsgruppeEventOgStopp(formidlingsgruppeEndretEvent)) return
+
+        try {
+            aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
+        } catch (e: Exception) {
+            logger.warn("Klarte ikke populere aktørid-cache for innkommende formidlingsgruppe", e)
+        }
+
+        try {
+            arbeidssokerperiodeService.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent)
+        } catch (e: Exception) {
+            logger.error("Feil ved behandling av formidlingsgruppe event", e)
+        }
+
+        formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
+    }
+
+    private fun vaskFormidlingsgruppeEventOgStopp(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent): Boolean {
         if (formidlingsgruppeEndretEvent.formidlingsgruppeEndret.isBefore(LocalDateTime.parse("2010-01-01T00:00:00"))
             && formidlingsgruppeEndretEvent.formidlingsgruppe.kode != "ARBS") {
             logger.warn(
@@ -37,51 +49,8 @@ class FormidlingsgruppeMottakService(
                 logger.error("Mottok en INSERT-melding med formidlingsgruppe ${formidlingsgruppeEndretEvent.formidlingsgruppe} - vi skal kun få INSERT med ISERV")
             }
             formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
-            return
+            return true
         }
-
-        try {
-            aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
-        } catch (e: Exception) {
-            logger.error("Feil med aktorId fra PDL", e)
-        }
-
-        try {
-            arbeidssokerperiodeService.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent)
-        } catch (e: Exception) {
-            logger.error("Feil ved behandling av formidlingsgruppe event", e)
-        }
-        val arbeidssøker = hentArbeidssøker(formidlingsgruppeEndretEvent.foedselsnummer)
-        formidlingsgruppeRepository.lagre(formidlingsgruppeEndretEvent)
-
-        try {
-            aktorIdCacheService.hentAktorIdFraPDLHvisIkkeFinnes(formidlingsgruppeEndretEvent.foedselsnummer, true)
-        } catch (e: Exception) {
-            logger.warn("Klarte ikke populere aktørid-cache for innkommende formidlingsgruppe", e)
-        }
-
-        behandle(arbeidssøker, formidlingsgruppeEndretEvent)
-    }
-
-    private fun hentArbeidssøker(foedselsnummer: Foedselsnummer): Arbeidssoker? {
-        return try {
-            val arbeidssøker = populerArbeidssokerperioderService.hentArbeidssøker(foedselsnummer)
-            arbeidssøker.add(arbeidssokerperiodeAvsluttetProducer)
-            arbeidssøker
-        } catch (e: RuntimeException) {
-            logger.error("Henting av arbeidssøker feilet", e)
-            null
-        }
-    }
-
-    private fun behandle(arbeidssøker: Arbeidssoker?, formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
-        if (arbeidssøker == null) return
-        try {
-            logger.info("Behandler mottak av $formidlingsgruppeEndretEvent")
-            arbeidssøker.behandle(formidlingsgruppeEndretEvent)
-            arbeidssøker.remove(arbeidssokerperiodeAvsluttetProducer)
-        } catch (e: RuntimeException) {
-            logger.error("Behandling av formidlingsgruppeEndretEvent feilet", e)
-        }
+        return false
     }
 }

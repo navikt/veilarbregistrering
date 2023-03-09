@@ -19,8 +19,6 @@ class FormidlingsgruppeMottakServiceTest {
         formidlingsgruppeMottakService = FormidlingsgruppeMottakService(
             formidlingsgruppeRepository,
             mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
             mockk(relaxed = true)
         )
     }
