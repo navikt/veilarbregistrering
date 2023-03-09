@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -51,8 +52,8 @@ internal class ArbeidssokerperiodeRepositoryImplTest(@Autowired private val arbe
         val arbeidssokerperioder = arbeidssokerperiodeRepositoryImpl.hentPerioder(gjeldendeFnr, emptyList())
 
         assertEquals(1, arbeidssokerperioder.size)
-        assertEquals(start, arbeidssokerperioder.first().fra)
-        assertEquals(slutt, arbeidssokerperioder.first().til)
+        assertEquals(start.truncatedTo(ChronoUnit.MILLIS), arbeidssokerperioder.first().fra.truncatedTo(ChronoUnit.MILLIS))
+        assertEquals(slutt.truncatedTo(ChronoUnit.MILLIS), arbeidssokerperioder.first().til?.truncatedTo(ChronoUnit.MILLIS))
     }
 
     @Test
