@@ -150,7 +150,7 @@ open class BrukerRegistreringService(
         }
 
         try {
-            arbeidssokerperiodeService.startPeriode(bruker.gjeldendeFoedselsnummer)
+            arbeidssokerperiodeService.startPeriode(bruker)
         } catch (e: RuntimeException) {
             LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
         }

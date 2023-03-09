@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.bruker.Bruker
-import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
@@ -13,12 +12,12 @@ class ArbeidssokerperiodeService(
     private val userService: UserService
 ) {
 
-    fun startPeriode(foedselsnummer: Foedselsnummer) {
-        if (harAktivPeriode(foedselsnummer)) {
+    fun startPeriode(bruker: Bruker) {
+        if (harAktivPeriode(bruker)) {
             throw IllegalStateException("Bruker har allerede en aktiv periode")
         }
 
-        repository.startPeriode(foedselsnummer, LocalDateTime.now())
+        repository.startPeriode(bruker.gjeldendeFoedselsnummer, LocalDateTime.now())
     }
 
     fun behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
@@ -42,16 +41,8 @@ class ArbeidssokerperiodeService(
             .map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
     }
 
-    private fun harAktivPeriode(foedselsnummer: Foedselsnummer): Boolean {
-        return harAktivPeriode(repository.hentPerioder(foedselsnummer))
-    }
-
-    private fun harAktivPeriode(perioder: List<ArbeidssokerperiodeDto>): Boolean {
-        if (perioder.isEmpty()) {
-            return false
-        }
-
-        return perioder.first().til == null
+    private fun harAktivPeriode(bruker: Bruker): Boolean {
+        return hentAktivPeriode(bruker) != null
     }
 
     private fun hentAktivPeriode(bruker: Bruker): ArbeidssokerperiodeDto? {

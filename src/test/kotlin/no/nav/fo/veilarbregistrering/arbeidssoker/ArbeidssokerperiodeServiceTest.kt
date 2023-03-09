@@ -26,22 +26,22 @@ internal class ArbeidssokerperiodeServiceTest {
     @Test
     fun `kaster exception hvis bruker har en aktiv periode`() {
         val fnr = Foedselsnummer("42")
-        every { repository.hentPerioder(any()) } returns listOf(ArbeidssokerperiodeDto(1, fnr, LocalDateTime.now()))
+        every { repository.hentPerioder(any(), any()) } returns listOf(ArbeidssokerperiodeDto(1, fnr, LocalDateTime.now()))
 
         assertThrows(IllegalStateException::class.java) {
-            service.startPeriode(fnr)
+            service.startPeriode(Bruker(fnr, AktorId("1234"), emptyList()))
         }
     }
 
     @Test
     fun `starter periode for bruker`() {
-        val fnr = Foedselsnummer("42")
-        every { repository.hentPerioder(any()) } returns emptyList()
+        val bruker = Bruker(Foedselsnummer("42"), AktorId("1234"), emptyList())
+        every { repository.hentPerioder(any(), any()) } returns emptyList()
         every { repository.startPeriode(any(), any()) } just Runs
 
-        service.startPeriode(fnr)
+        service.startPeriode(bruker)
 
-        verify(exactly = 1) { repository.startPeriode(foedselsnummer = fnr, any())}
+        verify(exactly = 1) { repository.startPeriode(bruker.gjeldendeFoedselsnummer, any()) }
     }
 
     @Test
