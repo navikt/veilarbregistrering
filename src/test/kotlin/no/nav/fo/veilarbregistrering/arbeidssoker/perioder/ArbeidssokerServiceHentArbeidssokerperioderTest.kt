@@ -23,7 +23,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             arbeidssokerperiodeService
         )
 
-        every { arbeidssokerperiodeService.hentPerioder(any()) } returns emptyList()
+        every { arbeidssokerperiodeService.hentPerioder(any<Bruker>()) } returns emptyList()
     }
 
     @Test
@@ -32,7 +32,7 @@ class ArbeidssokerServiceHentArbeidssokerperioderTest {
             LocalDate.of(2020, 1, 2),
             LocalDate.of(2020, 5, 1)
         )
-        every { arbeidssokerperiodeService.hentPerioder(BRUKER_3.gjeldendeFoedselsnummer) } returns finnArbeissokerperioder(BRUKER_3.gjeldendeFoedselsnummer)
+        every { arbeidssokerperiodeService.hentPerioder(BRUKER_3) } returns finnArbeissokerperioder(BRUKER_3.gjeldendeFoedselsnummer)
         val arbeidssokerperiodes = arbeidssokerService.hentArbeidssokerperioder(BRUKER_3, forespurtPeriode)
         assertThat(arbeidssokerperiodes.eldsteFoerst()).containsExactly(
             ARBEIDSSOKERPERIODE_1,

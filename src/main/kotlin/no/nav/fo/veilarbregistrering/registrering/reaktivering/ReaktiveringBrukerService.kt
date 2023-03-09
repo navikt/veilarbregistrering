@@ -11,7 +11,6 @@ import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import org.springframework.transaction.annotation.Transactional
 
 open class ReaktiveringBrukerService(
@@ -39,7 +38,7 @@ open class ReaktiveringBrukerService(
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
 
         try {
-            arbeidssokerperiodeService.startPeriode(bruker.gjeldendeFoedselsnummer)
+            arbeidssokerperiodeService.startPeriode(bruker)
         } catch (e: RuntimeException) {
             LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
         }

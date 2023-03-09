@@ -11,7 +11,7 @@ class ArbeidssokerService(
 ) {
 
     fun hentArbeidssokerperioder(bruker: Bruker, forespurtPeriode: Periode?): Arbeidssokerperioder {
-        val lagredePerioder = arbeidssokerperiodeService.hentPerioder(bruker.gjeldendeFoedselsnummer)
+        val lagredePerioder = arbeidssokerperiodeService.hentPerioder(bruker)
 
         forespurtPeriode?.let {
             return Arbeidssokerperioder.of(lagredePerioder.filter { it.overlapperMed(forespurtPeriode) }.map { Arbeidssokerperiode(it) })

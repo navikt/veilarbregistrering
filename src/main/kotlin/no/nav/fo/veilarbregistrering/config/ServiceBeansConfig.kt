@@ -329,7 +329,6 @@ class ServiceBeansConfig {
         aktorIdCacheService: AktorIdCacheService,
         populerArbeidssokerperioderService: PopulerArbeidssokerperioderService,
         arbeidssokerperiodeAvsluttetProducer: ArbeidssokerperiodeAvsluttetProducer,
-        unleashClient: UnleashClient,
         arbeidssokerperiodeService: ArbeidssokerperiodeService
     ): FormidlingsgruppeMottakService {
         return FormidlingsgruppeMottakService(
@@ -337,7 +336,6 @@ class ServiceBeansConfig {
             aktorIdCacheService,
             populerArbeidssokerperioderService,
             arbeidssokerperiodeAvsluttetProducer,
-            unleashClient,
             arbeidssokerperiodeService
         )
     }
@@ -439,7 +437,10 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun arbeidssokerperiodeService(arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository): ArbeidssokerperiodeService {
-        return ArbeidssokerperiodeService(arbeidssokerperiodeRepository)
+    fun arbeidssokerperiodeService(
+        arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
+        userService: UserService
+    ): ArbeidssokerperiodeService {
+        return ArbeidssokerperiodeService(arbeidssokerperiodeRepository, userService)
     }
 }
