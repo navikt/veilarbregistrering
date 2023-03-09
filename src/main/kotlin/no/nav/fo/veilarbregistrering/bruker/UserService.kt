@@ -36,6 +36,8 @@ class UserService(
     }
     fun finnBrukerGjennomPdl(fnr: Foedselsnummer): Bruker = map(pdlOppslagGateway.hentIdenter(fnr))
 
+    fun finnBrukerGjennomPdlForSystemkontekst(fnr: Foedselsnummer): Bruker = map(pdlOppslagGateway.hentIdenter(fnr, true))
+
     fun hentBruker(aktorId: AktorId): Bruker = map(pdlOppslagGateway.hentIdenter(aktorId))
 
     fun getEnhetIdFromUrlOrThrow(): String =

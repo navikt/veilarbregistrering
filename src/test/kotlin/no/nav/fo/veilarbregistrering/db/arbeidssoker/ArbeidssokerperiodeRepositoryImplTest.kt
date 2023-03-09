@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -37,7 +37,22 @@ internal class ArbeidssokerperiodeRepositoryImplTest(@Autowired private val arbe
         arbeidssokerperiodeRepositoryImpl.startPeriode(aremark(), LocalDateTime.now())
         arbeidssokerperiodeRepositoryImpl.avsluttPeriode(aremark(), LocalDateTime.now())
         val arbeidssokerperioder = arbeidssokerperiodeRepositoryImpl.hentPerioder(aremark())
-        assertNotEquals(null, arbeidssokerperioder.first().til)
+        assertNotNull(arbeidssokerperioder.first().til)
+    }
+
+    @Test
+    fun `skal avslutte periode for id`() {
+        val gjeldendeFnr = aremark()
+        val start = LocalDateTime.now().minusYears(3)
+        val slutt = LocalDateTime.now()
+        arbeidssokerperiodeRepositoryImpl.startPeriode(gjeldendeFnr, start)
+        val aktivPeriode = arbeidssokerperiodeRepositoryImpl.hentPerioder(gjeldendeFnr, emptyList())
+        arbeidssokerperiodeRepositoryImpl.avsluttPeriode(aktivPeriode.first().id, slutt)
+        val arbeidssokerperioder = arbeidssokerperiodeRepositoryImpl.hentPerioder(gjeldendeFnr, emptyList())
+
+        assertEquals(1, arbeidssokerperioder.size)
+        assertEquals(start, arbeidssokerperioder.first().fra)
+        assertEquals(slutt, arbeidssokerperioder.first().til)
     }
 
     @Test

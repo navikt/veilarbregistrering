@@ -39,6 +39,20 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
         }
     }
 
+    override fun avsluttPeriode(id: Int, tilDato: LocalDateTime) {
+        val params = mapOf(
+            "id" to id,
+            "tilOgMed" to tilDato
+        )
+        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed WHERE id = :id"
+
+        try {
+            db.update(sql, params)
+        } catch (e: DataIntegrityViolationException) {
+            throw DataIntegrityViolationException("Avslutning av arbeidssøkerperiode feilet", e)
+        }
+    }
+
     override fun hentPerioder(foedselsnummer: Foedselsnummer): List<ArbeidssokerperiodeDto> {
         val params = mapOf("foedselsnummer" to foedselsnummer.foedselsnummer)
         val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE foedselsnummer = :foedselsnummer ORDER BY id DESC"
