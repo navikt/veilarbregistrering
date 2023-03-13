@@ -2,23 +2,16 @@ name: Build, push, deploy 💪
 
 on: [ push ]
 
-env:
-  IMAGE_BASE: ghcr.io/${{ github.repository }}/veilarbregistrering
-
 jobs:
 
   test-build-and-push:
     name: Test, build and push
+    permissions:
+      contents: "read"
+      id-token: "write"
     runs-on: ubuntu-latest
     steps:
-
     - uses: actions/checkout@v3
-
-    - name: Lag tag for image
-      run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-    - name: Lag full image referanse
-      run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
 
     - name: Set up Maven cache
       uses: actions/cache@v3
@@ -41,13 +34,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and publish Docker image
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_REPOSITORY} --password-stdin
-        docker build --tag ${IMAGE} .
-        docker push ${IMAGE}
+    - name: docker-build-push
+      uses: nais/docker-build-push@v0
+      id: docker-build-push
+      with:
+        team: paw
+        identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+        project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy-dev:
     name: Deploy to dev gcp
@@ -57,12 +53,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Lag tag for image
-        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-      - name: Lag full image referanse
-        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
-
       - name: Deploy to Dev
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -70,6 +60,7 @@ jobs:
           CLUSTER: dev-gcp
           DRY_RUN: false
           RESOURCE: nais/nais-dev-gcp.yaml
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
 
   deploy-prod:
     name: Deploy to prod-gcp
@@ -79,12 +70,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Lag tag for image
-        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-      - name: Lag full image referanse
-        run: echo "IMAGE=$IMAGE_BASE:$TAG" >> $GITHUB_ENV
-
       - name: Deploy to production
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -92,23 +77,24 @@ jobs:
           CLUSTER: prod-gcp
           DRY_RUN: false
           RESOURCE: nais/nais-prod-gcp.yaml
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
 
-  release:
-    name: Tag and release
-    needs: deploy-prod
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout
-
-      - name: Lag tag for release
-        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: release/prod@${{ env.TAG }}
-          name: Release to prod
-          prerelease: false
+#  release:
+#    name: Tag and release
+#    needs: deploy-prod
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#        name: Checkout
+#
+#      - name: Lag tag for release
+#        run: echo "TAG=$(git log -1 --pretty='%ad_%h' --date=format:'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+#
+#      - name: Create release
+#        uses: softprops/action-gh-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: release/prod@${{ env.TAG }}
+#          name: Release to prod
+#          prerelease: false
