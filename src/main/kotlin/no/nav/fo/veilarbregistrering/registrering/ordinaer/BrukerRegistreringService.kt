@@ -18,20 +18,19 @@ import no.nav.fo.veilarbregistrering.profilering.ProfileringService
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.Tilstandsfeil
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerTilstandService
-import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.fo.veilarbregistrering.registrering.bruker.RegistreringType
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.ValideringUtils.validerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand.Companion.medStatus
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status.Companion.from
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.ValideringUtils.validerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 open class BrukerRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
@@ -133,6 +132,8 @@ open class BrukerRegistreringService(
         if (registreringTilstand.status !== Status.OVERFORT_ARENA) {
             throw AktiverBrukerException("Feil ved overføring til Arena: ${registreringTilstand.status}", fromStatus(registreringTilstand.status))
         }
+
+        startArbeidssokerperiode(bruker)
         registrerOverfortStatistikk(veileder)
     }
 
@@ -149,15 +150,17 @@ open class BrukerRegistreringService(
             throw AktiverBrukerTekniskException(e)
         }
 
+        val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA)
+        LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId)
+        return oppdatertRegistreringTilstand
+    }
+
+    private fun startArbeidssokerperiode(bruker: Bruker) {
         try {
             arbeidssokerperiodeService.startPeriode(bruker)
         } catch (e: RuntimeException) {
             LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
         }
-
-        val oppdatertRegistreringTilstand = oppdaterRegistreringTilstand(registreringId, Status.OVERFORT_ARENA)
-        LOG.info("Overføring av registrering (id: {}) til Arena gjennomført", registreringId)
-        return oppdatertRegistreringTilstand
     }
 
     private fun oppdaterRegistreringTilstand(registreringId: Long, status: Status): RegistreringTilstand {

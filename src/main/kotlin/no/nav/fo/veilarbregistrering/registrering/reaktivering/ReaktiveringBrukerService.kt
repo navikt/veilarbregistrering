@@ -37,17 +37,21 @@ open class ReaktiveringBrukerService(
 
         oppfolgingGateway.reaktiverBruker(bruker.gjeldendeFoedselsnummer)
 
-        try {
-            arbeidssokerperiodeService.startPeriode(bruker)
-        } catch (e: RuntimeException) {
-            LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
-        }
+        startArbeidssokerperiode(bruker)
 
         LOG.info("Reaktivering av bruker med aktørId : {}", bruker.aktorId)
         if (erVeileder) {
             metricsService.registrer(Events.MANUELL_REAKTIVERING_EVENT)
         }
         metricsService.registrer(Events.REGISTRERING_FULLFORING_REGISTRERINGSTYPE, RegistreringType.REAKTIVERING)
+    }
+
+    private fun startArbeidssokerperiode(bruker: Bruker) {
+        try {
+            arbeidssokerperiodeService.startPeriode(bruker)
+        } catch (e: RuntimeException) {
+            LOG.error("Feil ved starting av ny arbeidssøkerperiode", e)
+        }
     }
 
     open fun kanReaktiveres(bruker: Bruker): Boolean {
