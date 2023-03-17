@@ -20,7 +20,6 @@ spec:
     - secret: veilarbregistrering
   image: {{image}}
   ingresses:
-    - https://veilarbregistrering.dev.intern.nav.no
     - https://veilarbregistrering.intern.dev.nav.no
   env:
     - name: AAREG_REST_API
