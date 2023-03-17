@@ -27,7 +27,8 @@ class ReaktiveringResource(
         }
 
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} fullfører reaktivering", bruker.gjeldendeFoedselsnummer))
 
         reaktiveringBrukerService.reaktiverBruker(bruker, tilgangskontrollService.erVeileder())
     }

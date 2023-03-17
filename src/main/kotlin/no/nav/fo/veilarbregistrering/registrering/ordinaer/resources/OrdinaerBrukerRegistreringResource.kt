@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 
 import no.nav.common.featuretoggle.UnleashClient
+import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
@@ -28,7 +29,9 @@ class OrdinaerBrukerRegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} fullfører registrering", bruker.gjeldendeFoedselsnummer)
+        )
 
         val veileder = navVeilederService.navVeileder()
         val opprettetRegistrering =
