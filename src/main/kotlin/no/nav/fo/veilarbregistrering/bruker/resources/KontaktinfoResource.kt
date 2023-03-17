@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.bruker.resources
 
+import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.KontaktinfoService
 import no.nav.fo.veilarbregistrering.bruker.UserService
@@ -19,7 +20,9 @@ class KontaktinfoResource(
     @GetMapping("/kontaktinfo")
     override fun hentKontaktinfo(): KontaktinfoDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} henter kontaktinfo", bruker.gjeldendeFoedselsnummer)
+        )
         val kontaktinfo = kontaktinfoService.hentKontaktinfo(bruker)
         return map(kontaktinfo)
     }

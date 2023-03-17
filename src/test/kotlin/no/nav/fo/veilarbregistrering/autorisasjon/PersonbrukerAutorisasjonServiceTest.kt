@@ -92,7 +92,7 @@ class PersonbrukerAutorisasjonServiceTest {
             )
         }
 
-        assertEquals("Personbruker ber om lesetilgang til noen andre enn seg selv.", exception.message)
+        assertEquals("Personbruker ber om tilgang til noen andre enn seg selv.", exception.message)
     }
 
     @Test
@@ -188,7 +188,7 @@ class PersonbrukerAutorisasjonServiceTest {
             )
         }
 
-        assertEquals("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle INTERN", exception.message)
+        assertEquals("Kan ikke utføre tilgangskontroll for personbruker med rolle INTERN", exception.message)
     }
 
     companion object {

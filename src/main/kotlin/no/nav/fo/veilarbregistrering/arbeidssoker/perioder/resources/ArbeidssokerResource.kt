@@ -27,8 +27,7 @@ class ArbeidssokerResource(
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egne arbeidssøkerperioder", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, hentAuditLogMelding(bruker))
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -40,7 +39,7 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i request param - deprecated metode")
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, hentAuditLogMelding(bruker))
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -52,7 +51,7 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i body")
         val bruker = if (fnr != null) userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr)) else userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, hentAuditLogMelding(bruker))
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -78,6 +77,9 @@ class ArbeidssokerResource(
 
         return ArbeidssokerperioderDto(arbeidssokerperiodeDtoer)
     }
+
+    private fun hentAuditLogMelding(bruker: Bruker): CefMelding =
+        CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egne arbeidssøkerperioder", bruker.gjeldendeFoedselsnummer)
 
     companion object {
         private val LOG = loggerFor<ArbeidssokerResource>()

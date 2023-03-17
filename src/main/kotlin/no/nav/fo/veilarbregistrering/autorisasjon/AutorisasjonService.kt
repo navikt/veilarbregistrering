@@ -7,7 +7,9 @@ interface AutorisasjonService {
 
     fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding)
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer)
+    fun sjekkLesetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding)
     fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer)
+    fun sjekkSkrivetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding)
 
     fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding)
 

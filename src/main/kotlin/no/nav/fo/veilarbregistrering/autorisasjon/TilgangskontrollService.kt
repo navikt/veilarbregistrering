@@ -15,9 +15,13 @@ class TilgangskontrollService(
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
-    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(fnr)
-            ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+    fun sjekkLesetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding? = null) {
+        if (hentRolle() == UserRole.EKSTERN && cefMelding !== null) {
+            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker, cefMelding)
+        } else {
+            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+                ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+        }
     }
 
     fun sjekkSkrivetilgangTilBrukerForSystem(fnr: Foedselsnummer, cefMelding: CefMelding) {

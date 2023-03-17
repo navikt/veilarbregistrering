@@ -48,7 +48,8 @@ class ReaktiveringResource(
     @PostMapping("/kan-reaktiveres")
     override fun kanReaktiveres(@RequestBody fnr: Fnr): KanReaktiveresDto {
         val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr))
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} sjekker om vedkommende kan reaktiveres", bruker.gjeldendeFoedselsnummer))
 
         return KanReaktiveresDto(kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(bruker))
     }

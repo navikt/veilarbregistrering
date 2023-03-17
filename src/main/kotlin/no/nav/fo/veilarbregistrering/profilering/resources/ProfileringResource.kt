@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering.resources
 
+import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.profilering.ProfilertInnsatsgruppeService
@@ -18,7 +19,9 @@ class ProfileringResource(
     @GetMapping("/profilering")
     override fun hentProfileringForBurker(): ProfileringDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} henter profilering", bruker.gjeldendeFoedselsnummer)
+        )
 
         return ProfileringDto.fra(profilertInnsatsgruppeService.hentProfilering(bruker))
     }
@@ -26,7 +29,8 @@ class ProfileringResource(
     @GetMapping("/profilering/standard-innsats")
     override fun erStandardInnsatsBruker(): Boolean {
       val bruker = userService.finnBrukerGjennomPdl()
-      tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+      tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+          CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} sjekker om vedkommende er standard innsats", bruker.gjeldendeFoedselsnummer))
 
       return profilertInnsatsgruppeService.erStandardInnsats(bruker)
     }

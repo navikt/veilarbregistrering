@@ -26,11 +26,19 @@ open class SystembrukerAutorisasjonService(
         registrerAutorisationEvent(ActionId.READ)
     }
 
+    override fun sjekkLesetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for systembruker er ikke støttet")
+    }
+
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) {
         if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.WRITE} for systembruker med rolle ${rolle()}")
         logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
         registrerAutorisationEvent(ActionId.WRITE)
         throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
+    }
+
+    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for systembruker er ikke støttet")
     }
 
     override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {

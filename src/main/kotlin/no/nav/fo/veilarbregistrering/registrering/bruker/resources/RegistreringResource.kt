@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker.resources
 
+import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.bruker.HentRegistreringService
@@ -22,7 +23,9 @@ class RegistreringResource(
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(@RequestHeader("Nav-Consumer-Id") consumerId: String): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} starter registrering", bruker.gjeldendeFoedselsnummer)
+        )
 
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker, consumerId)
     }
@@ -31,7 +34,8 @@ class RegistreringResource(
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
         val bruker = userService.finnBrukerGjennomPdl()
 
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
+            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} henter registreringer", bruker.gjeldendeFoedselsnummer))
 
         return hentRegistreringService.hentBrukerregistrering(bruker)?.let {
             ResponseEntity.ok(it)
