@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
-import io.micrometer.core.instrument.Tag
 import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.Constants.ID_PORTEN_PID_CLAIM
@@ -12,24 +11,33 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.autitLogger
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
 
 open class PersonbrukerAutorisasjonService(
     private val veilarbPep: Pep,
-    private val authContextHolder: AuthContextHolder,
-    private val metricsService: MetricsService
+    private val authContextHolder: AuthContextHolder
 ) : AutorisasjonService {
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om lesetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
         validerTilgangOgAuditlog(cefMelding, bruker)
         validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4))
     }
-    override fun sjekkLesetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding) {
+    override fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om lesetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
         validerTilgangOgAuditlog(cefMelding, bruker)
         validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
     }
 
-    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding) {
+    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om skrivetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
         validerTilgangOgAuditlog(cefMelding, bruker)
         validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
     }

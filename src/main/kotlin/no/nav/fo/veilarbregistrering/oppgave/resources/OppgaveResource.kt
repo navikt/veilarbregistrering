@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.oppgave.resources
 
-import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.oppgave.OppgaveService
@@ -22,9 +21,7 @@ class OppgaveResource(
     override fun opprettOppgave(@RequestBody oppgaveDto: OppgaveDto?): OppgaveDto {
         if (oppgaveDto?.oppgaveType == null) { throw IllegalArgumentException("Oppgave m/ type må være angitt") }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} oppretter oppgave", bruker.gjeldendeFoedselsnummer)
-        )
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "oppgave")
         val oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.oppgaveType)
         return map(oppgaveResponse, oppgaveDto.oppgaveType)
     }

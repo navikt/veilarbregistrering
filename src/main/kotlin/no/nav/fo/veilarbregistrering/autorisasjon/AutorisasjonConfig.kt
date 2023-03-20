@@ -44,7 +44,7 @@ class AutorisasjonConfig {
         metricsService: MetricsService
     ): TilgangskontrollService {
         val autorisasjonServiceMap = mapOf(
-            UserRole.EKSTERN to PersonbrukerAutorisasjonService(veilarbPep, authContextHolder, metricsService),
+            UserRole.EKSTERN to PersonbrukerAutorisasjonService(veilarbPep, authContextHolder),
             UserRole.INTERN to VeilederAutorisasjonService(veilarbPep, authContextHolder, metricsService),
             UserRole.SYSTEM to SystembrukerAutorisasjonService(authContextHolder, metricsService)
         )

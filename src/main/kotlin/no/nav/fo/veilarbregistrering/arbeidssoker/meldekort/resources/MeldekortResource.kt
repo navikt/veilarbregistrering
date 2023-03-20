@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
-import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,8 +17,7 @@ class MeldekortResource(
     @GetMapping("/meldekort")
     override fun hentMeldekort(): List<MeldekortDto> {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egen meldekort informasjon", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "meldekort")
         return meldekortService.hentMeldekort(bruker.gjeldendeFoedselsnummer)
             .map(MeldekortDto::map)
     }
@@ -27,8 +25,7 @@ class MeldekortResource(
     @GetMapping("/meldekort/siste")
     override fun hentSisteMeldekort(): MeldekortDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egen meldekort informasjon", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "siste meldekort")
         return meldekortService.hentSisteMeldekort(bruker.gjeldendeFoedselsnummer)?.let {
             MeldekortDto.map(it)
         }

@@ -27,8 +27,7 @@ class ReaktiveringResource(
         }
 
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} fullfører reaktivering", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "reaktivering")
 
         reaktiveringBrukerService.reaktiverBruker(bruker, tilgangskontrollService.erVeileder())
     }
@@ -49,8 +48,7 @@ class ReaktiveringResource(
     @PostMapping("/kan-reaktiveres")
     override fun kanReaktiveres(@RequestBody fnr: Fnr): KanReaktiveresDto {
         val bruker = userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr))
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} sjekker om vedkommende kan reaktiveres", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "reaktivering")
 
         return KanReaktiveresDto(kanReaktiveres = reaktiveringBrukerService.kanReaktiveres(bruker))
     }

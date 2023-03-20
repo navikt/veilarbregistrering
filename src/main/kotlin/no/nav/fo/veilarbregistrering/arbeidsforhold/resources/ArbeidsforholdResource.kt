@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidsforhold.resources
 
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.FlereArbeidsforhold
-import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,9 +19,7 @@ class ArbeidsforholdResource(
     @GetMapping("/sistearbeidsforhold")
     override fun hentSisteArbeidsforhold(): ArbeidsforholdDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} henter siste arbeidsforhold", bruker.gjeldendeFoedselsnummer)
-        )
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "siste arbeidsforhold")
 
         val flereArbeidsforhold: FlereArbeidsforhold =
             arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)

@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources
 
 import no.nav.common.featuretoggle.UnleashClient
-import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
@@ -27,9 +26,7 @@ class SykmeldtResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} fullfører sykmeldtregistrering", bruker.gjeldendeFoedselsnummer)
-        )
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "registrering for sykmeldt")
         val veileder = navVeilederService.navVeileder()
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder)
     }

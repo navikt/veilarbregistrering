@@ -10,14 +10,14 @@ class TilgangskontrollService(
     private val autorisasjonServiceMap: Map<UserRole, AutorisasjonService>
 ) {
 
-    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, cefMelding)
+    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
+        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, kontekst)
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
-    fun sjekkLesetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding? = null) {
-        if (hentRolle() == UserRole.EKSTERN && cefMelding !== null) {
-            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker, cefMelding)
+    fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        if (hentRolle() == UserRole.EKSTERN) {
+            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker, kontekst)
         } else {
             autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
                 ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
@@ -29,9 +29,9 @@ class TilgangskontrollService(
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
-    fun sjekkSkrivetilgangTilBruker(bruker: Bruker, cefMelding: CefMelding? = null) {
-        if (hentRolle() == UserRole.EKSTERN && cefMelding !== null) {
-            autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(bruker, cefMelding)
+    fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        if (hentRolle() == UserRole.EKSTERN) {
+            autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(bruker, kontekst)
         } else {
             autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
                 ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
