@@ -10,14 +10,18 @@ class TilgangskontrollService(
     private val autorisasjonServiceMap: Map<UserRole, AutorisasjonService>
 ) {
 
-    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, cefMelding)
+    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
+        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBrukerMedNivå3(bruker, kontekst)
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
-    fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(fnr)
-            ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+    fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        if (hentRolle() == UserRole.EKSTERN) {
+            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker, kontekst)
+        } else {
+            autorisasjonServiceMap[hentRolle()]?.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+                ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+        }
     }
 
     fun sjekkSkrivetilgangTilBrukerForSystem(fnr: Foedselsnummer, cefMelding: CefMelding) {
@@ -25,9 +29,13 @@ class TilgangskontrollService(
             ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
     }
 
-    fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) {
-        autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(fnr)
-            ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+    fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        if (hentRolle() == UserRole.EKSTERN) {
+            autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(bruker, kontekst)
+        } else {
+            autorisasjonServiceMap[hentRolle()]?.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+                ?: throw AutorisasjonValideringException("Fant ikke tilgangskontroll for rollen ${hentRolle()}")
+        }
     }
 
     fun erVeileder(): Boolean {

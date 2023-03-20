@@ -19,7 +19,7 @@ class KontaktinfoResource(
     @GetMapping("/kontaktinfo")
     override fun hentKontaktinfo(): KontaktinfoDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "kontaktinformasjon")
         val kontaktinfo = kontaktinfoService.hentKontaktinfo(bruker)
         return map(kontaktinfo)
     }

@@ -18,7 +18,7 @@ class ProfileringResource(
     @GetMapping("/profilering")
     override fun hentProfileringForBurker(): ProfileringDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "profilering")
 
         return ProfileringDto.fra(profilertInnsatsgruppeService.hentProfilering(bruker))
     }
@@ -26,7 +26,7 @@ class ProfileringResource(
     @GetMapping("/profilering/standard-innsats")
     override fun erStandardInnsatsBruker(): Boolean {
       val bruker = userService.finnBrukerGjennomPdl()
-      tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+      tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "standard innsats")
 
       return profilertInnsatsgruppeService.erStandardInnsats(bruker)
     }

@@ -132,7 +132,7 @@ class RegistreringResourceTest(
         every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentStartRegistreringStatus(CONSUMER_ID_TEST)
-        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any(), any()) }
     }
 
     @Test
@@ -153,7 +153,7 @@ class RegistreringResourceTest(
         every { authContextHolder.erEksternBruker() } returns false
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         registreringResource.hentRegistrering()
-        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(IDENTER.finnGjeldendeFnr()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkLesetilgangTilBruker(any(), any()) }
     }
 
     companion object {

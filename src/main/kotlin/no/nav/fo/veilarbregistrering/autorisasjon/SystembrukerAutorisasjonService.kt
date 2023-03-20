@@ -16,7 +16,7 @@ open class SystembrukerAutorisasjonService(
     private val authContextHolder: AuthContextHolder,
     private val metricsService: MetricsService) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
         throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå 3 for systembruker")
     }
 
@@ -26,11 +26,19 @@ open class SystembrukerAutorisasjonService(
         registrerAutorisationEvent(ActionId.READ)
     }
 
+    override fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for systembruker er ikke støttet")
+    }
+
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) {
         if (rolle() != UserRole.SYSTEM) throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.WRITE} for systembruker med rolle ${rolle()}")
         logger.info("harTilgangTilPerson utfører ${ActionId.WRITE} for ${UserRole.SYSTEM}-rolle")
         registrerAutorisationEvent(ActionId.WRITE)
         throw AutorisasjonValideringException("Systembruker har ikke skrivetilgang til bruker")
+    }
+
+    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for systembruker er ikke støttet")
     }
 
     override fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding) {

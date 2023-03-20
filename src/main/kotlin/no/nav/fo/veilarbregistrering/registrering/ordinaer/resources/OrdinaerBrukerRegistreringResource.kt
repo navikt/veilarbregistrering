@@ -28,7 +28,7 @@ class OrdinaerBrukerRegistreringResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "registrering")
 
         val veileder = navVeilederService.navVeileder()
         val opprettetRegistrering =

@@ -19,7 +19,7 @@ class ArbeidsforholdResource(
     @GetMapping("/sistearbeidsforhold")
     override fun hentSisteArbeidsforhold(): ArbeidsforholdDto? {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "siste arbeidsforhold")
 
         val flereArbeidsforhold: FlereArbeidsforhold =
             arbeidsforholdGateway.hentArbeidsforhold(bruker.gjeldendeFoedselsnummer)

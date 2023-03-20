@@ -21,7 +21,7 @@ class OppgaveResource(
     override fun opprettOppgave(@RequestBody oppgaveDto: OppgaveDto?): OppgaveDto {
         if (oppgaveDto?.oppgaveType == null) { throw IllegalArgumentException("Oppgave m/ type må være angitt") }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "oppgave")
         val oppgaveResponse = oppgaveService.opprettOppgave(bruker, oppgaveDto.oppgaveType)
         return map(oppgaveResponse, oppgaveDto.oppgaveType)
     }

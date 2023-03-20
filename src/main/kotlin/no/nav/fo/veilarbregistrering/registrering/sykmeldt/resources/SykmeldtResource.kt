@@ -26,7 +26,7 @@ class SykmeldtResource(
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
         }
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkSkrivetilgangTilBruker(bruker, "registrering for sykmeldt")
         val veileder = navVeilederService.navVeileder()
         sykmeldtRegistreringService.registrerSykmeldt(sykmeldtRegistrering, bruker, veileder)
     }

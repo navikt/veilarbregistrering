@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbregistrering.autorisasjon
 
-import io.micrometer.core.instrument.Tag
 import no.nav.common.abac.Pep
 import no.nav.common.abac.domain.request.ActionId
 import no.nav.common.auth.Constants.ID_PORTEN_PID_CLAIM
@@ -12,33 +11,59 @@ import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.log.autitLogger
 import no.nav.fo.veilarbregistrering.log.logger
-import no.nav.fo.veilarbregistrering.metrics.Events
-import no.nav.fo.veilarbregistrering.metrics.MetricsService
 
 open class PersonbrukerAutorisasjonService(
     private val veilarbPep: Pep,
-    private val authContextHolder: AuthContextHolder,
-    private val metricsService: MetricsService
+    private val authContextHolder: AuthContextHolder
 ) : AutorisasjonService {
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
-        if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll på nivå3 for personbruker med rolle ${rolle()}")
-        logger.info("Sjekker lesetilgang med nivå 3 for ${UserRole.EKSTERN}-rolle")
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om lesetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
+        validerTilgangOgAuditlog(cefMelding, bruker)
+        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4))
+    }
+    override fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om lesetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
+        validerTilgangOgAuditlog(cefMelding, bruker)
+        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
+    }
+
+    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        val cefMelding = CefMelding(
+            "Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} ber om skrivetilgang for $kontekst",
+            bruker.gjeldendeFoedselsnummer
+        )
+        validerTilgangOgAuditlog(cefMelding, bruker)
+        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
+    }
+
+    private fun validerTilgangOgAuditlog(
+        cefMelding: CefMelding,
+        bruker: Bruker
+    ) {
+        if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for personbruker med rolle ${rolle()}")
+        logger.info("Sjekker tilgang for ${UserRole.EKSTERN}-rolle")
         autitLogger.info(cefMelding.cefMessage())
         val foedselsnummerFraToken = authContextHolder.hentFoedselsnummer()
         if (!bruker.alleFoedselsnummer().contains(foedselsnummerFraToken)) {
-            throw AutorisasjonException("Personbruker ber om lesetilgang til noen andre enn seg selv.")
+            throw AutorisasjonException("Personbruker ber om tilgang til noen andre enn seg selv.")
         }
-        validerInnloggingsnivå()
     }
 
-    private fun validerInnloggingsnivå() {
+    private fun validerInnloggingsnivå(gyldigeInnloggingsnivåer: List<String>) {
         val innloggingsnivå = authContextHolder.hentInnloggingsnivå()
-        if (listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4).contains(innloggingsnivå)) return
+        if (gyldigeInnloggingsnivåer.contains(innloggingsnivå)) return
 
         throw AutorisasjonException("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har $innloggingsnivå - vi krever $INNLOGGINGSNIVÅ_3 eller $INNLOGGINGSNIVÅ_4")
     }
 
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, tilEksternId(fnr))
+
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) =
         sjekkTilgang(ActionId.WRITE, tilEksternId(fnr))
 
@@ -51,7 +76,6 @@ open class PersonbrukerAutorisasjonService(
     private fun sjekkTilgang(handling: ActionId, bruker: EksternBrukerId) {
         if (rolle() != UserRole.EKSTERN) throw AutorisasjonValideringException("Kan ikke utføre tilgangskontroll for personbruker med rolle ${rolle()}")
         logger.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
-        registrerAutorisationEvent(handling)
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
             if (INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
@@ -61,14 +85,6 @@ open class PersonbrukerAutorisasjonService(
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
 
-    private fun registrerAutorisationEvent(handling: ActionId) {
-        metricsService.registrer(
-            Events.AUTORISASJON,
-            Tag.of("navident", "false"),
-            Tag.of("handling", handling.id),
-            Tag.of("rolle", UserRole.EKSTERN.name.lowercase())
-        )
-    }
 
     private fun AuthContextHolder.hentInnloggingsnivå(): String {
         return idTokenClaims.flatMap { getStringClaim(it, "acr") }

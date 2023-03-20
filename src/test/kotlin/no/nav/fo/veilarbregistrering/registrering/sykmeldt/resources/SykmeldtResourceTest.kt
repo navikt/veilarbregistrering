@@ -60,7 +60,7 @@ class SykmeldtResourceTest(
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
         sykmeldtResource.registrerSykmeldt(sykmeldtRegistrering)
-        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any(), any()) }
     }
 
     @Test

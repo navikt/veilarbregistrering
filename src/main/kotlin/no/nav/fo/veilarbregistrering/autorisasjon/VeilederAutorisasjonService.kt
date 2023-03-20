@@ -22,12 +22,18 @@ open class VeilederAutorisasjonService(
     private val metricsService: MetricsService
 ) : AutorisasjonService {
 
-    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding) {
+    override fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String) {
         throw AutorisasjonValideringException("Kan ikke utføre ${ActionId.READ} på nivå 3 for veileder")
     }
     override fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.READ, fnr)
+    override fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for veileder er ikke støttet")
+    }
 
     override fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer) = sjekkTilgang(ActionId.WRITE, fnr)
+    override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
+        throw AutorisasjonValideringException("Tilgangskontroll uten ABAC for veileder er ikke støttet")
+    }
 
     private fun sjekkTilgang(handling: ActionId, foedselsnummer: Foedselsnummer) {
         if (rolle() != UserRole.INTERN) throw AutorisasjonValideringException("Kan ikke utføre $handling for veileder med rolle ${rolle()}")

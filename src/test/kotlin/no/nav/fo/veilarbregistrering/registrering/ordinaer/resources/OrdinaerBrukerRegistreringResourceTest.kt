@@ -90,7 +90,7 @@ class OrdinaerBrukerRegistreringResourceTest(
             )
         } returns ordinaerBrukerRegistrering
         ordinaerBrukerRegistreringResource.registrerBruker(ordinaerBrukerRegistrering)
-        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any<Foedselsnummer>()) }
+        verify(exactly = 1) { tilgangskontrollService.sjekkSkrivetilgangTilBruker(any(), any()) }
     }
 
     companion object {

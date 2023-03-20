@@ -2,7 +2,6 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources
 
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.ArbeidssokerService
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.Arbeidssokerperiode
-import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -27,8 +26,7 @@ class ArbeidssokerResource(
         @RequestParam(value = "tilOgMed", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") tilOgMed: LocalDate?
     ): ArbeidssokerperioderDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker,
-            CefMelding("Personbruker med fødselsnummer=${bruker.gjeldendeFoedselsnummer.foedselsnummer} leser egne arbeidssøkerperioder", bruker.gjeldendeFoedselsnummer))
+        tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "arbeidssøkerperioder")
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -40,7 +38,7 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i request param - deprecated metode")
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "arbeidssøkerperioder")
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 
@@ -52,7 +50,7 @@ class ArbeidssokerResource(
     ): ArbeidssokerperioderDto {
         logger.info("hentArbeidssokerperioder med fnr i body")
         val bruker = if (fnr != null) userService.finnBrukerGjennomPdl(Foedselsnummer(fnr.fnr)) else userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "arbeidssøkerperioder")
         return hentArbeidssokerperioder(bruker, fraOgMed, tilOgMed)
     }
 

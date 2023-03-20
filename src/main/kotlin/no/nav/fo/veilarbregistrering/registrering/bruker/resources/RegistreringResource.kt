@@ -22,7 +22,7 @@ class RegistreringResource(
     @GetMapping("/startregistrering")
     override fun hentStartRegistreringStatus(@RequestHeader("Nav-Consumer-Id") consumerId: String): StartRegistreringStatusDto {
         val bruker = userService.finnBrukerGjennomPdl()
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "start registrering")
 
         return startRegistreringStatusService.hentStartRegistreringStatus(bruker, consumerId)
     }
@@ -31,7 +31,7 @@ class RegistreringResource(
     override fun hentRegistrering(): ResponseEntity<BrukerRegistreringWrapper> {
         val bruker = userService.finnBrukerGjennomPdl()
 
-        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker.gjeldendeFoedselsnummer)
+        tilgangskontrollService.sjekkLesetilgangTilBruker(bruker, "registreringer")
 
         return hentRegistreringService.hentBrukerregistrering(bruker)?.let {
             ResponseEntity.ok(it)

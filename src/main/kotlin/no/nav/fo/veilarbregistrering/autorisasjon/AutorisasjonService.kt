@@ -5,9 +5,11 @@ import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 
 interface AutorisasjonService {
 
-    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, cefMelding: CefMelding)
+    fun sjekkLesetilgangTilBrukerMedNivå3(bruker: Bruker, kontekst: String)
     fun sjekkLesetilgangTilBruker(fnr: Foedselsnummer)
+    fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String)
     fun sjekkSkrivetilgangTilBruker(fnr: Foedselsnummer)
+    fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String)
 
     fun sjekkSkrivetilgangTilBrukerForSystembruker(fnr: Foedselsnummer, cefMelding: CefMelding)
 
