@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.kafka
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.log.CallId.correlationIdAsBytes
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEventV2
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
 internal class ArbeidssokerRegistrertKafkaProducerV2(
-    private val producer: KafkaProducer<String, ArbeidssokerRegistrertInternalEventV2>,
+    private val producer: KafkaProducer<String, String>,
     private val topic: String
 ) : ArbeidssokerRegistrertProducerV2 {
 
@@ -23,10 +24,11 @@ internal class ArbeidssokerRegistrertKafkaProducerV2(
             val record = ProducerRecord(
                 topic,
                 event.aktorId.aktorId,
-                event
+                jacksonObjectMapper().writeValueAsString(event)
             )
             record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, correlationIdAsBytes))
             val resultat = AtomicBoolean(false)
+
             producer.send(
                 record
             ) { recordMetadata: RecordMetadata?, e: Exception? ->

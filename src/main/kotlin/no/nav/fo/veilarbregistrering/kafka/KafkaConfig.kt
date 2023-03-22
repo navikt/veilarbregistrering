@@ -40,7 +40,7 @@ class KafkaConfig {
     }
 
     @Bean
-    fun arbeidssokerRegistrertKafkaProducerV2Aiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerRegistrertInternalEventV2>): ArbeidssokerRegistrertProducerV2 {
+    fun arbeidssokerRegistrertKafkaProducerV2Aiven(kafkaProducerAiven: KafkaProducer<String, String>): ArbeidssokerRegistrertProducerV2 {
         return ArbeidssokerRegistrertKafkaProducerV2(kafkaProducerAiven, "paw.arbeidssoker-registrert-v2")
     }
 
