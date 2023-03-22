@@ -54,7 +54,9 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringSer
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBrukerRegistreringResource
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducerV2
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.resources.ReaktiveringResource
@@ -354,6 +356,7 @@ class ServiceBeansConfig {
         profileringRepository: ProfileringRepository,
         brukerRegistreringRepository: BrukerRegistreringRepository,
         registrertProducer: ArbeidssokerRegistrertProducer,
+        registrertProducerV2: ArbeidssokerRegistrertProducerV2,
         registreringTilstandRepository: RegistreringTilstandRepository,
         profilertProducer: ArbeidssokerProfilertProducer,
         metricsService: MetricsService
@@ -362,6 +365,7 @@ class ServiceBeansConfig {
             profileringRepository,
             brukerRegistreringRepository,
             registrertProducer,
+            registrertProducerV2,
             registreringTilstandRepository,
             profilertProducer,
             metricsService

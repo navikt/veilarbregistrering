@@ -15,7 +15,10 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.Arbeidssoker
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeKafkaConsumer
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka.MeldekortKafkaConsumer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEventV2
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducerV2
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -34,6 +37,11 @@ class KafkaConfig {
     @Bean
     fun arbeidssokerRegistrertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerRegistrertEvent>): ArbeidssokerRegistrertProducer {
         return ArbeidssokerRegistrertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-registrert-v1")
+    }
+
+    @Bean
+    fun arbeidssokerRegistrertKafkaProducerV2Aiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerRegistrertInternalEventV2>): ArbeidssokerRegistrertProducerV2 {
+        return ArbeidssokerRegistrertKafkaProducerV2(kafkaProducerAiven, "paw.arbeidssoker-registrert-v2")
     }
 
     @Bean
