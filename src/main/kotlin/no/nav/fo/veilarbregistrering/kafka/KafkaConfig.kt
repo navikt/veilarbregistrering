@@ -14,8 +14,8 @@ import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.Arbeidssoker
 import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeKafkaConsumer
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka.MeldekortKafkaConsumer
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
-import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEventV2
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
 import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducerV2

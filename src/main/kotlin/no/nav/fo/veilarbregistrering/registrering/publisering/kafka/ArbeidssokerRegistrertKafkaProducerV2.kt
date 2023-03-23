@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.kafka
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.common.log.MDCConstants
+import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.log.CallId.correlationIdAsBytes
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertInternalEventV2
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
@@ -24,7 +26,7 @@ internal class ArbeidssokerRegistrertKafkaProducerV2(
             val record = ProducerRecord(
                 topic,
                 event.aktorId.aktorId,
-                jacksonObjectMapper().writeValueAsString(event)
+                objectMapper.writeValueAsString(event)
             )
             record.headers().add(RecordHeader(MDCConstants.MDC_CALL_ID, correlationIdAsBytes))
             val resultat = AtomicBoolean(false)
@@ -42,7 +44,7 @@ internal class ArbeidssokerRegistrertKafkaProducerV2(
             }.get()
             resultat.get()
         } catch (e: Exception) {
-            LOG.error("Sending av arbeidssokerRegistrertEvent til Kafka feilet", e)
+            LOG.error("Sending av arbeidssokerRegistrertEventV2 til Kafka feilet", e)
             false
         }
     }
