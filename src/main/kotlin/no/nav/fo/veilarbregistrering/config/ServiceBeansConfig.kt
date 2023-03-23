@@ -8,6 +8,7 @@ import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ReparerArenaDataScheduler
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
@@ -438,5 +439,13 @@ class ServiceBeansConfig {
         userService: UserService
     ): ArbeidssokerperiodeService {
         return ArbeidssokerperiodeService(arbeidssokerperiodeRepository, userService)
+    }
+
+    @Bean
+    fun reparerArenaDataScheduler(
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
+        arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository
+    ): ReparerArenaDataScheduler {
+        return ReparerArenaDataScheduler(formidlingsgruppeRepository, arbeidssokerperiodeRepository)
     }
 }
