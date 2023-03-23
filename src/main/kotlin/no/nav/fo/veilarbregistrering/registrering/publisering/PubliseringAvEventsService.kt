@@ -50,11 +50,15 @@ class PubliseringAvEventsService(
         )
 
         val arbeidssokerRegistrertInternalEventV2 = ArbeidssokerRegistrertInternalEventV2(
+            bruker.gjeldendeFoedselsnummer,
             bruker.aktorId,
             ordinaerBrukerRegistrering.besvarelse,
             ordinaerBrukerRegistrering.opprettetDato
         )
+
+        // Publiserer hendelse når arbeidssøker har registrert seg med hele besvarelsen
         registrertProducerV2.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEventV2)
+
         if (registrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
             registreringTilstandRepository.oppdater(oppdatertRegistreringTilstand)
