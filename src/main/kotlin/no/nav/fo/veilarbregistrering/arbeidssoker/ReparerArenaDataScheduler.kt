@@ -18,16 +18,21 @@ class ReparerArenaDataScheduler(
             return
         }
 
+        logger.info("Starter jobb for å reparere arbeidssøkerperioder basert på Arena-data")
         val personerMedInaktivDato = lesArenaData()
         personerMedInaktivDato.forEach {
             val foedselsnummer = formidlingsgruppeRepository.hentFoedselsnummerForPersonId(it.key)
 
-            if (foedselsnummer == null) {
+            if (foedselsnummer.isEmpty()) {
                 logger.warn("Fant ikke fødselsnummer for personId ${it.key} - går videre til neste person")
                 return@forEach
             }
 
-            val aktivPeriode = arbeidssokerperiodeRepository.hentPerioder(foedselsnummer)
+            if (foedselsnummer.size > 1) {
+                logger.warn("Fant flere fødselsnumre for personId ${it.key} - velger første treff")
+            }
+
+            val aktivPeriode = arbeidssokerperiodeRepository.hentPerioder(foedselsnummer.first())
                 .find { periode -> periode.til == null }
 
             if (aktivPeriode == null) {
@@ -36,7 +41,7 @@ class ReparerArenaDataScheduler(
             }
 
             if (aktivPeriode.fra.toLocalDate().isBefore(it.value)) {
-                arbeidssokerperiodeRepository.avsluttPeriode(foedselsnummer, it.value.atTime(23, 59, 59))
+                arbeidssokerperiodeRepository.avsluttPeriode(foedselsnummer.first(), it.value.atTime(23, 59, 59))
             }
         }
 

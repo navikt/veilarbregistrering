@@ -88,11 +88,11 @@ class FormidlingsgruppeRepositoryImpl(private val db: NamedParameterJdbcTemplate
         return db.query(sql) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
     }
 
-    override fun hentFoedselsnummerForPersonId(personId: String): Foedselsnummer? {
+    override fun hentFoedselsnummerForPersonId(personId: String): List<Foedselsnummer> {
         val sql = "SELECT $FOEDSELSNUMMER FROM $FORMIDLINGSGRUPPE WHERE $PERSON_ID = :personId"
         val params = mapOf("personId" to personId)
 
-        return db.queryForObject(sql, params) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
+        return db.query(sql, params) { rs, _ -> Foedselsnummer(rs.getString(FOEDSELSNUMMER)) }
     }
 
     companion object {

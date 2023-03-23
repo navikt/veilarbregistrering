@@ -6,5 +6,5 @@ interface FormidlingsgruppeRepository {
     fun lagre(event: FormidlingsgruppeEndretEvent): Long
     fun finnFormidlingsgruppeEndretEventFor(foedselsnummerList: List<Foedselsnummer>): List<FormidlingsgruppeEndretEvent>
     fun hentDistinkteFnrForArbeidssokere(): List<Foedselsnummer>
-    fun hentFoedselsnummerForPersonId(personId: String): Foedselsnummer?
+    fun hentFoedselsnummerForPersonId(personId: String): List<Foedselsnummer>
 }

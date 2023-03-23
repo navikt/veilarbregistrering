@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -78,6 +79,12 @@ class FormidlingsgruppeRepositoryDbIntegrationTest(
 
         val distinkteFnr = formidlingsgruppeRepository.hentDistinkteFnrForArbeidssokere()
         assertEquals(3, distinkteFnr.size)
+    }
+
+    @Test
+    fun `skal returnere tom liste når fnr ikke finnes for personId`() {
+        val fnr = formidlingsgruppeRepository.hentFoedselsnummerForPersonId("123")
+        assertTrue(fnr.isEmpty())
     }
 
     private fun endretFormdlingsgruppe(foedselsnummer: Foedselsnummer, tidspunkt: LocalDateTime): FormidlingsgruppeEndretEvent {
