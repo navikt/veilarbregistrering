@@ -12,7 +12,7 @@ class ReparerArenaDataScheduler(
     private val leaderElectionClient: LeaderElectionClient
 ) {
 
-    @Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
+    //@Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
     fun avsluttPeriodeBasertPåArenaUttrekk() {
         if (!leaderElectionClient.isLeader) {
             return
