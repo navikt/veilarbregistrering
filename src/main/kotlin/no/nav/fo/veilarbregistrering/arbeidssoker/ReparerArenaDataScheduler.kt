@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.scheduling.annotation.Scheduled
@@ -7,11 +8,16 @@ import java.time.LocalDate
 
 class ReparerArenaDataScheduler(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
-    private val arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository
+    private val arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
+    private val leaderElectionClient: LeaderElectionClient
 ) {
 
     @Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
     fun avsluttPeriodeBasertPåArenaUttrekk() {
+        if (!leaderElectionClient.isLeader) {
+            return
+        }
+
         val personerMedInaktivDato = lesArenaData()
         personerMedInaktivDato.forEach {
             val foedselsnummer = formidlingsgruppeRepository.hentFoedselsnummerForPersonId(it.key)
