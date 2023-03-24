@@ -446,8 +446,9 @@ class ServiceBeansConfig {
     fun reparerArenaDataScheduler(
         formidlingsgruppeRepository: FormidlingsgruppeRepository,
         arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
+        pdlOppslagGateway: PdlOppslagGateway,
         leaderElectionClient: LeaderElectionClient
     ): ReparerArenaDataScheduler {
-        return ReparerArenaDataScheduler(formidlingsgruppeRepository, arbeidssokerperiodeRepository, leaderElectionClient)
+        return ReparerArenaDataScheduler(formidlingsgruppeRepository, arbeidssokerperiodeRepository, pdlOppslagGateway, leaderElectionClient)
     }
 }

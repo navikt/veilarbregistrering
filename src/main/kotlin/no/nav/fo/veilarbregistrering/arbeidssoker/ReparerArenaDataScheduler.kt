@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker
 
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
 import no.nav.fo.veilarbregistrering.log.logger
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDate
@@ -9,10 +10,11 @@ import java.time.LocalDate
 class ReparerArenaDataScheduler(
     private val formidlingsgruppeRepository: FormidlingsgruppeRepository,
     private val arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
+    private val pdlOppslagGateway: PdlOppslagGateway,
     private val leaderElectionClient: LeaderElectionClient
 ) {
 
-    //@Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 180000, fixedDelay = Long.MAX_VALUE)
     fun avsluttPeriodeBasertPåArenaUttrekk() {
         if (!leaderElectionClient.isLeader) {
             return
@@ -28,20 +30,30 @@ class ReparerArenaDataScheduler(
                 return@forEach
             }
 
-            if (foedselsnummer.size > 1) {
-                logger.warn("Fant flere fødselsnumre for personId ${it.key} - velger første treff")
+            if (foedselsnummer.distinct().size > 1) {
+                logger.warn("Fant flere ulike fødselsnumre for personId ${it.key} - velger første treff")
             }
 
-            val aktivPeriode = arbeidssokerperiodeRepository.hentPerioder(foedselsnummer.first())
-                .find { periode -> periode.til == null }
+            val perioder = arbeidssokerperiodeRepository.hentPerioder(foedselsnummer.first())
+                .ifEmpty {
+                    logger.info("Fant ingen perioder for person med personId ${it.key} - henter alle fnr i PDL")
+                    val alleFnr = pdlOppslagGateway.hentIdenter(foedselsnummer.first(), true)
+                    arbeidssokerperiodeRepository.hentPerioder(
+                        alleFnr.finnGjeldendeFnr(),
+                        alleFnr.finnHistoriskeFoedselsnummer()
+                    )
+                }
+
+            val aktivPeriode = perioder.find { periode -> periode.til == null }
 
             if (aktivPeriode == null) {
-                logger.warn("Fant ikke aktiv periode for personId ${it.key} - går videre til neste person")
+                logger.info("Fant ikke aktiv periode for personId ${it.key} - går videre til neste person")
                 return@forEach
             }
 
             if (aktivPeriode.fra.toLocalDate().isBefore(it.value)) {
-                arbeidssokerperiodeRepository.avsluttPeriode(foedselsnummer.first(), it.value.atTime(23, 59, 59))
+                logger.info("Avslutter periode for personid ${it.key}")
+                arbeidssokerperiodeRepository.avsluttPeriode(aktivPeriode.foedselsnummer, it.value.atTime(23, 59, 59))
             }
         }
 
