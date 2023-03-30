@@ -45,13 +45,6 @@ internal class ArbeidssokerperiodeServiceTest {
     }
 
     @Test
-    fun `gjør ingenting hvis ikke formidlingsgruppe er ISERV eller IARBS`() {
-        every { repository.avsluttPeriode(any<Int>(), any()) } just Runs
-        service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent = formidlingsgruppeEndret(LocalDateTime.now(), formidlingsgruppe = "ARBS"))
-        verify(exactly = 0) { repository.avsluttPeriode(any<Int>(), any()) }
-    }
-
-    @Test
     fun `gjør ingenting hvis ikke bruker har en aktiv periode` () {
         every { userService.finnBrukerGjennomPdlForSystemkontekst(any()) } returns
                 Bruker(Foedselsnummer("12345678910"), AktorId("1234"), emptyList())
@@ -74,6 +67,31 @@ internal class ArbeidssokerperiodeServiceTest {
         service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent = formidlingsgruppeEndret(LocalDateTime.now(), formidlingsgruppe = "ISERV"))
 
         verify(exactly = 1) { repository.avsluttPeriode(any<Int>(), any()) }
+    }
+
+    @Test
+    fun `skal starte periode for ARBS-formidlingsgruppe når vi ikke har registrering`() {
+        every { userService.finnBrukerGjennomPdlForSystemkontekst(any()) } returns
+                Bruker(Foedselsnummer("12345678910"), AktorId("1234"), emptyList())
+        every { repository.startPeriode(any(), any()) } just Runs
+        every { repository.hentPerioder(Foedselsnummer("12345678910"), any()) } returns emptyList()
+
+        service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndret(LocalDateTime.now()))
+
+        verify(exactly = 1) { repository.startPeriode(any(), any()) }
+    }
+
+    @Test
+    fun `skal ikke starte periode for ARBS-formidlingsgruppe når vi har registrering`() {
+        every { userService.finnBrukerGjennomPdlForSystemkontekst(any()) } returns
+                Bruker(Foedselsnummer("12345678910"), AktorId("1234"), emptyList())
+        every { repository.startPeriode(any(), any()) } just Runs
+        every { repository.hentPerioder(Foedselsnummer("12345678910"), any()) } returns
+                listOf(ArbeidssokerperiodeDto(1, Foedselsnummer("12345678910"), LocalDateTime.now()))
+
+        service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndret(LocalDateTime.now()))
+
+        verify(exactly = 0) { repository.startPeriode(any(), any()) }
     }
 
 }

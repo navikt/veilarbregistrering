@@ -21,19 +21,23 @@ class ArbeidssokerperiodeService(
     }
 
     fun behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
-        if (formidlingsgruppeEndretEvent.erArbeidssoker()) {
-            return
-        }
-
         val bruker = userService.finnBrukerGjennomPdlForSystemkontekst(formidlingsgruppeEndretEvent.foedselsnummer)
-        val aktivPeriode = hentAktivPeriode(bruker) ?: return
 
-        if (aktivPeriode.foedselsnummer != bruker.gjeldendeFoedselsnummer) {
-            // TODO skal vi i dette tilfellet oppdatere fødselsnummeret på perioden?
-            logger.warn("Avslutter periode for person som har et annet gjeldende fødselsnummer enn den aktive perioden")
+        if (formidlingsgruppeEndretEvent.erArbeidssoker()) {
+            if (harAktivPeriode(bruker)) return
+
+            logger.warn("Mottok ARBS-formidlingsgruppe fra Arena for person som ikke har startet periode via registrering. Starter periode")
+            repository.startPeriode(bruker.gjeldendeFoedselsnummer, LocalDateTime.now())
+        } else {
+            val aktivPeriode = hentAktivPeriode(bruker) ?: return
+
+            if (aktivPeriode.foedselsnummer != bruker.gjeldendeFoedselsnummer) {
+                // TODO skal vi i dette tilfellet oppdatere fødselsnummeret på perioden?
+                logger.warn("Avslutter periode for person som har et annet gjeldende fødselsnummer enn den aktive perioden")
+            }
+
+            repository.avsluttPeriode(id = aktivPeriode.id, LocalDateTime.now())
         }
-
-        repository.avsluttPeriode(id = aktivPeriode.id, LocalDateTime.now())
     }
 
     fun hentPerioder(bruker: Bruker): List<Periode> {
