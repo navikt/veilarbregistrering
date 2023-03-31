@@ -3,11 +3,13 @@ package no.nav.fo.veilarbregistrering.config
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
+import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
 import no.nav.fo.veilarbregistrering.arbeidsforhold.ArbeidsforholdGateway
 import no.nav.fo.veilarbregistrering.arbeidsforhold.resources.ArbeidsforholdResource
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
+import no.nav.fo.veilarbregistrering.arbeidssoker.ReparerArenaDataScheduler
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeRepository
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
@@ -441,5 +443,15 @@ class ServiceBeansConfig {
         userService: UserService
     ): ArbeidssokerperiodeService {
         return ArbeidssokerperiodeService(arbeidssokerperiodeRepository, userService)
+    }
+
+    @Bean
+    fun reparerArenaDataScheduler(
+        formidlingsgruppeRepository: FormidlingsgruppeRepository,
+        arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
+        pdlOppslagGateway: PdlOppslagGateway,
+        leaderElectionClient: LeaderElectionClient
+    ): ReparerArenaDataScheduler {
+        return ReparerArenaDataScheduler(formidlingsgruppeRepository, arbeidssokerperiodeRepository, pdlOppslagGateway, leaderElectionClient)
     }
 }

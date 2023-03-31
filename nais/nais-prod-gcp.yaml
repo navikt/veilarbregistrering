@@ -110,7 +110,6 @@ spec:
           cluster: prod-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
-          cluster: prod-fss
         - application: dp-oppslag-arbeidssoker
           namespace: teamdagpenger
         - application: dp-dagpenger
