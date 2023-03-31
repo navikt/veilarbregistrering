@@ -64,7 +64,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod-gcp
-    needs: [test-build-and-push, deploy-dev]
+    needs: test-build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
