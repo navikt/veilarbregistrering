@@ -119,6 +119,8 @@ spec:
         - application: familie-ef-sak
           namespace: teamfamilie
     outbound:
+      external:
+        - host: pdl-api.prod-fss-pub.nais.io
       rules:
         - application: aareg-services-nais
           namespace: arbeidsforhold
