@@ -1,7 +1,5 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.kafka
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.log.CallId.correlationIdAsBytes
