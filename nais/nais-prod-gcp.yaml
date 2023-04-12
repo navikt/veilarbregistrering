@@ -121,6 +121,14 @@ spec:
     outbound:
       external:
         - host: pdl-api.prod-fss-pub.nais.io
+        - host: aareg-services.prod-fss-pub.nais.io
+        - host: veilarboppfolging.prod-fss-pub.nais.io
+        - host: veilarbarena.prod-fss-pub.nais.io
+        - host: paw-proxy.prod-fss-pub.nais.io
+        - host: abac-veilarb-proxy.prod-fss-pub.nais.io
+        - host: norg2.prod-fss-pub.nais.io
+        - host: oppgave.prod-fss-pub.nais.io
+        - host: ereg-services.prod-fss-pub.nais.io
       rules:
         - application: aareg-services-nais
           namespace: arbeidsforhold
