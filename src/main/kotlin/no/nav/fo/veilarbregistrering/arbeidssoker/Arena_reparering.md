@@ -9,7 +9,7 @@ data, oppdaget vi at en del personer hadde startet en arbeidssøkerperiode helt 
 Det vil si at de har stått oppført som arbeidssøker kontinuerlig i 22 år i følge formidlingsgruppene vi har fått fra Arena. 
 Dette stusset vi på, og vi stilte et spørsmål til Arena med noen stikkprøver. Se relevant Slack-tråd
 [her](https://nav-it.slack.com/archives/CC9GYTA2C/p1677755329600699). Da viste det seg at disse personene ikke er
-arbeidssøkere i Arena. Denne feilen skyldes at vi ikke har fått alle formidlingsgrupper fra Arena. 
+arbeidssøkere i Arena. Denne feilen skyldes at historikken på formidlingsgrupper som vi har mottatt fra Arena ikke er komplett. 
 
 ### Mer detaljert informasjon for spesielt interesserte
 Vi får formidlingsgrupper fra Arena på et kafka-topic. Dette topicet er basert på tabellen `HIST_PERSON`, som er en tabell
@@ -17,6 +17,7 @@ med historikk over alle formidlingsgrupper en person har hatt i Arena. Denne tab
 endringer i formidlingsgruppe, slik at nåværende formidlingsgruppe ikke gjenspeiles i historikken og dermed heller ikke har blitt
 oversendt til oss. Det er noe uklart for meg hvorfor dette har skjedd, men jeg legger ved et sitat fra slack-diskusjonen som er lenket
 over: 
+
 "historikk-tabellen som blant annet skal inneholde alle formidlingsgrupper en person har og har hatt, viser seg å ikke være
 komplett for noen personer. Det er heller ikke innslag om at personene har blitt inaktivert (skal ligge i personloggen),
 så jeg mistenker at det har vært en glipp i funksjonalitet en eller annen gang tilbake i tid, eller noe script-oppdateringer
@@ -46,13 +47,13 @@ WHERE formidlingsgruppe.formidlingsgruppe = 'ARBS' AND person_id_status = 'AKTIV
 
 Dette gir, per 31.03.2023, 14281 treff. Det er sannsynlig at en stor andel av disse personene har startet en
 arbeidssøkerperiode nylig, og at det dermed er riktig at vi kun har mottatt én formidlingsgruppe fra Arena, som er ARBS. 
-Likevel vurderte vi at det beste var å sjekke alle 14281 selv om en del er "falske positive", fordi vi ikke vet hvor
-lenge feilen varte i Arena og ikke hadde eksakte tall fra Arena på hvilke personer som er truffet. 
+Likevel vurderte vi at det vil være best å sjekke alle 14281 selv om en del er "falske positive", fordi vi ikke vet hvor
+lenge feilen varte i Arena og ikke har eksakte tall/informasjon fra Arena på hvilke personer som er truffet. 
 
 ## Løsning
 
 Vi trenger å finne korrekt formidlingsgruppe i Arena for disse personene, slik at vi kan avslutte arbeidssøkerperiode for
-de som ikke lenger er arbeidssøkere i Arena. Arena har tilbudt seg å rette opp i feilen på sin side og lage et nytt initielt
+de som ikke lenger har formidlingsgruppe ARBS i Arena. Arena har tilbudt seg å rette opp i feilen på sin side og lage et nytt initielt
 uttrekk for formidlingsgruppe på Kafka. Dette vil imidlertid ta veldig lang tid, og vi må da bygge opp alle arbeidssøkerperioder
 på nytt. Vi har nå rundt 5 millioner arbeidssøkerperioder i vårt register, og denne feilen treffer sannsynligvis under 10 000
 av dem. Derfor vurderte vi at det er bedre å finne riktig status på de som er truffet av feilen "manuelt", fordi dette tar
@@ -70,12 +71,30 @@ inaktivering for disse. Dette var totalt 5153 personer. Vi fant ingen personer m
 Av de 14281 personene, fant vi også 313 personer som har ISERV-status i Person-tabellen, men ingen dato for når de sist ble
 inaktivert. Dette viser seg å være en annen feil i Arena. For disse resterende personene, leita vi i tabellen `LOGGLINJE`
 for å finne ut når personene ble inaktivert. Logglinje er en logg over alle hendelser på en person, og det er 11 ulike 
-hendelsestyper som omhandler inaktivering: MANIKAK, MSKINAK, MKINAKT, BESINAK, FRINAKT, INAKAEV, INAKINF, INAKT, INAKTSF, SBLINAK, SPERINA
-I vår datafortelling om inaktivering bruker vi kun de to første for å identifisere inaktivering (maskinell- og manuell inaktivering),
-så vi valgte å gjøre det samme her i frykt for at de andre er duplikater av disse. (Har for øvrig spurt Arena om en
-forklaring på hvilke av disse statusene vi bør bruke uten å få svar). I logglinje-tabellen fant vi spor av 33 inaktiveringer
-for 10 personer, men alle disse personene hadde vi i mellomtiden mottatt formidlingsgruppe for og allerede avsluttet
-arbeidssøkerperioden. 
+hendelsestyper som omhandler inaktivering:
+
+| Hendelsetypekode | Beskrivelse                             |
+| ------- |--------------------------------------------------|
+| MANINAK | Inaktivert manuelt                               |
+| MKINAKT | Inaktivert fra meldekort                         |
+| MSKINAK | Inaktivert maskinelt                             |
+| FRINAKT | Person inaktiv etter info fra Folkeregisteret    |
+| INAKAEV | Person inaktivert, ikke grunnlag for vurdering   |
+| INAKINF | Person inaktivert, opphør sykepenger i Infotrygd |
+| INAKT   | Person inaktivert                                |
+| INAKTSF | Person inaktivert, sykefraværstilfelle avsluttet |
+| SBLINAK | Person inaktiv fra nav.no                        |
+| SPERINA | Person inaktivert                                |
+| BESINAK | Planlagt inaktivert                              |
+
+I vår datafortelling om inaktivering bruker vi kun MANINAK og MSKINAK for å identifisere inaktivering,
+så vi valgte i første omgang å gjøre det samme her i frykt for at de andre ikke faktisk trigger en endring til ISERV.
+I logglinje-tabellen fant vi spor av 33 inaktiveringer for 10 personer, men alle disse personene hadde vi i mellomtiden 
+mottatt formidlingsgruppe for og allerede avsluttet arbeidssøkerperioden. 
+
+I ettertid av fiksen har vi fått informasjon fra Arena om at alle hendelsetypene over bortsett fra BESINAK (Planlagt 
+inaktivert) vil trigge en inaktivering som fører til at personen får formidlingsgruppe ISERV. Dermed kan vi søke etter de
+resterende 8 hendelsetypene i logglinje-tabellen og se om vi finner flere vi kan reparere, men dette har ikke blitt gjort enda. 
 
 ## Tall på personer som har fått fikset sin arbeidssøkerperiode
 
@@ -120,7 +139,7 @@ i dag, og de resterende 313 har vi ikke klart å finne inaktiveringsdato for sel
 sendes til Arena slik at de kan finne riktig data, mens personene med ARBS bør vi ta en vurdering på om vi skal forsøke 
 å fikse. Under er en fordeling på hvilket år disse personene ble arbeidssøker:
 
-| Årstall til_og_med | Antall |
+| Årstall  | Antall |
 |--------------------|--------|
 | 2001               | 8      |
 | 2002               | 3      |
@@ -146,3 +165,13 @@ sendes til Arena slik at de kan finne riktig data, mens personene med ARBS bør 
 | 2022               | 3452   |
 | 2023               | 232    |
 
+(Den observante leser vil se at dette summerer til 8632 personer, ikke 8815. Dette er fordi jeg måtte gjøre et nytt uttrekk
+for å klare å hente disse tallene, og da var totalbeholdningen som bare har én formidlingsgruppe mindre enn ved første uttrekk).
+
+## Videre arbeid
+
+Det er noen ting jeg tenker vi bør gjøre videre:
+- Av de 313 personene som har ISERV i dag som vi ikke har funnet dato for, bør vi sjekke logglinje-tabellen med de resterende hendelsestypene for inaktivering
+- De personene som har ISERV som vi ikke har avsluttet periode for, bør sendes til Arena-teamet som bør kunne gi riktig dato
+- Vi bør vurdere om vi skal se om det finnes feil blant personene som har ARBS i dag. Her kan vi enten sende alle til en sjekk hos Arena,
+eller sette en cutoff i tid for å luke ut falske positive, feks at vi sender alle som har startet en arbeidssøkerperiode før 2021.
