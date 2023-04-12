@@ -125,7 +125,7 @@ Antall fordelt på år:
 | 2008               | 2               |
 
 Disse resultatene kan reproduseres med følgende spørring:
-```psql
+```sql
 SELECT date_trunc('year', til_og_med) as år, count(*) as antall_rader
 FROM arbeidssokerperiode
 where endret between '2023-03-23' and '2023-03-24' and til_og_med < '2023-03-23'::timestamp
