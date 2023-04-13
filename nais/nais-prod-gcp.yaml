@@ -55,7 +55,7 @@ spec:
     - name: OPPGAVE_CLUSTER
       value: prod-fss
     - name: DIGDIR_KRR_PROXY_BASE_URL
-      value: https://digdir-krr-proxy.intern.nav.no/rest/
+      value: http://digdir-krr-proxy.team-rocket/rest/
     - name: DIGDIR_KRR_CLUSTER
       value: prod-gcp
     - name: PDL_URL
@@ -121,6 +121,14 @@ spec:
     outbound:
       external:
         - host: pdl-api.prod-fss-pub.nais.io
+        - host: aareg-services.prod-fss-pub.nais.io
+        - host: veilarboppfolging.prod-fss-pub.nais.io
+        - host: veilarbarena.prod-fss-pub.nais.io
+        - host: paw-proxy.prod-fss-pub.nais.io
+        - host: abac-veilarb-proxy.prod-fss-pub.nais.io
+        - host: norg2.prod-fss-pub.nais.io
+        - host: oppgave.prod-fss-pub.nais.io
+        - host: ereg-services.prod-fss-pub.nais.io
       rules:
         - application: aareg-services-nais
           namespace: arbeidsforhold
