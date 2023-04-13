@@ -55,7 +55,7 @@ spec:
     - name: OPPGAVE_CLUSTER
       value: prod-fss
     - name: DIGDIR_KRR_PROXY_BASE_URL
-      value: https://digdir-krr-proxy.intern.nav.no/rest/
+      value: http://digdir-krr-proxy.team-rocket/rest/
     - name: DIGDIR_KRR_CLUSTER
       value: prod-gcp
     - name: PDL_URL
