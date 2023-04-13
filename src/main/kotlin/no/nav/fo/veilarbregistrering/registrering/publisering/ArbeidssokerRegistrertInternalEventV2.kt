@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 data class ArbeidssokerRegistrertInternalEventV2(
     val foedselsnummer: Foedselsnummer,
     val aktorId: AktorId,
+    val registreringsId: Long,
     val besvarelse: Besvarelse,
     val opprettetDato: LocalDateTime
 )

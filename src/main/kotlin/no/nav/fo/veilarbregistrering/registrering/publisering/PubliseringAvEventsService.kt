@@ -52,6 +52,7 @@ class PubliseringAvEventsService(
         val arbeidssokerRegistrertInternalEventV2 = ArbeidssokerRegistrertInternalEventV2(
             bruker.gjeldendeFoedselsnummer,
             bruker.aktorId,
+            ordinaerBrukerRegistrering.id,
             ordinaerBrukerRegistrering.besvarelse,
             ordinaerBrukerRegistrering.opprettetDato
         )
