@@ -96,6 +96,8 @@ I ettertid av fiksen har vi fått informasjon fra Arena om at alle hendelsetypen
 inaktivert) vil trigge en inaktivering som fører til at personen får formidlingsgruppe ISERV. Dermed kan vi søke etter de
 resterende 8 hendelsetypene i logglinje-tabellen og se om vi finner flere vi kan reparere, men dette har ikke blitt gjort enda. 
 
+Koden for å gjøre disse oppslagene i Arena finnes [her](https://github.com/navikt/paw-sammenstilte-data/tree/b5768944744c7c6a74d86e020bb06e1c336167e0/arena_fiks).
+
 ## Tall på personer som har fått fikset sin arbeidssøkerperiode
 
 Vi har avsluttet arbeidssøkerperiode for totalt 4244 personer. De resterende 909 personene har enten fått avsluttet sin
