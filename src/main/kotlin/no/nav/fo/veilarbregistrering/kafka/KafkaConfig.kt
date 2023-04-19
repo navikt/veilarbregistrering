@@ -8,14 +8,16 @@ import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
-import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
-import no.nav.fo.veilarbregistrering.config.isProduction
-import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerProfilertKafkaProducer
-import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeKafkaConsumer
+import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka.MeldekortKafkaConsumer
+import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerProfilertKafkaProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducer
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducerV2
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -37,6 +39,11 @@ class KafkaConfig {
     }
 
     @Bean
+    fun arbeidssokerRegistrertKafkaProducerV2Aiven(kafkaProducerStringSerializerAiven: KafkaProducer<String, String>): ArbeidssokerRegistrertProducerV2 {
+        return ArbeidssokerRegistrertKafkaProducerV2(kafkaProducerStringSerializerAiven, "paw.arbeidssoker-registrert-v2")
+    }
+
+    @Bean
     fun arbeidssokerProfilertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerProfilertEvent>): ArbeidssokerProfilertProducer {
         return ArbeidssokerProfilertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-profilert-v1")
     }
@@ -44,6 +51,15 @@ class KafkaConfig {
     @Bean
     fun kafkaProducerAiven(): KafkaProducer<*, *> {
         return KafkaProducer<Any?, Any?>(kafkaPropertiesAiven())
+    }
+
+    @Bean
+    fun kafkaProducerStringSerializerAiven(): KafkaProducer<String, String> {
+        return KafkaProducer<String, String>(
+            kafkaPropertiesAiven().apply {
+                this[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
+            }
+        )
     }
 
     @Bean
@@ -83,7 +99,10 @@ class KafkaConfig {
     }
 
     @Bean
-    fun meldekortKafkaConsumer(unleashClient: UnleashClient, meldekortMottakService: MeldekortMottakService): MeldekortKafkaConsumer {
+    fun meldekortKafkaConsumer(
+        unleashClient: UnleashClient,
+        meldekortMottakService: MeldekortMottakService
+    ): MeldekortKafkaConsumer {
         val envSuffix = if (isProduction()) "p" else "q1"
         return MeldekortKafkaConsumer(
             meldekortKafkaConsumerProperties(),

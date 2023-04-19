@@ -2,10 +2,10 @@ package no.nav.fo.veilarbregistrering.registrering.publisering
 
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstand
 import no.nav.fo.veilarbregistrering.registrering.formidling.RegistreringTilstandRepository
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +15,7 @@ class PubliseringAvEventsService(
     private val profileringRepository: ProfileringRepository,
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val registrertProducer: ArbeidssokerRegistrertProducer,
+    private val registrertProducerV2: ArbeidssokerRegistrertProducerV2,
     private val registreringTilstandRepository: RegistreringTilstandRepository,
     private val profilertProducer: ArbeidssokerProfilertProducer,
     private val metricsService: MetricsService
@@ -27,7 +28,8 @@ class PubliseringAvEventsService(
 
         LOG.info(
             "{} registrering klar (status = OVERFORT_ARENA) for publisering",
-            registreringTilstand?.let { "1" } ?: "Ingen")
+            registreringTilstand?.let { "1" } ?: "Ingen"
+        )
 
         if (registreringTilstand == null) {
             return
@@ -46,6 +48,17 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.besvarelse,
             ordinaerBrukerRegistrering.opprettetDato
         )
+
+        val arbeidssokerRegistrertInternalEventV2 = ArbeidssokerRegistrertInternalEventV2(
+            bruker.gjeldendeFoedselsnummer,
+            bruker.aktorId,
+            ordinaerBrukerRegistrering.id,
+            ordinaerBrukerRegistrering.besvarelse,
+            ordinaerBrukerRegistrering.opprettetDato
+        )
+
+        // Publiserer hendelse når arbeidssøker har registrert seg med hele besvarelsen
+        registrertProducerV2.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEventV2)
 
         if (registrertProducer.publiserArbeidssokerRegistrert(arbeidssokerRegistrertInternalEvent)) {
             val oppdatertRegistreringTilstand = registreringTilstand.oppdaterStatus(Status.PUBLISERT_KAFKA)
