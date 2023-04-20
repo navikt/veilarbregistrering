@@ -49,17 +49,6 @@ class ReaktiveringResourceTest(
     }
 
     @Test
-    fun `startreaktivering returnerer riktig status og responsbody`() {
-        every { request.getParameter("fnr") } returns IDENT.stringValue()
-        every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER
-        val responseString = mvc.post("/api/startreaktivering").andExpect {
-            status { isNoContent() }
-        }.andReturn().response.contentAsString
-
-        Assertions.assertThat(responseString).isNullOrEmpty()
-    }
-
-    @Test
     fun `fullfoerreaktivering returnerer riktig status og responsbody`() {
         every { request.getParameter("fnr") } returns IDENT.stringValue()
         every { pdlOppslagGateway.hentIdenter(any<Foedselsnummer>()) } returns IDENTER

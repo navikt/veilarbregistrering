@@ -21,7 +21,7 @@ class OrdinaerBrukerRegistreringResource(
     private val unleashClient: UnleashClient
 ) : OrdinaerBrukerRegistreringApi {
 
-    @PostMapping(path=["/startregistrering", "/fullfoerordinaerregistrering"])
+    @PostMapping("/fullfoerordinaerregistrering")
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
         if (tjenesteErNede()) {
             brukerRegistreringService.registrerAtArenaHarPlanlagtNedetid()

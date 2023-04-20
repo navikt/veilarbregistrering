@@ -19,7 +19,7 @@ class SykmeldtResource(
     private val navVeilederService: NavVeilederService
 ) : SykmeldtApi {
 
-    @PostMapping(path=["/startregistrersykmeldt", "/fullfoersykmeldtregistrering"])
+    @PostMapping("/fullfoersykmeldtregistrering")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun registrerSykmeldt(@RequestBody sykmeldtRegistrering: SykmeldtRegistrering) {
         if (tjenesteErNede()) {
