@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.resources
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortService
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,11 +24,11 @@ class MeldekortResource(
     }
 
     @GetMapping("/meldekort/siste")
-    override fun hentSisteMeldekort(): MeldekortDto? {
+    override fun hentSisteMeldekort(): ResponseEntity<MeldekortDto> {
         val bruker = userService.finnBrukerGjennomPdl()
         tilgangskontrollService.sjekkLesetilgangTilBrukerMedNivå3(bruker, "siste meldekort")
         return meldekortService.hentSisteMeldekort(bruker.gjeldendeFoedselsnummer)?.let {
-            MeldekortDto.map(it)
-        }
+            ResponseEntity.ok(MeldekortDto.map(it))
+        } ?: ResponseEntity.noContent().build()
     }
 }
