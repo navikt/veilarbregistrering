@@ -10,5 +10,10 @@ data class ArbeidssokerRegistrertInternalEventV2(
     val aktorId: AktorId,
     val registreringsId: Long,
     val besvarelse: Besvarelse,
-    val opprettetDato: LocalDateTime
+    val opprettetDato: LocalDateTime,
+    val opprettetAv: OpprettetAv
 )
+
+enum class OpprettetAv {
+    BRUKER, VEILEDER, SYSTEM
+}

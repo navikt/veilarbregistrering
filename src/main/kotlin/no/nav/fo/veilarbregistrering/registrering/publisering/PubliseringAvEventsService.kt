@@ -49,12 +49,14 @@ class PubliseringAvEventsService(
             ordinaerBrukerRegistrering.opprettetDato
         )
 
+
         val arbeidssokerRegistrertInternalEventV2 = ArbeidssokerRegistrertInternalEventV2(
             bruker.gjeldendeFoedselsnummer,
             bruker.aktorId,
             ordinaerBrukerRegistrering.id,
             ordinaerBrukerRegistrering.besvarelse,
-            ordinaerBrukerRegistrering.opprettetDato
+            ordinaerBrukerRegistrering.opprettetDato,
+            ordinaerBrukerRegistrering.opprettetAv()
         )
 
         // Publiserer hendelse når arbeidssøker har registrert seg med hele besvarelsen

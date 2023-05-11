@@ -7,6 +7,7 @@ import no.nav.fo.veilarbregistrering.profilering.Profilering
 import no.nav.fo.veilarbregistrering.registrering.BrukerRegistreringType
 import no.nav.fo.veilarbregistrering.registrering.bruker.BrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
+import no.nav.fo.veilarbregistrering.registrering.publisering.OpprettetAv
 import no.nav.fo.veilarbregistrering.registrering.veileder.Veileder
 import java.time.LocalDateTime
 
@@ -26,6 +27,10 @@ data class OrdinaerBrukerRegistrering(
 
     override fun opprettetTidspunkt(): LocalDateTime {
         return opprettetDato
+    }
+
+    fun opprettetAv(): OpprettetAv {
+        return if (manueltRegistrertAv != null) OpprettetAv.VEILEDER else OpprettetAv.BRUKER
     }
 
     override fun toString(): String {
