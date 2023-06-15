@@ -118,6 +118,8 @@ spec:
           namespace: teamdagpenger
         - application: familie-ef-sak
           namespace: teamfamilie
+        - application: sykmeldtregistrering-frontend
+          namespace: team-esyfo
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
