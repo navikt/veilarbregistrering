@@ -1,15 +1,19 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker
 
+import no.nav.arbeid.soker.periode.ArbeidssokerperiodeEvent
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeEndretEvent
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Periode
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.log.logger
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerperiodeProducer
+import org.joda.time.DateTime
 import java.time.LocalDateTime
 
 class ArbeidssokerperiodeService(
     private val repository: ArbeidssokerperiodeRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
 ) {
 
     fun startPeriode(bruker: Bruker) {
@@ -17,7 +21,17 @@ class ArbeidssokerperiodeService(
             throw IllegalStateException("Bruker har allerede en aktiv periode")
         }
 
-        repository.startPeriode(bruker.gjeldendeFoedselsnummer, LocalDateTime.now())
+        val now = LocalDateTime.now()
+        repository.startPeriode(bruker.gjeldendeFoedselsnummer, now)
+
+        val arbeidssokerperiodeEvent = ArbeidssokerperiodeEvent(
+            bruker.aktorId.aktorId,
+            bruker.gjeldendeFoedselsnummer.foedselsnummer,
+            DateTime.parse(now.toString()),
+            null,
+        )
+
+        arbeidssokerperiodeProducer.publiserArbeidssokerperiode(arbeidssokerperiodeEvent)
     }
 
     fun behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent: FormidlingsgruppeEndretEvent) {
@@ -33,7 +47,17 @@ class ArbeidssokerperiodeService(
             logger.warn("Avslutter periode for person som har et annet gjeldende fødselsnummer enn den aktive perioden")
         }
 
-        repository.avsluttPeriode(id = aktivPeriode.id, LocalDateTime.now())
+        val now = LocalDateTime.now()
+        repository.avsluttPeriode(id = aktivPeriode.id, now)
+
+        val arbeidssokerperiodeEvent = ArbeidssokerperiodeEvent(
+            bruker.aktorId.aktorId,
+            bruker.gjeldendeFoedselsnummer.foedselsnummer,
+            DateTime.parse(aktivPeriode.fra.toString()),
+            DateTime.parse(now.toString()),
+        )
+
+        arbeidssokerperiodeProducer.publiserArbeidssokerperiode(arbeidssokerperiodeEvent)
     }
 
     fun hentPerioder(bruker: Bruker): List<Periode> {

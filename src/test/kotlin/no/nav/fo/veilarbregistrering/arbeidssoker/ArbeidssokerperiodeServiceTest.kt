@@ -6,6 +6,7 @@ import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.bruker.UserService
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerperiodeProducer
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,12 +16,14 @@ internal class ArbeidssokerperiodeServiceTest {
     private lateinit var repository: ArbeidssokerperiodeRepository
     private lateinit var service: ArbeidssokerperiodeService
     private lateinit var userService: UserService
+    private lateinit var arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer
 
     @BeforeEach
-    fun setUp () {
+    fun setUp() {
         repository = mockk()
         userService = mockk()
-        service = ArbeidssokerperiodeService(repository, userService)
+        arbeidssokerperiodeProducer = mockk()
+        service = ArbeidssokerperiodeService(repository, userService, arbeidssokerperiodeProducer)
     }
 
     @Test
@@ -38,6 +41,7 @@ internal class ArbeidssokerperiodeServiceTest {
         val bruker = Bruker(Foedselsnummer("42"), AktorId("1234"), emptyList())
         every { repository.hentPerioder(any(), any()) } returns emptyList()
         every { repository.startPeriode(any(), any()) } just Runs
+        every { arbeidssokerperiodeProducer.publiserArbeidssokerperiode(any()) } returns true
 
         service.startPeriode(bruker)
 
@@ -47,6 +51,8 @@ internal class ArbeidssokerperiodeServiceTest {
     @Test
     fun `gjør ingenting hvis ikke formidlingsgruppe er ISERV eller IARBS`() {
         every { repository.avsluttPeriode(any<Int>(), any()) } just Runs
+        every { arbeidssokerperiodeProducer.publiserArbeidssokerperiode(any()) } returns true
+
         service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent = formidlingsgruppeEndret(LocalDateTime.now(), formidlingsgruppe = "ARBS"))
         verify(exactly = 0) { repository.avsluttPeriode(any<Int>(), any()) }
     }
@@ -70,6 +76,7 @@ internal class ArbeidssokerperiodeServiceTest {
         every { repository.avsluttPeriode(any<Int>(), any()) } just Runs
         every { repository.hentPerioder(Foedselsnummer("12345678910"), any()) } returns
                 listOf(ArbeidssokerperiodeDto(1, Foedselsnummer("12345678910"), LocalDateTime.now()))
+        every { arbeidssokerperiodeProducer.publiserArbeidssokerperiode(any()) } returns true
 
         service.behandleFormidlingsgruppeEvent(formidlingsgruppeEndretEvent = formidlingsgruppeEndret(LocalDateTime.now(), formidlingsgruppe = "ISERV"))
 

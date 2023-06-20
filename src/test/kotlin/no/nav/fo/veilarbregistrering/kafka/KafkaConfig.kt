@@ -4,6 +4,7 @@ import io.mockk.mockk
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerperiodeProducer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -17,4 +18,7 @@ class KafkaConfig {
 
     @Bean
     fun arbeidssokerProfilertKafkaProducer(): ArbeidssokerProfilertProducer = mockk()
+
+    @Bean
+    fun arbeidssokerperiodeKafkaProducer(): ArbeidssokerperiodeProducer = mockk()
 }

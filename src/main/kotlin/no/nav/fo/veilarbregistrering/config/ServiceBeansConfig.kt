@@ -57,6 +57,7 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.resources.OrdinaerBru
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerperiodeProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringRepository
@@ -440,9 +441,10 @@ class ServiceBeansConfig {
     @Bean
     fun arbeidssokerperiodeService(
         arbeidssokerperiodeRepository: ArbeidssokerperiodeRepository,
-        userService: UserService
+        userService: UserService,
+        arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer
     ): ArbeidssokerperiodeService {
-        return ArbeidssokerperiodeService(arbeidssokerperiodeRepository, userService)
+        return ArbeidssokerperiodeService(arbeidssokerperiodeRepository, userService, arbeidssokerperiodeProducer)
     }
 
     @Bean

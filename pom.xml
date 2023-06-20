@@ -89,7 +89,7 @@
         <dependency>
             <groupId>no.nav.arbeid</groupId>
             <artifactId>veilarbregistrering-skjema</artifactId>
-            <version>1.202010190947-866fe12</version>
+            <version>1.202306202208-5504542</version>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>

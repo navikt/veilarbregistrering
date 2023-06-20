@@ -4,6 +4,7 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
+import no.nav.arbeid.soker.periode.ArbeidssokerperiodeEvent
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
 import no.nav.common.featuretoggle.UnleashClient
@@ -15,9 +16,11 @@ import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerperiodeProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerProfilertKafkaProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerRegistrertKafkaProducerV2
+import no.nav.fo.veilarbregistrering.registrering.publisering.kafka.ArbeidssokerperiodeKafkaProducer
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -46,6 +49,11 @@ class KafkaConfig {
     @Bean
     fun arbeidssokerProfilertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerProfilertEvent>): ArbeidssokerProfilertProducer {
         return ArbeidssokerProfilertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-profilert-v1")
+    }
+
+    @Bean
+    fun arbeidssokerperiodeKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerperiodeEvent>): ArbeidssokerperiodeProducer {
+        return ArbeidssokerperiodeKafkaProducer(kafkaProducerAiven, "paw.arbeidssokerperiode-v1")
     }
 
     @Bean
