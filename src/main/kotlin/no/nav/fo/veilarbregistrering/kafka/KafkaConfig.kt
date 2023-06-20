@@ -53,7 +53,7 @@ class KafkaConfig {
 
     @Bean
     fun arbeidssokerperiodeKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerperiodeEvent>): ArbeidssokerperiodeProducer {
-        return ArbeidssokerperiodeKafkaProducer(kafkaProducerAiven, "paw.arbeidssokerperiode-v1")
+        return ArbeidssokerperiodeKafkaProducer(kafkaProducerAiven, "paw.arbeidssokerperioder-v1")
     }
 
     @Bean
