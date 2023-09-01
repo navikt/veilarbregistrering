@@ -15,8 +15,9 @@ spec:
           - "NAVident"
   tokenx:
     enabled: true
+  idporten:
+    enabled: true
   envFrom:
-    - configmap: loginservice-idporten
     - secret: veilarbregistrering
   image: {{image}}
   ingresses:
