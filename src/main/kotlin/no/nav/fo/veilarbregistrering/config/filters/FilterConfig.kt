@@ -72,8 +72,8 @@ class FilterConfig {
     }
 
     private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig {
-        val discoveryUrl = requireProperty("LOGINSERVICE_IDPORTEN_DISCOVERY_URL")
-        val clientId = requireProperty("LOGINSERVICE_IDPORTEN_AUDIENCE")
+        val discoveryUrl = requireProperty("IDPORTEN_WELL_KNOWN_URL")
+        val clientId = requireProperty("IDPORTEN_CLIENT_ID")
         return OidcAuthenticatorConfig()
             .withDiscoveryUrl(discoveryUrl)
             .withClientId(clientId)
