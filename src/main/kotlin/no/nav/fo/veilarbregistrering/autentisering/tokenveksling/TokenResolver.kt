@@ -2,35 +2,21 @@ package no.nav.fo.veilarbregistrering.autentisering.tokenveksling
 
 import no.nav.common.auth.context.AuthContextHolder
 
-class TokenResolver(private val authContextHolder: AuthContextHolder) {
+class TokenResolver(private val authContextHolder: AuthContextHolder, private val tokenIssuers: TokenIssuers) {
 
-    fun token(): String {
-        return authContextHolder.requireContext().idToken.serialize()
-    }
+    fun token(): String = authContextHolder.requireContext().idToken.serialize()
 
-    fun erAzureAdToken(): Boolean {
-        return authContextHolder.erAADToken()
-    }
+    private fun hentIssuer(): String = authContextHolder.requireIdTokenClaims().issuer
+    fun erAzureAdToken(): Boolean = hentIssuer() === tokenIssuers.aadIssuer
 
-    fun erAzureAdOboToken(): Boolean {
-        return authContextHolder.erAADToken() && !authContextHolder.erSystemTilSystemToken()
-    }
+    private fun erSystemTilSystemToken(): Boolean =
+        authContextHolder.subject == authContextHolder.getStringClaim(authContextHolder.idTokenClaims.get(), "oid")
 
-    fun erAzureAdSystemTilSystemToken(): Boolean {
-        return authContextHolder.erAADToken() && authContextHolder.erSystemTilSystemToken()
-    }
+    fun erAzureAdOboToken(): Boolean = erAzureAdToken() && !erSystemTilSystemToken()
 
-    fun erTokenXToken(): Boolean {
-        return authContextHolder.erTokenXToken()
-    }
+    fun erAzureAdSystemTilSystemToken(): Boolean = erAzureAdToken() && erSystemTilSystemToken()
 
-    fun erIdPortenToken(): Boolean {
-        return authContextHolder.erIdPortenToken()
-    }
+    fun erTokenXToken(): Boolean = hentIssuer() === tokenIssuers.tokenXIssuer
+
+    fun erIdPortenToken(): Boolean = hentIssuer() === tokenIssuers.idportenIssuer
 }
-
-fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
-private fun AuthContextHolder.erSystemTilSystemToken(): Boolean = this.subject == this.getStringClaim(this.idTokenClaims.get(),"oid")
-private fun AuthContextHolder.erTokenXToken(): Boolean = hentIssuer().contains("tokendings") || hentIssuer().contains("tokenx")
-private fun AuthContextHolder.erIdPortenToken(): Boolean = hentIssuer().contains("difi.no")
-private fun AuthContextHolder.hentIssuer(): String = this.requireIdTokenClaims().issuer
