@@ -17,7 +17,7 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
             tokenResolver.erTokenXToken() -> exchangeTokenXToken(api, opprinneligToken)
             tokenResolver.erAzureAdOboToken() -> exchangeAadOboToken(api, opprinneligToken)
             tokenResolver.erAzureAdSystemTilSystemToken() -> createAadMachineToMachineToken(api)
-            else -> throw IllegalStateException("Prøver å veksle et token som ikke er AAD OBO eller TokenX")
+            else -> throw IllegalStateException("Prøver å veksle et token som ikke er AAD OBO eller TokenX. $opprinneligToken")
         }
     }
 
