@@ -32,5 +32,5 @@ class TokenResolver(private val authContextHolder: AuthContextHolder) {
 fun AuthContextHolder.erAADToken(): Boolean = hentIssuer().contains("login.microsoftonline.com")
 private fun AuthContextHolder.erSystemTilSystemToken(): Boolean = this.subject == this.getStringClaim(this.idTokenClaims.get(),"oid")
 private fun AuthContextHolder.erTokenXToken(): Boolean = hentIssuer().contains("tokendings")
-private fun AuthContextHolder.erIdPortenToken(): Boolean = hentIssuer().contains("idporten.no")
+private fun AuthContextHolder.erIdPortenToken(): Boolean = hentIssuer().contains("difi.no")
 private fun AuthContextHolder.hentIssuer(): String = this.requireIdTokenClaims().issuer
