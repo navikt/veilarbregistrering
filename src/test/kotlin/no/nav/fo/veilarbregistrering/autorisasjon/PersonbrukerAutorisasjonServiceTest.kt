@@ -69,7 +69,7 @@ class PersonbrukerAutorisasjonServiceTest {
             )
         }
 
-        assertEquals("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har TEST - vi krever Level3 eller Level4", exception.message)
+        assertEquals("Personbruker ber om lesetilgang med for lavt innloggingsnivå. Bruker har TEST - vi krever [Level3, idporten-loa-substantial] eller [Level4, idporten-loa-high]", exception.message)
     }
 
     @Test
