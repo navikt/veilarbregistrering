@@ -27,13 +27,13 @@ class TokenExchangeService(private val tokenResolver: TokenResolver) {
 
     private fun exchangeTokenXToken(api: DownstreamApi, opprinneligToken: String): String {
         logger.info("Veksler TokenX-token mot ${api.appName}")
-        return tokendingsClient.exchangeOnBehalfOfToken(
+        return tokenXClient.exchangeOnBehalfOfToken(
             "${api.cluster}:${api.namespace}:${api.appName}",
             opprinneligToken
         )
     }
 
-    private val tokendingsClient = TokenXTokenClientBuilder.builder()
+    private val tokenXClient = TokenXTokenClientBuilder.builder()
         .withNaisDefaults()
         .buildOnBehalfOfTokenClient()
 
