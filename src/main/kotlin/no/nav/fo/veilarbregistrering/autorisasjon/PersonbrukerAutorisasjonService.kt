@@ -22,7 +22,7 @@ open class PersonbrukerAutorisasjonService(
             bruker.gjeldendeFoedselsnummer
         )
         validerTilgangOgAuditlog(cefMelding, bruker)
-        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_3, INNLOGGINGSNIVÅ_4))
+        validerInnloggingsnivå(INNLOGGINGSNIVÅ_3 + INNLOGGINGSNIVÅ_4)
     }
     override fun sjekkLesetilgangTilBruker(bruker: Bruker, kontekst: String) {
         val cefMelding = CefMelding(
@@ -30,7 +30,7 @@ open class PersonbrukerAutorisasjonService(
             bruker.gjeldendeFoedselsnummer
         )
         validerTilgangOgAuditlog(cefMelding, bruker)
-        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
+        validerInnloggingsnivå(INNLOGGINGSNIVÅ_4)
     }
 
     override fun sjekkSkrivetilgangTilBruker(bruker: Bruker, kontekst: String) {
@@ -39,7 +39,7 @@ open class PersonbrukerAutorisasjonService(
             bruker.gjeldendeFoedselsnummer
         )
         validerTilgangOgAuditlog(cefMelding, bruker)
-        validerInnloggingsnivå(listOf(INNLOGGINGSNIVÅ_4))
+        validerInnloggingsnivå(INNLOGGINGSNIVÅ_4)
     }
 
     private fun validerTilgangOgAuditlog(
@@ -78,13 +78,12 @@ open class PersonbrukerAutorisasjonService(
         logger.info("harTilgangTilPerson utfører $handling for ${UserRole.EKSTERN}-rolle")
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, handling, bruker)) {
-            if (INNLOGGINGSNIVÅ_3 == authContextHolder.hentInnloggingsnivå()) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
+            if (INNLOGGINGSNIVÅ_3.contains(authContextHolder.hentInnloggingsnivå())) throw AutorisasjonLevel3Exception("Bruker er innlogget på nivå 3. $handling-tilgang til ekstern bruker som krever nivå 4-innlogging.")
             throw AutorisasjonException("Bruker mangler $handling-tilgang til ekstern bruker")
         }
     }
 
     private fun rolle(): UserRole = authContextHolder.role.orElseThrow { IllegalStateException("Ingen role funnet") }
-
 
     private fun AuthContextHolder.hentInnloggingsnivå(): String {
         return idTokenClaims.flatMap { getStringClaim(it, "acr") }
@@ -109,7 +108,7 @@ open class PersonbrukerAutorisasjonService(
     override fun erVeileder(): Boolean = false
 
     companion object {
-        private val INNLOGGINGSNIVÅ_3 = "Level3"
-        private val INNLOGGINGSNIVÅ_4 = "Level4"
+        private val INNLOGGINGSNIVÅ_3 = listOf("Level3", "idporten-loa-substantial")
+        private val INNLOGGINGSNIVÅ_4 = listOf("Level4", "idporten-loa-high")
     }
 }
