@@ -50,6 +50,9 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 MDC.put(TOKEN_TYPE, type)
                 metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type), Tag.of("consumerId", consumerId))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
+                if (type == ID_PORTEN) {
+                    secureLogger.info("Bruk av IDPORTEN-token mot $consumerId. Token fra Auth-header: $bearerToken")
+                }
                 if (type == STS) {
                     secureLogger.info("Bruk av STS-token mot $consumerId. Token fra cookie: $selvbetjeningToken Token fra Auth-header: $bearerToken")
                 }
