@@ -34,6 +34,9 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         val selvbetjeningToken =
             request.cookies?.filter { it.name == Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME }?.map { it.value }
                 ?.firstOrNull()
+        selvbetjeningToken?.let {
+            log.warn("$consumerId sender med cookie ${Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME}")
+        }
         val type = when {
             Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> selvbetjeningToken?.let { checkTokenForType(it) }
                 ?: ID_PORTEN
@@ -87,4 +90,4 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 
 fun JWT.erAzureAdToken(): Boolean = this.jwtClaimsSet.issuer.contains("microsoftonline.com")
 fun JWT.erIdPortenToken(): Boolean = this.jwtClaimsSet.issuer.contains("difi.no")
-fun JWT.erTokenXToken(): Boolean = listOf("tokendings", "tokenx").any { this.jwtClaimsSet.issuer.contains(it) }
+fun JWT.erTokenXToken(): Boolean = this.jwtClaimsSet.issuer.contains("tokenx")

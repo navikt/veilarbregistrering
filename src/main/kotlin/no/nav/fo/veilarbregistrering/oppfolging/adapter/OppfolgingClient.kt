@@ -3,6 +3,7 @@ package no.nav.fo.veilarbregistrering.oppfolging.adapter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.Tag
+import no.nav.common.auth.Constants
 import no.nav.common.health.HealthCheck
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
@@ -10,7 +11,9 @@ import no.nav.common.utils.UrlUtils
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeService
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
 import no.nav.fo.veilarbregistrering.config.RequestContext.servletRequest
+import no.nav.fo.veilarbregistrering.config.filters.AuthStatsFilter
 import no.nav.fo.veilarbregistrering.http.buildHttpClient
+import no.nav.fo.veilarbregistrering.log.loggerFor
 import no.nav.fo.veilarbregistrering.log.secureLogger
 import no.nav.fo.veilarbregistrering.metrics.Events.*
 import no.nav.fo.veilarbregistrering.metrics.MetricsService
@@ -140,9 +143,13 @@ open class OppfolgingClient(
             return listOf(("Authorization" to "Bearer ${tokenExchangeService.exchangeToken(oppfolgingApi)}"))
         }
 
+        val request = servletRequest()
+        request.cookies?.let { cookie ->
+            log.warn("Sender med cookie(s): ${cookie.map { it.name }} til oppfolging")
+        }
         return listOf(
-            servletRequest().getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
-                ?: (HttpHeaders.COOKIE to "selvbetjening-idtoken=${servletRequest().getHeader(HttpHeaders.AUTHORIZATION).removePrefix("Bearer ")}")
+            request.getHeader(HttpHeaders.COOKIE)?.let { HttpHeaders.COOKIE to it }
+                ?: (HttpHeaders.COOKIE to "selvbetjening-idtoken=${request.getHeader(HttpHeaders.AUTHORIZATION).removePrefix("Bearer ")}")
         )
     }
 
@@ -171,6 +178,7 @@ open class OppfolgingClient(
             readTimeout(120L, TimeUnit.SECONDS)
         }
         val Json = MediaType.parse("application/json; charset=utf-8")
+        private val log = loggerFor<OppfolgingClient>()
     }
 }
 
