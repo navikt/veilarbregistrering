@@ -90,6 +90,7 @@ class FilterConfig {
         return OidcAuthenticatorConfig()
             .withDiscoveryUrl(discoveryUrl)
             .withClientId(allowedAudience)
+            .withIdTokenCookieName(Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME)
             .withUserRoleResolver(AzureAdUserRoleResolver())
     }
 
