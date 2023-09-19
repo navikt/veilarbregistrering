@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.profilering
 
 import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
 import no.nav.fo.veilarbregistrering.oppfolging.Servicegruppe
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
@@ -14,8 +15,9 @@ class ProfilertInnsatsgruppeService(
 
     fun erStandardInnsats(bruker: Bruker): Boolean {
         val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
+        val brukInnsatsgruppe = servicegruppe?.value() == "IVURD" || (servicegruppe == null && isDevelopment());
 
-        return if (servicegruppe?.value() == "IVURD") {
+        return if (brukInnsatsgruppe) {
             innsatsgruppe == Innsatsgruppe.STANDARD_INNSATS
         } else {
             servicegruppe?.value() == "IKVAL"
