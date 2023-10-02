@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest
 
 class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 
-    private val ID_PORTEN = "ID-PORTEN"
     private val AAD = "AAD"
     private val TOKEN_X = "TOKENX"
     private val STS = "STS"
@@ -39,7 +38,6 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
         }
         val type = when {
             Constants.AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME in cookieNames -> selvbetjeningToken?.let { checkTokenForType(it) }
-                ?: ID_PORTEN
             Constants.AZURE_AD_ID_TOKEN_COOKIE_NAME in cookieNames -> AAD
             !bearerToken.isNullOrBlank() -> checkTokenForType(bearerToken)
             else -> null
@@ -50,9 +48,6 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
                 MDC.put(TOKEN_TYPE, type)
                 metricsService.registrer(Events.REGISTRERING_TOKEN, Tag.of("type", type), Tag.of("consumerId", consumerId))
                 log.info("Authentication with: [$it] request path: [${request.servletPath}] consumer: [$consumerId]")
-                if (type == ID_PORTEN) {
-                    secureLogger.info("Bruk av IDPORTEN-token mot $consumerId. Token fra Auth-header: $bearerToken")
-                }
                 if (type == STS) {
                     secureLogger.info("Bruk av STS-token mot $consumerId. Token fra cookie: $selvbetjeningToken Token fra Auth-header: $bearerToken")
                 }
@@ -68,7 +63,6 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
             val jwt = JWTParser.parse(token)
             when {
                 jwt.erAzureAdToken() -> AAD
-                jwt.erIdPortenToken() -> ID_PORTEN
                 jwt.erTokenXToken() -> TOKEN_X
                 else -> STS
             }
@@ -76,7 +70,6 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
             log.warn("Couldn't parse token $token")
             when {
                 token.contains("microsoftonline.com") -> AAD
-                token.contains("difi.no") -> ID_PORTEN
                 token.contains("tokendings") -> TOKEN_X
                 token.contains("tokenx") -> TOKEN_X
                 else -> STS
@@ -92,5 +85,4 @@ class AuthStatsFilter(private val metricsService: MetricsService) : Filter {
 }
 
 fun JWT.erAzureAdToken(): Boolean = this.jwtClaimsSet.issuer.contains("microsoftonline.com")
-fun JWT.erIdPortenToken(): Boolean = this.jwtClaimsSet.issuer.contains("difi.no")
 fun JWT.erTokenXToken(): Boolean = this.jwtClaimsSet.issuer.contains("tokenx")

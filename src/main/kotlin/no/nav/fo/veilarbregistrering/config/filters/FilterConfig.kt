@@ -60,7 +60,6 @@ class FilterConfig {
         val registration = FilterRegistrationBean<OidcAuthenticationFilter>()
         val authenticationFilter = OidcAuthenticationFilter(
             OidcAuthenticator.fromConfigs(
-                createAzureAdB2CConfig(),
                 createAadTokenConfig(),
                 createTokenXConfig()
             )
@@ -69,15 +68,6 @@ class FilterConfig {
         registration.order = 4
         registration.addUrlPatterns("/api/*")
         return registration
-    }
-
-    private fun createAzureAdB2CConfig(): OidcAuthenticatorConfig {
-        val discoveryUrl = requireProperty("IDPORTEN_WELL_KNOWN_URL")
-        val clientId = requireProperty("IDPORTEN_CLIENT_ID")
-        return OidcAuthenticatorConfig()
-            .withDiscoveryUrl(discoveryUrl)
-            .withClientId(clientId)
-            .withUserRole(UserRole.EKSTERN)
     }
 
     /**

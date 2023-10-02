@@ -15,8 +15,6 @@ spec:
           - "NAVident"
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
   envFrom:
     - secret: veilarbregistrering
   image: {{image}}
