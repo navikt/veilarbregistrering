@@ -119,6 +119,8 @@ spec:
           namespace: teamfamilie
         - application: meroppfolging-frontend
           namespace: team-esyfo
+        - application: dp-saksbehandling-frontend
+          namespace: teamdagpenger
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
