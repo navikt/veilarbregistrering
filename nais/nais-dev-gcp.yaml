@@ -121,6 +121,9 @@ spec:
           namespace: team-esyfo
         - application: dp-saksbehandling-frontend
           namespace: teamdagpenger
+        - application: azure-token-generator-nav
+          namespace: aura
+          cluster: dev-gcp
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
