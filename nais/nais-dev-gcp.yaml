@@ -15,8 +15,6 @@ spec:
           - "NAVident"
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
   envFrom:
     - secret: veilarbregistrering
   image: {{image}}
@@ -121,6 +119,10 @@ spec:
           namespace: teamfamilie
         - application: meroppfolging-frontend
           namespace: team-esyfo
+        - application: dp-saksbehandling-frontend
+          namespace: teamdagpenger
+        - application: azure-token-generator
+          namespace: aura
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io

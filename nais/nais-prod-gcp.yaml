@@ -15,8 +15,6 @@ spec:
           - "NAVident"
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
   envFrom:
     - secret: veilarbregistrering
   image: {{image}}
@@ -119,6 +117,8 @@ spec:
           namespace: teamdagpenger
         - application: familie-ef-sak
           namespace: teamfamilie
+        - application: dp-saksbehandling-frontend
+          namespace: teamdagpenger
     outbound:
       external:
         - host: pdl-api.prod-fss-pub.nais.io
