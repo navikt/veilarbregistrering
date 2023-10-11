@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.profilering
 
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.config.isDevelopment
 import no.nav.fo.veilarbregistrering.oppfolging.OppfolgingGateway
@@ -14,17 +15,17 @@ class ProfilertInnsatsgruppeService(
 ) {
 
     fun erStandardInnsats(bruker: Bruker): Boolean {
-        val (innsatsgruppe, servicegruppe) = hentProfilering(bruker)
+        val (innsatsgruppe, servicegruppe, formidlingsgruppe) = hentProfilering(bruker)
         val brukInnsatsgruppe = servicegruppe?.value() == "IVURD" || (servicegruppe == null && isDevelopment());
 
         return if (brukInnsatsgruppe) {
             innsatsgruppe == Innsatsgruppe.STANDARD_INNSATS
         } else {
-            servicegruppe?.value() == "IKVAL"
+            servicegruppe?.value() == "IKVAL" && formidlingsgruppe?.erArbeidssoker() ?: false;
         }
     }
 
-    fun hentProfilering(bruker: Bruker): Pair<Innsatsgruppe?, Servicegruppe?> {
+    fun hentProfilering(bruker: Bruker): Triple<Innsatsgruppe?, Servicegruppe?, Formidlingsgruppe?> {
         val arenaStatus = oppfolgingGateway.arenaStatus(bruker.gjeldendeFoedselsnummer)
         val brukerregistrering = brukerRegistreringRepository
             .finnOrdinaerBrukerregistreringForAktorIdOgTilstand(bruker.aktorId, listOf(
@@ -36,6 +37,6 @@ class ProfilertInnsatsgruppeService(
 
         val profilering = brukerregistrering?.let { profileringRepository.hentProfileringForId(brukerregistrering.id)  }
 
-        return Pair(profilering?.innsatsgruppe, arenaStatus?.servicegruppe)
+        return Triple(profilering?.innsatsgruppe, arenaStatus?.servicegruppe, arenaStatus?.formidlingsgruppe)
     }
 }
