@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import kotlin.test.assertEquals
+import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsgruppe
 
 @AutoConfigureMockMvc
 @WebMvcTest
@@ -55,7 +56,7 @@ class ProfileringResourceConfig {
     fun profilertInnsatsgruppeService(): ProfilertInnsatsgruppeService {
         val profilertInnsatsgruppeService = mockk<ProfilertInnsatsgruppeService>()
 
-        every { profilertInnsatsgruppeService.hentProfilering(any()) } returns Pair(Innsatsgruppe.STANDARD_INNSATS, Servicegruppe("IVURD"))
+        every { profilertInnsatsgruppeService.hentProfilering(any()) } returns Triple(Innsatsgruppe.STANDARD_INNSATS, Servicegruppe("IVURD"), Formidlingsgruppe("IARBS"))
         every { profilertInnsatsgruppeService.erStandardInnsats(any()) } returns false
 
         return profilertInnsatsgruppeService
