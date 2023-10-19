@@ -50,7 +50,7 @@ internal class ProfilertInnsatsgruppeServiceTest {
         val hentProfilering =
             profilertInnsatsgruppeService.hentProfilering(Bruker(Foedselsnummer("123"), AktorId("456")))
 
-        assertEquals(hentProfilering, Pair(Innsatsgruppe.STANDARD_INNSATS, Servicegruppe("IVURD")))
+        assertEquals(hentProfilering, Triple(Innsatsgruppe.STANDARD_INNSATS, Servicegruppe("IVURD"), Formidlingsgruppe("ARBS")))
     }
 
     @Test
