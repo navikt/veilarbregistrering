@@ -117,6 +117,8 @@ spec:
           namespace: teamdagpenger
         - application: familie-ef-sak
           namespace: teamfamilie
+        - application: meroppfolging-frontend
+          namespace: team-esyfo
         - application: dp-saksbehandling-frontend
           namespace: teamdagpenger
     outbound:
