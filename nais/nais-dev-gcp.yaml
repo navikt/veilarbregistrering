@@ -123,6 +123,8 @@ spec:
           namespace: teamdagpenger
         - application: azure-token-generator
           namespace: aura
+        - application: tokenx-token-generator
+          namespace: aura
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
