@@ -8,7 +8,6 @@ import io.mockk.mockkStatic
 import io.mockk.verify
 import javax.servlet.http.HttpServletRequest
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
@@ -132,7 +131,7 @@ private class OrdinaerBrukerRegistreringResourceConfig {
     }
 
     @Bean
-    fun unleashClient(): UnleashClient = mockk(relaxed = true)
+    fun unleashClient(): Unleash = mockk(relaxed = true)
 
     @Bean
     fun pdlOppslagGateway(): PdlOppslagGateway = mockk()
