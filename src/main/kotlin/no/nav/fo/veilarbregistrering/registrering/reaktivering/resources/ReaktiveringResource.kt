@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering.resources
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.Fnr
 import no.nav.fo.veilarbregistrering.autorisasjon.CefMelding
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api")
 class ReaktiveringResource(
     private val userService: UserService,
-    private val unleashClient: UnleashClient,
+    private val unleashClient: Unleash,
     private val tilgangskontrollService: TilgangskontrollService,
     private val reaktiveringBrukerService: ReaktiveringBrukerService
 ) : ReaktiveringApi {

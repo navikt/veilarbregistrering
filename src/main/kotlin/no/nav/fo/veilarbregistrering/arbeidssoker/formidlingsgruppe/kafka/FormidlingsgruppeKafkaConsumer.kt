@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.DefaultUnleash
+import io.getunleash.Unleash
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeMapper.Companion.map
@@ -25,7 +26,7 @@ class FormidlingsgruppeKafkaConsumer internal constructor(
     private val kafkaConsumerProperties: Properties,
     private val topic: String,
     private val formidlingsgruppeMottakService: FormidlingsgruppeMottakService,
-    private val unleashClient: UnleashClient
+    private val unleashClient: Unleash
 ) : Runnable {
     init {
         val forsinkelseIMinutterVedOppstart = 5

@@ -1,12 +1,26 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 
-import io.mockk.*
+import io.getunleash.Unleash
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
+import javax.servlet.http.HttpServletRequest
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
-import no.nav.fo.veilarbregistrering.bruker.*
+import no.nav.fo.veilarbregistrering.bruker.AktorId
+import no.nav.fo.veilarbregistrering.bruker.Bruker
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.FoedselsnummerTestdataBuilder
+import no.nav.fo.veilarbregistrering.bruker.Gruppe
+import no.nav.fo.veilarbregistrering.bruker.Ident
+import no.nav.fo.veilarbregistrering.bruker.Identer
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder
@@ -22,7 +36,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
 @WebMvcTest
@@ -101,7 +114,7 @@ private class OrdinaerBrukerRegistreringResourceConfig {
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         navVeilederService: NavVeilederService,
-        unleashClient: UnleashClient
+        unleashClient: Unleash
     ) = OrdinaerBrukerRegistreringResource(
         tilgangskontrollService,
         userService,

@@ -1,6 +1,12 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources
 
-import io.mockk.*
+import io.getunleash.Unleash
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
+import javax.servlet.http.HttpServletRequest
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.FileToJson
@@ -8,7 +14,12 @@ import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
 import no.nav.fo.veilarbregistrering.besvarelse.FremtidigSituasjonSvar
 import no.nav.fo.veilarbregistrering.besvarelse.TilbakeIArbeidSvar
-import no.nav.fo.veilarbregistrering.bruker.*
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.Gruppe
+import no.nav.fo.veilarbregistrering.bruker.Ident
+import no.nav.fo.veilarbregistrering.bruker.Identer
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringTestdataBuilder
@@ -25,7 +36,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import javax.servlet.http.HttpServletRequest
 
 @AutoConfigureMockMvc
 @WebMvcTest
@@ -94,7 +104,7 @@ private class SykmeldtResourceConfig {
     fun sykmeldtResource(
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
         navVeilederService: NavVeilederService
     ) = SykmeldtResource(

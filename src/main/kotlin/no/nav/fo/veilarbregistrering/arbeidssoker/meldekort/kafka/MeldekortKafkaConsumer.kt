@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.common.log.MDCConstants
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.config.objectMapper
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 class MeldekortKafkaConsumer internal constructor(
     private val kafkaConsumerProperties: Properties,
     private val topic: String,
-    private val unleashClient: UnleashClient,
+    private val unleashClient: Unleash,
     private val meldekortMottakService: MeldekortMottakService
 ) : Runnable {
     init {

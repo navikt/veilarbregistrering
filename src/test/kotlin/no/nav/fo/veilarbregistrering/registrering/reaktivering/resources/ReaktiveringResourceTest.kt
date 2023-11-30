@@ -1,14 +1,22 @@
 package no.nav.fo.veilarbregistrering.registrering.reaktivering.resources
 
+import io.getunleash.Unleash
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import javax.servlet.http.HttpServletRequest
+import kotlin.test.assertNotNull
 import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.Fnr
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
-import no.nav.fo.veilarbregistrering.bruker.*
+import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
+import no.nav.fo.veilarbregistrering.bruker.Gruppe
+import no.nav.fo.veilarbregistrering.bruker.Ident
+import no.nav.fo.veilarbregistrering.bruker.Identer
+import no.nav.fo.veilarbregistrering.bruker.PdlOppslagGateway
+import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.config.RequestContext
 import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
@@ -24,8 +32,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import javax.servlet.http.HttpServletRequest
-import kotlin.test.assertNotNull
 
 @AutoConfigureMockMvc
 @WebMvcTest
@@ -107,7 +113,7 @@ private class ReaktiveringResourceConfig {
     @Bean
     fun reaktiveringResource(
         userService: UserService,
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ) = ReaktiveringResource(

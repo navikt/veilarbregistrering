@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.sykmeldt.resources
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistrering
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 class SykmeldtResource(
     private val tilgangskontrollService: TilgangskontrollService,
     private val userService: UserService,
-    private val unleashClient: UnleashClient,
+    private val unleashClient: Unleash,
     private val sykmeldtRegistreringService: SykmeldtRegistreringService,
     private val navVeilederService: NavVeilederService
 ) : SykmeldtApi {
