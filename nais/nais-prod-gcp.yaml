@@ -17,6 +17,7 @@ spec:
     enabled: true
   envFrom:
     - secret: veilarbregistrering
+    - secret: veilarbregistrering-unleash-api-token
   image: {{image}}
   ingresses:
     - https://veilarbregistrering.intern.nav.no
