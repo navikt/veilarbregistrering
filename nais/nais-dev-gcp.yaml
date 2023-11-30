@@ -65,6 +65,8 @@ spec:
       value: https://ereg-services-q1.dev-fss-pub.nais.io/ereg
     - name: SPRING_PROFILES_ACTIVE
       value: gcp
+    - name: UNLEASH_SERVER_API_URL
+      value: https://paw-unleash-api.nav.cloud.nais.io/api
   leaderElection: true
   kafka:
     pool: nav-dev
@@ -137,6 +139,7 @@ spec:
         - host: norg2.dev-fss-pub.nais.io
         - host: oppgave-q1.dev-fss-pub.nais.io
         - host: ereg-services-q1.dev-fss-pub.nais.io
+        - host: paw-unleash-api.nav.cloud.nais.io
       rules:
         - application: aareg-services-nais-q1
           namespace: arbeidsforhold
