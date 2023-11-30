@@ -12,12 +12,10 @@ class UnleashConfig {
 
     @Bean
     fun unleashClient(): Unleash {
-        val unleashApiUrl = requireProperty(UNLEASH_SERVER_API_URL)
         val config = UnleashConfig.builder()
             .appName(APP_NAME)
-            .environment(requireProperty(UNLEASH_ENVIRONMENT))
             .instanceId(APP_NAME)
-            .unleashAPI("$unleashApiUrl/api")
+            .unleashAPI(requireProperty(UNLEASH_SERVER_API_URL))
             .apiKey(requireProperty(UNLEASH_SERVER_API_TOKEN))
             .build()
 
@@ -27,7 +25,6 @@ class UnleashConfig {
     companion object {
         const val UNLEASH_SERVER_API_URL = "UNLEASH_SERVER_API_URL"
         const val UNLEASH_SERVER_API_TOKEN = "UNLEASH_SERVER_API_TOKEN"
-        const val UNLEASH_ENVIRONMENT = "UNLEASH_ENVIRONMENT"
         const val APP_NAME = "veilarbregistrering"
     }
 }
