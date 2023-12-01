@@ -17,6 +17,7 @@ spec:
     enabled: true
   envFrom:
     - secret: veilarbregistrering
+    - secret: veilarbregistrering-unleash-api-token
   image: {{image}}
   ingresses:
     - https://veilarbregistrering.intern.nav.no
@@ -65,6 +66,8 @@ spec:
       value: https://ereg-services.prod-fss-pub.nais.io/ereg
     - name: SPRING_PROFILES_ACTIVE
       value: gcp
+    - name: UNLEASH_SERVER_API_URL
+      value: https://paw-unleash-api.nav.cloud.nais.io/api
   leaderElection: true
   kafka:
     pool: nav-prod
@@ -133,6 +136,7 @@ spec:
         - host: norg2.prod-fss-pub.nais.io
         - host: oppgave.prod-fss-pub.nais.io
         - host: ereg-services.prod-fss-pub.nais.io
+        - host: paw-unleash-api.nav.cloud.nais.io
       rules:
         - application: aareg-services-nais
           namespace: arbeidsforhold

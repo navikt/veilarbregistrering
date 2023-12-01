@@ -4,9 +4,9 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
+import io.getunleash.Unleash
 import no.nav.arbeid.soker.profilering.ArbeidssokerProfilertEvent
 import no.nav.arbeid.soker.registrering.ArbeidssokerRegistrertEvent
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.FormidlingsgruppeMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeKafkaConsumer
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
@@ -82,7 +82,7 @@ class KafkaConfig {
 
     @Bean
     fun formidlingsgruppeKafkaConsumer(
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         formidlingsgruppeMottakService: FormidlingsgruppeMottakService
     ): FormidlingsgruppeKafkaConsumer {
         val envSuffix = if (isProduction()) "p" else "q"
@@ -100,7 +100,7 @@ class KafkaConfig {
 
     @Bean
     fun meldekortKafkaConsumer(
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         meldekortMottakService: MeldekortMottakService
     ): MeldekortKafkaConsumer {
         val envSuffix = if (isProduction()) "p" else "q1"

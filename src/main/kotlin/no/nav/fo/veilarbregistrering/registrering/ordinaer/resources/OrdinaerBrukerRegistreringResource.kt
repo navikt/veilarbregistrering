@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.ordinaer.resources
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.fo.veilarbregistrering.autorisasjon.TilgangskontrollService
 import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
@@ -18,7 +18,7 @@ class OrdinaerBrukerRegistreringResource(
     private val userService: UserService,
     private val brukerRegistreringService: BrukerRegistreringService,
     private val navVeilederService: NavVeilederService,
-    private val unleashClient: UnleashClient
+    private val unleashClient: Unleash
 ) : OrdinaerBrukerRegistreringApi {
 
     @PostMapping("/fullfoerordinaerregistrering")

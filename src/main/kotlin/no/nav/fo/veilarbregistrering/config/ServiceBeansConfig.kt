@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbregistrering.config
 
+import io.getunleash.Unleash
 import no.nav.common.auth.context.AuthContextHolder
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheService
@@ -189,7 +189,7 @@ class ServiceBeansConfig {
     fun sykmeldtResource(
         tilgangskontrollService: TilgangskontrollService,
         userService: UserService,
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         sykmeldtRegistreringService: SykmeldtRegistreringService,
         navVeilederService: NavVeilederService,
     ): SykmeldtResource {
@@ -201,7 +201,7 @@ class ServiceBeansConfig {
     @Bean
     fun reaktiveringResource(
         userService: UserService,
-        unleashClient: UnleashClient,
+        unleashClient: Unleash,
         tilgangskontrollService: TilgangskontrollService,
         reaktiveringBrukerService: ReaktiveringBrukerService
     ): ReaktiveringResource {
@@ -216,7 +216,7 @@ class ServiceBeansConfig {
         userService: UserService,
         brukerRegistreringService: BrukerRegistreringService,
         navVeilederService: NavVeilederService,
-        unleashClient: UnleashClient
+        unleashClient: Unleash
     ): OrdinaerBrukerRegistreringResource {
         return OrdinaerBrukerRegistreringResource(
             tilgangskontrollService, userService, brukerRegistreringService, navVeilederService, unleashClient
@@ -259,7 +259,7 @@ class ServiceBeansConfig {
     }
 
     @Bean
-    fun featuretoggleResource(unleashClient: UnleashClient): FeaturetoggleResource {
+    fun featuretoggleResource(unleashClient: Unleash): FeaturetoggleResource {
         return FeaturetoggleResource(unleashClient)
     }
 

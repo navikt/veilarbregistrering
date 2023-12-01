@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.common.job.leader_election.LeaderElectionHttpClient
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
@@ -21,7 +21,7 @@ class PubliseringSchedulerConfig {
     fun publiseringAvRegistreringEventsScheduler(
             publiseringAvEventsService: PubliseringAvEventsService,
             leaderElectionClient: LeaderElectionClient,
-            unleashClient: UnleashClient
+            unleashClient: Unleash
     ): PubliseringAvRegistreringEventsScheduler {
         return PubliseringAvRegistreringEventsScheduler(
                 publiseringAvEventsService,

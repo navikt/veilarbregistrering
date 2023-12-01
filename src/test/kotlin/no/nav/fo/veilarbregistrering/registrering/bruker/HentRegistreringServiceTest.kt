@@ -1,8 +1,8 @@
 package no.nav.fo.veilarbregistrering.registrering.bruker
 
+import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
@@ -11,10 +11,10 @@ import no.nav.fo.veilarbregistrering.orgenhet.NavEnhet
 import no.nav.fo.veilarbregistrering.orgenhet.Norg2Gateway
 import no.nav.fo.veilarbregistrering.profilering.ProfileringRepository
 import no.nav.fo.veilarbregistrering.profilering.ProfileringTestdataBuilder.lagProfilering
-import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
-import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ internal class HentRegistreringServiceTest {
     @BeforeEach
     fun setup() {
         val manuellRegistreringRepository: ManuellRegistreringRepository = mockk()
-        val unleashClient: UnleashClient = mockk()
+        val unleashClient: Unleash = mockk()
         val norg2Gateway: Norg2Gateway = mockk()
         val profileringRepository: ProfileringRepository = mockk()
         val sykmeldtRegistreringRepository: SykmeldtRegistreringRepository = mockk()

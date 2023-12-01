@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbregistrering.registrering.publisering.scheduler
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.Unleash
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.log.CallId
 import no.nav.fo.veilarbregistrering.registrering.publisering.PubliseringAvEventsService
@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled
 class PubliseringAvRegistreringEventsScheduler(
     private val publiseringAvEventsService: PubliseringAvEventsService,
     private val leaderElectionClient: LeaderElectionClient,
-    private val unleashClient: UnleashClient
+    private val unleashClient: Unleash
 ) {
     @Scheduled(cron = HVERT_TIENDE_SEKUND)
     fun publiserRegistreringEvents() {

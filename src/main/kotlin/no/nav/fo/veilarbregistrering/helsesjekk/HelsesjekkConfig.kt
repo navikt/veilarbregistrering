@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbregistrering.helsesjekk
 
 import no.nav.common.abac.Pep
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.common.health.selftest.SelfTestCheck
 import no.nav.common.health.selftest.SelfTestChecks
 import no.nav.common.health.selftest.SelfTestMeterBinder
@@ -23,7 +22,7 @@ class HelsesjekkConfig {
     fun selfTestChecks(
         dbHelsesjekk: DatabaseHelsesjekk,
         veilarbPep: Pep,
-        unleashClient: UnleashClient,
+//        unleashClient: Unleash,
         oppfolgingClient: OppfolgingClient,
         krrClient: DigDirKrrProxyClient,
         aaregRestClient: AaregRestClient,
@@ -35,7 +34,7 @@ class HelsesjekkConfig {
         val selfTestChecks = listOf(
             SelfTestCheck("Ping (sporring) mot Databasen til veilarregistrering.", true, dbHelsesjekk),
             SelfTestCheck("Ping mot ABAC tilgangskontroll", true, veilarbPep.abacClient),
-            SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashClient),
+//            SelfTestCheck("Ping mot Unleash (tilbyr feature-toggles)", false, unleashClient),
             SelfTestCheck("Ping Oppfolging", false, oppfolgingClient),
             SelfTestCheck("Ping Kontakt og reservasjonsregisteret (KRR)", false, krrClient),
             SelfTestCheck("Ping Arbeid og arbeidstager registeret (Aareg)", false, aaregRestClient),
