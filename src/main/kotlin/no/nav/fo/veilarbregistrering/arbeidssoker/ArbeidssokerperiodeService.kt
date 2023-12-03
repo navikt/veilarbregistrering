@@ -41,6 +41,14 @@ class ArbeidssokerperiodeService(
             .map { Periode(it.fra.toLocalDate(), it.til?.toLocalDate()) }
     }
 
+    fun hentNesteArbeidssokerperioder(): List<ArbeidssokerperiodeDto> {
+        return repository.hentNesteArbeidssokerperioder()
+    }
+
+    fun settArbeidssokerperioderSomOverfort(listeMedIder: List<Int>) {
+        repository.settArbeidssokerperioderSomOverfort(listeMedIder)
+    }
+
     private fun harAktivPeriode(bruker: Bruker): Boolean {
         return hentAktivPeriode(bruker) != null
     }
