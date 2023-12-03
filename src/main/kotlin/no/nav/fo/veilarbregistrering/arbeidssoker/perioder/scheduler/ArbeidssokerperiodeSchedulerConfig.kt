@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler
 
+import io.getunleash.Unleash
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import org.springframework.context.annotation.Bean
@@ -14,11 +15,13 @@ class ArbeidssokerperiodeSchedulerConfig {
         leaderElectionClient: LeaderElectionClient,
         arbeidssokerperiodeService: ArbeidssokerperiodeService,
         arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
+        unleashClient: Unleash
     ): ArbeidssokerperiodeScheduler {
         return ArbeidssokerperiodeScheduler(
             leaderElectionClient,
             arbeidssokerperiodeService,
             arbeidssokerperiodeProducer,
+            unleashClient
         )
     }
 }

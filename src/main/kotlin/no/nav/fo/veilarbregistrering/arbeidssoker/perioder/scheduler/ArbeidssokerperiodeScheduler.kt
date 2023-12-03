@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler
 
+import io.getunleash.Unleash
 import no.nav.common.job.leader_election.LeaderElectionClient
 import no.nav.fo.veilarbregistrering.arbeidssoker.ArbeidssokerperiodeService
 import no.nav.fo.veilarbregistrering.log.logger
@@ -9,18 +10,27 @@ class ArbeidssokerperiodeScheduler(
     private val leaderElectionClient: LeaderElectionClient,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService,
     private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
+    private val unleashClient: Unleash,
 ) {
-    @Scheduled(cron = HVERT_TIENDE_SEKUND)
+    @Scheduled(fixedDelay = 2_000, initialDelay = 2_000)
     fun start() {
         if (!leaderElectionClient.isLeader) {
             return
         }
-        logger.info("Starter jobb for å overføre arbeidssøkerperioder")
 
-        val arbeidssokerperioder = arbeidssokerperiodeService.hentNesteArbeidssokerperioder()
+        overfoerArbeidssokerperioder()
+    }
+
+    private fun overfoerArbeidssokerperioder() {
+        if (!unleashClient.isEnabled(FEATURE_TOGGLE)) {
+            logger.info("Arbeidssøkerperioder overføring: Feature toggle er av")
+            return
+        }
+
+        val arbeidssokerperioder = arbeidssokerperiodeService.hentNesteArbeidssokerperioder(50)
 
         if (arbeidssokerperioder.isEmpty()) {
-            logger.info("Fant ingen arbeidssøkerperioder som skal overføres")
+            logger.info("Arbeidssøkerperioder overføring: Fant ingen arbeidssøkerperioder som skal overføres")
             return
         }
 
@@ -37,14 +47,16 @@ class ArbeidssokerperiodeScheduler(
 
         val hendelser = (startHendelser + stoppHendelser).sortedBy { it.tidspunkt }
 
-        logger.info("Hendelser til overføring ${hendelser.size}")
+        logger.info("Arbeidssøkerperioder overføring: Hendelser til overføring ${hendelser.size}")
 
         hendelser.forEach { arbeidssokerperiodeProducer.publiserArbeidssokerperioder(it) }
 
         arbeidssokerperiodeService.settArbeidssokerperioderSomOverfort(arbeidssokerperioder.map { it.id })
+
+        logger.info("Arbeidssøkerperioder overføring: Hendelser overført ${hendelser.size}")
     }
 
     companion object {
-        const val HVERT_TIENDE_SEKUND = "0/10 * * * * *"
+        const val FEATURE_TOGGLE = "veilarbregistrering.overfoer.arbeidssokerperioder"
     }
 }
