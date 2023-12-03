@@ -12,7 +12,7 @@ class ArbeidssokerperiodeScheduler(
     private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
     private val unleashClient: Unleash,
 ) {
-    // @Scheduled(initialDelay = 1000 * 30, fixedDelay = DEAD_MANS_SOLUTION)
+    @Scheduled(fixedDelay = 2_000, initialDelay = 2_000)
     fun start() {
         if (!leaderElectionClient.isLeader) {
             return
@@ -20,9 +20,7 @@ class ArbeidssokerperiodeScheduler(
 
         logger.info("Arbeidssøkerperioder overføring: starter overføring av arbeidssøkerperioder")
 
-        while (true) {
-            overfoerArbeidssokerperioder()
-        }
+        overfoerArbeidssokerperioder()
     }
 
     private fun overfoerArbeidssokerperioder() {
@@ -62,6 +60,5 @@ class ArbeidssokerperiodeScheduler(
 
     companion object {
         const val FEATURE_TOGGLE = "veilarbregistrering.overfoer.arbeidssokerperioder"
-        const val DEAD_MANS_SOLUTION = Long.MAX_VALUE
     }
 }
