@@ -17,13 +17,7 @@ class ArbeidssokerperiodeKafkaProducer(
                 UUID.randomUUID().toString(),
                 objectMapper.writeValueAsString(arbeidssokerperioder),
             )
-            producer.send(
-                record,
-            ) { _, e: Exception? ->
-                if (e != null) {
-                    logger.error(String.format("Arbeidssokerperioder publisert på topic, %s", topic), e)
-                }
-            }
+            producer.send(record)
             true
         } catch (e: Exception) {
             logger.error("Sending av Arbeidssokerperioder til Kafka feilet", e)
