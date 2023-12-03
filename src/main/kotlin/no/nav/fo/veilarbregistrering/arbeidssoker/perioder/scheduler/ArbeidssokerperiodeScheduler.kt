@@ -12,7 +12,7 @@ class ArbeidssokerperiodeScheduler(
     private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
     private val unleashClient: Unleash,
 ) {
-    @Scheduled(initialDelay = 1000 * 30, fixedDelay = DEAD_MANS_SOLUTION)
+    // @Scheduled(initialDelay = 1000 * 30, fixedDelay = DEAD_MANS_SOLUTION)
     fun start() {
         if (!leaderElectionClient.isLeader) {
             return
