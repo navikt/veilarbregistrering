@@ -18,8 +18,6 @@ class ArbeidssokerperiodeScheduler(
             return
         }
 
-        logger.info("Arbeidssøkerperioder overføring: starter overføring av arbeidssøkerperioder")
-
         overfoerArbeidssokerperioder()
     }
 
