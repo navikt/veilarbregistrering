@@ -2,6 +2,7 @@ package no.nav.fo.veilarbregistrering.config
 
 import no.nav.fo.veilarbregistrering.aktorIdCache.AktorIdCacheConfig
 import no.nav.fo.veilarbregistrering.arbeidsforhold.adapter.ArbeidsforholdGatewayConfig
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeSchedulerConfig
 import no.nav.fo.veilarbregistrering.autentisering.AuthenticationConfig
 import no.nav.fo.veilarbregistrering.autentisering.tokenveksling.TokenExchangeConfig
 import no.nav.fo.veilarbregistrering.autorisasjon.AutorisasjonConfig
@@ -48,7 +49,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
     ObjectMapperConfig::class,
     SwaggerConfig::class,
     TokenExchangeConfig::class,
-    AktorIdCacheConfig::class
+    AktorIdCacheConfig::class,
+    ArbeidssokerperiodeSchedulerConfig::class,
 )
 @EnableScheduling
 class ApplicationConfig

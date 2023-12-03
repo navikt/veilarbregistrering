@@ -11,6 +11,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.Formidlingsg
 import no.nav.fo.veilarbregistrering.arbeidssoker.formidlingsgruppe.kafka.FormidlingsgruppeKafkaConsumer
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.MeldekortMottakService
 import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka.MeldekortKafkaConsumer
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeKafkaProducer
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeProducer
 import no.nav.fo.veilarbregistrering.config.isProduction
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
@@ -46,6 +48,11 @@ class KafkaConfig {
     @Bean
     fun arbeidssokerProfilertKafkaProducerAiven(kafkaProducerAiven: KafkaProducer<String, ArbeidssokerProfilertEvent>): ArbeidssokerProfilertProducer {
         return ArbeidssokerProfilertKafkaProducer(kafkaProducerAiven, "paw.arbeidssoker-profilert-v1")
+    }
+
+    @Bean
+    fun arbeidssokerperiodeKafkaProducerAiven(kafkaProducerStringSerializerAiven: KafkaProducer<String, String>): ArbeidssokerperiodeProducer {
+        return ArbeidssokerperiodeKafkaProducer(kafkaProducerStringSerializerAiven, "paw.arbeidssokerperioder-overforing-beta-v1")
     }
 
     @Bean

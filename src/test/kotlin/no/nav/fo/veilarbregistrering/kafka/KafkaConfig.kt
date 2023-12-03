@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbregistrering.kafka
 
 import io.mockk.mockk
+import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
@@ -17,4 +18,7 @@ class KafkaConfig {
 
     @Bean
     fun arbeidssokerProfilertKafkaProducer(): ArbeidssokerProfilertProducer = mockk()
+
+    @Bean
+    fun arbeidssokerperiodeKafkaProducerAiven(): ArbeidssokerperiodeProducer = mockk()
 }

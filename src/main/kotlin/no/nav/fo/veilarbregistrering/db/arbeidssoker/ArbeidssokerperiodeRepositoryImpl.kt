@@ -31,7 +31,7 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
             "tilOgMed" to tilDato,
             "foedselsnummer" to foedselsnummer.foedselsnummer
         )
-        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed WHERE til_og_med IS NULL AND foedselsnummer = :foedselsnummer"
+        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed, overfort_kafka = FALSE WHERE til_og_med IS NULL AND foedselsnummer = :foedselsnummer"
         try {
             db.update(sql, params)
         } catch (e: DataIntegrityViolationException) {
@@ -44,7 +44,7 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
             "id" to id,
             "tilOgMed" to tilDato
         )
-        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed WHERE id = :id"
+        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET til_og_med = :tilOgMed, overfort_kafka = FALSE WHERE id = :id"
 
         try {
             db.update(sql, params)
@@ -67,6 +67,18 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
         val params = mapOf("foedselsnummerList" to foedselsnummerList.map(Foedselsnummer::stringValue))
         val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE foedselsnummer IN (:foedselsnummerList)"
         return db.query(sql, params, arbeidssokerperiodeMapper)
+    }
+
+    override fun hentNesteArbeidssokerperioder(): List<ArbeidssokerperiodeDto> {
+        val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE overfort_kafka IS FALSE ORDER BY fra_og_med LIMIT 50"
+        return db.query(sql, arbeidssokerperiodeMapper)
+    }
+
+    override fun settArbeidssokerperioderSomOverfort(listeMedIder: List<Int>) {
+        val sql = "UPDATE $ARBEIDSSOKERPERIODE_TABELL SET overfort_kafka = TRUE WHERE id IN (:listeMedIder)"
+        val params = mapOf("listeMedIder" to listeMedIder)
+
+        db.update(sql, params)
     }
 
     companion object {
