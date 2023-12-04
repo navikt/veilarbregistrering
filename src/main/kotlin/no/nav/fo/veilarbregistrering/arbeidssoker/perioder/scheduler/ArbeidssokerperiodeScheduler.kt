@@ -12,7 +12,7 @@ class ArbeidssokerperiodeScheduler(
     private val arbeidssokerperiodeProducer: ArbeidssokerperiodeProducer,
     private val unleashClient: Unleash,
 ) {
-    @Scheduled(fixedDelay = 2_000, initialDelay = 2_000)
+    @Scheduled(fixedDelay = 500, initialDelay = 2_000)
     fun start() {
         if (!leaderElectionClient.isLeader) {
             return
@@ -27,7 +27,7 @@ class ArbeidssokerperiodeScheduler(
             return
         }
 
-        val arbeidssokerperioder = arbeidssokerperiodeService.hentNesteArbeidssokerperioder(50)
+        val arbeidssokerperioder = arbeidssokerperiodeService.hentNesteArbeidssokerperioder(500)
 
         if (arbeidssokerperioder.isEmpty()) {
             logger.info("Arbeidssøkerperioder overføring: Fant ingen arbeidssøkerperioder som skal overføres")
