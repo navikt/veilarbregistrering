@@ -46,6 +46,11 @@ open class BrukerRegistreringService(
     private val aktorIdCacheService: AktorIdCacheService,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
+    init {
+        requireNotNull(brukerRegistreringRepository) {
+            "brukerRegistreringRepository kan ikke være null"
+        }
+    }
     @Transactional
     open fun registrerBrukerUtenOverforing(
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering,
