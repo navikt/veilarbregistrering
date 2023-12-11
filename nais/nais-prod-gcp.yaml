@@ -101,7 +101,6 @@ spec:
     inbound:
       rules:
         - application: arbeidssokerregistrering
-        - application: arbeidssokerregistrering-veileder
         - application: arbeidssokerregistrering-for-veileder
         - application: aia-backend
         - application: paw-reaktiver-arbeidssoker
