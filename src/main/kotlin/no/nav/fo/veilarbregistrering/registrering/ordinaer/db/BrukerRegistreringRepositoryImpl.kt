@@ -3,22 +3,44 @@ package no.nav.fo.veilarbregistrering.registrering.ordinaer.db
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.fo.veilarbregistrering.besvarelse.*
+import no.nav.fo.veilarbregistrering.besvarelse.AndreForholdSvar
+import no.nav.fo.veilarbregistrering.besvarelse.Besvarelse
+import no.nav.fo.veilarbregistrering.besvarelse.DinSituasjonSvar
+import no.nav.fo.veilarbregistrering.besvarelse.HelseHinderSvar
+import no.nav.fo.veilarbregistrering.besvarelse.SisteStillingSvar
+import no.nav.fo.veilarbregistrering.besvarelse.Stilling
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningBestattSvar
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningGodkjentSvar
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningSvar
+import no.nav.fo.veilarbregistrering.besvarelse.UtdanningUtils
 import no.nav.fo.veilarbregistrering.bruker.AktorId
 import no.nav.fo.veilarbregistrering.bruker.Bruker
 import no.nav.fo.veilarbregistrering.bruker.Foedselsnummer
-import no.nav.fo.veilarbregistrering.besvarelse.UtdanningUtils
-import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.bruker.TekstForSporsmal
 import no.nav.fo.veilarbregistrering.registrering.formidling.Status
 import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl
+import no.nav.fo.veilarbregistrering.registrering.formidling.db.RegistreringTilstandRepositoryImpl.Companion.REGISTRERING_TILSTAND
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
+import no.nav.paw.arbeidssokerregisteret.intern.v1.OpplysningerOmArbeidssoekerMottatt
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Annet
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Arbeidserfaring
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.BrukerType
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Helse
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.JaNeiVetIkke
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Jobbsituasjon
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.JobbsituasjonBeskrivelse
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.JobbsituasjonMedDetaljer
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Metadata
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.OpplysningerOmArbeidssoeker
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Utdanning
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Utdanningsnivaa
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.io.IOException
 import java.sql.SQLException
 import java.sql.Timestamp
+import java.util.*
 
 class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplate) : BrukerRegistreringRepository {
 
@@ -106,6 +128,23 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         }!!
     }
 
+    override fun hentNesteOpplysningerOmArbeidssoeker(antall: Int): List<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> {
+        val sql = """
+            SELECT * FROM $BRUKER_REGISTRERING WHERE overfort_kafka IS FALSE ORDER BY $OPPRETTET_DATO ASC LIMIT $antall 
+        """.trimIndent()
+
+        return db.query(sql, noParams, opplysningerOmArbeidssoekerMapper)
+    }
+
+    override fun settOpplysningerOmArbeidssoekerSomOverfort(listeMedIder: List<Int>) {
+        val sql =
+            "UPDATE $BRUKER_REGISTRERING SET overfort_kafka = TRUE WHERE $BRUKER_REGISTRERING_ID IN (:listeMedIder)"
+        val params = mapOf("listeMedIder" to listeMedIder)
+
+        db.update(sql, params)
+    }
+
+
     private fun nesteFraSekvens(sekvensNavn: String): Long {
         val sql = "SELECT nextVal('$sekvensNavn')"
         return db.queryForObject(sql, noParams, Long::class.java)!!
@@ -159,26 +198,111 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                     opprettetDato = rs.getTimestamp(OPPRETTET_DATO).toLocalDateTime(),
                     teksterForBesvarelse = readListOf(rs.getString(TEKSTER_FOR_BESVARELSE)),
                     sisteStilling =
-                        Stilling(
-                            styrk08 = rs.getString(YRKESPRAKSIS),
-                            konseptId = rs.getLong(KONSEPT_ID),
-                            label = rs.getString(YRKESBESKRIVELSE)
-                        ),
-                    besvarelse = (
-                        Besvarelse(
-                            dinSituasjon = DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)),
-                            utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)),
-                            utdanningBestatt = UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)),
-                            utdanningGodkjent = UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)),
-                            helseHinder = HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)),
-                            andreForhold = AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)),
-                            sisteStilling = SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)),
-                        )
+                    Stilling(
+                        styrk08 = rs.getString(YRKESPRAKSIS),
+                        konseptId = rs.getLong(KONSEPT_ID),
+                        label = rs.getString(YRKESBESKRIVELSE)
                     ),
+                    besvarelse = (
+                            Besvarelse(
+                                dinSituasjon = DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING)),
+                                utdanning = UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE)),
+                                utdanningBestatt = UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT)),
+                                utdanningGodkjent = UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE)),
+                                helseHinder = HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER)),
+                                andreForhold = AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER)),
+                                sisteStilling = SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK)),
+                            )
+                            ),
                 )
             } catch (e: SQLException) {
                 throw RuntimeException(e)
             }
+        }
+
+        val opplysningerOmArbeidssoekerMapper = RowMapper<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> { rs, _ ->
+            rs.getLong(BRUKER_REGISTRERING_ID) to
+            OpplysningerOmArbeidssoekerMottatt(
+                hendelseId = UUID.randomUUID(),
+                identitetsnummer = rs.getString(FOEDSELSNUMMER),
+                opplysningerOmArbeidssoeker = OpplysningerOmArbeidssoeker(
+                    id = UUID.randomUUID(),
+                    metadata = Metadata(
+                        tidspunkt = rs.getTimestamp(OPPRETTET_DATO).toInstant(),
+                        utfoertAv = no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Bruker(
+                            type = BrukerType.SLUTTBRUKER,
+                            id = rs.getString(FOEDSELSNUMMER)
+                        ),
+                        kilde = "veilarbregistrering",
+                        aarsak = "registrering"
+                    ),
+                    utdanning = Utdanning(
+                        utdanningsnivaa = when (UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE))) {
+                            UtdanningSvar.INGEN_UTDANNING -> Utdanningsnivaa.INGEN_UTDANNING
+                            UtdanningSvar.GRUNNSKOLE -> Utdanningsnivaa.GRUNNSKOLE
+                            UtdanningSvar.VIDEREGAENDE_GRUNNUTDANNING -> Utdanningsnivaa.VIDEREGAENDE_GRUNNUTDANNING
+                            UtdanningSvar.VIDEREGAENDE_FAGBREV_SVENNEBREV -> Utdanningsnivaa.VIDEREGAENDE_FAGUTDANNING_SVENNEBREV
+                            UtdanningSvar.HOYERE_UTDANNING_1_TIL_4 -> Utdanningsnivaa.HOYERE_UTDANNING_1_TIL_4
+                            UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER -> Utdanningsnivaa.HOYERE_UTDANNING_5_ELLER_MER
+                            UtdanningSvar.INGEN_SVAR -> Utdanningsnivaa.UDEFINERT
+                            null -> Utdanningsnivaa.UDEFINERT
+                        },
+                        bestaatt = when (UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT))) {
+                            UtdanningBestattSvar.JA -> JaNeiVetIkke.JA
+                            UtdanningBestattSvar.NEI -> JaNeiVetIkke.NEI
+                            else -> JaNeiVetIkke.VET_IKKE
+                        },
+                        godkjent = when (UtdanningGodkjentSvar.valueOf(rs.getString(UTDANNING_GODKJENT_NORGE))) {
+                            UtdanningGodkjentSvar.JA -> JaNeiVetIkke.JA
+                            UtdanningGodkjentSvar.NEI -> JaNeiVetIkke.NEI
+                            UtdanningGodkjentSvar.VET_IKKE -> JaNeiVetIkke.VET_IKKE
+                            UtdanningGodkjentSvar.INGEN_SVAR -> JaNeiVetIkke.VET_IKKE
+                        }
+                    ),
+                    arbeidserfaring = Arbeidserfaring(
+                        harHattArbeid = when (SisteStillingSvar.valueOf(rs.getString(JOBBHISTORIKK))) {
+                            SisteStillingSvar.HAR_HATT_JOBB -> JaNeiVetIkke.JA
+                            SisteStillingSvar.HAR_IKKE_HATT_JOBB -> JaNeiVetIkke.NEI
+                            SisteStillingSvar.INGEN_SVAR -> JaNeiVetIkke.VET_IKKE
+                        }
+                    ),
+                    jobbsituasjon = Jobbsituasjon(
+                        beskrivelser = listOfNotNull(
+                            when (DinSituasjonSvar.valueOf(rs.getString(BEGRUNNELSE_FOR_REGISTRERING))) {
+                                DinSituasjonSvar.MISTET_JOBBEN -> JobbsituasjonBeskrivelse.HAR_BLITT_SAGT_OPP
+                                DinSituasjonSvar.ALDRI_HATT_JOBB -> JobbsituasjonBeskrivelse.ALDRI_HATT_JOBB
+                                DinSituasjonSvar.HAR_SAGT_OPP -> JobbsituasjonBeskrivelse.HAR_SAGT_OPP
+                                DinSituasjonSvar.VIL_BYTTE_JOBB -> JobbsituasjonBeskrivelse.VIL_BYTTE_JOBB
+                                DinSituasjonSvar.ER_PERMITTERT -> JobbsituasjonBeskrivelse.ER_PERMITTERT
+                                DinSituasjonSvar.USIKKER_JOBBSITUASJON -> JobbsituasjonBeskrivelse.USIKKER_JOBBSITUASJON
+                                DinSituasjonSvar.JOBB_OVER_2_AAR -> JobbsituasjonBeskrivelse.IKKE_VAERT_I_JOBB_SISTE_2_AAR
+                                DinSituasjonSvar.VIL_FORTSETTE_I_JOBB -> null
+                                DinSituasjonSvar.AKKURAT_FULLFORT_UTDANNING -> JobbsituasjonBeskrivelse.AKKURAT_FULLFORT_UTDANNING
+                                DinSituasjonSvar.DELTIDSJOBB_VIL_MER -> JobbsituasjonBeskrivelse.DELTIDSJOBB_VIL_MER
+                            }?.let { beskrivelse ->
+                                JobbsituasjonMedDetaljer(
+                                    beskrivelse = beskrivelse,
+                                    detaljer = emptyMap()
+                                )
+                            }
+                        )
+                    ),
+                    annet = Annet(
+                        andreForholdHindrerArbeid = when (AndreForholdSvar.valueOf(rs.getString(ANDRE_UTFORDRINGER))) {
+                            AndreForholdSvar.JA -> JaNeiVetIkke.JA
+                            AndreForholdSvar.NEI -> JaNeiVetIkke.NEI
+                            AndreForholdSvar.INGEN_SVAR -> JaNeiVetIkke.VET_IKKE
+                        }
+                    ),
+                    helse = Helse(
+                        helsetilstandHindrerArbeid = when (HelseHinderSvar.valueOf(rs.getString(HAR_HELSEUTFORDRINGER))) {
+                            HelseHinderSvar.JA -> JaNeiVetIkke.JA
+                            HelseHinderSvar.NEI -> JaNeiVetIkke.NEI
+                            HelseHinderSvar.INGEN_SVAR -> JaNeiVetIkke.VET_IKKE
+                        }
+                    )
+                )
+            )
         }
 
         private val noParams = emptyMap<String, Any>()
@@ -190,14 +314,14 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                 "[]"
             }
 
-        private inline fun <reified T> readListOf(json: String?) : List<T> =
-             try {
-                 json?.let {
-                     val type = mapper.typeFactory.constructParametricType(List::class.java, T::class.java)
-                     jacksonObjectMapper().readValue<List<T>>(it, type)
-                 } ?: emptyList()
-             } catch (e: IOException) {
-                 throw RuntimeException(e)
-             }
+        private inline fun <reified T> readListOf(json: String?): List<T> =
+            try {
+                json?.let {
+                    val type = mapper.typeFactory.constructParametricType(List::class.java, T::class.java)
+                    jacksonObjectMapper().readValue<List<T>>(it, type)
+                } ?: emptyList()
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
     }
 }
