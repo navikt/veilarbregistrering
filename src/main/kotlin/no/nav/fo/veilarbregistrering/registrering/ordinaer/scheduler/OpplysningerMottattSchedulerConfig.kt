@@ -13,13 +13,13 @@ class OpplysningerMottattSchedulerConfig {
     @Bean
     fun opplysningMottattScheduler(
         leaderElectionClient: LeaderElectionClient,
-        registreringService: BrukerRegistreringService,
+        brukerRegistreringService: BrukerRegistreringService,
         opplysningerMottattProducer: OpplysningerMottattProducer,
         unleashClient: Unleash
     ): OpplysningMottattScheduler {
         return OpplysningMottattScheduler(
             leaderElectionClient,
-            registreringService,
+            brukerRegistreringService,
             opplysningerMottattProducer,
             unleashClient
         )

@@ -24,5 +24,5 @@ class KafkaConfig {
     fun arbeidssokerperiodeKafkaProducerAiven(): ArbeidssokerperiodeProducer = mockk()
 
     @Bean
-    fun opplysningerOmArbeidssokerProducerAvien(): OpplysningerMottattProducer = mockk()
+    fun opplysningerOmArbeidssokerProducerAiven(): OpplysningerMottattProducer = mockk()
 }

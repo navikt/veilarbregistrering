@@ -31,10 +31,12 @@ import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
 import no.nav.paw.arbeidssokerregisteret.intern.v1.OpplysningerOmArbeidssoekerMottatt
 import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.BrukerType
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-open class BrukerRegistreringService(
+@Service
+class BrukerRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val profileringRepository: ProfileringRepository,
     private val oppfolgingGateway: OppfolgingGateway,
@@ -46,13 +48,8 @@ open class BrukerRegistreringService(
     private val aktorIdCacheService: AktorIdCacheService,
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
-    init {
-        requireNotNull(brukerRegistreringRepository) {
-            "brukerRegistreringRepository kan ikke være null"
-        }
-    }
     @Transactional
-    open fun registrerBrukerUtenOverforing(
+    fun registrerBrukerUtenOverforing(
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering,
         bruker: Bruker,
         veileder: NavVeileder?
@@ -187,9 +184,7 @@ open class BrukerRegistreringService(
     }
 
     fun hentNesteOpplysningerOmArbeidssoker(antall: Int): List<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> =
-        // Hente opplysninger om arbeidssøker fra databasen
         brukerRegistreringRepository.hentNesteOpplysningerOmArbeidssoeker(antall).map { (id, opplysninger) ->
-            // Løpe gjennom listen og slå opp manuell registrering for å finne veileder
             Triple(id, opplysninger, manuellRegistreringRepository.hentManuellRegistrering(id, BrukerRegistreringType.ORDINAER))
         }.map { (id, opplysninger, manuellRegistrering) ->
             id to (manuellRegistrering?.let {

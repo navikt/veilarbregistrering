@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled
 
 class OpplysningMottattScheduler(
     private val leaderElectionClient: LeaderElectionClient,
-    private val registreringService: BrukerRegistreringService,
+    private val brukerRegistreringService: BrukerRegistreringService,
     private val opplysningerMottattProducer: OpplysningerMottattProducer,
     private val unleashClient: Unleash,
 ) {
@@ -27,7 +27,7 @@ class OpplysningMottattScheduler(
             return
         }
 
-        val opplysningerOmArbeidssoekere = registreringService.hentNesteOpplysningerOmArbeidssoker(100)
+        val opplysningerOmArbeidssoekere = brukerRegistreringService.hentNesteOpplysningerOmArbeidssoker(100)
 
         if (opplysningerOmArbeidssoekere.isEmpty()) {
             logger.info("Opplysninger om arbeidssøker: Fant ingen arbeidssøkeropplysninger som skal overføres")
@@ -38,7 +38,7 @@ class OpplysningMottattScheduler(
 
         opplysningerOmArbeidssoekere.forEach { (_, opplysninger) -> opplysningerMottattProducer.publiserOpplysningerMottatt(opplysninger) }
 
-        registreringService.settOpplysningerOmArbeidssoekerSomOverfort(opplysningerOmArbeidssoekere.map { it.first.toInt() })
+        brukerRegistreringService.settOpplysningerOmArbeidssoekerSomOverfort(opplysningerOmArbeidssoekere.map { it.first.toInt() })
 
         logger.info("Opplysninger om arbeidssøker: Hendelser overført ${opplysningerOmArbeidssoekere.size}")
     }
