@@ -230,7 +230,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                         tidspunkt = rs.getTimestamp(OPPRETTET_DATO).toInstant(),
                         utfoertAv = no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Bruker(
                             type = BrukerType.SLUTTBRUKER,
-                            id = rs.getString(FOEDSELSNUMMER)
+                            id = rs.getString(FOEDSELSNUMMER) ?: "ukjent"
                         ),
                         kilde = "veilarbregistrering",
                         aarsak = "registrering"
