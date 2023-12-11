@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 class OpplysningerMottattSchedulerConfig {
     @Bean
-    fun arbeidssokerperiodeScheduler(
+    fun opplysningMottattScheduler(
         leaderElectionClient: LeaderElectionClient,
         registreringService: BrukerRegistreringService,
         opplysningerMottattProducer: OpplysningerMottattProducer,
