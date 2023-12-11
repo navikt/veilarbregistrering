@@ -221,10 +221,9 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         }
 
         val opplysningerOmArbeidssoekerMapper = RowMapper<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> { rs, _ ->
-            rs.getLong(BRUKER_REGISTRERING_ID) to
-            OpplysningerOmArbeidssoekerMottatt(
+            rs.getLong(BRUKER_REGISTRERING_ID) to OpplysningerOmArbeidssoekerMottatt(
                 hendelseId = UUID.randomUUID(),
-                identitetsnummer = rs.getString(FOEDSELSNUMMER),
+                identitetsnummer = rs.getString(FOEDSELSNUMMER) ?: "ukjent",
                 opplysningerOmArbeidssoeker = OpplysningerOmArbeidssoeker(
                     id = UUID.randomUUID(),
                     metadata = Metadata(
