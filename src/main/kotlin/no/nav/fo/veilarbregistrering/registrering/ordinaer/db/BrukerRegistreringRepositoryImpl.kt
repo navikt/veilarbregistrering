@@ -130,7 +130,10 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
 
     override fun hentNesteOpplysningerOmArbeidssoeker(antall: Int): List<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> {
         val sql = """
-            SELECT * FROM $BRUKER_REGISTRERING WHERE overfort_kafka IS FALSE ORDER BY $OPPRETTET_DATO ASC LIMIT $antall 
+            SELECT bruker_registrering.* FROM $BRUKER_REGISTRERING
+            JOIN registrering_tilstand ON bruker_registrering.bruker_registrering_id = registrering_tilstand.bruker_registrering_id
+            WHERE registrering_tilstand.status = 'PUBLISERT_KAFKA'
+            AND overfort_kafka IS FALSE ORDER BY $OPPRETTET_DATO LIMIT $antall
         """.trimIndent()
 
         return db.query(sql, noParams, opplysningerOmArbeidssoekerMapper)
