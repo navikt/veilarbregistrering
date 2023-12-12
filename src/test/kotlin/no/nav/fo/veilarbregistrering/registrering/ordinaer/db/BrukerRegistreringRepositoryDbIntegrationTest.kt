@@ -14,6 +14,7 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringRep
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistreringTestdataBuilder.gyldigBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.sykmeldt.SykmeldtRegistreringRepository
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.JobbsituasjonBeskrivelse
 import no.nav.veilarbregistrering.integrasjonstest.db.DbContainerInitializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -121,6 +122,20 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
         val ordinaerBrukerRegistrerings = brukerRegistreringRepository.hentBrukerregistreringForFoedselsnummer(BRUKER_1.alleFoedselsnummer())
 
         assertThat(ordinaerBrukerRegistrerings.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun skal_hente_ordinaerBrukerRegistrering() {
+        val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1)
+        val liste = brukerRegistreringRepository.hentNesteOpplysningerOmArbeidssoeker(1)
+        assertThat(liste).hasSize(1)
+        val (id, opplysninger) = liste.first()
+
+        assertThat(id).isEqualTo(ordinaerBrukerRegistrering.id)
+        assertThat(opplysninger.identitetsnummer).isEqualTo(BRUKER_1.gjeldendeFoedselsnummer.foedselsnummer)
+        assertThat(opplysninger.opplysningerOmArbeidssoeker.metadata.utfoertAv.id).isEqualTo(BRUKER_1.gjeldendeFoedselsnummer.foedselsnummer)
+        assertThat(opplysninger.opplysningerOmArbeidssoeker.jobbsituasjon.beskrivelser).hasSize(1)
+        assertThat(opplysninger.opplysningerOmArbeidssoeker.jobbsituasjon.beskrivelser.first().beskrivelse).isEqualTo(JobbsituasjonBeskrivelse.IKKE_VAERT_I_JOBB_SISTE_2_AAR)
     }
 
     companion object {

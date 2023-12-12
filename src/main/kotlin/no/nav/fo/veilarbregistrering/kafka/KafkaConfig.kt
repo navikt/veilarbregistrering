@@ -14,6 +14,8 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.meldekort.kafka.MeldekortKafka
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeKafkaProducer
 import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.scheduler.ArbeidssokerperiodeProducer
 import no.nav.fo.veilarbregistrering.config.isProduction
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.scheduler.OpplysningerMottattKafkaProducer
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.scheduler.OpplysningerMottattProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerProfilertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducer
 import no.nav.fo.veilarbregistrering.registrering.publisering.ArbeidssokerRegistrertProducerV2
@@ -54,6 +56,10 @@ class KafkaConfig {
     fun arbeidssokerperiodeKafkaProducerAiven(kafkaProducerStringSerializerAiven: KafkaProducer<String, String>): ArbeidssokerperiodeProducer {
         return ArbeidssokerperiodeKafkaProducer(kafkaProducerStringSerializerAiven, "paw.arbeidssokerperioder-overforing-beta-v1")
     }
+
+    @Bean
+    fun opplysningerOmArbeidssokerProducerAvien(kafkaProducerStringSerializerAiven: KafkaProducer<String, String>): OpplysningerMottattProducer =
+        OpplysningerMottattKafkaProducer(kafkaProducerStringSerializerAiven, "paw.veilarb-opplysninger-mottatt-v1")
 
     @Bean
     fun kafkaProducerAiven(): KafkaProducer<*, *> {

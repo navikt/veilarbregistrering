@@ -19,6 +19,7 @@ import no.nav.fo.veilarbregistrering.metrics.MetricsConfig
 import no.nav.fo.veilarbregistrering.oppfolging.adapter.OppfolgingGatewayConfig
 import no.nav.fo.veilarbregistrering.oppgave.adapter.OppgaveGatewayConfig
 import no.nav.fo.veilarbregistrering.orgenhet.adapter.Norg2GatewayConfig
+import no.nav.fo.veilarbregistrering.registrering.ordinaer.scheduler.OpplysningerMottattSchedulerConfig
 import no.nav.fo.veilarbregistrering.registrering.publisering.scheduler.PubliseringSchedulerConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -51,6 +52,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     TokenExchangeConfig::class,
     AktorIdCacheConfig::class,
     ArbeidssokerperiodeSchedulerConfig::class,
+    OpplysningerMottattSchedulerConfig::class
 )
 @EnableScheduling
 class ApplicationConfig

@@ -1,0 +1,12 @@
+package no.nav.paw.arbeidssokerregisteret.intern.v1.vo
+
+enum class Utdanningsnivaa {
+    UKJENT_VERDI,
+    UDEFINERT,
+    INGEN_UTDANNING,
+    GRUNNSKOLE,
+    VIDEREGAENDE_GRUNNUTDANNING,
+    VIDEREGAENDE_FAGUTDANNING_SVENNEBREV,
+    HOYERE_UTDANNING_1_TIL_4,
+    HOYERE_UTDANNING_5_ELLER_MER,
+}

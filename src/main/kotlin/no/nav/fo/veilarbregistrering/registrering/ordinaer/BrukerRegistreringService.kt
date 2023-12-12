@@ -28,11 +28,15 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.ValideringUtils.valid
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.ManuellRegistreringRepository
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeileder
+import no.nav.paw.arbeidssokerregisteret.intern.v1.OpplysningerOmArbeidssoekerMottatt
+import no.nav.paw.arbeidssokerregisteret.intern.v1.vo.BrukerType
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-open class BrukerRegistreringService(
+@Service
+class BrukerRegistreringService(
     private val brukerRegistreringRepository: BrukerRegistreringRepository,
     private val profileringRepository: ProfileringRepository,
     private val oppfolgingGateway: OppfolgingGateway,
@@ -45,7 +49,7 @@ open class BrukerRegistreringService(
     private val arbeidssokerperiodeService: ArbeidssokerperiodeService
 ) {
     @Transactional
-    open fun registrerBrukerUtenOverforing(
+    fun registrerBrukerUtenOverforing(
         ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering,
         bruker: Bruker,
         veileder: NavVeileder?
@@ -177,6 +181,28 @@ open class BrukerRegistreringService(
 
     fun registrerAtArenaHarPlanlagtNedetid() {
         metricsService.registrer(Events.REGISTRERING_NEDETID_ARENA)
+    }
+
+    fun hentNesteOpplysningerOmArbeidssoker(antall: Int): List<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> =
+        brukerRegistreringRepository.hentNesteOpplysningerOmArbeidssoeker(antall).map { (id, opplysninger) ->
+            Triple(id, opplysninger, manuellRegistreringRepository.hentManuellRegistrering(id, BrukerRegistreringType.ORDINAER))
+        }.map { (id, opplysninger, manuellRegistrering) ->
+            id to (manuellRegistrering?.let {
+                opplysninger.copy(
+                    opplysningerOmArbeidssoeker = opplysninger.opplysningerOmArbeidssoeker.copy(
+                        metadata = opplysninger.opplysningerOmArbeidssoeker.metadata.copy(
+                            utfoertAv = no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Bruker(
+                                type = BrukerType.VEILEDER,
+                                id = manuellRegistrering.veilederIdent
+                            )
+                        )
+                    )
+                )
+            } ?: opplysninger)
+        }
+
+    fun settOpplysningerOmArbeidssoekerSomOverfort(listeMedIder: List<Int>) {
+        brukerRegistreringRepository.settOpplysningerOmArbeidssoekerSomOverfort(listeMedIder)
     }
 
     companion object {
