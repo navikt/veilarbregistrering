@@ -125,8 +125,9 @@ class BrukerRegistreringRepositoryDbIntegrationTest(
     }
 
     @Test
-    fun skal_hente_ordinaerBrukerRegistrering() {
+    fun `mapper opplysninger om arbeidssøker fra ordinaerBrukerRegistrering som har status 'PUBLISERT_KAFKA'`() {
         val ordinaerBrukerRegistrering = brukerRegistreringRepository.lagre(gyldigBrukerRegistrering(), BRUKER_1)
+        registreringTilstandRepository.lagre(registreringTilstand().brukerRegistreringId(ordinaerBrukerRegistrering.id).status(Status.PUBLISERT_KAFKA).build())
         val liste = brukerRegistreringRepository.hentNesteOpplysningerOmArbeidssoeker(1)
         assertThat(liste).hasSize(1)
         val (id, opplysninger) = liste.first()
