@@ -133,7 +133,9 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             SELECT bruker_registrering.* FROM $BRUKER_REGISTRERING
             JOIN registrering_tilstand ON bruker_registrering.bruker_registrering_id = registrering_tilstand.bruker_registrering_id
             WHERE registrering_tilstand.status = 'PUBLISERT_KAFKA'
-            AND overfort_kafka IS FALSE ORDER BY $OPPRETTET_DATO LIMIT $antall
+            AND overfort_kafka IS FALSE
+            AND opprettet_dato >= '2018-09-03'
+            ORDER BY $OPPRETTET_DATO LIMIT $antall
         """.trimIndent()
 
         return db.query(sql, noParams, opplysningerOmArbeidssoekerMapper)
