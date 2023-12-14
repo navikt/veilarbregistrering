@@ -12,7 +12,7 @@ class OpplysningMottattScheduler(
     private val opplysningerMottattProducer: OpplysningerMottattProducer,
     private val unleashClient: Unleash,
 ) {
-    @Scheduled(fixedDelay = 500, initialDelay = 10_000)
+    @Scheduled(fixedDelay = 60_000, initialDelay = 10_000)
     fun start() {
         if (!leaderElectionClient.isLeader) {
             return
@@ -27,7 +27,7 @@ class OpplysningMottattScheduler(
             return
         }
 
-        val opplysningerOmArbeidssoekere = brukerRegistreringService.hentNesteOpplysningerOmArbeidssoker(500)
+        val opplysningerOmArbeidssoekere = brukerRegistreringService.hentNesteOpplysningerOmArbeidssoker(100)
 
         if (opplysningerOmArbeidssoekere.isEmpty()) {
             logger.info("Opplysninger om arbeidssøker: Fant ingen arbeidssøkeropplysninger som skal overføres")
