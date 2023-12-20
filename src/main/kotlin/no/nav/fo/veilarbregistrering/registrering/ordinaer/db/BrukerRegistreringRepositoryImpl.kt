@@ -134,6 +134,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
             JOIN registrering_tilstand ON bruker_registrering.bruker_registrering_id = registrering_tilstand.bruker_registrering_id
             WHERE registrering_tilstand.status = 'PUBLISERT_KAFKA'
             AND overfort_kafka IS FALSE
+            AND $FOEDSELSNUMMER IS NOT NULL
             ORDER BY $OPPRETTET_DATO LIMIT $antall
         """.trimIndent()
 
@@ -227,14 +228,14 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         val opplysningerOmArbeidssoekerMapper = RowMapper<Pair<Long, OpplysningerOmArbeidssoekerMottatt>> { rs, _ ->
             rs.getLong(BRUKER_REGISTRERING_ID) to OpplysningerOmArbeidssoekerMottatt(
                 hendelseId = UUID.randomUUID(),
-                identitetsnummer = rs.getString(FOEDSELSNUMMER) ?: "ukjent",
+                identitetsnummer = rs.getString(FOEDSELSNUMMER),
                 opplysningerOmArbeidssoeker = OpplysningerOmArbeidssoeker(
                     id = UUID.randomUUID(),
                     metadata = Metadata(
                         tidspunkt = rs.getTimestamp(OPPRETTET_DATO).toInstant(),
                         utfoertAv = no.nav.paw.arbeidssokerregisteret.intern.v1.vo.Bruker(
                             type = BrukerType.SLUTTBRUKER,
-                            id = rs.getString(FOEDSELSNUMMER) ?: "ukjent"
+                            id = rs.getString(FOEDSELSNUMMER)
                         ),
                         kilde = "veilarbregistrering",
                         aarsak = "registrering"
