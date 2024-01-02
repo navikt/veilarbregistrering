@@ -70,7 +70,7 @@ class ArbeidssokerperiodeRepositoryImpl(private val db: NamedParameterJdbcTempla
     }
 
     override fun hentNesteArbeidssokerperioder(antall: Int): List<ArbeidssokerperiodeDto> {
-        val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE overfort_kafka IS FALSE AND fra_og_med >= '2018-09-03' ORDER BY fra_og_med LIMIT $antall"
+        val sql = "SELECT * FROM $ARBEIDSSOKERPERIODE_TABELL WHERE overfort_kafka IS FALSE ORDER BY fra_og_med LIMIT $antall"
         return db.query(sql, arbeidssokerperiodeMapper)
     }
 
