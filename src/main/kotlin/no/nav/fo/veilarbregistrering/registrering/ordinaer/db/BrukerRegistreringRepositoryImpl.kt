@@ -132,7 +132,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
         val sql = """
             SELECT bruker_registrering.* FROM $BRUKER_REGISTRERING
             JOIN registrering_tilstand ON bruker_registrering.bruker_registrering_id = registrering_tilstand.bruker_registrering_id
-            WHERE registrering_tilstand.status = 'PUBLISERT_KAFKA'
+            WHERE registrering_tilstand.status in ('PUBLISERT_KAFKA','OPPRINNELIG_OPPRETTET_UTEN_TILSTAND')
             AND overfort_kafka IS FALSE
             AND $FOEDSELSNUMMER IS NOT NULL
             ORDER BY $OPPRETTET_DATO LIMIT $antall
