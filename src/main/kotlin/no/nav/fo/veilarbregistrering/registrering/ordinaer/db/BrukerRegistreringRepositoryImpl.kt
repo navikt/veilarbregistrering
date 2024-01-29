@@ -241,16 +241,7 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                         aarsak = "registrering"
                     ),
                     utdanning = Utdanning(
-                        utdanningsnivaa = when (UtdanningUtils.mapTilUtdanning(rs.getString(NUS_KODE))) {
-                            UtdanningSvar.INGEN_UTDANNING -> Utdanningsnivaa.INGEN_UTDANNING
-                            UtdanningSvar.GRUNNSKOLE -> Utdanningsnivaa.GRUNNSKOLE
-                            UtdanningSvar.VIDEREGAENDE_GRUNNUTDANNING -> Utdanningsnivaa.VIDEREGAENDE_GRUNNUTDANNING
-                            UtdanningSvar.VIDEREGAENDE_FAGBREV_SVENNEBREV -> Utdanningsnivaa.VIDEREGAENDE_FAGUTDANNING_SVENNEBREV
-                            UtdanningSvar.HOYERE_UTDANNING_1_TIL_4 -> Utdanningsnivaa.HOYERE_UTDANNING_1_TIL_4
-                            UtdanningSvar.HOYERE_UTDANNING_5_ELLER_MER -> Utdanningsnivaa.HOYERE_UTDANNING_5_ELLER_MER
-                            UtdanningSvar.INGEN_SVAR -> Utdanningsnivaa.UDEFINERT
-                            null -> Utdanningsnivaa.UDEFINERT
-                        },
+                        nus = rs.getString(NUS_KODE),
                         bestaatt = when (UtdanningBestattSvar.valueOf(rs.getString(UTDANNING_BESTATT))) {
                             UtdanningBestattSvar.JA -> JaNeiVetIkke.JA
                             UtdanningBestattSvar.NEI -> JaNeiVetIkke.NEI
@@ -286,7 +277,11 @@ class BrukerRegistreringRepositoryImpl(private val db: NamedParameterJdbcTemplat
                             }?.let { beskrivelse ->
                                 JobbsituasjonMedDetaljer(
                                     beskrivelse = beskrivelse,
-                                    detaljer = emptyMap()
+                                    detaljer = rs.getString(YRKESPRAKSIS)
+                                        ?.takeIf { it.isNotBlank() && it != "X" && it != "-1" }
+                                        ?.let {
+                                            mapOf("stilling_styrk08" to it)
+                                        } ?: emptyMap()
                                 )
                             }
                         )

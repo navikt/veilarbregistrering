@@ -59,7 +59,7 @@ class KafkaConfig {
 
     @Bean
     fun opplysningerOmArbeidssokerProducerAvien(kafkaProducerStringSerializerAiven: KafkaProducer<String, String>): OpplysningerMottattProducer =
-        OpplysningerMottattKafkaProducer(kafkaProducerStringSerializerAiven, "paw.veilarb-opplysninger-mottatt-v1")
+        OpplysningerMottattKafkaProducer(kafkaProducerStringSerializerAiven, "paw.veilarb-opplysninger-mottatt-v2")
 
     @Bean
     fun kafkaProducerAiven(): KafkaProducer<*, *> {
