@@ -122,6 +122,8 @@ spec:
           namespace: teamfamilie
         - application: meroppfolging-frontend
           namespace: team-esyfo
+        - application: meroppfolging-backend
+          namespace: team-esyfo
         - application: dp-saksbehandling-frontend
           namespace: teamdagpenger
         - application: azure-token-generator
