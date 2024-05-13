@@ -68,9 +68,10 @@ open class PdlOppslagClient(
     ): String {
         val requestBody = RestUtils.toJsonRequestBody(graphqlRequest)
         val authHeaders = if (erSystemKontekst) lagAuthHeadersForSystem() else lagAuthHeaders()
+        val baseHeaders = mapOf(BEHANDLINGSNUMMER_HEADER to BEHANDLINGSNUMMER_HEADER_VERDI)
         val request = Request.Builder()
             .url(UrlUtils.joinPaths(baseUrl, "/graphql"))
-            .headers(Headers.of(authHeaders + ekstraHeaders))
+            .headers(Headers.of(baseHeaders + authHeaders + ekstraHeaders))
             .method("POST", requestBody)
             .build()
         try {
@@ -173,6 +174,8 @@ open class PdlOppslagClient(
         private const val NAV_PERSONIDENT_HEADER = "Nav-Personident"
         private const val TEMA_HEADER = "Tema"
         private const val OPPFOLGING_TEMA_HEADERVERDI = "OPP"
+        private const val BEHANDLINGSNUMMER_HEADER = "behandlingsnummer"
+        private const val BEHANDLINGSNUMMER_HEADER_VERDI = "B452"
     }
 
     override fun checkHealth(): HealthCheckResult {
