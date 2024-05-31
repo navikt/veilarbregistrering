@@ -110,22 +110,12 @@ spec:
         - application: veilarbdirigent
           namespace: pto
           cluster: prod-fss
-        - application: dp-oppslag-arbeidssoker
-          namespace: teamdagpenger
-        - application: dp-oppslag-arbeidssoker
-          namespace: teamdagpenger
-        - application: dp-dagpenger
-          namespace: teamdagpenger
-        - application: dp-soknadsdialog
-          namespace: teamdagpenger
         - application: familie-ef-sak
           namespace: teamfamilie
         - application: meroppfolging-frontend
           namespace: team-esyfo
         - application: meroppfolging-backend
           namespace: team-esyfo
-        - application: dp-saksbehandling-frontend
-          namespace: teamdagpenger
     outbound:
       external:
         - host: pdl-api.prod-fss-pub.nais.io
