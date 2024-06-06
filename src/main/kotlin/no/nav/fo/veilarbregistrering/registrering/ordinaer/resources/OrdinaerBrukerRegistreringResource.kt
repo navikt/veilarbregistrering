@@ -6,9 +6,11 @@ import no.nav.fo.veilarbregistrering.bruker.UserService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.BrukerRegistreringService
 import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistrering
 import no.nav.fo.veilarbregistrering.registrering.veileder.NavVeilederService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -22,7 +24,10 @@ class OrdinaerBrukerRegistreringResource(
 ) : OrdinaerBrukerRegistreringApi {
 
     @PostMapping("/fullfoerordinaerregistrering")
+    @ResponseStatus(HttpStatus.GONE)
     override fun registrerBruker(@RequestBody ordinaerBrukerRegistrering: OrdinaerBrukerRegistrering): OrdinaerBrukerRegistrering {
+        throw EndpointRemovedException("Endepunktet er ikke lenger i bruk.")
+/*
         if (tjenesteErNede()) {
             brukerRegistreringService.registrerAtArenaHarPlanlagtNedetid()
             throw RuntimeException("Tjenesten er nede for øyeblikket. Prøv igjen senere.")
@@ -35,7 +40,11 @@ class OrdinaerBrukerRegistreringResource(
             brukerRegistreringService.registrerBrukerUtenOverforing(ordinaerBrukerRegistrering, bruker, veileder)
         brukerRegistreringService.overforArena(opprettetRegistrering.id, bruker, veileder)
         return opprettetRegistrering
+ */
     }
 
     private fun tjenesteErNede(): Boolean = unleashClient.isEnabled("arbeidssokerregistrering.nedetid")
 }
+
+@ResponseStatus(HttpStatus.GONE)
+class EndpointRemovedException(val melding: String) : RuntimeException(melding)

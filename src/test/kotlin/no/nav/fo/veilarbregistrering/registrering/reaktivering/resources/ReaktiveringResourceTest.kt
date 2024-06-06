@@ -21,6 +21,7 @@ import no.nav.fo.veilarbregistrering.config.objectMapper
 import no.nav.fo.veilarbregistrering.registrering.reaktivering.ReaktiveringBrukerService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -34,6 +35,7 @@ import org.springframework.test.web.servlet.post
 
 @AutoConfigureMockMvc
 @WebMvcTest
+@Disabled
 @ContextConfiguration(classes = [ReaktiveringResourceConfig::class])
 class ReaktiveringResourceTest(
     @Autowired private val mvc: MockMvc,
