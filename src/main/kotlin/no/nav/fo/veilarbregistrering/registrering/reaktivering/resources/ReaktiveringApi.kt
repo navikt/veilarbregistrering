@@ -9,6 +9,7 @@ import no.nav.fo.veilarbregistrering.arbeidssoker.perioder.resources.Fnr
 interface ReaktiveringApi {
 
     @Operation(
+        hidden = true,
         summary = "Reaktiverer bruker som arbeidssøker.",
         description = "Tjenesten gjør en reaktivering av brukere som har blitt inaktivert i løpet av de siste 28 " +
                 "dagene. Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
@@ -17,6 +18,7 @@ interface ReaktiveringApi {
     fun reaktivering()
 
     @Operation(
+        hidden = true,
         summary = "Reaktiverer bruker som arbeidssøker med systembruker.",
         description = "Tjenesten gjør en reaktivering av brukere som har blitt inaktivert i løpet av de siste 28 " +
                 "dagene. Enkel reaktivering vil si at bruker settes til arbeidssøker (formidlingsgruppe=ARBS) i Arena " +
@@ -27,6 +29,7 @@ interface ReaktiveringApi {
     )
 
     @Operation(
+        hidden = true,
         summary = "Sjekker om en bruker kan reaktiveres",
         description = "Tjenesten sjekker om en bruker har blitt inaktivert i løpet av de siste 28 dagene. Hvis ja, kan bruker reaktiveres."
     )

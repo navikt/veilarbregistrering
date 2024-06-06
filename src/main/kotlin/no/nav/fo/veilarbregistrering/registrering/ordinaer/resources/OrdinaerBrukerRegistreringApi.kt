@@ -11,6 +11,7 @@ import no.nav.fo.veilarbregistrering.registrering.ordinaer.OrdinaerBrukerRegistr
 interface OrdinaerBrukerRegistreringApi {
 
     @Operation(
+        hidden = true,
         summary = "Registrerer bruker som av arbeidssøker.",
         description = "Tjenesten persisterer svaret fra bruker, og aktiverer bruker som arbeidssøker " +
                 "(formidlingsgruppe=ARBS) i Arena (via veilarboppfolging). Hvis aktiveringen i Arena blir vellykket, " +
