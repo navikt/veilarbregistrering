@@ -84,16 +84,14 @@ spec:
     path: veilarbregistrering/internal/isReady
     port: 8080
   replicas:
-    cpuThresholdPercentage: 85
-    max: 6
-    min: 2
+    max: 1
+    min: 1
   resources:
     limits:
-      cpu: "3"
-      memory: 3048Mi
+      memory: 1536Mi
     requests:
-      cpu: "1"
-      memory: 2048Mi
+      cpu: 25m
+      memory: 1024Mi
   webproxy: true
   secureLogs:
     enabled: true
