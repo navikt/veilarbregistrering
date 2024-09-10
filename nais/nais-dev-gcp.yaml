@@ -118,6 +118,9 @@ spec:
           namespace: aura
         - application: tokenx-token-generator
           namespace: aura
+        - application: veilarbperson
+          namespace: obo
+          cluster: dev-gcp
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
