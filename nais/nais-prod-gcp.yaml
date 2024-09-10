@@ -115,6 +115,9 @@ spec:
           namespace: team-esyfo
         - application: meroppfolging-backend
           namespace: team-esyfo
+        - application: veilarbperson
+          namespace: obo
+          cluster: prod-gcp
     outbound:
       external:
         - host: pdl-api.prod-fss-pub.nais.io
