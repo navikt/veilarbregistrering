@@ -59,7 +59,7 @@ class OppfolgingGatewayConfig {
     }
 }
 
-val oppfolgingNamespace = "pto"
+val oppfolgingNamespace = requireProperty("VEILARBOPPFOLGINGAPI_NAMESPACE")
 val oppfolgingAppNavn = "veilarboppfolging"
 val oppfolgingCluster = requireProperty("VEILARBOPPFOLGINGAPI_CLUSTER")
 val oppfolgingApi = DownstreamApi(oppfolgingCluster, oppfolgingNamespace, oppfolgingAppNavn)

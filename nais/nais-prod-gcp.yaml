@@ -34,6 +34,8 @@ spec:
       value: https://veilarboppfolging.prod-fss-pub.nais.io/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
       value: prod-fss
+    - name: VEILARBOPPFOLGINGAPI_NAMESPACE
+      value: pto
     - name: VEILARBARENA_URL
       value: https://veilarbarena.prod-fss-pub.nais.io/veilarbarena/api
     - name: VEILARBARENA_CLUSTER

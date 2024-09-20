@@ -31,9 +31,11 @@ spec:
     - name: AAD_DISCOVERY_URL
       value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration
     - name: VEILARBOPPFOLGINGAPI_URL
-      value: https://veilarboppfolging.dev-fss-pub.nais.io/veilarboppfolging/api
+      value: http://veilarboppfolging.poao/veilarboppfolging/api
     - name: VEILARBOPPFOLGINGAPI_CLUSTER
-      value: dev-fss
+      value: dev-gcp
+    - name: VEILARBOPPFOLGINGAPI_NAMESPACE
+      value: poao
     - name: VEILARBARENA_URL
       value: https://veilarbarena.dev-fss-pub.nais.io/veilarbarena/api
     - name: VEILARBARENA_CLUSTER
@@ -142,6 +144,8 @@ spec:
           cluster: dev-fss
         - application: digdir-krr-proxy
           namespace: team-rocket
+        - application: veilarboppfolging
+          namespace: poao
   gcp:
     sqlInstances:
       - type: POSTGRES_12
