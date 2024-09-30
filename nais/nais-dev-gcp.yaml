@@ -104,9 +104,6 @@ spec:
         - application: arbeidssokerregistrering-for-veileder
         - application: aia-backend
         - application: paw-reaktiver-arbeidssoker
-        - application: veilarbperson
-          namespace: pto
-          cluster: dev-fss
         - application: veilarbdirigent
           namespace: pto
           cluster: dev-fss
