@@ -87,8 +87,8 @@ spec:
     port: 8080
   replicas:
     cpuThresholdPercentage: 85
-    max: 6
-    min: 2
+    max: 0
+    min: 0
   resources:
     limits:
       memory: 2048Mi

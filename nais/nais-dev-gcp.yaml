@@ -86,8 +86,8 @@ spec:
     path: veilarbregistrering/internal/isReady
     port: 8080
   replicas:
-    max: 1
-    min: 1
+    max: 0
+    min: 0
   resources:
     limits:
       memory: 1536Mi
